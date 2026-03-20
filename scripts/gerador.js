@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenerativeAI, SchemaType } = require("@google/generative-ai");
 const fs = require("fs");
 const path = require("path");
 
@@ -37,6 +37,8 @@ async function iniciarAutomacao() {
     
     for (const exame of EXAMES) {
         console.log(`\n📂 EXAME: ${exame.nome.toUpperCase()}`);
+        
+        // Ajustado para apontar para a pasta /data na raiz (Solução 2 do GitHub Pages)
         const caminho = path.join(__dirname, '../data', `${exame.id}.json`);
         
         // Garante que o diretório data existe
@@ -52,7 +54,8 @@ async function iniciarAutomacao() {
             
             while (atuais < META_POR_NIVEL) {
                 const faltam = META_POR_NIVEL - atuais;
-                const lote = Math.min(15, faltam);
+                // Reduzido para 10 para maior fiabilidade e menos timeouts na API gratuita
+                const lote = Math.min(10, faltam);
 
                 console.log(`   [${nivel.toUpperCase()}] Status: ${atuais}/${META_POR_NIVEL} | Gerando +${lote}...`);
                 
@@ -98,23 +101,55 @@ async function iniciarAutomacao() {
 async function pedirIA(exame, nivel, quantidade) {
     try {
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-2.5-flash", // Modelo estável para grandes lotes
-            generationConfig: { responseMimeType: "application/json" } 
+            model: "gemini-2.5-flash", 
+            generationConfig: { 
+                responseMimeType: "application/json",
+                // Força a API a devolver um JSON perfeito e validado nativamente
+                responseSchema: {
+                    type: SchemaType.ARRAY,
+                    description: "Lista de questões de múltipla escolha para exames AWS.",
+                    items: {
+                        type: SchemaType.OBJECT,
+                        properties: {
+                            domain: { type: SchemaType.STRING },
+                            difficulty: { type: SchemaType.STRING },
+                            question: { type: SchemaType.STRING },
+                            options: { 
+                                type: SchemaType.ARRAY, 
+                                items: { type: SchemaType.STRING },
+                                description: "Exatamente 4 opções limpas, sem letras no início."
+                            },
+                            correct: { type: SchemaType.INTEGER, description: "Índice de 0 a 3 indicando a correta." },
+                            explanation: { type: SchemaType.STRING }
+                        },
+                        required: ["domain", "difficulty", "question", "options", "correct", "explanation"]
+                    }
+                }
+            } 
         });
 
+        // Few-Shot Prompting: Fornecendo um exemplo para guiar a IA e acelerar a resposta
         const prompt = `Atue como Arquiteto AWS Sênior. Gere ${quantidade} questões de múltipla escolha INÉDITAS para o exame ${exame.nome}.
         Dificuldade: "${nivel}". Domínios permitidos: ${JSON.stringify(exame.dominios)}.
         As questões devem focar em cenários reais e técnicos.
-        Responda APENAS com um array JSON válido:
-        [{ "domain": "string", "difficulty": "${nivel}", "question": "string", "options": ["A", "B", "C", "D"], "correct": 0, "explanation": "string" }]`;
+        
+        Exemplo do que espero gerado:
+        [
+          {
+            "domain": "${exame.dominios[0]}",
+            "difficulty": "${nivel}",
+            "question": "Qual serviço AWS permite gerenciar chaves de encriptação?",
+            "options": ["AWS IAM", "AWS KMS", "AWS CloudTrail", "Amazon Inspector"],
+            "correct": 1,
+            "explanation": "O AWS KMS (Key Management Service) gerencia chaves de encriptação de forma segura."
+          }
+        ]
+        Gere as ${quantidade} novas questões baseadas nos padrões oficiais da AWS.`;
 
         const result = await model.generateContent(prompt);
-        let responseText = result.response.text();
-
-        // Remove blocos de Markdown se a IA os incluir
-        responseText = responseText.replace(/```json/gi, '').replace(/```/g, '').trim();
-
-        const data = JSON.parse(responseText);
+        // Com o Schema definido, o Gemini já devolve o JSON puro
+        const data = JSON.parse(result.response.text());
+        
         return Array.isArray(data) ? data : null;
 
     } catch (e) {
