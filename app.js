@@ -20,7 +20,8 @@ let appState = {
   quizStartTime: null,           // Timestamp de início do quiz
   timerInterval: null,           // Referência do intervalo do timer
   timeRemaining: 15 * 60,        // Tempo restante em segundos (15 minutos)
-  quizMode: 'exam'               // Modo do quiz: 'exam' ou 'study'
+  quizMode: 'exam',              // Modo do quiz: 'exam' ou 'study'
+  flaggedQuestions: []           // NOVO: Array para rastrear questões marcadas para revisão
 };
 
 // ============================================================================
@@ -43,7 +44,7 @@ const CONFIG = {
  * Carrega dados persistidos e configura o gráfico radar
  */
 document.addEventListener('DOMContentLoaded', () => {
-  initTheme(); // <--- Inicialização do Modo Escuro
+  initTheme(); // Inicialização do Modo Escuro
   initializeRadarChart();
   loadLastScore();
   updateHistoryDisplay();
@@ -146,6 +147,7 @@ async function startQuiz() {
     appState.currentQuestionIndex = 0;
     appState.score = 0;
     appState.answers = [];
+    appState.flaggedQuestions = []; // Reset das marcações
     appState.quizMode = quizMode;
     
     // Prepara o objeto de pontuação por domínios
@@ -213,6 +215,9 @@ function loadQuestion() {
     progressBar.style.width = `${progress}%`;
   }
   
+  // Atualiza o botão da bandeira visualmente (se estava marcado anteriormente)
+  updateFlagUI();
+  
   // Renderiza opções de resposta
   renderOptions(question);
   
@@ -228,6 +233,42 @@ function loadQuestion() {
   if (btnNext) btnNext.classList.add('hidden');
   if (btnFinish) btnFinish.classList.add('hidden');
   if (btnSubmit) btnSubmit.classList.remove('hidden');
+}
+
+/**
+ * Marca ou desmarca a questão atual para revisão (Flagging)
+ */
+function toggleFlag() {
+  const currentIndex = appState.currentQuestionIndex;
+  const flagIndex = appState.flaggedQuestions.indexOf(currentIndex);
+  
+  if (flagIndex > -1) {
+    // Se já estava marcado, remove do array
+    appState.flaggedQuestions.splice(flagIndex, 1);
+  } else {
+    // Se não estava, adiciona ao array
+    appState.flaggedQuestions.push(currentIndex);
+  }
+  
+  updateFlagUI();
+}
+
+/**
+ * Atualiza o visual do botão de flag com base no estado da questão atual
+ */
+function updateFlagUI() {
+  const btnFlag = document.getElementById('btn-flag');
+  if (!btnFlag) return;
+  
+  const isFlagged = appState.flaggedQuestions.includes(appState.currentQuestionIndex);
+  
+  if (isFlagged) {
+    btnFlag.classList.remove('text-gray-400');
+    btnFlag.classList.add('text-orange-500'); 
+  } else {
+    btnFlag.classList.remove('text-orange-500');
+    btnFlag.classList.add('text-gray-400'); 
+  }
 }
 
 /**
@@ -387,8 +428,7 @@ function nextQuestion() {
  */
 function finishQuiz() {
   stopTimer();
-  saveQuizResult(); // Grava no localStorage com try/catch seguro
-  // GARANTIA: Atualiza a lista lateral imediatamente na interface
+  saveQuizResult(); 
   updateHistoryDisplay(); 
   
   showResultsScreen();
@@ -437,7 +477,8 @@ function resetAppState() {
     quizStartTime: null,
     timerInterval: null,
     timeRemaining: CONFIG.QUIZ_DURATION,
-    quizMode: 'exam'
+    quizMode: 'exam',
+    flaggedQuestions: [] // Reset as marcações de revisão
   };
   
   // Reseta gráfico radar de forma segura
@@ -462,7 +503,6 @@ function resetAppState() {
  * Quando o tempo acaba, finaliza automaticamente o quiz
  */
 function startTimer() {
-  // Cria elemento do timer no header se não existir
   let timerDisplay = document.getElementById('timer-display');
   if (!timerDisplay) {
     const scoreDisplay = document.getElementById('score-display');
@@ -475,7 +515,6 @@ function startTimer() {
   
   timerDisplay.classList.remove('hidden');
   
-  // Atualiza o timer a cada segundo
   appState.timerInterval = setInterval(() => {
     appState.timeRemaining--;
     
@@ -491,7 +530,7 @@ function startTimer() {
       timerDisplay.classList.remove('bg-gray-700');
     }
     
-    // Tempo esgotado - finaliza automaticamente
+    // Tempo esgotado
     if (appState.timeRemaining <= 0) {
       stopTimer();
       finishQuiz();
@@ -518,15 +557,10 @@ function stopTimer() {
 // GRÁFICO RADAR (Chart.js)
 // ============================================================================
 
-/**
- * Inicializa o gráfico radar de domínios
- * O gráfico é atualizado em tempo real conforme o utilizador responde
- */
 function initializeRadarChart() {
   const ctx = document.getElementById('radarChart');
   if (!ctx) return;
   
-  // Configuração do gráfico com tema AWS
   window.radarChartInstance = new Chart(ctx, {
     type: 'radar',
     data: {
@@ -582,10 +616,6 @@ function initializeRadarChart() {
   });
 }
 
-/**
- * Reinicializa o gráfico radar com os domínios da certificação selecionada
- * PRECISÃO: Garante que os labels correspondem exatamente aos domínios da prova
- */
 function reinitializeRadarChart() {
   if (!window.radarChartInstance || !appState.currentCertification) return;
   
@@ -593,16 +623,11 @@ function reinitializeRadarChart() {
   const labels = domains.map(d => d.name);
   const dataPoints = new Array(domains.length).fill(0);
   
-  // Atualiza labels e dados do gráfico
   window.radarChartInstance.data.labels = labels;
   window.radarChartInstance.data.datasets[0].data = dataPoints;
   window.radarChartInstance.update();
 }
 
-/**
- * Atualiza o gráfico radar com as pontuações atuais por domínio
- * Calcula a percentagem de acerto em cada domínio
- */
 function updateRadarChart() {
   if (!window.radarChartInstance || !appState.currentCertification) return;
   
@@ -614,16 +639,13 @@ function updateRadarChart() {
   });
   
   window.radarChartInstance.data.datasets[0].data = data;
-  window.radarChartInstance.update('none'); // 'none' evita animação para melhor performance
+  window.radarChartInstance.update('none'); 
 }
 
 // ============================================================================
 // ATUALIZAÇÕES DE UI E FEEDBACK
 // ============================================================================
 
-/**
- * Atualiza o display de pontuação no header
- */
 function updateScoreDisplay() {
   const display = document.getElementById('score-display');
   if (display) {
@@ -631,11 +653,6 @@ function updateScoreDisplay() {
   }
 }
 
-/**
- * Atualiza o insight dinâmico da IA baseado no desempenho atual
- * Fornece feedback contextual e recomendações de estudo
- * SEGURANÇA: Usa textContent e createElement para prevenir XSS
- */
 function updateDynamicInsight(customMessage = null) {
   const insightElement = document.getElementById('dynamic-insight');
   if (!insightElement) return;
@@ -650,19 +667,14 @@ function updateDynamicInsight(customMessage = null) {
     return;
   }
   
-  // Calcula estatísticas para gerar insight inteligente
   const totalAnswered = appState.answers.length;
   const currentScore = appState.score;
   const percentage = (currentScore / totalAnswered) * 100;
   
-  // DRY: Usa função utilitária para identificar domínios fracos
   const weakDomains = getWeakDomains(appState.domainScores, 70);
   const weakestDomain = weakDomains.length > 0 ? weakDomains[0] : null;
   
-  // Gera mensagem contextual baseada no desempenho
-  // SEGURANÇA: Usa createElement e textContent
   insightElement.innerHTML = '';
-  
   let message = '';
   let statusClass = '';
   
@@ -686,7 +698,6 @@ function updateDynamicInsight(customMessage = null) {
   const strong = document.createElement('strong');
   strong.className = statusClass;
   
-  // Extrai primeira parte (até primeiro ponto de exclamação)
   const parts = message.split('!');
   if (parts.length > 1) {
     strong.textContent = parts[0] + '!';
@@ -701,34 +712,21 @@ function updateDynamicInsight(customMessage = null) {
 // ECRÃ DE RESULTADOS
 // ============================================================================
 
-/**
- * Exibe o ecrã de resultados com análise completa do desempenho
- */
 function showResultsScreen() {
   const totalQuestions = appState.questions.length;
   const correctAnswers = appState.score;
   const incorrectAnswers = totalQuestions - correctAnswers;
   const percentage = (correctAnswers / totalQuestions) * 100;
   
-  // Atualiza estatísticas principais
   document.getElementById('final-score-percent').textContent = `${percentage.toFixed(0)}%`;
   document.getElementById('final-correct').textContent = correctAnswers;
   document.getElementById('final-incorrect').textContent = incorrectAnswers;
   
-  // Exibe badge de melhoria (comparação com último resultado)
   showImprovementBadge(percentage);
-  
-  // Gera recomendação da IA
   generateAIRecommendation(percentage);
-  
-  // Atualiza gráfico radar final
   updateRadarChart();
 }
 
-/**
- * Exibe badge de melhoria comparando com o último resultado
- * @param {number} currentPercentage - Percentagem atual
- */
 function showImprovementBadge(currentPercentage) {
   const lastResult = getLastQuizResult();
   const badge = document.getElementById('improvement-badge');
@@ -752,10 +750,6 @@ function showImprovementBadge(currentPercentage) {
   badge.classList.remove('hidden');
 }
 
-/**
- * Gera recomendação personalizada da IA baseada no desempenho
- * @param {number} percentage - Percentagem de acerto
- */
 function generateAIRecommendation(percentage) {
   const recommendationText = document.getElementById('recommendation-text');
   const studySitesContainer = document.getElementById('study-sites');
@@ -763,11 +757,8 @@ function generateAIRecommendation(percentage) {
   if (!recommendationText || !studySitesContainer) return;
   
   let message = '';
-  
-  // DRY: Usa função utilitária para identificar domínios fracos
   const weakDomains = getWeakDomains(appState.domainScores, 70);
   
-  // Gera mensagem baseada no desempenho geral
   if (percentage >= CONFIG.PASSING_SCORE) {
     message = `🎉 Parabéns! Você atingiu ${percentage.toFixed(0)}% e está acima da nota de corte (${CONFIG.PASSING_SCORE}%). `;
     if (weakDomains.length > 0) {
@@ -785,7 +776,6 @@ function generateAIRecommendation(percentage) {
   
   recommendationText.textContent = message;
   
-  // Adiciona links de estudo para domínios fracos
   studySitesContainer.innerHTML = '';
   if (weakDomains.length > 0) {
     const resources = getStudyResourcesForDomains(weakDomains);
@@ -805,11 +795,6 @@ function generateAIRecommendation(percentage) {
 // PERSISTÊNCIA DE DADOS (localStorage)
 // ============================================================================
 
-/**
- * Guarda o resultado do quiz no localStorage
- * Permite rastrear histórico e progresso do utilizador
- * SEGURANÇA: Protegido contra falhas de escrita no localStorage
- */
 function saveQuizResult() {
   const certId = appState.currentCertification.id;
   const result = {
@@ -822,36 +807,26 @@ function saveQuizResult() {
     domainScores: appState.domainScores,
     answers: appState.answers,
     timeSpent: CONFIG.QUIZ_DURATION - appState.timeRemaining,
-    quizMode: appState.quizMode
+    quizMode: appState.quizMode,
+    flaggedQuestions: appState.flaggedQuestions
   };
   
   try {
-    // Guarda último resultado da certificação
     localStorage.setItem(`${CONFIG.STORAGE_KEY_PREFIX}last_${certId}`, JSON.stringify(result));
     
-    // Adiciona ao histórico geral
     const history = getQuizHistory();
     history.push(result);
     
-    // Mantém apenas os últimos 10 resultados
     if (history.length > 10) {
       history.shift();
     }
     
     localStorage.setItem(`${CONFIG.STORAGE_KEY_PREFIX}history`, JSON.stringify(history));
   } catch (error) {
-    // SEGURANÇA: Captura erros de quota excedida ou localStorage desabilitado
     console.error('Erro ao salvar resultado no localStorage:', error);
-    // Não bloqueia a aplicação - continua funcionando sem persistência
   }
 }
 
-/**
- * Obtém o último resultado de uma certificação específica
- * SEGURANÇA: Protegido contra dados corrompidos com try/catch
- * @param {string} certId - ID da certificação (opcional, usa atual se não fornecido)
- * @returns {Object|null} Último resultado ou null
- */
 function getLastQuizResult(certId = null) {
   const id = certId || (appState.currentCertification ? appState.currentCertification.id : 'clf-c02');
   
@@ -859,42 +834,27 @@ function getLastQuizResult(certId = null) {
     const data = localStorage.getItem(`${CONFIG.STORAGE_KEY_PREFIX}last_${id}`);
     return data ? JSON.parse(data) : null;
   } catch (error) {
-    // SEGURANÇA: Dados corrompidos - retorna null e limpa entrada inválida
     console.error('Erro ao ler último resultado (dados corrompidos):', error);
     try {
       localStorage.removeItem(`${CONFIG.STORAGE_KEY_PREFIX}last_${id}`);
-    } catch (e) {
-      // Ignora erro de remoção
-    }
+    } catch (e) {}
     return null;
   }
 }
 
-/**
- * Obtém o histórico completo de quizzes
- * SEGURANÇA: Protegido contra dados corrompidos com try/catch
- * @returns {Array} Array de resultados
- */
 function getQuizHistory() {
   try {
     const data = localStorage.getItem(`${CONFIG.STORAGE_KEY_PREFIX}history`);
     return data ? JSON.parse(data) : [];
   } catch (error) {
-    // SEGURANÇA: Dados corrompidos - retorna array vazio e limpa entrada inválida
     console.error('Erro ao ler histórico (dados corrompidos):', error);
     try {
       localStorage.removeItem(`${CONFIG.STORAGE_KEY_PREFIX}history`);
-    } catch (e) {
-      // Ignora erro de remoção
-    }
+    } catch (e) {}
     return [];
   }
 }
 
-/**
- * Carrega e exibe a última pontuação no ecrã inicial
- * SEGURANÇA: Usa textContent para prevenir XSS
- */
 function loadLastScore() {
   const certSelect = document.getElementById('certification-select');
   const selectedCertId = certSelect ? certSelect.value : 'clf-c02';
@@ -902,7 +862,6 @@ function loadLastScore() {
   const banner = document.getElementById('last-score-banner');
   
   if (lastResult && banner) {
-    // SEGURANÇA: Usa textContent para partes dinâmicas
     const icon = document.createElement('i');
     icon.className = 'fa-solid fa-history mr-2';
     
@@ -924,9 +883,6 @@ function loadLastScore() {
   }
 }
 
-/**
- * Atualiza o display do histórico no painel lateral
- */
 function updateHistoryDisplay() {
   const historyList = document.getElementById('history-list');
   if (!historyList) return;
@@ -938,7 +894,6 @@ function updateHistoryDisplay() {
     return;
   }
   
-  // Exibe os últimos 5 resultados
   const recentHistory = history.slice(-5).reverse();
   historyList.innerHTML = recentHistory.map(result => {
     const date = new Date(result.date).toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit' });
@@ -957,35 +912,22 @@ function updateHistoryDisplay() {
   }).join('');
 }
 
-/**
- * Limpa o histórico de simulados após confirmação do utilizador
- * SEGURANÇA: Pede confirmação antes de apagar dados
- */
 function clearHistory() {
-  // Pede confirmação ao utilizador
   const confirmed = confirm('Tem certeza que deseja limpar todo o histórico de simulados? Esta ação não pode ser desfeita.');
-  
   if (!confirmed) return;
   
   try {
-    // Remove histórico do localStorage
     localStorage.removeItem(`${CONFIG.STORAGE_KEY_PREFIX}history`);
-    
-    // Atualiza o display visual
     updateHistoryDisplay();
     
-    // Feedback visual de sucesso
     const historyList = document.getElementById('history-list');
     if (historyList) {
       historyList.innerHTML = '<p class="text-sm text-green-600 font-semibold">✓ Histórico limpo com sucesso!</p>';
-      
-      // Volta ao estado padrão após 2 segundos
       setTimeout(() => {
         historyList.innerHTML = '<p class="text-sm text-gray-500 italic">Nenhum simulado realizado ainda.</p>';
       }, 2000);
     }
   } catch (error) {
-    // SEGURANÇA: Captura erros de acesso ao localStorage
     console.error('Erro ao limpar histórico:', error);
     alert('Erro ao limpar histórico. Por favor, tente novamente.');
   }
@@ -995,12 +937,7 @@ function clearHistory() {
 // GERAÇÃO DE RELATÓRIO PDF
 // ============================================================================
 
-/**
- * Gera e imprime relatório de desempenho em formato PDF
- * Usa a funcionalidade nativa de impressão do browser
- */
 function generatePerformanceReport() {
-  // Cria janela de impressão com conteúdo formatado
   const printWindow = window.open('', '_blank');
   
   if (!printWindow) {
@@ -1017,7 +954,6 @@ function generatePerformanceReport() {
     day: 'numeric' 
   });
   
-  // Gera HTML do relatório com estilos para impressão
   const reportHTML = `
     <!DOCTYPE html>
     <html lang="pt">
@@ -1174,10 +1110,6 @@ function generatePerformanceReport() {
   printWindow.document.close();
 }
 
-/**
- * Gera HTML das pontuações por domínio para o relatório
- * @returns {string} HTML formatado
- */
 function generateDomainScoresHTML() {
   if (!appState.currentCertification) return '';
   
@@ -1212,15 +1144,8 @@ function generateDomainScoresHTML() {
   `;
 }
 
-/**
- * Gera HTML da recomendação da IA para o relatório
- * @param {number} percentage - Percentagem de acerto
- * @returns {string} HTML formatado
- */
 function generateRecommendationHTML(percentage) {
   let message = '';
-  
-  // DRY: Usa função utilitária para identificar domínios fracos
   const weakDomains = getWeakDomains(appState.domainScores, 70);
   
   if (percentage >= CONFIG.PASSING_SCORE) {
@@ -1248,10 +1173,6 @@ function generateRecommendationHTML(percentage) {
   `;
 }
 
-/**
- * Gera HTML da revisão de questões para o relatório
- * @returns {string} HTML formatado
- */
 function generateQuestionsReviewHTML() {
   const questionsHTML = appState.answers.map((answer, index) => {
     const question = appState.questions.find(q => q.id === answer.questionId);
@@ -1261,10 +1182,14 @@ function generateQuestionsReviewHTML() {
     const statusIcon = answer.isCorrect ? '✓' : '✗';
     const statusText = answer.isCorrect ? 'Correto' : 'Incorreto';
     
+    // Injeta a bandeira visualmente no relatório se a questão foi marcada para revisão
+    const isFlagged = appState.flaggedQuestions.includes(index);
+    const flagIconHTML = isFlagged ? `<span style="color:#ff9900; margin-left:8px;" title="Marcada para revisão">🚩</span>` : '';
+    
     return `
       <div class="question-review ${statusClass}">
         <div class="question-text">
-          ${index + 1}. ${question.question}
+          ${index + 1}. ${question.question} ${flagIconHTML}
         </div>
         <div class="answer-info">
           <strong>Sua resposta:</strong> ${question.options[answer.selectedAnswer]}
@@ -1296,12 +1221,6 @@ function generateQuestionsReviewHTML() {
 // FUNÇÕES UTILITÁRIAS
 // ============================================================================
 
-/**
- * Identifica domínios com desempenho abaixo do threshold (DRY utility)
- * @param {Object} domainScores - Objeto com pontuações por domínio
- * @param {number} threshold - Percentagem mínima (padrão: 70%)
- * @returns {Array<string>} Array de IDs dos domínios fracos
- */
 function getWeakDomains(domainScores, threshold = 70) {
   const weakDomains = [];
   
@@ -1317,11 +1236,6 @@ function getWeakDomains(domainScores, threshold = 70) {
   return weakDomains;
 }
 
-/**
- * Obtém o nome legível de um domínio pelo seu ID
- * @param {string} domainId - ID do domínio
- * @returns {string} Nome do domínio
- */
 function getDomainName(domainId) {
   if (!appState.currentCertification) return domainId;
   
@@ -1329,22 +1243,12 @@ function getDomainName(domainId) {
   return domain ? domain.name : domainId;
 }
 
-/**
- * Formata tempo em segundos para formato legível (MM:SS)
- * @param {number} seconds - Tempo em segundos
- * @returns {string} Tempo formatado
- */
 function formatTime(seconds) {
   const minutes = Math.floor(seconds / 60);
   const secs = seconds % 60;
   return `${minutes}:${secs.toString().padStart(2, '0')}`;
 }
 
-/**
- * Embaralha um array (Fisher-Yates shuffle)
- * @param {Array} array - Array a embaralhar
- * @returns {Array} Array embaralhado
- */
 function shuffleArray(array) {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -1358,9 +1262,6 @@ function shuffleArray(array) {
 // GESTÃO DO MODO ESCURO (DARK MODE)
 // ============================================================================
 
-/**
- * Alterna entre o Modo Claro e Escuro, alterando ícones e guardando no localStorage
- */
 function toggleDarkMode() {
   const htmlEl = document.documentElement;
   const themeIcon = document.getElementById('theme-icon');
@@ -1376,7 +1277,6 @@ function toggleDarkMode() {
     themeIcon.classList.add('fa-moon');
   }
 
-  // Dica UX: Atualiza a cor da fonte do gráfico Radar do Chart.js para manter a legibilidade
   if (window.radarChartInstance) {
     const textColor = isDark ? '#e6edf3' : '#232f3e';
     const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
@@ -1388,12 +1288,8 @@ function toggleDarkMode() {
   }
 }
 
-/**
- * Recupera o tema preferido do utilizador no carregamento da página
- */
 function initTheme() {
   const savedTheme = localStorage.getItem('aws_sim_theme');
-  // Verifica também a preferência do sistema operativo do utilizador
   const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   
   if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {

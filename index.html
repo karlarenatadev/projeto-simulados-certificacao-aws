@@ -130,11 +130,16 @@
                 <div class="h-2 w-full bg-gray-200">
                     <div id="progress-bar" class="h-2 aws-bg-orange transition-all duration-500" style="width: 0%"></div>
                 </div>
-                <div class="p-6 md:p-10 flex-grow flex flex-col">
-                    <div class="flex justify-between items-center mb-6">
-                        <span id="question-category" class="text-xs font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Categoria</span>
-                        <span class="text-sm font-semibold text-gray-400">Questão <span id="current-q-num">1</span> de <span id="total-q-num">10</span></span>
-                    </div>
+                <div class="flex justify-between items-center mb-6">
+                <span id="question-category" class="text-xs font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Categoria</span>
+                
+                <div class="flex items-center gap-3">
+                    <button id="btn-flag" onclick="toggleFlag()" class="text-gray-400 hover:text-orange-500 transition-colors p-1 outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded" aria-label="Marcar questão para revisão">
+                        <i class="fa-solid fa-flag text-lg" aria-hidden="true"></i>
+                    </button>
+                    <span class="text-sm font-semibold text-gray-400">Questão <span id="current-q-num">1</span> de <span id="total-q-num">10</span></span>
+                </div>
+            </div>
                     <h3 id="question-text" class="text-xl md:text-2xl font-semibold aws-text-dark mb-8 leading-snug">Carregando questão...</h3>
                     <div id="options-container" class="flex flex-col gap-3 mb-8"></div>
                     <div id="explanation-box" class="hidden mt-4 bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-lg">
