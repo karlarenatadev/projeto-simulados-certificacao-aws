@@ -9,7 +9,7 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 // --- CONFIGURAÇÃO MASTER ---
 const META_POR_NIVEL = 60;
 const TENTATIVAS_MAXIMAS = 3; 
-const ESPERA_ENTRE_BLOCOS = 7000; // 7 segundos para evitar erro 429 (Rate Limit)
+const ESPERA_ENTRE_BLOCOS = 20000; // 20 segundos para evitar erro 429 (Rate Limit)
 const DIFICULDADES = ["easy", "medium", "hard"];
 
 const EXAMES = [
