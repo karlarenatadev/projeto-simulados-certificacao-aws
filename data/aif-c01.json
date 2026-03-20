@@ -1762,5 +1762,202 @@
     "correct": 2,
     "explanation": "A engenharia de prompt é a técnica de criar e refinar os prompts de entrada para modelos de IA generativa, a fim de obter respostas mais precisas, relevantes e desejáveis.",
     "id": 326
+  },
+  {
+    "domain": "ia-generativa",
+    "subdomain": "prompt-engineering",
+    "service": "amazon-bedrock",
+    "type": "multiple-choice",
+    "tags": [
+      "llm",
+      "prompt-engineering",
+      "cot",
+      "zero-shot",
+      "hard"
+    ],
+    "question": "Um engenheiro de prompt está desenvolvendo um agente de IA generativa no Amazon Bedrock para realizar inferências complexas sobre dados financeiros, como análise de risco de crédito, onde a precisão e a capacidade de explicar o raciocínio são cruciais. A abordagem inicial de 'zero-shot prompting' resultou em respostas superficiais e ocasionalmente imprecisas. Qual técnica de prompt engineering deve ser aplicada para melhorar significativamente a qualidade e a interpretabilidade das inferências do modelo?",
+    "options": [
+      "Chain-of-Thought (CoT) Prompting, solicitando ao modelo que explique seu raciocínio passo a passo antes de fornecer a resposta final, potencialmente combinado com exemplos 'few-shot'.",
+      "Aumentar o tamanho do 'temperature' nas configurações de inferência do modelo para encorajar maior criatividade.",
+      "Reduzir o 'max_tokens' para forçar o modelo a ser mais conciso e direto em suas respostas.",
+      "Usar apenas 'system prompts' extremamente curtos para dar ao modelo máxima liberdade para responder."
+    ],
+    "correct": 0,
+    "explanation": "Chain-of-Thought (CoT) Prompting é uma técnica avançada que instrui o LLM a 'pensar em voz alta' ou mostrar seus passos de raciocínio antes de chegar à resposta. Isso não só melhora a precisão para tarefas complexas, mas também torna o processo de inferência mais transparente e interpretabilidade, o que é crucial em domínios como o financeiro. A combinação com 'few-shot' (fornecendo exemplos de CoT) pode potencializar ainda mais essa técnica.",
+    "difficulty": "hard",
+    "id": 327
+  },
+  {
+    "domain": "ia-generativa",
+    "subdomain": "Modelos de Linguagem Grande (LLMs)",
+    "service": "Amazon Bedrock, Amazon Kendra, Amazon OpenSearch Service",
+    "type": "multiple-choice",
+    "tags": [
+      "RAG",
+      "LLM",
+      "prompt engineering",
+      "alucinações",
+      "atendimento ao cliente"
+    ],
+    "question": "Uma empresa de tecnologia está implementando um chatbot de atendimento ao cliente baseado em IA generativa usando Amazon Bedrock. A empresa exige que o chatbot responda apenas com informações verificadas de sua base de conhecimento interna e evite 'alucinações'. Qual abordagem arquitetural é mais eficaz para garantir que o chatbot opere estritamente dentro do contexto fornecido pela base de conhecimento interna, minimizando alucinações e otimizando a relevância das respostas, especialmente para perguntas complexas?",
+    "options": [
+      "Ajustar a temperatura e o top-p do modelo base no Bedrock para valores muito baixos.",
+      "Utilizar Retrieval Augmented Generation (RAG), integrando o Amazon Kendra ou Amazon OpenSearch Service para recuperar informações relevantes antes de gerar a resposta.",
+      "Realizar fine-tuning extensivo de um modelo de fundação grande com todo o corpus da base de conhecimento da empresa.",
+      "Implementar um filtro de conteúdo pós-geração para remover respostas que não correspondam a palavras-chave predefinidas da base de conhecimento."
+    ],
+    "correct": 1,
+    "explanation": "RAG é a estratégia mais robusta para este cenário. Ele recupera informações contextuais relevantes de uma base de conhecimento (usando serviços como Kendra ou OpenSearch) e as fornece ao LLM como parte do prompt, guiando a geração para fatos verificados e reduzindo alucinações. Ajustar temperatura/top-p pode reduzir criatividade, mas não garante factualidade baseada em uma base externa. Fine-tuning é custoso e pode ainda levar a alucinações se não for feito com cuidado extremo, e não garante que o modelo não invente fora do contexto treinado. Filtros pós-geração são reativos e menos eficazes para garantir a precisão proativamente.",
+    "difficulty": "hard",
+    "id": 328
+  },
+  {
+    "domain": "conceitos-ia",
+    "subdomain": "Paradigmas de ML",
+    "service": "Amazon SageMaker RL",
+    "type": "multiple-choice",
+    "tags": [
+      "Reinforcement Learning",
+      "otimização",
+      "SageMaker",
+      "tomada de decisão",
+      "problemas complexos"
+    ],
+    "question": "Uma empresa de logística deseja otimizar rotas de entrega para sua frota de veículos, considerando variáveis dinâmicas como tráfego em tempo real, capacidade de carga variável dos veículos e janelas de tempo de entrega restritas. O problema é complexo e não há um conjunto fixo de dados rotulados para treinamento supervisionado direto para todas as combinações de cenários. Qual paradigma de Machine Learning, suportado pelo Amazon SageMaker, seria mais apropriado para abordar este problema de otimização complexo e dinâmico, permitindo que os agentes aprendam a tomar decisões ótimas através de tentativa e erro em um ambiente simulado?",
+    "options": [
+      "Aprendizado Supervisionado com algoritmos como XGBoost no SageMaker.",
+      "Aprendizado Não Supervisionado usando Amazon SageMaker BlazingText para agrupamento de rotas.",
+      "Aprendizado por Reforço (Reinforcement Learning - RL) com SageMaker RL.",
+      "Transfer Learning com modelos pré-treinados para previsão de demanda de entrega."
+    ],
+    "correct": 2,
+    "explanation": "O Aprendizado por Reforço (RL) é o mais adequado para problemas de otimização sequencial e tomada de decisão em ambientes dinâmicos, onde um agente aprende a maximizar uma recompensa através de interações com o ambiente. O SageMaker RL fornece as ferramentas para construir e treinar modelos RL. Aprendizado Supervisionado requer dados rotulados para todas as combinações possíveis, o que é inviável aqui. Aprendizado Não Supervisionado e Transfer Learning não se encaixam na natureza de tomada de decisão e otimização em tempo real do problema.",
+    "difficulty": "hard",
+    "id": 329
+  },
+  {
+    "domain": "ia-generativa",
+    "subdomain": "Personalização de LLMs",
+    "service": "Amazon Bedrock",
+    "type": "multiple-choice",
+    "tags": [
+      "LLM",
+      "fine-tuning",
+      "prompt engineering",
+      "geração de texto",
+      "criatividade",
+      "personalização"
+    ],
+    "question": "Uma equipe de desenvolvimento está explorando a criação de um novo serviço que gera descrições de produtos altamente criativas e envolventes para um e-commerce, com base em algumas características básicas fornecidas. Eles precisam de um controle fino sobre o estilo e o tom da linguagem gerada, e a capacidade de incorporar jargões específicos do domínio do produto. Ao trabalhar com um Modelo de Linguagem Grande (LLM) no Amazon Bedrock, qual estratégia combinada oferece o maior controle sobre a qualidade, estilo e relevância do texto gerado para este caso de uso, mantendo a criatividade?",
+    "options": [
+      "Exclusivamente engenharia de prompt avançada com exemplos de poucas-disparos (few-shot prompting) para guiar o estilo.",
+      "Fine-tuning de um modelo de fundação apropriado no Amazon Bedrock com um dataset extenso de descrições de produtos no estilo desejado, seguido de engenharia de prompt.",
+      "Ajustar apenas os parâmetros de decodificação do modelo (como temperatura e top-k) para promover a criatividade.",
+      "Usar um modelo de tradução neural (NMT) do Amazon Translate para adaptar o estilo."
+    ],
+    "correct": 1,
+    "explanation": "Para obter controle fino sobre o estilo, tom e incorporar jargões específicos do domínio em um modelo generativo, o fine-tuning de um modelo de fundação com dados de alta qualidade e no estilo desejado é a abordagem mais eficaz. Isso 'ensina' o modelo as nuances específicas que ele não aprenderia apenas com prompt engineering. Após o fine-tuning, a engenharia de prompt ainda é crucial para direcionar o modelo para a tarefa específica e refinar a saída. A engenharia de prompt sozinha é limitada sem adaptação do modelo. Ajustar parâmetros de decodificação apenas afeta a aleatoriedade, não o estilo semântico. NMT é para tradução, não geração estilizada.",
+    "difficulty": "hard",
+    "id": 330
+  },
+  {
+    "domain": "implementacao-ia",
+    "subdomain": "Deployment de Modelos",
+    "service": "Amazon SageMaker",
+    "type": "multiple-choice",
+    "tags": [
+      "deployment",
+      "inferência",
+      "latência",
+      "escalabilidade",
+      "SageMaker",
+      "produção",
+      "detecção de fraude"
+    ],
+    "question": "Uma empresa financeira precisa implantar um modelo de detecção de fraude que foi treinado no Amazon SageMaker em um ambiente de produção com requisitos de latência extremamente baixos (milissegundos) e alta taxa de transferência (milhares de inferências por segundo). O modelo deve ser capaz de dimensionar automaticamente com picos de tráfego. Qual estratégia de deployment no Amazon SageMaker oferece a melhor combinação para atender a esses requisitos de latência, taxa de transferência e escalabilidade em um ambiente de produção crítico?",
+    "options": [
+      "Deployment em um SageMaker Asynchronous Inference Endpoint para processamento em lote.",
+      "Deployment em um SageMaker Real-time Inference Endpoint com Auto Scaling configurado.",
+      "Compilar o modelo com SageMaker Neo e implantá-lo em uma instância SageMaker Serverless Inference.",
+      "Exportar o modelo e implantá-lo manualmente em um cluster Amazon EKS."
+    ],
+    "correct": 1,
+    "explanation": "SageMaker Real-time Inference Endpoints são projetados para inferência de baixa latência e alta taxa de transferência. A integração com Auto Scaling permite que o endpoint se ajuste automaticamente à demanda, garantindo que os requisitos de desempenho sejam atendidos durante picos de tráfego. Asynchronous Inference é para processamento em lote e não atende aos requisitos de baixa latência. SageMaker Serverless Inference é uma boa opção para intermitência mas pode ter latência um pouco maior no 'cold start' e pode não ser ideal para picos de tráfego constantes e altíssimos onde o real-time endpoint com warm instances brilha. Implementar em EKS é uma solução mais complexa e manual, perdendo os benefícios de gerenciamento do SageMaker.",
+    "difficulty": "hard",
+    "id": 331
+  },
+  {
+    "domain": "seguranca-ia",
+    "subdomain": "Robustez de Modelo, Ataques Adversariais",
+    "service": "Amazon SageMaker",
+    "type": "multiple-choice",
+    "tags": [
+      "segurança-ia",
+      "ataques adversariais",
+      "robustez",
+      "SageMaker",
+      "treinamento adversarial",
+      "monitoramento de modelo"
+    ],
+    "question": "Uma organização governamental está utilizando um modelo de classificação de documentos confidenciais treinado no SageMaker. Há uma preocupação crescente com ataques adversariais, onde pequenas perturbações imperceptíveis nos documentos de entrada poderiam fazer com que o modelo classificasse erroneamente um documento sensível como não-sensível, comprometendo a segurança da informação. Qual é a estratégia mais robusta para mitigar o risco de ataques adversariais contra este modelo implantado no Amazon SageMaker?",
+    "options": [
+      "Aumentar a complexidade do modelo (por exemplo, adicionar mais camadas profundas) para torná-lo mais resistente a perturbações.",
+      "Implementar treinamento adversarial, onde o modelo é treinado em dados que incluem exemplos adversariais gerados, juntamente com o monitoramento contínuo de inferência para anomalias.",
+      "Usar criptografia de ponta a ponta para todos os dados de entrada e saída do modelo para proteger contra adulteração.",
+      "Reduzir a frequência de re-treinamento do modelo para estabilizar seu comportamento."
+    ],
+    "correct": 1,
+    "explanation": "O treinamento adversarial é uma técnica eficaz para aumentar a robustez de modelos de ML contra ataques adversariais, ensinando o modelo a generalizar melhor em cenários com perturbações. Combinar isso com o monitoramento contínuo de inferência (por exemplo, com SageMaker Model Monitor para desvio de dados e anomalias) permite detectar e responder a potenciais ataques em tempo real. Aumentar a complexidade pode, na verdade, tornar o modelo mais vulnerável. Criptografia protege a confidencialidade, mas não a integridade da saída do modelo contra um ataque adversário direcionado ao próprio modelo. Reduzir o re-treinamento pode levar à estagnação do modelo e não mitiga ataques adversariais.",
+    "difficulty": "hard",
+    "id": 332
+  },
+  {
+    "domain": "conceitos-ia",
+    "subdomain": "Paradigmas de ML",
+    "service": "Amazon SageMaker",
+    "type": "multiple-choice",
+    "tags": [
+      "Aprendizado Não Supervisionado",
+      "clustering",
+      "SageMaker",
+      "descoberta de padrões",
+      "análise de clientes"
+    ],
+    "question": "Um time de cientistas de dados está investigando um conjunto de dados de clientes para entender padrões de comportamento sem ter rótulos pré-definidos sobre esses padrões. Eles querem identificar grupos naturais de clientes com base em suas interações com o produto, a fim de criar campanhas de marketing direcionadas. Qual categoria de algoritmos de Machine Learning é mais adequada para descobrir estruturas e padrões ocultos neste dataset de clientes sem a necessidade de dados previamente rotulados, e qual serviço AWS pode facilitar essa tarefa?",
+    "options": [
+      "Algoritmos de Aprendizado Supervisionado (como Amazon SageMaker XGBoost) para prever o próximo passo do cliente.",
+      "Algoritmos de Aprendizado por Reforço (como Amazon SageMaker RL) para otimizar as interações do cliente.",
+      "Algoritmos de Aprendizado Não Supervisionado (como Amazon SageMaker k-Means ou PCA) para agrupamento e redução de dimensionalidade.",
+      "Modelos de Transformadores (como os disponíveis no Amazon Bedrock) para gerar perfis de clientes baseados em texto."
+    ],
+    "correct": 2,
+    "explanation": "Para descobrir estruturas e padrões ocultos em dados não rotulados e identificar grupos naturais de clientes, o Aprendizado Não Supervisionado é a categoria de algoritmos correta. Algoritmos como k-Means são usados para agrupamento (clustering), e PCA para redução de dimensionalidade, ambos disponíveis no Amazon SageMaker. Aprendizado Supervisionado e por Reforço exigem dados rotulados ou um ambiente para interagir. Modelos de Transformadores são mais para tarefas de PNL generativas ou de compreensão, não para agrupamento de dados tabulares sem rótulos.",
+    "difficulty": "hard",
+    "id": 333
+  },
+  {
+    "domain": "seguranca-ia",
+    "subdomain": "Auditoria e Monitoramento de Segurança",
+    "service": "AWS CloudTrail, Amazon SageMaker",
+    "type": "multiple-choice",
+    "tags": [
+      "segurança",
+      "auditoria",
+      "governança",
+      "CloudTrail",
+      "SageMaker",
+      "conformidade"
+    ],
+    "question": "Uma empresa de tecnologia está usando o Amazon SageMaker para treinar e implantar modelos de Machine Learning. Para garantir a governança e a auditoria, eles precisam de um registro imutável de todas as chamadas de API feitas aos serviços SageMaker, incluindo quem fez a chamada, quando e de onde, além de ser capaz de identificar atividades incomuns ou acesso não autorizado. Qual serviço AWS, integrado com o Amazon SageMaker, deve ser configurado para fornecer o registro detalhado e imutável de atividades necessárias para auditoria e detecção de anomalias de segurança?",
+    "options": [
+      "Amazon GuardDuty para detectar ameaças em logs do SageMaker.",
+      "AWS CloudTrail para registrar chamadas de API e eventos de usuário no SageMaker.",
+      "AWS Config para avaliar as configurações dos recursos do SageMaker em conformidade com as políticas.",
+      "Amazon Macie para descobrir dados sensíveis em buckets S3 usados pelo SageMaker."
+    ],
+    "correct": 1,
+    "explanation": "AWS CloudTrail é o serviço que fornece um registro de ações, usuários e eventos realizados na sua conta AWS, incluindo chamadas de API para serviços como Amazon SageMaker. É essencial para auditoria, monitoramento de conformidade e detecção de atividades incomuns. GuardDuty foca na detecção de ameaças, Config na avaliação de conformidade e Macie na descoberta de dados sensíveis, mas nenhum oferece o registro detalhado de chamadas de API como o CloudTrail.",
+    "difficulty": "hard",
+    "id": 334
   }
 ]

@@ -1066,20 +1066,6 @@
   {
     "domain": "faturamento",
     "difficulty": "easy",
-    "question": "O que é o AWS Free Tier?",
-    "options": [
-      "Uma avaliação de 30 dias de todos os serviços da AWS",
-      "Uma oferta que permite aos clientes usar certos serviços da AWS gratuitamente dentro de certos limites",
-      "Um desconto para todos os serviços da AWS para novos clientes",
-      "Um plano de suporte gratuito para todos os clientes"
-    ],
-    "correct": 1,
-    "explanation": "O AWS Free Tier permite que novos e existentes clientes experimentem certos serviços da AWS gratuitamente, dentro de limites específicos, por um determinado período ou indefinidamente para alguns serviços.",
-    "id": 1067
-  },
-  {
-    "domain": "faturamento",
-    "difficulty": "easy",
     "question": "Qual das opções a seguir NÃO é um fator que influencia o custo do Amazon EC2?",
     "options": [
       "Tipo de instância (família e tamanho)",
@@ -1192,20 +1178,6 @@
   {
     "domain": "seguranca",
     "difficulty": "easy",
-    "question": "Qual serviço da AWS é usado para gerenciar de forma centralizada usuários, grupos e permissões para acessar os recursos da AWS?",
-    "options": [
-      "Amazon S3",
-      "AWS Lambda",
-      "AWS Identity and Access Management (IAM)",
-      "Amazon EC2"
-    ],
-    "correct": 2,
-    "explanation": "AWS Identity and Access Management (IAM) é o serviço para controlar de forma segura quem pode acessar quais serviços e recursos na AWS.",
-    "id": 1076
-  },
-  {
-    "domain": "seguranca",
-    "difficulty": "easy",
     "question": "Qual das seguintes é a melhor prática de segurança para a conta root da AWS?",
     "options": [
       "Usá-la para tarefas administrativas diárias.",
@@ -1286,20 +1258,6 @@
     "correct": 1,
     "explanation": "Amazon S3 (Simple Storage Service) é um serviço de armazenamento de objetos que oferece durabilidade, disponibilidade e escalabilidade excepcionais, sendo adequado para uma vasta gama de casos de uso.",
     "id": 1082
-  },
-  {
-    "domain": "tecnologia",
-    "difficulty": "easy",
-    "question": "Qual serviço da AWS permite executar código sem provisionar ou gerenciar servidores, pagando apenas pelo tempo de computação consumido?",
-    "options": [
-      "Amazon EC2",
-      "Amazon ECS",
-      "AWS Lambda",
-      "AWS Fargate"
-    ],
-    "correct": 2,
-    "explanation": "AWS Lambda é um serviço de computação serverless que permite executar código sem a necessidade de provisionar ou gerenciar servidores subjacentes.",
-    "id": 1083
   },
   {
     "domain": "tecnologia",
@@ -2322,20 +2280,6 @@
     "correct": 3,
     "explanation": "Embora FaaS (Function as a Service) seja um subtipo de PaaS, no contexto de serviços sem servidor como AWS Lambda, ele é frequentemente referido como FaaS devido à sua natureza de execução de funções. O AWS Lambda é um serviço FaaS, onde a AWS gerencia totalmente os servidores, e o desenvolvedor foca apenas no código.",
     "id": 1156
-  },
-  {
-    "domain": "seguranca",
-    "difficulty": "medium",
-    "question": "De acordo com o Modelo de Responsabilidade Compartilhada da AWS, qual das seguintes tarefas é de responsabilidade EXCLUSIVA do cliente?",
-    "options": [
-      "A) Manutenção e segurança da infraestrutura física da nuvem",
-      "B) Proteção dos recursos de hardware que executam os serviços da AWS",
-      "C) Criptografia dos dados do cliente armazenados no S3",
-      "D) Patching do sistema operacional do host AWS"
-    ],
-    "correct": 2,
-    "explanation": "No Modelo de Responsabilidade Compartilhada, a AWS é responsável pela 'Segurança DA Nuvem' (infraestrutura subjacente), enquanto o cliente é responsável pela 'Segurança NA Nuvem' (dados, configuração, patching do SO em instâncias EC2 gerenciadas pelo cliente, etc.). A criptografia dos dados do cliente é uma responsabilidade do cliente.",
-    "id": 1157
   },
   {
     "domain": "tecnologia",
