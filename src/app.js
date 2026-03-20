@@ -125,7 +125,11 @@ async function startQuiz() {
       return;
     }
 
-    appState.questions = shuffleArray(questionsData).slice(0, Math.min(quantity, questionsData.length));
+    // Baralha as questões escolhidas E as alternativas de cada uma
+    appState.questions = shuffleArray(questionsData)
+      .slice(0, Math.min(quantity, questionsData.length))
+      .map(q => shuffleQuestionOptions(q));
+      
     appState.currentCertification = certificationPaths[selectedCertId];
     appState.currentQuestionIndex = 0;
     appState.score = 0;
@@ -162,7 +166,10 @@ async function startMistakesQuiz() {
     const response = await fetch(`data/${certId}.json`);
     const questionsData = await response.json();
     
-    appState.questions = shuffleArray(questionsData.filter(q => mistakesIds.includes(q.id)));
+    // Baralha as questões erradas E as alternativas
+    appState.questions = shuffleArray(questionsData.filter(q => mistakesIds.includes(q.id)))
+      .map(q => shuffleQuestionOptions(q));
+      
     appState.currentCertification = certificationPaths[certId];
     appState.currentQuestionIndex = 0;
     appState.score = 0;
@@ -200,6 +207,7 @@ function loadQuestion() {
   document.getElementById('explanation-box').classList.add('hidden');
   document.getElementById('btn-next').classList.add('hidden');
   document.getElementById('btn-finish').classList.add('hidden');
+  document.getElementById('btn-submit').classList.remove('hidden');
 }
 
 function renderOptions(question) {
@@ -236,9 +244,20 @@ function submitAnswer() {
   const question = appState.questions[appState.currentQuestionIndex];
   const isCorrect = appState.selectedAnswer === question.correct;
   
-  appState.answers.push({ questionId: question.id, domain: question.domain, isCorrect });
+  // Salva os dados completos para a Revisão In-App funcionar
+  appState.answers.push({ 
+    questionId: question.id, 
+    domain: question.domain, 
+    isCorrect: isCorrect,
+    question: question.question,
+    selectedAnswer: appState.selectedAnswer,
+    correctAnswer: question.correct,
+    explanation: question.explanation
+  });
+  
   if (isCorrect) appState.score++;
   
+  if (!appState.domainScores[question.domain]) appState.domainScores[question.domain] = { total: 0, correct: 0 };
   appState.domainScores[question.domain].total++;
   if (isCorrect) appState.domainScores[question.domain].correct++;
   
@@ -283,7 +302,7 @@ function finishQuiz() {
 }
 
 // ============================================================================
-// 5. PERSISTÊNCIA E LOGICA DE ERROS
+// 5. PERSISTÊNCIA E LÓGICA DE ERROS
 // ============================================================================
 
 function saveQuizResult() {
@@ -408,5 +427,127 @@ function getDomainName(id) {
 function updateScoreDisplay() { 
   document.getElementById('score-display').textContent = `${appState.score} / ${appState.answers.length}`; 
 }
-function startTimer() { /* Lógica de timer original */ }
-function stopTimer() { if (appState.timerInterval) clearInterval(appState.timerInterval); }
+
+// ============================================================================
+// 7. TEMPORIZADOR (TIMER)
+// ============================================================================
+
+function startTimer() {
+  let timerDisplay = document.getElementById('timer-display');
+  if (!timerDisplay) {
+    const scoreDisplay = document.getElementById('score-display');
+    timerDisplay = document.createElement('div');
+    timerDisplay.id = 'timer-display';
+    timerDisplay.className = 'bg-gray-700 px-3 py-1 rounded-full flex items-center gap-2';
+    timerDisplay.innerHTML = '<i class="fa-solid fa-clock text-blue-400"></i><span id="timer-text">15:00</span>';
+    scoreDisplay.parentElement.insertBefore(timerDisplay, scoreDisplay);
+  }
+  
+  timerDisplay.classList.remove('hidden');
+  
+  appState.timerInterval = setInterval(() => {
+    appState.timeRemaining--;
+    
+    const minutes = Math.floor(appState.timeRemaining / 60);
+    const seconds = appState.timeRemaining % 60;
+    const timerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    
+    document.getElementById('timer-text').textContent = timerText;
+    
+    // Alerta visual quando restam 2 minutos
+    if (appState.timeRemaining <= 120 && appState.timeRemaining > 0) {
+      timerDisplay.classList.add('bg-red-600', 'warning');
+      timerDisplay.classList.remove('bg-gray-700');
+    }
+    
+    // Tempo esgotado
+    if (appState.timeRemaining <= 0) {
+      stopTimer();
+      finishQuiz();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  if (appState.timerInterval) {
+    clearInterval(appState.timerInterval);
+    appState.timerInterval = null;
+  }
+  const timerDisplay = document.getElementById('timer-display');
+  if (timerDisplay) {
+    timerDisplay.classList.add('hidden');
+    timerDisplay.classList.remove('warning', 'bg-red-600');
+    timerDisplay.classList.add('bg-gray-700');
+  }
+}
+
+// ============================================================================
+// 8. NOVAS FUNCIONALIDADES (BARALHAR OPÇÕES E REVISÃO IN-APP)
+// ============================================================================
+
+/**
+ * Baralha as opções (A, B, C, D) de uma questão
+ * e atualiza o índice da resposta correta para não perder a referência.
+ */
+function shuffleQuestionOptions(question) {
+  let optionsWithTracker = question.options.map((opt, index) => ({
+    text: opt,
+    isOriginalCorrect: index === question.correct
+  }));
+  
+  optionsWithTracker = shuffleArray(optionsWithTracker);
+  
+  return {
+    ...question,
+    options: optionsWithTracker.map(o => o.text),
+    correct: optionsWithTracker.findIndex(o => o.isOriginalCorrect)
+  };
+}
+
+/**
+ * Gera a interface de revisão Pós-Simulado diretamente no ecrã
+ */
+function toggleInAppReview() {
+  const container = document.getElementById('in-app-review-container');
+  const btn = document.getElementById('btn-toggle-review');
+  
+  if (container.classList.contains('hidden')) {
+    container.innerHTML = ''; // Limpa conteúdo anterior
+    
+    appState.answers.forEach((ans, idx) => {
+      const isCorrect = ans.isCorrect;
+      const statusColor = isCorrect ? 'border-green-500 bg-green-50 dark:bg-green-900/20' : 'border-red-500 bg-red-50 dark:bg-red-900/20';
+      const icon = isCorrect ? '<i class="fa-solid fa-check text-green-500"></i>' : '<i class="fa-solid fa-xmark text-red-500"></i>';
+      
+      const html = `
+        <div class="border-l-4 ${statusColor} p-4 rounded-r-lg shadow-sm w-full mb-4 text-left">
+          <p class="font-bold text-gray-800 dark:text-gray-200 mb-2">${idx + 1}. ${ans.question}</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">
+            <strong>Sua Resposta:</strong> ${icon} ${appState.questions[idx].options[ans.selectedAnswer]}
+          </p>
+          ${!isCorrect ? `<p class="text-sm text-gray-600 dark:text-gray-400 mb-2"><strong>Correta:</strong> ${appState.questions[idx].options[ans.correctAnswer]}</p>` : ''}
+          <div class="mt-3 text-xs text-gray-600 dark:text-gray-400 bg-white dark:bg-slate-800 p-3 rounded border border-gray-200 dark:border-slate-600">
+            <strong>Explicação:</strong> ${ans.explanation}
+          </div>
+        </div>
+      `;
+      container.innerHTML += html;
+    });
+    
+    container.classList.remove('hidden');
+    container.classList.add('flex');
+    btn.innerHTML = '<i class="fa-solid fa-eye-slash mr-2"></i> Ocultar Revisão';
+  } else {
+    container.classList.add('hidden');
+    container.classList.remove('flex');
+    btn.innerHTML = '<i class="fa-solid fa-list-check mr-2"></i> Rever Respostas do Simulado';
+  }
+}
+
+function clearMistakes() {
+  const certId = document.getElementById('certification-select').value;
+  if (confirm('Deseja limpar a sua lista de questões erradas para esta certificação?')) {
+    localStorage.removeItem(`${CONFIG.STORAGE_KEY_PREFIX}mistakes_${certId}`);
+    checkMistakes(); // Atualiza a UI
+  }
+}
