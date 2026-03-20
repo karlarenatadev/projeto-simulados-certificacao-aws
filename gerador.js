@@ -23,8 +23,8 @@ const QUANTIDADE = 10; // Quantas questões gerar por execução
 async function gerarQuestoes() {
     // Usamos o modelo Flash, que é super rápido e ótimo para JSON
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
-        generationConfig: { responseMimeType: "application/json" } // Força a saída em JSON válido
+        model: "gemini-2.5-flash", 
+        generationConfig: { responseMimeType: "application/json" }
     });
 
     const prompt = `Atue como um Arquiteto de Soluções AWS elaborando questões de exame.

@@ -418,5 +418,145 @@
     ],
     "correct": 2,
     "explanation": "O pilar da Sustentabilidade (Sustainability) foca-se nos impactos ambientais, especialmente no consumo de energia e na eficiência. Otimizar código para reduzir o consumo de processamento e escolher regiões verdes são práticas recomendadas deste pilar para minimizar a pegada de carbono da arquitetura cloud."
+  },
+  {
+    "id": 1021,
+    "domain": "conceitos-cloud",
+    "difficulty": "easy",
+    "question": "Qual dos seguintes é um benefício chave de usar a computação em nuvem em vez de infraestrutura on-premises?",
+    "options": [
+      "A. Redução da necessidade de gerenciar segurança física da infraestrutura.",
+      "B. Maior latência para aplicações que exigem baixa conectividade.",
+      "C. Pagamento de taxas fixas mensais, independentemente do uso.",
+      "D. Maior controle sobre a manutenção do hardware de rede."
+    ],
+    "correct": 0,
+    "explanation": "A computação em nuvem, especialmente no modelo IaaS/PaaS, transfere a responsabilidade da segurança física e de parte da infraestrutura para o provedor, como a AWS. Isso se enquadra na responsabilidade 'da' nuvem da AWS. As outras opções são incorretas: a latência geralmente é otimizada na nuvem, o pagamento é tipicamente pay-as-you-go ou baseado no consumo, e o controle direto sobre o hardware físico de rede é reduzido na nuvem, sendo uma responsabilidade do provedor."
+  },
+  {
+    "id": 1022,
+    "domain": "tecnologia",
+    "difficulty": "easy",
+    "question": "Um cliente precisa armazenar objetos estáticos como imagens e vídeos com alta durabilidade e escalabilidade, acessíveis via HTTP. Qual serviço AWS é o mais adequado para essa necessidade?",
+    "options": [
+      "A. Amazon EC2",
+      "B. Amazon S3",
+      "C. Amazon RDS",
+      "D. Amazon VPC"
+    ],
+    "correct": 1,
+    "explanation": "Amazon S3 (Simple Storage Service) é um serviço de armazenamento de objetos altamente durável, escalável e seguro, ideal para armazenar conteúdo estático como imagens, vídeos e documentos. Ele oferece acesso via HTTP/HTTPS. Amazon EC2 é para recursos de computação, Amazon RDS é para bancos de dados relacionais e Amazon VPC é para configurar redes virtuais isoladas."
+  },
+  {
+    "id": 1023,
+    "domain": "seguranca",
+    "difficulty": "medium",
+    "question": "No Modelo de Responsabilidade Compartilhada da AWS, qual das seguintes é uma responsabilidade DO CLIENTE?",
+    "options": [
+      "A. Segurança física da infraestrutura global da AWS.",
+      "B. Manutenção dos servidores físicos que hospedam as instâncias EC2.",
+      "C. Criptografia de dados armazenados em um bucket S3 (se ativada).",
+      "D. Proteção da rede global que conecta as Regiões da AWS."
+    ],
+    "correct": 2,
+    "explanation": "A AWS é responsável pela segurança 'DA' nuvem (infraestrutura subjacente, rede global, hardware). O cliente é responsável pela segurança 'NA' nuvem (seus dados, configuração de segurança de rede, gerenciamento de IAM, e a criptografia de dados que ele escolhe aplicar, como em um bucket S3). As opções A, B e D são responsabilidades da AWS."
+  },
+  {
+    "id": 1024,
+    "domain": "faturamento",
+    "difficulty": "medium",
+    "question": "Uma empresa planeja usar instâncias Amazon EC2 continuamente por três anos e deseja reduzir os custos significativamente em comparação com o modelo sob demanda. Qual opção de compra do EC2 seria a mais econômica para este cenário?",
+    "options": [
+      "A. Instâncias Sob Demanda (On-Demand Instances)",
+      "B. Instâncias Spot (Spot Instances)",
+      "C. Instâncias Reservadas (Reserved Instances)",
+      "D. Hosts Dedicados (Dedicated Hosts)"
+    ],
+    "correct": 2,
+    "explanation": "Instâncias Reservadas (Reserved Instances - RIs) oferecem um desconto significativo (até 75%) em comparação com as instâncias sob demanda, em troca de um compromisso de uso por 1 ou 3 anos, sendo ideais para cargas de trabalho previsíveis e de longo prazo. Instâncias Sob Demanda são mais caras para uso contínuo. Instâncias Spot são para cargas de trabalho flexíveis e tolerantes a interrupções. Hosts Dedicados fornecem controle total sobre o servidor físico, mas não são a opção de custo mais baixo para uso contínuo em geral."
+  },
+  {
+    "id": 1025,
+    "domain": "tecnologia",
+    "difficulty": "medium",
+    "question": "Qual o propósito principal das Zonas de Disponibilidade (Availability Zones) dentro de uma Região da AWS?",
+    "options": [
+      "A. Para isolar o faturamento entre diferentes contas AWS.",
+      "B. Para garantir que cada serviço AWS tenha sua própria rede isolada.",
+      "C. Para fornecer isolamento contra falhas, permitindo alta disponibilidade e tolerância a falhas.",
+      "D. Para separar ambientes de desenvolvimento, teste e produção."
+    ],
+    "correct": 2,
+    "explanation": "As Zonas de Disponibilidade (AZs) são locais fisicamente separados e independentes dentro de uma Região AWS, cada uma com sua própria energia, resfriamento e rede. Elas são projetadas para fornecer isolamento de falhas, de modo que uma falha em uma AZ não afete as outras, permitindo que as arquiteturas implantadas em várias AZs atinjam alta disponibilidade e tolerância a falhas. As outras opções não representam o propósito principal das AZs."
+  },
+  {
+    "id": 1026,
+    "domain": "conceitos-cloud",
+    "difficulty": "medium",
+    "question": "Ao calcular o Custo Total de Propriedade (TCO) para migrar uma aplicação para a AWS, qual dos seguintes é um custo on-premises que pode ser significativamente reduzido ou eliminado com a migração?",
+    "options": [
+      "A. Custo de licenciamento de software customizado.",
+      "B. Custo de treinamento de pessoal para usar a AWS.",
+      "C. Custos de compra e manutenção de hardware de datacenter.",
+      "D. Custos de transferência de dados (data transfer out)."
+    ],
+    "correct": 2,
+    "explanation": "O Custo Total de Propriedade (TCO) on-premises inclui custos como a compra e manutenção de hardware, infraestrutura de datacenter (energia, resfriamento, espaço físico), e a equipe de TI dedicada à manutenção e operação desses ativos. Migrar para a AWS elimina ou reduz significativamente esses custos de infraestrutura física, pois a AWS os gerencia. Os outros itens mencionados são custos que podem persistir ou surgir na nuvem."
+  },
+  {
+    "id": 1027,
+    "domain": "seguranca",
+    "difficulty": "medium",
+    "question": "Qual serviço AWS é usado para gerenciar de forma centralizada usuários, grupos e permissões de acesso aos recursos da AWS?",
+    "options": [
+      "A. AWS Shield",
+      "B. AWS WAF",
+      "C. AWS Identity and Access Management (IAM)",
+      "D. Amazon GuardDuty"
+    ],
+    "correct": 2,
+    "explanation": "AWS Identity and Access Management (IAM) é o serviço que permite gerenciar o acesso de usuários, grupos e funções (roles) aos recursos da AWS de forma centralizada. Ele permite criar políticas que definem o que cada entidade pode ou não fazer. AWS Shield e AWS WAF são para proteção contra DDoS e ataques de aplicações web, respectivamente. Amazon GuardDuty é um serviço de detecção de ameaças."
+  },
+  {
+    "id": 1028,
+    "domain": "tecnologia",
+    "difficulty": "medium",
+    "question": "Um desenvolvedor precisa executar uma função de processamento de imagem que é acionada por uploads para o Amazon S3 e só precisa rodar por alguns segundos em cada execução. Para otimizar custos e eliminar a necessidade de gerenciar servidores, qual serviço AWS serverless seria o mais adequado?",
+    "options": [
+      "A. Amazon EC2",
+      "B. Amazon RDS",
+      "C. AWS Lambda",
+      "D. Amazon Redshift"
+    ],
+    "correct": 2,
+    "explanation": "AWS Lambda é um serviço de computação serverless que permite executar código sem provisionar ou gerenciar servidores. É ideal para funções acionadas por eventos (como uploads no S3) e de curta duração, pois você paga apenas pelo tempo de computação consumido. Amazon EC2 requer gerenciamento de servidores, Amazon RDS é um banco de dados relacional gerenciado, e Amazon Redshift é um data warehouse."
+  },
+  {
+    "id": 1029,
+    "domain": "faturamento",
+    "difficulty": "medium",
+    "question": "Um cliente da AWS deseja ter acesso a arquitetos de soluções AWS para revisões de design de arquitetura, otimização de performance e consultoria. Qual plano de suporte AWS é o mais básico que oferece este tipo de assistência proativa e consultiva?",
+    "options": [
+      "A. Plano Básico (Basic Support)",
+      "B. Plano Desenvolvedor (Developer Support)",
+      "C. Plano Negócios (Business Support)",
+      "D. Plano Empresarial (Enterprise Support)"
+    ],
+    "correct": 3,
+    "explanation": "O Plano Empresarial (Enterprise Support) oferece o nível mais abrangente de suporte, incluindo acesso a um Gerente Técnico de Contas (TAM) dedicado, revisões de design de arquitetura, otimização de performance e consultoria proativa. Os planos Básico e Desenvolvedor têm escopo limitado, e o Plano Negócios oferece suporte 24/7 com tempo de resposta mais rápido para casos críticos, mas não o mesmo nível de consultoria proativa oferecido pelo plano Empresarial."
+  },
+  {
+    "id": 1030,
+    "domain": "conceitos-cloud",
+    "difficulty": "medium",
+    "question": "Qual dos pilares do AWS Well-Architected Framework se concentra na capacidade de um sistema se recuperar de falhas e escalar para atender à demanda?",
+    "options": [
+      "A. Excelência Operacional",
+      "B. Segurança",
+      "C. Confiabilidade",
+      "D. Otimização de Custos"
+    ],
+    "correct": 2,
+    "explanation": "O pilar de Confiabilidade do AWS Well-Architected Framework se concentra na capacidade de um sistema de se recuperar de falhas de forma resiliente, de se escalar para atender à demanda e de se adaptar a mudanças de forma dinâmica. Excelência Operacional lida com a execução e monitoramento de sistemas. Segurança lida com a proteção de dados e sistemas. Otimização de Custos foca em maximizar o valor e minimizar os gastos."
   }
 ]
