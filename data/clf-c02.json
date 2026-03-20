@@ -1,0 +1,132 @@
+[
+  {
+    "id": 1,
+    "domain": "conceitos-cloud",
+    "question": "Qual das seguintes opções descreve melhor o modelo de responsabilidade compartilhada da AWS?",
+    "options": [
+      "A AWS é responsável pela segurança NA nuvem, e o cliente é responsável pela segurança DA nuvem",
+      "O cliente é responsável pela segurança NA nuvem, e a AWS é responsável pela segurança DA nuvem",
+      "A AWS e o cliente compartilham igualmente todas as responsabilidades de segurança",
+      "A AWS é responsável por toda a segurança, incluindo os dados do cliente"
+    ],
+    "correct": 1,
+    "explanation": "No modelo de responsabilidade compartilhada, a AWS gerencia a segurança DA nuvem (infraestrutura física, rede, hipervisor), enquanto o cliente é responsável pela segurança NA nuvem (dados, aplicações, configurações de SO, firewall, encriptação)."
+  },
+  {
+    "id": 2,
+    "domain": "tecnologia",
+    "question": "Uma empresa precisa de armazenamento de objetos escalável para backup de dados. Qual serviço AWS é mais adequado?",
+    "options": [
+      "Amazon EBS",
+      "Amazon S3",
+      "Amazon RDS",
+      "AWS Lambda"
+    ],
+    "correct": 1,
+    "explanation": "Amazon S3 (Simple Storage Service) é o serviço ideal para armazenamento de objetos escalável, durável e de baixo custo. EBS é para volumes de blocos anexados a instâncias EC2, RDS é para bases de dados relacionais, e Lambda é para computação serverless."
+  },
+  {
+    "id": 3,
+    "domain": "seguranca",
+    "question": "Qual serviço AWS permite gerenciar chaves de encriptação e controlar o acesso a dados encriptados?",
+    "options": [
+      "AWS IAM",
+      "AWS KMS",
+      "AWS CloudTrail",
+      "Amazon Inspector"
+    ],
+    "correct": 1,
+    "explanation": "AWS KMS (Key Management Service) é o serviço gerenciado para criar e controlar chaves de encriptação. IAM gere identidades e permissões, CloudTrail regista atividades da conta, e Inspector avalia vulnerabilidades de segurança."
+  },
+  {
+    "id": 4,
+    "domain": "faturamento",
+    "question": "Qual ferramenta AWS permite visualizar e analisar os custos e uso da conta ao longo do tempo?",
+    "options": [
+      "AWS Budgets",
+      "AWS Cost Explorer",
+      "AWS Pricing Calculator",
+      "AWS Trusted Advisor"
+    ],
+    "correct": 1,
+    "explanation": "AWS Cost Explorer fornece visualizações interativas dos custos e uso ao longo do tempo. Budgets define alertas de orçamento, Pricing Calculator estima custos futuros, e Trusted Advisor fornece recomendações de otimização."
+  },
+  {
+    "id": 5,
+    "domain": "conceitos-cloud",
+    "question": "Qual é o principal benefício da elasticidade na AWS Cloud?",
+    "options": [
+      "Redução de custos fixos de infraestrutura",
+      "Capacidade de escalar recursos automaticamente conforme a demanda",
+      "Acesso global a datacenters",
+      "Segurança aprimorada"
+    ],
+    "correct": 1,
+    "explanation": "Elasticidade refere-se à capacidade de aumentar ou diminuir recursos automaticamente conforme a demanda, garantindo que você tenha sempre a capacidade certa no momento certo, otimizando custos e desempenho."
+  },
+  {
+    "id": 6,
+    "domain": "tecnologia",
+    "question": "Qual serviço AWS fornece um sistema de nomes de domínio (DNS) escalável e de alta disponibilidade?",
+    "options": [
+      "Amazon CloudFront",
+      "AWS Direct Connect",
+      "Amazon Route 53",
+      "Elastic Load Balancing"
+    ],
+    "correct": 2,
+    "explanation": "Amazon Route 53 é o serviço DNS gerenciado da AWS, oferecendo roteamento de tráfego, registo de domínios e verificações de integridade. CloudFront é CDN, Direct Connect é conexão dedicada, e ELB distribui tráfego entre instâncias."
+  },
+  {
+    "id": 7,
+    "domain": "seguranca",
+    "question": "Qual serviço AWS fornece proteção contra ataques DDoS?",
+    "options": [
+      "AWS WAF",
+      "AWS Shield",
+      "Amazon GuardDuty",
+      "AWS Security Hub"
+    ],
+    "correct": 1,
+    "explanation": "AWS Shield é o serviço gerenciado de proteção contra DDoS. Shield Standard é gratuito e automático, enquanto Shield Advanced oferece proteção adicional. WAF protege contra exploits web, GuardDuty detecta ameaças, e Security Hub centraliza alertas de segurança."
+  },
+  {
+    "id": 8,
+    "domain": "faturamento",
+    "question": "Qual modelo de preços do Amazon EC2 oferece o maior desconto para cargas de trabalho previsíveis e de longo prazo?",
+    "options": [
+      "On-Demand Instances",
+      "Spot Instances",
+      "Reserved Instances",
+      "Dedicated Hosts"
+    ],
+    "correct": 2,
+    "explanation": "Reserved Instances oferecem descontos significativos (até 75%) em troca de compromisso de 1 ou 3 anos. On-Demand não tem compromisso, Spot oferece descontos mas pode ser interrompido, e Dedicated Hosts são servidores físicos dedicados."
+  },
+  {
+    "id": 9,
+    "domain": "tecnologia",
+    "question": "Qual serviço AWS permite executar código sem provisionar ou gerenciar servidores?",
+    "options": [
+      "Amazon EC2",
+      "AWS Lambda",
+      "Amazon ECS",
+      "AWS Elastic Beanstalk"
+    ],
+    "correct": 1,
+    "explanation": "AWS Lambda é o serviço de computação serverless que executa código em resposta a eventos, sem necessidade de gerenciar servidores. Você paga apenas pelo tempo de computação consumido."
+  },
+  {
+    "id": 10,
+    "domain": "conceitos-cloud",
+    "question": "Qual pilar do AWS Well-Architected Framework foca em executar sistemas para entregar valor de negócio?",
+    "options": [
+      "Excelência Operacional",
+      "Segurança",
+      "Confiabilidade",
+      "Eficiência de Performance"
+    ],
+    "correct": 0,
+    "explanation": "O pilar de Excelência Operacional concentra-se em executar e monitorizar sistemas para entregar valor de negócio e melhorar continuamente processos e procedimentos. Os outros pilares são: Segurança, Confiabilidade, Eficiência de Performance, Otimização de Custos e Sustentabilidade."
+  }
+]

@@ -67,7 +67,7 @@
                     </h3>
                     <div class="flex gap-4 justify-center">
                         <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="quiz-mode" value="exam" id="mode-exam" class="peer hidden" checked>
+                            <input type="radio" name="quiz-mode" value="exam" id="mode-exam" class="peer sr-only" checked>
                             <div class="border-2 border-gray-300 rounded-lg p-4 text-center transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 peer-checked:shadow-md hover:border-gray-400">
                                 <i class="fa-solid fa-clock text-2xl mb-2 text-gray-600 peer-checked:text-orange-600" aria-hidden="true"></i>
                                 <div class="font-bold text-gray-700">Modo Exame</div>
@@ -75,7 +75,7 @@
                             </div>
                         </label>
                         <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="quiz-mode" value="study" id="mode-study" class="peer hidden">
+                            <input type="radio" name="quiz-mode" value="study" id="mode-study" class="peer sr-only">
                             <div class="border-2 border-gray-300 rounded-lg p-4 text-center transition-all peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:shadow-md hover:border-gray-400">
                                 <i class="fa-solid fa-book-open text-2xl mb-2 text-gray-600 peer-checked:text-blue-600" aria-hidden="true"></i>
                                 <div class="font-bold text-gray-700">Modo Estudo</div>
@@ -184,9 +184,14 @@
                     </div>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 flex flex-col h-full">
-                    <h3 class="text-lg font-bold border-b border-gray-200 pb-2 mb-3 aws-text-dark">
-                        <i class="fa-solid fa-trophy text-yellow-500 mr-2" aria-hidden="true"></i> Histórico
-                    </h3>
+                    <div class="flex justify-between items-center border-b border-gray-200 pb-2 mb-3">
+                        <h3 class="text-lg font-bold aws-text-dark">
+                            <i class="fa-solid fa-trophy text-yellow-500 mr-2" aria-hidden="true"></i> Histórico
+                        </h3>
+                        <button onclick="clearHistory()" class="text-gray-400 hover:text-red-500 transition-colors p-1" title="Limpar histórico" aria-label="Limpar histórico de simulados">
+                            <i class="fa-solid fa-trash-can text-sm" aria-hidden="true"></i>
+                        </button>
+                    </div>
                     <div id="history-list" class="text-sm text-gray-500 italic flex-grow overflow-y-auto custom-scroll" role="status">Nenhum simulado realizado ainda.</div>
                 </div>
             </div>

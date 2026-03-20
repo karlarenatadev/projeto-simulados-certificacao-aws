@@ -1,0 +1,67 @@
+[
+  {
+    "id": 201,
+    "domain": "amazon-bedrock",
+    "question": "Uma empresa precisa implementar guardrails para prevenir que um modelo de IA generativa produza conteúdo inadequado. Qual recurso do Amazon Bedrock deve ser configurado?",
+    "options": [
+      "Amazon Bedrock Model Evaluation",
+      "Amazon Bedrock Guardrails com políticas de conteúdo e filtros de tópicos sensíveis",
+      "Amazon Bedrock Knowledge Bases com validação de contexto",
+      "Amazon Bedrock Agents com validação de output"
+    ],
+    "correct": 1,
+    "explanation": "Amazon Bedrock Guardrails permite configurar políticas de conteúdo, filtros de tópicos sensíveis, filtros de PII (Personally Identifiable Information) e word filters para prevenir outputs inadequados. É a solução específica para governança e segurança de conteúdo gerado por modelos de IA."
+  },
+  {
+    "id": 202,
+    "domain": "prompt-engineering",
+    "question": "Qual técnica de prompt engineering é mais eficaz quando o modelo precisa realizar uma tarefa completamente nova sem exemplos prévios?",
+    "options": [
+      "Few-shot prompting com 3-5 exemplos",
+      "Zero-shot prompting com instruções claras e contexto detalhado",
+      "Chain-of-thought prompting",
+      "Fine-tuning do modelo base"
+    ],
+    "correct": 1,
+    "explanation": "Zero-shot prompting é a técnica onde fornecemos apenas instruções claras sem exemplos, ideal para tarefas novas. Few-shot requer exemplos (que não temos), chain-of-thought é para raciocínio complexo, e fine-tuning não é prompt engineering. Zero-shot com contexto detalhado maximiza a compreensão do modelo sobre a tarefa."
+  },
+  {
+    "id": 203,
+    "domain": "fundamentos-ia",
+    "question": "Qual é a principal diferença entre Retrieval-Augmented Generation (RAG) e fine-tuning de modelos de linguagem?",
+    "options": [
+      "RAG modifica os pesos do modelo, enquanto fine-tuning adiciona conhecimento externo",
+      "RAG recupera informações de fontes externas em tempo real, enquanto fine-tuning treina o modelo com novos dados",
+      "RAG é mais caro que fine-tuning para implementar",
+      "Fine-tuning funciona apenas com modelos pequenos"
+    ],
+    "correct": 1,
+    "explanation": "RAG (Retrieval-Augmented Generation) mantém o modelo original e busca informações relevantes de bases de conhecimento externas em tempo de inferência, combinando retrieval com generation. Fine-tuning modifica os pesos do modelo através de treino adicional. RAG é ideal para conhecimento dinâmico e específico de domínio sem retreinar o modelo."
+  },
+  {
+    "id": 204,
+    "domain": "amazon-bedrock",
+    "question": "Uma aplicação precisa usar Amazon Bedrock Agents para automatizar tarefas complexas. Qual componente é essencial para permitir que o Agent execute ações específicas?",
+    "options": [
+      "Amazon Bedrock Model Catalog",
+      "Action Groups com funções Lambda associadas",
+      "Amazon Bedrock Guardrails",
+      "Amazon Bedrock Prompt Flows"
+    ],
+    "correct": 1,
+    "explanation": "Action Groups são componentes essenciais dos Bedrock Agents que definem as ações que o agente pode executar. Cada Action Group está associado a funções AWS Lambda que implementam a lógica de negócio. O agente usa o modelo de linguagem para decidir quando invocar estas ações baseado no contexto da conversa."
+  },
+  {
+    "id": 205,
+    "domain": "seguranca-ia",
+    "question": "Ao implementar uma solução de IA generativa que processa dados sensíveis de clientes, qual prática de segurança do Amazon Bedrock deve ser priorizada?",
+    "options": [
+      "Usar apenas modelos open-source",
+      "Ativar encriptação em trânsito e em repouso, configurar Guardrails para filtrar PII, e usar VPC endpoints",
+      "Desativar logging para evitar exposição de dados",
+      "Permitir acesso público para facilitar integração"
+    ],
+    "correct": 1,
+    "explanation": "A segurança em IA requer múltiplas camadas: encriptação protege dados em trânsito (TLS) e em repouso (KMS), Guardrails com filtros PII previnem vazamento de informações sensíveis nos outputs, e VPC endpoints mantêm o tráfego na rede privada AWS. Logging deve ser mantido (com dados sanitizados) para auditoria e conformidade."
+  }
+]

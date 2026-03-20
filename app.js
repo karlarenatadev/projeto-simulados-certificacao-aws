@@ -221,12 +221,16 @@ function loadQuestion() {
 
 /**
  * Renderiza as opções de resposta para a questão atual
+ * PERFORMANCE: Usa DocumentFragment para minimizar reflows/repaints
  * SEGURANÇA: Usa textContent para prevenir XSS
  * @param {Object} question - Objeto da questão
  */
 function renderOptions(question) {
   const container = document.getElementById('options-container');
   container.innerHTML = '';
+  
+  // PERFORMANCE: Usa DocumentFragment para batch DOM updates
+  const fragment = document.createDocumentFragment();
   
   question.options.forEach((option, index) => {
     const optionCard = document.createElement('div');
@@ -257,8 +261,12 @@ function renderOptions(question) {
       }
     });
     
-    container.appendChild(optionCard);
+    // Adiciona ao fragmento em vez de diretamente ao DOM
+    fragment.appendChild(optionCard);
   });
+  
+  // PERFORMANCE: Apenas um appendChild para todo o conjunto de opções
+  container.appendChild(fragment);
 }
 
 /**
@@ -614,19 +622,9 @@ function updateDynamicInsight(customMessage = null) {
   const currentScore = appState.score;
   const percentage = (currentScore / totalAnswered) * 100;
   
-  // Identifica domínio mais fraco
-  let weakestDomain = null;
-  let lowestScore = 100;
-  
-  Object.entries(appState.domainScores).forEach(([domainId, scores]) => {
-    if (scores.total > 0) {
-      const domainPercentage = (scores.correct / scores.total) * 100;
-      if (domainPercentage < lowestScore) {
-        lowestScore = domainPercentage;
-        weakestDomain = domainId;
-      }
-    }
-  });
+  // DRY: Usa função utilitária para identificar domínios fracos
+  const weakDomains = getWeakDomains(appState.domainScores, 70);
+  const weakestDomain = weakDomains.length > 0 ? weakDomains[0] : null;
   
   // Gera mensagem contextual baseada no desempenho
   // SEGURANÇA: Usa createElement e textContent
@@ -732,17 +730,9 @@ function generateAIRecommendation(percentage) {
   if (!recommendationText || !studySitesContainer) return;
   
   let message = '';
-  let weakDomains = [];
   
-  // Identifica domínios fracos (abaixo de 70%)
-  Object.entries(appState.domainScores).forEach(([domainId, scores]) => {
-    if (scores.total > 0) {
-      const domainPercentage = (scores.correct / scores.total) * 100;
-      if (domainPercentage < 70) {
-        weakDomains.push(domainId);
-      }
-    }
-  });
+  // DRY: Usa função utilitária para identificar domínios fracos
+  const weakDomains = getWeakDomains(appState.domainScores, 70);
   
   // Gera mensagem baseada no desempenho geral
   if (percentage >= CONFIG.PASSING_SCORE) {
@@ -932,6 +922,40 @@ function updateHistoryDisplay() {
       </div>
     `;
   }).join('');
+}
+
+/**
+ * Limpa o histórico de simulados após confirmação do utilizador
+ * SEGURANÇA: Pede confirmação antes de apagar dados
+ */
+function clearHistory() {
+  // Pede confirmação ao utilizador
+  const confirmed = confirm('Tem certeza que deseja limpar todo o histórico de simulados? Esta ação não pode ser desfeita.');
+  
+  if (!confirmed) return;
+  
+  try {
+    // Remove histórico do localStorage
+    localStorage.removeItem(`${CONFIG.STORAGE_KEY_PREFIX}history`);
+    
+    // Atualiza o display visual
+    updateHistoryDisplay();
+    
+    // Feedback visual de sucesso
+    const historyList = document.getElementById('history-list');
+    if (historyList) {
+      historyList.innerHTML = '<p class="text-sm text-green-600 font-semibold">✓ Histórico limpo com sucesso!</p>';
+      
+      // Volta ao estado padrão após 2 segundos
+      setTimeout(() => {
+        historyList.innerHTML = '<p class="text-sm text-gray-500 italic">Nenhum simulado realizado ainda.</p>';
+      }, 2000);
+    }
+  } catch (error) {
+    // SEGURANÇA: Captura erros de acesso ao localStorage
+    console.error('Erro ao limpar histórico:', error);
+    alert('Erro ao limpar histórico. Por favor, tente novamente.');
+  }
 }
 
 // ============================================================================
@@ -1162,16 +1186,9 @@ function generateDomainScoresHTML() {
  */
 function generateRecommendationHTML(percentage) {
   let message = '';
-  let weakDomains = [];
   
-  Object.entries(appState.domainScores).forEach(([domainId, scores]) => {
-    if (scores.total > 0) {
-      const domainPercentage = (scores.correct / scores.total) * 100;
-      if (domainPercentage < 70) {
-        weakDomains.push(domainId);
-      }
-    }
-  });
+  // DRY: Usa função utilitária para identificar domínios fracos
+  const weakDomains = getWeakDomains(appState.domainScores, 70);
   
   if (percentage >= CONFIG.PASSING_SCORE) {
     message = `Parabéns! Você atingiu ${percentage.toFixed(0)}% e está acima da nota de corte (${CONFIG.PASSING_SCORE}%). `;
@@ -1245,6 +1262,27 @@ function generateQuestionsReviewHTML() {
 // ============================================================================
 // FUNÇÕES UTILITÁRIAS
 // ============================================================================
+
+/**
+ * Identifica domínios com desempenho abaixo do threshold (DRY utility)
+ * @param {Object} domainScores - Objeto com pontuações por domínio
+ * @param {number} threshold - Percentagem mínima (padrão: 70%)
+ * @returns {Array<string>} Array de IDs dos domínios fracos
+ */
+function getWeakDomains(domainScores, threshold = 70) {
+  const weakDomains = [];
+  
+  Object.entries(domainScores).forEach(([domainId, scores]) => {
+    if (scores.total > 0) {
+      const domainPercentage = (scores.correct / scores.total) * 100;
+      if (domainPercentage < threshold) {
+        weakDomains.push(domainId);
+      }
+    }
+  });
+  
+  return weakDomains;
+}
 
 /**
  * Obtém o nome legível de um domínio pelo seu ID

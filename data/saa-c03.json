@@ -1,0 +1,41 @@
+[
+  {
+    "id": 101,
+    "domain": "design-resiliente",
+    "question": "Uma aplicação web precisa de alta disponibilidade em múltiplas Availability Zones. Qual combinação de serviços AWS é mais apropriada?",
+    "options": [
+      "Amazon EC2 com Auto Scaling Group e Application Load Balancer",
+      "Amazon EC2 com Elastic IP",
+      "AWS Lambda com API Gateway",
+      "Amazon Lightsail"
+    ],
+    "correct": 0,
+    "explanation": "Auto Scaling Group distribui instâncias EC2 em múltiplas AZs automaticamente, enquanto o Application Load Balancer distribui o tráfego entre elas, garantindo alta disponibilidade e resiliência a falhas de zona."
+  },
+  {
+    "id": 102,
+    "domain": "design-performante",
+    "question": "Uma aplicação global precisa de baixa latência para utilizadores em diferentes continentes. Qual serviço AWS deve ser implementado?",
+    "options": [
+      "Amazon S3 Transfer Acceleration",
+      "Amazon CloudFront",
+      "AWS Global Accelerator",
+      "Amazon Route 53 com roteamento geográfico"
+    ],
+    "correct": 1,
+    "explanation": "Amazon CloudFront é a CDN da AWS que distribui conteúdo através de edge locations globais, reduzindo significativamente a latência para utilizadores em qualquer parte do mundo através de cache de conteúdo próximo aos utilizadores finais."
+  },
+  {
+    "id": 103,
+    "domain": "design-seguro",
+    "question": "Uma empresa precisa garantir que dados sensíveis em S3 sejam encriptados em repouso e em trânsito. Qual é a melhor abordagem?",
+    "options": [
+      "Ativar apenas HTTPS para acesso aos objetos",
+      "Usar S3 Server-Side Encryption (SSE) e forçar HTTPS através de bucket policy",
+      "Encriptar dados manualmente antes do upload",
+      "Usar apenas IAM policies para controlar acesso"
+    ],
+    "correct": 1,
+    "explanation": "A combinação de SSE (encriptação em repouso) com bucket policy que força HTTPS (encriptação em trânsito) garante proteção completa dos dados. SSE-S3, SSE-KMS ou SSE-C podem ser usados conforme os requisitos de gestão de chaves."
+  }
+]

@@ -1,13 +1,12 @@
 # 🎓 Simulador IA - Certificações AWS
 
-[![Desenvolvido por](https://img.shields.io/badge/Desenvolvido%20por-Karla%20Renata-orange?style=for-the-badge)](#-autor)
-lor=white)](#)
+[![Desenvolvido por](https://img.shields.io/badge/Desenvolvido%20por-Karla%20Renata-orange?style=for-the-badge&logoColor=white)](#)
+[![AWS](https://img.shields.io/badge/AWS-Cloud-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)](#)
 [![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](#)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](#)
 
 Aplicação web profissional para simulação de exames de certificação AWS com análise inteligente de desempenho em tempo real.
 
-Projeto desenvolvido por **Karla Renata** para ajudar a comunidade a ean Code e Segurança Web.
+Projeto desenvolvido por **Karla Renata** para ajudar a comunidade a preparar-se para certificações AWS com foco em Clean Code e Segurança Web.
 
 ---
 
@@ -150,8 +149,6 @@ const CONFIG = {
 
 ## 🎯 Próximas Melhorias
 
-- [ ] Seleção de certificação no ecrã inicial
-- [ ] Modo de estudo (sem timer)
 - [ ] Filtro de questões por domínio
 - [ ] Exportação de dados em JSON
 - [ ] Modo escuro
