@@ -37,10 +37,10 @@ async function iniciarAutomacao() {
     
     for (const exame of EXAMES) {
         console.log(`\n📂 EXAME: ${exame.nome.toUpperCase()}`);
-        const caminho = path.join(__dirname, '../src/data', `${exame.id}.json`);
+        const caminho = path.join(__dirname, '../data', `${exame.id}.json`);
         
         // Garante que o diretório data existe
-        const dirData = path.join(__dirname, '../src/data');
+        const dirData = path.join(__dirname, '../data');
         if (!fs.existsSync(dirData)) {
             fs.mkdirSync(dirData, { recursive: true });
         }
