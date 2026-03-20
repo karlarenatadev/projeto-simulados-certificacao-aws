@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Simulador de Certificações AWS com Motor IA - Prepare-se para os exames AWS com questões realistas e análise inteligente de desempenho">
+    <title>Simulador IA - Certificações AWS</title>
+    
+    <!-- CDN Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="aws-bg-dark text-white shadow-md py-4 px-6 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-cloud aws-text-orange text-2xl" aria-hidden="true"></i>
+            <div>
+                <h1 class="text-xl font-bold leading-tight">Simulador IA</h1>
+                <p class="text-xs text-gray-300">Certificações AWS</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4 text-sm font-semibold">
+            <div class="bg-gray-700 px-3 py-1 rounded-full flex items-center gap-2">
+                <i class="fa-solid fa-bullseye text-green-400" aria-hidden="true"></i>
+                <span id="score-display" aria-live="polite">0 / 0</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8 max-w-7xl">
+        
+        <section class="lg:w-2/3 flex flex-col h-full bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+            
+            <!-- Tela Inicial -->
+            <div id="screen-start" class="p-8 md:p-12 flex flex-col items-center justify-center text-center h-full">
+                <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+                    <i class="fa-solid fa-brain aws-text-orange text-4xl" aria-hidden="true"></i>
+                </div>
+                <h2 class="text-3xl font-bold mb-4 aws-text-dark">Motor Gerador de Questões IA</h2>
+                <p class="text-gray-600 mb-6 max-w-lg leading-relaxed">
+                    Questões no estilo oficial dos exames AWS. Cada simulado usa perguntas diferentes para maximizar seu aprendizado. A IA analisa seu desempenho em tempo real.
+                </p>
+                
+                <!-- Seleção de Certificação -->
+                <div class="w-full max-w-md mb-6 bg-gray-50 p-6 rounded-xl border border-gray-200">
+                    <h3 class="text-lg font-bold aws-text-dark mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-certificate aws-text-orange" aria-hidden="true"></i>
+                        Selecione sua Certificação
+                    </h3>
+                    <select id="certification-select" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all outline-none text-gray-700 font-medium bg-white cursor-pointer hover:border-gray-400" aria-label="Selecionar certificação AWS">
+                        <option value="clf-c02">AWS Certified Cloud Practitioner (CLF-C02)</option>
+                        <option value="saa-c03">AWS Certified Solutions Architect (SAA-C03)</option>
+                        <option value="aif-c01">AWS Certified AI Practitioner (AIF-C01)</option>
+                    </select>
+                </div>
+                
+                <!-- Modo de Simulação -->
+                <div class="w-full max-w-md mb-6 bg-gray-50 p-6 rounded-xl border border-gray-200">
+                    <h3 class="text-lg font-bold aws-text-dark mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders aws-text-orange" aria-hidden="true"></i>
+                        Modo de Simulação
+                    </h3>
+                    <div class="flex gap-4 justify-center">
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="quiz-mode" value="exam" id="mode-exam" class="peer hidden" checked>
+                            <div class="border-2 border-gray-300 rounded-lg p-4 text-center transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 peer-checked:shadow-md hover:border-gray-400">
+                                <i class="fa-solid fa-clock text-2xl mb-2 text-gray-600 peer-checked:text-orange-600" aria-hidden="true"></i>
+                                <div class="font-bold text-gray-700">Modo Exame</div>
+                                <div class="text-xs text-gray-500 mt-1">Timer de 15 min</div>
+                            </div>
+                        </label>
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="quiz-mode" value="study" id="mode-study" class="peer hidden">
+                            <div class="border-2 border-gray-300 rounded-lg p-4 text-center transition-all peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:shadow-md hover:border-gray-400">
+                                <i class="fa-solid fa-book-open text-2xl mb-2 text-gray-600 peer-checked:text-blue-600" aria-hidden="true"></i>
+                                <div class="font-bold text-gray-700">Modo Estudo</div>
+                                <div class="text-xs text-gray-500 mt-1">Sem limite de tempo</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div id="last-score-banner" class="hidden bg-blue-50 border border-blue-200 rounded-lg px-6 py-3 mb-6 text-sm text-blue-800 font-semibold" role="status"></div>
+                <div class="grid grid-cols-2 gap-4 mb-8 w-full max-w-md text-left text-sm text-gray-700 bg-gray-50 p-4 rounded-lg border border-gray-100">
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500" aria-hidden="true"></i> 40+ Questões no banco</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-chart-line text-blue-500" aria-hidden="true"></i> Análise em Tempo Real</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-rotate text-purple-500" aria-hidden="true"></i> Questões diferentes a cada vez</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-lightbulb aws-text-orange" aria-hidden="true"></i> Explicações Detalhadas</div>
+                </div>
+                <button onclick="startQuiz()" class="aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all hover:shadow-lg transform hover:-translate-y-1" aria-label="Iniciar simulação">
+                    Iniciar Simulação <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <!-- Tela do Quiz -->
+            <div id="screen-quiz" class="hidden flex-col h-full relative">
+                <div class="h-2 w-full bg-gray-200">
+                    <div id="progress-bar" class="h-2 aws-bg-orange transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <div class="p-6 md:p-10 flex-grow flex flex-col">
+                    <div class="flex justify-between items-center mb-6">
+                        <span id="question-category" class="text-xs font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Categoria</span>
+                        <span class="text-sm font-semibold text-gray-400">Questão <span id="current-q-num">1</span> de <span id="total-q-num">10</span></span>
+                    </div>
+                    <h3 id="question-text" class="text-xl md:text-2xl font-semibold aws-text-dark mb-8 leading-snug">Carregando questão...</h3>
+                    <div id="options-container" class="flex flex-col gap-3 mb-8"></div>
+                    <div id="explanation-box" class="hidden mt-4 bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-lg">
+                        <h4 class="font-bold text-blue-800 mb-2 flex items-center gap-2"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Explicação</h4>
+                        <p id="explanation-text" class="text-sm text-blue-900 leading-relaxed custom-scroll max-h-40 overflow-y-auto"></p>
+                    </div>
+                    <div class="mt-auto pt-6 flex justify-end gap-3">
+                        <button id="btn-submit" onclick="submitAnswer()" disabled class="aws-bg-dark hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            Confirmar Resposta
+                        </button>
+                        <button id="btn-next" onclick="nextQuestion()" class="hidden aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all">
+                            Próxima <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
+                        </button>
+                        <button id="btn-finish" onclick="finishQuiz()" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all">
+                            Ver Resultado <i class="fa-solid fa-flag-checkered ml-2" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tela de Resultados -->
+            <div id="screen-results" class="hidden p-8 md:p-12 flex flex-col items-center justify-center text-center h-full overflow-y-auto custom-scroll">
+                <h2 class="text-3xl font-bold mb-2 aws-text-dark">Simulação Concluída!</h2>
+                <p class="text-gray-500 mb-6">Análise detalhada do seu desempenho.</p>
+                <div class="bg-gray-50 border border-gray-200 p-6 rounded-xl w-full max-w-md mb-4">
+                    <div class="text-6xl font-black mb-1" id="final-score-percent" aria-live="polite">0%</div>
+                    <p class="text-lg font-semibold text-gray-700 mb-1">Pontuação Final</p>
+                    <div id="improvement-badge" class="text-sm font-bold mb-4 hidden" role="status"></div>
+                    <div class="flex justify-between border-t border-gray-200 pt-4 text-sm">
+                        <div class="text-green-600 font-bold"><i class="fa-solid fa-check-circle" aria-hidden="true"></i> Acertos: <span id="final-correct">0</span></div>
+                        <div class="text-red-600 font-bold"><i class="fa-solid fa-times-circle" aria-hidden="true"></i> Erros: <span id="final-incorrect">0</span></div>
+                    </div>
+                </div>
+                <div id="ai-recommendation" class="bg-orange-50 border border-orange-200 p-5 rounded-lg text-left w-full mb-4">
+                    <h4 class="font-bold aws-text-orange mb-2"><i class="fa-solid fa-robot" aria-hidden="true"></i> Recomendação da IA</h4>
+                    <p id="recommendation-text" class="text-sm text-gray-800 mb-3"></p>
+                    <div id="study-sites" class="flex flex-wrap gap-2 mt-3"></div>
+                </div>
+                <div class="flex gap-3 flex-wrap justify-center">
+                    <button onclick="generatePerformanceReport()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all" aria-label="Gerar relatório de desempenho em PDF">
+                        <i class="fa-solid fa-file-pdf mr-2" aria-hidden="true"></i> Gerar Relatório PDF
+                    </button>
+                    <button onclick="retakeQuiz()" class="aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all" aria-label="Refazer simulado">
+                        <i class="fa-solid fa-rotate-right mr-2" aria-hidden="true"></i> Refazer Simulado
+                    </button>
+                    <button onclick="goHome()" class="aws-bg-dark hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all" aria-label="Voltar ao início">
+                        <i class="fa-solid fa-house mr-2" aria-hidden="true"></i> Início
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Painel Direito -->
+        <aside class="lg:w-1/3 flex flex-col gap-6">
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                <h3 class="text-lg font-bold border-b border-gray-200 pb-2 mb-4 aws-text-dark">
+                    <i class="fa-solid fa-microchip aws-text-orange mr-2" aria-hidden="true"></i> Análise de Domínios
+                </h3>
+                <p class="text-xs text-gray-500 mb-4 leading-relaxed">
+                    Mapa de radar atualizado em tempo real com base nos domínios oficiais do exame.
+                </p>
+                <div class="chart-container" role="img" aria-label="Gráfico radar de desempenho por domínio">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Grid Horizontal para Insight e Histórico -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4 w-full flex-grow">
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 flex flex-col h-full">
+                    <h3 class="text-lg font-bold border-b border-gray-200 pb-2 mb-4 aws-text-dark">
+                        <i class="fa-solid fa-bolt text-yellow-500 mr-2" aria-hidden="true"></i> Insight de Estudo
+                    </h3>
+                    <div id="dynamic-insight" class="text-sm text-gray-600 italic leading-relaxed flex-grow" role="status" aria-live="polite">
+                        Comece o simulado para que a IA mapeie seu perfil de conhecimento.
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 flex flex-col h-full">
+                    <h3 class="text-lg font-bold border-b border-gray-200 pb-2 mb-3 aws-text-dark">
+                        <i class="fa-solid fa-trophy text-yellow-500 mr-2" aria-hidden="true"></i> Histórico
+                    </h3>
+                    <div id="history-list" class="text-sm text-gray-500 italic flex-grow overflow-y-auto custom-scroll" role="status">Nenhum simulado realizado ainda.</div>
+                </div>
+            </div>
+        </aside>
+    </main>
+    <!-- Rodapé -->    
+    <footer class="text-center py-6 text-sm text-gray-500 mt-8 border-t border-gray-200">
+    Desenvolvido por <a href="https://www.linkedin.com/in/karlarenata-rosario/" target="_blank" class="font-bold text-aws-orange hover:underline">Karla Renata A. Rosario</a> | Projeto de Estudo AWS
+    </footer>
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,406 @@
+/**
+ * STYLE.CSS - Estilos Customizados
+ * 
+ * Complementa o Tailwind CSS com estilos específicos da aplicação,
+ * animações, temas AWS e estilos de impressão para relatórios.
+ */
+
+/* ============================================================================
+   IMPORTAÇÕES E FONTES
+   ============================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
+
+/* ============================================================================
+   VARIÁVEIS CSS (Tema AWS)
+   ============================================================================ */
+
+:root {
+  --aws-dark: #232f3e;
+  --aws-orange: #ff9900;
+  --aws-orange-hover: #ec7211;
+  --aws-light-gray: #f2f3f3;
+  --aws-border: #eaeded;
+  --success-green: #22c55e;
+  --error-red: #ef4444;
+  --info-blue: #3b82f6;
+}
+
+/* ============================================================================
+   ESTILOS GLOBAIS
+   ============================================================================ */
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: var(--aws-light-gray);
+  color: var(--aws-dark);
+}
+
+/* ============================================================================
+   CLASSES UTILITÁRIAS AWS
+   ============================================================================ */
+
+.aws-bg-dark {
+  background-color: var(--aws-dark);
+}
+
+.aws-text-dark {
+  color: var(--aws-dark);
+}
+
+.aws-bg-orange {
+  background-color: var(--aws-orange);
+}
+
+.aws-text-orange {
+  color: var(--aws-orange);
+}
+
+.aws-bg-orange:hover {
+  background-color: var(--aws-orange-hover);
+}
+
+/* ============================================================================
+   ANIMAÇÕES
+   ============================================================================ */
+
+.fade-in {
+  animation: fadeIn 0.4s ease-in forwards;
+}
+
+.fade-out {
+  animation: fadeOut 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Animação de pulso para elementos importantes */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ============================================================================
+   CARDS DE OPÇÕES (Quiz)
+   ============================================================================ */
+
+.option-card {
+  transition: all 0.2s ease;
+  border: 2px solid var(--aws-border);
+  cursor: pointer;
+}
+
+.option-card:hover:not(.disabled) {
+  border-color: var(--aws-orange);
+  background-color: #fffaf0;
+  transform: translateX(5px);
+}
+
+.option-card.selected {
+  border-color: var(--aws-orange);
+  background-color: #fffaf0;
+  box-shadow: 0 4px 6px -1px rgba(255, 153, 0, 0.2);
+}
+
+.option-card.correct {
+  border-color: var(--success-green);
+  background-color: #f0fdf4;
+  color: #166534;
+}
+
+.option-card.incorrect {
+  border-color: var(--error-red);
+  background-color: #fef2f2;
+  color: #991b1b;
+}
+
+.option-card.disabled {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* Foco para acessibilidade */
+.option-card:focus {
+  outline: 2px solid var(--aws-orange);
+  outline-offset: 2px;
+}
+
+/* ============================================================================
+   GRÁFICO RADAR
+   ============================================================================ */
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  height: 350px;
+  max-height: 400px;
+}
+
+/* Responsividade do gráfico */
+@media (max-width: 768px) {
+  .chart-container {
+    height: 300px;
+    max-height: 350px;
+  }
+}
+
+/* ============================================================================
+   SCROLLBAR CUSTOMIZADA
+   ============================================================================ */
+
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* ============================================================================
+   BADGES DE MELHORIA
+   ============================================================================ */
+
+.improvement-up {
+  color: #16a34a;
+}
+
+.improvement-down {
+  color: #dc2626;
+}
+
+.improvement-same {
+  color: #6b7280;
+}
+
+/* ============================================================================
+   LINKS DE RECURSOS DE ESTUDO
+   ============================================================================ */
+
+.site-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.site-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.site-link:focus {
+  outline: 2px solid var(--aws-orange);
+  outline-offset: 2px;
+}
+
+/* ============================================================================
+   TIMER (Temporizador)
+   ============================================================================ */
+
+#timer-display {
+  transition: background-color 0.3s ease;
+}
+
+#timer-display.warning {
+  background-color: #dc2626 !important;
+  animation: pulse 1s infinite;
+}
+
+/* ============================================================================
+   ESTILOS DE IMPRESSÃO (Para Relatórios PDF)
+   ============================================================================ */
+
+@media print {
+  /* Ajustes gerais para impressão */
+  body {
+    background: white;
+    color: black;
+    font-size: 12pt;
+  }
+  
+  /* Garante que cores de fundo sejam impressas */
+  * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  
+  /* Esconde elementos desnecessários */
+  header,
+  aside,
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Ajusta margens de página */
+  @page {
+    margin: 2cm;
+  }
+  
+  /* Evita quebras de página indesejadas */
+  .question-review,
+  .section {
+    page-break-inside: avoid;
+  }
+  
+  /* Força quebra de página antes de seções importantes */
+  .section {
+    page-break-before: auto;
+  }
+  
+  /* Remove sombras e efeitos para melhor impressão */
+  .shadow-lg,
+  .shadow-md {
+    box-shadow: none !important;
+  }
+  
+  /* Ajusta cores para impressão em preto e branco */
+  .aws-bg-orange {
+    background-color: #f0f0f0 !important;
+    border: 2px solid #000 !important;
+  }
+}
+
+/* ============================================================================
+   RESPONSIVIDADE MOBILE
+   ============================================================================ */
+
+@media (max-width: 640px) {
+  /* Ajusta tamanho de fontes em mobile */
+  body {
+    font-size: 14px;
+  }
+  
+  /* Reduz padding em cards */
+  .option-card {
+    padding: 12px;
+  }
+  
+  /* Ajusta tamanho de botões */
+  button {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+  
+  /* Stack de botões em mobile */
+  .flex.gap-3 {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .flex.gap-3 button {
+    width: 100%;
+  }
+}
+
+/* ============================================================================
+   ACESSIBILIDADE (a11y)
+   ============================================================================ */
+
+/* Foco visível para navegação por teclado */
+*:focus-visible {
+  outline: 2px solid var(--aws-orange);
+  outline-offset: 2px;
+}
+
+/* Remove outline padrão mas mantém para teclado */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Aumenta contraste para texto importante */
+.high-contrast {
+  color: #000;
+  font-weight: 600;
+}
+
+/* Suporte para modo de alto contraste do sistema */
+@media (prefers-contrast: high) {
+  .option-card {
+    border-width: 3px;
+  }
+  
+  button {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Suporte para preferência de movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================================================
+   ESTADOS DE LOADING
+   ============================================================================ */
+
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.spinner {
+  border: 3px solid rgba(255, 153, 0, 0.3);
+  border-top-color: var(--aws-orange);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
