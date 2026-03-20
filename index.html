@@ -86,6 +86,26 @@
                         </label>
                     </div>
                 </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-md mb-6">
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Quantidade</label>
+                        <select id="question-quantity" class="w-full p-2 border rounded-lg outline-none focus:border-orange-500">
+                            <option value="10">10 Questões</option>
+                            <option value="30">30 Questões</option>
+                            <option value="60">60 Questões</option>
+                        </select>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Dificuldade</label>
+                        <select id="difficulty-level" class="w-full p-2 border rounded-lg outline-none focus:border-orange-500">
+                            <option value="all">Todas</option>
+                            <option value="easy">Iniciante</option>
+                            <option value="medium">Intermediário</option>
+                            <option value="hard">Especialista</option>
+                        </select>
+                    </div>
+                </div>
                 
                 <div id="last-score-banner" class="hidden bg-blue-50 border border-blue-200 rounded-lg px-6 py-3 mb-6 text-sm text-blue-800 font-semibold" role="status"></div>
                 <div class="grid grid-cols-2 gap-4 mb-8 w-full max-w-md text-left text-sm text-gray-700 bg-gray-50 p-4 rounded-lg border border-gray-100">

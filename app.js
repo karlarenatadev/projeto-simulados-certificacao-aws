@@ -108,58 +108,43 @@ function goHome() {
  * Carrega questões, gere o Loading State e inicializa o timer
  */
 async function startQuiz() {
-  const certSelect = document.getElementById('certification-select');
-  const selectedCertId = certSelect ? certSelect.value : 'clf-c02';
-  
-  const modeStudy = document.getElementById('mode-study');
-  const quizMode = modeStudy && modeStudy.checked ? 'study' : 'exam';
-  
-  if (!certificationPaths[selectedCertId]) {
-    alert('Erro: Certificação não encontrada.');
-    return;
-  }
+  // Captura as novas configurações da UI
+  const selectedCertId = document.getElementById('certification-select').value;
+  const quantity = parseInt(document.getElementById('question-quantity').value);
+  const difficulty = document.getElementById('difficulty-level').value;
+  const quizMode = document.getElementById('mode-study').checked ? 'study' : 'exam';
 
-  // Elementos UI para o estado de Loading
   const startBtn = document.getElementById('btn-start-quiz');
-  const originalBtnText = startBtn.innerHTML;
-
+  
   try {
-    // 1. Ativar Estado de Loading
     startBtn.disabled = true;
-    startBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>A carregar questões...';
-    startBtn.classList.add('opacity-75', 'cursor-not-allowed');
+    startBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sorteando questões...';
 
-    // 2. Fazer o Fetch do ficheiro JSON (assumindo que estão na pasta data/)
     const response = await fetch(`data/${selectedCertId}.json`);
-    
-    if (!response.ok) {
-      throw new Error(`Erro HTTP: ${response.status}`);
-    }
-    
-    const questionsData = await response.json();
+    if (!response.ok) throw new Error('Falha ao carregar banco de dados.');
+    let questionsData = await response.json();
 
-    // 3. Validação dos dados recebidos
-    if (!Array.isArray(questionsData) || questionsData.length === 0) {
-      throw new Error('O banco de questões está vazio ou num formato inválido.');
+    // 1. FILTRO DE DIFICULDADE (Se o campo existir no seu JSON)
+    if (difficulty !== 'all') {
+      questionsData = questionsData.filter(q => q.difficulty === difficulty);
     }
 
-    // 4. Inicializar o Estado da Aplicação
+    // 2. EMBARALHAMENTO REAL (Fisher-Yates) para evitar repetições
+    appState.questions = shuffleArray(questionsData).slice(0, Math.min(quantity, questionsData.length));
+
+    if (appState.questions.length === 0) {
+      alert('Nenhuma questão encontrada para este nível de dificuldade.');
+      return;
+    }
+
+    // Reinicializa o estado
     appState.currentCertification = certificationPaths[selectedCertId];
-    // Usa as perguntas do JSON, embaralha e corta para a quantidade desejada
-    appState.questions = shuffleArray(questionsData).slice(0, CONFIG.QUESTIONS_PER_QUIZ);
     appState.currentQuestionIndex = 0;
-    appState.answers = [];
     appState.score = 0;
-    appState.domainScores = {};
-    appState.quizStartTime = Date.now();
-    appState.timeRemaining = CONFIG.QUIZ_DURATION;
+    appState.answers = [];
     appState.quizMode = quizMode;
-    
-    appState.currentCertification.domains.forEach(domain => {
-      appState.domainScores[domain.id] = { correct: 0, total: 0 };
-    });
-    
-    // 5. Mudar Ecrãs e Iniciar
+    appState.timeRemaining = CONFIG.QUIZ_DURATION;
+
     showScreen('quiz');
     if (quizMode === 'exam') startTimer();
     reinitializeRadarChart();
@@ -167,14 +152,11 @@ async function startQuiz() {
     updateScoreDisplay();
 
   } catch (error) {
-    // Tratamento de Erros Seguro
-    console.error('Erro ao iniciar o simulado:', error);
-    alert('Não foi possível carregar as questões. Verifique a sua ligação à internet e tente novamente.');
+    console.error(error);
+    alert('Erro ao iniciar. Tente recarregar a página.');
   } finally {
-    // 6. Remover Estado de Loading (ocorre independentemente de dar erro ou sucesso)
     startBtn.disabled = false;
-    startBtn.innerHTML = originalBtnText;
-    startBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+    startBtn.innerHTML = 'Iniciar Simulação <i class="fa-solid fa-arrow-right ml-2"></i>';
   }
 }
 /**
@@ -383,7 +365,8 @@ function nextQuestion() {
  */
 function finishQuiz() {
   stopTimer();
-  saveQuizResult();
+  saveQuizResult(); // Grava no localStorage
+  updateHistoryDisplay(); // ATUALIZA A LISTA NA TELA IMEDIATAMENTE
   showResultsScreen();
   showScreen('results');
 }
