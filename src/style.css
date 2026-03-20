@@ -1,7 +1,6 @@
 /**
  * STYLE.CSS - Estilos Customizados
- * 
- * Complementa o Tailwind CSS com estilos específicos da aplicação,
+ * * Complementa o Tailwind CSS com estilos específicos da aplicação,
  * animações, temas AWS e estilos de impressão para relatórios.
  */
 
@@ -12,100 +11,112 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
 
 /* ============================================================================
-   VARIÁVEIS CSS (Tema AWS)
+   VARIÁVEIS CSS (Tema Base e Cores AWS)
    ============================================================================ */
 
 :root {
+  /* Cores da Marca AWS */
   --aws-dark: #232f3e;
   --aws-orange: #ff9900;
   --aws-orange-hover: #ec7211;
   --aws-light-gray: #f2f3f3;
   --aws-border: #eaeded;
+  
+  /* Cores de Feedback */
   --success-green: #22c55e;
   --error-red: #ef4444;
   --info-blue: #3b82f6;
+
+  /* Variáveis de Tema (Light Mode Padrão) */
+  --bg-main: var(--aws-light-gray);
+  --bg-card: #ffffff;
+  --text-main: var(--aws-dark);
+  --text-muted: #6b7280;
+  --border-theme: #e5e7eb;
+}
+
+/* Variáveis de Tema (Dark Mode) */
+.dark {
+  --bg-main: #0f172a;       /* Slate 900 */
+  --bg-card: #1e293b;       /* Slate 800 */
+  --text-main: #f8fafc;     /* Slate 50 */
+  --text-muted: #cbd5e1;    /* Slate 300 */
+  --border-theme: #334155;  /* Slate 700 */
 }
 
 /* ============================================================================
-   ESTILOS GLOBAIS
+   ESTILOS GLOBAIS E CLASSES AWS
    ============================================================================ */
 
 body {
   font-family: 'Open Sans', sans-serif;
-  background-color: var(--aws-light-gray);
-  color: var(--aws-dark);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* ============================================================================
-   CLASSES UTILITÁRIAS AWS
-   ============================================================================ */
-
-.aws-bg-dark {
-  background-color: var(--aws-dark);
-}
-
-.aws-text-dark {
-  color: var(--aws-dark);
-}
-
-.aws-bg-orange {
-  background-color: var(--aws-orange);
-}
-
-.aws-text-orange {
-  color: var(--aws-orange);
-}
-
-.aws-bg-orange:hover {
-  background-color: var(--aws-orange-hover);
-}
+.aws-bg-dark { background-color: var(--aws-dark); }
+.aws-text-dark { color: var(--aws-dark); }
+.aws-bg-orange { background-color: var(--aws-orange); }
+.aws-text-orange { color: var(--aws-orange); }
+.aws-bg-orange:hover { background-color: var(--aws-orange-hover); }
 
 /* ============================================================================
    ANIMAÇÕES
    ============================================================================ */
 
-.fade-in {
-  animation: fadeIn 0.4s ease-in forwards;
-}
-
-.fade-out {
-  animation: fadeOut 0.4s ease-out forwards;
-}
+/* Fades */
+.fade-in { animation: fadeIn 0.4s ease-in forwards; }
+.fade-out { animation: fadeOut 0.4s ease-out forwards; }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-10px); }
 }
 
-/* Animação de pulso para elementos importantes */
+/* Slides (Transição de Questões) */
+.slide-in { animation: slideInRight 0.3s ease-out forwards; }
+.slide-out { animation: slideOutLeft 0.3s ease-out forwards; }
+
+@keyframes slideInRight {
+  from { transform: translateX(30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutLeft {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(-30px); opacity: 0; }
+}
+
+/* Utilitários Visuais */
+.pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
 @keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }
 
-.pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.spinner {
+  border: 3px solid rgba(255, 153, 0, 0.3);
+  border-top-color: var(--aws-orange);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 /* ============================================================================
@@ -114,8 +125,10 @@ body {
 
 .option-card {
   transition: all 0.2s ease;
-  border: 2px solid var(--aws-border);
+  border: 2px solid var(--border-theme);
   cursor: pointer;
+  background-color: var(--bg-card);
+  color: var(--text-main);
 }
 
 .option-card:hover:not(.disabled) {
@@ -154,9 +167,64 @@ body {
 }
 
 /* ============================================================================
-   GRÁFICO RADAR
+   MODO ESCURO (DARK MODE - OVERRIDES DE COMPONENTES)
    ============================================================================ */
 
+/* Textos e Fundos base garantidos pelas variáveis e pelas classes HTML,
+   estas regras forçam componentes específicos que o Tailwind não alcança nativamente */
+
+.dark .aws-text-dark { color: var(--text-main) !important; }
+
+/* Adaptação dos Cards de Opções no Quiz (Dark Mode) */
+.dark .option-card:hover:not(.disabled) {
+  background-color: #334155 !important;
+  border-color: var(--aws-orange) !important;
+}
+
+.dark .option-card.selected {
+  background-color: #334155 !important;
+  border-color: var(--aws-orange) !important;
+  box-shadow: 0 4px 6px -1px rgba(255, 153, 0, 0.4);
+}
+
+/* Cores de acerto/erro no Modo Escuro */
+.dark .option-card.correct {
+  background-color: rgba(34, 197, 94, 0.15) !important;
+  color: #4ade80 !important;
+}
+
+.dark .option-card.incorrect {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  color: #f87171 !important;
+}
+
+/* Adaptação dos Radio Buttons Customizados (Modo Exame/Estudo) no Dark Mode */
+.dark .peer:checked ~ .peer-checked\:bg-orange-50 {
+  background-color: rgba(255, 153, 0, 0.15) !important;
+  border-color: var(--aws-orange) !important;
+  box-shadow: 0 4px 6px -1px rgba(255, 153, 0, 0.2);
+}
+
+.dark .peer:checked ~ .peer-checked\:bg-blue-50 {
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  border-color: var(--info-blue) !important;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+}
+
+.dark .peer:not(:checked) ~ .hover\:border-gray-400:hover {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+.dark .peer:checked ~ div .font-bold {
+  color: #ffffff !important;
+}
+
+/* ============================================================================
+   COMPONENTES GERAIS (Gráficos, Scroll, Timer, etc.)
+   ============================================================================ */
+
+/* Gráfico Radar */
 .chart-container {
   position: relative;
   width: 100%;
@@ -166,57 +234,20 @@ body {
   max-height: 400px;
 }
 
-/* Responsividade do gráfico */
-@media (max-width: 768px) {
-  .chart-container {
-    height: 300px;
-    max-height: 350px;
-  }
-}
+/* Scrollbar Customizada */
+.custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; border-radius: 4px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+.custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+.dark .custom-scroll::-webkit-scrollbar-thumb { background: #475569; }
+.dark .custom-scroll::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
-/* ============================================================================
-   SCROLLBAR CUSTOMIZADA
-   ============================================================================ */
+/* Badges de Evolução */
+.improvement-up { color: #16a34a; }
+.improvement-down { color: #dc2626; }
+.improvement-same { color: #6b7280; }
 
-.custom-scroll::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-.custom-scroll::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-.custom-scroll::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
-}
-
-.custom-scroll::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
-}
-
-/* ============================================================================
-   BADGES DE MELHORIA
-   ============================================================================ */
-
-.improvement-up {
-  color: #16a34a;
-}
-
-.improvement-down {
-  color: #dc2626;
-}
-
-.improvement-same {
-  color: #6b7280;
-}
-
-/* ============================================================================
-   LINKS DE RECURSOS DE ESTUDO
-   ============================================================================ */
-
+/* Links de Recursos */
 .site-link {
   display: inline-flex;
   align-items: center;
@@ -228,153 +259,62 @@ body {
   text-decoration: none;
   transition: all 0.2s;
 }
+.site-link:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); }
 
-.site-link:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.site-link:focus {
-  outline: 2px solid var(--aws-orange);
-  outline-offset: 2px;
-}
-
-/* ============================================================================
-   TIMER (Temporizador)
-   ============================================================================ */
-
-#timer-display {
-  transition: background-color 0.3s ease;
-}
-
+/* Timer Alert */
+#timer-display { transition: background-color 0.3s ease; }
 #timer-display.warning {
   background-color: #dc2626 !important;
   animation: pulse 1s infinite;
 }
 
 /* ============================================================================
-   ESTILOS DE IMPRESSÃO (Para Relatórios PDF)
+   RESPONSIVIDADE (MEDIA QUERIES)
    ============================================================================ */
 
-@media print {
-  /* Ajustes gerais para impressão */
-  body {
-    background: white;
-    color: black;
-    font-size: 12pt;
-  }
-  
-  /* Garante que cores de fundo sejam impressas */
-  * {
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
-  
-  /* Esconde elementos desnecessários */
-  header,
-  aside,
-  .no-print {
-    display: none !important;
-  }
-  
-  /* Ajusta margens de página */
-  @page {
-    margin: 2cm;
-  }
-  
-  /* Evita quebras de página indesejadas */
-  .question-review,
-  .section {
-    page-break-inside: avoid;
-  }
-  
-  /* Força quebra de página antes de seções importantes */
-  .section {
-    page-break-before: auto;
-  }
-  
-  /* Remove sombras e efeitos para melhor impressão */
-  .shadow-lg,
-  .shadow-md {
-    box-shadow: none !important;
-  }
-  
-  /* Ajusta cores para impressão em preto e branco */
-  .aws-bg-orange {
-    background-color: #f0f0f0 !important;
-    border: 2px solid #000 !important;
-  }
-}
-
-/* ============================================================================
-   RESPONSIVIDADE MOBILE
-   ============================================================================ */
-
+/* Telas Pequenas (Smartphones - até 640px) */
 @media (max-width: 640px) {
-  /* Ajusta tamanho de fontes em mobile */
-  body {
-    font-size: 14px;
-  }
+  body { font-size: 14px; }
   
-  /* Reduz padding em cards */
-  .option-card {
-    padding: 12px;
-  }
+  #screen-start, #screen-quiz, #screen-results { padding: 1.25rem !important; }
+  h2.text-3xl { font-size: 1.5rem !important; line-height: 2rem !important; }
   
-  /* Ajusta tamanho de botões */
-  button {
-    padding: 10px 16px;
-    font-size: 14px;
-  }
+  .option-card { padding: 12px !important; }
+  button { padding: 10px 16px; font-size: 14px; }
   
-  /* Stack de botões em mobile */
-  .flex.gap-3 {
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  .flex.gap-3 button {
-    width: 100%;
-  }
+  /* Empilha botões verticalmente */
+  .mt-auto.pt-6.flex { flex-direction: column; width: 100%; gap: 0.75rem !important; }
+  .mt-auto.pt-6.flex button { width: 100%; margin: 0 !important; }
+
+  .chart-container { height: 250px !important; }
+}
+
+/* Telas Médias (Tablets - 641px a 1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .chart-container { height: 300px !important; }
+  #screen-start { padding: 2rem !important; }
+}
+
+/* Telas Grandes (Desktops - Acima de 1024px) */
+@media (min-width: 1025px) {
+  .chart-container { height: 350px !important; }
+  .option-card { padding: 1.25rem !important; }
 }
 
 /* ============================================================================
-   ACESSIBILIDADE (a11y)
+   ACESSIBILIDADE (A11Y)
    ============================================================================ */
 
-/* Foco visível para navegação por teclado */
-*:focus-visible {
-  outline: 2px solid var(--aws-orange);
-  outline-offset: 2px;
-}
+*:focus-visible { outline: 2px solid var(--aws-orange) !important; outline-offset: 2px !important; }
+*:focus:not(:focus-visible) { outline: none; }
 
-/* Remove outline padrão mas mantém para teclado */
-*:focus:not(:focus-visible) {
-  outline: none;
-}
-
-/* Aumenta contraste para texto importante */
-.high-contrast {
-  color: #000;
-  font-weight: 600;
-}
-
-/* Suporte para modo de alto contraste do sistema */
 @media (prefers-contrast: high) {
-  .option-card {
-    border-width: 3px;
-  }
-  
-  button {
-    border: 2px solid currentColor;
-  }
+  .option-card { border-width: 3px; }
+  button { border: 2px solid currentColor; }
 }
 
-/* Suporte para preferência de movimento reduzido */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -382,268 +322,19 @@ body {
 }
 
 /* ============================================================================
-   ESTADOS DE LOADING
+   ESTILOS DE IMPRESSÃO (PDF Relatórios)
    ============================================================================ */
 
-.loading {
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-.spinner {
-  border: 3px solid rgba(255, 153, 0, 0.3);
-  border-top-color: var(--aws-orange);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-/* ============================================================================
-   MODO ESCURO (DARK MODE)
-   ============================================================================ */
-
-:root {
-  --bg-main: var(--aws-light-gray);
-  --text-main: var(--aws-dark);
-  --bg-card: #ffffff;
-  --border-color: #e5e7eb; /* gray-200 */
-}
-
-/* Redefinição de variáveis no contexto dark */
-.dark {
-  --bg-main: #161b22;
-  --text-main: #e6edf3;
-  --bg-card: #0d1117;
-  --border-color: #30363d;
-}
-
-/* Aplicação Global e Override das classes utilitárias do Tailwind no modo escuro */
-.dark body {
-  background-color: var(--bg-main);
-  color: var(--text-main);
-}
-
-.dark .bg-white, 
-.dark .bg-gray-50, 
-.dark .bg-gray-100 {
-  background-color: var(--bg-card) !important;
-}
-
-.dark .text-gray-500, 
-.dark .text-gray-600, 
-.dark .text-gray-700, 
-.dark .text-gray-800, 
-.dark .aws-text-dark {
-  color: var(--text-main) !important;
-}
-
-.dark .border-gray-100, 
-.dark .border-gray-200, 
-.dark .border-gray-300 {
-  border-color: var(--border-color) !important;
-}
-
-/* Ajustes específicos de UI/UX para os cards de opções no modo escuro */
-.dark .option-card {
-  background-color: var(--bg-card);
-}
-
-.dark .option-card:hover:not(.disabled) {
-  background-color: #1a2332 !important; /* Ligeiro destaque */
-  border-color: var(--aws-orange) !important;
-}
-
-.dark .option-card.selected {
-  background-color: #1a2332 !important;
-  border-color: var(--aws-orange) !important;
-  box-shadow: 0 4px 6px -1px rgba(255, 153, 0, 0.4);
-}
-
-/* Garantir que o foco acessível do Tailwind (Laranja AWS) permanece super visível */
-.dark *:focus-visible {
-  outline: 2px solid var(--aws-orange) !important;
-  outline-offset: 2px !important;
-}
-
-/* ============================================================================
-   1. ADAPTAÇÃO DE TEXTOS E ELEMENTOS PARA O MODO ESCURO
-   ============================================================================ */
-
-.dark {
-  --bg-main: #0f172a; /* Azul muito escuro (Slate 900) */
-  --bg-card: #1e293b; /* Fundo dos cards (Slate 800) */
-  --text-main: #f8fafc; /* Texto principal quase branco */
-  --text-muted: #cbd5e1; /* Texto secundário cinza claro */
-  --border-color: #334155; /* Bordas suaves */
-}
-
-/* Força o fundo da página inteira */
-.dark body {
-  background-color: var(--bg-main) !important;
-  color: var(--text-main) !important;
-}
-
-/* Adaptação de Fundos Claros do Tailwind para Escuros */
-.dark .bg-white, 
-.dark .bg-gray-50, 
-.dark .bg-gray-100, 
-.dark .bg-gray-200 {
-  background-color: var(--bg-card) !important;
-  border-color: var(--border-color) !important;
-}
-
-/* ADAPTAÇÃO DE TEXTOS: Transforma os textos pretos/cinzas em brancos/claros */
-.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6,
-.dark .aws-text-dark,
-.dark .text-gray-900, .dark .text-gray-800, .dark .text-gray-700 {
-  color: var(--text-main) !important;
-}
-
-/* Textos secundários (parágrafos e descrições) */
-.dark p, .dark span, .dark div, .dark label,
-.dark .text-gray-600, .dark .text-gray-500, .dark .text-gray-400 {
-  color: var(--text-muted) !important;
-}
-
-/* Adaptação dos Cards de Opções no Quiz */
-.dark .option-card {
-  background-color: var(--bg-card);
-  border-color: var(--border-color);
-  color: var(--text-main);
-}
-
-.dark .option-card:hover:not(.disabled) {
-  background-color: #334155 !important;
-  border-color: var(--aws-orange) !important;
-}
-
-.dark .option-card.selected {
-  background-color: #334155 !important;
-  border-color: var(--aws-orange) !important;
-  box-shadow: 0 4px 6px -1px rgba(255, 153, 0, 0.4);
-}
-
-/* Adaptação dos Inputs e Selects */
-.dark select, .dark input {
-  background-color: #0f172a !important;
-  color: var(--text-main) !important;
-  border-color: var(--border-color) !important;
-}
-
-/* Header escuro no topo */
-.dark header.aws-bg-dark {
-  background-color: #020617 !important;
-  border-bottom: 1px solid var(--border-color);
-}
-
-
-/* ============================================================================
-   2. RECURSIVIDADE DE MÍDIAS (RESPONSIVIDADE / MEDIA QUERIES)
-   ============================================================================ */
-
-/* Telas Pequenas (Smartphones - até 640px) */
-@media (max-width: 640px) {
-  body {
-    font-size: 14px; /* Reduz ligeiramente a fonte geral */
-  }
+@media print {
+  body { background: white !important; color: black !important; font-size: 12pt; }
+  * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   
-  /* Reduz os espaçamentos internos para ganhar espaço de ecrã */
-  #screen-start, #screen-quiz, #screen-results {
-    padding: 1.25rem !important; 
-  }
+  header, aside, .no-print { display: none !important; }
   
-  /* Ajusta o tamanho dos títulos */
-  h2.text-3xl {
-    font-size: 1.5rem !important;
-    line-height: 2rem !important;
-  }
+  @page { margin: 2cm; }
+  .question-review, .section { page-break-inside: avoid; }
+  .section { page-break-before: auto; }
   
-  /* Empilha os botões do quiz (Cancelar, Próxima, etc.) verticalmente em celulares */
-  .mt-auto.pt-6.flex {
-    flex-direction: column;
-    width: 100%;
-    gap: 0.75rem !important;
-  }
-  
-  .mt-auto.pt-6.flex button {
-    width: 100%;
-    margin: 0 !important;
-  }
-
-  /* Reduz o tamanho do gráfico radar para caber na tela do celular */
-  .chart-container {
-    height: 250px !important;
-  }
-}
-
-/* Telas Médias (Tablets - 641px a 1024px) */
-@media (min-width: 641px) and (max-width: 1024px) {
-  .chart-container {
-    height: 300px !important;
-  }
-  
-  #screen-start {
-    padding: 2rem !important;
-  }
-}
-
-/* Telas Grandes (Desktops - Acima de 1024px) */
-@media (min-width: 1025px) {
-  .chart-container {
-    height: 350px !important;
-  }
-  
-  /* Dá mais respiro aos cards de opção em monitores grandes */
-  .option-card {
-    padding: 1.25rem !important;
-  }
-}
-
-/* Substitui o fundo claro por um fundo escuro translúcido com a cor do tema */
-.dark .peer:checked ~ .peer-checked\:bg-orange-50 {
-  background-color: rgba(255, 153, 0, 0.15) !important; /* Translúcido Laranja */
-  border-color: var(--aws-orange) !important;
-  box-shadow: 0 4px 6px -1px rgba(255, 153, 0, 0.2);
-}
-
-.dark .peer:checked ~ .peer-checked\:bg-blue-50 {
-  background-color: rgba(59, 130, 246, 0.15) !important; /* Translúcido Azul */
-  border-color: var(--info-blue) !important;
-  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
-}
-
-/* Garante que o hover dos cards não selecionados fica suave no modo escuro */
-.dark .peer:not(:checked) ~ .hover\:border-gray-400:hover {
-  background-color: #1e293b !important;
-  border-color: #475569 !important;
-}
-
-/* Garante que os textos dentro do card selecionado brilham em branco no dark mode */
-.dark .peer:checked ~ div .font-bold.text-gray-700 {
-  color: #ffffff !important;
-}
-
-/* Novas animações de slide para transição de questões */
-@keyframes slideInRight {
-  from { transform: translateX(30px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes slideOutLeft {
-  from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(-30px); opacity: 0; }
-}
-
-.slide-in {
-  animation: slideInRight 0.3s ease-out forwards;
-}
-
-.slide-out {
-  animation: slideOutLeft 0.3s ease-out forwards;
+  .shadow-lg, .shadow-md { box-shadow: none !important; }
+  .aws-bg-orange { background-color: #f0f0f0 !important; border: 2px solid #000 !important; color: #000 !important; }
 }

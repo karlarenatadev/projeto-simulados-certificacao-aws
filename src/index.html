@@ -7,7 +7,6 @@
     <title>Simulador IA - Certificações AWS</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -21,7 +20,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff9900">
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-gray-100 dark:bg-slate-900 transition-colors duration-300">
 
     <header class="aws-bg-dark text-white shadow-md py-4 px-6 flex justify-between items-center sticky top-0 z-50">
         <div class="flex items-center gap-3">
@@ -32,7 +31,6 @@
             </div>
         </div>
         <div class="flex items-center gap-4 text-sm font-semibold">
-            
             <button id="theme-toggle" onclick="toggleDarkMode()" class="text-gray-300 hover:text-white transition-colors p-2 rounded-full hover:bg-gray-700" aria-label="Alternar modo escuro">
                 <i id="theme-icon" class="fa-solid fa-moon text-xl" aria-hidden="true"></i>
             </button>
@@ -46,66 +44,67 @@
 
     <main class="flex-grow container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8 max-w-7xl">
         
-        <section class="lg:w-2/3 flex flex-col h-full bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+        <section class="lg:w-2/3 flex flex-col h-full bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 overflow-hidden transition-colors">
             
             <div id="screen-start" class="p-8 md:p-12 flex flex-col items-center justify-center text-center h-full">
                 <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
                     <i class="fa-solid fa-brain aws-text-orange text-4xl" aria-hidden="true"></i>
                 </div>
-                <h2 class="text-3xl font-bold mb-4 aws-text-dark">Motor Gerador de Questões IA</h2>
-                <p class="text-gray-600 mb-6 max-w-lg leading-relaxed">
+                <h2 class="text-3xl font-bold mb-4 aws-text-dark dark:text-white">Motor Gerador de Questões IA</h2>
+                <p class="text-gray-600 dark:text-gray-300 mb-6 max-w-lg leading-relaxed">
                     Questões no estilo oficial dos exames AWS. Cada simulado usa perguntas diferentes para maximizar seu aprendizado. A IA analisa seu desempenho em tempo real.
                 </p>
                 
-                <div class="w-full max-w-md mb-6 bg-gray-50 p-6 rounded-xl border border-gray-200">
-                    <h3 class="text-lg font-bold aws-text-dark mb-4 flex items-center gap-2">
+                <div class="w-full max-w-md mb-6 bg-gray-50 dark:bg-slate-700 p-6 rounded-xl border border-gray-200 dark:border-slate-600">
+                    <h3 class="text-lg font-bold aws-text-dark dark:text-white mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-certificate aws-text-orange" aria-hidden="true"></i>
                         Selecione sua Certificação
                     </h3>
-                    <select id="certification-select" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all outline-none text-gray-700 font-medium bg-white cursor-pointer hover:border-gray-400" aria-label="Selecionar certificação AWS">
+                    <select id="certification-select" class="w-full px-4 py-3 border-2 border-gray-300 dark:border-slate-500 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all outline-none text-gray-700 dark:text-gray-200 font-medium bg-white dark:bg-slate-600 cursor-pointer" aria-label="Selecionar certificação AWS">
                         <option value="clf-c02">AWS Certified Cloud Practitioner (CLF-C02)</option>
                         <option value="saa-c03">AWS Certified Solutions Architect (SAA-C03)</option>
                         <option value="aif-c01">AWS Certified AI Practitioner (AIF-C01)</option>
                     </select>
                 </div>
                 
-                <div class="w-full max-w-md mb-6 bg-gray-50 p-6 rounded-xl border border-gray-200">
-                    <h3 class="text-lg font-bold aws-text-dark mb-4 flex items-center gap-2">
+                <div class="w-full max-w-md mb-6 bg-gray-50 dark:bg-slate-700 p-6 rounded-xl border border-gray-200 dark:border-slate-600">
+                    <h3 class="text-lg font-bold aws-text-dark dark:text-white mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-sliders aws-text-orange" aria-hidden="true"></i>
                         Modo de Simulação
                     </h3>
                     <div class="flex gap-4 justify-center">
                         <label class="flex-1 cursor-pointer">
                             <input type="radio" name="quiz-mode" value="exam" id="mode-exam" class="peer sr-only" checked>
-                            <div class="border-2 border-gray-300 rounded-lg p-4 text-center transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 peer-checked:shadow-md hover:border-gray-400">
-                                <i class="fa-solid fa-clock text-2xl mb-2 text-gray-600 peer-checked:text-orange-600" aria-hidden="true"></i>
-                                <div class="font-bold text-gray-700">Modo Exame</div>
-                                <div class="text-xs text-gray-500 mt-1">Timer de 15 min</div>
+                            <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg p-4 text-center transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-slate-600 hover:border-gray-400">
+                                <i class="fa-solid fa-clock text-2xl mb-2 text-gray-600 dark:text-gray-300 peer-checked:text-orange-600" aria-hidden="true"></i>
+                                <div class="font-bold text-gray-700 dark:text-gray-200">Modo Exame</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Timer de 15 min</div>
                             </div>
                         </label>
                         <label class="flex-1 cursor-pointer">
                             <input type="radio" name="quiz-mode" value="study" id="mode-study" class="peer sr-only">
-                            <div class="border-2 border-gray-300 rounded-lg p-4 text-center transition-all peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:shadow-md hover:border-gray-400">
-                                <i class="fa-solid fa-book-open text-2xl mb-2 text-gray-600 peer-checked:text-blue-600" aria-hidden="true"></i>
-                                <div class="font-bold text-gray-700">Modo Estudo</div>
-                                <div class="text-xs text-gray-500 mt-1">Sem limite de tempo</div>
+                            <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg p-4 text-center transition-all peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-slate-600 hover:border-gray-400">
+                                <i class="fa-solid fa-book-open text-2xl mb-2 text-gray-600 dark:text-gray-300 peer-checked:text-blue-600" aria-hidden="true"></i>
+                                <div class="font-bold text-gray-700 dark:text-gray-200">Modo Estudo</div>
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Sem limite</div>
                             </div>
                         </label>
                     </div>
                 </div>
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-md mb-6">
-                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Quantidade</label>
-                        <select id="question-quantity" class="w-full p-2 border rounded-lg outline-none focus:border-orange-500">
+                    <div class="bg-gray-50 dark:bg-slate-700 p-4 rounded-xl border border-gray-200 dark:border-slate-600">
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2">Quantidade</label>
+                        <select id="question-quantity" class="w-full p-2 border rounded-lg outline-none focus:border-orange-500 dark:bg-slate-600 dark:text-white dark:border-slate-500">
                             <option value="10">10 Questões</option>
                             <option value="30">30 Questões</option>
                             <option value="60">60 Questões</option>
                         </select>
                     </div>
 
-                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">Dificuldade</label>
-                        <select id="difficulty-level" class="w-full p-2 border rounded-lg outline-none focus:border-orange-500">
+                    <div class="bg-gray-50 dark:bg-slate-700 p-4 rounded-xl border border-gray-200 dark:border-slate-600">
+                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2">Dificuldade</label>
+                        <select id="difficulty-level" class="w-full p-2 border rounded-lg outline-none focus:border-orange-500 dark:bg-slate-600 dark:text-white dark:border-slate-500">
                             <option value="all">Todas</option>
                             <option value="easy">Iniciante</option>
                             <option value="medium">Intermediário</option>
@@ -114,75 +113,78 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col gap-2">
-                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <div class="w-full max-w-md mb-6 text-left">
+                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2">
                         Filtro por Tópico (Opcional):
                     </label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </span>
-                        <input 
-                            type="text" 
-                            id="topic-filter" 
-                            placeholder="Ex: S3, Lambda, VPC..." 
-                            class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-aws-orange outline-none transition-all"
-                        >
+                        <input type="text" id="topic-filter" placeholder="Ex: S3, Lambda, VPC..." 
+                            class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 dark:border-slate-500 bg-white dark:bg-slate-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-all">
                     </div>
                 </div>
 
-                <div id="last-score-banner" class="hidden bg-blue-50 border border-blue-200 rounded-lg px-6 py-3 mb-6 text-sm text-blue-800 font-semibold" role="status"></div>
-                <div class="grid grid-cols-2 gap-4 mb-8 w-full max-w-md text-left text-sm text-gray-700 bg-gray-50 p-4 rounded-lg border border-gray-100">
-                    <div class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500" aria-hidden="true"></i> 40+ Questões no banco</div>
-                    <div class="flex items-center gap-2"><i class="fa-solid fa-chart-line text-blue-500" aria-hidden="true"></i> Análise em Tempo Real</div>
-                    <div class="flex items-center gap-2"><i class="fa-solid fa-rotate text-purple-500" aria-hidden="true"></i> Questões diferentes a cada vez</div>
-                    <div class="flex items-center gap-2"><i class="fa-solid fa-lightbulb aws-text-orange" aria-hidden="true"></i> Explicações Detalhadas</div>
+                <div id="last-score-banner" class="hidden bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg px-6 py-3 mb-6 text-sm text-blue-800 dark:text-blue-100 font-semibold w-full max-w-md" role="status"></div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-8 w-full max-w-md text-left text-sm text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-slate-700 p-4 rounded-lg border border-gray-100 dark:border-slate-600">
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-check text-green-500"></i> Banco atualizado</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-chart-line text-blue-500"></i> Análise de IA</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-rotate text-purple-500"></i> Questões dinâmicas</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-lightbulb aws-text-orange"></i> Feedback real</div>
                 </div>
-                <button id="btn-start-quiz" onclick="startQuiz()" class="aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all hover:shadow-lg transform hover:-translate-y-1" aria-label="Iniciar simulação">
+                
+                <button id="btn-start-quiz" onclick="startQuiz()" class="aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all hover:shadow-lg transform hover:-translate-y-1 w-full max-w-md" aria-label="Iniciar simulação">
                     Iniciar Simulação <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
                 </button>
-                <button id="btn-practice-mistakes" onclick="startMistakesQuiz()" class="hidden w-full max-w-md mt-4 bg-red-100 hover:bg-red-200 text-red-700 font-bold py-3 px-8 rounded-lg border-2 border-red-300 transition-all flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Praticar Questões Erradas (<span id="mistakes-count">0</span>)
-                </button>
+                
+                <div class="w-full max-w-md flex flex-col items-center">
+                    <button id="btn-practice-mistakes" onclick="startMistakesQuiz()" class="hidden w-full mt-4 bg-red-100 dark:bg-red-900 hover:bg-red-200 dark:hover:bg-red-800 text-red-700 dark:text-red-100 font-bold py-3 px-8 rounded-lg border-2 border-red-300 dark:border-red-700 transition-all flex items-center justify-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Praticar Questões Erradas (<span id="mistakes-count">0</span>)
+                    </button>
+                    <button id="btn-clear-mistakes" onclick="clearMistakes()" class="hidden text-xs text-gray-400 hover:text-red-500 underline mt-3 transition-colors">
+                        Limpar histórico de erros
+                    </button>
+                </div>
             </div>
 
-        <div id="screen-quiz" class="hidden flex-col h-full relative">
+            <div id="screen-quiz" class="hidden flex-col h-full relative p-6 md:p-8">
                 
-                <div class="h-2 w-full bg-gray-200">
+                <div class="absolute top-0 left-0 h-2 w-full bg-gray-200 dark:bg-slate-700">
                     <div id="progress-bar" class="h-2 aws-bg-orange transition-all duration-500" style="width: 0%"></div>
                 </div>
                 
-                <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
-                    <span id="question-category" class="text-xs font-bold uppercase tracking-wider text-gray-600 bg-gray-100 dark:bg-slate-800 dark:text-gray-300 border border-gray-200 dark:border-slate-700 px-4 py-1.5 rounded-full shadow-sm">
+                <div class="flex flex-wrap justify-between items-center mb-6 mt-4 gap-3">
+                    <span id="question-category" class="text-xs font-bold uppercase tracking-wider text-gray-600 bg-gray-100 dark:bg-slate-700 dark:text-gray-300 border border-gray-200 dark:border-slate-600 px-4 py-1.5 rounded-full shadow-sm">
                         Categoria
                     </span>
                     
-                    <div class="flex items-center gap-4 bg-white dark:bg-slate-800 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-700 shadow-sm">
+                    <div class="flex items-center gap-4 bg-white dark:bg-slate-800 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-600 shadow-sm">
                         <button id="btn-flag" onclick="toggleFlag()" class="text-gray-400 hover:text-orange-500 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded" aria-label="Marcar questão para revisão" title="Marcar para revisão">
                             <i class="fa-solid fa-flag text-lg" aria-hidden="true"></i>
                         </button>
-                        
                         <div class="w-px h-5 bg-gray-300 dark:bg-slate-600"></div>
-                        
                         <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">
                             Questão <span id="current-q-num" class="text-aws-dark dark:text-white text-base mx-1">1</span> de <span id="total-q-num" class="ml-1">10</span>
                         </span>
                     </div>
                 </div>
                 
-                <h3 id="question-text" class="text-xl md:text-2xl font-semibold aws-text-dark mb-8 leading-snug">Carregando questão...</h3>
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold aws-text-dark dark:text-white mb-8 leading-snug">Carregando questão...</h3>
                 <div id="options-container" class="flex flex-col gap-3 mb-8"></div>
                 
-                <div id="explanation-box" class="hidden mt-4 bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-lg">
-                    <h4 class="font-bold text-blue-800 mb-2 flex items-center gap-2"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Explicação</h4>
-                    <p id="explanation-text" class="text-sm text-blue-900 leading-relaxed custom-scroll max-h-40 overflow-y-auto"></p>
+                <div id="explanation-box" class="hidden mt-4 bg-blue-50 dark:bg-slate-700 border-l-4 border-blue-500 p-5 rounded-r-lg shadow-sm">
+                    <h4 class="font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info" aria-hidden="true"></i> Explicação
+                    </h4>
+                    <p id="explanation-text" class="text-sm text-blue-900 dark:text-gray-200 leading-relaxed custom-scroll max-h-40 overflow-y-auto"></p>
                 </div>
                 
-                <div class="mt-auto pt-6 flex flex-wrap justify-end gap-3 items-center w-full">
-                    <button id="btn-cancel" onclick="cancelQuiz()" class="mr-auto bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 font-bold py-3 px-6 rounded-lg shadow-sm transition-all" aria-label="Cancelar simulado">
+                <div class="mt-auto pt-6 flex flex-wrap justify-end gap-3 items-center w-full border-t border-gray-100 dark:border-slate-700">
+                    <button id="btn-cancel" onclick="cancelQuiz()" class="mr-auto bg-white dark:bg-slate-700 hover:bg-gray-100 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-slate-500 font-bold py-3 px-6 rounded-lg shadow-sm transition-all" aria-label="Cancelar simulado">
                         <i class="fa-solid fa-xmark mr-2" aria-hidden="true"></i> Cancelar
                     </button>
-
                     <button id="btn-submit" onclick="submitAnswer()" disabled class="aws-bg-dark hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                         Confirmar Resposta
                     </button>
@@ -196,30 +198,33 @@
             </div>
 
             <div id="screen-results" class="hidden p-8 md:p-12 flex flex-col items-center justify-center text-center h-full overflow-y-auto custom-scroll">
-                <h2 class="text-3xl font-bold mb-2 aws-text-dark">Simulação Concluída!</h2>
-                <p class="text-gray-500 mb-6">Análise detalhada do seu desempenho.</p>
-                <div class="bg-gray-50 border border-gray-200 p-6 rounded-xl w-full max-w-md mb-4">
-                    <div class="text-6xl font-black mb-1" id="final-score-percent" aria-live="polite">0%</div>
-                    <p class="text-lg font-semibold text-gray-700 mb-1">Pontuação Final</p>
+                <h2 class="text-3xl font-bold mb-2 aws-text-dark dark:text-white">Simulação Concluída!</h2>
+                <p class="text-gray-500 dark:text-gray-400 mb-6">Análise detalhada do seu desempenho.</p>
+                
+                <div class="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 p-6 rounded-xl w-full max-w-md mb-4 shadow-sm">
+                    <div class="text-6xl font-black mb-1 dark:text-white" id="final-score-percent" aria-live="polite">0%</div>
+                    <p class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">Pontuação Final</p>
                     <div id="improvement-badge" class="text-sm font-bold mb-4 hidden" role="status"></div>
-                    <div class="flex justify-between border-t border-gray-200 pt-4 text-sm">
-                        <div class="text-green-600 font-bold"><i class="fa-solid fa-check-circle" aria-hidden="true"></i> Acertos: <span id="final-correct">0</span></div>
-                        <div class="text-red-600 font-bold"><i class="fa-solid fa-times-circle" aria-hidden="true"></i> Erros: <span id="final-incorrect">0</span></div>
+                    <div class="flex justify-between border-t border-gray-200 dark:border-slate-500 pt-4 text-sm">
+                        <div class="text-green-600 dark:text-green-400 font-bold"><i class="fa-solid fa-check-circle" aria-hidden="true"></i> Acertos: <span id="final-correct">0</span></div>
+                        <div class="text-red-600 dark:text-red-400 font-bold"><i class="fa-solid fa-times-circle" aria-hidden="true"></i> Erros: <span id="final-incorrect">0</span></div>
                     </div>
                 </div>
-                <div id="ai-recommendation" class="bg-orange-50 border border-orange-200 p-5 rounded-lg text-left w-full mb-4">
+                
+                <div id="ai-recommendation" class="bg-orange-50 dark:bg-slate-700 border border-orange-200 dark:border-orange-500/30 p-5 rounded-lg text-left w-full max-w-2xl mb-6 shadow-sm">
                     <h4 class="font-bold aws-text-orange mb-2"><i class="fa-solid fa-robot" aria-hidden="true"></i> Recomendação da IA</h4>
-                    <p id="recommendation-text" class="text-sm text-gray-800 mb-3"></p>
+                    <p id="recommendation-text" class="text-sm text-gray-800 dark:text-gray-200 mb-3"></p>
                     <div id="study-sites" class="flex flex-wrap gap-2 mt-3"></div>
                 </div>
-                <div class="flex gap-3 flex-wrap justify-center">
-                    <button onclick="generatePerformanceReport()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all" aria-label="Gerar relatório de desempenho em PDF">
-                        <i class="fa-solid fa-file-pdf mr-2" aria-hidden="true"></i> Gerar Relatório PDF
+                
+                <div class="flex gap-3 flex-wrap justify-center w-full max-w-2xl">
+                    <button onclick="generatePerformanceReport()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all whitespace-nowrap" aria-label="Gerar relatório de desempenho em PDF">
+                        <i class="fa-solid fa-file-pdf mr-2" aria-hidden="true"></i> Relatório PDF
                     </button>
-                    <button onclick="retakeQuiz()" class="aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all" aria-label="Refazer simulado">
-                        <i class="fa-solid fa-rotate-right mr-2" aria-hidden="true"></i> Refazer Simulado
+                    <button onclick="retakeQuiz()" class="flex-1 aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all whitespace-nowrap" aria-label="Refazer simulado">
+                        <i class="fa-solid fa-rotate-right mr-2" aria-hidden="true"></i> Refazer
                     </button>
-                    <button onclick="goHome()" class="aws-bg-dark hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all" aria-label="Voltar ao início">
+                    <button onclick="goHome()" class="flex-1 aws-bg-dark hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all whitespace-nowrap" aria-label="Voltar ao início">
                         <i class="fa-solid fa-house mr-2" aria-hidden="true"></i> Início
                     </button>
                 </div>
@@ -227,11 +232,12 @@
         </section>
 
         <aside class="lg:w-1/3 flex flex-col gap-6">
-            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                <h3 class="text-lg font-bold border-b border-gray-200 pb-2 mb-4 aws-text-dark">
+            
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 transition-colors">
+                <h3 class="text-lg font-bold border-b border-gray-200 dark:border-slate-600 pb-2 mb-4 aws-text-dark dark:text-white">
                     <i class="fa-solid fa-microchip aws-text-orange mr-2" aria-hidden="true"></i> Análise de Domínios
                 </h3>
-                <p class="text-xs text-gray-500 mb-4 leading-relaxed">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-4 leading-relaxed">
                     Mapa de radar atualizado em tempo real com base nos domínios oficiais do exame.
                 </p>
                 <div class="chart-container" role="img" aria-label="Gráfico radar de desempenho por domínio">
@@ -240,30 +246,35 @@
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4 w-full flex-grow">
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 flex flex-col h-full">
-                    <h3 class="text-lg font-bold border-b border-gray-200 pb-2 mb-4 aws-text-dark">
+                
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 flex flex-col h-full transition-colors">
+                    <h3 class="text-lg font-bold border-b border-gray-200 dark:border-slate-600 pb-2 mb-4 aws-text-dark dark:text-white">
                         <i class="fa-solid fa-bolt text-yellow-500 mr-2" aria-hidden="true"></i> Insight de Estudo
                     </h3>
-                    <div id="dynamic-insight" class="text-sm text-gray-600 italic leading-relaxed flex-grow" role="status" aria-live="polite">
+                    <div id="dynamic-insight" class="text-sm text-gray-600 dark:text-gray-300 italic leading-relaxed flex-grow" role="status" aria-live="polite">
                         Comece o simulado para que a IA mapeie seu perfil de conhecimento.
                     </div>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 flex flex-col h-full">
-                    <div class="flex justify-between items-center border-b border-gray-200 pb-2 mb-3">
-                        <h3 class="text-lg font-bold aws-text-dark">
+                
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 flex flex-col h-full transition-colors">
+                    <div class="flex justify-between items-center border-b border-gray-200 dark:border-slate-600 pb-2 mb-3">
+                        <h3 class="text-lg font-bold aws-text-dark dark:text-white">
                             <i class="fa-solid fa-trophy text-yellow-500 mr-2" aria-hidden="true"></i> Histórico
                         </h3>
                         <button onclick="clearHistory()" class="text-gray-400 hover:text-red-500 transition-colors p-1" title="Limpar histórico" aria-label="Limpar histórico de simulados">
                             <i class="fa-solid fa-trash-can text-sm" aria-hidden="true"></i>
                         </button>
                     </div>
-                    <div id="history-list" class="text-sm text-gray-500 italic flex-grow overflow-y-auto custom-scroll" role="status">Nenhum simulado realizado ainda.</div>
+                    <div id="history-list" class="text-sm text-gray-500 dark:text-gray-400 italic flex-grow overflow-y-auto custom-scroll" role="status">
+                        Nenhum simulado realizado ainda.
+                    </div>
                 </div>
             </div>
         </aside>
     </main>
-    <footer class="text-center py-6 text-sm text-gray-500 mt-8 border-t border-gray-200">
-    Desenvolvido por <a href="https://www.linkedin.com/in/karlarenata-rosario/" target="_blank" class="font-bold text-aws-orange hover:underline">Karla Renata A. Rosario</a> | Projeto de Estudo AWS
+
+    <footer class="text-center py-6 text-sm text-gray-500 dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition-colors">
+        Desenvolvido por <a href="https://www.linkedin.com/in/karlarenata-rosario/" target="_blank" class="font-bold text-aws-orange hover:underline">Karla Renata A. Rosario</a> | Projeto de Estudo AWS
     </footer>
 
     <script src="data.js"></script>
