@@ -13,18 +13,7 @@ Este simulador é um ecossistema completo, focado em **Clean Code, Integridade d
 
 ## 📑 Índice
 
-- [🎓 AWS Certified Cloud Simulator](#-aws-certified-cloud-simulator---pro-edition)
-- [📂 Estrutura de Arquivos](#-estrutura-de-arquivos-atualizada-e-profissional)
-- [📑 Documentação Especializada](#-documentação-especializada-docs)
-- [⚙️ Engenharia de Dados e Pipeline](#-engenharia-de-dados-e-pipeline)
-- [🤖 IA Generativa](#-ia-generativa)
-- [🚀 Diferenciais Técnicos](#-diferenciais-técnicos)
-- [🎯 Funcionalidades Premium](#-funcionalidades-premium)
-- [🛠 Como Executar](#-como-executar)
-- [📈 Roadmap](#-roadmap)
-- [🌐 Demo Online](#-demo-online)
-- [💡 Dica Final](#-dica-final)
-- [📄 Licença](#-licença)
+[🎓 AWS](#-aws-certified-cloud-simulator) | [📂 Estrutura](#-estrutura-de-arquivos-atualizada-e-profissional) | [📑 Docs](#-documentação-especializada-docs) | [⚙️ Dados](#-engenharia-de-dados-e-pipeline) | [🤖 IA](#-ia-generativa) | [🚀 Diferenciais](#-diferenciais-técnicos) | [🎯 Funcionalidades](#-funcionalidades-premium) | [🛠 Executar](#-requisitos-e-como-executar) | [📈 Roadmap](#-roadmap) | [🌐 Demo](#-demo-online) | [💡 Dica](#-dica-final) | [📄 Licença](#-licença)
 
 ---
 
