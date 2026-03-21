@@ -22,11 +22,12 @@ Este projeto vai além de um simples quiz web: ele é um ecossistema completo fo
 
 ## 🚀 Visão Geral da Arquitetura
 
-### ⚙️ Pipeline de Dados (ETL & IA)
-![Arquitetura ETL](./docs/assets/arquitetura-data.png)
+O projeto é dividido em duas camadas principais que operam de forma desacoplada. Abaixo, você pode ver o fluxo de dados no Backend (Python/IA) e a estrutura modular do Frontend (Vanilla JS):
 
-### 💻 Arquitetura Frontend (Modular)
-![Arquitetura Frontend](./docs/assets/arquitetura-front.png)
+<p align="center">
+  <img src="./docs/assets/arquitetura-data.png" alt="Arquitetura ETL" width="49%">
+  <img src="./docs/assets/arquitetura-front.png" alt="Arquitetura Frontend" width="49%">
+</p>
 
 O projeto é dividido em duas camadas principais que operam de forma desacoplada:
 
