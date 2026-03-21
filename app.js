@@ -1,6 +1,6 @@
 /**
  * APP.JS - Simulador de Certificações AWS (Versão Ultra 2026)
- * Inovações: Cards Interativos, Radar Pro, Links Oficiais e Gamificação.
+ * Inovações: Cards Interativos, Radar Pro, Links Oficiais, Gamificação e Relatórios.
  */
 
 // ============================================================================
@@ -39,13 +39,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const certSelect = document.getElementById('certification-select');
     
-    // Força a injeção inicial dos tópicos logo que a página carrega
-    setTimeout(() => {
-        if (typeof certificationPaths !== 'undefined' && certSelect) {
-            appState.currentCertification = certificationPaths[certSelect.value];
-            updateTopicDropdown();
+    // Blindagem: Garante que os dados (data.js) carregaram antes de preencher o dropdown
+    const initInterval = setInterval(() => {
+        if (typeof certificationPaths !== 'undefined') {
+            clearInterval(initInterval);
+            if (certSelect) {
+                appState.currentCertification = certificationPaths[certSelect.value];
+                updateTopicDropdown();
+            }
         }
-    }, 100); // Delay de 100ms garante que o DOM HTML está 100% pronto
+    }, 50);
 
     certSelect?.addEventListener('change', () => {
         loadLastScore();
@@ -97,7 +100,6 @@ async function startQuiz() {
         // Filtro de Tópico (Dropdown)
         const topicFilter = document.getElementById('topic-filter')?.value;
         if (topicFilter && topicFilter !== "") {
-            // Filtra exatamente pelo ID do domínio vindo do dropdown
             data = data.filter(q => q.domain === topicFilter);
         }
 
@@ -117,6 +119,10 @@ async function startQuiz() {
 
         appState.domainScores = {};
         appState.currentCertification.domains.forEach(d => appState.domainScores[d.id] = { total: 0, correct: 0 });
+
+        // Remove o relatório anterior se houver
+        const oldReport = document.getElementById('detailed-report');
+        if (oldReport) oldReport.remove();
 
         showScreen('quiz');
         if (mode === 'exam') startTimer();
@@ -157,9 +163,6 @@ function loadQuestion() {
     document.getElementById('btn-submit').classList.remove('hidden');
 }
 
-/**
- * OPÇÃO 1 - CARDS DE RESPOSTA INTERATIVOS
- */
 function renderOptions(question) {
     const container = document.getElementById('options-container');
     if (!container) return;
@@ -218,7 +221,10 @@ function submitAnswer() {
         if (idx === appState.selectedAnswer && !isCorrect) card.classList.add('bg-red-50', 'border-red-500', 'dark:bg-red-900/20');
     });
 
-    // Explicação + Link de Documentação (Toque Profissional)
+    // Prepara os textos para o feedback detalhado
+    const userText = q.options[appState.selectedAnswer];
+    const correctText = q.options[q.correct];
+
     const expBox = document.getElementById('explanation-box');
     const docLink = q.reference_url ? 
         `<a href="${q.reference_url}" target="_blank" class="mt-3 inline-block text-orange-600 font-bold hover:underline">
@@ -227,9 +233,19 @@ function submitAnswer() {
 
     expBox.querySelector('h4').innerHTML = isCorrect ? 
         '<i class="fa-solid fa-check"></i> Correto!' : '<i class="fa-solid fa-xmark"></i> Incorreto';
-    expBox.querySelector('h4').className = isCorrect ? "font-bold text-green-600 mb-1" : "font-bold text-red-600 mb-1";
+    expBox.querySelector('h4').className = isCorrect ? "font-bold text-green-600 mb-3" : "font-bold text-red-600 mb-3";
     
-    document.getElementById('explanation-text').innerHTML = `${q.explanation} <br> ${docLink}`;
+    // Monta o feedback detalhado: Sua resposta x Resposta Correta x Por que
+    let feedbackHTML = "";
+    if (!isCorrect) {
+        feedbackHTML += `<div class="mb-2"><strong class="text-gray-800 dark:text-gray-200">Sua resposta:</strong> <span class="text-red-600 dark:text-red-400">${userText}</span></div>`;
+        feedbackHTML += `<div class="mb-3"><strong class="text-gray-800 dark:text-gray-200">Resposta correta:</strong> <span class="text-green-600 dark:text-green-400">${correctText}</span></div>`;
+    } else {
+        feedbackHTML += `<div class="mb-3"><strong class="text-gray-800 dark:text-gray-200">Sua resposta:</strong> <span class="text-green-600 dark:text-green-400">${correctText}</span></div>`;
+    }
+    feedbackHTML += `<div class="pt-3 mt-2 border-t border-blue-200 dark:border-slate-600"><strong class="text-gray-800 dark:text-gray-200">Por que?</strong><br>${q.explanation}</div>`;
+
+    document.getElementById('explanation-text').innerHTML = `${feedbackHTML} ${docLink}`;
     expBox.classList.remove('hidden');
 
     document.getElementById('btn-submit').classList.add('hidden');
@@ -284,10 +300,9 @@ function cancelQuiz() {
 }
 
 // ============================================================================
-// 5. RADAR CHART (MELHORADO COM FILL E PADDING)
+// 5. RADAR CHART
 // ============================================================================
 
-// Função auxiliar para quebrar textos longos em duas linhas no gráfico
 function formatChartLabel(name) {
     const words = name.split(' ');
     if (words.length > 2) {
@@ -308,7 +323,7 @@ function initializeRadarChart() {
             datasets: [{
                 label: 'Conhecimento (%)',
                 data: [0, 0, 0, 0],
-                fill: true, // Preenchimento de área
+                fill: true,
                 backgroundColor: 'rgba(255, 153, 0, 0.2)',
                 borderColor: '#ff9900',
                 borderWidth: 2,
@@ -316,7 +331,7 @@ function initializeRadarChart() {
             }]
         },
         options: {
-            maintainAspectRatio: false, // <-- Impede o gráfico de "sambar"
+            maintainAspectRatio: false, 
             layout: { padding: 15 },
             scales: {
                 r: { 
@@ -325,7 +340,7 @@ function initializeRadarChart() {
                     ticks: { display: false, stepSize: 25 },
                     grid: { color: 'rgba(200, 200, 200, 0.2)' },
                     pointLabels: {
-                        font: { size: 11, family: "'Open Sans', sans-serif" }, // Fonte menor e ajustada
+                        font: { size: 11, family: "'Open Sans', sans-serif" },
                         padding: 5
                     }
                 }
@@ -338,23 +353,19 @@ function initializeRadarChart() {
 function reinitializeRadarChart() {
     if (!appState.currentCertification || !window.radarChartInstance) return;
     
-    // Aplica a quebra de texto nos labels
     const labels = appState.currentCertification.domains.map(d => formatChartLabel(d.name));
     window.radarChartInstance.data.labels = labels;
     
-    // Tenta recuperar os domínios salvos do último simulado feito
     const certId = appState.currentCertification.id;
     const lastResult = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}last_${certId}`));
 
     if (lastResult && lastResult.domainScores) {
-        // Se já houver um histórico para essa prova, recupera as notas do gráfico
         const data = appState.currentCertification.domains.map(d => {
             const s = lastResult.domainScores[d.id];
             return (s && s.total > 0) ? (s.correct / s.total) * 100 : 0;
         });
         window.radarChartInstance.data.datasets[0].data = data;
     } else {
-        // Se nunca tiver feito o simulado, zera o gráfico
         window.radarChartInstance.data.datasets[0].data = labels.map(() => 0);
     }
     
@@ -385,7 +396,7 @@ function saveQuizResult() {
         total: appState.questions.length,
         percentage: pct, 
         date: new Date().toISOString(),
-        domainScores: appState.domainScores // <--- SALVA OS DADOS DO RADAR PARA O REINITIALIZE ACHAR DEPOIS
+        domainScores: appState.domainScores
     };
 
     localStorage.setItem(`${APP_CONFIG.STORAGE_KEY}last_${certId}`, JSON.stringify(result));
@@ -421,23 +432,116 @@ function updateGamification(pct) {
 }
 
 // ============================================================================
-// 7. UTILITÁRIOS
+// 7. RESULTADOS E RELATÓRIO PDF
 // ============================================================================
 
-// Atualiza o dropdown de tópicos com base na certificação selecionada
-function updateTopicDropdown() {
-    const topicSelect = document.getElementById('topic-filter');
+function showResultsScreen() {
+    const total = appState.questions.length;
+    const pct = (appState.score / total) * 100;
     
-    // Blindagem: Verifica se o elemento existe E se é um <select> 
-    // (Evita falhas se o <input> antigo ainda estiver perdido pelo HTML)
-    if (!topicSelect || topicSelect.tagName !== 'SELECT' || !appState.currentCertification) {
-        return; 
+    document.getElementById('final-score-percent').textContent = `${pct.toFixed(0)}%`;
+    document.getElementById('final-correct').textContent = appState.score;
+    document.getElementById('final-incorrect').textContent = total - appState.score;
+
+    let weakestDomain = null;
+    let lowestScore = 100;
+
+    for (const [domainId, scoreData] of Object.entries(appState.domainScores)) {
+        if (scoreData.total > 0) {
+            const domainPct = (scoreData.correct / scoreData.total) * 100;
+            if (domainPct <= lowestScore) {
+                lowestScore = domainPct;
+                weakestDomain = domainId;
+            }
+        }
     }
 
-    // Reseta as opções sempre que for atualizar
+    const domainName = getDomainName(weakestDomain) || "Tópicos Gerais";
+    const recText = document.getElementById('recommendation-text');
+
+    if (pct >= 85) {
+        recText.innerHTML = `<strong>Excelente desempenho!</strong> Você demonstrou um domínio profundo. Se quiser alcançar a perfeição, faça uma revisão rápida em: <em>${domainName}</em>.`;
+    } else if (pct >= APP_CONFIG.PASSING_SCORE) {
+        recText.innerHTML = `<strong>Parabéns, você passou!</strong> Para aumentar sua segurança para o exame real, concentre seus estudos finais no domínio: <em>${domainName}</em>.`;
+    } else {
+        recText.innerHTML = `<strong>Não desanime!</strong> Sua maior oportunidade de melhoria está no domínio: <em>${domainName}</em>. Revise a documentação oficial sobre esse tema e tente novamente.`;
+    }
+
+    // Gera o relatório visual
+    renderDetailedReport();
+    showScreen('results');
+}
+
+function renderDetailedReport() {
+    const resultsScreen = document.getElementById('screen-results');
+    const buttonsContainer = resultsScreen.querySelector('.flex.gap-3.flex-wrap'); 
+    
+    if(buttonsContainer) buttonsContainer.classList.add('no-print');
+
+    let reportDiv = document.getElementById('detailed-report');
+    if (!reportDiv) {
+        reportDiv = document.createElement('div');
+        reportDiv.id = 'detailed-report';
+        reportDiv.className = 'mt-8 mb-8 w-full max-w-3xl text-left bg-white dark:bg-slate-800 p-6 md:p-8 rounded-xl shadow-md border border-gray-200 dark:border-slate-700';
+        resultsScreen.insertBefore(reportDiv, buttonsContainer);
+    }
+
+    let html = `<h3 class="text-2xl font-bold mb-6 aws-text-dark dark:text-white border-b border-gray-200 dark:border-slate-700 pb-3">
+                    <i class="fa-solid fa-list-check text-aws-orange mr-2"></i> Revisão do Simulado
+                </h3>`;
+    
+    appState.answers.forEach((ans, index) => {
+        const userText = ans.options[ans.userSelection];
+        const correctText = ans.options[ans.correct];
+        const isRight = ans.isCorrect;
+        
+        const icon = isRight 
+            ? `<i class="fa-solid fa-check-circle text-green-500 mr-1"></i>` 
+            : `<i class="fa-solid fa-times-circle text-red-500 mr-1"></i>`;
+
+        html += `
+        <div class="mb-6 pb-6 border-b border-gray-100 dark:border-slate-700 question-review">
+            <p class="font-bold text-gray-800 dark:text-gray-100 mb-4 leading-relaxed">
+                ${index + 1}. ${ans.question}
+            </p>
+            <div class="text-sm mb-2 flex items-start gap-2">
+                <span class="font-semibold text-gray-600 dark:text-gray-400 min-w-[120px]">Sua Resposta:</span> 
+                <span class="${isRight ? 'text-green-600 dark:text-green-400 font-medium' : 'text-red-600 dark:text-red-400 font-medium'}">
+                    ${icon} ${userText}
+                </span>
+            </div>
+            ${!isRight ? `
+            <div class="text-sm mb-3 flex items-start gap-2">
+                <span class="font-semibold text-gray-600 dark:text-gray-400 min-w-[120px]">Resposta Correta:</span> 
+                <span class="text-green-600 dark:text-green-400 font-medium">
+                    <i class="fa-solid fa-check-circle text-green-500 mr-1"></i> ${correctText}
+                </span>
+            </div>` : ''}
+            <div class="mt-4 bg-blue-50 dark:bg-slate-700/50 p-4 rounded-lg text-sm text-gray-700 dark:text-gray-300 border-l-4 border-blue-500">
+                <strong class="text-blue-800 dark:text-blue-300 block mb-1">Explicação:</strong> 
+                ${ans.explanation}
+            </div>
+        </div>
+        `;
+    });
+
+    reportDiv.innerHTML = html;
+}
+
+function generatePerformanceReport() {
+    window.print();
+}
+
+// ============================================================================
+// 8. UTILITÁRIOS GERAIS
+// ============================================================================
+
+function updateTopicDropdown() {
+    const topicSelect = document.getElementById('topic-filter');
+    if (!topicSelect || !appState.currentCertification) return;
+
     topicSelect.innerHTML = '<option value="">Todos os Tópicos</option>';
 
-    // Adiciona os domínios da certificação atual dinamicamente
     appState.currentCertification.domains.forEach(domain => {
         const option = document.createElement('option');
         option.value = domain.id;
@@ -476,44 +580,6 @@ function startTimer() {
     }, 1000);
 }
 
-function showResultsScreen() {
-    const total = appState.questions.length;
-    const pct = (appState.score / total) * 100;
-    
-    document.getElementById('final-score-percent').textContent = `${pct.toFixed(0)}%`;
-    document.getElementById('final-correct').textContent = appState.score;
-    document.getElementById('final-incorrect').textContent = total - appState.score;
-
-    // Lógica para a Recomendação da IA
-    let weakestDomain = null;
-    let lowestScore = 100;
-
-    // Identifica o domínio com a menor pontuação
-    for (const [domainId, scoreData] of Object.entries(appState.domainScores)) {
-        if (scoreData.total > 0) {
-            const domainPct = (scoreData.correct / scoreData.total) * 100;
-            if (domainPct <= lowestScore) {
-                lowestScore = domainPct;
-                weakestDomain = domainId;
-            }
-        }
-    }
-
-    const domainName = getDomainName(weakestDomain) || "Tópicos Gerais";
-    const recText = document.getElementById('recommendation-text');
-
-    // Gera o texto dinâmico com base na nota e no domínio mais fraco
-    if (pct >= 85) {
-        recText.innerHTML = `<strong>Excelente desempenho!</strong> Você demonstrou um domínio profundo. Se quiser alcançar a perfeição, faça uma revisão rápida em: <em>${domainName}</em>.`;
-    } else if (pct >= APP_CONFIG.PASSING_SCORE) {
-        recText.innerHTML = `<strong>Parabéns, você passou!</strong> Para aumentar sua segurança para o exame real, concentre seus estudos finais no domínio: <em>${domainName}</em>.`;
-    } else {
-        recText.innerHTML = `<strong>Não desanime!</strong> Sua maior oportunidade de melhoria está no domínio: <em>${domainName}</em>. Revise a documentação oficial sobre esse tema e tente novamente.`;
-    }
-
-    showScreen('results');
-}
-
 function initTheme() {
     const theme = localStorage.getItem('aws_sim_theme') || 'light';
     document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -536,19 +602,12 @@ function loadLastScore() {
     }
 }
 
-// Gera o relatório PDF usando a funcionalidade de impressão do navegador
-function generatePerformanceReport() {
-    window.print();
-}
-
-// Refaz o quiz voltando para a tela inicial
 function retakeQuiz() {
     goHome();
-    // Rola a página para o topo
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Placeholders para evitar erros se não implementados
+// Placeholders para evitar erros
 function updateHistoryDisplay() {}
 function checkMistakes() {}
 function updateFlagUI() {}
