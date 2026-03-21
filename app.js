@@ -32,32 +32,30 @@ const APP_CONFIG = {
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initializeRadarChart();
-    loadLastScore();
     updateHistoryDisplay();
-    checkMistakes();
     renderGamification();
 
     const certSelect = document.getElementById('certification-select');
     
-    // Blindagem: Garante que os dados (data.js) carregaram antes de preencher o dropdown
+    // Força a injeção inicial dos tópicos e da última nota logo que a página carrega
     const initInterval = setInterval(() => {
         if (typeof certificationPaths !== 'undefined') {
             clearInterval(initInterval);
             if (certSelect) {
                 appState.currentCertification = certificationPaths[certSelect.value];
                 updateTopicDropdown();
+                loadLastScore();
             }
         }
     }, 50);
 
     certSelect?.addEventListener('change', () => {
-        loadLastScore();
-        checkMistakes();
         const selectedId = certSelect.value;
         if (typeof certificationPaths !== 'undefined') {
             appState.currentCertification = certificationPaths[selectedId];
             reinitializeRadarChart();
-            updateTopicDropdown(); // Atualiza a lista de domínios quando a prova muda
+            updateTopicDropdown(); 
+            loadLastScore();
         }
     });
 });
@@ -94,10 +92,8 @@ async function startQuiz() {
         
         let data = await response.json();
 
-        // Filtro de Dificuldade
         if (difficulty !== 'all') data = data.filter(q => q.difficulty === difficulty);
         
-        // Filtro de Tópico (Dropdown)
         const topicFilter = document.getElementById('topic-filter')?.value;
         if (topicFilter && topicFilter !== "") {
             data = data.filter(q => q.domain === topicFilter);
@@ -120,7 +116,6 @@ async function startQuiz() {
         appState.domainScores = {};
         appState.currentCertification.domains.forEach(d => appState.domainScores[d.id] = { total: 0, correct: 0 });
 
-        // Remove o relatório anterior se houver
         const oldReport = document.getElementById('detailed-report');
         if (oldReport) oldReport.remove();
 
@@ -153,7 +148,6 @@ function loadQuestion() {
     }
 
     renderOptions(q);
-    updateFlagUI();
     
     appState.selectedAnswer = null;
     document.getElementById('btn-submit').disabled = true;
@@ -214,17 +208,14 @@ function submitAnswer() {
         if (isCorrect) appState.domainScores[q.domain].correct++;
     }
 
-    // Feedback Visual nos Cards
     document.querySelectorAll('.option-card').forEach((card, idx) => {
         card.classList.add('pointer-events-none');
         if (idx === q.correct) card.classList.add('bg-green-50', 'border-green-500', 'dark:bg-green-900/20');
         if (idx === appState.selectedAnswer && !isCorrect) card.classList.add('bg-red-50', 'border-red-500', 'dark:bg-red-900/20');
     });
 
-    // Prepara os textos para o feedback detalhado
     const userText = q.options[appState.selectedAnswer];
     const correctText = q.options[q.correct];
-
     const expBox = document.getElementById('explanation-box');
     const docLink = q.reference_url ? 
         `<a href="${q.reference_url}" target="_blank" class="mt-3 inline-block text-orange-600 font-bold hover:underline">
@@ -235,7 +226,6 @@ function submitAnswer() {
         '<i class="fa-solid fa-check"></i> Correto!' : '<i class="fa-solid fa-xmark"></i> Incorreto';
     expBox.querySelector('h4').className = isCorrect ? "font-bold text-green-600 mb-3" : "font-bold text-red-600 mb-3";
     
-    // Monta o feedback detalhado: Sua resposta x Resposta Correta x Por que
     let feedbackHTML = "";
     if (!isCorrect) {
         feedbackHTML += `<div class="mb-2"><strong class="text-gray-800 dark:text-gray-200">Sua resposta:</strong> <span class="text-red-600 dark:text-red-400">${userText}</span></div>`;
@@ -286,6 +276,7 @@ function finishQuiz() {
     if (appState.timerInterval) clearInterval(appState.timerInterval);
     saveQuizResult();
     updateHistoryDisplay();
+    loadLastScore();
     showResultsScreen();
 }
 
@@ -383,7 +374,7 @@ function updateRadarChart() {
 }
 
 // ============================================================================
-// 6. PERSISTÊNCIA & GAMIFICAÇÃO
+// 6. PERSISTÊNCIA, GAMIFICAÇÃO E HISTÓRICO
 // ============================================================================
 
 function saveQuizResult() {
@@ -396,7 +387,8 @@ function saveQuizResult() {
         total: appState.questions.length,
         percentage: pct, 
         date: new Date().toISOString(),
-        domainScores: appState.domainScores
+        domainScores: appState.domainScores,
+        answers: appState.answers
     };
 
     localStorage.setItem(`${APP_CONFIG.STORAGE_KEY}last_${certId}`, JSON.stringify(result));
@@ -431,9 +423,147 @@ function updateGamification(pct) {
     renderGamification();
 }
 
+function updateHistoryDisplay() {
+    const historyList = document.getElementById('history-list');
+    if (!historyList) return;
+
+    const history = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}history`) || "[]");
+
+    if (history.length === 0) {
+        historyList.innerHTML = 'Nenhum simulado realizado ainda.';
+        return;
+    }
+
+    const reversedHistory = [...history].reverse();
+    let html = '<ul class="space-y-3 w-full">';
+
+    reversedHistory.forEach((item, index) => {
+        const date = new Date(item.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+        const isPass = item.percentage >= APP_CONFIG.PASSING_SCORE;
+        const color = isPass ? 'text-green-500' : 'text-red-500';
+        const icon = isPass ? 'fa-check-circle' : 'fa-times-circle';
+        const certName = item.certId.toUpperCase();
+        
+        // O índice original para clicar
+        const originalIndex = history.length - 1 - index;
+
+        html += `
+        <li onclick="showHistoricalReport(${originalIndex})" class="flex justify-between items-center p-3 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-lg shadow-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-600 transition-all group">
+            <div>
+                <div class="font-bold text-gray-700 dark:text-gray-200 group-hover:text-aws-orange transition-colors">${certName}</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">${date}</div>
+            </div>
+            <div class="flex flex-col items-end">
+                <div class="${color} font-bold text-lg flex items-center gap-1">
+                    ${item.percentage.toFixed(0)}% <i class="fa-solid ${icon}"></i>
+                </div>
+                <div class="text-[10px] text-blue-500 dark:text-blue-400 opacity-80 group-hover:opacity-100 group-hover:underline mt-1 transition-all">
+                    <i class="fa-solid fa-eye"></i> Ver Relatório
+                </div>
+            </div>
+        </li>
+        `;
+    });
+
+    html += '</ul>';
+    historyList.innerHTML = html;
+
+    updateDynamicInsight(history);
+}
+
+function clearHistory() {
+    if(confirm("Tem certeza que deseja apagar todo o histórico de simulados?")) {
+        localStorage.removeItem(`${APP_CONFIG.STORAGE_KEY}history`);
+        updateHistoryDisplay();
+        
+        const insightEl = document.getElementById('dynamic-insight');
+        if (insightEl) insightEl.innerHTML = "Comece o simulado para que a IA mapeie seu perfil de conhecimento.";
+    }
+}
+
+function updateDynamicInsight(history) {
+    const insightEl = document.getElementById('dynamic-insight');
+    if (!insightEl || !history || history.length === 0) return;
+
+    const last = history[history.length - 1];
+    if (last.percentage >= 85) {
+        insightEl.innerHTML = `<span class="text-green-600 dark:text-green-400 font-bold text-base"><i class="fa-solid fa-fire"></i> Você está voando!</span><br><br>Seu desempenho no último simulado da <strong>${last.certId.toUpperCase()}</strong> foi excelente. Mantenha o ritmo de estudos, você está quase pronto!`;
+    } else if (last.percentage >= APP_CONFIG.PASSING_SCORE) {
+        insightEl.innerHTML = `<span class="text-blue-600 dark:text-blue-400 font-bold text-base"><i class="fa-solid fa-thumbs-up"></i> Bom trabalho!</span><br><br>Você passou no último simulado, mas ainda há espaço para revisar. Reforce seus pontos fracos olhando o gráfico ao lado.`;
+    } else {
+        insightEl.innerHTML = `<span class="text-orange-600 dark:text-orange-400 font-bold text-base"><i class="fa-solid fa-book"></i> Foco nos estudos!</span><br><br>Você precisa de mais uns pontos para passar na <strong>${last.certId.toUpperCase()}</strong>. Revise o relatório em PDF detalhado do seu último teste e tente novamente.`;
+    }
+}
+
 // ============================================================================
-// 7. RESULTADOS E RELATÓRIO PDF
+// 7. EXIBIÇÃO DE RESULTADOS E RELATÓRIOS
 // ============================================================================
+
+function loadLastScore() {
+    const banner = document.getElementById('last-score-banner');
+    const certId = document.getElementById('certification-select')?.value;
+    if (!banner || !certId) return;
+
+    const last = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}last_${certId}`));
+    
+    if (last && last.percentage !== undefined) {
+        banner.classList.remove('hidden');
+        banner.classList.add('cursor-pointer', 'hover:bg-blue-100', 'dark:hover:bg-blue-800', 'transition-all');
+        banner.onclick = () => showLastReport(certId);
+
+        banner.innerHTML = `
+            <div class="flex justify-between items-center w-full">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-history"></i> 
+                    <span>Última Nota: <strong>${last.percentage.toFixed(0)}%</strong></span>
+                </div>
+                <div class="text-xs font-bold underline flex items-center gap-1 opacity-80 hover:opacity-100">
+                    <i class="fa-solid fa-file-pdf"></i> Ver Relatório
+                </div>
+            </div>
+        `;
+    } else {
+        banner.classList.add('hidden');
+    }
+}
+
+function showLastReport(certId) {
+    const lastResult = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}last_${certId}`));
+    if(!lastResult || !lastResult.answers) {
+        alert("Os detalhes deste relatório não foram salvos anteriormente. Faça um novo simulado!");
+        return;
+    }
+
+    if (typeof certificationPaths !== 'undefined') {
+        appState.currentCertification = certificationPaths[lastResult.certId];
+    }
+    appState.score = lastResult.score;
+    appState.questions = lastResult.answers; 
+    appState.answers = lastResult.answers;
+    appState.domainScores = lastResult.domainScores;
+
+    showResultsScreen();
+}
+
+function showHistoricalReport(index) {
+    const history = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}history`) || "[]");
+    const result = history[index];
+    
+    if(!result || !result.answers) {
+        alert("Os detalhes deste relatório não estão mais disponíveis.");
+        return;
+    }
+
+    if (typeof certificationPaths !== 'undefined') {
+        appState.currentCertification = certificationPaths[result.certId];
+    }
+    appState.score = result.score;
+    appState.questions = result.answers; 
+    appState.answers = result.answers;
+    appState.domainScores = result.domainScores;
+
+    showResultsScreen();
+}
 
 function showResultsScreen() {
     const total = appState.questions.length;
@@ -467,7 +597,6 @@ function showResultsScreen() {
         recText.innerHTML = `<strong>Não desanime!</strong> Sua maior oportunidade de melhoria está no domínio: <em>${domainName}</em>. Revise a documentação oficial sobre esse tema e tente novamente.`;
     }
 
-    // Gera o relatório visual
     renderDetailedReport();
     showScreen('results');
 }
@@ -482,45 +611,64 @@ function renderDetailedReport() {
     if (!reportDiv) {
         reportDiv = document.createElement('div');
         reportDiv.id = 'detailed-report';
-        reportDiv.className = 'mt-8 mb-8 w-full max-w-3xl text-left bg-white dark:bg-slate-800 p-6 md:p-8 rounded-xl shadow-md border border-gray-200 dark:border-slate-700';
+        reportDiv.className = 'mt-8 mb-8 w-full max-w-3xl mx-auto text-left bg-white dark:bg-slate-800 p-6 md:p-8 rounded-xl shadow-md border border-gray-200 dark:border-slate-700 print-report-container';
         resultsScreen.insertBefore(reportDiv, buttonsContainer);
     }
 
-    let html = `<h3 class="text-2xl font-bold mb-6 aws-text-dark dark:text-white border-b border-gray-200 dark:border-slate-700 pb-3">
-                    <i class="fa-solid fa-list-check text-aws-orange mr-2"></i> Revisão do Simulado
-                </h3>`;
+    const total = appState.questions.length;
+    const pct = (appState.score / total) * 100;
+    const recText = document.getElementById('recommendation-text')?.innerHTML || '';
+
+    let html = `
+        <div class="hidden print:block mb-8 border-b-2 border-black pb-6">
+            <h2 class="text-3xl font-bold mb-4 print-text-black">Relatório Oficial - Simulado AWS</h2>
+            <p class="text-xl mb-4 print-text-black"><strong>Pontuação Final:</strong> ${pct.toFixed(0)}% (${appState.score} acertos de ${total})</p>
+            <div class="border border-black p-4 mt-4">
+                <strong class="text-lg block mb-2 print-text-black">Sugestão de Estudo (IA):</strong>
+                <span class="text-base print-text-black">${recText}</span>
+            </div>
+        </div>
+
+        <div class="report-header pb-4 mb-6 border-b border-gray-300 dark:border-slate-700 print:hidden">
+            <h3 class="text-2xl font-bold aws-text-dark dark:text-white">
+                <i class="fa-solid fa-list-check text-aws-orange mr-2"></i> Revisão do Simulado
+            </h3>
+        </div>
+    `;
     
     appState.answers.forEach((ans, index) => {
         const userText = ans.options[ans.userSelection];
         const correctText = ans.options[ans.correct];
         const isRight = ans.isCorrect;
         
-        const icon = isRight 
-            ? `<i class="fa-solid fa-check-circle text-green-500 mr-1"></i>` 
-            : `<i class="fa-solid fa-times-circle text-red-500 mr-1"></i>`;
+        const colorClass = isRight ? "print-text-green text-green-600 dark:text-green-400" : "print-text-red text-red-600 dark:text-red-400";
+        const icon = isRight ? "✅" : "❌";
 
         html += `
-        <div class="mb-6 pb-6 border-b border-gray-100 dark:border-slate-700 question-review">
-            <p class="font-bold text-gray-800 dark:text-gray-100 mb-4 leading-relaxed">
-                ${index + 1}. ${ans.question}
-            </p>
-            <div class="text-sm mb-2 flex items-start gap-2">
-                <span class="font-semibold text-gray-600 dark:text-gray-400 min-w-[120px]">Sua Resposta:</span> 
-                <span class="${isRight ? 'text-green-600 dark:text-green-400 font-medium' : 'text-red-600 dark:text-red-400 font-medium'}">
-                    ${icon} ${userText}
-                </span>
+        <div class="question-review mb-8 pb-6 border-b border-gray-200 dark:border-slate-700 page-break-safe">
+            
+            <div class="mb-3">
+                <span class="font-bold text-gray-800 dark:text-white text-lg block mb-2 print-text-black">${index + 1}. ${ans.question}</span>
             </div>
-            ${!isRight ? `
-            <div class="text-sm mb-3 flex items-start gap-2">
-                <span class="font-semibold text-gray-600 dark:text-gray-400 min-w-[120px]">Resposta Correta:</span> 
-                <span class="text-green-600 dark:text-green-400 font-medium">
-                    <i class="fa-solid fa-check-circle text-green-500 mr-1"></i> ${correctText}
-                </span>
-            </div>` : ''}
-            <div class="mt-4 bg-blue-50 dark:bg-slate-700/50 p-4 rounded-lg text-sm text-gray-700 dark:text-gray-300 border-l-4 border-blue-500">
-                <strong class="text-blue-800 dark:text-blue-300 block mb-1">Explicação:</strong> 
-                ${ans.explanation}
+            
+            <div class="answer-block mb-3 p-4 rounded-lg bg-gray-50 dark:bg-slate-700/30 border border-gray-100 dark:border-slate-600 print-no-bg">
+                <div class="mb-2">
+                    <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">Sua Resposta:</span>
+                    <span class="${colorClass} font-semibold block">${icon} ${userText}</span>
+                </div>
+                
+                ${!isRight ? `
+                <div class="mt-3 pt-3 border-t border-gray-200 dark:border-slate-600 print-border-black">
+                    <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">Resposta Correta:</span>
+                    <span class="print-text-green text-green-600 dark:text-green-400 font-semibold block">✅ ${correctText}</span>
+                </div>` : ''}
             </div>
+            
+            <div class="explanation-print mt-4 p-4 rounded-lg bg-blue-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 border-l-4 border-l-blue-500 text-sm text-gray-800 dark:text-gray-200 print-no-bg">
+                <strong class="text-blue-800 dark:text-blue-300 block mb-2 print-text-black">Explicação:</strong> 
+                <span class="block leading-relaxed print-text-black">${ans.explanation}</span>
+            </div>
+            
         </div>
         `;
     });
@@ -538,7 +686,9 @@ function generatePerformanceReport() {
 
 function updateTopicDropdown() {
     const topicSelect = document.getElementById('topic-filter');
-    if (!topicSelect || !appState.currentCertification) return;
+    if (!topicSelect || topicSelect.tagName !== 'SELECT' || !appState.currentCertification) {
+        return; 
+    }
 
     topicSelect.innerHTML = '<option value="">Todos os Tópicos</option>';
 
@@ -590,24 +740,11 @@ function toggleDarkMode() {
     localStorage.setItem('aws_sim_theme', isDark ? 'dark' : 'light');
 }
 
-function loadLastScore() {
-    const banner = document.getElementById('last-score-banner');
-    const certId = document.getElementById('certification-select')?.value;
-    const last = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}last_${certId}`));
-    if (last && banner) {
-        banner.innerHTML = `<i class="fa-solid fa-history mr-2"></i> Última: <strong>${last.percentage.toFixed(0)}%</strong>`;
-        banner.classList.remove('hidden');
-    } else {
-        banner?.classList.add('hidden');
-    }
-}
-
 function retakeQuiz() {
     goHome();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Placeholders para evitar erros
-function updateHistoryDisplay() {}
+// Placeholders para evitar erros se não implementados
 function checkMistakes() {}
 function updateFlagUI() {}
