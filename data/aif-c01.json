@@ -1,7 +1,7 @@
 [
   {
     "id": 201,
-    "domain": "design-performance",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Uma empresa precisa implementar guardrails para prevenir que um modelo de IA generativa produza conteúdo inadequado. Qual recurso do Amazon Bedrock deve ser configurado?",
     "options": [
@@ -21,7 +21,7 @@
   },
   {
     "id": 202,
-    "domain": "design-performance",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Qual técnica de prompt engineering é mais eficaz quando o modelo precisa realizar uma tarefa completamente nova sem exemplos prévios?",
     "options": [
@@ -41,7 +41,7 @@
   },
   {
     "id": 203,
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Qual é a principal diferença entre Retrieval-Augmented Generation (RAG) e fine-tuning de modelos de linguagem?",
     "options": [
@@ -61,7 +61,7 @@
   },
   {
     "id": 204,
-    "domain": "design-performance",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Uma aplicação precisa usar Amazon Bedrock Agents para automatizar tarefas complexas. Qual componente é essencial para permitir que o Agent execute ações específicas?",
     "options": [
@@ -81,7 +81,7 @@
   },
   {
     "id": 205,
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "hard",
     "question": "Ao implementar uma solução de IA generativa que processa dados sensíveis de clientes, qual prática de segurança do Amazon Bedrock deve ser priorizada?",
     "options": [
@@ -101,7 +101,7 @@
   },
   {
     "id": 206,
-    "domain": "design-performance",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Qual serviço da AWS oferece uma API unificada para aceder a Foundation Models (FMs) de empresas líderes como Anthropic, Meta, Cohere e Amazon?",
     "options": [
@@ -121,7 +121,7 @@
   },
   {
     "id": 207,
-    "domain": "design-performance",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Na engenharia de prompts, o que acontece se definir o parâmetro de inferência 'Temperature' (Temperatura) com um valor alto (ex: 0.9)?",
     "options": [
@@ -141,7 +141,7 @@
   },
   {
     "id": 208,
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Qual é a definição de 'Alucinação' (Hallucination) no contexto de Large Language Models (LLMs)?",
     "options": [
@@ -161,7 +161,7 @@
   },
   {
     "id": 209,
-    "domain": "design-performance",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Qual funcionalidade nativa do Amazon Bedrock automatiza completamente o fluxo de RAG, desde a leitura de documentos no Amazon S3 até à consulta numa base de dados vetorial?",
     "options": [
@@ -181,7 +181,7 @@
   },
   {
     "id": 210,
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "O que são 'Embeddings' no contexto de Inteligência Artificial Generativa e RAG?",
     "options": [
@@ -201,7 +201,7 @@
   },
   {
     "id": 211,
-    "domain": "design-performance",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Um LLM está a cometer erros de lógica ao tentar resolver um problema matemático complexo descrito num prompt. Que técnica de prompt engineering deve ser utilizada para forçar o modelo a demonstrar o raciocínio correto?",
     "options": [
@@ -221,7 +221,7 @@
   },
   {
     "id": 212,
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "medium",
     "question": "Uma clínica médica quer utilizar o Amazon Bedrock para resumir os históricos de pacientes. Como podem garantir de forma nativa que números de telemóvel e números de Segurança Social são mascarados antes de o resumo ser devolvido à aplicação?",
     "options": [
@@ -241,7 +241,7 @@
   },
   {
     "id": 213,
-    "domain": "design-performance",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Ao criar um Agent no Amazon Bedrock, como é que o Agente 'descobre' quais as funcionalidades da empresa que pode invocar (por exemplo, cancelar um voo ou consultar o saldo de um cliente)?",
     "options": [
@@ -261,7 +261,7 @@
   },
   {
     "id": 214,
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Qual é o principal propósito do processo de 'Chunking' ao preparar documentos de texto para uma arquitetura RAG?",
     "options": [
@@ -281,7 +281,7 @@
   },
   {
     "id": 215,
-    "domain": "design-performance",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "A equipa de Data Science precisa comparar objetivamente se o modelo Anthropic Claude 3 é mais preciso que o modelo Amazon Titan Text para a tarefa específica de sumarização de artigos da empresa. Que recurso devem usar no Bedrock?",
     "options": [
@@ -301,7 +301,7 @@
   },
   {
     "id": 216,
-    "domain": "design-performance",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "hard",
     "question": "Uma aplicação bancária exigirá latência rigorosamente consistente e processará milhões de tokens por minuto no Amazon Bedrock durante o horário de expediente. Qual é a estratégia recomendada para evitar estrangulamentos (throttling) da API?",
     "options": [
@@ -321,7 +321,7 @@
   },
   {
     "id": 217,
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "hard",
     "question": "Uma empresa tem um manual técnico que é revisto semanalmente com novos procedimentos. Eles têm efetuado Fine-Tuning de um modelo LLM todas as semanas, mas o processo é caro, lento e o modelo começou a esquecer o conhecimento antigo ('Catastrophic Forgetting'). Qual é a abordagem arquitetural correta?",
     "options": [
@@ -341,7 +341,7 @@
   },
   {
     "id": 218,
-    "domain": "design-performance",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "hard",
     "question": "Ao configurar a inferência no Amazon Bedrock, um engenheiro ajustou o parâmetro 'Top P' (Nucleus Sampling) para 0.9. Qual é o comportamento mecânico exato deste parâmetro na geração da resposta?",
     "options": [
@@ -361,7 +361,7 @@
   },
   {
     "id": 219,
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "hard",
     "question": "Qual é a arquitetura mais segura para permitir que uma aplicação empresarial, alojada numa Sub-rede Privada de uma VPC, consuma modelos do Amazon Bedrock sem que o tráfego de dados transite pela internet pública?",
     "options": [
@@ -381,7 +381,7 @@
   },
   {
     "id": 220,
-    "domain": "design-performance",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "hard",
     "question": "No processo de ingestão de dados de uma Knowledge Base for Amazon Bedrock, qual é a função exata de um modelo como o 'Amazon Titan Text Embeddings'?",
     "options": [
@@ -400,7 +400,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Qual das seguintes opções descreve melhor o principal objetivo da Inteligência Artificial (IA)?",
     "options": [
@@ -420,7 +420,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "O que diferencia o Machine Learning (ML) da programação tradicional?",
     "options": [
@@ -440,7 +440,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Em um contexto de Machine Learning, qual é a principal finalidade de um 'modelo'?",
     "options": [
@@ -460,7 +460,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Qual dos seguintes é um exemplo de uma aplicação prática de Inteligência Artificial?",
     "options": [
@@ -480,7 +480,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "O que representa o termo 'inferência' em Machine Learning?",
     "options": [
@@ -500,7 +500,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "easy",
     "question": "Qual é a principal característica da IA Generativa?",
     "options": [
@@ -520,7 +520,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "easy",
     "question": "Qual dos seguintes é um exemplo de aplicação da IA Generativa?",
     "options": [
@@ -540,7 +540,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "easy",
     "question": "O que são Large Language Models (LLMs) no contexto da IA Generativa?",
     "options": [
@@ -560,7 +560,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "easy",
     "question": "No contexto da IA Generativa, o que é um 'prompt'?",
     "options": [
@@ -580,7 +580,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "easy",
     "question": "Qual serviço da AWS permite aos desenvolvedores acessar e usar uma variedade de modelos de IA generativa (modelos fundamentais) por meio de uma API?",
     "options": [
@@ -600,7 +600,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "Por que a privacidade dos dados é uma preocupação importante na segurança da IA?",
     "options": [
@@ -620,7 +620,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "O que significa 'viés' (bias) em um modelo de IA?",
     "options": [
@@ -640,7 +640,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "Qual é uma consideração ética fundamental ao desenvolver e implantar sistemas de IA?",
     "options": [
@@ -660,7 +660,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "Qual é o risco de treinar um modelo de IA com dados não verificados ou de baixa qualidade?",
     "options": [
@@ -680,7 +680,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "Um modelo de IA que é facilmente enganado por pequenas perturbações em seus dados de entrada, levando a classificações incorretas, está vulnerável a que tipo de ataque?",
     "options": [
@@ -700,7 +700,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "easy",
     "question": "Qual é geralmente a primeira etapa em um projeto de Machine Learning?",
     "options": [
@@ -720,7 +720,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "easy",
     "question": "Qual serviço da AWS é amplamente utilizado para armazenar grandes volumes de dados que serão usados para treinar modelos de Machine Learning?",
     "options": [
@@ -740,7 +740,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "easy",
     "question": "Qual é o principal propósito do 'treinamento' de um modelo de Machine Learning?",
     "options": [
@@ -760,7 +760,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "easy",
     "question": "Após o treinamento, para onde um modelo de Machine Learning precisa ser movido para que possa ser usado por aplicações e usuários finais?",
     "options": [
@@ -780,7 +780,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "easy",
     "question": "Qual serviço da AWS oferece recursos de inteligência artificial pré-treinados para análise de imagens e vídeos, como detecção de objetos e reconhecimento facial?",
     "options": [
@@ -800,7 +800,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Qual é o principal objetivo da Inteligência Artificial (IA)?",
     "options": [
@@ -820,7 +820,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "O que descreve melhor o Aprendizado de Máquina (Machine Learning - ML)?",
     "options": [
@@ -840,7 +840,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Qual é a principal diferença entre aprendizado supervisionado e não supervisionado?",
     "options": [
@@ -860,7 +860,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Qual das seguintes tarefas é um exemplo de problema de classificação em Machine Learning?",
     "options": [
@@ -880,7 +880,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "O que é um 'modelo' no contexto de Machine Learning?",
     "options": [
@@ -900,7 +900,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "easy",
     "question": "Qual é o principal objetivo da IA Generativa?",
     "options": [
@@ -920,7 +920,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "easy",
     "question": "Qual tipo de modelo é mais comumente usado para gerar texto parecido com o humano a partir de um prompt?",
     "options": [
@@ -940,7 +940,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "easy",
     "question": "Qual das seguintes é uma aplicação comum da IA Generativa em campos criativos?",
     "options": [
@@ -960,7 +960,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "easy",
     "question": "O que significa a sigla 'LLM' no contexto da IA Generativa?",
     "options": [
@@ -980,7 +980,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "easy",
     "question": "Qual serviço da AWS oferece capacidades para construir e escalar aplicações de IA Generativa com acesso a uma variedade de modelos básicos (foundation models)?",
     "options": [
@@ -1000,7 +1000,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "Por que a privacidade dos dados é uma preocupação importante ao desenvolver e implantar modelos de IA?",
     "options": [
@@ -1020,7 +1020,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "O que é 'viés de IA' (AI bias)?",
     "options": [
@@ -1040,7 +1040,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "Qual das seguintes é uma prática fundamental para garantir a segurança dos dados usados em sistemas de IA?",
     "options": [
@@ -1060,7 +1060,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "Qual é um princípio chave da 'IA Responsável'?",
     "options": [
@@ -1080,7 +1080,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "Que tipo de ataque em IA tenta enganar um modelo fazendo pequenas alterações nos dados de entrada para causar uma previsão incorreta?",
     "options": [
@@ -1100,7 +1100,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "easy",
     "question": "Qual serviço da AWS é amplamente utilizado para construir, treinar e implantar modelos de Machine Learning em escala?",
     "options": [
@@ -1120,7 +1120,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "easy",
     "question": "Qual é a primeira etapa crucial em um ciclo de vida típico de um projeto de Machine Learning?",
     "options": [
@@ -1140,7 +1140,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "easy",
     "question": "Qual serviço da AWS oferece recursos de IA pré-treinados para tarefas como reconhecimento de imagem e texto, sem a necessidade de construir ou treinar modelos do zero?",
     "options": [
@@ -1160,7 +1160,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "easy",
     "question": "Qual é a principal finalidade da 'rotulagem de dados' (data labeling) em Machine Learning?",
     "options": [
@@ -1180,7 +1180,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "easy",
     "question": "Após a implantação de um modelo de IA, qual é uma preocupação comum que pode afetar seu desempenho ao longo do tempo?",
     "options": [
@@ -1200,7 +1200,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Uma empresa está explorando como a IA pode otimizar seus processos de atendimento ao cliente. Eles precisam de uma tecnologia que possa entender e responder a perguntas complexas dos clientes em linguagem natural. Qual conceito de IA é mais fundamental para permitir que um sistema interaja com humanos usando linguagem natural, como um chatbot avançado?",
     "options": [
@@ -1220,7 +1220,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "easy",
     "question": "Uma equipe de marketing deseja gerar rapidamente múltiplas variações de slogans para uma nova campanha de produto, com base em algumas palavras-chave e no tom desejado. Qual tipo de modelo de IA é mais adequado para esta tarefa de geração de texto criativo a partir de um prompt?",
     "options": [
@@ -1240,7 +1240,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "Uma startup de saúde está desenvolvendo um modelo de IA para auxiliar no diagnóstico de doenças. Eles estão preocupados em garantir que o modelo não tome decisões enviesadas que possam impactar injustamente certos grupos demográficos de pacientes. Qual é uma preocupação ética e de segurança fundamental ao desenvolver e implantar modelos de IA, especialmente em setores sensíveis como saúde?",
     "options": [
@@ -1260,7 +1260,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "easy",
     "question": "Uma pequena empresa está começando seu primeiro projeto de IA para prever a demanda de produtos. Eles coletaram uma grande quantidade de dados de vendas históricas. Qual é a primeira etapa crucial em qualquer projeto de Machine Learning, antes mesmo de começar a construir o modelo?",
     "options": [
@@ -1280,7 +1280,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Qual categoria de tarefa de Machine Learning é mais utilizada para prever se um cliente comprará ou não um determinado produto com base em seu histórico, resultando em uma decisão 'sim' ou 'não'?",
     "options": [
@@ -1300,7 +1300,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "easy",
     "question": "Uma empresa de e-commerce deseja criar descrições de produtos únicas e atraentes para milhares de itens em seu catálogo, evitando o trabalho manual demorado. Qual capacidade de IA generativa seria mais benéfica para automatizar a criação dessas descrições de produtos de forma escalável?",
     "options": [
@@ -1320,7 +1320,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "Um time de desenvolvimento de IA está trabalhando com dados sensíveis de clientes. Eles precisam garantir que o acesso aos dados usados para treinar e inferir modelos seja restrito apenas a pessoal autorizado e que os dados sejam protegidos contra vazamentos. Qual aspecto da segurança da IA é crucial para proteger os dados confidenciais dos clientes?",
     "options": [
@@ -1340,7 +1340,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "easy",
     "question": "Após treinar um modelo de Machine Learning, a equipe precisa validar se ele está funcionando conforme o esperado antes de colocá-lo em produção. Qual etapa do ciclo de vida do Machine Learning envolve quantificar o desempenho do modelo usando métricas como acurácia, precisão ou recall em um conjunto de dados de teste?",
     "options": [
@@ -1360,7 +1360,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Uma empresa está explorando diferentes abordagens de IA. Eles ouvem falar sobre 'Deep Learning' e querem entender o que o torna distinto de outros métodos de Machine Learning. Qual característica principal diferencia o Deep Learning de outras formas tradicionais de Machine Learning?",
     "options": [
@@ -1380,7 +1380,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "easy",
     "question": "Uma equipe de desenvolvimento está utilizando um Foundation Model para gerar código de software. Eles querem influenciar o estilo e a estrutura do código gerado para que se alinhe às suas diretrizes internas. Que técnica eles podem usar para guiar e refinar a saída do modelo generativo, fornecendo instruções específicas no input?",
     "options": [
@@ -1400,7 +1400,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "Uma organização de notícias está usando IA para resumir artigos. Eles estão preocupados que o modelo possa ocasionalmente gerar 'alucinações' (informações falsas, mas plausíveis) ou reproduzir vieses presentes nos dados de treinamento. Para mitigar riscos como alucinações e a reprodução de vieses em modelos generativos de texto, qual prática de segurança e responsabilidade da IA é fundamental?",
     "options": [
@@ -1420,7 +1420,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "easy",
     "question": "Após o treinamento e avaliação de um modelo de Machine Learning, a equipe quer disponibilizá-lo para que as aplicações de negócios possam usá-lo para fazer previsões em tempo real. Qual termo descreve o processo de disponibilizar um modelo de Machine Learning treinado para uso em um ambiente de produção?",
     "options": [
@@ -1440,7 +1440,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Uma empresa está considerando usar IA para automatizar tarefas repetitivas, mas quer entender a diferença entre a inteligência que imita o comportamento humano em tarefas específicas e a inteligência que poderia igualar ou superar a inteligência humana em todas as tarefas. Qual termo se refere a sistemas de IA que são projetados e treinados para realizar uma tarefa específica, ao invés de possuir capacidades cognitivas humanas gerais?",
     "options": [
@@ -1460,7 +1460,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Uma empresa de telecomunicações deseja prever quais clientes são propensos a cancelar seus serviços nos próximos 3 meses para intervir proativamente. Qual é o tipo de problema de Machine Learning mais adequado para este cenário e qual métrica de avaliação seria crucial para monitorar, considerando o custo de um falso negativo (perder um cliente que iria embora)?",
     "options": [
@@ -1480,7 +1480,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Ao preparar um conjunto de dados para treinar um modelo de Machine Learning, um engenheiro de dados precisa dividir os dados em subconjuntos para treinamento, validação e teste. Qual é a principal finalidade do conjunto de validação nesse processo?",
     "options": [
@@ -1500,7 +1500,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Um cientista de dados está explorando um novo dataset sem rótulos (labels) pré-definidos e deseja identificar padrões e estruturas intrínsecas nos dados para segmentação de clientes. Qual tipo de abordagem de Machine Learning ele deve usar?",
     "options": [
@@ -1520,7 +1520,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "medium",
     "question": "Uma empresa de e-commerce planeja usar IA Generativa para criar respostas personalizadas para perguntas frequentes de clientes em um chatbot. Qual tecnologia AWS é mais apropriada para construir e gerenciar esse tipo de aplicação de IA Generativa de forma escalável e com flexibilidade na escolha de modelos?",
     "options": [
@@ -1540,7 +1540,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "medium",
     "question": "Ao interagir com um Large Language Model (LLM) para gerar um resumo de um texto técnico longo, o engenheiro de prompt deseja garantir que o resumo seja conciso e foque nos pontos-chave da metodologia. Qual técnica de prompt engineering seria mais eficaz para alcançar esse resultado?",
     "options": [
@@ -1560,7 +1560,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "medium",
     "question": "Uma equipe de desenvolvimento está construindo um assistente de IA generativa para advogados, que precisa responder a perguntas sobre a legislação brasileira específica. Os modelos Foundation (FMs) pré-treinados não possuem conhecimento profundo dessa legislação. Para garantir respostas precisas e atualizadas, qual é a abordagem mais recomendada, que minimiza a necessidade de re-treinar o modelo base extensivamente e permite fácil atualização do conhecimento?",
     "options": [
@@ -1580,7 +1580,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "medium",
     "question": "Qual das seguintes opções descreve a capacidade fundamental que diferencia a IA Generativa de modelos de IA tradicionais de classificação ou regressão?",
     "options": [
@@ -1600,7 +1600,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "medium",
     "question": "Uma empresa está desenvolvendo um modelo de IA para auxiliar na triagem de currículos e percebe que o modelo tende a favorecer candidatos do sexo masculino para cargos de liderança, replicando um viés histórico presente nos dados de treinamento. Qual estratégia é mais eficaz para mitigar esse viés algorítmico?",
     "options": [
@@ -1620,7 +1620,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "medium",
     "question": "Uma aplicação de IA em conformidade com o GDPR precisa processar dados de clientes contendo PII (Personally Identifiable Information). Qual das seguintes práticas é uma medida de segurança e privacidade fundamental que deve ser implementada antes que esses dados sejam usados para treinamento ou inferência?",
     "options": [
@@ -1640,7 +1640,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "medium",
     "question": "Um adversário malicioso tenta enganar um modelo de classificação de imagens adicionando pequenas perturbações imperceptíveis a uma imagem, fazendo com que o modelo a classifique incorretamente (ex: um sinal de pare como um sinal de limite de velocidade). Que tipo de ataque isso representa?",
     "options": [
@@ -1660,7 +1660,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Uma equipe de Machine Learning desenvolveu e treinou um modelo de classificação de documentos personalizado usando PyTorch e agora precisa implantá-lo como um endpoint de inferência em tempo real na AWS, com alta disponibilidade e escalabilidade automática. Qual serviço AWS é a ferramenta mais completa e apropriada para empacotar, implantar e gerenciar esse modelo?",
     "options": [
@@ -1680,7 +1680,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Uma startup deseja criar uma aplicação que analise o sentimento de avaliações de clientes deixadas em seu site, sem a necessidade de treinar um modelo de ML do zero. Qual serviço pré-treinado da AWS pode ser usado diretamente para realizar essa tarefa de análise de sentimento?",
     "options": [
@@ -1700,7 +1700,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Um cientista de dados precisa armazenar grandes volumes de dados (terabytes) para treinamento de modelos de Machine Learning, que serão acessados por instâncias do Amazon SageMaker e outras ferramentas. Os dados devem ser duráveis, de baixo custo e facilmente acessíveis. Qual serviço AWS é o mais adequado para essa finalidade?",
     "options": [
@@ -1720,7 +1720,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Uma equipe de MLOps precisa orquestrar um pipeline de Machine Learning complexo que inclui etapas de pré-processamento de dados em AWS Glue, treinamento de modelo em Amazon SageMaker Training Jobs e implantação em Amazon SageMaker Endpoints. Qual serviço AWS é o mais recomendado para definir, agendar e monitorar a execução desse workflow?",
     "options": [
@@ -1740,7 +1740,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Um modelo de Machine Learning personalizado foi desenvolvido e precisa ser implantado para realizar inferências esporádicas e de baixa latência em resposta a eventos. A equipe busca uma solução de implantação que minimize custos quando o modelo não está sendo usado ativamente. Qual serviço AWS, combinado com o SageMaker, seria mais adequado para esse cenário?",
     "options": [
@@ -1760,7 +1760,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Uma empresa de atendimento ao cliente deseja automatizar o roteamento de solicitações de clientes para o departamento correto com base no tópico da mensagem. Por exemplo, mensagens sobre faturamento vão para o departamento financeiro, enquanto problemas técnicos vão para o suporte. Qual conceito de IA é mais relevante para esta tarefa de categorização?",
     "options": [
@@ -1780,7 +1780,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Um cientista de dados está explicando a diferença entre aprendizado supervisionado e não supervisionado. Em qual tipo de aprendizado de máquina o modelo é treinado usando um conjunto de dados onde as entradas e suas saídas corretas (rótulos) são fornecidas explicitamente?",
     "options": [
@@ -1800,7 +1800,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Uma empresa de varejo está construindo um modelo de IA para prever o volume de vendas para o próximo trimestre com base em dados históricos, tendências sazonais e promoções passadas. Qual tarefa de aprendizado de máquina é mais apropriada para prever um valor numérico contínuo como o volume de vendas?",
     "options": [
@@ -1820,7 +1820,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "medium",
     "question": "Uma equipe de marketing deseja gerar automaticamente diferentes variações de textos de anúncios (ad copies) e slogans para uma nova campanha de produtos, garantindo criatividade e relevância. Qual serviço da AWS, que oferece acesso a modelos de fundação (FMs), seria mais adequado para essa tarefa?",
     "options": [
@@ -1840,7 +1840,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "medium",
     "question": "Um desenvolvedor está realizando o fine-tuning de um Large Language Model (LLM) pré-treinado em um conjunto de dados específico de documentos médicos para melhorar sua precisão na resposta a consultas clínicas. Qual é o principal benefício de realizar o fine-tuning de um LLM para um domínio específico?",
     "options": [
@@ -1860,7 +1860,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "medium",
     "question": "Uma empresa de design de interiores quer criar visualizações fotorrealistas de ambientes a partir de descrições textuais detalhadas dos móveis, cores e estilos. Qual tipo de modelo de IA generativa é mais adequado para converter descrições textuais em conteúdo visual de alta qualidade?",
     "options": [
@@ -1880,7 +1880,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "medium",
     "question": "Um engenheiro está trabalhando com um modelo de IA generativa para sumarizar artigos de notícias, mas o modelo ocasionalmente divaga ou inclui informações irrelevantes. Qual técnica envolve a elaboração cuidadosa de instruções e exemplos para guiar o comportamento de um modelo generativo e obter a saída desejada?",
     "options": [
@@ -1900,7 +1900,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "medium",
     "question": "Uma instituição financeira utiliza um modelo de IA para avaliar pedidos de empréstimo. Surgem preocupações de que o modelo possa estar aprovando menos empréstimos para certos grupos demográficos, mesmo que as entradas de dados relevantes sejam as mesmas. Qual aspecto da IA responsável está sendo diretamente abordado ao investigar e mitigar essas disparidades nas previsões do modelo?",
     "options": [
@@ -1920,7 +1920,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "medium",
     "question": "Um sistema de visão computacional baseado em IA é utilizado para controle de acesso. Um adversário tenta enganar o sistema adicionando pequenas, quase imperceptíveis, perturbações a uma imagem para que o modelo classifique incorretamente a pessoa. Como é conhecido este tipo de ataque, que visa enganar o modelo durante a inferência?",
     "options": [
@@ -1940,7 +1940,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "medium",
     "question": "Uma empresa está treinando um modelo de IA usando dados sensíveis de clientes. Para proteger a privacidade individual, a empresa deseja garantir que a contribuição de qualquer único indivíduo para o conjunto de dados de treinamento não possa ser inferida na saída do modelo. Qual técnica de preservação da privacidade visa adicionar ruído estatístico aos dados para proteger registros individuais, permitindo que o modelo ainda aprenda padrões gerais?",
     "options": [
@@ -1960,7 +1960,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Uma equipe de data science em uma grande empresa quer desenvolver, treinar e implantar modelos de machine learning personalizados em larga escala, mantendo controle total sobre o ciclo de vida do ML, incluindo experimentação e versionamento. Qual serviço da AWS oferece uma plataforma gerenciada abrangente para essas finalidades?",
     "options": [
@@ -1980,7 +1980,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Uma empresa de seguros precisa processar milhares de documentos digitalizados, como formulários de sinistro e apólices, para extrair informações específicas como nomes de clientes, números de apólice e datas. Qual serviço de IA da AWS é projetado para reconhecimento óptico de caracteres (OCR) e extração inteligente de dados estruturados de documentos?",
     "options": [
@@ -2000,7 +2000,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Uma equipe de desenvolvimento está implantando um modelo de machine learning como um endpoint de inferência em tempo real usando Amazon SageMaker. Eles preveem que a carga de requisições pode variar significativamente ao longo do dia e precisam garantir alta disponibilidade e escalabilidade. Qual configuração de implantação do endpoint aborda principalmente a necessidade de escalabilidade automática baseada na demanda de tráfego?",
     "options": [
@@ -2020,7 +2020,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Um portal de e-commerce deseja analisar automaticamente o sentimento (positivo, negativo, neutro) dos milhares de comentários de produtos deixados por seus clientes, sem a necessidade de construir ou treinar um modelo de machine learning personalizado. Qual serviço de IA pré-treinado da AWS seria o mais adequado para realizar essa tarefa de Processamento de Linguagem Natural (NLP) out-of-the-box?",
     "options": [
@@ -2040,7 +2040,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Uma organização está implementando práticas de MLOps para agilizar o desenvolvimento, a implantação e a manutenção de seus modelos de machine learning. Qual princípio do MLOps enfatiza a automação de todo o pipeline de machine learning, desde a preparação de dados até a implantação do modelo e o monitoramento contínuo?",
     "options": [
@@ -2060,7 +2060,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Uma empresa de e-commerce deseja prever qual produto um cliente provavelmente comprará em seguida com base no histórico de navegação e compras. Qual tipo de problema de Machine Learning é este e qual abordagem é mais adequada?",
     "options": [
@@ -2080,7 +2080,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Um cientista de dados está preparando um dataset para treinar um modelo de detecção de fraudes. Ele observa que o conjunto de dados tem muitos valores ausentes em colunas como 'idade' e 'renda', e algumas colunas numéricas têm uma distribuição muito skewed. Qual etapa do pipeline de ML deve ser focada para resolver esses problemas de dados antes do treinamento do modelo?",
     "options": [
@@ -2100,7 +2100,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Uma startup desenvolve um modelo de IA para auxiliar na triagem de currículos para posições de tecnologia. Após testes iniciais, percebe-se que o modelo tende a dar pontuações significativamente mais baixas para candidatos de certos grupos demográficos, mesmo quando suas qualificações são equivalentes. Qual é o principal problema ético que este modelo apresenta e qual ação deve ser tomada para mitigá-lo?",
     "options": [
@@ -2120,7 +2120,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "medium",
     "question": "Uma equipe de marketing quer gerar rapidamente variações de slogans publicitários e descrições de produtos para uma nova campanha, baseando-se em um conjunto inicial de textos. Eles precisam de uma solução que possa ser integrada facilmente e que não exija o treinamento de um modelo do zero. Qual serviço AWS de IA Generativa seria mais adequado para essa tarefa?",
     "options": [
@@ -2140,7 +2140,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "medium",
     "question": "Um desenvolvedor está usando um LLM no Amazon Bedrock para responder a perguntas frequentes (FAQs) de clientes. Ele percebe que o modelo, às vezes, 'alucina', ou seja, gera informações incorretas ou inventadas que não estão na base de conhecimento da empresa. Qual técnica de 'prompt engineering' ou arquitetura pode ajudar a reduzir as alucinações e direcionar o modelo a usar apenas informações fornecidas?",
     "options": [
@@ -2160,7 +2160,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "medium",
     "question": "Uma empresa possui uma vasta coleção de documentos internos confidenciais (manuais, relatórios técnicos, etc.) e deseja construir um chatbot que possa responder a perguntas sobre esses documentos de forma segura e precisa, sem expor os documentos originais e sem ter que retreinar um modelo grande. Qual abordagem de IA Generativa é a mais eficiente para este caso, considerando a segurança, precisão e a minimização de custos de treinamento?",
     "options": [
@@ -2180,7 +2180,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "medium",
     "question": "Uma empresa de saúde está construindo um modelo de ML para diagnosticar doenças a partir de imagens médicas. Os dados de treinamento contêm informações sensíveis de pacientes. Qual estratégia de segurança na AWS deve ser priorizada para proteger esses dados durante o treinamento e a inferência do modelo?",
     "options": [
@@ -2200,7 +2200,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "medium",
     "question": "Um modelo de recomendação de crédito está mostrando um viés sistemático contra certos grupos minoritários, levando a uma alta taxa de rejeição de empréstimos para esses indivíduos. A empresa está preocupada com as implicações éticas e regulatórias. Qual ferramenta ou abordagem na AWS pode ser utilizada para detectar e mitigar esse viés no modelo de forma proativa?",
     "options": [
@@ -2220,7 +2220,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "medium",
     "question": "Uma organização de notícias está usando um modelo de IA para sumarizar artigos. Foi descoberto que um agente malicioso conseguiu 'envenenar' o modelo adicionando frases sutilmente alteradas a novos artigos, fazendo com que o modelo gerasse resumos imprecisos ou tendenciosos para artigos legítimos. Qual tipo de ataque de segurança de IA foi realizado neste cenário?",
     "options": [
@@ -2240,7 +2240,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Uma equipe de desenvolvimento construiu um modelo de ML usando scikit-learn e Python em um notebook SageMaker e agora precisa implantá-lo como um endpoint REST para inferência em tempo real, que será acessado por uma aplicação web. A solução deve ser escalável e ter alta disponibilidade. Qual é o serviço AWS mais adequado para implantar e gerenciar este modelo para inferência em tempo real?",
     "options": [
@@ -2260,7 +2260,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Uma empresa deseja estabelecer um processo MLOps para seus modelos de detecção de anomalias. Eles precisam automatizar o retreinamento, a validação e a implantação de novos modelos quando novos dados estiverem disponíveis ou quando o desempenho do modelo decair. Qual conjunto de serviços AWS deve ser utilizado para construir um pipeline MLOps robusto para este cenário?",
     "options": [
@@ -2280,7 +2280,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Uma empresa de análise de dados precisa processar grandes volumes de dados de logs de clientes para gerar features para um modelo de ML. Os dados estão em buckets S3 e precisam ser transformados, limpos e agregados antes de serem usados para treinamento. Qual serviço AWS é o mais indicado para realizar a etapa de ETL (Extract, Transform, Load) desses dados em grande escala, antes de alimentar o SageMaker?",
     "options": [
@@ -2300,7 +2300,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Um modelo de detecção de fraudes foi implantado em um endpoint SageMaker. A equipe de operações precisa ser notificada imediatamente se a qualidade das previsões do modelo (por exemplo, acurácia ou F1-score) começar a degradar significativamente ao longo do tempo. Qual serviço AWS deve ser configurado para monitorar a performance do modelo em produção e alertar sobre a degradação?",
     "options": [
@@ -2320,7 +2320,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Uma empresa está treinando modelos complexos de Deep Learning em instâncias do SageMaker. O treinamento é intensivo em computação e leva muitas horas. Eles querem otimizar os custos sem comprometer a capacidade de treinamento quando necessário. Qual estratégia de otimização de custos pode ser aplicada para os jobs de treinamento do SageMaker, aproveitando a elasticidade da nuvem?",
     "options": [
@@ -2340,7 +2340,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Uma equipe de desenvolvimento está construindo uma aplicação que precisa reconhecer objetos específicos (ex: tipos de ferramentas) em imagens carregadas pelos usuários em tempo real. Eles têm um dataset grande de imagens rotuladas, com os objetos de interesse devidamente identificados. Qual paradigma de Machine Learning é o mais adequado para resolver este problema?",
     "options": [
@@ -2360,7 +2360,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "medium",
     "question": "Uma empresa de e-commerce deseja gerar automaticamente descrições de produtos atraentes e únicas a partir de um conjunto de palavras-chave. Qual serviço AWS, combinado com um modelo de base apropriado, seria o mais adequado para essa tarefa?",
     "options": [
@@ -2380,7 +2380,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Uma equipe de cientistas de dados precisa treinar um modelo de Machine Learning personalizado em um conjunto de dados massivo. Eles precisam de um ambiente totalmente gerenciado que ofereça escalabilidade dinâmica de recursos de computação e suporte à execução de código Python personalizado. Qual serviço AWS é o mais apropriado?",
     "options": [
@@ -2400,7 +2400,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "medium",
     "question": "Um aplicativo de IA processa dados confidenciais de clientes. Para atender aos requisitos de conformidade e privacidade, todos os dados devem ser criptografados em repouso e em trânsito. Quais serviços e práticas da AWS devem ser empregados para garantir essa segurança?",
     "options": [
@@ -2420,7 +2420,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Um modelo de Machine Learning está sendo desenvolvido para prever se um cliente irá cancelar sua assinatura (churn). O conjunto de dados de treinamento contém informações históricas de clientes, incluindo se eles cancelaram ou não. Que tipo de abordagem de Machine Learning está sendo utilizada neste cenário?",
     "options": [
@@ -2440,7 +2440,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "difficulty": "medium",
     "question": "Uma agência de publicidade deseja gerar imagens realistas a partir de descrições textuais fornecidas pelos designers. Qual serviço AWS, juntamente com um modelo de base específico, deve ser utilizado para essa finalidade?",
     "options": [
@@ -2460,7 +2460,7 @@
     "type": "scenario"
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "difficulty": "medium",
     "question": "Após o treinamento bem-sucedido de um modelo de previsão de vendas, a equipe de desenvolvimento precisa implantá-lo como um endpoint HTTP em tempo real que possa lidar com cargas de requisição variáveis e fornecer previsões com baixa latência. Qual serviço AWS é projetado para essa implantação gerenciada e escalável?",
     "options": [
@@ -2480,7 +2480,7 @@
     "type": "scenario"
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "medium",
     "question": "Um artefato de modelo de Machine Learning, considerado propriedade intelectual, está armazenado em um bucket do Amazon S3. Como um arquiteto de segurança pode garantir que apenas os trabalhos de treinamento e inferência autorizados do SageMaker possam acessar este artefato, e que ele permaneça criptografado em repouso?",
     "options": [
@@ -2500,7 +2500,7 @@
     "type": "scenario"
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Ao trabalhar com modelos de IA generativa, como Large Language Models (LLMs), qual prática envolve a elaboração cuidadosa do texto de entrada para guiar o modelo a gerar resultados desejados e de alta qualidade?",
     "options": [
@@ -2520,7 +2520,7 @@
     "type": "scenario"
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "subdomain": "prompt-engineering",
     "service": "amazon-bedrock",
     "type": "multiple-choice",
@@ -2544,7 +2544,7 @@
     "id": 327
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "subdomain": "Modelos de Linguagem Grande (LLMs)",
     "service": "Amazon Bedrock, Amazon Kendra, Amazon OpenSearch Service",
     "type": "multiple-choice",
@@ -2568,7 +2568,7 @@
     "id": 328
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "subdomain": "Paradigmas de ML",
     "service": "Amazon SageMaker RL",
     "type": "multiple-choice",
@@ -2592,7 +2592,7 @@
     "id": 329
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "subdomain": "Personalização de LLMs",
     "service": "Amazon Bedrock",
     "type": "multiple-choice",
@@ -2617,7 +2617,7 @@
     "id": 330
   },
   {
-    "domain": "implementacao-ia",
+    "domain": "applications-foundation-models",
     "subdomain": "Deployment de Modelos",
     "service": "Amazon SageMaker",
     "type": "multiple-choice",
@@ -2643,7 +2643,7 @@
     "id": 331
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "subdomain": "Robustez de Modelo, Ataques Adversariais",
     "service": "Amazon SageMaker",
     "type": "multiple-choice",
@@ -2668,7 +2668,7 @@
     "id": 332
   },
   {
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "subdomain": "Paradigmas de ML",
     "service": "Amazon SageMaker",
     "type": "multiple-choice",
@@ -2692,7 +2692,7 @@
     "id": 333
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "subdomain": "Auditoria e Monitoramento de Segurança",
     "service": "AWS CloudTrail, Amazon SageMaker",
     "type": "multiple-choice",
@@ -2717,7 +2717,7 @@
     "id": 334
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "subdomain": "modelos-de-fundacao",
     "service": "Amazon Bedrock",
     "difficulty": "medium",
@@ -2741,7 +2741,7 @@
     "id": 335
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "subdomain": "governança-ml",
     "service": "Amazon SageMaker",
     "difficulty": "medium",
@@ -2765,7 +2765,7 @@
     "id": 336
   },
   {
-    "domain": "ia-generativa",
+    "domain": "fundamentals-genai",
     "subdomain": "modelos-de-fundacao",
     "service": "Amazon Bedrock",
     "difficulty": "medium",
@@ -2789,7 +2789,7 @@
     "id": 335
   },
   {
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "subdomain": "governança-ml",
     "service": "Amazon SageMaker",
     "difficulty": "medium",

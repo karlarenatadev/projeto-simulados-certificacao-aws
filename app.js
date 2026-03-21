@@ -5,6 +5,7 @@
 
 import { QuizEngine } from './js/quizEngine.js';
 import { certificationPaths } from './data.js';
+import { storageManager } from './js/storageManager.js';
 
 const APP_CONFIG = {
     PASSING_SCORE: 70,
@@ -267,16 +268,29 @@ function displayReportFromResult(results) {
     document.getElementById('final-correct').textContent = results.score;
     document.getElementById('final-incorrect').textContent = results.total - results.score;
 
-    const domainName = getDomainName(results.weakestDomain) || "Tópicos Gerais";
     const recText = document.getElementById('recommendation-text');
 
     if (recText) {
-        if (results.percentage >= 85) {
-            recText.innerHTML = `<strong>Excelente desempenho!</strong> Você demonstrou um domínio profundo. Se quiser alcançar a perfeição, faça uma revisão rápida em: <em>${domainName}</em>.`;
-        } else if (results.passed || results.percentage >= APP_CONFIG.PASSING_SCORE) {
-            recText.innerHTML = `<strong>Parabéns, você passou!</strong> Para aumentar sua segurança para o exame real, concentre seus estudos finais no domínio: <em>${domainName}</em>.`;
+        // Lógica baseada em weakDomains (array)
+        const weakDomains = results.weakDomains || [];
+        
+        if (weakDomains.length === 0) {
+            // Caso 0: Nenhum domínio fraco
+            recText.innerHTML = `<strong>Excelente! Você demonstrou consistência em todos os domínios.</strong> Continue assim e você estará mais do que preparado para o exame real.`;
+        } else if (weakDomains.length === 1) {
+            // Caso 1: Um único domínio fraco
+            const domainName = getDomainName(weakDomains[0]) || "Tópicos Gerais";
+            if (results.percentage >= 85) {
+                recText.innerHTML = `<strong>Excelente desempenho!</strong> Você demonstrou um domínio profundo. Se quiser alcançar a perfeição, faça uma revisão rápida em: <em>${domainName}</em>.`;
+            } else if (results.passed || results.percentage >= APP_CONFIG.PASSING_SCORE) {
+                recText.innerHTML = `<strong>Parabéns, você passou!</strong> Para aumentar sua segurança para o exame real, concentre seus estudos finais no domínio: <em>${domainName}</em>.`;
+            } else {
+                recText.innerHTML = `<strong>Não desanime!</strong> Sua maior oportunidade de melhoria está no domínio: <em>${domainName}</em>. Revise a documentação oficial sobre esse tema e tente novamente.`;
+            }
         } else {
-            recText.innerHTML = `<strong>Não desanime!</strong> Sua maior oportunidade de melhoria está no domínio: <em>${domainName}</em>. Revise a documentação oficial sobre esse tema e tente novamente.`;
+            // Caso 2+: Múltiplos domínios fracos
+            const domainNames = weakDomains.map(id => getDomainName(id)).join(', ');
+            recText.innerHTML = `<strong>Atenção! Você precisa reforçar seus estudos em múltiplas áreas críticas:</strong> <em>${domainNames}</em>. Revise a documentação oficial sobre esses temas antes de tentar novamente.`;
         }
     }
 
@@ -353,22 +367,7 @@ function renderDetailedReportUI(results) {
 // ============================================================================
 function saveQuizResult() {
     const results = engine.getFinalResults();
-    const resultToSave = {
-        certId: results.certId, 
-        score: results.score, 
-        total: results.total,
-        percentage: results.percentage, 
-        date: new Date().toISOString(),
-        domainScores: results.domainScores,
-        answers: results.answers
-    };
-
-    localStorage.setItem(`${APP_CONFIG.STORAGE_KEY}last_${results.certId}`, JSON.stringify(resultToSave));
-    
-    let history = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}history`) || "[]");
-    history.push(resultToSave);
-    localStorage.setItem(`${APP_CONFIG.STORAGE_KEY}history`, JSON.stringify(history.slice(-10)));
-
+    storageManager.saveQuizResult(results);
     updateGamification(results.percentage);
 }
 
@@ -377,7 +376,7 @@ function loadLastScore() {
     const certId = document.getElementById('certification-select')?.value;
     if (!banner || !certId) return;
 
-    const last = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}last_${certId}`));
+    const last = storageManager.loadLastScore(certId);
     
     if (last && last.percentage !== undefined) {
         banner.classList.remove('hidden');
@@ -400,31 +399,30 @@ function loadLastScore() {
 }
 
 function showLastReport(certId) {
-    const lastResult = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}last_${certId}`));
+    const lastResult = storageManager.loadLastResult(certId);
     if(!lastResult || !lastResult.answers) {
         alert("Os detalhes deste relatório não foram salvos. Faça um novo simulado!");
         return;
     }
     
-    // Calcula Weakest Domain para Relatórios Históricos
-    let weakestDomain = null;
-    let lowestScore = 100;
-    for (const [domainId, scoreData] of Object.entries(lastResult.domainScores)) {
-        if (scoreData.total > 0) {
-            const domainPct = (scoreData.correct / scoreData.total) * 100;
-            if (domainPct <= lowestScore) {
-                lowestScore = domainPct;
-                weakestDomain = domainId;
+    // Calcula weakDomains se não existir (compatibilidade com relatórios antigos)
+    if (!lastResult.weakDomains) {
+        lastResult.weakDomains = [];
+        for (const [domainId, scoreData] of Object.entries(lastResult.domainScores)) {
+            if (scoreData.total > 0) {
+                const domainPct = (scoreData.correct / scoreData.total) * 100;
+                if (domainPct < 70) {
+                    lastResult.weakDomains.push(domainId);
+                }
             }
         }
     }
-    lastResult.weakestDomain = weakestDomain;
     
     displayReportFromResult(lastResult);
 }
 
 function showHistoricalReport(index) {
-    const history = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}history`) || "[]");
+    const history = storageManager.getHistory();
     const result = history[index];
     
     if(!result || !result.answers) {
@@ -432,19 +430,18 @@ function showHistoricalReport(index) {
         return;
     }
     
-    // Calcula Weakest Domain
-    let weakestDomain = null;
-    let lowestScore = 100;
-    for (const [domainId, scoreData] of Object.entries(result.domainScores)) {
-        if (scoreData.total > 0) {
-            const domainPct = (scoreData.correct / scoreData.total) * 100;
-            if (domainPct <= lowestScore) {
-                lowestScore = domainPct;
-                weakestDomain = domainId;
+    // Calcula weakDomains se não existir (compatibilidade com relatórios antigos)
+    if (!result.weakDomains) {
+        result.weakDomains = [];
+        for (const [domainId, scoreData] of Object.entries(result.domainScores)) {
+            if (scoreData.total > 0) {
+                const domainPct = (scoreData.correct / scoreData.total) * 100;
+                if (domainPct < 70) {
+                    result.weakDomains.push(domainId);
+                }
             }
         }
     }
-    result.weakestDomain = weakestDomain;
 
     displayReportFromResult(result);
 }
@@ -453,7 +450,7 @@ function updateHistoryDisplay() {
     const historyList = document.getElementById('history-list');
     if (!historyList) return;
 
-    const history = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}history`) || "[]");
+    const history = storageManager.getHistory();
 
     if (history.length === 0) {
         historyList.innerHTML = 'Nenhum simulado realizado ainda.';
@@ -497,7 +494,7 @@ function updateHistoryDisplay() {
 
 function clearHistory() {
     if(confirm("Tem certeza que deseja apagar todo o histórico de simulados?")) {
-        localStorage.removeItem(`${APP_CONFIG.STORAGE_KEY}history`);
+        storageManager.clearHistory();
         updateHistoryDisplay();
         
         const insightEl = document.getElementById('dynamic-insight');
@@ -520,13 +517,13 @@ function updateDynamicInsight(history) {
 }
 
 function renderGamification() {
-    const data = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}gamification`) || '{"streak":0,"badges":[]}');
+    const data = storageManager.getGamification();
     const streakEl = document.getElementById('streak-counter');
     if (streakEl) streakEl.textContent = data.streak;
 }
 
 function updateGamification(pct) {
-    let data = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}gamification`) || '{"streak":0,"badges":[],"lastDate":""}');
+    let data = storageManager.getGamification();
     const today = new Date().toISOString().split('T')[0];
 
     if (data.lastDate !== today) {
@@ -538,7 +535,7 @@ function updateGamification(pct) {
         data.badges.push({ id: 'perfect', name: 'Gabarito', icon: 'fa-star' });
     }
 
-    localStorage.setItem(`${APP_CONFIG.STORAGE_KEY}gamification`, JSON.stringify(data));
+    storageManager.updateGamification(data);
     renderGamification();
 }
 
@@ -600,7 +597,7 @@ function reinitializeRadarChart() {
     window.radarChartInstance.data.labels = labels;
     
     const certId = uiState.currentCertificationInfo.id;
-    const lastResult = JSON.parse(localStorage.getItem(`${APP_CONFIG.STORAGE_KEY}last_${certId}`));
+    const lastResult = storageManager.loadLastResult(certId);
 
     if (lastResult && lastResult.domainScores) {
         const data = uiState.currentCertificationInfo.domains.map(d => {

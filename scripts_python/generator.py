@@ -17,7 +17,7 @@ client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 EXAMES_CONFIG = {
     "clf-c02": ["conceitos-cloud", "seguranca", "tecnologia", "faturamento"],
     "saa-c03": ["design-resiliente", "design-performance", "seguranca-aplicacoes", "design-custo"],
-    "aif-c01": ["conceitos-ia", "ia-generativa", "seguranca-ia", "implementacao-ia"],
+    "aif-c01": ["fundamentals-ai-ml", "fundamentals-genai", "applications-foundation-models", "guidelines-responsible-ai", "security-compliance-governance"],
     "dva-c02": ["desenvolvimento-servicos", "implementacao", "seguranca-app", "resolucao-problemas"]
 }
 
@@ -61,7 +61,29 @@ def fabricar_questoes(exame_id, nivel, qtd=3, retries=0):
     Nível de Dificuldade: {nivel}.
     Domínios permitidos: {dominios}.
 
-    REGRAS OBRIGATÓRIAS:
+    ⚠️⚠️⚠️ REGRA CRÍTICA - FORMATO DE CASO DE USO ⚠️⚠️⚠️
+    
+    NUNCA faça perguntas diretas de definição. TODAS as questões devem obrigatoriamente apresentar um caso de uso ou problema de negócio arquitetural.
+    
+    ❌ EXEMPLOS INVÁLIDOS (NUNCA FAÇA ISSO):
+    - "O que é o Amazon S3?"
+    - "Qual é a definição de AWS Lambda?"
+    - "Como funciona o Amazon EC2?"
+    - "Qual a diferença entre EBS e EFS?"
+    
+    ✅ EXEMPLOS VÁLIDOS (SEMPRE FAÇA ASSIM):
+    - "Uma empresa de streaming precisa armazenar 500TB de vídeos com acesso frequente e baixa latência. Qual serviço AWS é mais adequado?"
+    - "Um sistema de e-commerce precisa processar pedidos de forma assíncrona sem gerenciar servidores. Qual solução AWS atende esse requisito?"
+    - "Uma startup quer hospedar uma aplicação web com escalabilidade automática. Qual serviço AWS deve ser usado?"
+
+    ESTRUTURA OBRIGATÓRIA:
+    1. CONTEXTO (mínimo 80 caracteres): Descreva um cenário de negócio real com requisitos específicos
+    2. REQUISITO: Especifique o que precisa ser resolvido
+    3. PERGUNTA: "Qual serviço/solução AWS..." ou "Como a empresa deve..."
+    4. OPÇÕES: Apenas nomes de serviços AWS (ex: "Amazon S3", "AWS Lambda")
+    5. EXPLICAÇÃO: Por que a resposta correta atende ao cenário e por que as outras não
+
+    REGRAS ADICIONAIS:
     1. Formato de Caso de Uso: Inicie sempre com um cenário de negócios prático (ex: "Uma empresa precisa..."). Nunca pergunte definições diretas.
     2. RESPOSTAS CURTAS (MUITO IMPORTANTE): As 4 alternativas na lista 'options' DEVEM conter APENAS o nome oficial do serviço AWS (ex: "Amazon S3", "AWS Lambda", "Amazon EC2"). NUNCA escreva frases, ações ou explicações dentro das opções.
     3. Distratores Plausíveis: As opções erradas devem ser serviços reais da AWS que um candidato poderia confundir no cenário.

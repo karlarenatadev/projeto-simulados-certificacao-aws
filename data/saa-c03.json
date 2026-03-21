@@ -41,7 +41,7 @@
   },
   {
     "id": 2003,
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "Qual é o principal objetivo da arquitetura RAG (Retrieval-Augmented Generation)?",
     "options": [
@@ -61,7 +61,7 @@
   },
   {
     "id": 2004,
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "easy",
     "question": "Que funcionalidade do Amazon Bedrock permite implementar salvaguardas personalizadas para bloquear conteúdos tóxicos, filtrar PII (Informação Pessoalmente Identificável) e evitar que o modelo responda a tópicos indesejados?",
     "options": [
@@ -121,7 +121,7 @@
   },
   {
     "id": 2007,
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "easy",
     "question": "No contexto de aplicações de IA Generativa e RAG, para que serve uma Base de Dados Vetorial (Vector Database)?",
     "options": [
@@ -181,7 +181,7 @@
   },
   {
     "id": 2010,
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "medium",
     "question": "Uma seguradora quer utilizar o Amazon Bedrock para resumir as reclamações dos clientes. No entanto, é crítico que números de cartões de crédito e moradas sejam mascarados (redacted) antes que a resposta seja apresentada ao utilizador final. Como implementar isto de forma nativa?",
     "options": [
@@ -241,7 +241,7 @@
   },
   {
     "id": 2013,
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "medium",
     "question": "Qual é a sequência correta de eventos num fluxo de trabalho clássico de RAG (Retrieval-Augmented Generation)?",
     "options": [
@@ -281,7 +281,7 @@
   },
   {
     "id": 2015,
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "hard",
     "question": "Um Arquiteto IA tem de criar um assistente virtual para uma seguradora. A seguradora atualiza os seus contratos e termos legais diariamente. O assistente tem de responder usando apenas os termos mais recentes e com o vocabulário e o tom formal específicos da marca. Qual é a estratégia arquitetural recomendada?",
     "options": [
@@ -321,7 +321,7 @@
   },
   {
     "id": 2017,
-    "domain": "seguranca-ia",
+    "domain": "security-compliance-governance",
     "difficulty": "hard",
     "question": "Para garantir que o seu chatbot de recursos humanos nunca aborda temas relacionados com política ou aconselhamento financeiro, configurou 'Denied Topics' nos Guardrails for Amazon Bedrock. Se o utilizador perguntar de forma insistente sobre investimentos em ações, como funciona o mecanismo de bloqueio na arquitetura do Bedrock?",
     "options": [
@@ -381,7 +381,7 @@
   },
   {
     "id": 2020,
-    "domain": "conceitos-ia",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "hard",
     "question": "A equipa técnica está a passar relatórios com 100 páginas (cerca de 80.000 tokens) diretamente como contexto num único prompt para o Claude 3 no Bedrock. Estão a verificar que o modelo ignora factos cruciais que se encontram no meio do documento. Como se denomina este fenómeno na IA Generativa?",
     "options": [

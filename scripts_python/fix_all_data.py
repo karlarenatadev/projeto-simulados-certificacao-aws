@@ -9,7 +9,7 @@ PASTA_DATA = os.path.join(BASE_DIR, "data")
 EXAMES_CONFIG = {
     "clf-c02": ["conceitos-cloud", "seguranca", "tecnologia", "faturamento"],
     "saa-c03": ["design-resiliente", "design-performance", "seguranca-aplicacoes", "design-custo"],
-    "aif-c01": ["conceitos-ia", "ia-generativa", "seguranca-ia", "implementacao-ia"],
+    "aif-c01": ["fundamentals-ai-ml", "fundamentals-genai", "applications-foundation-models", "guidelines-responsible-ai", "security-compliance-governance"],
     "dva-c02": ["desenvolvimento-servicos", "implementacao", "seguranca-app", "resolucao-problemas"]
 }
 
@@ -18,7 +18,11 @@ TRADUCAO_DOMINIOS = {
     "amazon-bedrock": "design-performance",
     "prompt-engineering": "design-performance",
     "fundamentos-ia": "conceitos-ia",
-    "seguranca-ia": "seguranca-ia"
+    # Mapeamento de migração para AIF-C01 (domínios antigos → novos)
+    "conceitos-ia": "fundamentals-ai-ml",
+    "ia-generativa": "fundamentals-genai",
+    "implementacao-ia": "applications-foundation-models",
+    "seguranca-ia": "security-compliance-governance"
 }
 
 def curar_tudo():

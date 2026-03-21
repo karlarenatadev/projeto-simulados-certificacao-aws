@@ -43,10 +43,11 @@ export const certificationPaths = {
     color: 'purple',
     dataFile: 'data/aif-c01.json',
     domains: [
-      { id: 'conceitos-ia', name: 'Fundamentos de IA/ML', weight: 28 },
-      { id: 'ia-generativa', name: 'IA Generativa e LLMs', weight: 32 },
-      { id: 'seguranca-ia', name: 'Segurança em IA', weight: 24 },
-      { id: 'implementacao-ia', name: 'Implementação de Soluções', weight: 16 }
+      { id: 'fundamentals-ai-ml', name: 'Fundamentos de IA e ML', weight: 20 },
+      { id: 'fundamentals-genai', name: 'Fundamentos de IA Generativa', weight: 24 },
+      { id: 'applications-foundation-models', name: 'Aplicações de Modelos de Fundação', weight: 28 },
+      { id: 'guidelines-responsible-ai', name: 'Diretrizes para IA Responsável', weight: 14 },
+      { id: 'security-compliance-governance', name: 'Segurança, Conformidade e Governança', weight: 14 }
     ]
   },
   'dva-c02': {
@@ -90,6 +91,26 @@ const studyResources = {
   'seguranca-app': [
     { name: 'AWS KMS Documentation', url: 'https://docs.aws.amazon.com/kms/', icon: 'fa-key', color: 'red' },
     { name: 'Secrets Manager Guide', url: 'https://docs.aws.amazon.com/secretsmanager/', icon: 'fa-user-shield', color: 'orange' }
+  ],
+  'fundamentals-ai-ml': [
+    { name: 'O que é Machine Learning?', url: 'https://aws.amazon.com/pt/what-is/machine-learning/', icon: 'fa-brain', color: 'purple' },
+    { name: 'Amazon SageMaker Documentation', url: 'https://docs.aws.amazon.com/sagemaker/', icon: 'fa-robot', color: 'blue' }
+  ],
+  'fundamentals-genai': [
+    { name: 'O que é IA Generativa?', url: 'https://aws.amazon.com/pt/what-is/generative-ai/', icon: 'fa-wand-magic-sparkles', color: 'purple' },
+    { name: 'Amazon Bedrock Documentation', url: 'https://docs.aws.amazon.com/bedrock/', icon: 'fa-layer-group', color: 'orange' }
+  ],
+  'applications-foundation-models': [
+    { name: 'Foundation Models no Amazon Bedrock', url: 'https://aws.amazon.com/pt/bedrock/foundation-models/', icon: 'fa-cubes', color: 'blue' },
+    { name: 'Amazon Q Developer', url: 'https://aws.amazon.com/pt/q/developer/', icon: 'fa-code', color: 'green' }
+  ],
+  'guidelines-responsible-ai': [
+    { name: 'IA Responsável na AWS', url: 'https://aws.amazon.com/pt/machine-learning/responsible-ai/', icon: 'fa-balance-scale', color: 'green' },
+    { name: 'AWS AI Service Cards', url: 'https://aws.amazon.com/machine-learning/ai-service-cards/', icon: 'fa-file-contract', color: 'blue' }
+  ],
+  'security-compliance-governance': [
+    { name: 'Segurança em Machine Learning', url: 'https://docs.aws.amazon.com/wellarchitected/latest/machine-learning-lens/security.html', icon: 'fa-shield-halved', color: 'red' },
+    { name: 'AWS Governance at Scale', url: 'https://aws.amazon.com/pt/solutions/implementations/governance-at-scale/', icon: 'fa-sitemap', color: 'orange' }
   ]
 };
 

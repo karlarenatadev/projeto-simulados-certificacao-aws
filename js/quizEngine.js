@@ -113,16 +113,14 @@ export class QuizEngine {
         const total = this.state.questions.length;
         const percentage = (this.state.score / total) * 100;
         
-        // Calcula o domínio mais fraco
-        let weakestDomain = null;
-        let lowestScore = 100;
+        // Calcula todos os domínios fracos (accuracy < 70%)
+        const weakDomains = [];
 
         for (const [domainId, scoreData] of Object.entries(this.state.domainScores)) {
             if (scoreData.total > 0) {
                 const domainPct = (scoreData.correct / scoreData.total) * 100;
-                if (domainPct <= lowestScore) {
-                    lowestScore = domainPct;
-                    weakestDomain = domainId;
+                if (domainPct < 70) {
+                    weakDomains.push(domainId);
                 }
             }
         }
@@ -134,7 +132,7 @@ export class QuizEngine {
             percentage: percentage,
             passed: percentage >= this.PASSING_SCORE,
             domainScores: this.state.domainScores,
-            weakestDomain: weakestDomain,
+            weakDomains: weakDomains,
             answers: this.state.answers
         };
     }
