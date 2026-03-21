@@ -349,15 +349,63 @@ body {
    ============================================================================ */
 
 @media print {
-  body { background: white !important; color: black !important; font-size: 12pt; }
-  * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-  
-  header, aside, .no-print { display: none !important; }
-  
-  @page { margin: 2cm; }
-  .question-review, .section { page-break-inside: avoid; }
-  .section { page-break-before: auto; }
-  
-  .shadow-lg, .shadow-md { box-shadow: none !important; }
-  .aws-bg-orange { background-color: #f0f0f0 !important; border: 2px solid #000 !important; color: #000 !important; }
+  /* 1. Reseta fundos e garante legibilidade base para o papel */
+  body, main, #screen-results, #detailed-report {
+    background: transparent !important;
+    background-color: white !important;
+    color: black !important;
+  }
+
+  /* 2. Força o navegador a imprimir as cores exatas dos textos (verde/vermelho) */
+  * {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  /* 3. Esconde toda a "casca" do site (menus, gráficos, banners, botões) */
+  header, aside, .no-print, #last-score-banner, .chart-container, #ai-recommendation {
+    display: none !important;
+  }
+
+  /* 4. Define as margens da página do PDF */
+  @page {
+    margin: 1.5cm;
+  }
+
+  /* 5. Transforma o container do relatório para ocupar 100% do papel */
+  #detailed-report {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* 6. Evita que uma pergunta seja "cortada no meio" entre duas páginas */
+  .question-review {
+    page-break-inside: avoid;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding-bottom: 15px !important;
+    margin-bottom: 15px !important;
+  }
+
+  /* 7. Remove a cor de fundo da "Explicação", deixando um visual limpo e apenas a borda lateral azul */
+  .question-review .bg-blue-50 {
+    background-color: transparent !important;
+    border: 1px solid #e5e7eb !important;
+    border-left: 4px solid #3b82f6 !important;
+    color: #333333 !important;
+  }
+
+  /* 8. Garante que os textos de acerto/erro continuem coloridos no PDF */
+  .text-green-600, .text-green-500 { color: #16a34a !important; }
+  .text-red-600, .text-red-500 { color: #dc2626 !important; }
+  .text-blue-800 { color: #1e40af !important; }
+  .aws-text-dark { color: #232f3e !important; }
+
+  /* 9. Padroniza o tamanho das fontes especificamente para o PDF (usando 'pt' para papel) */
+  #detailed-report h3 { font-size: 18pt !important; margin-bottom: 20px !important; }
+  #detailed-report p.font-bold { font-size: 12pt !important; color: #000 !important; }
+  #detailed-report .text-sm { font-size: 11pt !important; }
 }
