@@ -33,18 +33,18 @@ O projeto segue uma **organização modular**, permitindo escalabilidade, manute
 
 ---
 
-## 📑 Documentação Especializada (`/docs`)
+## 📑 Documentação Especializada (/docs)
 
-Cada arquivo `.md` detalha uma área-chave do projeto:
+Cada arquivo `.md` detalha uma área-chave do projeto e pode ser acessado diretamente online:
 
-| Arquivo                     | Descrição                                                                               |
-| :-------------------------- | :-------------------------------------------------------------------------------------- |
-| **🚀 QUICKSTART.md**        | Guia rápido para rodar o simulador localmente em menos de 1 minuto.                     |
-| **🏗 ARCHITECTURE.md**      | Fluxo de dados completo: Python → JSON → Vanilla JS → Chart.js.                         |
-| **🛡 SECURITY.md**          | Estratégias de prevenção de XSS, injeção de dados e práticas de a11y.                   |
-| **📈 EXECUTIVE_SUMMARY.md** | Resumo executivo com KPIs de cobertura, evolução de questões e métricas de engajamento. |
-| **🚢 DEPLOYMENT.md**        | Passo a passo para hospedar no AWS S3 + CloudFront ou Vercel com CI/CD.                 |
-| **📝 CHANGELOG.md**         | Histórico detalhado de versões, updates e evolução do motor de simulado.                |
+| Arquivo | Descrição |
+| :--- | :--- |
+| [🚀 QUICKSTART.md](https://karlarenatadev.github.io/projeto-simulados-certificacao-aws/docs/QUICKSTART.md) | Guia rápido para rodar o simulador localmente em menos de 1 minuto |
+| [🏗 ARCHITECTURE.md](https://karlarenatadev.github.io/projeto-simulados-certificacao-aws/docs/ARCHITECTURE.md) | Fluxo de dados completo: Python → JSON → Vanilla JS → Chart.js |
+| [🛡 SECURITY.md](https://karlarenatadev.github.io/projeto-simulados-certificacao-aws/docs/SECURITY.md) | Estratégias de prevenção de XSS, injeção de dados e práticas de acessibilidade (a11y) |
+| [📈 EXECUTIVE_SUMMARY.md](https://karlarenatadev.github.io/projeto-simulados-certificacao-aws/docs/EXECUTIVE_SUMMARY.md) | Resumo executivo com KPIs de cobertura, evolução de questões e métricas de engajamento |
+| [🚢 DEPLOYMENT.md](https://karlarenatadev.github.io/projeto-simulados-certificacao-aws/docs/DEPLOYMENT.md) | Passo a passo para hospedar no AWS S3 + CloudFront ou Vercel com CI/CD |
+| [📝 CHANGELOG.md](https://karlarenatadev.github.io/projeto-simulados-certificacao-aws/docs/CHANGELOG.md) | Histórico detalhado de versões, updates e evolução do motor de simulado |
 
 ---
 
@@ -126,8 +126,9 @@ git clone https://github.com/karlarenatadev/projeto-simulados-certificacao-aws.g
 
 ## 🌐 Demo Online
 
-*(Quando disponível, após deploy em S3 + CloudFront)*
-[https://simulador-aws.karlarenata.dev](https://simulador-aws.karlarenata.dev)
+Você pode testar o simulador online via **GitHub Pages**:
+
+[https://karlarenatadev.github.io/projeto-simulados-certificacao-aws/](https://karlarenatadev.github.io/projeto-simulados-certificacao-aws/)
 
 ---
 
