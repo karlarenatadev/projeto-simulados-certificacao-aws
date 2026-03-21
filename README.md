@@ -156,18 +156,6 @@ Desenvolvido com paixão por **Karla Renata** 🚀
 > **"A certificação é o seu destino, a disciplina é o seu motor.
 > Pratique até o gráfico de radar estar totalmente preenchido."**
 
-```
-
----
-
-💡 **Sugestão estratégica (importante para seu portfólio):**
-
-Esse README já está **muito acima da média para projetos de portfólio**, mas se você quiser eu posso também transformar ele em um **README nível sênior**, incluindo:
-
-- badges de tecnologia
-- preview do simulador
-- arquitetura visual (diagrama)
-- métricas do projeto
 - seção de engenharia de dados
 - seção de IA generativa
 
