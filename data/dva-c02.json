@@ -1,1 +1,213 @@
-[]
+[
+  {
+    "id": 1001,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "armazenamento",
+    "service": "DynamoDB",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "NoSQL",
+      "Performance",
+      "TTL"
+    ],
+    "question": "Um desenvolvedor precisa garantir que itens antigos de sessão sejam removidos automaticamente de uma tabela do DynamoDB após 24 horas. Qual recurso deve ser habilitado?",
+    "options": [
+      "DynamoDB Streams",
+      "Global Secondary Index",
+      "Time to Live (TTL)",
+      "Provisioned Throughput"
+    ],
+    "correct": 2,
+    "explanation": "O Time to Live (TTL) permite definir um timestamp para que o DynamoDB exclua itens expirados sem custo adicional de gravação."
+  },
+  {
+    "id": 1002,
+    "domain": "implementacao",
+    "subdomain": "serverless",
+    "service": "Lambda",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Cold Start",
+      "Concurrency"
+    ],
+    "question": "Qual configuração reduz o tempo de inicialização (cold start) de uma função Lambda, mantendo instâncias pré-inicializadas?",
+    "options": [
+      "Aumentar o tempo de Timeout",
+      "Provisioned Concurrency",
+      "Reserved Concurrency",
+      "Habilitar VPC Peering"
+    ],
+    "correct": 1,
+    "explanation": "A Provisioned Concurrency mantém um número específico de instâncias de funções inicializadas e prontas para responder imediatamente."
+  },
+  {
+    "id": 1003,
+    "domain": "seguranca-app",
+    "subdomain": "identidade",
+    "service": "Cognito",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Auth",
+      "Mobile"
+    ],
+    "question": "Qual recurso do Amazon Cognito é utilizado para fornecer credenciais temporárias do IAM a usuários de aplicativos móveis?",
+    "options": [
+      "User Pools",
+      "Identity Pools",
+      "Sync Groups",
+      "API Keys"
+    ],
+    "correct": 1,
+    "explanation": "Identity Pools (Federated Identities) trocam tokens de autenticação por credenciais temporárias do IAM para acessar recursos AWS."
+  },
+  {
+    "id": 1004,
+    "domain": "resolucao-problemas",
+    "subdomain": "monitoramento",
+    "service": "X-Ray",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "Debugging",
+      "Analytics"
+    ],
+    "question": "Para realizar buscas e filtragens avançadas no console do AWS X-Ray usando metadados indexados, o desenvolvedor deve usar:",
+    "options": [
+      "Metadata",
+      "Segments",
+      "Annotations",
+      "Sampling Rules"
+    ],
+    "correct": 2,
+    "explanation": "Annotations são pares chave-valor indexados que permitem filtrar rastreamentos (traces) de forma eficiente no X-Ray."
+  },
+  {
+    "id": 1005,
+    "domain": "implementacao",
+    "subdomain": "cicd",
+    "service": "CodeDeploy",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "Deployment",
+      "Blue/Green"
+    ],
+    "question": "Qual método de deployment do CodeDeploy permite criar um novo ambiente paralelo e trocar o tráfego gradualmente para minimizar riscos?",
+    "options": [
+      "All-at-once",
+      "Rolling Update",
+      "Blue/Green Deployment",
+      "In-place Update"
+    ],
+    "correct": 2,
+    "explanation": "O Blue/Green Deployment cria um novo conjunto de instâncias e redireciona o tráfego, permitindo rollback rápido se necessário."
+  },
+  {
+    "id": 1006,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "api",
+    "service": "API Gateway",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "Throttling",
+      "Scale"
+    ],
+    "question": "Como um desenvolvedor pode limitar a taxa de requisições de um cliente específico para evitar que ele consuma toda a capacidade da API?",
+    "options": [
+      "Habilitar Cache na API",
+      "Configurar Usage Plans com Throttling",
+      "Aumentar o número de Shards",
+      "Mudar para Integração HTTP Proxy"
+    ],
+    "correct": 1,
+    "explanation": "Usage Plans permitem definir limites de quota e throttling (taxa de requisições por segundo) por chave de API."
+  },
+  {
+    "id": 1007,
+    "domain": "resolucao-problemas",
+    "subdomain": "performance",
+    "service": "DynamoDB",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Optimistic Locking",
+      "Consistency"
+    ],
+    "question": "Ao implementar o bloqueio otimista (Optimistic Locking) no DynamoDB para evitar sobreposições de gravação, qual recurso deve ser utilizado?",
+    "options": [
+      "Strongly Consistent Reads",
+      "Conditional Writes com o parâmetro ExpressionAttributeValues",
+      "Transações ACID no DynamoDB",
+      "Global Tables com replicação ativa"
+    ],
+    "correct": 1,
+    "explanation": "O bloqueio otimista é feito usando Gravações Condicionais que verificam a versão do item antes de permitir a atualização."
+  },
+  {
+    "id": 1008,
+    "domain": "seguranca-app",
+    "subdomain": "criptografia",
+    "service": "S3",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "SSE-KMS",
+      "Compliance"
+    ],
+    "question": "Uma empresa exige que cada objeto no S3 seja criptografado com uma chave KMS única e que o contexto da criptografia seja registrado no CloudTrail. Qual header deve ser usado no PUT?",
+    "options": [
+      "x-amz-server-side-encryption: AES256",
+      "x-amz-server-side-encryption: aws:kms e x-amz-server-side-encryption-context",
+      "x-amz-mfa-delete: true",
+      "x-amz-acl: private-encryption"
+    ],
+    "correct": 1,
+    "explanation": "O uso de SSE-KMS com Encryption Context permite rastreabilidade detalhada e segurança baseada em chaves do KMS."
+  },
+  {
+    "id": 1009,
+    "domain": "implementacao",
+    "subdomain": "iac",
+    "service": "CloudFormation",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Custom Resources",
+      "Automation"
+    ],
+    "question": "Um desenvolvedor precisa executar uma lógica Python personalizada durante a criação de um stack do CloudFormation. O que deve ser utilizado?",
+    "options": [
+      "Seção Mappings do Template",
+      "CloudFormation Custom Resources com Lambda",
+      "WaitCondition Handle",
+      "Seção Parameters com AllowedValues"
+    ],
+    "correct": 1,
+    "explanation": "Custom Resources permitem que o CloudFormation chame uma função Lambda para realizar tarefas complexas fora dos recursos nativos."
+  },
+  {
+    "id": 1010,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "orquestracao",
+    "service": "Step Functions",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "State Machine",
+      "Workflows"
+    ],
+    "question": "Em um fluxo de trabalho do Step Functions, como você lida com retentativas automáticas em caso de falha de uma Lambda específica?",
+    "options": [
+      "Configurar um Dead Letter Queue (DLQ)",
+      "Usar o campo 'Retry' no estado da Máquina de Estados",
+      "Aumentar o timeout da Lambda",
+      "Implementar um loop 'while' dentro do código da Lambda"
+    ],
+    "correct": 1,
+    "explanation": "O Step Functions possui suporte nativo para 'Retry' e 'Catch', permitindo gerenciar erros de fluxo de forma declarativa."
+  }
+]

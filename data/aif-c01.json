@@ -1,7 +1,7 @@
 [
   {
     "id": 201,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "medium",
     "question": "Uma empresa precisa implementar guardrails para prevenir que um modelo de IA generativa produza conteúdo inadequado. Qual recurso do Amazon Bedrock deve ser configurado?",
     "options": [
@@ -11,11 +11,17 @@
       "Amazon Bedrock Agents com validação de output"
     ],
     "correct": 1,
-    "explanation": "Amazon Bedrock Guardrails permite configurar políticas de conteúdo, filtros de tópicos sensíveis, filtros de PII (Personally Identifiable Information) e word filters para prevenir outputs inadequados. É a solução específica para governança e segurança de conteúdo gerado por modelos de IA."
+    "explanation": "Amazon Bedrock Guardrails permite configurar políticas de conteúdo, filtros de tópicos sensíveis, filtros de PII (Personally Identifiable Information) e word filters para prevenir outputs inadequados. É a solução específica para governança e segurança de conteúdo gerado por modelos de IA.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 202,
-    "domain": "prompt-engineering",
+    "domain": "design-performance",
     "difficulty": "easy",
     "question": "Qual técnica de prompt engineering é mais eficaz quando o modelo precisa realizar uma tarefa completamente nova sem exemplos prévios?",
     "options": [
@@ -25,11 +31,17 @@
       "Fine-tuning do modelo base"
     ],
     "correct": 1,
-    "explanation": "Zero-shot prompting é a técnica onde fornecemos apenas instruções claras sem exemplos, ideal para tarefas novas. Few-shot requer exemplos (que não temos), chain-of-thought é para raciocínio complexo, e fine-tuning não é prompt engineering. Zero-shot com contexto detalhado maximiza a compreensão do modelo sobre a tarefa."
+    "explanation": "Zero-shot prompting é a técnica onde fornecemos apenas instruções claras sem exemplos, ideal para tarefas novas. Few-shot requer exemplos (que não temos), chain-of-thought é para raciocínio complexo, e fine-tuning não é prompt engineering. Zero-shot com contexto detalhado maximiza a compreensão do modelo sobre a tarefa.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 203,
-    "domain": "fundamentos-ia",
+    "domain": "conceitos-ia",
     "difficulty": "easy",
     "question": "Qual é a principal diferença entre Retrieval-Augmented Generation (RAG) e fine-tuning de modelos de linguagem?",
     "options": [
@@ -39,11 +51,17 @@
       "Fine-tuning funciona apenas com modelos pequenos"
     ],
     "correct": 1,
-    "explanation": "RAG (Retrieval-Augmented Generation) mantém o modelo original e busca informações relevantes de bases de conhecimento externas em tempo de inferência, combinando retrieval com generation. Fine-tuning modifica os pesos do modelo através de treino adicional. RAG é ideal para conhecimento dinâmico e específico de domínio sem retreinar o modelo."
+    "explanation": "RAG (Retrieval-Augmented Generation) mantém o modelo original e busca informações relevantes de bases de conhecimento externas em tempo de inferência, combinando retrieval com generation. Fine-tuning modifica os pesos do modelo através de treino adicional. RAG é ideal para conhecimento dinâmico e específico de domínio sem retreinar o modelo.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 204,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "medium",
     "question": "Uma aplicação precisa usar Amazon Bedrock Agents para automatizar tarefas complexas. Qual componente é essencial para permitir que o Agent execute ações específicas?",
     "options": [
@@ -53,7 +71,13 @@
       "Amazon Bedrock Prompt Flows"
     ],
     "correct": 1,
-    "explanation": "Action Groups são componentes essenciais dos Bedrock Agents que definem as ações que o agente pode executar. Cada Action Group está associado a funções AWS Lambda que implementam a lógica de negócio. O agente usa o modelo de linguagem para decidir quando invocar estas ações baseado no contexto da conversa."
+    "explanation": "Action Groups são componentes essenciais dos Bedrock Agents que definem as ações que o agente pode executar. Cada Action Group está associado a funções AWS Lambda que implementam a lógica de negócio. O agente usa o modelo de linguagem para decidir quando invocar estas ações baseado no contexto da conversa.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 205,
@@ -67,11 +91,17 @@
       "Permitir acesso público para facilitar integração"
     ],
     "correct": 1,
-    "explanation": "A segurança em IA requer múltiplas camadas: encriptação protege dados em trânsito (TLS) e em repouso (KMS), Guardrails com filtros PII previnem vazamento de informações sensíveis nos outputs, e VPC endpoints mantêm o tráfego na rede privada AWS. Logging deve ser mantido (com dados sanitizados) para auditoria e conformidade."
+    "explanation": "A segurança em IA requer múltiplas camadas: encriptação protege dados em trânsito (TLS) e em repouso (KMS), Guardrails com filtros PII previnem vazamento de informações sensíveis nos outputs, e VPC endpoints mantêm o tráfego na rede privada AWS. Logging deve ser mantido (com dados sanitizados) para auditoria e conformidade.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 206,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "easy",
     "question": "Qual serviço da AWS oferece uma API unificada para aceder a Foundation Models (FMs) de empresas líderes como Anthropic, Meta, Cohere e Amazon?",
     "options": [
@@ -81,11 +111,17 @@
       "Amazon Lex"
     ],
     "correct": 1,
-    "explanation": "O Amazon Bedrock é um serviço totalmente gerido que disponibiliza FMs de alto desempenho de várias empresas de IA através de uma única API, simplificando a construção de aplicações de IA generativa sem a necessidade de gerir infraestrutura."
+    "explanation": "O Amazon Bedrock é um serviço totalmente gerido que disponibiliza FMs de alto desempenho de várias empresas de IA através de uma única API, simplificando a construção de aplicações de IA generativa sem a necessidade de gerir infraestrutura.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 207,
-    "domain": "prompt-engineering",
+    "domain": "design-performance",
     "difficulty": "easy",
     "question": "Na engenharia de prompts, o que acontece se definir o parâmetro de inferência 'Temperature' (Temperatura) com um valor alto (ex: 0.9)?",
     "options": [
@@ -95,11 +131,17 @@
       "O modelo processará o prompt de forma significativamente mais rápida"
     ],
     "correct": 2,
-    "explanation": "O parâmetro 'Temperature' controla a aleatoriedade da saída. Valores mais baixos tornam as respostas mais previsíveis e determinísticas (ideal para código ou factos), enquanto valores mais altos aumentam a criatividade e a diversidade do vocabulário (ideal para geração de histórias ou brainstorming)."
+    "explanation": "O parâmetro 'Temperature' controla a aleatoriedade da saída. Valores mais baixos tornam as respostas mais previsíveis e determinísticas (ideal para código ou factos), enquanto valores mais altos aumentam a criatividade e a diversidade do vocabulário (ideal para geração de histórias ou brainstorming).",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 208,
-    "domain": "fundamentos-ia",
+    "domain": "conceitos-ia",
     "difficulty": "easy",
     "question": "Qual é a definição de 'Alucinação' (Hallucination) no contexto de Large Language Models (LLMs)?",
     "options": [
@@ -109,11 +151,17 @@
       "Quando o modelo se recusa a responder a uma pergunta por motivos de segurança"
     ],
     "correct": 1,
-    "explanation": "Uma alucinação ocorre quando um LLM gera uma resposta que soa plausível e confiante, mas que é completamente inventada, ilógica ou não suportada pelos dados de treino/contexto fornecido."
+    "explanation": "Uma alucinação ocorre quando um LLM gera uma resposta que soa plausível e confiante, mas que é completamente inventada, ilógica ou não suportada pelos dados de treino/contexto fornecido.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 209,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "easy",
     "question": "Qual funcionalidade nativa do Amazon Bedrock automatiza completamente o fluxo de RAG, desde a leitura de documentos no Amazon S3 até à consulta numa base de dados vetorial?",
     "options": [
@@ -123,11 +171,17 @@
       "Amazon Bedrock Model Evaluation"
     ],
     "correct": 1,
-    "explanation": "As Knowledge Bases for Amazon Bedrock fornecem um pipeline RAG (Retrieval-Augmented Generation) totalmente gerido. Elas conectam-se às suas fontes de dados (como o S3), geram embeddings automaticamente e permitem que a aplicação consulte a base vetorial sem ter de escrever código complexo."
+    "explanation": "As Knowledge Bases for Amazon Bedrock fornecem um pipeline RAG (Retrieval-Augmented Generation) totalmente gerido. Elas conectam-se às suas fontes de dados (como o S3), geram embeddings automaticamente e permitem que a aplicação consulte a base vetorial sem ter de escrever código complexo.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 210,
-    "domain": "fundamentos-ia",
+    "domain": "conceitos-ia",
     "difficulty": "easy",
     "question": "O que são 'Embeddings' no contexto de Inteligência Artificial Generativa e RAG?",
     "options": [
@@ -137,11 +191,17 @@
       "Servidores físicos dedicados exclusivamente ao treino de modelos de linguagem"
     ],
     "correct": 1,
-    "explanation": "Embeddings são arrays de números (vetores) que representam o significado semântico de palavras, frases ou documentos. Eles permitem que os computadores compreendam as relações entre os conceitos, sendo a base das pesquisas de similaridade nas Vector Databases."
+    "explanation": "Embeddings são arrays de números (vetores) que representam o significado semântico de palavras, frases ou documentos. Eles permitem que os computadores compreendam as relações entre os conceitos, sendo a base das pesquisas de similaridade nas Vector Databases.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 211,
-    "domain": "prompt-engineering",
+    "domain": "design-performance",
     "difficulty": "medium",
     "question": "Um LLM está a cometer erros de lógica ao tentar resolver um problema matemático complexo descrito num prompt. Que técnica de prompt engineering deve ser utilizada para forçar o modelo a demonstrar o raciocínio correto?",
     "options": [
@@ -151,7 +211,13 @@
       "Chain-of-Thought (CoT) prompting"
     ],
     "correct": 3,
-    "explanation": "O Chain-of-Thought (CoT) incentiva o modelo a raciocinar 'passo a passo' antes de fornecer a resposta final. Ao dividir um problema complexo em passos lógicos intermédios, o modelo tem muito menos probabilidade de errar em tarefas de raciocínio lógico ou matemático."
+    "explanation": "O Chain-of-Thought (CoT) incentiva o modelo a raciocinar 'passo a passo' antes de fornecer a resposta final. Ao dividir um problema complexo em passos lógicos intermédios, o modelo tem muito menos probabilidade de errar em tarefas de raciocínio lógico ou matemático.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 212,
@@ -165,11 +231,17 @@
       "Inserir um aviso no System Prompt a pedir educadamente ao modelo para não revelar os dados"
     ],
     "correct": 1,
-    "explanation": "Os Guardrails for Amazon Bedrock possuem funcionalidades robustas de deteção de Informação Pessoalmente Identificável (PII). Podem ser configurados para identificar e mascarar (redact) esses dados nos outputs gerados pelo LLM, substituindo a informação sensível antes de chegar ao utilizador final."
+    "explanation": "Os Guardrails for Amazon Bedrock possuem funcionalidades robustas de deteção de Informação Pessoalmente Identificável (PII). Podem ser configurados para identificar e mascarar (redact) esses dados nos outputs gerados pelo LLM, substituindo a informação sensível antes de chegar ao utilizador final.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 213,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "medium",
     "question": "Ao criar um Agent no Amazon Bedrock, como é que o Agente 'descobre' quais as funcionalidades da empresa que pode invocar (por exemplo, cancelar um voo ou consultar o saldo de um cliente)?",
     "options": [
@@ -179,11 +251,17 @@
       "O desenvolvedor precisa de treinar (fine-tuning) o modelo com o código da API"
     ],
     "correct": 1,
-    "explanation": "Nos Bedrock Agents, os Action Groups usam esquemas OpenAPI (JSON ou YAML) que descrevem as APIs disponíveis, a sua utilidade e os parâmetros exigidos. O Agente utiliza este esquema para decidir de forma autónoma qual a API a chamar (via AWS Lambda) para resolver o pedido do utilizador."
+    "explanation": "Nos Bedrock Agents, os Action Groups usam esquemas OpenAPI (JSON ou YAML) que descrevem as APIs disponíveis, a sua utilidade e os parâmetros exigidos. O Agente utiliza este esquema para decidir de forma autónoma qual a API a chamar (via AWS Lambda) para resolver o pedido do utilizador.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 214,
-    "domain": "fundamentos-ia",
+    "domain": "conceitos-ia",
     "difficulty": "medium",
     "question": "Qual é o principal propósito do processo de 'Chunking' ao preparar documentos de texto para uma arquitetura RAG?",
     "options": [
@@ -193,11 +271,17 @@
       "Traduzir o documento para inglês para facilitar o processamento do LLM"
     ],
     "correct": 1,
-    "explanation": "O Chunking é a técnica de dividir documentos longos em pequenos 'chunks' (blocos). Isto é essencial porque os modelos de embedding têm limites de tokens (janela de contexto) e porque blocos mais curtos garantem que a pesquisa semântica devolva apenas os excertos altamente relevantes, em vez de um PDF inteiro de 100 páginas."
+    "explanation": "O Chunking é a técnica de dividir documentos longos em pequenos 'chunks' (blocos). Isto é essencial porque os modelos de embedding têm limites de tokens (janela de contexto) e porque blocos mais curtos garantem que a pesquisa semântica devolva apenas os excertos altamente relevantes, em vez de um PDF inteiro de 100 páginas.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 215,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "medium",
     "question": "A equipa de Data Science precisa comparar objetivamente se o modelo Anthropic Claude 3 é mais preciso que o modelo Amazon Titan Text para a tarefa específica de sumarização de artigos da empresa. Que recurso devem usar no Bedrock?",
     "options": [
@@ -207,11 +291,17 @@
       "Amazon Bedrock Custom Model Import"
     ],
     "correct": 0,
-    "explanation": "O Amazon Bedrock Model Evaluation permite avaliar, comparar e selecionar os melhores FMs para o seu caso de uso. Suporta avaliações automáticas baseadas em métricas predefinidas e datasets padrão, ou avaliações baseadas em feedback humano (Human-in-the-loop)."
+    "explanation": "O Amazon Bedrock Model Evaluation permite avaliar, comparar e selecionar os melhores FMs para o seu caso de uso. Suporta avaliações automáticas baseadas em métricas predefinidas e datasets padrão, ou avaliações baseadas em feedback humano (Human-in-the-loop).",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 216,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "hard",
     "question": "Uma aplicação bancária exigirá latência rigorosamente consistente e processará milhões de tokens por minuto no Amazon Bedrock durante o horário de expediente. Qual é a estratégia recomendada para evitar estrangulamentos (throttling) da API?",
     "options": [
@@ -221,11 +311,17 @@
       "Criar dezenas de contas AWS e balancear a carga entre elas de forma manual"
     ],
     "correct": 1,
-    "explanation": "Para cargas de trabalho críticas que requerem volumes massivos e latência consistente, o modelo de pagamento 'On-Demand' não é adequado devido aos limites rate-limit variáveis. O Provisioned Throughput permite adquirir Model Units dedicadas, assegurando taxa de transferência e estabilidade de performance ideais para grandes volumes."
+    "explanation": "Para cargas de trabalho críticas que requerem volumes massivos e latência consistente, o modelo de pagamento 'On-Demand' não é adequado devido aos limites rate-limit variáveis. O Provisioned Throughput permite adquirir Model Units dedicadas, assegurando taxa de transferência e estabilidade de performance ideais para grandes volumes.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 217,
-    "domain": "fundamentos-ia",
+    "domain": "conceitos-ia",
     "difficulty": "hard",
     "question": "Uma empresa tem um manual técnico que é revisto semanalmente com novos procedimentos. Eles têm efetuado Fine-Tuning de um modelo LLM todas as semanas, mas o processo é caro, lento e o modelo começou a esquecer o conhecimento antigo ('Catastrophic Forgetting'). Qual é a abordagem arquitetural correta?",
     "options": [
@@ -235,11 +331,17 @@
       "Treinar um Foundation Model inteiramente do zero (Pre-training) uma vez por mês"
     ],
     "correct": 1,
-    "explanation": "O Fine-Tuning é muito ineficiente para memorizar dados voláteis ou factuais que mudam com frequência. A arquitetura RAG é perfeita para este caso: basta adicionar as páginas atualizadas do manual à Vector Database (ex: Amazon OpenSearch Serverless). O LLM consultará em tempo real a informação mais recente, sem necessidade de retreinar o modelo."
+    "explanation": "O Fine-Tuning é muito ineficiente para memorizar dados voláteis ou factuais que mudam com frequência. A arquitetura RAG é perfeita para este caso: basta adicionar as páginas atualizadas do manual à Vector Database (ex: Amazon OpenSearch Serverless). O LLM consultará em tempo real a informação mais recente, sem necessidade de retreinar o modelo.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 218,
-    "domain": "prompt-engineering",
+    "domain": "design-performance",
     "difficulty": "hard",
     "question": "Ao configurar a inferência no Amazon Bedrock, um engenheiro ajustou o parâmetro 'Top P' (Nucleus Sampling) para 0.9. Qual é o comportamento mecânico exato deste parâmetro na geração da resposta?",
     "options": [
@@ -249,7 +351,13 @@
       "O modelo omitirá os 10% finais do prompt de entrada (truncation) para economizar custos de processamento"
     ],
     "correct": 1,
-    "explanation": "O 'Top P' é um método de amostragem (Nucleus Sampling) onde o modelo analisa a lista de possíveis próximas palavras e soma as suas probabilidades do topo para a base. Assim que a soma atinge o limite de P (neste caso, 90%), o modelo descarta todas as outras palavras 'menos prováveis', escolhendo a próxima palavra apenas dentro deste núcleo superior."
+    "explanation": "O 'Top P' é um método de amostragem (Nucleus Sampling) onde o modelo analisa a lista de possíveis próximas palavras e soma as suas probabilidades do topo para a base. Assim que a soma atinge o limite de P (neste caso, 90%), o modelo descarta todas as outras palavras 'menos prováveis', escolhendo a próxima palavra apenas dentro deste núcleo superior.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 219,
@@ -263,11 +371,17 @@
       "Desativar a encriptação TLS nas chamadas da SDK para que os firewalls locais possam inspecionar os prompts"
     ],
     "correct": 2,
-    "explanation": "A criação de um VPC Endpoint para o Amazon Bedrock (via AWS PrivateLink) permite que recursos em sub-redes privadas invoquem as APIs do Bedrock usando a rede interna da AWS (backbone), evitando completamente a exposição de dados sensíveis e prompts à internet pública, garantindo o máximo de conformidade de rede."
+    "explanation": "A criação de um VPC Endpoint para o Amazon Bedrock (via AWS PrivateLink) permite que recursos em sub-redes privadas invoquem as APIs do Bedrock usando a rede interna da AWS (backbone), evitando completamente a exposição de dados sensíveis e prompts à internet pública, garantindo o máximo de conformidade de rede.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 220,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "hard",
     "question": "No processo de ingestão de dados de uma Knowledge Base for Amazon Bedrock, qual é a função exata de um modelo como o 'Amazon Titan Text Embeddings'?",
     "options": [
@@ -277,7 +391,13 @@
       "Classificar o sentimento de cada documento (Positivo/Negativo) durante o upload"
     ],
     "correct": 1,
-    "explanation": "O modelo de Embedding (como o Titan Embeddings ou o Cohere Multilingual) atua especificamente na tradução da linguagem humana para a linguagem de máquina (matemática). Ele lê o texto do documento e converte-o numa matriz de números (embeddings/vetores), permitindo que a base de dados vetorial efetue as pesquisas de similaridade numérica na fase de RAG."
+    "explanation": "O modelo de Embedding (como o Titan Embeddings ou o Cohere Multilingual) atua especificamente na tradução da linguagem humana para a linguagem de máquina (matemática). Ele lê o texto do documento e converte-o numa matriz de números (embeddings/vetores), permitindo que a base de dados vetorial efetue as pesquisas de similaridade numérica na fase de RAG.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -291,7 +411,13 @@
     ],
     "correct": 1,
     "explanation": "A IA busca capacitar máquinas para simular a inteligência humana, permitindo-lhes raciocinar, aprender e resolver problemas, em vez de substituí-la completamente ou apenas realizar tarefas mecânicas.",
-    "id": 221
+    "id": 221,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -305,7 +431,13 @@
     ],
     "correct": 2,
     "explanation": "No Machine Learning, os sistemas aprendem padrões a partir de dados e ajustam seu comportamento sem a necessidade de regras explícitas para cada cenário, ao contrário da programação tradicional onde cada regra é definida por um programador.",
-    "id": 222
+    "id": 222,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -319,7 +451,13 @@
     ],
     "correct": 1,
     "explanation": "Um modelo de Machine Learning é o resultado de um processo de treinamento e encapsula o conhecimento aprendido a partir dos dados, sendo usado para fazer previsões ou tomar decisões sobre novos dados.",
-    "id": 223
+    "id": 223,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -333,7 +471,13 @@
     ],
     "correct": 2,
     "explanation": "Sistemas de recomendação de produtos utilizam IA para analisar o comportamento do usuário e dados de produtos para sugerir itens relevantes, um exemplo clássico de aplicação de IA.",
-    "id": 224
+    "id": 224,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -347,7 +491,13 @@
     ],
     "correct": 1,
     "explanation": "A inferência é o ato de usar um modelo de Machine Learning já treinado para aplicar seu conhecimento em dados nunca vistos antes e gerar previsões ou classificações.",
-    "id": 225
+    "id": 225,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -361,7 +511,13 @@
     ],
     "correct": 1,
     "explanation": "A IA Generativa se distingue pela sua capacidade de gerar dados novos e originais, que são semelhantes aos dados de treinamento, mas não são cópias exatas.",
-    "id": 226
+    "id": 226,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -375,7 +531,13 @@
     ],
     "correct": 1,
     "explanation": "Gerar imagens a partir de descrições de texto (text-to-image) é uma aplicação clássica da IA Generativa, onde o modelo cria um conteúdo visual totalmente novo.",
-    "id": 227
+    "id": 227,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -389,7 +551,13 @@
     ],
     "correct": 1,
     "explanation": "LLMs são modelos de IA treinados em vastas quantidades de dados textuais para compreender, gerar e interagir com a linguagem humana de maneira sofisticada.",
-    "id": 228
+    "id": 228,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -403,7 +571,13 @@
     ],
     "correct": 2,
     "explanation": "Um prompt é a entrada ou instrução fornecida pelo usuário a um modelo generativo, que serve para guiar o modelo sobre o tipo de saída desejada.",
-    "id": 229
+    "id": 229,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -417,7 +591,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon Bedrock é um serviço totalmente gerenciado que oferece acesso a modelos fundamentais (FMs) de IA Generativa de Amazon e startups de IA líderes via API, permitindo que os desenvolvedores criem aplicativos generativos de IA.",
-    "id": 230
+    "id": 230,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -431,7 +611,13 @@
     ],
     "correct": 1,
     "explanation": "Modelos de IA são treinados com dados e, se esses dados contiverem informações sensíveis, há um risco de que essas informações sejam expostas, inferidas ou vazadas se não houver medidas de privacidade adequadas.",
-    "id": 231
+    "id": 231,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -445,7 +631,13 @@
     ],
     "correct": 1,
     "explanation": "Viés em um modelo de IA ocorre quando o modelo aprende e perpetua preconceitos presentes nos dados de treinamento, levando a resultados injustos ou discriminatórios para certos grupos.",
-    "id": 232
+    "id": 232,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -459,7 +651,13 @@
     ],
     "correct": 2,
     "explanation": "Considerações éticas na IA focam em garantir que a tecnologia seja desenvolvida e usada de forma responsável, promovendo a justiça, transparência e minimizando danos potenciais à sociedade.",
-    "id": 233
+    "id": 233,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -473,7 +671,13 @@
     ],
     "correct": 1,
     "explanation": "Dados de baixa qualidade ou não verificados podem levar o modelo a aprender padrões incorretos, resultando em desempenho ruim, previsões imprecisas e, potencialmente, viés.",
-    "id": 234
+    "id": 234,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -487,7 +691,13 @@
     ],
     "correct": 2,
     "explanation": "Ataques adversários são projetados para enganar modelos de IA com pequenas, muitas vezes imperceptíveis, modificações nos dados de entrada, fazendo com que o modelo cometa erros de classificação.",
-    "id": 235
+    "id": 235,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -501,7 +711,13 @@
     ],
     "correct": 1,
     "explanation": "A coleta e preparação de dados é uma etapa crucial e geralmente a primeira, pois a qualidade e relevância dos dados impactam diretamente o desempenho do modelo.",
-    "id": 236
+    "id": 236,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -515,7 +731,13 @@
     ],
     "correct": 1,
     "explanation": "Amazon S3 é um serviço de armazenamento de objetos altamente escalável e durável, ideal para armazenar datasets de treinamento de Machine Learning de qualquer tamanho.",
-    "id": 237
+    "id": 237,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -529,7 +751,13 @@
     ],
     "correct": 1,
     "explanation": "O treinamento é o processo onde o modelo aprende com os dados, ajustando seus pesos e vieses para minimizar erros e otimizar seu desempenho em uma tarefa específica.",
-    "id": 238
+    "id": 238,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -543,7 +771,13 @@
     ],
     "correct": 2,
     "explanation": "Após o treinamento e validação, o modelo é implantado em um ambiente de produção para que possa receber novas entradas e fazer previsões ou tomar decisões em tempo real.",
-    "id": 239
+    "id": 239,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -557,7 +791,13 @@
     ],
     "correct": 1,
     "explanation": "Amazon Rekognition é um serviço de análise de imagem e vídeo baseado em IA da AWS que oferece capacidades pré-treinadas para diversas tarefas de visão computacional, sem a necessidade de construir um modelo do zero.",
-    "id": 240
+    "id": 240,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -571,7 +811,13 @@
     ],
     "correct": 2,
     "explanation": "O principal objetivo da Inteligência Artificial é desenvolver sistemas que possam simular e executar tarefas que normalmente requerem inteligência humana, como aprendizado, resolução de problemas e tomada de decisões.",
-    "id": 241
+    "id": 241,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -585,7 +831,13 @@
     ],
     "correct": 0,
     "explanation": "Aprendizado de Máquina é um subcampo da Inteligência Artificial que se concentra em desenvolver algoritmos que permitem que os computadores aprendam padrões a partir de dados e façam previsões ou decisões sem serem explicitamente programados para cada tarefa.",
-    "id": 242
+    "id": 242,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -599,7 +851,13 @@
     ],
     "correct": 1,
     "explanation": "No aprendizado supervisionado, o modelo é treinado em um conjunto de dados que contém entradas e saídas corretas (rótulos). No aprendizado não supervisionado, o modelo trabalha com dados sem rótulos e tenta encontrar padrões ou estruturas por conta própria.",
-    "id": 243
+    "id": 243,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -613,7 +871,13 @@
     ],
     "correct": 2,
     "explanation": "Classificação é uma tarefa de aprendizado supervisionado onde o modelo atribui uma categoria (rótulo) a um item de entrada. Identificar um gato ou um cachorro é um exemplo clássico de classificação binária.",
-    "id": 244
+    "id": 244,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -627,7 +891,13 @@
     ],
     "correct": 1,
     "explanation": "No Machine Learning, um modelo é o resultado do processo de treinamento de um algoritmo em um conjunto de dados, representando a lógica ou os padrões aprendidos que podem ser usados para fazer previsões ou tomar decisões sobre novos dados.",
-    "id": 245
+    "id": 245,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -641,7 +911,13 @@
     ],
     "correct": 2,
     "explanation": "A IA Generativa tem como objetivo principal gerar novos conteúdos originais, como texto, imagens, áudio e vídeo, que sejam realistas e coerentes com os dados nos quais o modelo foi treinado.",
-    "id": 246
+    "id": 246,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -655,7 +931,13 @@
     ],
     "correct": 2,
     "explanation": "Grandes Modelos de Linguagem (LLMs) são os mais conhecidos e eficazes para gerar texto coerente e contextualmente relevante em resposta a prompts, simulando a escrita humana.",
-    "id": 247
+    "id": 247,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -669,7 +951,13 @@
     ],
     "correct": 1,
     "explanation": "A IA Generativa é amplamente utilizada para criar novas formas de arte, design e conteúdo visual a partir de descrições textuais, revolucionando campos como design gráfico, publicidade e entretenimento.",
-    "id": 248
+    "id": 248,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -683,7 +971,13 @@
     ],
     "correct": 2,
     "explanation": "LLM significa Large Language Model (Grande Modelo de Linguagem), referindo-se a modelos de IA que foram treinados em vastas quantidades de dados textuais para entender, gerar e responder a linguagem humana.",
-    "id": 249
+    "id": 249,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -697,7 +991,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon Bedrock é um serviço totalmente gerenciado que facilita o acesso a modelos básicos (foundation models) de IA Generativa da Amazon e de empresas líderes de IA, permitindo construir e escalar aplicações generativas.",
-    "id": 250
+    "id": 250,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -711,7 +1011,13 @@
     ],
     "correct": 1,
     "explanation": "A privacidade dos dados é crucial para proteger informações sensíveis e pessoais usadas no treinamento de modelos de IA, evitando violações de dados, uso indevido e garantindo a conformidade com regulamentações como GDPR ou LGPD.",
-    "id": 251
+    "id": 251,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -725,7 +1031,13 @@
     ],
     "correct": 1,
     "explanation": "O viés de IA ocorre quando um modelo de IA produz resultados tendenciosos ou discriminatórios, geralmente porque os dados de treinamento eram tendenciosos ou o algoritmo foi projetado de forma a perpetuar preconceitos existentes na sociedade.",
-    "id": 252
+    "id": 252,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -739,7 +1051,13 @@
     ],
     "correct": 2,
     "explanation": "A implementação de controles de acesso rigorosos (quem pode ver/modificar os dados) e a criptografia de dados (transformar os dados em um código secreto) são práticas essenciais para proteger a segurança e a confidencialidade dos dados em sistemas de IA.",
-    "id": 253
+    "id": 253,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -753,7 +1071,13 @@
     ],
     "correct": 1,
     "explanation": "A IA Responsável envolve garantir que os sistemas de IA sejam desenvolvidos e usados de maneira ética e segura, com ênfase na transparência, equidade (evitar preconceitos) e responsabilidade pelas suas ações e impactos.",
-    "id": 254
+    "id": 254,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -767,7 +1091,13 @@
     ],
     "correct": 2,
     "explanation": "Ataques adversários envolvem a criação de entradas especialmente projetadas para enganar modelos de Machine Learning, geralmente fazendo pequenas e imperceptíveis modificações nos dados de entrada para forçar o modelo a fazer uma previsão incorreta.",
-    "id": 255
+    "id": 255,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -781,7 +1111,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon SageMaker é um serviço totalmente gerenciado que abrange o ciclo de vida completo do Machine Learning (ML), desde a preparação dos dados e construção de modelos até o treinamento, ajuste e implantação.",
-    "id": 256
+    "id": 256,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -795,7 +1131,13 @@
     ],
     "correct": 1,
     "explanation": "Antes que qualquer modelo possa ser treinado, é essencial coletar os dados relevantes, limpá-los, transformá-los e prepará-los de forma adequada, pois a qualidade dos dados afeta diretamente o desempenho do modelo.",
-    "id": 257
+    "id": 257,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -809,7 +1151,13 @@
     ],
     "correct": 2,
     "explanation": "Os serviços de IA da AWS, como Amazon Rekognition (visão computacional), Amazon Comprehend (NLP) e Amazon Polly (text-to-speech), são pré-treinados e oferecem funcionalidades de IA prontas para uso, sem a necessidade de expertise em ML.",
-    "id": 258
+    "id": 258,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -823,7 +1171,13 @@
     ],
     "correct": 1,
     "explanation": "A rotulagem de dados é o processo de adicionar tags ou rótulos informativos aos dados brutos (como identificar objetos em uma imagem ou categorizar texto), tornando-os úteis para treinar modelos de Machine Learning supervisionado.",
-    "id": 259
+    "id": 259,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -837,7 +1191,13 @@
     ],
     "correct": 1,
     "explanation": "A deriva de modelo (model drift) ocorre quando o relacionamento entre os dados de entrada e a variável alvo muda ao longo do tempo. Isso faz com que as previsões do modelo implantado se tornem menos precisas à medida que as condições do mundo real mudam em relação aos dados nos quais ele foi treinado.",
-    "id": 260
+    "id": 260,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -851,7 +1211,13 @@
     ],
     "correct": 1,
     "explanation": "NLP é o ramo da IA que se concentra na interação entre computadores e linguagem humana, permitindo que as máquinas entendam, interpretem e gerem linguagem natural.",
-    "id": 261
+    "id": 261,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -865,7 +1231,13 @@
     ],
     "correct": 2,
     "explanation": "Modelos generativos (frequentemente implementados como Foundation Models ou Large Language Models) são projetados para gerar novos conteúdos, como texto, imagens ou áudio, a partir de entradas (prompts).",
-    "id": 262
+    "id": 262,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -879,7 +1251,13 @@
     ],
     "correct": 2,
     "explanation": "O viés do modelo é uma preocupação crítica na segurança e ética da IA, pois um modelo enviesado pode levar a resultados discriminatórios ou injustos, especialmente em aplicações sensíveis como saúde ou finanças.",
-    "id": 263
+    "id": 263,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -893,7 +1271,13 @@
     ],
     "correct": 2,
     "explanation": "A preparação e o pré-processamento dos dados (limpeza, normalização, tratamento de valores ausentes) são etapas fundamentais e geralmente as primeiras em um pipeline de ML, pois a qualidade dos dados impacta diretamente a qualidade do modelo.",
-    "id": 264
+    "id": 264,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -907,7 +1291,13 @@
     ],
     "correct": 0,
     "explanation": "Classificação é a tarefa de ML que categoriza dados em uma de duas ou mais classes discretas, como 'comprará' ou 'não comprará' um produto.",
-    "id": 265
+    "id": 265,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -921,7 +1311,13 @@
     ],
     "correct": 2,
     "explanation": "A geração de texto, impulsionada por modelos de linguagem grandes (LLMs), é ideal para criar automaticamente descrições, artigos, e-mails ou qualquer outro conteúdo textual a partir de um conjunto de instruções ou dados.",
-    "id": 266
+    "id": 266,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -935,7 +1331,13 @@
     ],
     "correct": 1,
     "explanation": "Gerenciamento de acesso (IAM) e criptografia de dados (em repouso e em trânsito) são medidas essenciais para proteger dados sensíveis e garantir a conformidade e a privacidade.",
-    "id": 267
+    "id": 267,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -949,7 +1351,13 @@
     ],
     "correct": 3,
     "explanation": "A avaliação do modelo é a fase onde o desempenho do modelo treinado é medido e comparado com os objetivos estabelecidos, usando métricas apropriadas para o tipo de problema (classificação, regressão, etc.).",
-    "id": 268
+    "id": 268,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -963,7 +1371,13 @@
     ],
     "correct": 2,
     "explanation": "Deep Learning é um subcampo do Machine Learning que utiliza arquiteturas de redes neurais com várias camadas ocultas (profundas) para aprender representações hierárquicas dos dados, o que o torna poderoso para tarefas complexas como reconhecimento de imagem e NLP.",
-    "id": 269
+    "id": 269,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -977,7 +1391,13 @@
     ],
     "correct": 2,
     "explanation": "Engenharia de Prompt é a arte e a ciência de criar as entradas (prompts) mais eficazes para modelos generativos, a fim de obter as saídas desejadas, controlando o comportamento e o estilo do conteúdo gerado.",
-    "id": 270
+    "id": 270,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -991,7 +1411,13 @@
     ],
     "correct": 1,
     "explanation": "A inclusão de verificações humanas (Human-in-the-loop) e auditorias regulares é crucial para identificar e corrigir vieses, imprecisões e alucinações geradas por modelos de IA, especialmente em contextos onde a precisão e a imparcialidade são vitais.",
-    "id": 271
+    "id": 271,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1005,7 +1431,13 @@
     ],
     "correct": 2,
     "explanation": "A implantação do modelo (Model Deployment) é a etapa em que o modelo treinado é integrado a um sistema operacional ou aplicação, tornando-o acessível para inferência em tempo real ou em lote.",
-    "id": 272
+    "id": 272,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -1019,7 +1451,13 @@
     ],
     "correct": 2,
     "explanation": "Inteligência Artificial Estreita (Narrow AI ou Weak AI) é a forma de IA que existe hoje, projetada para realizar uma única tarefa ou um conjunto limitado de tarefas com alta competência, como reconhecimento facial ou assistentes de voz.",
-    "id": 273
+    "id": 273,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -1033,7 +1471,13 @@
     ],
     "correct": 2,
     "explanation": "Prever churn (cancelamento) é um problema de classificação binária (o cliente vai ou não vai cancelar). O custo de um falso negativo (prever que o cliente NÃO vai cancelar, mas ele cancela) é alto, pois a empresa perde a oportunidade de intervir. O Recall (Sensibilidade) mede a proporção de verdadeiros positivos que foram corretamente identificados e é crucial para minimizar falsos negativos.",
-    "id": 274
+    "id": 274,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -1047,7 +1491,13 @@
     ],
     "correct": 1,
     "explanation": "O conjunto de validação é usado para ajustar os hiperparâmetros do modelo (por exemplo, taxa de aprendizado, número de épocas) e para monitorar o desempenho durante o treinamento, ajudando a identificar e prevenir o overfitting, onde o modelo memoriza os dados de treinamento em vez de generalizar.",
-    "id": 275
+    "id": 275,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -1061,7 +1511,13 @@
     ],
     "correct": 1,
     "explanation": "O aprendizado não supervisionado é a abordagem correta quando os dados não possuem rótulos e o objetivo é descobrir padrões, estruturas ou grupos inerentes aos dados, como na segmentação de clientes com algoritmos de clustering.",
-    "id": 276
+    "id": 276,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -1075,7 +1531,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon Bedrock é um serviço totalmente gerenciado que oferece acesso a Foundation Models (FMs) de alto desempenho de provedores de IA líderes, incluindo modelos da Amazon (Titan), para construir e escalar aplicativos de IA generativa. Ele permite a personalização com dados próprios e integração fácil, sendo ideal para o cenário de um chatbot generativo.",
-    "id": 277
+    "id": 277,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -1089,7 +1551,13 @@
     ],
     "correct": 3,
     "explanation": "Especificar claramente o formato, o conteúdo e o foco desejado no prompt é a técnica mais direta e eficaz para controlar a saída de um LLM para uma tarefa específica como sumarização concisa e focada. Isso se enquadra em um tipo de zero-shot prompting com instruções bem definidas, onde o modelo não precisa de exemplos, apenas de uma boa diretriz.",
-    "id": 278
+    "id": 278,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -1103,7 +1571,13 @@
     ],
     "correct": 1,
     "explanation": "RAG é ideal para cenários onde o modelo precisa de conhecimento atualizado ou específico de um domínio que não estava presente em seu treinamento original. Ele permite que o modelo consulte fontes de dados externas e autoritativas em tempo real (como um banco de dados de legislação), garantindo respostas precisas e possibilitando fácil atualização do conhecimento sem a necessidade de dispendiosos fine-tunings completos do modelo base.",
-    "id": 279
+    "id": 279,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -1117,7 +1591,13 @@
     ],
     "correct": 2,
     "explanation": "A característica distintiva da IA Generativa é a sua capacidade de criar conteúdo novo e original (texto, imagens, código, áudio, etc.) que não estava explicitamente presente nos dados de treinamento, em contraste com modelos discriminativos que focam em classificação ou regressão.",
-    "id": 280
+    "id": 280,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -1131,7 +1611,13 @@
     ],
     "correct": 2,
     "explanation": "Para mitigar o viés algorítmico, é crucial abordar a fonte do viés (os dados) e/ou o processo de modelagem. Técnicas de reamostragem (como oversampling de grupos sub-representados ou undersampling de grupos super-representados) ou ponderação ajudam a balancear a representação dos grupos nos dados de treinamento. Além disso, a avaliação com métricas de fairness (como paridade demográfica ou igualdade de oportunidades) é essencial para verificar a eficácia da mitigação.",
-    "id": 281
+    "id": 281,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -1145,7 +1631,13 @@
     ],
     "correct": 2,
     "explanation": "A anonimização ou pseudoanonimização reduz o risco de identificação direta do indivíduo, o que é fundamental para a privacidade. Além disso, controles de acesso rigorosos (usando AWS IAM), criptografia em repouso (SSE-S3, KMS) e em trânsito (SSL/TLS) são essenciais para proteger PII e garantir conformidade com regulamentações como o GDPR.",
-    "id": 282
+    "id": 282,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -1159,7 +1651,13 @@
     ],
     "correct": 2,
     "explanation": "Um ataque adversário, especificamente um ataque de evasão, envolve a criação de entradas ligeiramente modificadas (perturbações adversárias) que são imperceptíveis para humanos, mas que levam o modelo a fazer previsões incorretas. O objetivo é 'enganar' o modelo durante a inferência.",
-    "id": 283
+    "id": 283,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1173,7 +1671,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon SageMaker Endpoints são projetados especificamente para implantar modelos de ML para inferência em tempo real. Eles oferecem gerenciamento completo da infraestrutura, escalabilidade automática, monitoramento e integração com diferentes frameworks (como PyTorch), sendo a solução mais completa e otimizada para este caso.",
-    "id": 284
+    "id": 284,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1187,7 +1691,13 @@
     ],
     "correct": 1,
     "explanation": "Amazon Comprehend é um serviço de NLP (Processamento de Linguagem Natural) pré-treinado da AWS que pode ser usado para detectar sentimento (positivo, negativo, neutro, misto) em textos sem a necessidade de desenvolver e treinar modelos customizados, economizando tempo e recursos.",
-    "id": 285
+    "id": 285,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1201,7 +1711,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon S3 (Simple Storage Service) é um armazenamento de objetos altamente escalável, durável, de baixo custo e com alta disponibilidade, ideal para armazenar grandes volumes de dados (como datasets para ML). Ele se integra nativamente com SageMaker e outras ferramentas AWS, tornando-o a escolha padrão para esta finalidade.",
-    "id": 286
+    "id": 286,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1215,7 +1731,13 @@
     ],
     "correct": 1,
     "explanation": "AWS Step Functions é um serviço de orquestração sem servidor que permite definir, agendar e monitorar workflows complexos e distribuídos, como pipelines de ML. Ele pode sequenciar e gerenciar as execuções de diferentes serviços AWS (Glue, SageMaker, Lambda, etc.) de forma visual e resiliente, facilitando a construção de pipelines robustos.",
-    "id": 287
+    "id": 287,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1229,7 +1751,13 @@
     ],
     "correct": 1,
     "explanation": "Amazon SageMaker Serverless Inference é ideal para workloads com padrões de inferência intermitentes ou infrequentes. Ele dimensiona automaticamente de zero a centenas de instâncias em milissegundos e você paga apenas pela duração do tempo de execução e pela quantidade de dados processados, o que é ótimo para otimização de custos em cenários de baixa utilização, pois não há custos quando o endpoint está ocioso.",
-    "id": 288
+    "id": 288,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -1243,7 +1771,13 @@
     ],
     "correct": 1,
     "explanation": "A Classificação é o processo de atribuir dados a categorias predefinidas. Neste cenário, as mensagens são categorizadas em tópicos específicos (financeiro, técnico, etc.), o que a torna a técnica mais adequada para roteamento.",
-    "id": 289
+    "id": 289,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -1257,7 +1791,13 @@
     ],
     "correct": 1,
     "explanation": "No aprendizado supervisionado, o modelo aprende a mapear entradas para saídas desejadas usando um dataset que contém exemplos de entradas com seus rótulos corretos, permitindo que o modelo generalize para novas entradas.",
-    "id": 290
+    "id": 290,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -1271,7 +1811,13 @@
     ],
     "correct": 2,
     "explanation": "A Regressão é uma tarefa de aprendizado de máquina usada para prever um valor de saída contínuo e numérico. Prever o volume de vendas, que é um número contínuo, é um caso de uso clássico para regressão.",
-    "id": 291
+    "id": 291,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -1285,7 +1831,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon Bedrock fornece acesso a modelos de fundação para gerar texto, como copy para marketing, conversas e resumos, sendo ideal para a criação de conteúdo criativo e diverso para anúncios.",
-    "id": 292
+    "id": 292,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -1299,7 +1851,13 @@
     ],
     "correct": 2,
     "explanation": "O fine-tuning adapta um modelo pré-treinado para um conjunto de dados e tarefa específicos, o que melhora significativamente a performance e a relevância do modelo para o domínio especializado, sem a necessidade de treiná-lo do zero.",
-    "id": 293
+    "id": 293,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -1313,7 +1871,13 @@
     ],
     "correct": 1,
     "explanation": "Modelos de Difusão (Diffusion Models) são a tecnologia atual líder para geração de imagens de alta qualidade a partir de texto (text-to-image), superando outros modelos generativos em fotorrealismo e detalhes.",
-    "id": 294
+    "id": 294,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -1327,7 +1891,13 @@
     ],
     "correct": 1,
     "explanation": "Prompt Engineering é a prática de projetar e otimizar as entradas (prompts) para modelos de IA generativa, a fim de obter respostas mais precisas, relevantes e controladas, evitando divagações ou saídas indesejadas.",
-    "id": 295
+    "id": 295,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -1341,7 +1911,13 @@
     ],
     "correct": 2,
     "explanation": "A Justiça (Fairness) em IA refere-se à mitigação de vieses e à garantia de que os modelos de IA não gerem resultados discriminatórios ou desiguais para diferentes grupos demográficos, garantindo um tratamento equitativo.",
-    "id": 296
+    "id": 296,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -1355,7 +1931,13 @@
     ],
     "correct": 0,
     "explanation": "Ataques de Evasão, também conhecidos como ataques adversariais, envolvem a criação de exemplos de entrada com pequenas modificações (perturbações) que são imperceptíveis para humanos, mas que levam o modelo de IA a fazer classificações incorretas ou inesperadas.",
-    "id": 297
+    "id": 297,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -1369,7 +1951,13 @@
     ],
     "correct": 1,
     "explanation": "A Privacidade Diferencial é uma estrutura matemática para medir e garantir a privacidade de dados, adicionando ruído controlado aos dados ou aos resultados da análise, de modo que a inclusão ou exclusão de qualquer registro individual não altere significativamente a saída do algoritmo.",
-    "id": 298
+    "id": 298,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1383,7 +1971,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon SageMaker é um serviço de machine learning totalmente gerenciado que permite que cientistas e desenvolvedores de dados construam, treinem e implantem modelos de ML rapidamente, cobrindo todo o ciclo de vida do ML.",
-    "id": 299
+    "id": 299,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1397,7 +1991,13 @@
     ],
     "correct": 1,
     "explanation": "Amazon Textract é um serviço de machine learning que extrai automaticamente texto, escrita à mão e dados de documentos digitalizados, como formulários e tabelas, indo além do simples OCR para entender o contexto do documento.",
-    "id": 300
+    "id": 300,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1411,7 +2011,13 @@
     ],
     "correct": 1,
     "explanation": "O Amazon SageMaker oferece a funcionalidade de auto scaling para endpoints, permitindo que o número de instâncias de inferência seja ajustado automaticamente para cima ou para baixo com base em métricas de utilização e políticas configuradas, garantindo que a capacidade corresponda à demanda.",
-    "id": 301
+    "id": 301,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1425,7 +2031,13 @@
     ],
     "correct": 1,
     "explanation": "Amazon Comprehend é um serviço de NLP totalmente gerenciado que usa machine learning para encontrar insights e relacionamentos em texto. Ele oferece análise de sentimento pré-treinada, detecção de entidade e outras funcionalidades de NLP sem a necessidade de treinamento de modelo.",
-    "id": 302
+    "id": 302,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1439,7 +2051,13 @@
     ],
     "correct": 2,
     "explanation": "O princípio de Integração e Entrega Contínuas (CI/CD) para ML no MLOps foca na automação e padronização de todas as etapas do ciclo de vida do ML, incluindo construção, teste, empacotamento, implantação e validação do modelo, garantindo um processo eficiente e repetível.",
-    "id": 303
+    "id": 303,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -1453,7 +2071,13 @@
     ],
     "correct": 2,
     "explanation": "Prever o próximo produto que um cliente comprará é um problema clássico de recomendação. Sistemas de recomendação frequentemente utilizam abordagens como a filtragem colaborativa para encontrar padrões entre usuários e itens e gerar sugestões personalizadas.",
-    "id": 304
+    "id": 304,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -1467,7 +2091,13 @@
     ],
     "correct": 1,
     "explanation": "A engenharia de features envolve a transformação de dados brutos em features que podem ser usadas para treinar um modelo. Isso inclui o tratamento de valores ausentes (imputação), a normalização/padronização para lidar com distribuições skewed e outras transformações para melhorar a qualidade e representatividade dos dados para o modelo.",
-    "id": 305
+    "id": 305,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -1481,7 +2111,13 @@
     ],
     "correct": 2,
     "explanation": "O problema descrito é um exemplo claro de viés (bias) no modelo, onde ele exibe discriminação contra certos grupos demográficos. A mitigação envolve auditar os dados de treinamento, balanceá-los ou aplicar técnicas para promover a fairness no algoritmo, garantindo que o modelo seja equitativo.",
-    "id": 306
+    "id": 306,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -1495,7 +2131,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon Bedrock oferece acesso a uma variedade de modelos de fundação (FMs) pré-treinados para gerar texto, o que é perfeito para criar variações de slogans e descrições sem a necessidade de treinar um modelo do zero. Sua integração via API facilita o uso em aplicações existentes.",
-    "id": 307
+    "id": 307,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -1509,7 +2151,13 @@
     ],
     "correct": 3,
     "explanation": "Retrieval Augmented Generation (RAG) é uma técnica onde o modelo recupera informações relevantes de uma base de conhecimento externa (como documentos da empresa) e as incorpora ao prompt antes de gerar uma resposta. Isso ajuda a 'aterrar' o modelo nos fatos fornecidos e reduz significativamente as alucinações.",
-    "id": 308
+    "id": 308,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -1523,7 +2171,13 @@
     ],
     "correct": 2,
     "explanation": "Um sistema RAG com um FM e um banco de dados de vetores para os documentos internos é a solução mais eficiente e segura. Ele permite que o chatbot recupere informações relevantes dos documentos e as use para contextualizar o FM, gerando respostas precisas sem a necessidade de retreinar o modelo (o que seria caro e demorado), nem expor os documentos originais diretamente, sendo superior ao fine-tuning para muitos casos de uso de recuperação de conhecimento.",
-    "id": 309
+    "id": 309,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -1537,7 +2191,13 @@
     ],
     "correct": 1,
     "explanation": "Para dados sensíveis, como informações médicas, a criptografia de dados em repouso (no Amazon S3, utilizando AWS KMS) e em trânsito (via HTTPS para todas as comunicações) é fundamental. Além disso, controles de acesso granular através do IAM garantem que apenas usuários e serviços autorizados possam acessar os dados e o modelo, seguindo o princípio do menor privilégio.",
-    "id": 310
+    "id": 310,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -1551,7 +2211,13 @@
     ],
     "correct": 1,
     "explanation": "Amazon SageMaker Clarify é projetado especificamente para ajudar a detectar e analisar viés nos dados de treinamento e na inferência do modelo, além de explicar as previsões, sendo a ferramenta ideal para identificar e mitigar problemas de fairness (imparcialidade) em modelos de Machine Learning.",
-    "id": 311
+    "id": 311,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -1565,7 +2231,13 @@
     ],
     "correct": 2,
     "explanation": "Um ataque de envenenamento de dados (Data poisoning attack) ocorre quando um adversário insere dados maliciosos no conjunto de treinamento ou em dados que o modelo consome continuamente, alterando o comportamento do modelo de forma indesejada, como a geração de resumos imprecisos ou tendenciosos, comprometendo a integridade e confiabilidade das saídas do modelo.",
-    "id": 312
+    "id": 312,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1579,7 +2251,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon SageMaker Endpoints são projetados especificamente para implantar modelos de ML para inferência em tempo real com alta escalabilidade, alta disponibilidade e integração nativa com o ecossistema SageMaker, facilitando o gerenciamento do ciclo de vida do modelo e a integração com outras aplicações.",
-    "id": 313
+    "id": 313,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1593,7 +2271,13 @@
     ],
     "correct": 1,
     "explanation": "Para um pipeline MLOps robusto na AWS, a combinação de AWS CodePipeline (para CI/CD geral e orquestração), AWS CodeCommit (controle de versão do código), Amazon SageMaker Pipelines (para orquestração de fluxos de trabalho de ML, incluindo treinamento, validação e implantação de modelos) e Amazon SageMaker (para treinamento e implantação de modelos) é a arquitetura padrão e mais adequada, permitindo automação e gerenciamento completo do ciclo de vida do ML.",
-    "id": 314
+    "id": 314,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1607,7 +2291,13 @@
     ],
     "correct": 2,
     "explanation": "AWS Glue é um serviço de ETL serverless, totalmente gerenciado, que é ideal para processar grandes volumes de dados (incluindo logs) armazenados no Amazon S3, transformá-los, limpá-los e agregá-los. Ele suporta Spark e Python para scripts de ETL, sendo perfeito para preparar dados para modelos de Machine Learning sem a necessidade de gerenciar infraestrutura de servidores.",
-    "id": 315
+    "id": 315,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1621,7 +2311,13 @@
     ],
     "correct": 1,
     "explanation": "Amazon SageMaker Model Monitor é a ferramenta ideal para monitorar a qualidade do modelo em produção, detectando desvios nos dados de entrada (drift de dados) e degradação de performance. Ele publica métricas no Amazon CloudWatch, onde Alarms podem ser configurados para emitir notificações (via Amazon SNS, por exemplo) quando thresholds específicos de performance forem violados.",
-    "id": 316
+    "id": 316,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1635,7 +2331,13 @@
     ],
     "correct": 1,
     "explanation": "Para jobs de treinamento que podem ser interrompidos e reiniciados (ou que não são extremamente sensíveis a interrupções), o uso de instâncias de Spot do SageMaker (ou instâncias Spot do EC2 subjacentes) pode gerar economias significativas de custos (até 90% em comparação com On-Demand) ao aproveitar a capacidade ociosa da AWS. A opção C não é aplicável a Deep Learning complexo que exige GPUs.",
-    "id": 317
+    "id": 317,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -1649,7 +2351,13 @@
     ],
     "correct": 2,
     "explanation": "O reconhecimento de objetos em imagens com um dataset grande de imagens *rotuladas* é um problema clássico de aprendizado supervisionado. Neste paradigma, o modelo aprende a mapear entradas (imagens) para saídas (rótulos de objetos e suas localizações) com base em exemplos conhecidos e anotados, permitindo que ele generalize para novas imagens.",
-    "id": 318
+    "id": 318,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -1663,7 +2371,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon Bedrock fornece acesso a diversos Large Language Models (LLMs) capazes de gerar texto criativo e coerente a partir de prompts, sendo ideal para a geração de descrições de produtos.",
-    "id": 319
+    "id": 319,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1677,7 +2391,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon SageMaker Training Jobs oferece uma infraestrutura gerenciada e escalável para treinar modelos de ML personalizados, permitindo a execução de código customizado e o provisionamento automático de recursos.",
-    "id": 320
+    "id": 320,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -1691,7 +2411,13 @@
     ],
     "correct": 2,
     "explanation": "A criptografia em repouso pode ser alcançada com o AWS KMS e a criptografia de bucket do S3 (SSE-KMS ou SSE-S3), enquanto o TLS/SSL garante a criptografia dos dados em trânsito entre os serviços AWS e clientes.",
-    "id": 321
+    "id": 321,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -1705,7 +2431,13 @@
     ],
     "correct": 2,
     "explanation": "Aprendizado supervisionado é utilizado quando o conjunto de dados de treinamento possui rótulos (neste caso, se o cliente cancelou ou não), e o objetivo é aprender uma função que mapeie entradas para saídas desejadas.",
-    "id": 322
+    "id": 322,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",
@@ -1719,7 +2451,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon Bedrock oferece acesso a modelos de base como Stable Diffusion, que são especializados em gerar imagens a partir de prompts de texto (text-to-image).",
-    "id": 323
+    "id": 323,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "implementacao-ia",
@@ -1733,7 +2471,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon SageMaker Endpoints são ambientes totalmente gerenciados e escaláveis para implantar modelos de ML, oferecendo endpoints HTTP de baixa latência para inferência em tempo real e capacidade de autoescalonamento.",
-    "id": 324
+    "id": 324,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-ia",
@@ -1747,7 +2491,13 @@
     ],
     "correct": 1,
     "explanation": "Políticas de bucket S3 e IAM Roles fornecem controle de acesso granular. A criptografia do lado do servidor S3 com KMS garante que o artefato do modelo seja criptografado em repouso.",
-    "id": 325
+    "id": 325,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "conceitos-ia",
@@ -1761,7 +2511,13 @@
     ],
     "correct": 2,
     "explanation": "A engenharia de prompt é a técnica de criar e refinar os prompts de entrada para modelos de IA generativa, a fim de obter respostas mais precisas, relevantes e desejáveis.",
-    "id": 326
+    "id": 326,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "ia-generativa",

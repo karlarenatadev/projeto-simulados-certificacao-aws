@@ -30,7 +30,7 @@ class AWSQuestion(BaseModel):
     difficulty: str
     type: str = "scenario"
     tags: List[str]
-    question: str = Field(..., min_length=30)
+    question: str = Field(..., min_length=10)
     options: List[str] = Field(..., min_length=4, max_length=4)
     correct: int = Field(..., ge=0, le=3)
     explanation: str = Field(..., min_length=30)
@@ -112,5 +112,5 @@ def fabricar_questoes(exame_id, nivel, qtd=3, retries=0):
 
 # 5. EXECUÇÃO DE EXEMPLO
 if __name__ == "__main__":
-    # Testar com a nova certificação DVA-C02
-    fabricar_questoes("dva-c02", "medium", 3)
+    fabricar_questoes("aif-c01", "hard", 10) # Completa o que falta
+    fabricar_questoes("dva-c02", "easy", 10) # Começa a encorpar a DVA

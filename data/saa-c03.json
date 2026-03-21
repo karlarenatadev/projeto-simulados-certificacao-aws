@@ -1,7 +1,7 @@
 [
   {
     "id": 2001,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "easy",
     "question": "O que é o Amazon Bedrock?",
     "options": [
@@ -11,11 +11,17 @@
       "Um ambiente de desenvolvimento integrado (IDE) exclusivo para cientistas de dados"
     ],
     "correct": 1,
-    "explanation": "O Amazon Bedrock é um serviço totalmente gerido que disponibiliza Foundation Models (FMs) de empresas líderes (como Anthropic, Cohere, Meta, Mistral AI e Amazon) através de uma API unificada, permitindo construir e escalar aplicações de IA generativa facilmente."
+    "explanation": "O Amazon Bedrock é um serviço totalmente gerido que disponibiliza Foundation Models (FMs) de empresas líderes (como Anthropic, Cohere, Meta, Mistral AI e Amazon) através de uma API unificada, permitindo construir e escalar aplicações de IA generativa facilmente.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2002,
-    "domain": "prompt-engineering",
+    "domain": "design-performance",
     "difficulty": "easy",
     "question": "Na engenharia de prompts (Prompt Engineering), o que significa a técnica 'Few-Shot Prompting'?",
     "options": [
@@ -25,11 +31,17 @@
       "Limitar a resposta do modelo a um número muito reduzido de palavras"
     ],
     "correct": 2,
-    "explanation": "O 'Few-Shot Prompting' envolve fornecer ao LLM (Large Language Model) alguns exemplos concretos (shots) dentro do próprio prompt. Isto ajuda o modelo a compreender o padrão, o formato e o tom desejados antes de gerar a resposta final."
+    "explanation": "O 'Few-Shot Prompting' envolve fornecer ao LLM (Large Language Model) alguns exemplos concretos (shots) dentro do próprio prompt. Isto ajuda o modelo a compreender o padrão, o formato e o tom desejados antes de gerar a resposta final.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2003,
-    "domain": "fundamentos-ia",
+    "domain": "conceitos-ia",
     "difficulty": "easy",
     "question": "Qual é o principal objetivo da arquitetura RAG (Retrieval-Augmented Generation)?",
     "options": [
@@ -39,7 +51,13 @@
       "Melhorar a precisão das respostas de um LLM fornecendo-lhe factos e dados externos recuperados de uma base de conhecimento privada"
     ],
     "correct": 3,
-    "explanation": "O RAG enriquece os prompts de um LLM com dados atualizados e específicos do domínio (recuperados de uma base de dados externa). Isto evita a necessidade de retreinar o modelo e reduz drasticamente as alucinações, pois o modelo baseia as suas respostas nos documentos recuperados."
+    "explanation": "O RAG enriquece os prompts de um LLM com dados atualizados e específicos do domínio (recuperados de uma base de dados externa). Isto evita a necessidade de retreinar o modelo e reduz drasticamente as alucinações, pois o modelo baseia as suas respostas nos documentos recuperados.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2004,
@@ -53,11 +71,17 @@
       "Knowledge Bases for Amazon Bedrock"
     ],
     "correct": 2,
-    "explanation": "Os Guardrails for Amazon Bedrock permitem definir políticas de segurança e privacidade consistentes em diferentes Foundation Models. Eles filtram PII, bloqueiam discursos de ódio ou perigosos e negam respostas sobre tópicos restritos definidos pela empresa."
+    "explanation": "Os Guardrails for Amazon Bedrock permitem definir políticas de segurança e privacidade consistentes em diferentes Foundation Models. Eles filtram PII, bloqueiam discursos de ódio ou perigosos e negam respostas sobre tópicos restritos definidos pela empresa.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2005,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "easy",
     "question": "Qual componente do Amazon Bedrock é capaz de planear e executar tarefas de múltiplas etapas (como fazer o cancelamento de uma reserva), interagindo de forma autónoma com as APIs da sua empresa?",
     "options": [
@@ -67,11 +91,17 @@
       "Bedrock Provisioned Throughput"
     ],
     "correct": 0,
-    "explanation": "Os Agents for Amazon Bedrock podem executar ações complexas. Eles dividem a solicitação do utilizador em etapas lógicas, orquestram a interação com Foundation Models e invocam as APIs corporativas (através de funções Lambda) para concluir a tarefa de forma autónoma."
+    "explanation": "Os Agents for Amazon Bedrock podem executar ações complexas. Eles dividem a solicitação do utilizador em etapas lógicas, orquestram a interação com Foundation Models e invocam as APIs corporativas (através de funções Lambda) para concluir a tarefa de forma autónoma.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2006,
-    "domain": "prompt-engineering",
+    "domain": "design-performance",
     "difficulty": "easy",
     "question": "Ao configurar os parâmetros de inferência de um LLM, o que acontece se definir a 'Temperature' (Temperatura) com um valor próximo de 0 (ex: 0.1)?",
     "options": [
@@ -81,11 +111,17 @@
       "O modelo irá ignorar os filtros de segurança e Guardrails"
     ],
     "correct": 1,
-    "explanation": "A Temperatura controla a aleatoriedade das respostas. Um valor baixo (próximo de 0) torna o modelo muito determinístico, escolhendo quase sempre as palavras mais prováveis (ideal para código ou factos). Um valor alto aumenta a criatividade."
+    "explanation": "A Temperatura controla a aleatoriedade das respostas. Um valor baixo (próximo de 0) torna o modelo muito determinístico, escolhendo quase sempre as palavras mais prováveis (ideal para código ou factos). Um valor alto aumenta a criatividade.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2007,
-    "domain": "fundamentos-ia",
+    "domain": "conceitos-ia",
     "difficulty": "easy",
     "question": "No contexto de aplicações de IA Generativa e RAG, para que serve uma Base de Dados Vetorial (Vector Database)?",
     "options": [
@@ -95,11 +131,17 @@
       "Para monitorizar o custo exato gerado por cada chamada ao LLM"
     ],
     "correct": 2,
-    "explanation": "As Vector Databases (como o Amazon OpenSearch Serverless) armazenam dados em forma de vetores de alta dimensionalidade (embeddings). Isto permite procurar informações não por palavras exatas, mas sim por similaridade de significado (pesquisa semântica)."
+    "explanation": "As Vector Databases (como o Amazon OpenSearch Serverless) armazenam dados em forma de vetores de alta dimensionalidade (embeddings). Isto permite procurar informações não por palavras exatas, mas sim por similaridade de significado (pesquisa semântica).",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2008,
-    "domain": "prompt-engineering",
+    "domain": "design-performance",
     "difficulty": "medium",
     "question": "Uma aplicação de apoio ao cliente está a alucinar (inventar respostas) quando lhe perguntam sobre produtos que a empresa não vende. Qual é a estratégia de prompt mais simples e eficaz para mitigar isto?",
     "options": [
@@ -109,11 +151,17 @@
       "Alterar o Foundation Model para um modelo focado exclusivamente na geração de código"
     ],
     "correct": 1,
-    "explanation": "A forma mais simples de combater alucinações (hallucinations) é limitar o âmbito de atuação do modelo através de diretrizes rigorosas no System Prompt (Grounding), instruindo-o explicitamente a admitir desconhecimento em vez de tentar adivinhar."
+    "explanation": "A forma mais simples de combater alucinações (hallucinations) é limitar o âmbito de atuação do modelo através de diretrizes rigorosas no System Prompt (Grounding), instruindo-o explicitamente a admitir desconhecimento em vez de tentar adivinhar.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2009,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "medium",
     "question": "A sua empresa tem milhares de manuais em PDF guardados no Amazon S3. O objetivo é criar um chatbot capaz de responder a perguntas dos funcionários com base apenas nesses PDFs. Qual funcionalidade do Bedrock oferece uma solução end-to-end (arquitetura RAG gerenciada) para este cenário?",
     "options": [
@@ -123,7 +171,13 @@
       "Amazon Bedrock Provisioned Throughput"
     ],
     "correct": 1,
-    "explanation": "As Knowledge Bases for Amazon Bedrock gerem de forma totalmente automatizada o pipeline de RAG. Elas conectam-se ao seu S3, transformam o texto em embeddings, armazenam-nos numa base de dados vetorial (ex: OpenSearch) e automatizam a recuperação de dados durante a interação com o modelo."
+    "explanation": "As Knowledge Bases for Amazon Bedrock gerem de forma totalmente automatizada o pipeline de RAG. Elas conectam-se ao seu S3, transformam o texto em embeddings, armazenam-nos numa base de dados vetorial (ex: OpenSearch) e automatizam a recuperação de dados durante a interação com o modelo.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2010,
@@ -137,11 +191,17 @@
       "Modificar o prompt pedindo ao LLM que por favor não mostre dados privados"
     ],
     "correct": 2,
-    "explanation": "Os Guardrails for Amazon Bedrock possuem funcionalidades nativas de deteção de PII. Podem ser configurados para intercetar o output do modelo e mascarar (redact) informações sensíveis (substituindo-as por tags como [CREDIT_CARD]) antes de devolver a resposta à aplicação."
+    "explanation": "Os Guardrails for Amazon Bedrock possuem funcionalidades nativas de deteção de PII. Podem ser configurados para intercetar o output do modelo e mascarar (redact) informações sensíveis (substituindo-as por tags como [CREDIT_CARD]) antes de devolver a resposta à aplicação.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2011,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "medium",
     "question": "Ao desenvolver Agents for Amazon Bedrock, como é que o agente sabe quais as funcionalidades (APIs) da sua empresa que estão disponíveis para serem invocadas para resolver o pedido de um utilizador?",
     "options": [
@@ -151,11 +211,17 @@
       "As APIs têm de ser descritas uma a uma diretamente na caixa de texto do System Prompt do agente"
     ],
     "correct": 1,
-    "explanation": "Nos Agents for Amazon Bedrock, os 'Action Groups' conectam o agente às suas APIs. Define-se as capacidades usando um esquema OpenAPI (JSON/YAML). O agente analisa este esquema para entender quando invocar uma determinada API e quais os parâmetros que deve extrair do prompt do utilizador."
+    "explanation": "Nos Agents for Amazon Bedrock, os 'Action Groups' conectam o agente às suas APIs. Define-se as capacidades usando um esquema OpenAPI (JSON/YAML). O agente analisa este esquema para entender quando invocar uma determinada API e quais os parâmetros que deve extrair do prompt do utilizador.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2012,
-    "domain": "prompt-engineering",
+    "domain": "design-performance",
     "difficulty": "medium",
     "question": "Ao afinar os parâmetros de um LLM no Amazon Bedrock, ajustou-se o valor de 'Top P' para 0.9. O que significa este ajuste na prática?",
     "options": [
@@ -165,11 +231,17 @@
       "Ignora 10% do prompt original para otimizar o consumo de tokens"
     ],
     "correct": 1,
-    "explanation": "O parâmetro 'Top P' (Nucleus Sampling) altera o leque de palavras candidatas. Um valor de 0.9 significa que o modelo irá considerar apenas o subconjunto de palavras mais prováveis que, somadas, atinjam 90% de probabilidade, cortando a 'cauda longa' de palavras muito raras ou absurdas."
+    "explanation": "O parâmetro 'Top P' (Nucleus Sampling) altera o leque de palavras candidatas. Um valor de 0.9 significa que o modelo irá considerar apenas o subconjunto de palavras mais prováveis que, somadas, atinjam 90% de probabilidade, cortando a 'cauda longa' de palavras muito raras ou absurdas.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2013,
-    "domain": "fundamentos-ia",
+    "domain": "conceitos-ia",
     "difficulty": "medium",
     "question": "Qual é a sequência correta de eventos num fluxo de trabalho clássico de RAG (Retrieval-Augmented Generation)?",
     "options": [
@@ -179,11 +251,17 @@
       "1) Fazer o Fine-tuning do modelo. 2) Validar com métricas BLEU. 3) Iniciar o Agent."
     ],
     "correct": 1,
-    "explanation": "O fluxo de RAG em tempo de execução consiste em: (1) Receber o prompt; (2) Fazer o Embedding do prompt; (3) Recuperar documentos relevantes do Vector DB através de pesquisa semântica; (4) Aumentar (Augment) o prompt original adicionando esses documentos como contexto; (5) O LLM gerar a resposta final fundamentada."
+    "explanation": "O fluxo de RAG em tempo de execução consiste em: (1) Receber o prompt; (2) Fazer o Embedding do prompt; (3) Recuperar documentos relevantes do Vector DB através de pesquisa semântica; (4) Aumentar (Augment) o prompt original adicionando esses documentos como contexto; (5) O LLM gerar a resposta final fundamentada.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2014,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "medium",
     "question": "Uma empresa precisa de escolher o melhor Foundation Model no Amazon Bedrock para a sua aplicação de sumarização. Como podem realizar esta avaliação de forma estruturada no serviço?",
     "options": [
@@ -193,11 +271,17 @@
       "Executar dois modelos em paralelo e deixar a AWS escolher o mais rápido automaticamente"
     ],
     "correct": 1,
-    "explanation": "A funcionalidade de Model Evaluation (Avaliação de Modelos) no Amazon Bedrock permite comparar diferentes modelos. Pode escolher avaliações automáticas (para tarefas como sumarização, usando datasets standard) ou criar avaliações com humanos (fornecendo à sua equipa de QA uma UI para classificar as respostas do modelo)."
+    "explanation": "A funcionalidade de Model Evaluation (Avaliação de Modelos) no Amazon Bedrock permite comparar diferentes modelos. Pode escolher avaliações automáticas (para tarefas como sumarização, usando datasets standard) ou criar avaliações com humanos (fornecendo à sua equipa de QA uma UI para classificar as respostas do modelo).",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2015,
-    "domain": "fundamentos-ia",
+    "domain": "conceitos-ia",
     "difficulty": "hard",
     "question": "Um Arquiteto IA tem de criar um assistente virtual para uma seguradora. A seguradora atualiza os seus contratos e termos legais diariamente. O assistente tem de responder usando apenas os termos mais recentes e com o vocabulário e o tom formal específicos da marca. Qual é a estratégia arquitetural recomendada?",
     "options": [
@@ -207,11 +291,17 @@
       "Treinar o LLM do zero (Pre-training) na infraestrutura local."
     ],
     "correct": 2,
-    "explanation": "O Fine-Tuning é útil para alterar o 'estilo' ou o comportamento de um modelo, mas é muito ineficiente para memorizar conhecimento atualizado frequentemente. O RAG é perfeito para incorporar factos que mudam diariamente (inserindo os contratos novos no Vector DB sem necessitar de treinar nada). O tom formal pode ser facilmente forçado através de System Prompts bem estruturados."
+    "explanation": "O Fine-Tuning é útil para alterar o 'estilo' ou o comportamento de um modelo, mas é muito ineficiente para memorizar conhecimento atualizado frequentemente. O RAG é perfeito para incorporar factos que mudam diariamente (inserindo os contratos novos no Vector DB sem necessitar de treinar nada). O tom formal pode ser facilmente forçado através de System Prompts bem estruturados.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2016,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "hard",
     "question": "Ao utilizar as Knowledge Bases for Amazon Bedrock integradas com o Amazon OpenSearch Serverless como base de dados vetorial, que processo decorre em background durante a ingestão de documentos (Data Ingestion)?",
     "options": [
@@ -221,7 +311,13 @@
       "O Amazon S3 invoca funções Lambda que traduzem o documento para inglês e o enviam para o Foundation Model"
     ],
     "correct": 1,
-    "explanation": "Durante a ingestão, a Knowledge Base automatiza a extração do texto do S3, aplica técnicas de 'Chunking' (partir o documento em pedaços lógicos), invoca um modelo de Embedding (como o Amazon Titan Embeddings) para transformar cada chunk num array de números (vetores), e guarda o texto original e o vetor respetivo no index do OpenSearch Serverless."
+    "explanation": "Durante a ingestão, a Knowledge Base automatiza a extração do texto do S3, aplica técnicas de 'Chunking' (partir o documento em pedaços lógicos), invoca um modelo de Embedding (como o Amazon Titan Embeddings) para transformar cada chunk num array de números (vetores), e guarda o texto original e o vetor respetivo no index do OpenSearch Serverless.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2017,
@@ -235,11 +331,17 @@
       "Apenas o prompt do utilizador é verificado; as respostas geradas pelos LLMs são assumidas como intrinsecamente seguras"
     ],
     "correct": 1,
-    "explanation": "Os Guardrails funcionam como uma camada intermédia de segurança forte. Eles verificam TANTO a entrada do utilizador (Input) como a saída gerada pelo modelo (Output). Se o classificador identificar que um Tópico Negado (Denied Topic) foi abordado em qualquer um dos sentidos, o Guardrail bloqueia a interação e devolve uma resposta de recusa pré-configurada pelo administrador."
+    "explanation": "Os Guardrails funcionam como uma camada intermédia de segurança forte. Eles verificam TANTO a entrada do utilizador (Input) como a saída gerada pelo modelo (Output). Se o classificador identificar que um Tópico Negado (Denied Topic) foi abordado em qualquer um dos sentidos, o Guardrail bloqueia a interação e devolve uma resposta de recusa pré-configurada pelo administrador.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2018,
-    "domain": "prompt-engineering",
+    "domain": "design-performance",
     "difficulty": "hard",
     "question": "Uma aplicação de análise financeira está a utilizar um LLM para analisar demonstrações de resultados, mas o modelo está a saltar passos cruciais de cálculo e a errar as conclusões finais. Que técnica avançada de Prompt Engineering deveria ser implementada para forçar a precisão lógica?",
     "options": [
@@ -249,11 +351,17 @@
       "Reduzir o parâmetro Max Tokens para 50"
     ],
     "correct": 1,
-    "explanation": "A técnica de 'Chain-of-Thought' (Corrente de Pensamento) incentiva o LLM a raciocinar passo-a-passo. Ao incluir a instrução 'Pensa passo-a-passo antes de dar a resposta final' (ou fornecendo um exemplo onde os passos lógicos estão discriminados), o modelo processa o problema em pequenas partes sequenciais, o que reduz drasticamente falhas de lógica em tarefas matemáticas ou analíticas complexas."
+    "explanation": "A técnica de 'Chain-of-Thought' (Corrente de Pensamento) incentiva o LLM a raciocinar passo-a-passo. Ao incluir a instrução 'Pensa passo-a-passo antes de dar a resposta final' (ou fornecendo um exemplo onde os passos lógicos estão discriminados), o modelo processa o problema em pequenas partes sequenciais, o que reduz drasticamente falhas de lógica em tarefas matemáticas ou analíticas complexas.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2019,
-    "domain": "amazon-bedrock",
+    "domain": "design-performance",
     "difficulty": "hard",
     "question": "Um banco global vai lançar o seu assistente de IA para clientes e antecipa um volume massivo e sustentado de requests à API do Amazon Bedrock durante o horário laboral, exigindo uma latência garantida e sem throttling. Qual modelo de capacidade do Amazon Bedrock deve ser utilizado?",
     "options": [
@@ -263,11 +371,17 @@
       "Bedrock Serverless Auto Scaling"
     ],
     "correct": 2,
-    "explanation": "O modelo On-Demand é excelente para workloads variáveis, mas não oferece garantias rígidas de throughput num ambiente de volume extremo. O Provisioned Throughput permite aos clientes adquirir capacidade dedicada (em Model Units) para FMs base ou modelos Customizados (Fine-tuned), garantindo previsibilidade de custos, taxa de transferência garantida e latência consistente."
+    "explanation": "O modelo On-Demand é excelente para workloads variáveis, mas não oferece garantias rígidas de throughput num ambiente de volume extremo. O Provisioned Throughput permite aos clientes adquirir capacidade dedicada (em Model Units) para FMs base ou modelos Customizados (Fine-tuned), garantindo previsibilidade de custos, taxa de transferência garantida e latência consistente.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "id": 2020,
-    "domain": "fundamentos-ia",
+    "domain": "conceitos-ia",
     "difficulty": "hard",
     "question": "A equipa técnica está a passar relatórios com 100 páginas (cerca de 80.000 tokens) diretamente como contexto num único prompt para o Claude 3 no Bedrock. Estão a verificar que o modelo ignora factos cruciais que se encontram no meio do documento. Como se denomina este fenómeno na IA Generativa?",
     "options": [
@@ -277,7 +391,13 @@
       "Token Overflow (Estouro de Tokens)"
     ],
     "correct": 0,
-    "explanation": "Estudos sobre Large Language Models demonstram o fenómeno 'Lost in the middle': quando alimentados com um contexto massivo, os LLMs têm excelente capacidade para reter factos localizados no INÍCIO ou no FIM do prompt, mas tendem a ignorar a informação situada a meio do contexto. Implementar estratégias RAG que injetem apenas os blocos rigorosamente relevantes é a arquitetura ideal para mitigar este problema."
+    "explanation": "Estudos sobre Large Language Models demonstram o fenómeno 'Lost in the middle': quando alimentados com um contexto massivo, os LLMs têm excelente capacidade para reter factos localizados no INÍCIO ou no FIM do prompt, mas tendem a ignorar a informação situada a meio do contexto. Implementar estratégias RAG que injetem apenas os blocos rigorosamente relevantes é a arquitetura ideal para mitigar este problema.",
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -291,7 +411,13 @@
     ],
     "correct": 1,
     "explanation": "Implantar a aplicação em múltiplas Zonas de Disponibilidade com um Application Load Balancer distribui o tráfego e garante que a aplicação permaneça disponível mesmo se uma AZ falhar.",
-    "id": 2021
+    "id": 2021,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -305,7 +431,13 @@
     ],
     "correct": 2,
     "explanation": "A Replicação entre Regiões (CRR) do Amazon S3 é projetada para replicar objetos automaticamente entre buckets em diferentes regiões AWS, proporcionando um plano de recuperação de desastres.",
-    "id": 2022
+    "id": 2022,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -319,7 +451,13 @@
     ],
     "correct": 2,
     "explanation": "A configuração Multi-AZ para o Amazon RDS cria uma réplica em espera em uma Zona de Disponibilidade diferente, fornecendo alta disponibilidade e failover automático em caso de falha da instância ou da AZ primária.",
-    "id": 2023
+    "id": 2023,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -333,7 +471,13 @@
     ],
     "correct": 2,
     "explanation": "Um Auto Scaling Group (ASG) gerencia a frota de instâncias EC2, dimensionando-as para cima e para baixo. Um Application Load Balancer (ALB) distribui o tráfego de entrada entre as instâncias do ASG, garantindo alta disponibilidade e escalabilidade.",
-    "id": 2024
+    "id": 2024,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -347,7 +491,13 @@
     ],
     "correct": 2,
     "explanation": "O Amazon Route 53, com suas verificações de saúde, pode monitorar a disponibilidade e o desempenho dos endpoints e, em caso de falha, rotear o tráfego para um endpoint saudável configurado em uma política de roteamento de failover.",
-    "id": 2025
+    "id": 2025,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -361,7 +511,13 @@
     ],
     "correct": 2,
     "explanation": "O Amazon CloudFront é um serviço de Content Delivery Network (CDN) que armazena em cache o conteúdo em locais de borda em todo o mundo, reduzindo a latência e acelerando a entrega para usuários finais.",
-    "id": 2026
+    "id": 2026,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -375,7 +531,13 @@
     ],
     "correct": 2,
     "explanation": "As réplicas de leitura do Amazon RDS permitem descarregar o tráfego de leitura da instância de banco de dados principal, melhorando o desempenho de leitura e liberando a instância principal para operações de gravação.",
-    "id": 2027
+    "id": 2027,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -389,7 +551,13 @@
     ],
     "correct": 3,
     "explanation": "Os volumes io2 (Provisioned IOPS SSD) são projetados para cargas de trabalho de E/S intensivas, como bancos de dados transacionais, que exigem um desempenho consistente e de alta performance com IOPS elevadas. gp3 é uma boa opção de uso geral, mas io2 é para as mais exigentes.",
-    "id": 2028
+    "id": 2028,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -403,7 +571,13 @@
     ],
     "correct": 1,
     "explanation": "O S3 Transfer Acceleration utiliza os locais de borda do CloudFront para rotear os dados para o bucket S3, o que pode acelerar significativamente os uploads de longa distância.",
-    "id": 2029
+    "id": 2029,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -417,7 +591,13 @@
     ],
     "correct": 2,
     "explanation": "O Amazon ElastiCache (que suporta Redis e Memcached) é um serviço de cache distribuído na memória que pode ser usado para armazenar dados frequentemente acessados, reduzindo a carga no banco de dados e melhorando a latência da aplicação.",
-    "id": 2030
+    "id": 2030,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -431,7 +611,13 @@
     ],
     "correct": 1,
     "explanation": "Security Groups atuam como firewalls virtuais no nível da instância, controlando o tráfego de entrada e saída para instâncias EC2. Eles são com estado, ou seja, as regras de saída são automaticamente permitidas se o tráfego de entrada correspondente foi permitido.",
-    "id": 2031
+    "id": 2031,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -445,7 +631,13 @@
     ],
     "correct": 1,
     "explanation": "Anexar um perfil do IAM (IAM Role) a uma instância EC2 é a prática recomendada para conceder permissões de forma segura. O perfil fornece credenciais temporárias que a aplicação pode usar, eliminando a necessidade de armazenar chaves de acesso estáticas.",
-    "id": 2032
+    "id": 2032,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -459,7 +651,13 @@
     ],
     "correct": 2,
     "explanation": "O AWS WAF (Web Application Firewall) ajuda a proteger aplicações web de ataques comuns da web, filtrando o tráfego malicioso com base em regras personalizáveis e gerenciadas.",
-    "id": 2033
+    "id": 2033,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -473,7 +671,13 @@
     ],
     "correct": 3,
     "explanation": "O AWS Identity and Access Management (IAM) permite que você gerencie com segurança o acesso a serviços e recursos da AWS. Com o IAM, você pode criar e gerenciar usuários e grupos da AWS e usar permissões para permitir e negar o acesso a recursos da AWS.",
-    "id": 2034
+    "id": 2034,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -487,7 +691,13 @@
     ],
     "correct": 2,
     "explanation": "A ativação da criptografia padrão em um bucket S3 (Default Encryption) garante que todos os novos objetos carregados no bucket sejam criptografados automaticamente em repouso, usando SSE-S3 ou SSE-KMS, conforme configurado.",
-    "id": 2035
+    "id": 2035,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -501,7 +711,13 @@
     ],
     "correct": 2,
     "explanation": "Spot Instances permitem que você solicite capacidade EC2 não utilizada por até 90% de desconto no preço On-Demand. Elas são ideais para aplicações tolerantes a falhas que podem lidar com interrupções.",
-    "id": 2036
+    "id": 2036,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -515,7 +731,13 @@
     ],
     "correct": 2,
     "explanation": "O S3 Standard-Infrequent Access (S3 Standard-IA) é ideal para dados acessados com pouca frequência, mas que exigem acesso rápido quando necessário. Ele oferece um custo de armazenamento menor que o S3 Standard e um custo por recuperação menor que o Glacier.",
-    "id": 2037
+    "id": 2037,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -529,7 +751,13 @@
     ],
     "correct": 2,
     "explanation": "AWS Savings Plans oferecem economia de até 72% em comparação com os preços On-Demand, em troca de um compromisso de uso consistente (por hora) por um período de 1 ou 3 anos. Eles são mais flexíveis que as Reserved Instances tradicionais, cobrindo tanto EC2 quanto Fargate e Lambda.",
-    "id": 2038
+    "id": 2038,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -543,7 +771,13 @@
     ],
     "correct": 2,
     "explanation": "O 'right-sizing' de instâncias envolve analisar a utilização e ajustar o tipo da instância para um que melhor se adapte aos requisitos de desempenho, mas com custo menor, ou desligar instâncias que não são mais necessárias.",
-    "id": 2039
+    "id": 2039,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -557,7 +791,13 @@
     ],
     "correct": 2,
     "explanation": "O AWS Cost Explorer é uma ferramenta de gerenciamento de custos que permite visualizar, entender e gerenciar seus custos e uso da AWS ao longo do tempo, ajudando a identificar áreas para otimização de custos.",
-    "id": 2040
+    "id": 2040,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -571,7 +811,13 @@
     ],
     "correct": 2,
     "explanation": "Elastic Load Balancing (ELB) distribui automaticamente o tráfego de entrada para várias instâncias em diferentes Zonas de Disponibilidade, melhorando a tolerância a falhas e a resiliência.",
-    "id": 2041
+    "id": 2041,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -585,7 +831,13 @@
     ],
     "correct": 2,
     "explanation": "O Amazon EC2 Auto Scaling monitora a saúde das instâncias e pode automaticamente substituir instâncias não saudáveis, além de ajustar a capacidade computacional para atender à demanda.",
-    "id": 2042
+    "id": 2042,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -599,7 +851,13 @@
     ],
     "correct": 1,
     "explanation": "O Amazon S3 é projetado para durabilidade extrema e armazena objetos de forma redundante em várias Zonas de Disponibilidade por padrão, garantindo alta disponibilidade e durabilidade.",
-    "id": 2043
+    "id": 2043,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -613,7 +871,13 @@
     ],
     "correct": 2,
     "explanation": "Os backups automatizados do Amazon RDS permitem a recuperação point-in-time para qualquer segundo dentro do período de retenção configurado, aumentando a resiliência do banco de dados.",
-    "id": 2044
+    "id": 2044,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -627,7 +891,13 @@
     ],
     "correct": 1,
     "explanation": "A configuração Multi-AZ do Amazon RDS fornece alta disponibilidade e failover automático para um banco de dados em caso de falha na Zona de Disponibilidade primária, garantindo a continuidade do serviço.",
-    "id": 2045
+    "id": 2045,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -641,7 +911,13 @@
     ],
     "correct": 2,
     "explanation": "Read Replicas permitem descarregar o tráfego de leitura da instância de banco de dados primária, melhorando a performance de leitura geral e reduzindo a carga sobre a instância principal.",
-    "id": 2046
+    "id": 2046,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -655,7 +931,13 @@
     ],
     "correct": 2,
     "explanation": "O Amazon EC2 Auto Scaling ajusta automaticamente o número de instâncias EC2 em seu grupo para manter a performance e a disponibilidade durante variações de tráfego, escalando para cima ou para baixo conforme necessário.",
-    "id": 2047
+    "id": 2047,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -669,7 +951,13 @@
     ],
     "correct": 2,
     "explanation": "O Amazon CloudFront é uma Content Delivery Network (CDN) que armazena em cache o conteúdo em edge locations próximas aos usuários, reduzindo a latência e melhorando a performance de entrega.",
-    "id": 2048
+    "id": 2048,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -683,7 +971,13 @@
     ],
     "correct": 2,
     "explanation": "Os volumes io2 (Provisioned IOPS SSD) são projetados para cargas de trabalho de I/O intensivo, como bancos de dados transacionais, que exigem performance consistente e alta quantidade de IOPS.",
-    "id": 2049
+    "id": 2049,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -697,7 +991,13 @@
     ],
     "correct": 2,
     "explanation": "O AWS Lambda é um serviço de computação serverless que executa código em resposta a eventos, escalando automaticamente e cobrando apenas pelo tempo de computação consumido, otimizando a performance e o custo.",
-    "id": 2050
+    "id": 2050,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -711,7 +1011,13 @@
     ],
     "correct": 1,
     "explanation": "O AWS Identity and Access Management (IAM) permite gerenciar usuários, grupos e funções para controlar quem pode acessar e quais ações podem ser executadas nos serviços e recursos da AWS.",
-    "id": 2051
+    "id": 2051,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -725,7 +1031,13 @@
     ],
     "correct": 1,
     "explanation": "O AWS WAF (Web Application Firewall) protege aplicações web de ataques que podem afetar a disponibilidade, comprometer a segurança ou consumir recursos excessivos, filtrando o tráfego HTTP/S.",
-    "id": 2052
+    "id": 2052,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -739,7 +1051,13 @@
     ],
     "correct": 2,
     "explanation": "SSE-S3 é uma opção de criptografia do lado do servidor onde a AWS gerencia as chaves de criptografia usando uma chave exclusiva para cada objeto e criptografa os dados antes de salvá-los no disco.",
-    "id": 2053
+    "id": 2053,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -753,7 +1071,13 @@
     ],
     "correct": 1,
     "explanation": "O AWS CloudTrail registra as ações tomadas em sua conta AWS, permitindo a auditoria de governança, conformidade, segurança e análise operacional.",
-    "id": 2054
+    "id": 2054,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -767,7 +1091,13 @@
     ],
     "correct": 1,
     "explanation": "Security Groups atuam como firewalls virtuais no nível da instância, controlando o tráfego de entrada e saída para as instâncias EC2, sendo o método mais granular para proteger instâncias individuais.",
-    "id": 2055
+    "id": 2055,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -781,7 +1111,13 @@
     ],
     "correct": 2,
     "explanation": "Reserved Instances oferecem descontos significativos (até 75%) em comparação com as On-Demand, em troca de um compromisso de uso por 1 ou 3 anos, ideal para cargas de trabalho estáveis.",
-    "id": 2056
+    "id": 2056,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -795,7 +1131,13 @@
     ],
     "correct": 2,
     "explanation": "O AWS Instance Scheduler é uma solução sem servidor que permite configurar horários de início e término para instâncias EC2 e RDS, ajudando a economizar custos em ambientes que não exigem operação contínua.",
-    "id": 2057
+    "id": 2057,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -809,7 +1151,13 @@
     ],
     "correct": 1,
     "explanation": "O Amazon S3 Standard-IA (Infrequent Access) é ideal para dados acessados com pouca frequência, mas que exigem acesso rápido quando necessário, oferecendo um custo de armazenamento menor que o S3 Standard.",
-    "id": 2058
+    "id": 2058,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -823,7 +1171,13 @@
     ],
     "correct": 2,
     "explanation": "Spot Instances permitem que você solicite capacidade EC2 não utilizada com grandes descontos em comparação com as instâncias On-Demand. Elas podem ser interrompidas, tornando-as ideais para cargas de trabalho flexíveis e tolerantes a falhas.",
-    "id": 2059
+    "id": 2059,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -837,7 +1191,13 @@
     ],
     "correct": 2,
     "explanation": "O AWS Cost Explorer permite visualizar, entender e gerenciar seus custos e uso da AWS ao longo do tempo, fornecendo relatórios e análises detalhadas.",
-    "id": 2060
+    "id": 2060,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -851,7 +1211,13 @@
     ],
     "correct": 2,
     "explanation": "O Elastic Load Balancer (ELB) distribui automaticamente o tráfego de entrada para múltiplos destinos, como instâncias EC2, em uma ou mais Zonas de Disponibilidade, garantindo alta disponibilidade e tolerância a falhas para a aplicação.",
-    "id": 2061
+    "id": 2061,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -865,7 +1231,13 @@
     ],
     "correct": 2,
     "explanation": "S3 Standard é a classe de armazenamento de objetos do Amazon S3 projetada para dados de uso geral que são acessados com frequência, oferecendo alta durabilidade, alta disponibilidade e baixa latência.",
-    "id": 2062
+    "id": 2062,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -879,7 +1251,13 @@
     ],
     "correct": 2,
     "explanation": "Security Groups atuam como firewalls de nível de instância para instâncias EC2, controlando o tráfego permitido de entrada e saída. Eles são stateful, o que significa que se você permitir o tráfego de entrada, o tráfego de saída correspondente é automaticamente permitido.",
-    "id": 2063
+    "id": 2063,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -893,7 +1271,13 @@
     ],
     "correct": 2,
     "explanation": "Savings Plans e instâncias reservadas (Reserved Instances) são modelos de precificação da AWS projetados para reduzir os custos de instâncias EC2 (e outros serviços) para cargas de trabalho de longo prazo com uso previsível. Savings Plans são mais flexíveis que as instâncias reservadas tradicionais, permitindo economias em troca de um compromisso de uso contínuo por 1 ou 3 anos.",
-    "id": 2064
+    "id": 2064,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -907,7 +1291,13 @@
     ],
     "correct": 3,
     "explanation": "Um Auto Scaling Group (ASG) permite que você defina e mantenha a disponibilidade da sua aplicação e dimensione automaticamente sua frota de instâncias EC2 para cima ou para baixo de acordo com as condições definidas. Ele trabalha em conjunto com um ELB para distribuir o tráfego entre as instâncias disponíveis.",
-    "id": 2065
+    "id": 2065,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -921,7 +1311,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon CloudFront é um serviço de Content Delivery Network (CDN) que acelera a entrega de conteúdo estático e dinâmico da web aos usuários, armazenando em cache em locais de borda globais, reduzindo a latência.",
-    "id": 2066
+    "id": 2066,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -935,7 +1331,13 @@
     ],
     "correct": 2,
     "explanation": "O uso de AWS IAM Roles (Funções do IAM) para instâncias EC2 é a melhor prática de segurança. Ele permite que as instâncias obtenham credenciais temporárias para acessar outros serviços AWS, eliminando a necessidade de armazenar credenciais estáticas na instância ou no código da aplicação.",
-    "id": 2067
+    "id": 2067,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -949,7 +1351,13 @@
     ],
     "correct": 2,
     "explanation": "S3 Lifecycle Policies permitem automatizar a transição de objetos para classes de armazenamento mais econômicas (como S3 Standard-IA ou S3 Glacier) e/ou a exclusão de objetos após um período definido, otimizando significativamente os custos de armazenamento.",
-    "id": 2068
+    "id": 2068,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -963,7 +1371,13 @@
     ],
     "correct": 2,
     "explanation": "Amazon S3 é um serviço de armazenamento de objetos altamente durável, projetado para durabilidade de 99,999999999% (11 noves) de objetos, armazenando dados de forma redundante em várias Zonas de Disponibilidade. Ele é ideal para backups, arquivos e armazenamento de dados primários.",
-    "id": 2069
+    "id": 2069,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -977,7 +1391,13 @@
     ],
     "correct": 1,
     "explanation": "General Purpose SSD (gp3) é o tipo de volume EBS de uso geral recomendado para a maioria das cargas de trabalho, oferecendo um bom equilíbrio de preço e desempenho para uma ampla gama de workloads transacionais e operacionais.",
-    "id": 2070
+    "id": 2070,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -991,7 +1411,13 @@
     ],
     "correct": 2,
     "explanation": "AWS WAF (Web Application Firewall) ajuda a proteger aplicações web contra exploits da web comuns que podem afetar a disponibilidade da aplicação, comprometer a segurança ou consumir recursos excessivos, como injeção de SQL, XSS, etc.",
-    "id": 2071
+    "id": 2071,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1005,7 +1431,13 @@
     ],
     "correct": 3,
     "explanation": "Instâncias Spot permitem que os usuários solicitem capacidade EC2 não utilizada com um preço de custo significativamente mais baixo. No entanto, essas instâncias podem ser interrompidas pela AWS com um aviso de dois minutos se a capacidade for necessária para instâncias On-Demand ou Reservadas.",
-    "id": 2072
+    "id": 2072,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1019,7 +1451,13 @@
     ],
     "correct": 2,
     "explanation": "A configuração Multi-AZ (Multiple Availability Zone) para Amazon RDS provisiona e mantém automaticamente uma réplica em espera síncrona em uma Zona de Disponibilidade diferente, garantindo alta disponibilidade e failover automático em caso de falha da instância primária ou da AZ.",
-    "id": 2073
+    "id": 2073,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1033,7 +1471,13 @@
     ],
     "correct": 2,
     "explanation": "A estratégia de Warm Standby permite ter um ambiente com recursos pré-escalados e sincronizados para ativar rapidamente em caso de desastre, atendendo bem a RTOs e RPOs na faixa de minutos. Um banco de dados Multi-AZ (como RDS Multi-AZ) oferece alta disponibilidade dentro de uma região, mas para DR entre regiões, uma configuração de Warm Standby ou Pilot Light é mais apropriada. Para RTO de 15 minutos e RPO de 5 minutos, Warm Standby com replicação de dados contínua (como logs do banco de dados ou replicação assíncrona) e servidores auto-scaling pré-configurados é ideal. Backup and Restore não atenderia o RTO. Pilot Light seria um pouco mais lento para ativar. Multi-site Active-Active é mais complexo e caro, e muitas vezes não é necessário para estes requisitos de RTO/RPO.",
-    "id": 2074
+    "id": 2074,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1047,7 +1491,13 @@
     ],
     "correct": 3,
     "explanation": "Para milhões de pequenos objetos e alto volume de requisições, é importante otimizar tanto o acesso quanto a distribuição. O S3 automaticamente escala para altas taxas de requisições, mas a limitação pode surgir quando muitos objetos compartilham os mesmos prefixos, levando a 'hot spots'. Configurar prefixos de objetos aleatórios (ex: usando hashes ou UUIDs como parte do prefixo) ajuda a distribuir as requisições de forma mais uniforme pelo namespace do S3, melhorando o paralelismo. O Amazon CloudFront é essencial para caching de borda, reduzindo a latência para usuários finais e desafogando as requisições diretas ao S3. S3 Intelligent-Tiering não otimiza a performance de acesso direto ao S3, apenas o custo baseado no padrão de acesso. S3 Standard-IA não é otimizado para acesso frequente. Múltiplos buckets não resolvem a questão dos hot spots e adicionam complexidade.",
-    "id": 2075
+    "id": 2075,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1061,7 +1511,13 @@
     ],
     "correct": 3,
     "explanation": "Para proteger contra as 10 principais vulnerabilidades do OWASP (ataques de injeção SQL, XSS, etc.) e DDoS na camada 7 (HTTP/HTTPS), o AWS WAF é a solução primária. Ele permite criar regras personalizadas ou usar Managed Rules para filtrar tráfego malicioso antes que ele atinja a aplicação. O AWS Shield Standard oferece proteção automática e gratuita contra os ataques DDoS mais comuns e frequentes. No entanto, para proteção contra DDoS na camada 7 e suporte de resposta a incidentes, o AWS Shield Advanced é necessário, pois oferece detecção mais sofisticada e visibilidade aprimorada. Security Groups, Network ACLs e KMS são importantes para a segurança geral, mas não abordam diretamente as vulnerabilidades do OWASP Top 10 ou DDoS na camada 7 como o WAF e o Shield Advanced.",
-    "id": 2076
+    "id": 2076,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1075,7 +1531,13 @@
     ],
     "correct": 2,
     "explanation": "A estratégia mais eficaz para este cenário é uma combinação de Savings Plans, Spot Instances e On-Demand. Savings Plans oferecem descontos significativos (até 72%) em troca de um compromisso de uso de computação (em USD/hora) por 1 ou 3 anos, cobrindo uma ampla gama de tipos de instâncias EC2 e Fargate, sendo ideais para a capacidade de base previsível. Spot Instances são excelentes para cargas de trabalho tolerantes a interrupções (como processamento em lote), oferecendo descontos de até 90% em comparação com On-Demand. Instâncias On-Demand devem ser usadas para picos inesperados ou cargas de trabalho que não se encaixam nas outras categorias, oferecendo a máxima flexibilidade. Reserved Instances são boas, mas Savings Plans oferecem mais flexibilidade em termos de tipo de instância e região.",
-    "id": 2077
+    "id": 2077,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1089,7 +1551,13 @@
     ],
     "correct": 2,
     "explanation": "O Amazon RDS Multi-AZ foca em alta disponibilidade e failover automático para uma instância secundária em caso de falha, mas a instância secundária não é usada para leitura normal, apenas para failover. Para distribuir a carga de leitura e melhorar a performance para aplicações intensivas em leitura, a solução correta é adicionar Read Replicas do RDS. As Read Replicas são instâncias independentes que replicam os dados da instância primária e podem ser usadas para atender requisições de leitura, desafogando a instância primária. Manter a configuração Multi-AZ na instância primária continua garantindo a resiliência em caso de falha da primária. ElastiCache é uma boa opção para cache, mas as Read Replicas são a solução nativa para escalabilidade de leitura de banco de dados relacional. Migrar para Aurora seria uma solução mais drástica e custosa, embora eficaz.",
-    "id": 2078
+    "id": 2078,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1103,7 +1571,13 @@
     ],
     "correct": 2,
     "explanation": "Para reduzir a latência e melhorar a experiência do usuário para conteúdo estático em escala global, a implementação de um Content Delivery Network (CDN) como o Amazon CloudFront é a solução mais eficaz. O CloudFront armazena em cache o conteúdo estático em pontos de presença (Edge Locations) distribuídos globalmente, entregando-o aos usuários a partir do local mais próximo, o que diminui drasticamente a latência. As outras opções não abordam a distribuição global ou o cache de borda de forma eficaz para conteúdo estático.",
-    "id": 2079
+    "id": 2079,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1117,7 +1591,13 @@
     ],
     "correct": 2,
     "explanation": "Para atender ao requisito de criptografia em repouso com uma chave que a empresa possa controlar, a melhor opção é Server-Side Encryption com chaves gerenciadas pelo AWS Key Management Service (SSE-KMS). Com SSE-KMS, o S3 criptografa seus objetos usando uma chave CMK (Customer Master Key) que você pode gerenciar no KMS. Isso lhe dá controle sobre a chave de criptografia, incluindo a capacidade de definir políticas de acesso e auditar o uso da chave. SSE-S3 é gerenciado pela AWS e você não tem controle direto sobre as chaves. Client-Side Encryption adiciona complexidade e pode não ser o preferido se a AWS pode gerenciar a criptografia no lado do servidor. SSE-C requer que a empresa gerencie suas próprias chaves e as forneça em cada requisição, o que é mais complexo e menos gerenciável na maioria dos casos.",
-    "id": 2080
+    "id": 2080,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1131,7 +1611,13 @@
     ],
     "correct": 3,
     "explanation": "O Amazon S3 Intelligent-Tiering é projetado especificamente para otimizar custos de armazenamento para dados com padrões de acesso desconhecidos ou variáveis. Ele move automaticamente os objetos entre duas camadas de acesso (uma para acesso frequente e outra para acesso infrequente) com base nos padrões de acesso, sem impacto na performance e sem taxas de recuperação. Isso se encaixa perfeitamente no cenário descrito, onde os dados são acessados com frequência nos primeiros 30 dias e depois raramente. Mover para S3 Standard-IA manualmente (ou com política de ciclo de vida) é uma boa alternativa se o padrão de acesso for muito previsível, mas o Intelligent-Tiering remove a necessidade de adivinhação. Glacier Deep Archive teria custos de recuperação mais altos e tempos de recuperação mais longos do que 'poucas horas'. S3 Standard seria o mais caro para dados acessados infrequentemente.",
-    "id": 2081
+    "id": 2081,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1145,7 +1631,13 @@
     ],
     "correct": 1,
     "explanation": "Para um banco de dados relacional que suporta uma aplicação crítica e sem estado em um ASG Multi-AZ, a melhor prática para resiliência é utilizar o Amazon RDS com Multi-AZ habilitado. Essa configuração provisiona uma réplica síncrona do banco de dados em uma AZ diferente dentro da mesma região. Em caso de falha da AZ primária ou da instância de banco de dados, o RDS automaticamente faz o failover para a réplica secundária, minimizando o tempo de inatividade. Isso garante alta disponibilidade e resiliência para o componente de banco de dados, complementando a distribuição das instâncias EC2 em múltiplas AZs.",
-    "id": 2082
+    "id": 2082,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1159,7 +1651,13 @@
     ],
     "correct": 1,
     "explanation": "Quando a carga de leitura é o principal problema em um banco de dados relacional, a estratégia mais eficaz e escalável é configurar Read Replicas do RDS. As Read Replicas replicam os dados de forma assíncrona da instância primária e podem ser usadas para atender requisições de leitura, aliviando a carga da instância primária. A instância primária continua a lidar com todas as operações de escrita e com as leituras que exigem consistência forte e imediata. Aumentar o tamanho da instância pode ajudar até certo ponto, mas não oferece escalabilidade horizontal de leitura. DynamoDB é uma boa opção para bancos de dados NoSQL, mas não é a solução para um problema de performance em um banco de dados relacional existente. O cache na aplicação é útil, mas as Read Replicas são uma solução de escalabilidade de leitura de banco de dados.",
-    "id": 2083
+    "id": 2083,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1173,7 +1671,13 @@
     ],
     "correct": 2,
     "explanation": "Para um banco de dados relacional gerenciado com dados PII, a abordagem mais segura na AWS é usar o Amazon RDS com criptografia em repouso habilitada via AWS KMS e forçar SSL/TLS para todas as conexões de banco de dados. A criptografia em repouso do RDS com KMS garante que os dados armazenados no disco, backups e snapshots sejam criptografados. Forçar SSL/TLS para as conexões garante que os dados sejam criptografados em trânsito entre a aplicação e o banco de dados. Gerenciar a criptografia no nível da aplicação é possível, mas o RDS oferece uma solução integrada. Provisionar EC2 com um banco de dados auto-gerenciado aumenta a complexidade de gerenciamento e segurança. S3 é para armazenamento de objetos, não um banco de dados relacional para PII.",
-    "id": 2084
+    "id": 2084,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1187,7 +1691,13 @@
     ],
     "correct": 3,
     "explanation": "Para logs de auditoria que são raramente acessados, precisam ser retidos por 7 anos, podem levar algumas horas para recuperação e têm como principal objetivo a minimização de custos, o Amazon S3 Glacier e o S3 Glacier Deep Archive são as classes de armazenamento mais adequadas. O Glacier oferece custos de armazenamento muito baixos com tempos de recuperação que variam de minutos a horas. Para retenção de longo prazo e custo mínimo absoluto, o Glacier Deep Archive é ideal, com os menores custos de armazenamento e tempos de recuperação de horas. Uma política de ciclo de vida que primeiro move para o Glacier e depois para o Deep Archive (se houver uma fase inicial onde o acesso 'infrequente' ainda é mais provável que 'quase nunca') otimiza ainda mais, garantindo que o custo seja o menor possível para a maior parte do período de retenção. S3 Standard-IA seria mais caro e não é ideal para retenção de 7 anos com acesso raríssimo. Glacier Instant Retrieval é mais caro que Glacier/Deep Archive e não é necessário dado o requisito de 'algumas horas' para recuperação.",
-    "id": 2085
+    "id": 2085,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1201,7 +1711,13 @@
     ],
     "correct": 1,
     "explanation": "Para alcançar um RTO de menos de 1 minuto em caso de falha de AZ, a aplicação deve ser projetada para ser tolerante a falhas de AZ. Isso significa que os componentes devem ser distribuídos por múltiplas AZs e ser capazes de continuar operando se uma AZ falhar. Distribuir os microsserviços (em containers) em múltiplas AZs através de um serviço como ECS ou EKS, e usar um banco de dados RDS Multi-AZ, atende a esse requisito. O ALB distribuiria o tráfego entre as AZs. O RDS Multi-AZ garante failover automático para o banco de dados em outra AZ. Implementar em uma única AZ é o oposto da resiliência de AZ. Lightsail não oferece a mesma granularidade de controle e resiliência. Backup and Restore não atende a um RTO de menos de 1 minuto.",
-    "id": 2086
+    "id": 2086,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1215,7 +1731,13 @@
     ],
     "correct": 2,
     "explanation": "A otimização da distribuição das tabelas (DISTSTYLE) e das chaves de classificação (SORTKEY) é um dos fatores mais críticos para o desempenho do Amazon Redshift. O DISTSTYLE determina como os dados são distribuídos entre os nós de computação, enquanto o SORTKEY influencia a forma como os dados são armazenados fisicamente no disco. Configurar esses parâmetros corretamente para as suas consultas mais frequentes pode reduzir significativamente a quantidade de dados que precisam ser movidos entre nós ou lidos do disco, melhorando drasticamente o desempenho. Aumentar o número de nós é uma opção de escala, mas a otimização interna (DISTSTYLE/SORTKEY) deve ser feita primeiro. Redshift Spectrum é para integrar dados do S3, não primariamente para otimizar consultas existentes dentro do cluster. Aurora é um banco de dados relacional transacional, não um data warehouse massivamente paralelo (MPP) como o Redshift.",
-    "id": 2087
+    "id": 2087,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1229,7 +1751,13 @@
     ],
     "correct": 2,
     "explanation": "Para uma API RESTful com autenticação e autorização baseada na identidade do usuário, o Amazon API Gateway, em conjunto com um Authorizer Lambda personalizado (ou um Authorizer Cognito User Pool), é a solução ideal. O API Gateway atua como um 'front door' para a API, e o Authorizer Lambda pode ser usado para validar tokens JWT, chaves de API, ou outros mecanismos de autenticação em cada requisição antes que ela chegue à sua API backend (hospedada em EC2). Isso garante que apenas requisições autenticadas e autorizadas alcancem sua lógica de negócio. Security Groups e Network ACLs controlam o acesso de rede, não a identidade do usuário. AWS WAF protege contra vulnerabilidades web, mas não lida com autenticação/autorização de usuário. Integrar IAM diretamente com a API seria mais complexo para usuários externos e não se encaixa tão bem com um modelo de API RESTful externo quanto o API Gateway.",
-    "id": 2088
+    "id": 2088,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1243,7 +1771,13 @@
     ],
     "correct": 2,
     "explanation": "Para ambientes de teste e desenvolvimento que são usados apenas durante o horário comercial e desligados fora dele, a estratégia mais econômica é usar instâncias On-Demand e implementar um script para parar e iniciar as instâncias conforme necessário. Você só paga pelas horas em que as instâncias estão em execução. Instâncias Spot podem ser interrompidas, o que não é ideal para ambientes de desenvolvimento onde o trabalho está em andamento. Reserved Instances e Savings Plans são projetados para cargas de trabalho de longa duração e alta utilização (geralmente 24/7), e não seriam tão vantajosos para instâncias que rodam apenas 10 horas por dia e são desligadas, pois o desconto se aplicaria apenas ao período de execução e o compromisso seria pago mesmo quando inativas (para RIs de capacidade) ou o uso comprometido não seria totalmente utilizado (para SPs).",
-    "id": 2089
+    "id": 2089,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1257,7 +1791,13 @@
     ],
     "correct": 0,
     "explanation": "O padrão de Circuit Breaker (disjuntor) é ideal para isolar falhas em componentes externos ou de terceiros. Quando o componente de terceiros começa a falhar repetidamente, o disjuntor 'abre', impedindo que o sistema principal continue enviando requisições que provavelmente falharão. Isso evita que o sistema principal seja sobrecarregado ou bloqueado por um componente que não responde, e permite que ele continue processando outras tarefas. Após um tempo configurável, o disjuntor tenta novamente algumas requisições, e se for bem-sucedido, 'fecha' novamente. Aumentar instâncias não resolve a falha do componente externo. Migrar para um servidor dedicado não isola a falha lógica. Um único SQS Queue não impede que o sistema principal seja impactado pela falha do componente de terceiros ao tentar processar mensagens.",
-    "id": 2090
+    "id": 2090,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1271,7 +1811,13 @@
     ],
     "correct": 2,
     "explanation": "Erros de latência e throttling no DynamoDB durante picos de tráfego são indicadores diretos de que a tabela não tem capacidade de leitura e escrita provisionada suficiente para lidar com a carga. A solução mais imediata e direta é aumentar as unidades de capacidade de leitura (RCU) e escrita (WCU) provisionadas para a tabela do DynamoDB para corresponder ao padrão de tráfego esperado. Habilitar o DynamoDB Auto Scaling também pode ajudar a gerenciar a capacidade dinamicamente. DAX é uma ótima opção para caching e pode reduzir custos e latência em leituras, mas se o problema for capacidade insuficiente, DAX pode não ser suficiente por si só. Migrar para RDS é uma mudança de arquitetura e não a solução direta para problemas de capacidade do DynamoDB.",
-    "id": 2091
+    "id": 2091,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1285,7 +1831,13 @@
     ],
     "correct": 1,
     "explanation": "Para permitir que instâncias EC2 em uma sub-rede privada acessem a internet pública (para baixar patches, etc.) sem ter um endereço IP público e sem serem diretamente acessíveis pela internet, a solução correta é usar um NAT Gateway (Network Address Translation Gateway). O NAT Gateway é provisionado em uma sub-rede pública e permite que as instâncias em sub-redes privadas iniciem conexões de saída para a internet. O tráfego de resposta é roteado de volta para as instâncias privadas através do NAT Gateway. Um IGW em uma sub-rede privada exporia as instâncias. VPC Endpoints são para acesso privado a serviços AWS específicos, não para a internet em geral. Anexar EIPs tornaria as instâncias publicamente acessíveis.",
-    "id": 2092
+    "id": 2092,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1299,7 +1851,13 @@
     ],
     "correct": 3,
     "explanation": "Para um grande número de instâncias EC2 que operam 24/7 e que se espera que permaneçam ativas por pelo menos um ano, com o objetivo de reduzir custos de forma previsível e substancial, os Savings Plans (de Compute ou EC2 Instance) são a melhor recomendação. Eles oferecem flexibilidade significativa em comparação com as Reserved Instances tradicionais, permitindo que você se comprometa com um valor de uso horário (em USD/hora) em troca de um desconto. Isso abrange automaticamente qualquer família, tamanho, AZ ou região de instância (para Compute Savings Plan) ou tipo de instância dentro de uma família e região (para EC2 Instance Savings Plan), o que é ideal para cargas de trabalho de longo prazo e alta utilização. RIs específicas podem ser limitantes se houver mudanças nas necessidades. Spot Instances não são para cargas de trabalho críticas e 24/7. Auto Scaling reduz custos em cargas de trabalho variáveis, mas não oferece os mesmos descontos de compromisso para cargas de trabalho base 24/7.",
-    "id": 2093
+    "id": 2093,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1313,7 +1871,13 @@
     ],
     "correct": 0,
     "explanation": "Distribuir instâncias com um Auto Scaling Group em múltiplas Zonas de Disponibilidade e usar um Application Load Balancer é a prática recomendada para alta disponibilidade e tolerância a falhas de AZ. O ALB distribui o tráfego automaticamente para as AZs saudáveis, e o ASG garante que um número mínimo de instâncias esteja sempre disponível.",
-    "id": 2094
+    "id": 2094,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1327,7 +1891,13 @@
     ],
     "correct": 1,
     "explanation": "As réplicas de leitura do Amazon RDS são projetadas especificamente para escalar o desempenho de leitura de bancos de dados relacionais. Elas permitem que as leituras sejam direcionadas para instâncias separadas, aliviando a carga da instância primária e sem impactar as operações de escrita da instância principal. A opção 3 pode ser uma solução a longo prazo, mas envolveria uma refatoração da aplicação. A opção 4 seria uma boa complementação, mas réplicas de leitura são a solução mais direta para o problema de 'leitura significativamente maior que escritas' em RDS.",
-    "id": 2095
+    "id": 2095,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1341,7 +1911,13 @@
     ],
     "correct": 0,
     "explanation": "Usar o Amazon CloudFront com um Origin Access Control (OAC) é a prática recomendada para servir conteúdo privado do S3 através de uma CDN. O OAC permite que o CloudFront acesse o bucket S3 de forma segura e restrita, e a aplicação pode então controlar o acesso dos usuários ao CloudFront (por exemplo, via URLs assinadas ou cookies assinados se a autenticação for na própria CDN, ou simplesmente pela própria autenticação da aplicação se o CloudFront estiver servindo o front-end). Isso impede o acesso direto ao S3 e aproveita a performance da CDN.",
-    "id": 2096
+    "id": 2096,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1355,7 +1931,13 @@
     ],
     "correct": 3,
     "explanation": "EC2 Savings Plans oferecem descontos significativos (até 72%) em troca de um compromisso de uso por 1 ou 3 anos. Eles são altamente flexíveis, pois se aplicam a qualquer uso de EC2 (independentemente da família da instância, tamanho, AZ ou região para Compute Savings Plans), tornando-os ideais para cargas de trabalho previsíveis, mesmo que não 24/7, pois o compromisso de gasto é aplicado à taxa por hora. Instâncias On-Demand são as mais caras. Spot são para cargas de trabalho tolerantes a interrupções. RIs são mais específicas para tipos de instância e sistemas operacionais, sendo menos flexíveis que Savings Plans.",
-    "id": 2097
+    "id": 2097,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1369,7 +1951,13 @@
     ],
     "correct": 2,
     "explanation": "Para uma aplicação stateless com requisitos de RTO/RPO baixos, mas buscando custo-eficácia em relação a um Multi-site Active/Active, o Warm Standby é a melhor opção. Ele envolve ter uma versão reduzida (menor escala) da aplicação em execução contínua na região secundária, pronta para ser escalada rapidamente em caso de falha da região primária. Pilot Light é mais barato, mas tem um RTO/RPO mais alto. Backup and Restore tem o RTO/RPO mais alto e é menos eficaz para essa necessidade. Multi-site Active/Active oferece os melhores RTO/RPO, mas é significativamente mais caro.",
-    "id": 2098
+    "id": 2098,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1383,7 +1971,13 @@
     ],
     "correct": 1,
     "explanation": "O Amazon DynamoDB é um banco de dados NoSQL de chave-valor que oferece desempenho consistente de milissegundos de um dígito em qualquer escala, sendo ideal para armazenar e recuperar bilhões de itens pequenos com baixa latência e alta taxa de transferência. S3 é para objetos maiores e arquivos estáticos (embora suporte objetos pequenos, a latência pode ser maior do que DynamoDB para acesso a bilhões de itens individuais). RDS é um banco de dados relacional e não é otimizado para bilhões de objetos pequenos com acesso de chave-valor. EBS é um armazenamento de bloco para EC2.",
-    "id": 2099
+    "id": 2099,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1397,7 +1991,13 @@
     ],
     "correct": 2,
     "explanation": "O Amazon Cognito User Pools oferece uma solução gerenciada para autenticação e pode ser facilmente integrado ao Amazon API Gateway como um autorizador. Ele valida tokens JWT fornecidos pelos usuários e injeta informações de contexto do usuário (claims do token) no evento Lambda, permitindo que a função Lambda saiba quem está invocando-a sem ter que gerenciar a lógica de autenticação. Autorizadores Lambda customizados (opção 0) exigem mais desenvolvimento e manutenção. IAM (opção 1) é para acesso de serviços ou usuários IAM, não para usuários de aplicações. Autenticar no Lambda (opção 3) seria um anti-padrão e adicionaria complexidade.",
-    "id": 2100
+    "id": 2100,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1411,7 +2011,13 @@
     ],
     "correct": 2,
     "explanation": "O S3 Standard é adequado para acesso frequente. O S3 Standard-IA é para dados acessados com menos frequência, mas que precisam de recuperação rápida. A solução mais custo-eficaz para este cenário é usar uma política de ciclo de vida (Lifecycle Policy) do S3 para mover automaticamente os arquivos do S3 Standard (onde são frequentemente acessados) para o S3 Standard-IA (onde o custo de armazenamento é menor, mas com custo por acesso) após 30 dias. O S3 Glacier Deep Archive é muito mais barato, mas tem um tempo de recuperação de horas, o que não atende ao requisito de 'minutos'.",
-    "id": 2101
+    "id": 2101,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1425,7 +2031,13 @@
     ],
     "correct": 1,
     "explanation": "A configuração Multi-AZ do Amazon RDS cria automaticamente uma réplica síncrona em espera (standby) em uma Zona de Disponibilidade diferente. Em caso de falha da AZ primária ou da instância, o RDS faz um failover automático para a réplica em standby, geralmente em menos de 60 segundos, e como é síncrona, o RPO é próximo de zero. Réplicas de leitura (opção 2) são assíncronas e destinadas a escala de leitura, não a alta disponibilidade de escrita e failover automático. Aurora Global Database (opção 3) oferece um DR regional ainda mais robusto, mas Multi-AZ é a solução primária para HA dentro de uma região com os RTO/RPO especificados para RDS PostgreSQL.",
-    "id": 2102
+    "id": 2102,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1439,7 +2051,13 @@
     ],
     "correct": 1,
     "explanation": "O Amazon CloudFront é uma Content Delivery Network (CDN) que armazena em cache o conteúdo em pontos de presença (PoPs) localizados globalmente. Ao servir conteúdo estático (como imagens e vídeos) através do CloudFront, os usuários obtêm o conteúdo do PoP mais próximo, o que reduz significativamente a latência e melhora a experiência do usuário. S3 Transfer Acceleration ajuda a acelerar uploads para S3, não entrega de conteúdo para o usuário final. EC2 é um servidor, não uma CDN. ElastiCache é para cache de dados de aplicações ou bancos de dados.",
-    "id": 2103
+    "id": 2103,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1453,7 +2071,13 @@
     ],
     "correct": 2,
     "explanation": "SSE-KMS permite que os dados sejam criptografados em repouso no S3 usando chaves gerenciadas pelo AWS KMS. Isso oferece mais controle sobre as chaves (por exemplo, permissões de uso, rotação de chaves) do que o SSE-S3, onde a AWS gerencia totalmente a chave. Além disso, as chaves são únicas para a conta ou para as chaves criadas no KMS. SSE-C exige que o cliente gerencie as chaves. A criptografia do lado do cliente é uma opção, mas a questão pede que a criptografia seja 'gerenciada pela AWS' e com controle sobre a chave.",
-    "id": 2104
+    "id": 2104,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1467,7 +2091,13 @@
     ],
     "correct": 1,
     "explanation": "Para cargas de trabalho que são executadas esporadicamente, por curtos períodos, com duração e frequência imprevisíveis, o AWS Lambda é a solução mais custo-eficaz. Você paga apenas pelo tempo de computação real consumido (por milissegundo) e pelo número de invocações, sem necessidade de provisionar ou gerenciar servidores subjacentes. EC2 On-Demand e Fargate incorrem em custos mesmo quando o serviço está ocioso (ou por no mínimo segundos/minutos). Instâncias Spot poderiam ser uma opção para cargas de trabalho de batch flexíveis, mas o Lambda é mais adequado para a imprevisibilidade e curtas durações sem gerenciar a infraestrutura.",
-    "id": 2105
+    "id": 2105,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1481,7 +2111,13 @@
     ],
     "correct": 1,
     "explanation": "O Amazon S3 Glacier oferece armazenamento de arquivamento de baixo custo com tempos de recuperação que variam de minutos a horas. Para logs que são raramente acessados após 30 dias e precisam de recuperação em algumas horas, mover os dados para o S3 Glacier (agora chamado S3 Glacier Flexible Retrieval) através de uma política de ciclo de vida após 30 dias é a opção mais custo-eficaz, enquanto mantém a resiliência e a durabilidade inerentes ao S3. S3 Standard-IA ou S3 One Zone-IA seriam mais caros para armazenamento de longo prazo. S3 Intelligent-Tiering poderia ser uma opção, mas se você sabe o padrão de acesso, uma política de ciclo de vida direta para Glacier é mais otimizada para custo.",
-    "id": 2106
+    "id": 2106,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1495,7 +2131,13 @@
     ],
     "correct": 1,
     "explanation": "O Amazon Kinesis Data Streams é projetado especificamente para ingestão e processamento de dados de streaming em tempo real em larga escala. Ele pode lidar com altas taxas de ingestão e picos de tráfego, bufferizando os dados de forma durável e distribuindo-os para consumidores, garantindo que nenhum dado seja perdido e que o processamento possa ocorrer eficientemente. SQS é uma fila de mensagens para desacoplamento de microserviços, não para streaming de dados em massa. S3 é para armazenamento de objetos, não para ingestão em tempo real. AWS Batch é para cargas de trabalho de batch.",
-    "id": 2107
+    "id": 2107,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1509,7 +2151,13 @@
     ],
     "correct": 2,
     "explanation": "Para rotear o tráfego do S3 de dentro de uma VPC diretamente para o S3 sem passar pela internet pública, você deve usar um Gateway VPC Endpoint para S3. Este tipo de endpoint é específico para S3 e DynamoDB, e atua como um alvo para rotas na sua tabela de rotas da VPC, permitindo acesso privado e seguro. O Interface Endpoint é para outros serviços AWS e requer Security Groups. Security Groups (opção 0) e políticas de bucket baseadas em IP público (opção 3) não impedem que o tráfego passe pela internet pública se um endpoint não for configurado.",
-    "id": 2108
+    "id": 2108,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1523,7 +2171,13 @@
     ],
     "correct": 2,
     "explanation": "O Amazon Aurora Serverless é ideal para cargas de trabalho intermitentes e imprevisíveis ou que variam muito, pois ele escala automaticamente a capacidade do banco de dados para cima e para baixo, e pode até mesmo escalar para zero quando inativo, resultando em economia significativa de custos. RDS Reserved Instances (opção 1) são boas para cargas de trabalho *consistentes e contínuas*, mas menos eficazes para grandes variações de uso. Desligar e ligar uma instância RDS (opção 3) é manual e pode causar tempo de inatividade e perda de dados temporária. Escalar manualmente (opção 0) é trabalhoso e propenso a erros.",
-    "id": 2109
+    "id": 2109,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1537,7 +2191,13 @@
     ],
     "correct": 2,
     "explanation": "Uma Dead-Letter Queue (DLQ) é crucial para garantir a resiliência em sistemas baseados em filas. Se uma mensagem não puder ser processada com sucesso após um número configurável de tentativas, ela é movida para a DLQ. Isso impede que mensagens problemáticas bloqueiem a fila principal e permite que as mensagens falhas sejam inspecionadas e, se necessário, reenviadas para processamento. Limite de visibilidade (opção 0) e Long Polling (opção 1) são para performance e eficiência de leitura, não para lidar com falhas de processamento. SQS FIFO (opção 3) garante a ordem, mas não lida com mensagens não processáveis.",
-    "id": 2110
+    "id": 2110,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1551,7 +2211,13 @@
     ],
     "correct": 3,
     "explanation": "Para armazenar petabytes de dados brutos e permitir consultas analíticas escaláveis e eficientes, uma 'data lake' construída no Amazon S3, combinada com o AWS Glue Data Catalog para metadados e o Amazon Athena para consultas interativas usando SQL padrão, é a arquitetura mais comum e custo-eficaz. O S3 oferece escalabilidade ilimitada e durabilidade, enquanto Athena e Glue oferecem recursos de consulta 'serverless' sobre esses dados. Redshift (opção 2) é um data warehouse, otimizado para dados estruturados, e pode ser caro em escala de petabytes para dados brutos sem pré-processamento. RDS e DynamoDB não são projetados para volumes de dados de petabytes para análises.",
-    "id": 2111
+    "id": 2111,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1565,7 +2231,13 @@
     ],
     "correct": 2,
     "explanation": "O AWS Shield Standard é habilitado automaticamente para todos os clientes AWS e oferece proteção contra a maioria dos ataques DDoS comuns em camadas 3 e 4 sem custo adicional. No entanto, para websites 'constantemente sob ataque DDoS' e que são críticos, o AWS Shield Advanced oferece proteção aprimorada, detecção quase em tempo real, mitigação automática avançada e acesso à equipe de resposta a DDoS (DRT) da AWS. AWS WAF (opção 0) é para proteção em nível de aplicação (camada 7). GuardDuty (opção 1) é um serviço de detecção de ameaças, não de mitigação de DDoS.",
-    "id": 2112
+    "id": 2112,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1579,7 +2251,13 @@
     ],
     "correct": 2,
     "explanation": "Instâncias Spot do Amazon EC2 são ideais para cargas de trabalho que podem tolerar interrupções, como tarefas de computação intensiva que podem ser interrompidas e retomadas. Elas oferecem descontos significativos (até 90%) em comparação com as instâncias On-Demand, aproveitando a capacidade EC2 não utilizada. Instâncias On-Demand são as mais caras. RIs são para cargas de trabalho contínuas e previsíveis. Instâncias Dedicadas são para conformidade ou licenciamento, sendo mais caras.",
-    "id": 2113
+    "id": 2113,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1593,7 +2271,13 @@
     ],
     "correct": 0,
     "explanation": "A configuração Multi-AZ para Amazon RDS provisiona uma instância de espera síncrona em uma Zona de Disponibilidade diferente, garantindo alta disponibilidade e failover automático em caso de falha da AZ primária. Isso atende diretamente aos requisitos de tolerância a falhas de uma Zona de Disponibilidade. Read Replicas são para escalabilidade de leitura, não para alta disponibilidade do banco de dados primário.",
-    "id": 2114
+    "id": 2114,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1607,7 +2291,13 @@
     ],
     "correct": 0,
     "explanation": "Um Application Load Balancer (ALB) distribuirá o tráfego entre instâncias de forma eficiente. Um Auto Scaling Group (ASG) configurado para múltiplas Zonas de Disponibilidade garantirá que o número correto de instâncias esteja em execução e que as instâncias com falha sejam substituídas automaticamente, promovendo alta disponibilidade e escalabilidade. Esta é a arquitetura padrão para aplicações web resilientes e escaláveis na AWS.",
-    "id": 2115
+    "id": 2115,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1621,7 +2311,13 @@
     ],
     "correct": 0,
     "explanation": "A Replicação entre Regiões (CRR) do S3 é a solução ideal para replicar objetos automaticamente entre buckets S3 em diferentes regiões AWS, melhorando a resiliência e permitindo que usuários de diferentes localizações acessem os dados de uma região geograficamente mais próxima com menor latência. O Object Versioning ajuda na recuperação de objetos deletados/modificados, Transfer Acceleration acelera uploads para S3 e CloudFront é uma CDN para cache de conteúdo, não replicação de dados S3 primários.",
-    "id": 2116
+    "id": 2116,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1635,7 +2331,13 @@
     ],
     "correct": 0,
     "explanation": "O Amazon ElastiCache (Redis ou Memcached) é ideal para armazenar em cache os resultados de consultas frequentes do banco de dados, reduzindo a carga no RDS e melhorando o tempo de resposta da aplicação. O Amazon CloudFront é uma Content Delivery Network (CDN) que armazena em cache conteúdo estático (imagens, CSS, JS) em locais de borda globalmente, reduzindo a latência para usuários finais e a carga no servidor de origem. Esta combinação é a mais eficaz para resolver ambos os gargalos de desempenho.",
-    "id": 2117
+    "id": 2117,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1649,7 +2351,13 @@
     ],
     "correct": 0,
     "explanation": "As Read Replicas do Amazon RDS permitem descarregar consultas de leitura da instância de banco de dados principal, distribuindo a carga e melhorando o desempenho de leitura. Isso é ideal para cenários onde as operações de leitura superam significativamente as operações de escrita, oferecendo uma solução escalável e relativamente simples para o problema. Aumentar IOPS ou sharding são opções, mas Read Replicas são geralmente a primeira e mais direta solução para este problema no RDS.",
-    "id": 2118
+    "id": 2118,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1663,7 +2371,13 @@
     ],
     "correct": 0,
     "explanation": "Os volumes EBS io2 Block Express são projetados para as cargas de trabalho mais exigentes, oferecendo as maiores taxas de IOPS e throughput com latência de milissegundos de um dígito, sendo ideais para bancos de dados NoSQL, bancos de dados relacionais e outras aplicações I/O intensivas que requerem desempenho extremo. gp3 é um bom SSD para a maioria dos casos, mas io2 Block Express é superior para requisitos extremos de performance.",
-    "id": 2119
+    "id": 2119,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1677,7 +2391,13 @@
     ],
     "correct": 0,
     "explanation": "O AWS WAF (Web Application Firewall) permite monitorar as requisições HTTP e HTTPS que chegam à sua API Gateway (e outros recursos como CloudFront, ALB, AppSync) e bloquear ou permitir requisições com base em regras personalizadas ou gerenciadas, protegendo contra vulnerabilidades comuns da web como injeção de SQL, XSS e bots. AWS Shield Standard oferece proteção contra ataques DDoS, mas não ataques de camada 7. Security Groups controlam o tráfego de rede na camada 4. Cognito é para autenticação e autorização de usuários.",
-    "id": 2120
+    "id": 2120,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1691,7 +2411,13 @@
     ],
     "correct": 0,
     "explanation": "O AWS Secrets Manager é projetado especificamente para armazenar, gerenciar e rotacionar credenciais e outros segredos de forma segura. Ele oferece integração nativa com serviços como RDS para rotação automática de credenciais de banco de dados, o que é um requisito crucial para segurança e conformidade. O AWS Systems Manager Parameter Store pode armazenar segredos, mas não oferece rotação automática nativa. Variáveis de ambiente e arquivos S3 não são métodos seguros para armazenar segredos confidenciais.",
-    "id": 2121
+    "id": 2121,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1705,7 +2431,13 @@
     ],
     "correct": 0,
     "explanation": "Os Grupos de Segurança atuam como um firewall virtual para instâncias EC2, controlando o tráfego de entrada e saída. Eles são stateful e permitem a granularidade necessária para especificar portas, protocolos e endereços IP de origem. NACLs são stateless e operam em nível de sub-rede, enquanto WAF e Shield Advanced fornecem proteção em camadas superiores ou contra DDoS.",
-    "id": 2122
+    "id": 2122,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1719,7 +2451,13 @@
     ],
     "correct": 0,
     "explanation": "A criptografia do lado do servidor com chaves gerenciadas pelo S3 (SSE-S3) usa AES-256 para criptografar cada objeto com uma chave única. O S3 gerencia completamente as chaves de criptografia e o processo, oferecendo alta segurança e conformidade com o menor esforço administrativo por parte do cliente, tornando-o uma boa escolha para a maioria dos casos de uso de dados confidenciais. SSE-KMS oferece mais controle, mas exige algum gerenciamento de chaves. SSE-C e criptografia do lado do cliente exigem gerenciamento completo das chaves pelo cliente.",
-    "id": 2123
+    "id": 2123,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1733,7 +2471,13 @@
     ],
     "correct": 1,
     "explanation": "Para cargas de trabalho previsíveis e contínuas de longo prazo (1 ou 3 anos), as Savings Plans ou Instâncias Reservadas (RIs) oferecem os maiores descontos (até 72%) em comparação com as instâncias Sob Demanda. As Savings Plans são mais flexíveis, aplicando-se a um compromisso de uso por hora, independentemente do tipo de instância ou região, enquanto as RIs são para tipos de instância específicos. Instâncias Sob Demanda são mais caras, e Instâncias Spot são para cargas de trabalho tolerantes a interrupções.",
-    "id": 2124
+    "id": 2124,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1747,7 +2491,13 @@
     ],
     "correct": 0,
     "explanation": "O Amazon S3 Intelligent-Tiering é a classe de armazenamento mais adequada para dados com padrões de acesso desconhecidos ou variáveis. Ele move automaticamente os objetos entre dois tiers de acesso (um para acesso frequente e outro para acesso infrequente) quando os padrões de acesso mudam, sem taxas de recuperação, otimizando os custos sem impacto no desempenho. S3 Standard é para acesso frequente. S3 Standard-IA tem taxas de recuperação e um período mínimo de cobrança, e Glacier é para arquivamento com recuperação lenta.",
-    "id": 2125
+    "id": 2125,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1761,7 +2511,13 @@
     ],
     "correct": 0,
     "explanation": "O AWS Lambda é um serviço de computação serverless ideal para cargas de trabalho acionadas por eventos e com padrões de uso variáveis. Você paga apenas pelo tempo de execução do código, eliminando a necessidade de provisionar ou gerenciar servidores, o que o torna extremamente econômico para picos intermitentes e períodos de inatividade. Instâncias EC2, ECS ou EKS, mesmo com Auto Scaling, incorrem em custos para instâncias ociosas ou de provisionamento contínuo, tornando-os menos econômicos para cargas de trabalho altamente variáveis com longos períodos de inatividade.",
-    "id": 2126
+    "id": 2126,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1775,7 +2531,13 @@
     ],
     "correct": 1,
     "explanation": "A opção correta é usar Aurora Global Database. Ele oferece replicação assíncrona com latência tipicamente inferior a um segundo entre regiões, garantindo um RPO próximo de zero e um RTO de menos de 1 minuto em caso de failover regional. O Route 53 com weighted routing e health checks pode distribuir o tráfego entre as regiões e realizar failover automático e rápido. As outras opções não atendem aos requisitos de RPO/RTO: Snapshots (opção A) têm RPO/RTO muito altos. DMS (opção C) é mais adequado para migração e não oferece a mesma eficiência para DR ativa-ativa com RPO near-zero que o Aurora Global Database. Read Replicas (opção D) com RDS não fornecem um mecanismo de failover tão robusto e eficiente quanto o Aurora Global Database para um ambiente ativa-ativa com RPO próximo de zero.",
-    "id": 2127
+    "id": 2127,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1789,7 +2551,13 @@
     ],
     "correct": 1,
     "explanation": "A opção correta é migrar para Aurora PostgreSQL com múltiplas Read Replicas e ElastiCache para Redis. O Aurora PostgreSQL oferece escalabilidade de leitura e desempenho superiores ao RDS padrão. Múltiplas Read Replicas do Aurora podem escalar leituras horizontalmente. ElastiCache para Redis é uma solução eficaz para armazenar em cache resultados de consultas frequentes, reduzindo drasticamente a carga no banco de dados e melhorando a latência da API para abaixo de 100ms. Apenas aumentar o tamanho da instância RDS (opção A) pode ajudar, mas não escala leituras horizontalmente e não resolve a contenção em picos. Adicionar Read Replicas ao RDS padrão (opção C) é uma melhoria, mas o Aurora oferece melhor desempenho e escalabilidade. Migrar para DynamoDB (opção D) pode ser uma solução radical e envolve refatoração significativa, e nem sempre é adequado para todas as consultas complexas de um banco de dados relacional existente; além disso, a questão foca em otimizar o atual banco relacional.",
-    "id": 2128
+    "id": 2128,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1803,7 +2571,13 @@
     ],
     "correct": 1,
     "explanation": "A opção correta é a mais abrangente e segura. Usar SSE-KMS no S3 oferece maior controle sobre as chaves de criptografia e auditoria via CloudTrail, e políticas de bucket com IAM roles e Condition Keys garantem acesso granular. A criptografia KMS para RDS em repouso e SSL/TLS em trânsito são essenciais. O AWS Secrets Manager é a prática recomendada para gerenciar credenciais, permitindo rotação automática e acesso seguro via IAM roles, sem expor as credenciais a desenvolvedores. IMDSv2 protege contra SSRF para acesso a metadados da instância. As outras opções são menos seguras: SSE-S3 (opção A) oferece menos controle. Variáveis de ambiente (opção C) são inseguras para credenciais e WAF não protege o armazenamento. SSE-C (opção D) exige que o cliente gerencie suas próprias chaves, o que pode ser complexo, e um bastion host é uma camada a mais, mas não é uma solução completa para gerenciamento de credenciais e segurança de dados.",
-    "id": 2129
+    "id": 2129,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1817,7 +2591,13 @@
     ],
     "correct": 2,
     "explanation": "A opção mais econômica para esta carga de trabalho é a utilização de AWS Batch com EC2 Spot Instances. Jobs de processamento em lote que são tolerantes a falhas e interrupções são ideais para Spot Instances, que oferecem descontos significativos (até 90% em comparação com On-Demand). O AWS Batch gerencia o provisionamento e o escalonamento das instâncias Spot de forma eficiente, e a diversificação de instâncias e AZs minimiza o risco de interrupções. Instâncias On-Demand (opção A) seriam muito mais caras. Reserved Instances (opção B) não são ideais para cargas de trabalho intermitentes de apenas 4-6 horas por dia. Funções AWS Lambda (opção D) têm limites de tempo de execução (15 minutos) e recursos, o que as torna inadequadas para jobs que duram 4-6 horas e exigem alta CPU/memória.",
-    "id": 2130
+    "id": 2130,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1831,7 +2611,13 @@
     ],
     "correct": 2,
     "explanation": "A opção mais adequada é armazenar as imagens no Amazon S3, configurar Replication de Regiões Cruzadas (CRR) e usar o Amazon CloudFront. O S3 oferece alta durabilidade e disponibilidade inerente dentro de uma região. CRR adiciona resiliência regional, protegendo contra um desastre em toda a região. O CloudFront (CDN) distribui o conteúdo globalmente a partir de edge locations, reduzindo a latência para usuários em diferentes localizações e melhorando o desempenho e a resiliência da entrega. EBS (opção A) não é escalável para milhões de imagens e não é um serviço de armazenamento de objetos. Apenas S3 com CloudFront (opção B) oferece resiliência de AZ e entrega global, mas não DR regional. S3 Intelligent-Tiering (opção D) é para otimização de custo com base no padrão de acesso, e ElastiCache não é ideal para cache de imagens em escala de milhões de arquivos.",
-    "id": 2131
+    "id": 2131,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1845,7 +2631,13 @@
     ],
     "correct": 1,
     "explanation": "A opção correta é mudar o tipo de endpoint do Amazon API Gateway para Edge Optimized. Endpoints Edge Optimized aproveitam a rede de borda do CloudFront para rotear as requisições para a localização da AWS mais próxima do usuário, reduzindo a latência de rede. Como o problema são os tempos de carregamento 'inconsistentes e lentidão na primeira requisição' para usuários em diferentes continentes, isso aponta para latência de rede entre o cliente e o API Gateway. Otimizar o Lambda (opção A) pode ajudar o backend, mas não resolve a latência de rede inicial. ElastiCache (opção C) melhora o desempenho do backend, mas novamente, não o tempo de viagem inicial da requisição. Provisionar EC2 em várias regiões (opção D) é uma solução válida para aplicações completas, mas para API Gateway e Lambda, o endpoint Edge Optimized já provê essa camada de otimização de borda de forma mais integrada e serverless.",
-    "id": 2132
+    "id": 2132,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1859,7 +2651,13 @@
     ],
     "correct": 1,
     "explanation": "A opção mais granular e segura é usar Cognito Identity Pools em conjunto com políticas IAM e chaves de condição. Identity Pools permitem federar usuários e gerar credenciais temporárias do IAM. Essas credenciais podem ser associadas a políticas IAM que usam Condition Keys, como `aws:PrincipalTag` ou claims do token JWT (por exemplo, `cognito:roles`) para garantir que os usuários só possam acessar os recursos (prefixos S3, itens DynamoDB) que pertencem ao seu inquilino. Criar buckets/tabelas separadas (opção A) pode ser inviável em grande escala e ainda exigiria um controle de acesso granular. WAF (opção C) protege contra ataques web, não garante isolamento de dados entre inquilinos. Credenciais fixas (opção D) não são uma boa prática de segurança e não fornecem o mesmo nível de controle granular ou auditoria.",
-    "id": 2133
+    "id": 2133,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1873,7 +2671,13 @@
     ],
     "correct": 2,
     "explanation": "A opção mais eficaz é usar um Instance Scheduler e EC2 Savings Plans. O Instance Scheduler automatiza a tarefa de ligar/desligar instâncias, garantindo que elas só rodem quando necessário, o que economiza custos para uso intermitente. Para as horas de uso contínuo no horário comercial, adquirir EC2 Savings Plans de 1 ou 3 anos com pagamento antecipado parcial oferece descontos significativos (até 72%) para o uso previsível de instâncias de computação. Instâncias On-Demand (opção A) são as mais caras. Reserved Instances (opção B) exigem um comprometimento e podem levar a custos desperdiçados se as instâncias forem desligadas ou mudarem de tipo. Migrar para Lambda/Fargate (opção D) seria uma refatoração significativa, e nem todos os ambientes de teste são adequados para serverless, e pode não ser o mais barato para cargas de trabalho de longa duração diárias.",
-    "id": 2134
+    "id": 2134,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1887,7 +2691,13 @@
     ],
     "correct": 1,
     "explanation": "A opção correta é usar o Amazon Data Lifecycle Manager (DLM) para snapshots EBS frequentes e um script de automação para restauração. Snapshots frequentes (a cada hora ou menos) garantem um RPO baixo. A criação de uma nova instância a partir de uma AMI recente (ou simplesmente lançar uma nova instância) e anexar um novo volume criado a partir do snapshot mais recente pode ser orquestrada para um RTO baixo. Aumentar o tamanho ou IOPS do EBS (opção A) melhora o desempenho, mas não o RPO/RTO de recuperação de falha de volume. Replicar para S3 via DataSync (opção C) é uma solução, mas a recuperação para um EBS ativo pode levar mais tempo e ser mais complexa do que restaurar de um snapshot EBS. Replicar volumes EBS entre AZs (opção D) não é possível diretamente com EBS; EBS é zonal. Para Multi-AZ com armazenamento persistente compartilhado, seria necessário usar EFS ou um banco de dados Multi-AZ.",
-    "id": 2135
+    "id": 2135,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1901,7 +2711,13 @@
     ],
     "correct": 1,
     "explanation": "A opção correta é uma abordagem multifacetada. O Amazon CloudFront é essencial para distribuir o conteúdo de vídeo de forma global e eficiente, reduzindo a carga nos servidores de origem e a latência para os usuários. Para o DynamoDB, mudar para On-Demand resolve o problema de throttling em picos, pois a capacidade escala automaticamente. DynamoDB Accelerator (DAX) é uma excelente opção para cargas de trabalho intensivas em leitura que exigem latência em microssegundos. Auto Scaling Groups com métricas de CPU/rede garantem que os servidores EC2 escalem horizontalmente para lidar com o tráfego. Aumentar capacidade provisionada do DynamoDB e escalar verticalmente EC2 (opção A) não é ideal para picos imprevisíveis ou escalabilidade horizontal. RDS (opção C) não é adequado para dados não-relacionais em escala de milhões de usuários simultâneos, e ELB por si só não resolve a escalabilidade do banco de dados ou a entrega global. ElastiCache Memcached (opção D) não é o mais adequado para cache de vídeo em si (CloudFront é melhor), e Lambda não é ideal para gerenciar servidores de vídeo em tempo real ou a escalabilidade de instâncias EC2 diretamente dessa forma.",
-    "id": 2136
+    "id": 2136,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1915,7 +2731,13 @@
     ],
     "correct": 2,
     "explanation": "A melhor solução é migrar para o AWS Secrets Manager e usar IAM roles. O Secrets Manager foi projetado especificamente para gerenciar segredos de forma segura, com rotação automática, auditoria via CloudTrail e integração com IAM. As aplicações em EC2 podem ser configuradas com IAM roles que permitem acesso apenas aos segredos necessários, eliminando a necessidade de hardcoding de credenciais e aumentando a segurança. O Systems Manager Parameter Store é adequado para parâmetros não sensíveis ou para segredos que não exigem rotação automática. Criptografar arquivos de configuração (opção A) ainda requer gerenciamento de chaves e não oferece rotação automática. Variáveis de ambiente (opção B) não são seguras, auditáveis ou fáceis de rotacionar. Apenas o Parameter Store para todos os segredos (opção D) é uma opção, mas o Secrets Manager oferece recursos de rotação e gerenciamento de segredos mais avançados, especialmente para senhas de banco de dados, que o Parameter Store não possui nativamente.",
-    "id": 2137
+    "id": 2137,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1929,7 +2751,13 @@
     ],
     "correct": 1,
     "explanation": "A arquitetura mais econômica e escalável para este cenário é usar AWS Lambda. Para cargas de trabalho imprevisíveis, com picos de demanda e que podem escalar para zero quando inativas, o Lambda é ideal porque você paga apenas pelo tempo de computação usado. Ele escala automaticamente para lidar com grandes volumes de eventos (como uploads para S3 ou mensagens SQS), sem a necessidade de gerenciar servidores. EC2 Spot Instances (opção A) são econômicas para cargas de trabalho tolerantes a interrupções, mas ainda exigem gerenciamento de servidores e não escalam para custo zero. ECS Fargate (opção C) é uma excelente opção serverless para contêineres, mas ainda tem um custo de cluster mínimo e pode não escalar tão rapidamente ou para zero de forma tão eficaz quanto o Lambda. EC2 On-Demand (opção D) é a opção mais cara e não escalaria automaticamente de forma tão eficiente para picos de demanda imprevisíveis.",
-    "id": 2138
+    "id": 2138,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1943,7 +2771,13 @@
     ],
     "correct": 2,
     "explanation": "A opção correta é utilizar o Amazon EFS com o modo de disponibilidade Padrão (Regional) e implantar o cluster EKS em múltiplas AZs. O EFS no modo Padrão armazena dados de forma redundante em várias AZs dentro de uma região, tornando-o inerentemente resiliente a falhas de AZ e garantindo consistência de dados. Quando o cluster EKS é implantado em múltiplas AZs, os pods podem ser redistribuídos automaticamente em AZs saudáveis em caso de falha, e o EFS continua acessível e consistente. EFS One Zone (opção A) não oferece resiliência de AZ. EBS (opção B) é zonal e não é diretamente compartilhável entre instâncias em AZs diferentes para o mesmo volume. Replicar EFS para S3 (opção D) seria para DR regional, mas o problema foca em resiliência de AZ e consistência de dados em EFS.",
-    "id": 2139
+    "id": 2139,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -1957,7 +2791,13 @@
     ],
     "correct": 2,
     "explanation": "A estratégia mais eficaz é usar o Amazon CloudFront. O CloudFront é uma Content Delivery Network (CDN) que armazena em cache o conteúdo (estático e dinâmico, se configurado) em edge locations próximas aos usuários finais, reduzindo a latência de rede e a carga nos servidores de origem. Otimizar as configurações de cache é crucial. Aumentar a largura de banda (opção A) não resolve o problema de latência de rede para usuários distantes. Migrar para uma região centralizada (opção B) pode melhorar para alguns, mas piorar para outros. O Global Accelerator (opção D) roteia o tráfego para endpoints mais próximos, o que é útil, mas o CloudFront é especificamente projetado para cachear e entregar conteúdo de forma mais eficiente globalmente, o que aborda a causa principal da lentidão de 'tempo de carregamento inicial alto'.",
-    "id": 2140
+    "id": 2140,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -1971,7 +2811,13 @@
     ],
     "correct": 1,
     "explanation": "A opção mais completa e integrada é implementar AWS WAF, AWS Shield Advanced e AWS Certificate Manager (ACM). O WAF (Web Application Firewall) protege o API Gateway e o ALB contra ataques de camada 7 como SQL Injection e XSS. O AWS Shield Advanced oferece proteção DDoS mais robusta. O ACM gerencia certificados SSL/TLS de forma centralizada, com provisionamento e renovação automática, e se integra perfeitamente com o API Gateway e o ALB. Security Groups e Network ACLs (opção A) são firewalls de camada 4 e não oferecem proteção contra ataques de camada 7. GuardDuty e Config (opção C) são ferramentas de detecção e auditoria, não de proteção em tempo real contra ataques web. Um firewall de terceiros (opção D) pode ser eficaz, mas carece da integração nativa e da automação oferecidas pelas soluções da AWS.",
-    "id": 2141
+    "id": 2141,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -1985,7 +2831,13 @@
     ],
     "correct": 2,
     "explanation": "A estratégia mais eficaz para uma carga de trabalho de produção estável e previsível é a combinação de right-sizing, Savings Plans e Reserved Instances. O AWS Cost Explorer ajuda a identificar instâncias superdimensionadas (right-sizing). AWS Compute Savings Plans (para EC2, Fargate, Lambda) e Reserved Instances (para RDS, Redshift) oferecem os maiores descontos (até 72%) em troca de um comprometimento de uso por 1 ou 3 anos, o que é ideal para cargas de trabalho previsíveis. Desligar instâncias de produção (opção A) não é uma opção para um ambiente 'estável e previsível' que provavelmente precisa estar sempre disponível. Migrar para serverless (opção B) é um grande esforço de refatoração, e nem sempre resulta em 30% de economia, especialmente para Redshift e cargas de trabalho complexas. Usar Spot Instances (opção D) não é recomendado para ambientes de produção estáveis e previsíveis devido ao risco de interrupções, e a otimização de consultas por si só pode não atingir a meta de 30%.",
-    "id": 2142
+    "id": 2142,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -1999,7 +2851,13 @@
     ],
     "correct": 1,
     "explanation": "A opção mais robusta é configurar uma Dead Letter Queue (DLQ), ajustar o visibility timeout, e usar CloudWatch com Auto Scaling. A DLQ garante que mensagens não processadas não sejam perdidas. O visibility timeout permite que o consumidor tenha tempo suficiente para processar a mensagem. Monitorar a profundidade da fila do SQS com métricas do CloudWatch e usá-las para escalar o Auto Scaling Group de consumidores EC2 proativamente permite que a aplicação se ajuste automaticamente aos picos de demanda. Aumentar o tamanho das instâncias (opção A) não é uma solução escalável ou automática para picos imprevisíveis. SQS FIFO (opção C) é para ordenação, não para throughput escalável em massa ou resiliência a falhas de processamento. Um ELB (opção D) é para tráfego web/API, não para consumidores de filas SQS.",
-    "id": 2143
+    "id": 2143,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -2013,7 +2871,13 @@
     ],
     "correct": 2,
     "explanation": "A abordagem mais eficiente é migrar o banco de dados para Amazon RDS. Desacoplar o banco de dados da instância da aplicação remove a contenção de recursos, permitindo que a aplicação e o banco de dados funcionem em ambientes otimizados independentemente. O AWS DMS facilita a migração com tempo de inatividade mínimo, o que é crucial para uma aplicação legada. Aumentar o tamanho da instância EC2 (opção A) pode fornecer mais recursos, mas não resolve a contenção fundamental e pode ser mais caro. Otimizar consultas e adicionar ElastiCache (opção B) são boas práticas, mas não resolvem a contenção de recursos subjacente entre a aplicação e o DB na mesma instância. ALB e Auto Scaling (opção D) são para escalabilidade horizontal da aplicação, o que não resolve o problema de contenção de recursos na instância monolítica com DB acoplado.",
-    "id": 2144
+    "id": 2144,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -2027,7 +2891,13 @@
     ],
     "correct": 1,
     "explanation": "A solução mais adequada é o AWS Systems Manager Session Manager. Ele permite que os usuários acessem instâncias EC2 sem a necessidade de portas de entrada abertas (SSH/RDP) para a internet ou bastion hosts. Ao configurar VPC Endpoints para SSM, as instâncias em subnets privadas podem se comunicar com o serviço SSM sem atravessar a internet, aumentando a segurança. As sessões são auditáveis via CloudTrail e podem ser logadas no CloudWatch Logs ou S3. IAM roles concedem controle granular sobre quem pode iniciar sessões. Um bastion host (opção A) requer gerenciamento e abre portas. Site-to-Site VPN (opção C) concede acesso de rede, mas não o controle de acesso granular de usuário e auditoria de sessão que o SSM oferece. Abrir portas SSH/RDP (opção D) diretamente para a internet é uma prática de segurança ruim, mesmo para IPs específicos.",
-    "id": 2145
+    "id": 2145,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -2041,7 +2911,13 @@
     ],
     "correct": 2,
     "explanation": "A estratégia mais eficaz é uma combinação de AWS Instance Scheduler e EC2 Spot Instances. O Instance Scheduler automatiza o desligamento de recursos fora do horário comercial, eliminando custos de inatividade. Para as horas de uso, onde a interrupção é tolerável (comum em dev/test), o uso de Spot Instances em Auto Scaling Groups pode reduzir significativamente os custos de computação. Reserved Instances (opção A) não são adequadas para uso intermitente, pois o comprometimento de uso leva a custos mesmo quando as instâncias estão desligadas. A instrução manual (opção B) é ineficiente e propensa a erros humanos. Refatorar para serverless (opção D) pode ser um esforço significativo e nem todos os ambientes dev/test podem ser facilmente adaptados para serverless, além de que a questão especifica ambientes 'idênticos aos de produção', que podem não ser totalmente serverless.",
-    "id": 2146
+    "id": 2146,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -2055,7 +2931,13 @@
     ],
     "correct": 0,
     "explanation": "Para RTO < 5 min e RPO < 1 min em uma arquitetura ativa-ativa com Aurora MySQL, o Aurora Global Database é a melhor escolha. Ele permite replicação rápida entre regiões (RPO tipicamente em segundos) e recuperação em menos de 1 minuto. Combinado com o Route 53 (usando políticas de roteamento de latência e failover), garante que o tráfego seja direcionado para a região mais saudável e de menor latência, oferecendo uma solução robusta e transparente para falhas regionais. As DynamoDB Global Tables seriam uma alternativa se a aplicação fosse NoSQL. A replicação customizada é complexa e difícil de manter RPO/RTO tão baixos. Warm Standby não atenderia ao requisito de RTO/RPO de um ambiente ativo-ativo.",
-    "id": 2147
+    "id": 2147,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -2069,7 +2951,13 @@
     ],
     "correct": 1,
     "explanation": "Para milhões de operações de leitura/escrita por segundo e latência sub-milissegundo para dados de sessão e perfil de usuário que mudam frequentemente, o Amazon ElastiCache para Redis com sharding e clusterização é a solução ideal. Ele foi projetado para casos de uso de cache distribuído em memória de alta performance e baixa latência, como dados de sessão, placares de líderes e perfis de usuário. Embora o DynamoDB com DAX seja excelente para escalar DynamoDB, os dados de sessão e perfis de usuário que exigem latência sub-milissegundo são um caso de uso clássico para um cache distribuído como o Redis.",
-    "id": 2148
+    "id": 2148,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -2083,7 +2971,13 @@
     ],
     "correct": 0,
     "explanation": "Para atender a todos os requisitos: 1. Criptografia em repouso e em trânsito: SSE-KMS e TLS garantem isso. 2. Acesso granular e restrito à VPC: Um VPC Endpoint para S3 garante que o tráfego não saia da rede AWS privada. Políticas de bucket com `aws:SourceVpce` e `aws:SourceVpc` combinadas com roles IAM garantem acesso granular e restrito. 3. Sem acesso público: O VPC Endpoint, combinado com uma política de bucket que recusa acesso público e permite apenas o VPC Endpoint, garante que não haja acesso via internet pública. Esta combinação é a mais segura e aderente aos requisitos.",
-    "id": 2149
+    "id": 2149,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -2097,7 +2991,13 @@
     ],
     "correct": 0,
     "explanation": "Para workloads fault-tolerant que podem ser interrompidos e reiniciados, as instâncias EC2 Spot são a opção mais econômica. O uso de um Spot Fleet com estratégia de diversificação aumenta a probabilidade de obter a capacidade necessária e reduz a chance de interrupções generalizadas, pois o fleet pode alternar entre pools de Spot disponíveis. RIs e Savings Plans são para workloads previsíveis e *ininterruptos*. Fargate Spot é uma excelente alternativa para cargas de trabalho de container, mas a pergunta foca em instâncias EC2 e a estratégia mais eficaz para elas dadas as condições.",
-    "id": 2150
+    "id": 2150,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -2111,7 +3011,13 @@
     ],
     "correct": 0,
     "explanation": "O padrão de Circuit Breaker é projetado especificamente para lidar com falhas de dependências externas (como uma API de terceiros instável) ao impedir que a aplicação continue fazendo chamadas que provavelmente falharão, permitindo que o serviço externo se recupere e evitando falhas em cascata. Aumentar a capacidade do ASG apenas aumentaria o número de instâncias que falham. As verificações de saúde do ELB são para a saúde da instância, não para a resiliência à falha de um serviço externo. Usar SQS é uma ótima estratégia de desacoplamento, mas a pergunta implica em uma chamada síncrona que está falhando, e o Circuit Breaker é mais direto para isolar a falha do componente dependente e evitar a cascata, sem uma refatoração assíncrona completa.",
-    "id": 2151
+    "id": 2151,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -2125,7 +3031,13 @@
     ],
     "correct": 0,
     "explanation": "Para melhorar a performance de entrega global de conteúdo estático e imutável, o Amazon CloudFront é a solução mais eficaz. Ele distribui o conteúdo para pontos de presença (edge locations) globais, armazenando em cache os vídeos populares mais próximos dos usuários finais, reduzindo significativamente a latência e a carga no S3. S3 Transfer Acceleration é para uploads. S3 Multi-Region Access Points e S3 Cross-Region Replication são para resiliência e acesso direto a dados S3 multi-região, não otimizando a entrega para o usuário final de forma tão eficiente quanto o CloudFront para streaming de conteúdo.",
-    "id": 2152
+    "id": 2152,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -2139,7 +3051,13 @@
     ],
     "correct": 0,
     "explanation": "Quando um IdP corporativo *externo* já emite JWTs e a lógica de autorização é personalizada baseada em roles dentro desses tokens, o Lambda Authorizer do API Gateway é a solução mais flexível e apropriada. Ele permite que você escreva um código Lambda para inspecionar o JWT, validar sua assinatura, verificar claims e retornar uma política IAM para o API Gateway, que concede ou nega acesso ao recurso. Cognito User Pools é um IdP em si, e embora possa ser integrado a IdPs externos, um Lambda Authorizer oferece controle total sobre a lógica de validação e autorização do JWT existente. IAM roles são para acesso a recursos AWS, não para autenticação de usuários finais de API.",
-    "id": 2153
+    "id": 2153,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -2153,7 +3071,13 @@
     ],
     "correct": 0,
     "explanation": "Para workloads de curta duração, esporádicos e que podem tolerar interrupções, as instâncias EC2 Spot são a opção mais econômica, oferecendo descontos significativos em comparação com as instâncias On-Demand. A capacidade de reinício dos testes minimiza o impacto das interrupções. Instâncias On-Demand seriam mais caras. RIs e Savings Plans são para workloads previsíveis e de longo prazo que não podem ser interrompidos, não se encaixando neste cenário de uso esporádico e tolerante a falhas.",
-    "id": 2154
+    "id": 2154,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -2167,7 +3091,13 @@
     ],
     "correct": 0,
     "explanation": "Para RPO de 0 e RTO inferior a 1 minuto para um banco de dados relacional, o Amazon RDS Multi-AZ é a solução padrão e mais adequada. Ele provisiona uma réplica síncrona em uma Availability Zone diferente e realiza failover automático em caso de falha, garantindo perda zero de dados (RPO=0) e tempo de recuperação rápido. A replicação customizada em EC2 é complexa e difícil de garantir RPO=0 e RTO<1 min. Instance store é efêmero e não fornece durabilidade. Snapshots EBS não atenderiam ao RPO de 0, pois haveria perda de dados entre os intervalos dos snapshots.",
-    "id": 2155
+    "id": 2155,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -2181,7 +3111,13 @@
     ],
     "correct": 0,
     "explanation": "Para workloads orientados por fila com throughput variável, a melhor abordagem é combinar o SQS long polling com políticas de escalonamento do Auto Scaling Group baseadas em métricas do SQS. O long polling reduz o número de chamadas vazias ao SQS, e as políticas de escalonamento dinâmico (por exemplo, usando `ApproximateNumberOfMessagesVisible` ou `ApproximateNumberOfMessagesNotVisible`) permitem que o ASG adicione ou remova instâncias automaticamente para corresponder à carga de trabalho, garantindo que haja capacidade suficiente quando os jobs chegam e reduzindo-a quando a fila está vazia. Aumentar o tamanho da instância pode ser ineficiente para throughput variável. Spot é para custo, não necessariamente para performance e responsividade em si. SNS é um serviço pub/sub, não de fila, e não é adequado para este padrão de consumo.",
-    "id": 2156
+    "id": 2156,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -2195,7 +3131,13 @@
     ],
     "correct": 0,
     "explanation": "Para uma conexão dedicada e privada, o AWS Direct Connect é essencial. Para garantir que os dados transferidos por essa conexão dedicada sejam criptografados e para fornecer uma camada adicional de segurança e autenticação, é uma prática recomendada estabelecer uma VPN Site-to-Site sobre a conexão Direct Connect (conhecido como 'VPN sobre DX'). Isso combina a largura de banda e a latência consistente do DX com a criptografia IPsec da VPN. Uma VPN Site-to-Site sozinha usa a internet pública, e VPC Peering é para comunicação entre VPCs na AWS. Transit Gateway gerencia o roteamento, mas não fornece a conexão dedicada ou a criptografia da camada de dados por si só na mesma medida.",
-    "id": 2157
+    "id": 2157,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -2209,7 +3151,13 @@
     ],
     "correct": 0,
     "explanation": "A restrição de não poder migrar a aplicação (mantendo-a em uma *única* instância EC2) e a impossibilidade de refatoração para serverless ou containers elimina as opções de Auto Scaling para múltiplas instâncias, Lambda e ECS. A melhor estratégia para uma única instância com uso de CPU intermitente, mas que precisa de alta capacidade em certos momentos, é redimensionar para um tipo de instância burstable (como T3 ou T4g). Essas instâncias podem ter bom desempenho para cargas de trabalho de uso geral, com a capacidade de burst para atender aos picos de CPU, mantendo os custos baixos durante períodos de baixa utilização, especialmente em modo ilimitado. Se a carga de trabalho for *extremamente* previsível, o agendamento de start/stop da instância também poderia ser uma opção, mas instâncias burstable são mais flexíveis para o padrão 'poucas horas de alta CPU'.",
-    "id": 2158
+    "id": 2158,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -2223,7 +3171,13 @@
     ],
     "correct": 0,
     "explanation": "Quando uma task falha devido a vazamentos de memória e reinicia, a forma mais direta de garantir resiliência para o *próprio serviço* é através de health checks. As verificações de saúde na definição da task do ECS permitem que o ECS monitore o estado da task e, se ela não responder ou falhar em passar as verificações, o ECS pode substituí-la por uma nova task saudável. Isso ajuda a restaurar a funcionalidade do serviço rapidamente. O Circuit Breaker ajuda a proteger os *consumidores* da falha de um serviço, mas não resolve o problema do *serviço em si*. Aumentar a memória pode atrasar a falha, mas não a resolve. SQS desacopla, mas o serviço ainda precisa ser funcional para processar as mensagens.",
-    "id": 2159
+    "id": 2159,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -2237,7 +3191,13 @@
     ],
     "correct": 0,
     "explanation": "A otimização de desempenho mais impactante para o Amazon Athena (e outros motores de query serverless) é a conversão dos dados para formatos colunares otimizados como Parquet ou ORC, combinados com compressão. Formatos colunares permitem que o Athena leia apenas as colunas necessárias para a consulta, reduzindo drasticamente a quantidade de dados escaneados (e, consequentemente, os custos e o tempo da consulta). A compressão também diminui a quantidade de dados a serem lidos. As outras opções são irrelevantes ou prejudiciais para o desempenho do Athena.",
-    "id": 2160
+    "id": 2160,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -2251,7 +3211,13 @@
     ],
     "correct": 0,
     "explanation": "O AWS Secrets Manager é o serviço ideal para este cenário. Ele é projetado para armazenar, gerenciar e rotacionar credenciais de banco de dados, chaves de API e outros segredos. Sua principal vantagem é a capacidade de rotação automática de segredos (especialmente para bancos de dados suportados), além de integração com Lambda e EC2 via roles IAM, auditoria completa com CloudTrail e criptografia integrada com KMS. O Parameter Store com `SecureString` é uma boa opção para armazenamento seguro, mas não oferece rotação automática out-of-the-box. KMS é um serviço de criptografia, não de gerenciamento de segredos em si. Armazenar em variáveis de ambiente ou User Data, mesmo criptografado, é uma prática menos segura e gerenciável para rotação e controle de acesso.",
-    "id": 2161
+    "id": 2161,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -2265,7 +3231,13 @@
     ],
     "correct": 0,
     "explanation": "Para dados que são raramente acessados, precisam ser armazenados por um longo período (7 anos), e onde o custo é a prioridade máxima, o Amazon S3 Glacier Deep Archive é a classe de armazenamento mais econômica. Ele é projetado para armazenamento de longo prazo com o menor custo por GB. Embora os tempos de recuperação possam ser de até 12 horas para recuperação padrão (e até 48 horas para recuperação em massa), ele atende ao requisito de 'recuperáveis em até 24 horas'. S3 Glacier Flexible Retrieval (anteriormente S3 Glacier) tem custos um pouco mais altos e tempos de recuperação mais rápidos (minutos a horas). S3 Standard-IA é muito caro para dados 'raramente acessados'.",
-    "id": 2162
+    "id": 2162,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -2279,7 +3251,13 @@
     ],
     "correct": 0,
     "explanation": "Para RTO < 4 horas e RPO < 1 hora, a estratégia de Warm Standby é a mais adequada. Ela mantém um ambiente reduzido e 'quente' na região secundária, pronto para escalar rapidamente. O uso de AWS Backup para AMIs (garantindo RPO em minutos) e réplicas de leitura cross-region do RDS (garantindo RPO em minutos para o banco de dados) permite uma recuperação de dados dentro do RPO especificado. O Pilot Light seria mais lento (maior RTO). O Active/Active oferece RTO/RPO ainda menores, mas é mais complexo e caro do que o Warm Standby para esses requisitos. Snapshots diários não atenderiam ao RPO de menos de 1 hora.",
-    "id": 2163
+    "id": 2163,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -2293,7 +3271,13 @@
     ],
     "correct": 0,
     "explanation": "Para dados 'relativamente estáticos por um curto período' acessados via API Gateway, o cache do API Gateway é a solução mais direta e eficaz para reduzir a latência percebida pelo usuário final. Ele armazena as respostas da API no edge do API Gateway, evitando que a requisição chegue ao Lambda e, consequentemente, ao banco de dados para cada chamada repetida dentro do período de cache. Isso melhora drasticamente a latência e reduz a carga no backend. Embora ElastiCache seja uma ótima solução de cache geral, o cache do API Gateway é específico para o endpoint da API e pode ser mais simples de implementar para este caso. Otimizar queries é sempre uma boa prática, mas o cache resolve o problema de dados estáticos para o usuário. Aumentar a memória do Lambda pode melhorar o tempo de execução da função, mas não resolve a latência inerente à busca de dados do RDS para dados estáticos.",
-    "id": 2164
+    "id": 2164,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -2307,7 +3291,13 @@
     ],
     "correct": 0,
     "explanation": "Para isolamento granular no nível da rede entre microsserviços e prevenção de comunicação não autorizada, os Security Groups são a ferramenta mais eficaz na AWS. Eles operam no nível da instância (ou ENI) e são stateful, permitindo que você especifique regras de entrada e saída com base em outros Security Groups, endereços IP, protocolos e portas. Isso permite que você crie regras de 'firewall virtual' que permitem apenas o tráfego explícito entre os microsserviços autorizados. NACLs são stateless e operam no nível da sub-rede, sendo menos granulares. Um service mesh opera no nível da aplicação para controle de tráfego, enquanto IAM roles controlam o acesso a recursos AWS, não o tráfego de rede entre instâncias.",
-    "id": 2165
+    "id": 2165,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -2321,7 +3311,13 @@
     ],
     "correct": 0,
     "explanation": "Para uma workload que é 'totalmente tolerante a falhas', 'pode ser interrompida e retomada' e 'executada em instâncias EC2', as instâncias Spot são a opção mais econômica. Elas oferecem descontos significativos (até 90% em comparação com On-Demand) em troca da possibilidade de interrupção. As Reserved Instances e os Savings Plans são mais adequados para workloads previsíveis e *ininterruptos*. A migração para Lambda pode ser uma opção de custo-benefício em outros cenários, mas a pergunta especifica instâncias EC2 e a capacidade de tolerar interrupções, que é a característica principal das instâncias Spot.",
-    "id": 2166
+    "id": 2166,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -2335,7 +3331,13 @@
     ],
     "correct": 1,
     "explanation": "A opção B é a mais adequada para os requisitos de RTO < 15 minutos e RPO < 5 minutos. O Amazon Aurora Global Database oferece um RPO de segundos e um RTO de menos de 1 minuto para recuperação de desastres entre regiões, sendo superior aos Read Replicas assíncronos do RDS em termos de RPO/RTO. A replicação de AMIs com Auto Scaling Group e Route 53 com health checks e política de failover garantem a recuperação automática e rápida da camada de computação e do DNS.",
-    "id": 2167
+    "id": 2167,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -2349,7 +3351,13 @@
     ],
     "correct": 2,
     "explanation": "O Amazon FSx for Lustre é otimizado para cargas de trabalho de HPC, oferecendo alta throughput e baixa latência, e pode ser integrado diretamente com o S3 como um repositório de dados. Ele escala elasticamente e é ideal para as características de desempenho exigidas por simulações HPC em instâncias Spot. As outras opções não oferecem o mesmo nível de performance e integração para HPC.",
-    "id": 2168
+    "id": 2168,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -2363,7 +3371,13 @@
     ],
     "correct": 2,
     "explanation": "A opção C é a abordagem mais segura e conforme o princípio do menor privilégio. Ao especificar o ARN completo das funções IAM na política de chave do KMS, o controle de acesso é aplicado no nível da chave, que é a primeira linha de defesa. Isso garante que apenas as funções explicitamente autorizadas possam usar a chave, independentemente de outras políticas IAM. O CloudTrail habilitado em todas as contas fornece a trilha de auditoria completa para todos os acessos à chave KMS.",
-    "id": 2169
+    "id": 2169,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -2377,7 +3391,13 @@
     ],
     "correct": 1,
     "explanation": "A opção B é a mais eficaz para este cenário. Instâncias Spot com Capacity Rebalancing são ideais para workloads flexíveis e sensíveis ao custo, pois tentam rebalancear o workload para novas instâncias Spot antes que as instâncias atuais sejam interrompidas. A complementação com On-Demand para a capacidade mínima garante que o deadline seja sempre cumprido, balanceando o custo-benefício e a confiabilidade. Reserved Instances (A) não oferecem a flexibilidade necessária para workloads variáveis. Lambda (C) pode ser uma boa opção para re-arquitetura, mas a questão foca em otimizar a solução existente. Savings Plans (D) são bons para base, mas não endereçam a variabilidade e a necessidade de deadline de forma tão dinâmica quanto as Spot/On-Demand combinadas.",
-    "id": 2170
+    "id": 2170,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -2391,7 +3411,13 @@
     ],
     "correct": 1,
     "explanation": "O Amazon EventBridge Global Endpoints (B) é projetado especificamente para fornecer alta disponibilidade e resiliência entre Regiões para eventos. Ele automaticamente replica eventos e gerencia o failover para uma Região secundária em caso de interrupção na Região primária, garantindo latência mínima e disponibilidade contínua. As outras opções exigem lógica de failover manual ou não oferecem o mesmo nível de automação e resiliência nativa para eventos.",
-    "id": 2171
+    "id": 2171,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -2405,7 +3431,13 @@
     ],
     "correct": 1,
     "explanation": "A opção B é a mais eficaz para atender aos requisitos de alta escala de leitura global e baixa latência. Um Aurora Global Database permite escalar leituras em múltiplas Regiões com réplicas de leitura de baixa latência. O cluster de escrita em uma Região gerencia as escritas, enquanto os clusters de leitura secundários em outras Regiões servem as leituras de forma independente, sem impactar o desempenho do cluster de escrita. O endpoint do leitor global direciona o tráfego para a réplica mais próxima do usuário.",
-    "id": 2172
+    "id": 2172,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -2419,7 +3451,13 @@
     ],
     "correct": 0,
     "explanation": "A opção A é a mais completa e segura. Um Lambda Authorizer permite a integração com provedores de identidade externos. O AWS WAF no API Gateway fornece proteção contra injeção de SQL e XSS. O VPC Link com um NLB garante que o tráfego do API Gateway para as instâncias EC2 permaneça dentro da rede privada da AWS, impedindo a exfiltração de dados e o tráfego pela internet pública, atendendo a todos os requisitos de segurança.",
-    "id": 2173
+    "id": 2173,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -2433,7 +3471,13 @@
     ],
     "correct": 1,
     "explanation": "A opção B, S3 Intelligent-Tiering com arquivamento para o S3 Glacier Deep Archive, é a solução mais econômica para dados com padrões de acesso desconhecidos ou que mudam ao longo do tempo, como logs de auditoria. Ele move automaticamente os objetos entre as classes de armazenamento com base no padrão de acesso, incluindo a camada Glacier Deep Archive, sem taxas adicionais de tiering ou recuperação. Isso garante que os dados sejam armazenados na classe mais barata e ainda permite a recuperação dentro do SLA de 24 horas, já que o S3 gerencia o ciclo de vida. A opção A exige gerenciamento manual das políticas, e a C tem custos de recuperação Expedited que podem ser altos para grandes volumes. A D é menos escalável e mais complexa para gerenciar petabytes de dados.",
-    "id": 2174
+    "id": 2174,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -2447,7 +3491,13 @@
     ],
     "correct": 1,
     "explanation": "A opção B é a mais adequada para tornar uma aplicação stateful legada altamente disponível em múltiplas AZs sem re-arquitetura significativa. O WSFC com EBS Multi-Attach permite que volumes EBS sejam anexados a múltiplas instâncias na mesma AZ (ou em diferentes AZs para failover, embora isso seja mais complexo e exija considerações de consistência). Isso fornece um armazenamento compartilhado consistente para a aplicação stateful, permitindo que outra instância na AZ secundária assuma o controle rapidamente em caso de falha. Snapshots EBS (A) não oferecem o RPO/RTO necessários para 'consistência dos dados durante o failover é primordial'. DataSync (C) é para migração/sincronização de dados, não para HA em tempo real. RDS Multi-AZ (D) lida com o banco de dados, mas não com o estado da aplicação local.",
-    "id": 2175
+    "id": 2175,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -2461,7 +3511,13 @@
     ],
     "correct": 1,
     "explanation": "O AWS Global Accelerator (B) é projetado especificamente para melhorar a disponibilidade e o desempenho global, roteando o tráfego de usuários para o endpoint mais próximo e saudável através da rede global da AWS. Ele usa endereços IP estáticos de anycast para fornecer um ponto de entrada fixo e otimiza o caminho da rede, reduzindo a latência. A combinação com o CloudFront para ativos estáticos é ideal para jogos. Route 53 com latência (A) melhora, mas o Global Accelerator vai além, otimizando o caminho da rede TCP/UDP. Direct Connect (C) não é escalável para milhões de jogadores. VPC Peering (D) interconecta VPCs, mas não otimiza o acesso do usuário final à AWS.",
-    "id": 2176
+    "id": 2176,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "seguranca-aplicacoes",
@@ -2475,7 +3531,13 @@
     ],
     "correct": 1,
     "explanation": "A opção B é a mais abrangente e automatizada para os requisitos. O SSM Patch Manager automatiza o patching em grande escala. O Amazon Inspector fornece varredura contínua de vulnerabilidades e conformidade. O AWS Security Hub agrega os resultados do Inspector, CloudTrail, GuardDuty e outros serviços de segurança em um painel centralizado, fornecendo relatórios de conformidade e alertas, e pode ser integrado com o AWS Organizations para gerenciamento centralizado em várias contas.",
-    "id": 2177
+    "id": 2177,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-custo",
@@ -2489,7 +3551,13 @@
     ],
     "correct": 1,
     "explanation": "A opção B é a mais eficiente e escalável. O AWS Instance Scheduler é um utilitário pré-configurado que automatiza o início e a parada de instâncias EC2 e RDS. Para ECS Fargate, configurar regras agendadas no EventBridge para ajustar o número de tarefas para zero fora do horário comercial (e reajustar para o valor necessário no início do dia) permite a otimização de custos. Esta abordagem utiliza serviços gerenciados nativos da AWS, é escalável e minimiza a sobrecarga de gerenciamento, atendendo ao requisito de início rápido. A opção A é manual e não escalável. A C muda serviços sem justificar e complica desnecessariamente. A D é inviável para 'centenas de instâncias' e não é automática.",
-    "id": 2178
+    "id": 2178,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-resiliente",
@@ -2503,7 +3571,13 @@
     ],
     "correct": 2,
     "explanation": "A opção C, usando o Amazon Aurora Global Database, é a única que pode atender consistentemente aos requisitos de RPO < 1 minuto e RTO < 5 minutos para um banco de dados relacional em um cenário de failover entre Regiões. O Aurora Global Database oferece um RPO de segundos e um RTO geralmente inferior a 1 minuto, replicando dados com latência mínima. Read Replicas assíncronos (B) podem ter um RPO maior devido à natureza assíncrona. Snapshots (A e D) não atendem aos requisitos de RPO/RTO devido à frequência dos snapshots e ao tempo de restauração.",
-    "id": 2179
+    "id": 2179,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   },
   {
     "domain": "design-performance",
@@ -2517,6 +3591,12 @@
     ],
     "correct": 1,
     "explanation": "A opção B é a mais apropriada para a ingestão e análise de dados IoT em tempo real de alta performance. O Amazon Kinesis Data Streams é projetado para lidar com milhões de registros por segundo, fornecendo um fluxo de dados em tempo real. O Kinesis Data Analytics pode processar esses fluxos para detecção de anomalias quase instantânea. O Kinesis Firehose é eficiente para entregar grandes volumes de dados brutos do Kinesis Data Streams para o Amazon S3 para armazenamento de longo prazo e análises históricas. Isso combina escalabilidade, desempenho em tempo real e armazenamento eficiente. As outras opções não oferecem a mesma combinação de recursos para dados em tempo real de alta vazão e análises imediatas.",
-    "id": 2180
+    "id": 2180,
+    "subdomain": "geral",
+    "service": "AWS",
+    "tags": [
+      "ajuste-automatico"
+    ],
+    "type": "scenario"
   }
 ]

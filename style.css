@@ -338,3 +338,49 @@ body {
   .shadow-lg, .shadow-md { box-shadow: none !important; }
   .aws-bg-orange { background-color: #f0f0f0 !important; border: 2px solid #000 !important; color: #000 !important; }
 }
+
+/* Estilo para as opções de resposta */
+.option-card {
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.option-card:hover:not(.disabled) {
+    transform: translateX(8px);
+    border-color: #ff9900;
+    background-color: rgba(255, 153, 0, 0.05);
+}
+
+.option-card.selected {
+    border-color: #ff9900;
+    background-color: rgba(255, 153, 0, 0.1);
+}
+
+.option-card.correct {
+    border-color: #10b981 !important; /* Verde */
+    background-color: rgba(16, 185, 129, 0.1) !important;
+}
+
+.option-card.incorrect {
+    border-color: #ef4444 !important; /* Vermelho */
+    background-color: rgba(239, 68, 68, 0.1) !important;
+}
+
+/* Letras (A, B, C, D) destacadas */
+.option-letter {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f3f4f6;
+    font-weight: bold;
+    color: #4b5563;
+    transition: all 0.2s ease;
+}
+
+.option-card.selected .option-letter {
+    background: #ff9900;
+    color: white;
+}

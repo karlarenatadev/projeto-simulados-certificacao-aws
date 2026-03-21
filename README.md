@@ -1,140 +1,176 @@
-# 🎓 Simulador IA - Certificações AWS
+```markdown
+# 🎓 AWS Certified Cloud Simulator - Pro Edition
 
-[![Desenvolvido por](https://img.shields.io/badge/Desenvolvido%20por-Karla%20Renata-orange?style=for-the-badge&logoColor=white)](#-autor)
-[![AWS](https://img.shields.io/badge/AWS-Cloud-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)](#)
-[![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](#)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](#)
+Uma plataforma de elite para simulados AWS, unindo **Engenharia de Dados com Python** e uma **experiência de usuário (UX) de alto nível**.
 
-Aplicação web profissional para simulação de exames de certificação AWS com análise inteligente de desempenho em tempo real.
-
-Projeto desenvolvido por **Karla Renata** para ajudar a comunidade a preparar-se para certificações AWS com foco em Clean Code, Segurança Web e Performance.
+Desenvolvido por **Karla Renata**, este simulador não é apenas um quiz, mas um **ecossistema completo focado em Clean Code, Data Integrity e Performance**.
 
 ---
 
-## 📚 Documentação Completa
+# 🏗️ Arquitetura do Ecossistema
 
-- 📑 **[INDEX.md](INDEX.md)** - Índice completo de toda a documentação
-- 🚀 **[QUICKSTART.md](QUICKSTART.md)** - Comece em 30 segundos
-- 🏗️ **[ARCHITECTURE.md](ARCHITECTURE.md)** - Arquitetura técnica detalhada
-- 🤝 **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guia para contribuidores
-- 📊 **[EXECUTIVE_SUMMARY.md](EXECUTIVE_SUMMARY.md)** - Sumário executivo
-- 🛡️ **[SECURITY_IMPROVEMENTS.md](SECURITY_IMPROVEMENTS.md)** - Melhorias de segurança
-- 📝 **[CHANGELOG.md](CHANGELOG.md)** - Histórico de mudanças e melhorias
-- 🚀 **[DEPLOYMENT.md](DEPLOYMENT.md)** - Guia de Deployment
+O projeto utiliza uma abordagem de **Decoupled Architecture (Arquitetura Desacoplada)**:
 
-## 🏗️ Arquitetura
+### Data Layer
+**Python + Pydantic**
 
-### Estrutura de Ficheiros
+Pipeline de **curadoria e sanitização** que garante que **100% das questões sigam um contrato de dados estrito**.
 
-```text
-├── index.html          # Estrutura HTML limpa e semântica
-├── style.css           # Estilos customizados e tema AWS
-├── app.js              # Lógica principal da aplicação (Assíncrona)
-├── data.js             # Mapeamento de certificações e utilitários
-├── /data/              # Pasta com os bancos de questões em JSON
-│   ├── clf-c02.json    # Questões Cloud Practitioner
-│   ├── saa-c03.json    # Questões Solutions Architect
-│   └── aif-c01.json    # Questões AI Practitioner
-├── sw.js               # Service Worker para funcionamento Offline (PWA)
-├── manifest.json       # Configuração de instalação do PWA
-└── README.md           # Documentação do projeto
-```
+### Storage Layer
+**JSON**
 
-### Princípios Aplicados
+Bancos de dados **otimizados e categorizados por certificação oficial**.
 
-- **Separação de Responsabilidades**: Dados estáticos isolados em JSON, lógica e apresentação separados.
-- **Clean Code**: Funções puras, nomes descritivos, early returns e otimização de DOM (DocumentFragment).
-- **Segurança Core**: Prevenção XSS (`textContent`), blindagem do LocalStorage e validação de dados de entrada.
-- **PWA (Progressive Web App)**: Cache de recursos para funcionamento 100% offline.
+### Application Layer
+**Vanilla JS + ES6**
 
-## 🚀 Funcionalidades
+Motor de simulado **assíncrono** com **gerenciamento de estado global e reatividade de DOM**.
 
-### 1. Simulação de Exame e Estudo
-- **Modos Híbridos**: Alterne entre Modo Exame (com timer) e Modo Estudo (livre).
-- 10 questões por simulado (configurável).
-- Feedback imediato com explicações detalhadas.
+### Presentation Layer
+**TailwindCSS + Chart.js**
 
-### 2. Análise Inteligente
-- **Gráfico Radar**: Visualização de desempenho por domínio (Chart.js).
-- **Insights Dinâmicos**: Recomendações personalizadas da IA.
-- **Comparação de Resultados**: Badge de melhoria vs último simulado.
-
-### 3. Relatório de Desempenho
-- Geração de relatório PDF profissional.
-- Inclui: score, gráfico, questões detalhadas, explicações e insights.
-- Formatação otimizada para impressão.
-
-### 4. Persistência de Dados e PWA
-- **localStorage Seguro**: Armazena último resultado e mantém histórico.
-- **Suporte Offline**: Instale a aplicação no seu celular/desktop e estude sem internet.
-
-### 5. Certificações Disponíveis
-
-#### ☁️ AWS Certified Cloud Practitioner (CLF-C02)
-- Conceitos de Cloud (24%) | Segurança e Conformidade (30%) | Tecnologia e Serviços (34%) | Faturamento e Preços (12%)
-
-#### 🏗️ AWS Certified Solutions Architect - Associate (SAA-C03)
-- Design de Arquiteturas Resilientes (26%) | Alto Desempenho (24%) | Arquiteturas Seguras (30%) | Otimizadas em Custos (20%)
-
-#### 🤖 AWS Certified AI Practitioner (AIF-C01)
-- Fundamentos de IA/ML | Amazon Bedrock | Prompt Engineering | Segurança em IA
-
-## 🎨 Design e UX
-
-### Tema AWS
-- Cores oficiais: `#232f3e` (dark), `#ff9900` (orange)
-- Tipografia: Open Sans
-- Ícones: Font Awesome 6.4
-
-### Responsividade e Acessibilidade (a11y)
-- Layout adaptativo (mobile, tablet, desktop) com CSS Grid.
-- Atributos ARIA (`aria-label`, `aria-live`, `role`).
-- Navegação por teclado (`tabindex`, `focus states`) e inputs invisíveis apenas para Leitores de Tela (`sr-only`).
-
-## 💻 Tecnologias
-
-- **HTML5 & CSS3** (Tailwind CSS via CDN)
-- **Vanilla JavaScript** (Lógica pura, ES6+, Fetch API)
-- **Chart.js** (Gráfico radar dinâmico)
-- **Service Workers** (PWA Offline)
-
-## 📦 Como Usar
-
-1. Clone o repositório ou faça o download da pasta.
-2. Como o projeto usa `fetch()` para carregar arquivos `.json`, **é necessário rodar um servidor local** (ex: Extensão *Live Server* do VS Code).
-3. Abra a porta do servidor local no seu browser.
-4. Selecione a certificação, escolha o modo e clique em "Iniciar Simulação".
-
-## 🔧 Configuração e Como Adicionar Questões
-
-Para adicionar novas questões, não é mais necessário alterar o JavaScript. Basta abrir o arquivo JSON correspondente na pasta `/data/` e adicionar um novo objeto:
-
-```json
-{
-  "id": 999,
-  "domain": "conceitos-cloud",
-  "question": "Sua nova pergunta aqui?",
-  "options": ["Opção A", "Opção B", "Opção C", "Opção D"],
-  "correct": 1,
-  "explanation": "Explicação detalhada da resposta."
-}
-```
-
-## 🎯 Próximas Melhorias (Roadmap)
-
-- [x] Separação de dados em arquivos `.json` nativos (Fetch API)
-- [x] PWA (Progressive Web App) para acesso offline
-- [x] Otimização de Performance (DocumentFragment no DOM)
-- [x] Automação de Banco de Dados com IA (Google Gemini)
-- [x] Blindagem de Chaves de API e Variáveis de Ambiente (.env)
-- [ ] Filtro de questões por domínio específico (Ex: S3, Lambda, IAM)
-- [ ] Modo escuro (Dark Mode) com persistência no LocalStorage
-- [ ] Deploy Automatizado na AWS (S3 + CloudFront + Route53)
-
-## 📄 Licença
-
-Este projeto é de código aberto sob a licença MIT para fins educacionais.
+Interface **mobile-first** com **feedback visual imediato e análise de radar**.
 
 ---
 
-**Nota**: Este simulador é uma ferramenta de estudo e não representa um exame oficial AWS. As questões são exemplos educacionais baseados nos guias oficiais.
+# 📂 Estrutura do Projeto
+
+```
+
+├── 📂 data/             # Bancos de dados JSON validados
+├── 📂 scripts_python/   # Pipeline de Sanitização e Geração IA (Pydantic)
+├── 📂 assets/           # Ícones, Favicons e Estilos
+├── app.js               # O "Coração": Motor do Simulado e Lógica de Estado
+├── data.js              # Configurações de Domínios e Trilhas Oficiais
+├── sw.js                # Service Worker (PWA) para estudo Offline
+└── index.html           # Interface Semântica e Acessível
+
+````
+
+---
+
+# 🚀 Diferenciais Técnicos
+
+## 📊 Análise de Domínios (Radar Chart)
+
+Implementação avançada com **Chart.js** que **mapeia o desempenho em tempo real**.
+
+O gráfico utiliza:
+
+- **Preenchimento de área (Alpha Transparency)**
+- **Paddings dinâmicos**
+- **Legibilidade otimizada para os domínios oficiais da AWS**
+
+---
+
+## 🛡️ Integridade de Dados com Pydantic
+
+Diferente de simuladores comuns, este projeto possui um **Auditor de Dados em Python**.
+
+Cada questão passa por uma validação que exige:
+
+- mínimo de **30 caracteres na pergunta**
+- **exatamente 4 opções de resposta**
+- **mapeamento obrigatório para serviços reais da AWS** (S3, Lambda, etc)
+
+---
+
+## 📱 Experiência PWA (Mobile App)
+
+Graças ao **Service Worker customizado**, o simulador:
+
+- pode ser **instalado em Android/iOS**
+- funciona **100% offline**
+- permite **estudar sem consumo de dados**
+
+---
+
+# 🎯 Funcionalidades Premium
+
+- ✅ **Cards de Opção Interativos**  
+  Feedback visual com letras destacadas e estados de seleção.
+
+- ✅ **Modo Exame vs Modo Estudo**  
+  Timer regressivo ou revisão imediata com explicações.
+
+- ✅ **Deep Linking de Documentação**  
+  Botões diretos para **AWS Whitepapers** em cada resposta.
+
+- ✅ **Gamificação**  
+  Sistema de **streaks (dias seguidos)** e **badges de conquista**.
+
+- ✅ **Banco de Erros**  
+  Prática focada **apenas nas questões respondidas incorretamente**.
+
+---
+
+# 🛠️ Como Executar
+
+O projeto utiliza a **Fetch API**, portanto requer um **servidor local**.
+
+### Passos:
+
+1. Clone o repositório
+
+```bash
+git clone https://github.com/karlarenatadev/projeto-simulados-certificacao-aws.git
+````
+
+2. Abra o projeto no **VS Code**
+
+3. Abra o arquivo `index.html`
+
+4. Clique em **Go Live**
+   (extensão **Live Server**)
+
+5. Acesse:
+
+```
+http://127.0.0.1:5500
+```
+
+---
+
+# 📈 Roadmap de Evolução
+
+* ✅ **V1.0** — Motor básico de questões
+* ✅ **V2.0** — Migração para JSON + Validação Pydantic
+* ✅ **V3.0** — UI Premium com Cards + Radar Chart
+
+### Próximas versões
+
+* ⬜ **V4.0** — Exportação de relatório de desempenho em PDF
+* ⬜ **V5.0** — Deploy automatizado via **AWS S3 + CloudFront (CI/CD)**
+
+---
+
+# 📄 Licença e Uso
+
+Este projeto é destinado a **fins educacionais e portfólio técnico**.
+
+Desenvolvido com paixão por **Karla Renata** 🚀
+
+---
+
+# 💡 Dica Final da Karla
+
+> **"A certificação é o seu destino, a disciplina é o seu motor.
+> Pratique até o gráfico de radar estar totalmente preenchido."**
+
+```
+
+---
+
+💡 **Sugestão estratégica (importante para seu portfólio):**
+
+Esse README já está **muito acima da média para projetos de portfólio**, mas se você quiser eu posso também transformar ele em um **README nível sênior**, incluindo:
+
+- badges de tecnologia
+- preview do simulador
+- arquitetura visual (diagrama)
+- métricas do projeto
+- seção de engenharia de dados
+- seção de IA generativa
+
+Isso deixa seu repositório **com cara de projeto de engenharia real**, algo que chama atenção de recrutadores.
+```

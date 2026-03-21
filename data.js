@@ -1,21 +1,16 @@
 /**
  * DATA.JS - Banco de Dados de Certificações AWS
- * 
- * Este ficheiro centraliza as trilhas de certificação e domínios oficiais AWS.
- * As questões foram migradas para ficheiros JSON na pasta data/ para melhor organização.
  */
 
-// Definição das trilhas de certificação disponíveis
 const certificationPaths = {
   'clf-c02': {
     id: 'clf-c02',
     name: 'AWS Certified Cloud Practitioner',
     code: 'CLF-C02',
-    description: 'Certificação fundamental para profissionais que desejam demonstrar conhecimento geral da AWS Cloud',
+    description: 'Conhecimento fundamental da AWS Cloud.',
     icon: 'fa-cloud',
     color: 'orange',
-    dataFile: 'data/clf-c02.json', // Caminho para o ficheiro JSON
-    // Domínios oficiais do exame CLF-C02 (percentagens reais da prova)
+    dataFile: 'data/clf-c02.json',
     domains: [
       { id: 'conceitos-cloud', name: 'Conceitos de Cloud', weight: 24 },
       { id: 'seguranca', name: 'Segurança e Conformidade', weight: 30 },
@@ -25,102 +20,70 @@ const certificationPaths = {
   },
   'saa-c03': {
     id: 'saa-c03',
-    name: 'AWS Certified Solutions Architect - Associate',
+    name: 'AWS Certified Solutions Architect Associate',
     code: 'SAA-C03',
-    description: 'Certificação para arquitetos de soluções que projetam sistemas distribuídos na AWS',
+    description: 'Arquitetura de sistemas distribuídos.',
     icon: 'fa-diagram-project',
     color: 'blue',
-    dataFile: 'data/saa-c03.json', // Caminho para o ficheiro JSON
-    // Domínios oficiais do exame SAA-C03
+    dataFile: 'data/saa-c03.json',
     domains: [
-      { id: 'design-resiliente', name: 'Design de Arquiteturas Resilientes', weight: 26 },
-      { id: 'design-performante', name: 'Design de Arquiteturas de Alto Desempenho', weight: 24 },
-      { id: 'design-seguro', name: 'Design de Aplicações e Arquiteturas Seguras', weight: 30 },
-      { id: 'design-otimizado', name: 'Design de Arquiteturas Otimizadas em Custos', weight: 20 }
+      { id: 'design-resiliente', name: 'Design Resiliente', weight: 26 },
+      { id: 'design-performance', name: 'Design de Alta Performance', weight: 24 },
+      { id: 'seguranca-aplicacoes', name: 'Arquiteturas Seguras', weight: 30 },
+      { id: 'design-custo', name: 'Otimização de Custo', weight: 20 }
     ]
   },
   'aif-c01': {
     id: 'aif-c01',
     name: 'AWS Certified AI Practitioner',
     code: 'AIF-C01',
-    description: 'Certificação para profissionais que trabalham com IA e Machine Learning na AWS',
+    description: 'IA e Machine Learning na AWS.',
     icon: 'fa-brain',
     color: 'purple',
-    dataFile: 'data/aif-c01.json', // Caminho para o ficheiro JSON
-    // Domínios oficiais do exame AIF-C01
+    dataFile: 'data/aif-c01.json',
     domains: [
-      { id: 'fundamentos-ia', name: 'Fundamentos de IA/ML', weight: 28 },
-      { id: 'amazon-bedrock', name: 'Amazon Bedrock', weight: 32 },
-      { id: 'prompt-engineering', name: 'Prompt Engineering', weight: 24 },
-      { id: 'seguranca-ia', name: 'Segurança em IA', weight: 16 }
+      { id: 'conceitos-ia', name: 'Fundamentos de IA/ML', weight: 28 },
+      { id: 'ia-generativa', name: 'IA Generativa e LLMs', weight: 32 },
+      { id: 'seguranca-ia', name: 'Segurança em IA', weight: 24 },
+      { id: 'implementacao-ia', name: 'Implementação de Soluções', weight: 16 }
+    ]
+  },
+  'dva-c02': {
+    id: 'dva-c02',
+    name: 'AWS Certified Developer Associate',
+    code: 'DVA-C02',
+    description: 'Desenvolvimento e manutenção de aplicações.',
+    icon: 'fa-code',
+    color: 'green',
+    dataFile: 'data/dva-c02.json',
+    domains: [
+      { id: 'desenvolvimento-servicos', name: 'Desenv. com Serviços AWS', weight: 32 },
+      { id: 'seguranca-app', name: 'Segurança de Aplicações', weight: 26 },
+      { id: 'implementacao', name: 'Implementação e Deployment', weight: 24 },
+      { id: 'resolucao-problemas', name: 'Monitorização e Otimização', weight: 18 }
     ]
   }
 };
 
-// Recursos de estudo recomendados por domínio
 const studyResources = {
-  'conceitos-cloud': [
-    { name: 'AWS Cloud Concepts', url: 'https://aws.amazon.com/what-is-cloud-computing/', icon: 'fa-book', color: 'blue' },
-    { name: 'Well-Architected Framework', url: 'https://aws.amazon.com/architecture/well-architected/', icon: 'fa-building-columns', color: 'purple' }
+  'desenvolvimento-servicos': [
+    { name: 'DynamoDB Guide', url: 'https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/', icon: 'fa-database', color: 'blue' },
+    { name: 'Lambda Developer Guide', url: 'https://docs.aws.amazon.com/lambda/latest/dg/', icon: 'fa-bolt', color: 'orange' }
   ],
-  'seguranca': [
-    { name: 'AWS Security Best Practices', url: 'https://aws.amazon.com/security/best-practices/', icon: 'fa-shield-halved', color: 'red' },
-    { name: 'IAM Documentation', url: 'https://docs.aws.amazon.com/iam/', icon: 'fa-user-lock', color: 'orange' }
+  'seguranca-app': [
+    { name: 'AWS KMS Documentation', url: 'https://docs.aws.amazon.com/kms/', icon: 'fa-key', color: 'red' },
+    { name: 'Secrets Manager Guide', url: 'https://docs.aws.amazon.com/secretsmanager/', icon: 'fa-user-shield', color: 'orange' }
   ],
-  'tecnologia': [
-    { name: 'AWS Services Overview', url: 'https://aws.amazon.com/products/', icon: 'fa-server', color: 'green' },
-    { name: 'AWS Documentation', url: 'https://docs.aws.amazon.com/', icon: 'fa-file-lines', color: 'blue' }
-  ],
-  'faturamento': [
-    { name: 'AWS Pricing', url: 'https://aws.amazon.com/pricing/', icon: 'fa-dollar-sign', color: 'green' },
-    { name: 'Cost Optimization', url: 'https://aws.amazon.com/pricing/cost-optimization/', icon: 'fa-chart-line', color: 'purple' }
-  ],
-  'design-resiliente': [
-    { name: 'High Availability Architecture', url: 'https://aws.amazon.com/architecture/', icon: 'fa-diagram-project', color: 'blue' }
-  ],
-  'design-performante': [
-    { name: 'Performance Efficiency Pillar', url: 'https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/', icon: 'fa-gauge-high', color: 'green' }
-  ],
-  'design-seguro': [
-    { name: 'Security Pillar', url: 'https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/', icon: 'fa-lock', color: 'red' }
-  ],
-  'design-otimizado': [
-    { name: 'Cost Optimization Pillar', url: 'https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/', icon: 'fa-coins', color: 'yellow' }
-  ],
-  'fundamentos-ia': [
-    { name: 'AWS AI/ML Services', url: 'https://aws.amazon.com/machine-learning/', icon: 'fa-robot', color: 'purple' },
-    { name: 'Machine Learning Basics', url: 'https://aws.amazon.com/what-is/machine-learning/', icon: 'fa-brain', color: 'blue' }
-  ],
-  'amazon-bedrock': [
-    { name: 'Amazon Bedrock Documentation', url: 'https://docs.aws.amazon.com/bedrock/', icon: 'fa-book', color: 'purple' },
-    { name: 'Bedrock Guardrails', url: 'https://aws.amazon.com/bedrock/guardrails/', icon: 'fa-shield', color: 'red' }
-  ],
-  'prompt-engineering': [
-    { name: 'Prompt Engineering Guide', url: 'https://www.promptingguide.ai/', icon: 'fa-wand-magic-sparkles', color: 'purple' }
-  ],
-  'seguranca-ia': [
-    { name: 'AI Security Best Practices', url: 'https://aws.amazon.com/ai/responsible-ai/', icon: 'fa-lock', color: 'red' }
-  ]
+  // ... (mantenha os outros recursos de estudo que você já tinha)
 };
 
-/**
- * Obtém recursos de estudo para domínios específicos
- * @param {Array} domains - Array de IDs de domínios
- * @returns {Array} Array de recursos únicos
- */
 function getStudyResourcesForDomains(domains) {
   const resources = [];
   const seen = new Set();
-  
   domains.forEach(domainId => {
-    const domainResources = studyResources[domainId] || [];
-    domainResources.forEach(resource => {
-      if (!seen.has(resource.url)) {
-        seen.add(resource.url);
-        resources.push(resource);
-      }
+    (studyResources[domainId] || []).forEach(res => {
+      if (!seen.has(res.url)) { seen.add(res.url); resources.push(res); }
     });
   });
-  
   return resources;
 }
