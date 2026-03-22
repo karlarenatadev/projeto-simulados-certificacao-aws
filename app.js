@@ -19,7 +19,7 @@ let uiState = {
     timerInterval: null,
     timeRemaining: 0,
     isPaused: false,
-    tempSelectedAnswer: null
+    tempSelectedAnswer: null // Será null (escolha única) ou [] (múltipla)
 };
 
 // ============================================================================
@@ -27,7 +27,7 @@ let uiState = {
 // ============================================================================
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
-    initializeRadarChart();
+    initializeRadarChart(); // Mantido por segurança, caso o HTML ainda tenha o canvas
     updateHistoryDisplay();
     renderGamification();
 
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================================================================
-// 2. MOTOR DO QUIZ
+// 2. MOTOR DO QUIZ E TIMER
 // ============================================================================
 async function startQuiz() {
     const certSelect = document.getElementById('certification-select');
@@ -69,8 +69,6 @@ async function startQuiz() {
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>A carregar...';
 
         const certId = certSelect.value;
-        
-        // Pega a info importada de forma nativa e segura
         const currentCertInfo = certificationPaths[certId];
         uiState.currentCertificationInfo = currentCertInfo;
 
@@ -81,7 +79,6 @@ async function startQuiz() {
             mode: modeInput ? modeInput.value : 'exam'
         };
 
-        // Chama o motor para buscar e processar as questões
         const result = await engine.loadQuestions(certId, currentCertInfo.domains, filters);
 
         if (!result.success) {
@@ -89,15 +86,32 @@ async function startQuiz() {
             return;
         }
 
-        // Configura o timer (90 segundos por questão)
-        uiState.timeRemaining = result.totalQuestions * 90; 
+        // Configura o timer baseado no exame real da AWS (em segundos)
+        let tempoPorQuestao = 90; // Padrão
+        if (certId === 'saa-c03' || certId === 'dva-c02') {
+            tempoPorQuestao = 120; // 130 mins para 65 questões (2 minutos/questão)
+        } else if (certId === 'clf-c02') {
+            tempoPorQuestao = 83;  // 90 mins para 65 questões (~83 seg/questão)
+        } else if (certId === 'aif-c01') {
+            tempoPorQuestao = 110; // ~120 mins para 65 questões
+        }
+
+        uiState.timeRemaining = result.totalQuestions * tempoPorQuestao; 
         
-        // Limpa relatórios antigos da tela
+        // Limpa relatórios antigos
         const oldReport = document.getElementById('detailed-report');
         if (oldReport) oldReport.remove();
 
         showScreen('quiz');
-        if (filters.mode === 'exam') startTimer();
+        
+        // Verifica o modo e inicia o timer
+        const timerContainer = document.getElementById('timer-container');
+        if (filters.mode === 'exam') {
+            if (timerContainer) timerContainer.classList.remove('hidden');
+            startTimer();
+        } else {
+            if (timerContainer) timerContainer.classList.add('hidden');
+        }
         
         reinitializeRadarChart();
         loadQuestionUI();
@@ -110,22 +124,66 @@ async function startQuiz() {
     }
 }
 
+function startTimer() {
+    if (uiState.timerInterval) clearInterval(uiState.timerInterval);
+    
+    updateTimerDisplay(); // Atualiza logo no início
+
+    uiState.timerInterval = setInterval(() => {
+        if (uiState.isPaused) return;
+        
+        uiState.timeRemaining--;
+        updateTimerDisplay();
+
+        if (uiState.timeRemaining <= 0) {
+            clearInterval(uiState.timerInterval);
+            alert("⏰ O tempo esgotou! O seu simulado será finalizado automaticamente e as questões em branco serão dadas como erradas.");
+            finishQuiz();
+        }
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    const hours = Math.floor(uiState.timeRemaining / 3600);
+    const min = Math.floor((uiState.timeRemaining % 3600) / 60);
+    const sec = uiState.timeRemaining % 60;
+    
+    const el = document.getElementById('timer-text');
+    if (el) {
+        if (hours > 0) {
+            el.textContent = `${hours}:${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        } else {
+            el.textContent = `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        }
+    }
+}
+
+// ============================================================================
+// 3. UI DE QUESTÕES E MÚLTIPLAS ESCOLHAS
+// ============================================================================
 function loadQuestionUI() {
     const q = engine.getCurrentQuestion();
     const progress = engine.getProgress();
+    const isMulti = Array.isArray(q.correct);
     
     document.getElementById('question-category').textContent = getDomainName(q.domain);
-    document.getElementById('question-text').textContent = q.question;
+    
+    // Adiciona o aviso "(Escolha X)" caso seja múltipla
+    const questionText = isMulti ? `${q.question} <br><span class="text-sm text-aws-orange italic mt-2 block">(Escolha ${q.correct.length} opções)</span>` : q.question;
+    document.getElementById('question-text').innerHTML = questionText;
+    
     document.getElementById('current-q-num').textContent = progress.current;
     document.getElementById('total-q-num').textContent = progress.total;
     
     const progressBar = document.getElementById('progress-bar');
     if (progressBar) progressBar.style.width = `${progress.percentage}%`;
 
+    // Define o estado inicial da resposta dependendo do tipo da pergunta
+    uiState.tempSelectedAnswer = isMulti ? [] : null;
+
     renderOptionsUI(q);
     
-    // Reset de botões e explicações
-    uiState.tempSelectedAnswer = null;
+    // Reset de botões e caixas
     document.getElementById('btn-submit').disabled = true;
     document.getElementById('explanation-box').classList.add('hidden');
     document.getElementById('btn-next').classList.add('hidden');
@@ -142,16 +200,18 @@ function loadQuestionUI() {
 function renderOptionsUI(question) {
     const container = document.getElementById('options-container');
     container.innerHTML = '';
+    const isMulti = Array.isArray(question.correct);
     
     question.options.forEach((opt, idx) => {
         const card = document.createElement('div');
+        card.id = `option-${idx}`;
         card.className = 'option-card group p-4 rounded-xl flex items-center gap-4 cursor-pointer border-2 border-gray-100 dark:border-slate-700 hover:border-orange-300 hover:shadow-md transition-all duration-200 bg-white dark:bg-slate-800';
         
         card.innerHTML = `
             <div class="option-letter w-10 h-10 flex-shrink-0 rounded-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center font-bold text-gray-500 group-hover:text-orange-600 transition-colors">
                 ${String.fromCharCode(65 + idx)}
             </div>
-            <div class="flex-grow text-gray-700 dark:text-gray-200 font-medium">
+            <div class="option-text flex-grow text-gray-700 dark:text-gray-200 font-medium">
                 ${opt}
             </div>
         `;
@@ -161,16 +221,36 @@ function renderOptionsUI(question) {
                                !document.getElementById('btn-finish').classList.contains('hidden');
             if (isAnswered) return;
 
-            document.querySelectorAll('.option-card').forEach(c => {
-                c.classList.remove('selected', 'border-orange-500', 'bg-orange-50');
-                c.querySelector('.option-letter').classList.remove('bg-orange-500', 'text-white');
-            });
+            if (!isMulti) {
+                // LÓGICA DE ESCOLHA ÚNICA
+                document.querySelectorAll('.option-card').forEach(c => {
+                    c.classList.remove('selected', 'border-orange-500', 'bg-orange-50');
+                    c.querySelector('.option-letter').classList.remove('bg-orange-500', 'text-white');
+                });
 
-            card.classList.add('selected', 'border-orange-500', 'bg-orange-50');
-            card.querySelector('.option-letter').classList.add('bg-orange-500', 'text-white');
+                card.classList.add('selected', 'border-orange-500', 'bg-orange-50');
+                card.querySelector('.option-letter').classList.add('bg-orange-500', 'text-white');
 
-            uiState.tempSelectedAnswer = idx;
-            document.getElementById('btn-submit').disabled = false;
+                uiState.tempSelectedAnswer = idx;
+                document.getElementById('btn-submit').disabled = false;
+            } else {
+                // LÓGICA DE ESCOLHA MÚLTIPLA
+                const isSelected = card.classList.contains('selected');
+                
+                if (isSelected) {
+                    card.classList.remove('selected', 'border-orange-500', 'bg-orange-50');
+                    card.querySelector('.option-letter').classList.remove('bg-orange-500', 'text-white');
+                    uiState.tempSelectedAnswer = uiState.tempSelectedAnswer.filter(i => i !== idx);
+                } else {
+                    // Limita seleções
+                    if (uiState.tempSelectedAnswer.length < question.correct.length) {
+                        card.classList.add('selected', 'border-orange-500', 'bg-orange-50');
+                        card.querySelector('.option-letter').classList.add('bg-orange-500', 'text-white');
+                        uiState.tempSelectedAnswer.push(idx);
+                    }
+                }
+                document.getElementById('btn-submit').disabled = uiState.tempSelectedAnswer.length !== question.correct.length;
+            }
         };
 
         container.appendChild(card);
@@ -178,15 +258,47 @@ function renderOptionsUI(question) {
 }
 
 function submitAnswer() {
+    const question = engine.getCurrentQuestion();
+    const isMulti = Array.isArray(question.correct);
     const result = engine.submitAnswer(uiState.tempSelectedAnswer);
-    const q = engine.getCurrentQuestion();
 
-    document.querySelectorAll('.option-card').forEach((card, idx) => {
-        card.classList.add('pointer-events-none');
-        if (idx === result.correctIndex) card.classList.add('bg-green-50', 'border-green-500', 'dark:bg-green-900/20');
-        if (idx === uiState.tempSelectedAnswer && !result.isCorrect) card.classList.add('bg-red-50', 'border-red-500', 'dark:bg-red-900/20');
-    });
+    document.getElementById('btn-submit').classList.add('hidden');
+    // Opaca as opções para foco na resposta
+    document.querySelectorAll('.option-card').forEach(card => card.classList.add('opacity-70'));
 
+    // --- NOVA LÓGICA DE FEEDBACK VISUAL (VERDE/VERMELHO) ---
+    if (!isMulti) {
+        const userSelectedIdx = uiState.tempSelectedAnswer;
+        const correctIdx = question.correct;
+        const isCorrect = userSelectedIdx === correctIdx;
+
+        if (isCorrect) {
+            applyStyleToOptionCard(userSelectedIdx, 'correct');
+        } else {
+            applyStyleToOptionCard(userSelectedIdx, 'incorrect');
+            applyStyleToOptionCard(correctIdx, 'correct');
+        }
+    } else {
+        const userSelections = uiState.tempSelectedAnswer; 
+        const correctAnswers = question.correct; 
+
+        question.options.forEach((_, optionIdx) => {
+            const isSelectedByUser = userSelections.includes(optionIdx);
+            const isTrulyCorrect = correctAnswers.includes(optionIdx);
+
+            if (isSelectedByUser) {
+                if (isTrulyCorrect) {
+                    applyStyleToOptionCard(optionIdx, 'correct');
+                } else {
+                    applyStyleToOptionCard(optionIdx, 'incorrect');
+                }
+            } else if (isTrulyCorrect) {
+                applyStyleToOptionCard(optionIdx, 'correct');
+            }
+        });
+    }
+
+    // Explicações e Referências
     const expBox = document.getElementById('explanation-box');
     const docLink = result.referenceUrl ? 
         `<a href="${result.referenceUrl}" target="_blank" class="mt-3 inline-block text-orange-600 font-bold hover:underline">
@@ -199,16 +311,16 @@ function submitAnswer() {
     
     let feedbackHTML = "";
     if (!result.isCorrect) {
-        feedbackHTML += `<div class="mb-2"><strong class="text-gray-800 dark:text-gray-200">Sua resposta:</strong> <span class="text-red-600 dark:text-red-400">${q.options[uiState.tempSelectedAnswer]}</span></div>`;
+        let userText = isMulti ? uiState.tempSelectedAnswer.map(i => question.options[i]).join("<br>• ") : question.options[uiState.tempSelectedAnswer];
+        feedbackHTML += `<div class="mb-2"><strong class="text-gray-800 dark:text-gray-200">Sua resposta:</strong> <span class="text-red-600 dark:text-red-400"><br>• ${userText}</span></div>`;
     }
-    feedbackHTML += `<div class="mb-3"><strong class="text-gray-800 dark:text-gray-200">Resposta correta:</strong> <span class="text-green-600 dark:text-green-400">${q.options[result.correctIndex]}</span></div>`;
+    let correctText = isMulti ? question.correct.map(i => question.options[i]).join("<br>• ") : question.options[result.correctIndex];
+    feedbackHTML += `<div class="mb-3"><strong class="text-gray-800 dark:text-gray-200">Resposta correta:</strong> <span class="text-green-600 dark:text-green-400"><br>• ${correctText}</span></div>`;
     feedbackHTML += `<div class="pt-3 mt-2 border-t border-blue-200 dark:border-slate-600"><strong class="text-gray-800 dark:text-gray-200">Por que?</strong><br>${result.explanation}</div>`;
 
     document.getElementById('explanation-text').innerHTML = `${feedbackHTML} ${docLink}`;
     expBox.classList.remove('hidden');
 
-    document.getElementById('btn-submit').classList.add('hidden');
-    
     if (!result.isFinished) {
         document.getElementById('btn-next').classList.remove('hidden');
     } else {
@@ -217,6 +329,29 @@ function submitAnswer() {
 
     updateScoreDisplayUI();
     updateRadarChartUI();
+}
+
+// Função Auxiliar de Estilos de Acerto/Erro
+function applyStyleToOptionCard(optionIdx, styleType) {
+    const card = document.getElementById(`option-${optionIdx}`);
+    if (!card) return;
+    
+    const letterEl = card.querySelector('.option-letter');
+    const textEl = card.querySelector('.option-text');
+
+    card.classList.remove('selected', 'border-orange-500', 'bg-orange-50', 'opacity-70', 'border-gray-100', 'dark:border-slate-700', 'bg-white', 'dark:bg-slate-800');
+    letterEl.classList.remove('bg-orange-500', 'text-white', 'bg-gray-100', 'dark:bg-slate-700');
+    textEl.classList.remove('text-gray-700', 'dark:text-gray-200');
+
+    if (styleType === 'correct') {
+        card.classList.add('border-green-600', 'bg-green-50', 'dark:bg-green-900/30', 'opacity-100');
+        letterEl.classList.add('bg-green-600', 'text-white');
+        textEl.classList.add('text-green-800', 'dark:text-green-300', 'font-semibold');
+    } else if (styleType === 'incorrect') {
+        card.classList.add('border-red-600', 'bg-red-50', 'dark:bg-red-900/30', 'opacity-100');
+        letterEl.classList.add('bg-red-600', 'text-white');
+        textEl.classList.add('text-red-800', 'dark:text-red-300', 'font-semibold');
+    }
 }
 
 function nextQuestion() {
@@ -239,7 +374,7 @@ function toggleFlag() {
 }
 
 // ============================================================================
-// 3. TELAS E RELATÓRIOS
+// 4. TELAS E RELATÓRIOS
 // ============================================================================
 function showScreen(screenName) {
     const screens = ['start', 'quiz', 'results'];
@@ -264,14 +399,15 @@ function displayReportFromResult(results) {
         uiState.currentCertificationInfo = certificationPaths[results.certId];
     }
 
-    document.getElementById('final-score-percent').textContent = `${results.percentage.toFixed(0)}%`;
+    // Converte a pontuação para a escala oficial AWS (100-1000)
+    const awsScore = Math.floor((results.percentage / 100) * 900) + 100;
+    
+    document.getElementById('final-score-percent').textContent = awsScore; // Escala 100-1000
     document.getElementById('final-correct').textContent = results.score;
     document.getElementById('final-incorrect').textContent = results.total - results.score;
 
-    // 1. PRIMEIRO CAPTURAMOS O ELEMENTO DO HTML
     const recText = document.getElementById('recommendation-text');
 
-    // 2. VERIFICAMOS SE O ELEMENTO EXISTE ANTES DE ALTERAR
     if (recText) {
         const weakDomains = results.weakDomains || [];
 
@@ -307,6 +443,7 @@ function renderDetailedReportUI(results) {
 
     const recText = document.getElementById('recommendation-text')?.innerHTML || '';
 
+    // 1. HEADER
     let html = `
         <div class="hidden print:block mb-8 border-b-2 border-black pb-6">
             <h2 class="text-3xl font-bold mb-4 print-text-black">Relatório Oficial - Simulado AWS</h2>
@@ -316,16 +453,73 @@ function renderDetailedReportUI(results) {
                 <span class="text-base print-text-black">${recText}</span>
             </div>
         </div>
-        <div class="report-header pb-4 mb-6 border-b border-gray-300 dark:border-slate-700 print:hidden">
-            <h3 class="text-2xl font-bold aws-text-dark dark:text-white">
-                <i class="fa-solid fa-list-check text-aws-orange mr-2"></i> Revisão do Simulado
+    `;
+
+    // 2. UX/UI: DESEMPENHO POR DOMÍNIO (Padrão AWS)
+    html += `
+        <div class="domain-performance-section mb-8">
+            <h3 class="text-xl font-bold aws-text-dark dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-slate-700">
+                <i class="fa-solid fa-chart-bar text-aws-orange mr-2"></i> Desempenho por Domínio
+            </h3>
+            <div class="space-y-3">
+    `;
+
+    uiState.currentCertificationInfo.domains.forEach(domain => {
+        const scoreData = results.domainScores[domain.id];
+        if (scoreData && scoreData.total > 0) {
+            const pct = (scoreData.correct / scoreData.total) * 100;
+            const meets = pct >= 70; 
+
+            const statusText = meets ? "Atende às Competências" : "Precisa de Melhoria";
+            const statusColor = meets 
+                ? "text-green-700 bg-green-100 dark:bg-green-900/40 dark:text-green-400 border-green-200 dark:border-green-800" 
+                : "text-red-700 bg-red-100 dark:bg-red-900/40 dark:text-red-400 border-red-200 dark:border-red-800";
+            const icon = meets ? "fa-check-circle" : "fa-exclamation-triangle";
+
+            html += `
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-50 dark:bg-slate-700/30 rounded-lg border border-gray-200 dark:border-slate-600 transition-all hover:shadow-sm">
+                    <div class="mb-3 sm:mb-0">
+                        <span class="font-bold text-gray-800 dark:text-gray-200 block text-md">${domain.name}</span>
+                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1 block">
+                            Score do Domínio: ${pct.toFixed(0)}% <span class="opacity-75">(${scoreData.correct} de ${scoreData.total} corretas)</span>
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-bold border ${statusColor} shrink-0">
+                        <i class="fa-solid ${icon}"></i> ${statusText}
+                    </div>
+                </div>
+            `;
+        }
+    });
+
+    html += `
+            </div>
+        </div>
+    `;
+
+    // 3. REVISÃO QUESTÃO A QUESTÃO
+    html += `
+        <div class="report-header pb-4 mb-6 border-b border-gray-300 dark:border-slate-700 print:hidden mt-10">
+            <h3 class="text-xl font-bold aws-text-dark dark:text-white">
+                <i class="fa-solid fa-list-check text-aws-orange mr-2"></i> Detalhamento das Questões
             </h3>
         </div>
     `;
     
     results.answers.forEach((ans, index) => {
-        const userText = ans.options[ans.userSelection];
-        const correctText = ans.options[ans.correct];
+        const isMulti = Array.isArray(ans.correct);
+        
+        let userText = "";
+        let correctText = "";
+
+        if (isMulti) {
+            userText = ans.userSelection.map(i => ans.options[i]).join("<br>• ");
+            correctText = ans.correct.map(i => ans.options[i]).join("<br>• ");
+        } else {
+            userText = ans.options[ans.userSelection];
+            correctText = ans.options[ans.correct];
+        }
+
         const colorClass = ans.isCorrect ? "print-text-green text-green-600 dark:text-green-400" : "print-text-red text-red-600 dark:text-red-400";
         const icon = ans.isCorrect ? "✅" : "❌";
 
@@ -337,12 +531,12 @@ function renderDetailedReportUI(results) {
             <div class="answer-block mb-3 p-4 rounded-lg bg-gray-50 dark:bg-slate-700/30 border border-gray-100 dark:border-slate-600 print-no-bg">
                 <div class="mb-2">
                     <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">Sua Resposta:</span>
-                    <span class="${colorClass} font-semibold block">${icon} ${userText}</span>
+                    <span class="${colorClass} font-semibold block leading-snug">${icon} ${isMulti ? '<br>• ' : ''}${userText}</span>
                 </div>
                 ${!ans.isCorrect ? `
                 <div class="mt-3 pt-3 border-t border-gray-200 dark:border-slate-600 print-border-black">
                     <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">Resposta Correta:</span>
-                    <span class="print-text-green text-green-600 dark:text-green-400 font-semibold block">✅ ${correctText}</span>
+                    <span class="print-text-green text-green-600 dark:text-green-400 font-semibold block leading-snug">✅ ${isMulti ? '<br>• ' : ''}${correctText}</span>
                 </div>` : ''}
             </div>
             <div class="explanation-print mt-4 p-4 rounded-lg bg-blue-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 border-l-4 border-l-blue-500 text-sm text-gray-800 dark:text-gray-200 print-no-bg">
@@ -357,7 +551,7 @@ function renderDetailedReportUI(results) {
 }
 
 // ============================================================================
-// 4. PERSISTÊNCIA, GAMIFICAÇÃO E HISTÓRICO
+// 5. PERSISTÊNCIA E HISTÓRICO
 // ============================================================================
 function saveQuizResult() {
     const results = engine.getFinalResults();
@@ -375,12 +569,13 @@ function loadLastScore() {
     if (last && last.percentage !== undefined) {
         banner.classList.remove('hidden');
         banner.classList.add('cursor-pointer', 'hover:bg-blue-100', 'dark:hover:bg-blue-800', 'transition-all');
+        const awsScore = Math.floor((last.percentage / 100) * 900) + 100;
 
         banner.innerHTML = `
             <div class="flex justify-between items-center w-full h-full" onclick="showLastReport('${certId}')">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-history"></i> 
-                    <span>Última Nota: <strong>${last.percentage.toFixed(0)}%</strong></span>
+                    <span>Último Teste: <strong>${awsScore} Pontos</strong></span>
                 </div>
                 <div class="text-xs font-bold underline flex items-center gap-1 opacity-80 hover:opacity-100">
                     <i class="fa-solid fa-file-pdf"></i> Ver Relatório
@@ -399,7 +594,6 @@ function showLastReport(certId) {
         return;
     }
     
-    // Calcula weakDomains se não existir (compatibilidade com relatórios antigos)
     if (!lastResult.weakDomains) {
         lastResult.weakDomains = [];
         for (const [domainId, scoreData] of Object.entries(lastResult.domainScores)) {
@@ -411,7 +605,6 @@ function showLastReport(certId) {
             }
         }
     }
-    
     displayReportFromResult(lastResult);
 }
 
@@ -424,7 +617,6 @@ function showHistoricalReport(index) {
         return;
     }
     
-    // Calcula weakDomains se não existir (compatibilidade com relatórios antigos)
     if (!result.weakDomains) {
         result.weakDomains = [];
         for (const [domainId, scoreData] of Object.entries(result.domainScores)) {
@@ -436,7 +628,6 @@ function showHistoricalReport(index) {
             }
         }
     }
-
     displayReportFromResult(result);
 }
 
@@ -460,6 +651,7 @@ function updateHistoryDisplay() {
         const color = isPass ? 'text-green-500' : 'text-red-500';
         const icon = isPass ? 'fa-check-circle' : 'fa-times-circle';
         const certName = item.certId.toUpperCase();
+        const awsScore = Math.floor((item.percentage / 100) * 900) + 100;
         
         const originalIndex = history.length - 1 - index;
 
@@ -471,7 +663,7 @@ function updateHistoryDisplay() {
             </div>
             <div class="flex flex-col items-end">
                 <div class="${color} font-bold text-lg flex items-center gap-1">
-                    ${item.percentage.toFixed(0)}% <i class="fa-solid ${icon}"></i>
+                    ${awsScore} <i class="fa-solid ${icon}"></i>
                 </div>
                 <div class="text-[10px] text-blue-500 dark:text-blue-400 opacity-80 group-hover:opacity-100 group-hover:underline mt-1 transition-all">
                     <i class="fa-solid fa-eye"></i> Ver Relatório
@@ -504,7 +696,7 @@ function updateDynamicInsight(history) {
     if (last.percentage >= 85) {
         insightEl.innerHTML = `<span class="text-green-600 dark:text-green-400 font-bold text-base"><i class="fa-solid fa-fire"></i> Você está voando!</span><br><br>Seu desempenho no último simulado da <strong>${last.certId.toUpperCase()}</strong> foi excelente. Mantenha o ritmo de estudos, você está quase pronto!`;
     } else if (last.percentage >= APP_CONFIG.PASSING_SCORE) {
-        insightEl.innerHTML = `<span class="text-blue-600 dark:text-blue-400 font-bold text-base"><i class="fa-solid fa-thumbs-up"></i> Bom trabalho!</span><br><br>Você passou no último simulado, mas ainda há espaço para revisar. Reforce seus pontos fracos olhando o gráfico ao lado.`;
+        insightEl.innerHTML = `<span class="text-blue-600 dark:text-blue-400 font-bold text-base"><i class="fa-solid fa-thumbs-up"></i> Bom trabalho!</span><br><br>Você passou no último simulado, mas ainda há espaço para revisar. Reforce seus pontos fracos olhando o relatório detalhado.`;
     } else {
         insightEl.innerHTML = `<span class="text-orange-600 dark:text-orange-400 font-bold text-base"><i class="fa-solid fa-book"></i> Foco nos estudos!</span><br><br>Você precisa de mais uns pontos para passar na <strong>${last.certId.toUpperCase()}</strong>. Revise o relatório em PDF detalhado do seu último teste e tente novamente.`;
     }
@@ -534,7 +726,7 @@ function updateGamification(pct) {
 }
 
 // ============================================================================
-// 5. CHART E UTILITÁRIOS GERAIS
+// 6. CHART E UTILITÁRIOS GERAIS
 // ============================================================================
 
 function initializeRadarChart() {
@@ -564,10 +756,7 @@ function initializeRadarChart() {
                     max: 100, 
                     ticks: { display: false, stepSize: 25 },
                     grid: { color: 'rgba(200, 200, 200, 0.2)' },
-                    pointLabels: {
-                        font: { size: 11, family: "'Open Sans', sans-serif" },
-                        padding: 5
-                    }
+                    pointLabels: { font: { size: 11, family: "'Open Sans', sans-serif" }, padding: 5 }
                 }
             },
             plugins: { legend: { display: false } }
@@ -586,7 +775,6 @@ function formatChartLabel(name) {
 
 function reinitializeRadarChart() {
     if (!uiState.currentCertificationInfo || !window.radarChartInstance) return;
-    
     const labels = uiState.currentCertificationInfo.domains.map(d => formatChartLabel(d.name));
     window.radarChartInstance.data.labels = labels;
     
@@ -602,7 +790,6 @@ function reinitializeRadarChart() {
     } else {
         window.radarChartInstance.data.datasets[0].data = labels.map(() => 0);
     }
-    
     window.radarChartInstance.update();
 }
 
@@ -614,19 +801,6 @@ function updateRadarChartUI() {
     });
     window.radarChartInstance.data.datasets[0].data = data;
     window.radarChartInstance.update();
-}
-
-function startTimer() {
-    if (uiState.timerInterval) clearInterval(uiState.timerInterval);
-    uiState.timerInterval = setInterval(() => {
-        if (uiState.isPaused) return;
-        uiState.timeRemaining--;
-        const min = Math.floor(uiState.timeRemaining / 60);
-        const sec = uiState.timeRemaining % 60;
-        const el = document.getElementById('timer-text');
-        if (el) el.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
-        if (uiState.timeRemaining <= 0) finishQuiz();
-    }, 1000);
 }
 
 function updateScoreDisplayUI() {
@@ -682,7 +856,7 @@ function generatePerformanceReport() {
 }
 
 // ============================================================================
-// 6. EXPOSIÇÃO GLOBAL (Ponte para o index.html)
+// 7. EXPOSIÇÃO GLOBAL (Ponte para o index.html)
 // ============================================================================
 window.startQuiz = startQuiz;
 window.submitAnswer = submitAnswer;
