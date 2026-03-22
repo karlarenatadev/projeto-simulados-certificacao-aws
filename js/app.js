@@ -715,23 +715,244 @@ function clearHistory() {
         updateHistoryDisplay();
         renderGlobalRadarChart(); // Atualiza gráfico global após limpar histórico
         
-        const insightEl = document.getElementById('dynamic-insight');
-        if (insightEl) insightEl.innerHTML = "Comece o simulado para que a IA mapeie seu perfil de conhecimento.";
+        // Atualiza insights para estado inicial
+        updateDynamicInsight([]);
     }
 }
 
 function updateDynamicInsight(history) {
     const insightEl = document.getElementById('dynamic-insight');
-    if (!insightEl || !history || history.length === 0) return;
-
-    const last = history[history.length - 1];
-    if (last.percentage >= 85) {
-        insightEl.innerHTML = `<span class="text-green-600 dark:text-green-400 font-bold text-base"><i class="fa-solid fa-fire"></i> Você está voando!</span><br><br>Seu desempenho no último simulado da <strong>${last.certId.toUpperCase()}</strong> foi excelente. Mantenha o ritmo de estudos, você está quase pronto!`;
-    } else if (last.percentage >= APP_CONFIG.PASSING_SCORE) {
-        insightEl.innerHTML = `<span class="text-blue-600 dark:text-blue-400 font-bold text-base"><i class="fa-solid fa-thumbs-up"></i> Bom trabalho!</span><br><br>Você passou no último simulado, mas ainda há espaço para revisar. Reforce seus pontos fracos olhando o relatório detalhado.`;
-    } else {
-        insightEl.innerHTML = `<span class="text-orange-600 dark:text-orange-400 font-bold text-base"><i class="fa-solid fa-book"></i> Foco nos estudos!</span><br><br>Você precisa de mais uns pontos para passar na <strong>${last.certId.toUpperCase()}</strong>. Revise o relatório em PDF detalhado do seu último teste e tente novamente.`;
+    if (!insightEl) return;
+    
+    // Se não há histórico, mostra mensagem padrão
+    if (!history || history.length === 0) {
+        insightEl.innerHTML = `
+            <div class="flex items-start gap-3">
+                <i class="fa-solid fa-lightbulb text-yellow-500 text-xl mt-1"></i>
+                <div>
+                    <div class="font-bold text-gray-800 dark:text-white mb-1">Comece sua jornada!</div>
+                    <div class="text-xs text-gray-600 dark:text-gray-400">Faça seu primeiro simulado para receber insights personalizados baseados no seu desempenho.</div>
+                </div>
+            </div>
+        `;
+        return;
     }
+
+    // Análise inteligente do histórico
+    const insight = generateSmartInsight(history);
+    
+    insightEl.innerHTML = `
+        <div class="flex items-start gap-3">
+            <i class="${insight.icon} ${insight.iconColor} text-xl mt-1"></i>
+            <div>
+                <div class="font-bold ${insight.titleColor} mb-1">${insight.title}</div>
+                <div class="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">${insight.message}</div>
+                ${insight.action ? `<div class="mt-2 text-xs font-semibold ${insight.actionColor}">${insight.action}</div>` : ''}
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Gera insights inteligentes baseados em análise profunda do histórico
+ */
+function generateSmartInsight(history) {
+    const stats = calculateGlobalDomainStats();
+    const last = history[history.length - 1];
+    const recentTests = history.slice(-3); // Últimos 3 testes
+    
+    // Calcula tendência (melhorando, estável, piorando)
+    let trend = 'stable';
+    if (recentTests.length >= 2) {
+        const scores = recentTests.map(t => t.percentage);
+        const avgFirst = scores.slice(0, Math.floor(scores.length / 2)).reduce((a, b) => a + b, 0) / Math.floor(scores.length / 2);
+        const avgLast = scores.slice(Math.floor(scores.length / 2)).reduce((a, b) => a + b, 0) / Math.ceil(scores.length / 2);
+        
+        if (avgLast > avgFirst + 5) trend = 'improving';
+        else if (avgLast < avgFirst - 5) trend = 'declining';
+    }
+    
+    // Identifica domínios fracos globalmente
+    let weakestDomains = [];
+    if (stats && stats.domainStats) {
+        weakestDomains = Object.entries(stats.domainStats)
+            .filter(([_, data]) => parseFloat(data.percentage) < 70)
+            .sort((a, b) => parseFloat(a[1].percentage) - parseFloat(b[1].percentage))
+            .slice(0, 2)
+            .map(([_, data]) => data.name);
+    }
+    
+    // Verifica consistência (desvio padrão das últimas 5 tentativas)
+    let isConsistent = true;
+    if (history.length >= 3) {
+        const lastScores = history.slice(-5).map(t => t.percentage);
+        const avg = lastScores.reduce((a, b) => a + b, 0) / lastScores.length;
+        const variance = lastScores.reduce((sum, score) => sum + Math.pow(score - avg, 2), 0) / lastScores.length;
+        const stdDev = Math.sqrt(variance);
+        isConsistent = stdDev < 15; // Desvio padrão menor que 15%
+    }
+    
+    // Verifica se está próximo da aprovação
+    const avgScore = stats ? parseFloat(stats.summary.avgScore) : last.percentage;
+    const isNearPassing = avgScore >= 65 && avgScore < 70;
+    
+    // Verifica se há muitos testes recentes (possível burnout)
+    const today = new Date();
+    const testsToday = history.filter(t => {
+        const testDate = new Date(t.date);
+        return testDate.toDateString() === today.toDateString();
+    }).length;
+    
+    // Verifica streak de aprovações
+    let passingStreak = 0;
+    for (let i = history.length - 1; i >= 0; i--) {
+        if (history[i].percentage >= 70) passingStreak++;
+        else break;
+    }
+    
+    // LÓGICA DE DECISÃO DE INSIGHTS
+    
+    // 1. Burnout - muitos testes no mesmo dia
+    if (testsToday >= 4) {
+        return {
+            icon: 'fa-solid fa-battery-quarter',
+            iconColor: 'text-red-500',
+            title: 'Cuidado com o Burnout!',
+            titleColor: 'text-red-600 dark:text-red-400',
+            message: `Você já fez ${testsToday} simulados hoje. Seu cérebro precisa de descanso para consolidar o aprendizado. Que tal fazer uma pausa e voltar amanhã?`,
+            action: '💡 Dica: Estudos mostram que pausas melhoram a retenção em até 30%',
+            actionColor: 'text-blue-600 dark:text-blue-400'
+        };
+    }
+    
+    // 2. Streak de aprovações - está dominando!
+    if (passingStreak >= 3 && avgScore >= 80) {
+        return {
+            icon: 'fa-solid fa-trophy',
+            iconColor: 'text-yellow-500',
+            title: 'Você está dominando! 🔥',
+            titleColor: 'text-green-600 dark:text-green-400',
+            message: `${passingStreak} aprovações seguidas com média de ${avgScore.toFixed(0)}%! Você está pronto para o exame real. Considere agendar sua certificação.`,
+            action: '🎯 Próximo passo: Agende seu exame oficial AWS',
+            actionColor: 'text-green-600 dark:text-green-400'
+        };
+    }
+    
+    // 3. Tendência de melhora
+    if (trend === 'improving' && avgScore >= 60) {
+        return {
+            icon: 'fa-solid fa-chart-line',
+            iconColor: 'text-green-500',
+            title: 'Evolução Consistente! 📈',
+            titleColor: 'text-green-600 dark:text-green-400',
+            message: `Sua pontuação está melhorando a cada teste! Média atual: ${avgScore.toFixed(0)}%. Continue nesse ritmo e você alcançará a aprovação em breve.`,
+            action: weakestDomains.length > 0 ? `🎯 Foco: ${weakestDomains[0]}` : '💪 Continue praticando!',
+            actionColor: 'text-blue-600 dark:text-blue-400'
+        };
+    }
+    
+    // 4. Tendência de queda - precisa de atenção
+    if (trend === 'declining') {
+        return {
+            icon: 'fa-solid fa-chart-line-down',
+            iconColor: 'text-orange-500',
+            title: 'Atenção: Queda no Desempenho',
+            titleColor: 'text-orange-600 dark:text-orange-400',
+            message: `Suas últimas pontuações estão caindo. Isso pode indicar cansaço ou falta de revisão. Revise os conceitos básicos antes de continuar.`,
+            action: '💡 Sugestão: Faça uma pausa de 1 dia e revise suas anotações',
+            actionColor: 'text-orange-600 dark:text-orange-400'
+        };
+    }
+    
+    // 5. Próximo da aprovação - motivação extra
+    if (isNearPassing) {
+        return {
+            icon: 'fa-solid fa-bullseye',
+            iconColor: 'text-blue-500',
+            title: 'Quase lá! Falta pouco! 🎯',
+            titleColor: 'text-blue-600 dark:text-blue-400',
+            message: `Você está a apenas ${(70 - avgScore).toFixed(0)}% da aprovação! ${weakestDomains.length > 0 ? `Foque em: ${weakestDomains.join(' e ')}` : 'Continue praticando!'}.`,
+            action: '💪 Você consegue! Mais alguns simulados e estará pronto',
+            actionColor: 'text-blue-600 dark:text-blue-400'
+        };
+    }
+    
+    // 6. Domínios fracos identificados
+    if (weakestDomains.length > 0 && avgScore < 70) {
+        return {
+            icon: 'fa-solid fa-crosshairs',
+            iconColor: 'text-purple-500',
+            title: 'Foco Estratégico Necessário',
+            titleColor: 'text-purple-600 dark:text-purple-400',
+            message: `Seus pontos fracos: ${weakestDomains.join(' e ')}. Dedique 70% do seu tempo de estudo nesses domínios para melhorar rapidamente.`,
+            action: '📚 Recomendação: Revise a documentação oficial AWS sobre esses tópicos',
+            actionColor: 'text-purple-600 dark:text-purple-400'
+        };
+    }
+    
+    // 7. Inconsistência - precisa de mais prática
+    if (!isConsistent && history.length >= 5) {
+        return {
+            icon: 'fa-solid fa-wave-square',
+            iconColor: 'text-yellow-500',
+            title: 'Desempenho Inconsistente',
+            titleColor: 'text-yellow-600 dark:text-yellow-500',
+            message: `Suas pontuações variam muito entre os testes. Isso indica que você precisa consolidar melhor os conceitos fundamentais.`,
+            action: '💡 Dica: Faça simulados menores (10-15 questões) focados em um domínio por vez',
+            actionColor: 'text-yellow-600 dark:text-yellow-500'
+        };
+    }
+    
+    // 8. Desempenho excelente consistente
+    if (avgScore >= 85 && isConsistent) {
+        return {
+            icon: 'fa-solid fa-star',
+            iconColor: 'text-yellow-500',
+            title: 'Desempenho Excepcional! ⭐',
+            titleColor: 'text-green-600 dark:text-green-400',
+            message: `Média de ${avgScore.toFixed(0)}% com consistência impressionante! Você está mais do que pronto para o exame oficial.`,
+            action: '🎓 Próximo passo: Agende sua certificação AWS',
+            actionColor: 'text-green-600 dark:text-green-400'
+        };
+    }
+    
+    // 9. Bom desempenho - continuar praticando
+    if (avgScore >= 70 && avgScore < 85) {
+        return {
+            icon: 'fa-solid fa-thumbs-up',
+            iconColor: 'text-blue-500',
+            title: 'Bom Desempenho! 👍',
+            titleColor: 'text-blue-600 dark:text-blue-400',
+            message: `Média de ${avgScore.toFixed(0)}% - você está aprovado! Para garantir ainda mais segurança, continue praticando até atingir 85%+.`,
+            action: weakestDomains.length > 0 ? `🎯 Melhore em: ${weakestDomains[0]}` : '💪 Continue assim!',
+            actionColor: 'text-blue-600 dark:text-blue-400'
+        };
+    }
+    
+    // 10. Precisa melhorar - foco nos estudos
+    if (avgScore < 70) {
+        const certName = last.certId.toUpperCase();
+        return {
+            icon: 'fa-solid fa-book-open',
+            iconColor: 'text-orange-500',
+            title: 'Foco nos Estudos Necessário 📖',
+            titleColor: 'text-orange-600 dark:text-orange-400',
+            message: `Média atual: ${avgScore.toFixed(0)}%. Você precisa de ${(70 - avgScore).toFixed(0)}% a mais para aprovação. ${weakestDomains.length > 0 ? `Priorize: ${weakestDomains.join(' e ')}.` : 'Revise os conceitos fundamentais.'}`,
+            action: `📚 Recomendação: Estude a documentação oficial da ${certName}`,
+            actionColor: 'text-orange-600 dark:text-orange-400'
+        };
+    }
+    
+    // 11. Fallback - mensagem genérica motivacional
+    return {
+        icon: 'fa-solid fa-rocket',
+        iconColor: 'text-blue-500',
+        title: 'Continue Praticando! 🚀',
+        titleColor: 'text-blue-600 dark:text-blue-400',
+        message: `Você já fez ${history.length} simulado${history.length > 1 ? 's' : ''}! Cada teste é uma oportunidade de aprender. Continue assim!`,
+        action: '💡 Dica: A prática leva à perfeição',
+        actionColor: 'text-blue-600 dark:text-blue-400'
+    };
 }
 
 function renderGamification() {
@@ -894,6 +1115,10 @@ function goHome() {
     showScreen('start');
     loadLastScore();
     renderGlobalRadarChart(); // Atualiza gráfico global ao voltar para home
+    
+    // Atualiza insights ao voltar para home
+    const history = storageManager.getHistory();
+    updateDynamicInsight(history);
 }
 
 function retakeQuiz() {

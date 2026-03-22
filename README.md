@@ -94,6 +94,19 @@ Plataforma completa de preparação para exames de certificação AWS que combin
 - ✅ **Badges de Conquista**: Medalhas virtuais por marcos alcançados
 - ✅ **Persistência Local**: Progresso salvo no navegador
 
+### 🧠 Insights Inteligentes (NOVO)
+- ✅ **Análise Multifatorial**: Sistema analisa 11 fatores diferentes do seu desempenho
+- ✅ **Detecção de Tendências**: Identifica se você está melhorando, estável ou piorando
+- ✅ **Identificação de Domínios Fracos**: Aponta áreas que precisam de mais estudo
+- ✅ **Análise de Consistência**: Detecta variações no desempenho e sugere estratégias
+- ✅ **Alerta de Burnout**: Avisa quando você está estudando demais no mesmo dia
+- ✅ **Celebração de Conquistas**: Reconhece streaks de aprovações e desempenho excepcional
+- ✅ **Recomendações Acionáveis**: Sempre fornece próximos passos claros e específicos
+- ✅ **Motivação Personalizada**: Mensagens adaptadas ao seu momento de aprendizado
+- ✅ **Atualização em Tempo Real**: Insights atualizados após cada simulado
+- ✅ **11 Tipos de Insights**: Desde "Comece sua jornada" até "Você está dominando"
+- ✅ **Design Visual Rico**: Ícones e cores contextuais para cada tipo de insight
+
 ### 🎨 Interface Moderna
 - ✅ **Design Responsivo**: Otimizado para desktop, tablet e mobile
 - ✅ **Dark Mode**: Alternância automática ou manual com suporte completo em todos os gráficos
@@ -176,6 +189,79 @@ O simulador respeita rigorosamente a distribuição de domínios oficial da AWS:
   - **Domínio 2**: Segurança (26%)
   - **Domínio 3**: Implementação (Deployment) (24%)
   - **Domínio 4**: Solução de problemas e otimização (18%)
+
+-----
+
+## 🧠 Sistema de Insights Inteligentes
+
+O simulador possui um sistema avançado de análise que fornece **insights personalizados** baseados no seu desempenho:
+
+### � Análise Multifatorial
+
+O sistema analisa **11 fatores diferentes** para gerar recomendações precisas:
+
+1. **Tendência de Desempenho**: Detecta se você está melhorando, estável ou piorando
+2. **Domínios Fracos**: Identifica as 2 áreas que mais precisam de atenção
+3. **Consistência**: Analisa variações no desempenho entre testes
+4. **Detecção de Burnout**: Alerta quando há muitos testes no mesmo dia
+5. **Streak de Aprovações**: Reconhece sequências de sucesso
+6. **Proximidade da Aprovação**: Motivação extra quando está perto dos 70%
+7. **Média Global**: Considera todo o histórico de simulados
+8. **Desempenho Recente**: Analisa os últimos 3 testes
+9. **Total de Simulados**: Contextualiza baseado na experiência
+10. **Análise por Certificação**: Recomendações específicas por exame
+11. **Padrões de Estudo**: Identifica hábitos positivos e negativos
+
+### 🎯 11 Tipos de Insights
+
+O sistema gera diferentes tipos de insights baseados na sua situação:
+
+| Tipo | Quando Aparece | Exemplo |
+|------|----------------|---------|
+| 🔋 **Burnout Alert** | 4+ testes no mesmo dia | "Cuidado com o Burnout! Seu cérebro precisa de descanso..." |
+| 🏆 **Dominando** | 3+ aprovações seguidas + média ≥80% | "Você está dominando! Agende seu exame oficial" |
+| 📈 **Evolução Consistente** | Tendência de melhora | "Sua pontuação está melhorando a cada teste!" |
+| 📉 **Queda no Desempenho** | Tendência de declínio | "Faça uma pausa e revise suas anotações" |
+| 🎯 **Quase Lá** | Média entre 65-70% | "Você está a apenas X% da aprovação!" |
+| 🎯 **Foco Estratégico** | Domínios fracos identificados | "Dedique 70% do tempo nesses domínios" |
+| 〰️ **Desempenho Inconsistente** | Desvio padrão alto | "Faça simulados menores focados por domínio" |
+| ⭐ **Desempenho Excepcional** | Média ≥85% + consistente | "Você está mais do que pronto!" |
+| 👍 **Bom Desempenho** | Média entre 70-85% | "Continue praticando até 85%+" |
+| 📖 **Foco nos Estudos** | Média <70% | "Revise a documentação oficial" |
+| 🚀 **Continue Praticando** | Mensagem motivacional | "A prática leva à perfeição" |
+
+### 💡 Exemplos Reais
+
+**Usuário Iniciante:**
+```
+💡 Comece sua jornada!
+Faça seu primeiro simulado para receber insights 
+personalizados baseados no seu desempenho.
+```
+
+**Melhorando Consistentemente:**
+```
+📈 Evolução Consistente!
+Sua pontuação está melhorando a cada teste! 
+Média atual: 68%. Continue nesse ritmo.
+🎯 Foco: Segurança e conformidade
+```
+
+**Pronto para o Exame:**
+```
+🏆 Você está dominando! 🔥
+5 aprovações seguidas com média de 87%! 
+Você está pronto para o exame real.
+🎯 Próximo passo: Agende seu exame oficial AWS
+```
+
+### 🔄 Atualização Automática
+
+Os insights são atualizados automaticamente:
+- ✅ Após completar cada simulado
+- ✅ Ao voltar para a tela inicial
+- ✅ Ao limpar o histórico
+- ✅ Na inicialização da aplicação
 
 -----
 
@@ -352,13 +438,26 @@ projeto-simulados-certificacao-aws/
   - **Suporte ao Modo Escuro**: Todos os gráficos adaptam cores automaticamente
   - **Tooltips Informativos**: Detalhes ao passar o mouse sobre os dados
 
-### 5\. Explicações Aprimoradas
+### 5\. Sistema de Insights Inteligentes (NOVO)
+
+  - **Análise Multifatorial**: Avalia 11 fatores diferentes (tendência, consistência, domínios fracos, burnout, etc.)
+  - **Detecção de Padrões**: Identifica se você está melhorando, estável ou piorando
+  - **Recomendações Personalizadas**: Insights únicos baseados no seu histórico completo
+  - **Alerta de Burnout**: Detecta quando você está estudando demais e recomenda pausas
+  - **Celebração de Conquistas**: Reconhece streaks de aprovações e desempenho excepcional
+  - **Foco Estratégico**: Identifica os 2 domínios mais fracos e sugere priorização
+  - **Proximidade da Aprovação**: Motivação extra quando você está perto dos 70%
+  - **11 Tipos de Insights**: Desde iniciante até expert, sempre com próximos passos claros
+  - **Design Visual Rico**: Ícones contextuais (🏆, 📈, 📉, 🎯, 📖, etc.) e cores dinâmicas
+  - **Atualização Automática**: Insights atualizados após cada simulado e ao voltar para home
+
+### 6\. Explicações Aprimoradas
 
   - Justificativa da resposta correta
   - Explicação do porquê os distratores não se aplicam
   - Foco em aprendizado arquitetural e cenários reais de negócio
 
-### 6\. PWA Completo
+### 7\. PWA Completo
 
   - Funciona 100% offline
   - Instalável em desktop e mobile via botão no cabeçalho
@@ -376,11 +475,12 @@ projeto-simulados-certificacao-aws/
   - **4 certificações** oficiais AWS (CLF-C02, SAA-C03, AIF-C01, DVA-C02)
   - **2 idiomas** (PT-BR e EN-US) com tradução automática via Google Translate
   - **2 gráficos de radar** (por simulado e dashboard global agregado)
+  - **11 tipos de insights** inteligentes baseados em análise multifatorial
   - **100% offline** após instalação como PWA (Progressive Web App)
   - **0 dependências** externas no frontend (apenas CDNs para Tailwind, Font Awesome e Chart.js)
   - **Escala oficial AWS** 100-1000 pontos (conversão automática)
   - **2 motores de IA** (Gemini 2.5 Flash + Groq Llama 3.3 70B como fallback)
-  - **1100+ linhas** de código JavaScript no controller principal
+  - **1300+ linhas** de código JavaScript no controller principal
   - **50+ termos técnicos** AWS preservados na tradução automática
 
 -----
