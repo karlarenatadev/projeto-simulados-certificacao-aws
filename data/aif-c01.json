@@ -2610,7 +2610,12 @@
     "service": "Amazon Bedrock",
     "difficulty": "medium",
     "type": "multiple-choice",
-    "tags": ["generative-ai", "foundation-models", "customization", "deployment"],
+    "tags": [
+      "generative-ai",
+      "foundation-models",
+      "customization",
+      "deployment"
+    ],
     "question": "Uma empresa de tecnologia está implementando soluções de IA generativa usando Amazon Bedrock. Quais capacidades o Amazon Bedrock oferece para trabalhar com modelos de fundação? (Escolha 3)",
     "options": [
       "Acesso a múltiplos modelos de fundação de diferentes provedores via API unificada",
@@ -2618,7 +2623,11 @@
       "Implantação gerenciada sem necessidade de gerenciar infraestrutura",
       "Desenvolvimento automático de aplicações web completas"
     ],
-    "correct": [0, 1, 2],
+    "correct": [
+      0,
+      1,
+      2
+    ],
     "explanation": "O Amazon Bedrock oferece acesso unificado a diversos modelos de fundação (FMs) de provedores como Anthropic, AI21 Labs e Amazon, permite personalização através de fine-tuning com dados próprios, e fornece implantação totalmente gerenciada sem necessidade de provisionar servidores. Ele não desenvolve aplicações web automaticamente - isso requer desenvolvimento manual ou ferramentas específicas. O distrator sobre desenvolvimento automático de aplicações não se aplica ao Bedrock."
   },
   {
@@ -2627,7 +2636,12 @@
     "service": "Amazon SageMaker Clarify",
     "difficulty": "medium",
     "type": "multiple-choice",
-    "tags": ["responsible-ai", "bias", "explainability", "fairness"],
+    "tags": [
+      "responsible-ai",
+      "bias",
+      "explainability",
+      "fairness"
+    ],
     "question": "Uma empresa de recursos humanos está desenvolvendo um modelo de IA para triagem de currículos e precisa garantir práticas de IA responsável. Quais funcionalidades o Amazon SageMaker Clarify fornece? (Escolha 2)",
     "options": [
       "Detecção de viés nos dados de treinamento e nas previsões do modelo",
@@ -2635,7 +2649,10 @@
       "Treinamento automático de modelos sem necessidade de código",
       "Hospedagem de sites estáticos para dashboards de IA"
     ],
-    "correct": [0, 1],
+    "correct": [
+      0,
+      1
+    ],
     "explanation": "O Amazon SageMaker Clarify ajuda a detectar viés potencial nos dados e modelos de ML, e fornece explicabilidade das previsões através de análise de importância de features, essencial para IA responsável em decisões de RH. Ele não treina modelos automaticamente sem código (isso seria o SageMaker Canvas) nem hospeda sites estáticos (isso seria o S3). Os distratores confundem Clarify com outras ferramentas do ecossistema SageMaker."
   },
   {
@@ -2644,7 +2661,12 @@
     "service": "Amazon Kendra",
     "difficulty": "medium",
     "type": "multiple-choice",
-    "tags": ["rag", "search", "knowledge-base", "retrieval"],
+    "tags": [
+      "rag",
+      "search",
+      "knowledge-base",
+      "retrieval"
+    ],
     "question": "Uma empresa está implementando uma arquitetura RAG (Retrieval-Augmented Generation) para seu chatbot corporativo. Quais componentes são essenciais para uma implementação RAG eficaz? (Escolha 3)",
     "options": [
       "Um serviço de busca inteligente como Amazon Kendra para recuperar documentos relevantes",
@@ -2652,7 +2674,11 @@
       "Uma base de conhecimento com documentos e dados proprietários da empresa",
       "Um serviço de tradução automática para múltiplos idiomas"
     ],
-    "correct": [0, 1, 2],
+    "correct": [
+      0,
+      1,
+      2
+    ],
     "explanation": "RAG (Retrieval-Augmented Generation) combina três componentes essenciais: (1) um sistema de recuperação de informações como Amazon Kendra para buscar documentos relevantes, (2) um modelo de fundação para gerar respostas contextualizadas, e (3) uma base de conhecimento com dados proprietários. Tradução automática não é um componente essencial do RAG, embora possa ser adicionada como funcionalidade extra. O distrator sobre tradução confunde funcionalidades opcionais com componentes essenciais do RAG."
   },
   {
@@ -2661,7 +2687,12 @@
     "service": "AWS KMS e Amazon Macie",
     "difficulty": "medium",
     "type": "multiple-choice",
-    "tags": ["security", "encryption", "data-protection", "compliance"],
+    "tags": [
+      "security",
+      "encryption",
+      "data-protection",
+      "compliance"
+    ],
     "question": "Uma instituição de saúde precisa proteger dados sensíveis de pacientes usados para treinar modelos de ML. Quais serviços AWS devem ser implementados para proteção abrangente de dados? (Escolha 2)",
     "options": [
       "AWS KMS para gerenciar chaves de criptografia e criptografar dados em repouso",
@@ -2669,7 +2700,10 @@
       "Amazon CloudWatch para monitorar métricas de performance",
       "AWS CodePipeline para automação de deployment"
     ],
-    "correct": [0, 1],
+    "correct": [
+      0,
+      1
+    ],
     "explanation": "O AWS KMS (Key Management Service) gerencia chaves de criptografia para proteger dados em repouso e em trânsito, enquanto o Amazon Macie usa machine learning para descobrir, classificar e proteger automaticamente dados sensíveis como informações de saúde (PHI). CloudWatch é para monitoramento de métricas, não proteção de dados. CodePipeline é para CI/CD, não para segurança de dados. Os distratores confundem proteção de dados com monitoramento e deployment."
   },
   {
@@ -2678,7 +2712,12 @@
     "service": "Amazon SageMaker",
     "difficulty": "medium",
     "type": "multiple-choice",
-    "tags": ["machine-learning", "mlops", "lifecycle", "deployment"],
+    "tags": [
+      "machine-learning",
+      "mlops",
+      "lifecycle",
+      "deployment"
+    ],
     "question": "Uma equipe de ciência de dados precisa de uma plataforma completa para o ciclo de vida de ML. Quais capacidades o Amazon SageMaker oferece? (Escolha 3)",
     "options": [
       "Preparação e rotulagem de dados com SageMaker Ground Truth",
@@ -2686,7 +2725,2613 @@
       "Implantação de modelos com endpoints escaláveis e monitoramento",
       "Gerenciamento de bancos de dados relacionais"
     ],
-    "correct": [0, 1, 2],
+    "correct": [
+      0,
+      1,
+      2
+    ],
     "explanation": "O Amazon SageMaker é uma plataforma completa de ML que oferece ferramentas para todo o ciclo de vida: preparação de dados (Ground Truth para rotulagem), treinamento distribuído em larga escala com otimização automática, e implantação de modelos com endpoints gerenciados e monitoramento contínuo. Ele não gerencia bancos de dados relacionais (isso é o Amazon RDS). O distrator sobre bancos de dados relacionais não se aplica ao SageMaker, que é focado em ML."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "introdução-ai-ml",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "machine learning",
+      "desenvolvimento"
+    ],
+    "question": "Uma empresa de comércio eletrônico deseja criar um modelo de recomendação de produtos personalizados para os clientes. Qual serviço/solução AWS pode ser utilizado para treinar e implantar esse modelo?",
+    "options": [
+      "Amazon S3",
+      "AWS Lambda",
+      "Amazon SageMaker",
+      "Amazon DynamoDB"
+    ],
+    "correct": 2,
+    "explanation": "O Amazon SageMaker é um serviço de machine learning que permite treinar, testar e implantar modelos de aprendizado de máquina, incluindo modelos de recomendação."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "conceitos-genai",
+    "service": "Amazon Comprehend",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "processamento-natural-linguagem",
+      "análise-sentimento"
+    ],
+    "question": "Um jornal online deseja analisar as opiniões dos leitores sobre os artigos publicados. Qual serviço/solução AWS pode ser utilizado para realizar a análise de sentimento desses comentários?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon Translate",
+      "Amazon Transcribe",
+      "Amazon Rekognition"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon Comprehend é um serviço de processamento natural de linguagem que pode ser utilizado para analisar o sentimento dos textos, incluindo comentários de leitores."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "aplicativos-modelos-fundamentais",
+    "service": "Amazon Lex",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "chatbots",
+      "interface-usuário"
+    ],
+    "question": "Um banco deseja criar um chatbot para atender às perguntas frequentes dos clientes. Qual serviço/solução AWS pode ser utilizado para criar e implantar esse chatbot?",
+    "options": [
+      "Amazon Lex",
+      "Amazon Polly",
+      "Amazon Connect",
+      "Amazon Pinpoint"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon Lex é um serviço de criação de chatbots que pode ser utilizado para criar e implantar chatbots com interface de usuário natural."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "diretrizes-ai-responsável",
+    "service": "Amazon Rekognition",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "detecção-imagens",
+      "privacidade"
+    ],
+    "question": "Um aplicativo de mídia social deseja detectar e remover imagens inapropriadas. Qual serviço/solução AWS pode ser utilizado para realizar a detecção dessas imagens, garantindo a privacidade dos usuários?",
+    "options": [
+      "Amazon Rekognition",
+      "Amazon SageMaker",
+      "Amazon Comprehend",
+      "Amazon Translate"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon Rekognition é um serviço de visão computacional que pode ser utilizado para detectar imagens inapropriadas, e é projetado para garantir a privacidade dos usuários."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança-conformidade-governança",
+    "service": "AWS IAM",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "autenticação",
+      "autorização"
+    ],
+    "question": "Uma empresa de saúde deseja controlar o acesso aos dados de pacientes, garantindo que apenas os funcionários autorizados possam visualizar esses dados. Qual serviço/solução AWS pode ser utilizado para gerenciar as permissões de acesso?",
+    "options": [
+      "AWS IAM",
+      "Amazon Cognito",
+      "Amazon Inspector",
+      "Amazon Macie"
+    ],
+    "correct": 0,
+    "explanation": "O AWS IAM é um serviço de gerenciamento de identidade e acesso que pode ser utilizado para controlar o acesso aos recursos da AWS, incluindo dados de pacientes."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "introdução-ai-ml",
+    "service": "Amazon S3",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "armazenamento-dados",
+      "machine-learning"
+    ],
+    "question": "Um pesquisador de dados deseja armazenar um grande conjunto de dados para treinar um modelo de machine learning. Qual serviço/solução AWS pode ser utilizado para armazenar esses dados de forma escalável e segura?",
+    "options": [
+      "Amazon S3",
+      "Amazon DynamoDB",
+      "Amazon Redshift",
+      "Amazon Elastic Block Store"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon S3 é um serviço de armazenamento de objetos que pode ser utilizado para armazenar grandes conjuntos de dados de forma escalável e segura, e é ideal para uso com machine learning."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "conceitos-genai",
+    "service": "Amazon Translate",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "tradução-texto",
+      "globalização"
+    ],
+    "question": "Um site de comércio eletrônico deseja traduzir o conteúdo para vários idiomas para atender a clientes globais. Qual serviço/solução AWS pode ser utilizado para realizar a tradução desse conteúdo?",
+    "options": [
+      "Amazon Translate",
+      "Amazon Comprehend",
+      "Amazon Transcribe",
+      "Amazon Polly"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon Translate é um serviço de tradução de texto que pode ser utilizado para traduzir conteúdo para vários idiomas, e é ideal para uso em sites de comércio eletrônico."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "aplicativos-modelos-fundamentais",
+    "service": "Amazon Connect",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "contato-cliente",
+      "atendimento-ao-cliente"
+    ],
+    "question": "Um call center deseja criar um sistema de atendimento ao cliente com recursos de inteligência artificial. Qual serviço/solução AWS pode ser utilizado para criar e implantar esse sistema?",
+    "options": [
+      "Amazon Connect",
+      "Amazon Lex",
+      "Amazon Polly",
+      "Amazon Pinpoint"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon Connect é um serviço de contato que pode ser utilizado para criar e implantar sistemas de atendimento ao cliente com recursos de inteligência artificial."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "diretrizes-ai-responsável",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "desenvolvimento-ai",
+      "responsabilidade"
+    ],
+    "question": "Um desenvolvedor de AI deseja criar um modelo de machine learning que seja justo e transparente. Qual serviço/solução AWS pode ser utilizado para criar e implantar esse modelo, garantindo a responsabilidade?",
+    "options": [
+      "Amazon SageMaker",
+      "Amazon Comprehend",
+      "Amazon Rekognition",
+      "Amazon Translate"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon SageMaker é um serviço de machine learning que pode ser utilizado para criar e implantar modelos de aprendizado de máquina, e oferece recursos para garantir a responsabilidade e a transparência."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança-conformidade-governança",
+    "service": "AWS CloudWatch",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "monitoramento",
+      "segurança"
+    ],
+    "question": "Uma empresa de tecnologia deseja monitorar os recursos da AWS para detectar possíveis ameaças à segurança. Qual serviço/solução AWS pode ser utilizado para monitorar e detectar essas ameaças?",
+    "options": [
+      "AWS CloudWatch",
+      "AWS IAM",
+      "Amazon Inspector",
+      "Amazon Macie"
+    ],
+    "correct": 0,
+    "explanation": "O AWS CloudWatch é um serviço de monitoramento que pode ser utilizado para monitorar os recursos da AWS e detectar possíveis ameaças à segurança."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "introdução-ai-ml",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Machine Learning",
+      "Treinamento de Modelos"
+    ],
+    "question": "Uma empresa de comércio eletrônico deseja criar um modelo de machine learning para prever a probabilidade de um cliente realizar uma compra. Qual serviço AWS pode ser utilizado para treinar e implantar o modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker é o serviço AWS mais adequado para treinar e implantar modelos de machine learning, pois oferece recursos para preparar dados, treinar modelos e implantá-los em produção."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "aplicações-de-modelos",
+    "service": "Amazon Comprehend",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Processamento de Linguagem Natural",
+      "Análise de Sentimento"
+    ],
+    "question": "Um empresa de mídia social deseja analisar as opiniões dos usuários sobre seus produtos. Qual serviço AWS pode ser utilizado para realizar análise de sentimento em texto não estruturado?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon Rekognition",
+      "Amazon Transcribe",
+      "Amazon Translate"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend é o serviço AWS mais adequado para realizar análise de sentimento em texto não estruturado, pois oferece recursos para processamento de linguagem natural e análise de opinião."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "desenvolvimento-responsável",
+    "service": "Amazon SageMaker Model Monitor",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Desenvolvimento Responsável de AI",
+      "Monitoramento de Modelos"
+    ],
+    "question": "Uma empresa de tecnologia deseja monitorar o desempenho de seus modelos de machine learning em produção. Qual serviço AWS pode ser utilizado para monitorar a saída do modelo e detectar problemas?",
+    "options": [
+      "Amazon SageMaker Model Monitor",
+      "Amazon CloudWatch",
+      "Amazon X-Ray",
+      "AWS CloudTrail"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Model Monitor é o serviço AWS mais adequado para monitorar o desempenho de modelos de machine learning em produção, pois oferece recursos para monitorar a saída do modelo e detectar problemas."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "introdução-genai",
+    "service": "Amazon CodeGuru",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Desenvolvimento de Software",
+      "Revisão de Código"
+    ],
+    "question": "Uma empresa de tecnologia deseja automatizar a revisão de código para garantir a qualidade e segurança do software. Qual serviço AWS pode ser utilizado para revisar o código e detectar problemas?",
+    "options": [
+      "Amazon CodeGuru",
+      "AWS CodePipeline",
+      "AWS CodeBuild",
+      "AWS CodeCommit"
+    ],
+    "correct": 0,
+    "explanation": "Amazon CodeGuru é o serviço AWS mais adequado para revisar o código e detectar problemas, pois oferece recursos para revisão de código e detecção de problemas de segurança."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança-e-conformidade",
+    "service": "AWS IAM",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Segurança",
+      "Conformidade"
+    ],
+    "question": "Uma empresa de saúde deseja controlar o acesso a dados sensíveis de pacientes. Qual serviço AWS pode ser utilizado para gerenciar permissões e acessos?",
+    "options": [
+      "AWS IAM",
+      "AWS Cognito",
+      "AWS Directory Service",
+      "AWS Organizations"
+    ],
+    "correct": 0,
+    "explanation": "AWS IAM é o serviço AWS mais adequado para gerenciar permissões e acessos, pois oferece recursos para controlar o acesso a recursos e dados."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "introdução-ai-ml",
+    "service": "Amazon Rekognition",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Visão Computacional",
+      "Reconhecimento de Imagens"
+    ],
+    "question": "Uma empresa de comércio eletrônico deseja criar um sistema de reconhecimento de imagens para identificar produtos. Qual serviço AWS pode ser utilizado para realizar reconhecimento de imagens?",
+    "options": [
+      "Amazon Rekognition",
+      "Amazon SageMaker",
+      "Amazon Comprehend",
+      "Amazon Transcribe"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Rekognition é o serviço AWS mais adequado para realizar reconhecimento de imagens, pois oferece recursos para visão computacional e reconhecimento de imagens."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "aplicações-de-modelos",
+    "service": "Amazon Transcribe",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Processamento de Áudio",
+      "Transcrição de Áudio"
+    ],
+    "question": "Uma empresa de mídia deseja transcrever áudios de entrevistas para texto. Qual serviço AWS pode ser utilizado para transcrever áudios?",
+    "options": [
+      "Amazon Transcribe",
+      "Amazon Comprehend",
+      "Amazon Rekognition",
+      "Amazon SageMaker"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Transcribe é o serviço AWS mais adequado para transcrever áudios, pois oferece recursos para processamento de áudio e transcrição de áudio."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "desenvolvimento-responsável",
+    "service": "Amazon SageMaker Autopilot",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Desenvolvimento Responsável de AI",
+      "Seleção de Modelos"
+    ],
+    "question": "Uma empresa de tecnologia deseja selecionar o melhor modelo de machine learning para um problema específico. Qual serviço AWS pode ser utilizado para selecionar o melhor modelo?",
+    "options": [
+      "Amazon SageMaker Autopilot",
+      "Amazon SageMaker Model Monitor",
+      "Amazon SageMaker Notebook Instance",
+      "Amazon SageMaker Training Job"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Autopilot é o serviço AWS mais adequado para selecionar o melhor modelo de machine learning, pois oferece recursos para automação de seleção de modelos."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "introdução-genai",
+    "service": "Amazon CodeBuild",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Desenvolvimento de Software",
+      "Compilação de Código"
+    ],
+    "question": "Uma empresa de tecnologia deseja compilar e testar código de software de forma automatizada. Qual serviço AWS pode ser utilizado para compilar e testar código?",
+    "options": [
+      "Amazon CodeBuild",
+      "AWS CodePipeline",
+      "AWS CodeCommit",
+      "AWS CodeDeploy"
+    ],
+    "correct": 0,
+    "explanation": "Amazon CodeBuild é o serviço AWS mais adequado para compilar e testar código de software, pois oferece recursos para compilação e teste de código."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança-e-conformidade",
+    "service": "AWS CloudTrail",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Segurança",
+      "Conformidade"
+    ],
+    "question": "Uma empresa de saúde deseja monitorar e registrar todas as atividades de acesso a dados sensíveis de pacientes. Qual serviço AWS pode ser utilizado para monitorar e registrar atividades?",
+    "options": [
+      "AWS CloudTrail",
+      "AWS IAM",
+      "AWS Cognito",
+      "AWS Directory Service"
+    ],
+    "correct": 0,
+    "explanation": "AWS CloudTrail é o serviço AWS mais adequado para monitorar e registrar atividades de acesso a dados, pois oferece recursos para registro e monitoramento de atividades."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "introdução-ai-ml",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "treinamento de modelos",
+      "aprendizado de máquina"
+    ],
+    "question": "Uma empresa de comércio eletrônico deseja criar um modelo de recomendação de produtos personalizados para seus clientes. Qual serviço AWS pode ser utilizado para treinar e implantar o modelo?",
+    "options": [
+      "Amazon S3",
+      "AWS Lambda",
+      "Amazon SageMaker",
+      "Amazon DynamoDB"
+    ],
+    "correct": 2,
+    "explanation": "Amazon SageMaker é o serviço AWS mais adequado para treinar e implantar modelos de aprendizado de máquina, incluindo modelos de recomendação de produtos personalizados."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "fundamentos-genai",
+    "service": "Amazon Comprehend",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "processamento de linguagem natural",
+      "análise de sentimento"
+    ],
+    "question": "Um cliente deseja analisar as opiniões de seus clientes sobre seus produtos em redes sociais. Qual serviço AWS pode ser utilizado para realizar a análise de sentimento?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon Rekognition",
+      "Amazon Transcribe",
+      "Amazon Polly"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend é o serviço AWS mais adequado para realizar a análise de sentimento e processamento de linguagem natural."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "modelos-de-base",
+    "service": "Amazon Bedrock",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "modelos de base",
+      "desenvolvimento de aplicativos"
+    ],
+    "question": "Um desenvolvedor deseja criar um aplicativo de reconhecimento de imagens utilizando um modelo de base pré-treinado. Qual serviço AWS pode ser utilizado para acessar e implantar o modelo?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock é o serviço AWS mais adequado para acessar e implantar modelos de base pré-treinados para desenvolver aplicativos."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "desenvolvimento-responsável",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "desenvolvimento responsável",
+      "ética em ai"
+    ],
+    "question": "Um time de desenvolvedores deseja garantir que seus modelos de aprendizado de máquina sejam justos e transparentes. Qual serviço AWS pode ser utilizado para ajudar a desenvolver e implantar modelos de maneira responsável?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Comprehend",
+      "Amazon Rekognition"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker é o serviço AWS mais adequado para ajudar a desenvolver e implantar modelos de aprendizado de máquina de maneira responsável e ética."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança-e-governança",
+    "service": "AWS IAM",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "segurança de dados",
+      "controle de acesso"
+    ],
+    "question": "Uma empresa deseja controlar o acesso aos seus recursos AWS e garantir a segurança dos dados. Qual serviço AWS pode ser utilizado para gerenciar as permissões e o acesso?",
+    "options": [
+      "AWS IAM",
+      "Amazon S3",
+      "AWS Lambda",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "AWS IAM é o serviço AWS mais adequado para gerenciar as permissões e o acesso aos recursos AWS."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "visão-computacional",
+    "service": "Amazon Rekognition",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "reconhecimento de imagens",
+      "visão computacional"
+    ],
+    "question": "Um desenvolvedor deseja criar um aplicativo que possa identificar objetos em imagens. Qual serviço AWS pode ser utilizado para realizar a análise de imagens?",
+    "options": [
+      "Amazon Rekognition",
+      "Amazon Comprehend",
+      "Amazon Transcribe",
+      "Amazon Polly"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Rekognition é o serviço AWS mais adequado para realizar a análise de imagens e reconhecimento de objetos."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "aplicativos-de-voz",
+    "service": "Amazon Lex",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "aplicativos de voz",
+      "assistente virtual"
+    ],
+    "question": "Um desenvolvedor deseja criar um assistente virtual que possa entender e responder a comandos de voz. Qual serviço AWS pode ser utilizado para desenvolver o assistente?",
+    "options": [
+      "Amazon Lex",
+      "Amazon Polly",
+      "Amazon Transcribe",
+      "Amazon Comprehend"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Lex é o serviço AWS mais adequado para desenvolver aplicativos de voz e assistentes virtuais."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "ética-em-ai",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "ética em ai",
+      "transparência"
+    ],
+    "question": "Um time de desenvolvedores deseja garantir que seus modelos de aprendizado de máquina sejam transparentes e justos. Qual serviço AWS pode ser utilizado para ajudar a desenvolver e implantar modelos de maneira ética?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Comprehend",
+      "Amazon Rekognition"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker é o serviço AWS mais adequado para ajudar a desenvolver e implantar modelos de aprendizado de máquina de maneira ética e transparente."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "proteção-de-dados",
+    "service": "AWS KMS",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "proteção de dados",
+      "criptografia"
+    ],
+    "question": "Uma empresa deseja proteger seus dados armazenados em AWS com criptografia. Qual serviço AWS pode ser utilizado para gerenciar as chaves de criptografia?",
+    "options": [
+      "AWS KMS",
+      "AWS IAM",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "AWS KMS é o serviço AWS mais adequado para gerenciar as chaves de criptografia e proteger os dados armazenados em AWS."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "processamento-de-linguagem-natural",
+    "service": "Amazon Comprehend",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "processamento de linguagem natural",
+      "análise de texto"
+    ],
+    "question": "Um cliente deseja analisar textos para extrair informações relevantes. Qual serviço AWS pode ser utilizado para realizar a análise de texto?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon Rekognition",
+      "Amazon Transcribe",
+      "Amazon Polly"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend é o serviço AWS mais adequado para realizar a análise de texto e processamento de linguagem natural."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "introdução ao machine learning",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "machine learning",
+      "SageMaker"
+    ],
+    "question": "Uma empresa de varejo deseja desenvolver um modelo de machine learning para prever a demanda de produtos. Qual serviço AWS pode ser usado para criar, treinar e implantar esse modelo?",
+    "options": [
+      "Amazon S3",
+      "AWS Lambda",
+      "Amazon SageMaker",
+      "Amazon DynamoDB"
+    ],
+    "correct": 2,
+    "explanation": "Amazon SageMaker é o serviço AWS que permite criar, treinar e implantar modelos de machine learning. Ele fornece uma variedade de algoritmos e ferramentas para desenvolver e implantar modelos de machine learning, além de oferecer recursos de gerenciamento de modelos e monitoramento de desempenho."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "introdução à inteligência artificial geral",
+    "service": "Amazon Bedrock",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "inteligência artificial geral",
+      "Amazon Bedrock"
+    ],
+    "question": "Um time de pesquisa em inteligência artificial geral deseja desenvolver e testar modelos de IA de forma segura e escalável. Qual serviço AWS pode ser usado para isso?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Bedrock",
+      "Amazon Comprehend"
+    ],
+    "correct": 2,
+    "explanation": "Amazon Bedrock é o serviço AWS que fornece uma plataforma segura e escalável para desenvolver e testar modelos de inteligência artificial geral. Ele oferece recursos de gerenciamento de modelos, monitoramento de desempenho e segurança para proteger os modelos e os dados."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "modelos de linguagem",
+    "service": "Amazon Comprehend",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "modelos de linguagem",
+      "Amazon Comprehend"
+    ],
+    "question": "Um empresa de tecnologia deseja desenvolver um chatbot que possa entender e responder a perguntas de clientes de forma natural. Qual serviço AWS pode ser usado para desenvolver o modelo de linguagem necessário?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Comprehend",
+      "Amazon Transcribe"
+    ],
+    "correct": 2,
+    "explanation": "Amazon Comprehend é o serviço AWS que fornece recursos de processamento de linguagem natural para desenvolver modelos de linguagem que possam entender e responder a perguntas de forma natural. Ele oferece algoritmos de aprendizado de máquina e recursos de gerenciamento de modelos para desenvolver e implantar modelos de linguagem."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "desenvolvimento de IA responsável",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "IA responsável",
+      "Amazon SageMaker"
+    ],
+    "question": "Um time de desenvolvimento de IA deseja desenvolver um modelo de IA que seja justo e transparente. Qual serviço AWS pode ser usado para desenvolver e implantar esse modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Comprehend",
+      "Amazon Rekognition"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker é o serviço AWS que fornece recursos de desenvolvimento de IA responsável, incluindo ferramentas de explicabilidade e justiça para garantir que os modelos sejam transparentes e justos. Ele oferece algoritmos de aprendizado de máquina e recursos de gerenciamento de modelos para desenvolver e implantar modelos de IA responsáveis."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança de dados",
+    "service": "AWS IAM",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "segurança de dados",
+      "AWS IAM"
+    ],
+    "question": "Um empresa de saúde deseja armazenar dados sensíveis de pacientes em um repositório de dados na nuvem. Qual serviço AWS pode ser usado para garantir a segurança e o controle de acesso a esses dados?",
+    "options": [
+      "AWS IAM",
+      "Amazon S3",
+      "AWS Lambda",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "AWS IAM é o serviço AWS que fornece recursos de gerenciamento de identidade e acesso para garantir a segurança e o controle de acesso a recursos e dados na nuvem. Ele oferece recursos de autenticação, autorização e gerenciamento de políticas para proteger os dados e garantir o cumprimento de requisitos de segurança e conformidade."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "aprendizado de máquina",
+    "service": "Amazon SageMaker Autopilot",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "aprendizado de máquina",
+      "Amazon SageMaker Autopilot"
+    ],
+    "question": "Um time de desenvolvimento de IA deseja desenvolver um modelo de aprendizado de máquina para prever a demanda de produtos, mas não tem experiência em machine learning. Qual serviço AWS pode ser usado para automatizar o processo de desenvolvimento do modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon SageMaker Autopilot",
+      "Amazon Comprehend"
+    ],
+    "correct": 2,
+    "explanation": "Amazon SageMaker Autopilot é o serviço AWS que fornece recursos de automação de aprendizado de máquina para desenvolver modelos de machine learning sem necessidade de experiência em machine learning. Ele oferece algoritmos de aprendizado de máquina e recursos de gerenciamento de modelos para desenvolver e implantar modelos de machine learning de forma automática."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "inteligência artificial geral",
+    "service": "Amazon Bedrock Barreiras de Proteção",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "inteligência artificial geral",
+      "Amazon Bedrock Barreiras de Proteção"
+    ],
+    "question": "Um time de pesquisa em inteligência artificial geral deseja desenvolver e testar modelos de IA de forma segura e escalável, com proteções contra acessos não autorizados. Qual serviço AWS pode ser usado para isso?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Bedrock Barreiras de Proteção",
+      "Amazon Comprehend"
+    ],
+    "correct": 2,
+    "explanation": "Amazon Bedrock Barreiras de Proteção é o serviço AWS que fornece recursos de segurança e proteção para desenvolver e testar modelos de inteligência artificial geral de forma segura e escalável. Ele oferece recursos de gerenciamento de modelos, monitoramento de desempenho e segurança para proteger os modelos e os dados."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "modelos de linguagem",
+    "service": "Amazon Transcribe",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "modelos de linguagem",
+      "Amazon Transcribe"
+    ],
+    "question": "Um empresa de mídia deseja desenvolver um modelo de linguagem para transcrever áudios de entrevistas. Qual serviço AWS pode ser usado para desenvolver o modelo de linguagem necessário?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Comprehend",
+      "Amazon Transcribe"
+    ],
+    "correct": 3,
+    "explanation": "Amazon Transcribe é o serviço AWS que fornece recursos de transcrição de áudio para texto para desenvolver modelos de linguagem que possam transcrever áudios de forma natural. Ele oferece algoritmos de aprendizado de máquina e recursos de gerenciamento de modelos para desenvolver e implantar modelos de linguagem."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "desenvolvimento de IA responsável",
+    "service": "Amazon SageMaker Model Monitor",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "IA responsável",
+      "Amazon SageMaker Model Monitor"
+    ],
+    "question": "Um time de desenvolvimento de IA deseja desenvolver um modelo de IA que seja justo e transparente, e monitorar o desempenho do modelo em tempo real. Qual serviço AWS pode ser usado para desenvolver e implantar esse modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon SageMaker Model Monitor",
+      "Amazon Comprehend"
+    ],
+    "correct": 2,
+    "explanation": "Amazon SageMaker Model Monitor é o serviço AWS que fornece recursos de monitoramento de desempenho de modelos de IA para garantir que os modelos sejam justos e transparentes. Ele oferece recursos de monitoramento de desempenho e explicabilidade para garantir que os modelos sejam justos e transparentes."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança de dados",
+    "service": "AWS Lake Formation",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "segurança de dados",
+      "AWS Lake Formation"
+    ],
+    "question": "Um empresa de saúde deseja armazenar dados sensíveis de pacientes em um repositório de dados na nuvem, com controle de acesso e segurança. Qual serviço AWS pode ser usado para garantir a segurança e o controle de acesso a esses dados?",
+    "options": [
+      "AWS IAM",
+      "Amazon S3",
+      "AWS Lake Formation",
+      "Amazon DynamoDB"
+    ],
+    "correct": 2,
+    "explanation": "AWS Lake Formation é o serviço AWS que fornece recursos de gerenciamento de dados e segurança para garantir a segurança e o controle de acesso a dados armazenados em um repositório de dados na nuvem. Ele oferece recursos de autenticação, autorização e gerenciamento de políticas para proteger os dados e garantir o cumprimento de requisitos de segurança e conformidade."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "machine learning",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "machine learning",
+      "Amazon SageMaker"
+    ],
+    "question": "Uma empresa de comércio eletrônico precisa desenvolver um modelo de machine learning para prever a probabilidade de um cliente realizar uma compra. Qual serviço AWS pode ser utilizado para treinar e implantar esse modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker é um serviço de machine learning que permite treinar e implantar modelos de machine learning. Ele oferece uma variedade de algoritmos e frameworks para desenvolver modelos personalizados."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "general intelligence",
+    "service": "Amazon Comprehend",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "general intelligence",
+      "Amazon Comprehend"
+    ],
+    "question": "Um hospital precisa analisar um grande volume de textos médicos para identificar padrões e tendências. Qual serviço AWS pode ser utilizado para realizar essa análise?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon SageMaker",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend é um serviço de inteligência natural que permite analisar textos para identificar padrões e tendências. Ele oferece uma variedade de funcionalidades, incluindo análise de sentimento e extração de entidades."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "foundation models",
+    "service": "Amazon Bedrock",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "foundation models",
+      "Amazon Bedrock"
+    ],
+    "question": "Uma empresa de tecnologia precisa desenvolver um modelo de foundation para realizar tarefas de processamento de linguagem natural. Qual serviço AWS pode ser utilizado para criar e implantar esse modelo?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock é um serviço de foundation models que permite criar e implantar modelos de foundation para realizar tarefas de processamento de linguagem natural. Ele oferece uma variedade de funcionalidades, incluindo suporte a múltiplos frameworks e linguagens de programação."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "responsável",
+    "service": "Amazon Rekognition",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "responsável",
+      "Amazon Rekognition"
+    ],
+    "question": "Um desenvolvedor de aplicativos precisa criar um sistema de detecção de faces para uma aplicação de segurança. Qual serviço AWS pode ser utilizado para realizar essa detecção de forma responsável?",
+    "options": [
+      "Amazon Rekognition",
+      "Amazon SageMaker",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Rekognition é um serviço de visão computacional que permite realizar detecção de faces de forma responsável. Ele oferece uma variedade de funcionalidades, incluindo suporte a múltiplos formatos de imagem e vídeo."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança",
+    "service": "Amazon IAM",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "segurança",
+      "Amazon IAM"
+    ],
+    "question": "Uma empresa de finanças precisa gerenciar o acesso a seus recursos AWS de forma segura. Qual serviço AWS pode ser utilizado para gerenciar permissões e políticas de segurança?",
+    "options": [
+      "Amazon IAM",
+      "Amazon SageMaker",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon IAM é um serviço de gerenciamento de identidade e acesso que permite gerenciar permissões e políticas de segurança para recursos AWS. Ele oferece uma variedade de funcionalidades, incluindo suporte a múltiplos tipos de usuários e grupos."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "machine learning",
+    "service": "AWS Lake Formation",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "machine learning",
+      "AWS Lake Formation"
+    ],
+    "question": "Uma empresa de varejo precisa criar um data warehouse para armazenar e processar grandes volumes de dados para treinar modelos de machine learning. Qual serviço AWS pode ser utilizado para criar esse data warehouse?",
+    "options": [
+      "AWS Lake Formation",
+      "Amazon SageMaker",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "AWS Lake Formation é um serviço de data warehouse que permite criar e gerenciar data warehouses para armazenar e processar grandes volumes de dados. Ele oferece uma variedade de funcionalidades, incluindo suporte a múltiplos formatos de dados e integração com serviços de machine learning."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "general intelligence",
+    "service": "Amazon Lex",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "general intelligence",
+      "Amazon Lex"
+    ],
+    "question": "Uma empresa de tecnologia precisa criar um chatbot para atender a clientes de forma personalizada. Qual serviço AWS pode ser utilizado para criar e implantar esse chatbot?",
+    "options": [
+      "Amazon Lex",
+      "Amazon SageMaker",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Lex é um serviço de inteligência natural que permite criar e implantar chatbots para atender a clientes de forma personalizada. Ele oferece uma variedade de funcionalidades, incluindo suporte a múltiplos canais de comunicação e integração com serviços de machine learning."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "foundation models",
+    "service": "Amazon CodeGuru",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "foundation models",
+      "Amazon CodeGuru"
+    ],
+    "question": "Uma empresa de software precisa desenvolver um modelo de foundation para realizar revisões de código de forma automática. Qual serviço AWS pode ser utilizado para criar e implantar esse modelo?",
+    "options": [
+      "Amazon CodeGuru",
+      "Amazon SageMaker",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon CodeGuru é um serviço de foundation models que permite criar e implantar modelos de foundation para realizar revisões de código de forma automática. Ele oferece uma variedade de funcionalidades, incluindo suporte a múltiplos linguagens de programação e integração com serviços de desenvolvimento de software."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "responsável",
+    "service": "Amazon Comprehend Medical",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "responsável",
+      "Amazon Comprehend Medical"
+    ],
+    "question": "Um hospital precisa analisar textos médicos para identificar informações sensíveis de pacientes. Qual serviço AWS pode ser utilizado para realizar essa análise de forma responsável?",
+    "options": [
+      "Amazon Comprehend Medical",
+      "Amazon SageMaker",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend Medical é um serviço de inteligência natural que permite analisar textos médicos para identificar informações sensíveis de pacientes de forma responsável. Ele oferece uma variedade de funcionalidades, incluindo suporte a múltiplos formatos de texto e integração com serviços de saúde."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança",
+    "service": "AWS CloudWatch",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "segurança",
+      "AWS CloudWatch"
+    ],
+    "question": "Uma empresa de finanças precisa monitorar e gerenciar os logs de segurança de seus recursos AWS. Qual serviço AWS pode ser utilizado para realizar essa monitoração e gerenciamento?",
+    "options": [
+      "AWS CloudWatch",
+      "Amazon SageMaker",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "AWS CloudWatch é um serviço de monitoração e gerenciamento que permite monitorar e gerenciar os logs de segurança de recursos AWS. Ele oferece uma variedade de funcionalidades, incluindo suporte a múltiplos tipos de logs e integração com serviços de segurança."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "introdução à inteligência artificial",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "machine learning",
+      "treinamento de modelos"
+    ],
+    "question": "Uma empresa de comércio eletrônico deseja criar um modelo de recomendação de produtos personalizados para seus clientes. Qual serviço AWS pode ser utilizado para treinar e implantar esse modelo?",
+    "options": [
+      "Amazon S3",
+      "AWS Lambda",
+      "Amazon SageMaker",
+      "Amazon DynamoDB"
+    ],
+    "correct": 2,
+    "explanation": "A Amazon SageMaker é um serviço de machine learning que permite treinar e implantar modelos de aprendizado de máquina, incluindo modelos de recomendação de produtos. As outras opções não são adequadas para treinar e implantar modelos de machine learning."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "introdução à inteligência artificial geral",
+    "service": "Amazon Bedrock",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "inteligência artificial",
+      "modelo de linguagem"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um modelo de linguagem para gerar respostas personalizadas para seus clientes. Qual serviço AWS pode ser utilizado para criar e implantar esse modelo?",
+    "options": [
+      "Amazon Comprehend",
+      "AWS Lake Formation",
+      "Amazon Bedrock",
+      "Amazon Rekognition"
+    ],
+    "correct": 2,
+    "explanation": "A Amazon Bedrock é um serviço de inteligência artificial que permite criar e implantar modelos de linguagem para gerar respostas personalizadas. As outras opções não são adequadas para criar e implantar modelos de linguagem."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "aplicações de modelos de linguagem",
+    "service": "Amazon Comprehend",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "análise de texto",
+      "processamento de linguagem natural"
+    ],
+    "question": "Uma empresa de saúde deseja analisar textos médicos para extrair informações relevantes. Qual serviço AWS pode ser utilizado para realizar essa tarefa?",
+    "options": [
+      "Amazon Comprehend",
+      "AWS Lake Formation",
+      "Amazon SageMaker",
+      "Amazon Rekognition"
+    ],
+    "correct": 0,
+    "explanation": "A Amazon Comprehend é um serviço de processamento de linguagem natural que permite analisar textos para extrair informações relevantes. As outras opções não são adequadas para realizar essa tarefa."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "diretrizes para inteligência artificial responsável",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "inteligência artificial responsável",
+      "ética"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um modelo de inteligência artificial que seja justo e transparente. Qual serviço AWS pode ser utilizado para criar e implantar esse modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lake Formation",
+      "Amazon Comprehend",
+      "Amazon Rekognition"
+    ],
+    "correct": 0,
+    "explanation": "A Amazon SageMaker é um serviço de machine learning que permite criar e implantar modelos de inteligência artificial que sejam justos e transparentes. As outras opções não são adequadas para criar e implantar modelos de inteligência artificial responsável."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança e conformidade",
+    "service": "AWS IAM",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "segurança",
+      "conformidade"
+    ],
+    "question": "Uma empresa de finanças deseja garantir que seus modelos de inteligência artificial sejam seguros e conformes com as regulamentações. Qual serviço AWS pode ser utilizado para gerenciar o acesso e as permissões?",
+    "options": [
+      "AWS IAM",
+      "AWS Lake Formation",
+      "Amazon Comprehend",
+      "Amazon Rekognition"
+    ],
+    "correct": 0,
+    "explanation": "O AWS IAM é um serviço de gerenciamento de identidade e acesso que permite gerenciar o acesso e as permissões para os recursos da AWS, incluindo os modelos de inteligência artificial. As outras opções não são adequadas para gerenciar o acesso e as permissões."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "introdução à inteligência artificial",
+    "service": "Amazon Rekognition",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "visão computacional",
+      "reconhecimento de imagens"
+    ],
+    "question": "Uma empresa de varejo deseja criar um sistema de reconhecimento de imagens para identificar produtos em suas lojas. Qual serviço AWS pode ser utilizado para realizar essa tarefa?",
+    "options": [
+      "Amazon Rekognition",
+      "AWS Lake Formation",
+      "Amazon Comprehend",
+      "Amazon SageMaker"
+    ],
+    "correct": 0,
+    "explanation": "A Amazon Rekognition é um serviço de visão computacional que permite realizar tarefas de reconhecimento de imagens e vídeos. As outras opções não são adequadas para realizar essa tarefa."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "introdução à inteligência artificial geral",
+    "service": "Amazon Bedrock",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "inteligência artificial",
+      "modelo de linguagem"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um modelo de linguagem para gerar respostas personalizadas para seus clientes. Qual serviço AWS pode ser utilizado para criar e implantar esse modelo?",
+    "options": [
+      "Amazon Comprehend",
+      "AWS Lake Formation",
+      "Amazon Bedrock",
+      "Amazon Rekognition"
+    ],
+    "correct": 2,
+    "explanation": "A Amazon Bedrock é um serviço de inteligência artificial que permite criar e implantar modelos de linguagem para gerar respostas personalizadas. As outras opções não são adequadas para criar e implantar modelos de linguagem."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "aplicações de modelos de linguagem",
+    "service": "Amazon Comprehend",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "análise de texto",
+      "processamento de linguagem natural"
+    ],
+    "question": "Uma empresa de saúde deseja analisar textos médicos para extrair informações relevantes. Qual serviço AWS pode ser utilizado para realizar essa tarefa?",
+    "options": [
+      "Amazon Comprehend",
+      "AWS Lake Formation",
+      "Amazon SageMaker",
+      "Amazon Rekognition"
+    ],
+    "correct": 0,
+    "explanation": "A Amazon Comprehend é um serviço de processamento de linguagem natural que permite analisar textos para extrair informações relevantes. As outras opções não são adequadas para realizar essa tarefa."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "diretrizes para inteligência artificial responsável",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "inteligência artificial responsável",
+      "ética"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um modelo de inteligência artificial que seja justo e transparente. Qual serviço AWS pode ser utilizado para criar e implantar esse modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lake Formation",
+      "Amazon Comprehend",
+      "Amazon Rekognition"
+    ],
+    "correct": 0,
+    "explanation": "A Amazon SageMaker é um serviço de machine learning que permite criar e implantar modelos de inteligência artificial que sejam justos e transparentes. As outras opções não são adequadas para criar e implantar modelos de inteligência artificial responsável."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança e conformidade",
+    "service": "AWS IAM",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "segurança",
+      "conformidade"
+    ],
+    "question": "Uma empresa de finanças deseja garantir que seus modelos de inteligência artificial sejam seguros e conformes com as regulamentações. Qual serviço AWS pode ser utilizado para gerenciar o acesso e as permissões?",
+    "options": [
+      "AWS IAM",
+      "AWS Lake Formation",
+      "Amazon Comprehend",
+      "Amazon Rekognition"
+    ],
+    "correct": 0,
+    "explanation": "O AWS IAM é um serviço de gerenciamento de identidade e acesso que permite gerenciar o acesso e as permissões para os recursos da AWS, incluindo os modelos de inteligência artificial. As outras opções não são adequadas para gerenciar o acesso e as permissões."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "introdução à inteligência artificial",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "inteligência artificial",
+      "machine learning"
+    ],
+    "question": "Um desenvolvedor de inteligência artificial precisa criar um modelo de previsão de vendas para uma empresa de varejo. Qual serviço AWS pode ser utilizado para criar, treinar e implantar esse modelo?",
+    "options": [
+      "Amazon S3",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon DynamoDB"
+    ],
+    "correct": 1,
+    "explanation": "Amazon SageMaker é um serviço de inteligência artificial que permite criar, treinar e implantar modelos de machine learning. É a escolha certa para este cenário porque oferece recursos para preparar dados, treinar modelos e implantá-los em produção."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "modelos de linguagem",
+    "service": "Amazon Bedrock",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "modelos de linguagem",
+      "processamento de linguagem natural"
+    ],
+    "question": "Uma empresa de tecnologia deseja desenvolver um chatbot que possa entender e responder a perguntas de clientes de forma natural. Qual serviço AWS pode ser utilizado para criar e treinar esse modelo de linguagem?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon Translate",
+      "Amazon Bedrock",
+      "AWS Lake Formation"
+    ],
+    "correct": 2,
+    "explanation": "Amazon Bedrock é um serviço que oferece modelos de linguagem pré-treinados e personalizáveis para tarefas de processamento de linguagem natural. É a escolha certa para este cenário porque permite criar e treinar modelos de linguagem para chatbots e outros aplicativos de linguagem."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "aplicativos de visão computacional",
+    "service": "Amazon Rekognition",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "visão computacional",
+      "reconhecimento de imagens"
+    ],
+    "question": "Um desenvolvedor de aplicativos móveis deseja criar uma funcionalidade que permita aos usuários identificar objetos e cenas em imagens capturadas com a câmera do celular. Qual serviço AWS pode ser utilizado para desenvolver essa funcionalidade?",
+    "options": [
+      "Amazon S3",
+      "Amazon Rekognition",
+      "AWS Lambda",
+      "Amazon DynamoDB"
+    ],
+    "correct": 1,
+    "explanation": "Amazon Rekognition é um serviço de visão computacional que oferece recursos para reconhecimento de imagens, incluindo a identificação de objetos e cenas. É a escolha certa para este cenário porque fornece uma API simples para analisar imagens e retornar informações sobre o conteúdo."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "ética e responsabilidade",
+    "service": "Amazon SageMaker",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "ética",
+      "responsabilidade"
+    ],
+    "question": "Um time de desenvolvedores de inteligência artificial deseja garantir que seus modelos sejam justos e não discriminatórios. Qual serviço AWS pode ser utilizado para ajudar a identificar e mitigar vieses em modelos de machine learning?",
+    "options": [
+      "Amazon S3",
+      "Amazon SageMaker",
+      "AWS Lake Formation",
+      "Amazon DynamoDB"
+    ],
+    "correct": 1,
+    "explanation": "Amazon SageMaker oferece recursos para ajudar a identificar e mitigar vieses em modelos de machine learning, incluindo a capacidade de analisar dados e modelos para detectar desigualdades e injustiças. É a escolha certa para este cenário porque fornece ferramentas para desenvolver modelos responsáveis e éticos."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança de dados",
+    "service": "AWS Lake Formation",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "segurança de dados",
+      "governança de dados"
+    ],
+    "question": "Uma empresa de saúde deseja criar um repositório de dados centralizado para armazenar e gerenciar dados de pacientes, garantindo a segurança e a conformidade com regulamentações de saúde. Qual serviço AWS pode ser utilizado para criar esse repositório de dados?",
+    "options": [
+      "Amazon S3",
+      "AWS Lake Formation",
+      "Amazon DynamoDB",
+      "Amazon Redshift"
+    ],
+    "correct": 1,
+    "explanation": "AWS Lake Formation é um serviço de gerenciamento de dados que permite criar um repositório de dados centralizado e seguro, com recursos para governança de dados e conformidade com regulamentações. É a escolha certa para este cenário porque oferece uma plataforma para armazenar, gerenciar e analisar dados de forma segura e conforme as regulamentações de saúde."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "machine learning",
+    "service": "Amazon SageMaker",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "machine learning",
+      "Amazon SageMaker"
+    ],
+    "question": "Uma empresa de varejo online deseja implementar um sistema de recomendação de produtos personalizados para seus clientes. Qual serviço/solução AWS pode ser utilizado para criar e treinar modelos de machine learning para essa finalidade?",
+    "options": [
+      "Amazon S3",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon DynamoDB"
+    ],
+    "correct": 1,
+    "explanation": "A resposta correta é Amazon SageMaker porque ele fornece uma plataforma completa para criar, treinar e implantar modelos de machine learning, incluindo algoritmos de recomendação. As outras opções não são adequadas para essa tarefa específica."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "natural language processing",
+    "service": "Amazon Comprehend",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "nlp",
+      "Amazon Comprehend"
+    ],
+    "question": "Um hospital deseja analisar grandes volumes de relatórios médicos para identificar padrões e tendências nos diagnósticos e tratamentos. Qual serviço/solução AWS pode ser utilizado para realizar análise de linguagem natural nesses relatórios?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon SageMaker",
+      "AWS Lake Formation",
+      "Amazon Redshift"
+    ],
+    "correct": 0,
+    "explanation": "A resposta correta é Amazon Comprehend porque ele fornece capacidades de análise de linguagem natural para processar e extrair insights de texto não estruturado, como relatórios médicos. As outras opções não são adequadas para essa tarefa específica."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "explicability",
+    "service": "Amazon SageMaker Clarify",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "explicability",
+      "Amazon SageMaker Clarify"
+    ],
+    "question": "Uma empresa financeira desenvolveu um modelo de machine learning para aprovar ou negar pedidos de empréstimo. No entanto, os reguladores exigem que a empresa forneça explicações claras sobre as decisões tomadas pelo modelo. Qual serviço/solução AWS pode ser utilizado para fornecer insights sobre a explicabilidade do modelo?",
+    "options": [
+      "Amazon SageMaker Clarify",
+      "Amazon SageMaker Autopilot",
+      "AWS Step Functions",
+      "Amazon CloudWatch"
+    ],
+    "correct": 0,
+    "explanation": "A resposta correta é Amazon SageMaker Clarify porque ele fornece ferramentas para analisar e explicar as decisões tomadas por modelos de machine learning, ajudando a atender às exigências regulatórias. As outras opções não são adequadas para essa tarefa específica."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "governance",
+    "service": "AWS Lake Formation",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "governance",
+      "AWS Lake Formation"
+    ],
+    "question": "Uma empresa de dados deseja criar um repositório centralizado para armazenar e gerenciar todos os seus dados, garantindo que sejam seguros e conformes com as regulamentações. Qual serviço/solução AWS pode ser utilizado para criar um lago de dados seguro e governado?",
+    "options": [
+      "AWS Lake Formation",
+      "Amazon S3",
+      "Amazon DynamoDB",
+      "Amazon Redshift"
+    ],
+    "correct": 0,
+    "explanation": "A resposta correta é AWS Lake Formation porque ele fornece uma plataforma para criar, gerenciar e governar lagos de dados, garantindo a segurança e conformidade dos dados. As outras opções não são adequadas para essa tarefa específica."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "inteligência artificial",
+    "service": "Amazon Bedrock",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "inteligência artificial",
+      "Amazon Bedrock"
+    ],
+    "question": "Uma empresa de tecnologia deseja desenvolver aplicações de inteligência artificial que possam ser implantadas em dispositivos edge, como robôs e veículos autônomos. Qual serviço/solução AWS pode ser utilizado para criar e implantar modelos de inteligência artificial em dispositivos edge?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS IoT Greengrass",
+      "AWS Lambda"
+    ],
+    "correct": 0,
+    "explanation": "A resposta correta é Amazon Bedrock porque ele fornece uma plataforma para criar e implantar modelos de inteligência artificial em dispositivos edge, permitindo a execução de aplicações de IA em tempo real. As outras opções não são adequadas para essa tarefa específica."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "visão computacional",
+    "service": "Amazon Rekognition",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "visão computacional",
+      "Amazon Rekognition"
+    ],
+    "question": "Uma empresa de segurança deseja desenvolver um sistema de reconhecimento facial para monitorar e controlar o acesso a áreas restritas. Qual serviço/solução AWS pode ser utilizado para criar e implantar modelos de visão computacional para reconhecimento facial?",
+    "options": [
+      "Amazon Rekognition",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "A resposta correta é Amazon Rekognition porque ele fornece uma plataforma para criar e implantar modelos de visão computacional, incluindo reconhecimento facial, para aplicações de segurança. As outras opções não são adequadas para essa tarefa específica."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "privacidade",
+    "service": "Amazon SageMaker Model Monitor",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "privacidade",
+      "Amazon SageMaker Model Monitor"
+    ],
+    "question": "Uma empresa de saúde deseja garantir que seus modelos de machine learning sejam justos e não contenham viés em relação a informações pessoais sensíveis, como idade e gênero. Qual serviço/solução AWS pode ser utilizado para monitorar e garantir a privacidade dos modelos de machine learning?",
+    "options": [
+      "Amazon SageMaker Model Monitor",
+      "Amazon SageMaker Clarify",
+      "AWS Lake Formation",
+      "Amazon CloudWatch"
+    ],
+    "correct": 0,
+    "explanation": "A resposta correta é Amazon SageMaker Model Monitor porque ele fornece ferramentas para monitorar e garantir a privacidade dos modelos de machine learning, ajudando a detectar e mitigar viés e garantir a conformidade com regulamentações de privacidade. As outras opções não são adequadas para essa tarefa específica."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança",
+    "service": "AWS IAM",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "segurança",
+      "AWS IAM"
+    ],
+    "question": "Uma empresa financeira deseja garantir que seus modelos de machine learning sejam seguros e conformes com as regulamentações de segurança. Qual serviço/solução AWS pode ser utilizado para gerenciar e controlar o acesso aos modelos de machine learning?",
+    "options": [
+      "AWS IAM",
+      "Amazon SageMaker",
+      "AWS Lake Formation",
+      "Amazon CloudWatch"
+    ],
+    "correct": 0,
+    "explanation": "A resposta correta é AWS IAM porque ele fornece uma plataforma para gerenciar e controlar o acesso aos recursos da AWS, incluindo modelos de machine learning, garantindo a segurança e conformidade com as regulamentações. As outras opções não são adequadas para essa tarefa específica."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "aprendizado de máquina",
+    "service": "Amazon SageMaker Autopilot",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "aprendizado de máquina",
+      "Amazon SageMaker Autopilot"
+    ],
+    "question": "Uma empresa de marketing deseja desenvolver um modelo de machine learning para prever a probabilidade de compra de clientes. No entanto, a equipe de dados não tem experiência em machine learning. Qual serviço/solução AWS pode ser utilizado para criar e treinar modelos de machine learning sem requerer conhecimento especializado?",
+    "options": [
+      "Amazon SageMaker Autopilot",
+      "Amazon SageMaker",
+      "AWS Lake Formation",
+      "Amazon Redshift"
+    ],
+    "correct": 0,
+    "explanation": "A resposta correta é Amazon SageMaker Autopilot porque ele fornece uma plataforma para criar e treinar modelos de machine learning de forma automática, sem requerer conhecimento especializado em machine learning. As outras opções não são adequadas para essa tarefa específica."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "processamento de linguagem natural",
+    "service": "Amazon Comprehend Medical",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "processamento de linguagem natural",
+      "Amazon Comprehend Medical"
+    ],
+    "question": "Uma empresa de saúde deseja analisar relatórios médicos para extrair informações relevantes, como diagnósticos e tratamentos. Qual serviço/solução AWS pode ser utilizado para realizar análise de linguagem natural em relatórios médicos?",
+    "options": [
+      "Amazon Comprehend Medical",
+      "Amazon Comprehend",
+      "AWS Lake Formation",
+      "Amazon Redshift"
+    ],
+    "correct": 0,
+    "explanation": "A resposta correta é Amazon Comprehend Medical porque ele fornece uma plataforma para realizar análise de linguagem natural em relatórios médicos, permitindo a extração de informações relevantes. As outras opções não são adequadas para essa tarefa específica."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "machine learning",
+    "service": "Amazon SageMaker",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "machine learning",
+      "treinamento de modelo"
+    ],
+    "question": "Uma empresa de tecnologia deseja desenvolver um modelo de aprendizado de máquina para prever a probabilidade de compra de um cliente com base em seu histórico de compras e comportamento online. Qual serviço AWS pode ser utilizado para criar, treinar e implantar esse modelo de forma eficiente?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker é o serviço AWS mais adequado para criar, treinar e implantar modelos de aprendizado de máquina. Ele oferece uma variedade de algoritmos e frameworks de machine learning, além de recursos de treinamento e deploy automatizados. AWS Lambda é um serviço de computação serverless que pode ser usado para executar funções, mas não é ideal para treinamento de modelos de machine learning. Amazon S3 é um serviço de armazenamento de objetos que pode ser usado para armazenar dados, mas não é adequado para treinamento de modelos. Amazon DynamoDB é um serviço de banco de dados NoSQL que pode ser usado para armazenar dados, mas não é adequado para treinamento de modelos."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "general intelligence",
+    "service": "Amazon Bedrock",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "inteligência geral",
+      "aplicativos"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um aplicativo que possa entender e responder a perguntas complexas de forma natural, utilizando inteligência geral. Qual serviço AWS pode ser utilizado para criar esse tipo de aplicativo?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Comprehend"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock é o serviço AWS mais adequado para criar aplicativos que utilizam inteligência geral. Ele oferece uma plataforma para criar e treinar modelos de linguagem natural que podem entender e responder a perguntas complexas de forma natural. Amazon SageMaker é um serviço de machine learning que pode ser usado para criar modelos de aprendizado de máquina, mas não é ideal para criar aplicativos de inteligência geral. AWS Lambda é um serviço de computação serverless que pode ser usado para executar funções, mas não é ideal para criar aplicativos de inteligência geral. Amazon Comprehend é um serviço de processamento de linguagem natural que pode ser usado para analisar texto, mas não é adequado para criar aplicativos de inteligência geral."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "foundation models",
+    "service": "Amazon SageMaker JumpStart",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "modelos de fundação",
+      "aprendizado de máquina"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um modelo de aprendizado de máquina para classificar imagens de produtos, mas não tem experiência em machine learning. Qual serviço AWS pode ser utilizado para criar e treinar esse modelo de forma rápida e eficiente?",
+    "options": [
+      "Amazon SageMaker JumpStart",
+      "Amazon SageMaker Autopilot",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker JumpStart é o serviço AWS mais adequado para criar e treinar modelos de aprendizado de máquina de forma rápida e eficiente, especialmente para usuários sem experiência em machine learning. Ele oferece uma biblioteca de modelos pré-treinados e uma interface de usuário amigável para criar e treinar modelos. Amazon SageMaker Autopilot é um serviço de machine learning que pode ser usado para criar e treinar modelos, mas requer mais experiência em machine learning. AWS Lambda é um serviço de computação serverless que pode ser usado para executar funções, mas não é ideal para criar e treinar modelos de machine learning. Amazon S3 é um serviço de armazenamento de objetos que pode ser usado para armazenar dados, mas não é adequado para criar e treinar modelos de machine learning."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "ética em ai",
+    "service": "Amazon AI Services",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "ética em ai",
+      "responsabilidade"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um sistema de recomendação de produtos que utilize inteligência artificial, mas precisa garantir que o sistema seja justo e transparente. Qual serviço AWS pode ser utilizado para garantir a responsabilidade e a ética no desenvolvimento desse sistema?",
+    "options": [
+      "Amazon AI Services",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon AI Services é o serviço AWS mais adequado para garantir a responsabilidade e a ética no desenvolvimento de sistemas de inteligência artificial. Ele oferece uma variedade de ferramentas e recursos para ajudar a garantir a justiça, a transparência e a explicabilidade dos modelos de machine learning. Amazon SageMaker é um serviço de machine learning que pode ser usado para criar e treinar modelos, mas não é ideal para garantir a responsabilidade e a ética. AWS Lambda é um serviço de computação serverless que pode ser usado para executar funções, mas não é ideal para garantir a responsabilidade e a ética. Amazon S3 é um serviço de armazenamento de objetos que pode ser usado para armazenar dados, mas não é adequado para garantir a responsabilidade e a ética."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança em ai",
+    "service": "Amazon SageMaker Model Monitoring",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "segurança em ai",
+      "monitoramento de modelo"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um modelo de aprendizado de máquina para prever a probabilidade de compra de um cliente, mas precisa garantir que o modelo seja seguro e não seja vulnerável a ataques. Qual serviço AWS pode ser utilizado para monitorar e proteger o modelo?",
+    "options": [
+      "Amazon SageMaker Model Monitoring",
+      "Amazon SageMaker Autopilot",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Model Monitoring é o serviço AWS mais adequado para monitorar e proteger os modelos de machine learning. Ele oferece uma variedade de ferramentas e recursos para ajudar a detectar e prevenir ataques e garantir a segurança dos modelos. Amazon SageMaker Autopilot é um serviço de machine learning que pode ser usado para criar e treinar modelos, mas não é ideal para monitorar e proteger os modelos. AWS Lambda é um serviço de computação serverless que pode ser usado para executar funções, mas não é ideal para monitorar e proteger os modelos. Amazon S3 é um serviço de armazenamento de objetos que pode ser usado para armazenar dados, mas não é adequado para monitorar e proteger os modelos."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "machine learning",
+    "service": "Amazon SageMaker Studio",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "machine learning",
+      "desenvolvimento de modelo"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um modelo de aprendizado de máquina para classificar textos, mas precisa de uma ferramenta que permita aos desenvolvedores criar, treinar e implantar modelos de forma colaborativa. Qual serviço AWS pode ser utilizado para criar e gerenciar o ciclo de vida do modelo?",
+    "options": [
+      "Amazon SageMaker Studio",
+      "Amazon SageMaker Autopilot",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Studio é o serviço AWS mais adequado para criar e gerenciar o ciclo de vida do modelo de machine learning. Ele oferece uma interface de usuário amigável e uma variedade de ferramentas para criar, treinar e implantar modelos de forma colaborativa. Amazon SageMaker Autopilot é um serviço de machine learning que pode ser usado para criar e treinar modelos, mas não é ideal para gerenciar o ciclo de vida do modelo. AWS Lambda é um serviço de computação serverless que pode ser usado para executar funções, mas não é ideal para criar e gerenciar o ciclo de vida do modelo. Amazon S3 é um serviço de armazenamento de objetos que pode ser usado para armazenar dados, mas não é adequado para criar e gerenciar o ciclo de vida do modelo."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "general intelligence",
+    "service": "Amazon Lex",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "inteligência geral",
+      "chatbots"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um chatbot que possa entender e responder a perguntas complexas de forma natural, utilizando inteligência geral. Qual serviço AWS pode ser utilizado para criar esse tipo de chatbot?",
+    "options": [
+      "Amazon Lex",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Comprehend"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Lex é o serviço AWS mais adequado para criar chatbots que utilizam inteligência geral. Ele oferece uma plataforma para criar e treinar modelos de linguagem natural que podem entender e responder a perguntas complexas de forma natural. Amazon SageMaker é um serviço de machine learning que pode ser usado para criar modelos de aprendizado de máquina, mas não é ideal para criar chatbots. AWS Lambda é um serviço de computação serverless que pode ser usado para executar funções, mas não é ideal para criar chatbots. Amazon Comprehend é um serviço de processamento de linguagem natural que pode ser usado para analisar texto, mas não é adequado para criar chatbots."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "foundation models",
+    "service": "Amazon SageMaker Foundation Models",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "modelos de fundação",
+      "aprendizado de máquina"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um modelo de aprendizado de máquina para classificar imagens de produtos, mas precisa de uma forma eficiente de criar e treinar o modelo. Qual serviço AWS pode ser utilizado para criar e treinar o modelo de forma eficiente?",
+    "options": [
+      "Amazon SageMaker Foundation Models",
+      "Amazon SageMaker Autopilot",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Foundation Models é o serviço AWS mais adequado para criar e treinar modelos de aprendizado de máquina de forma eficiente. Ele oferece uma variedade de modelos pré-treinados e uma interface de usuário amigável para criar e treinar modelos. Amazon SageMaker Autopilot é um serviço de machine learning que pode ser usado para criar e treinar modelos, mas não é ideal para criar modelos de forma eficiente. AWS Lambda é um serviço de computação serverless que pode ser usado para executar funções, mas não é ideal para criar e treinar modelos de machine learning. Amazon S3 é um serviço de armazenamento de objetos que pode ser usado para armazenar dados, mas não é adequado para criar e treinar modelos de machine learning."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "ética em ai",
+    "service": "AWS AI Services",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "ética em ai",
+      "responsabilidade"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um sistema de recomendação de produtos que utilize inteligência artificial, mas precisa garantir que o sistema seja justo e transparente. Qual serviço AWS pode ser utilizado para garantir a responsabilidade e a ética no desenvolvimento desse sistema?",
+    "options": [
+      "AWS AI Services",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "AWS AI Services é o serviço AWS mais adequado para garantir a responsabilidade e a ética no desenvolvimento de sistemas de inteligência artificial. Ele oferece uma variedade de ferramentas e recursos para ajudar a garantir a justiça, a transparência e a explicabilidade dos modelos de machine learning. Amazon SageMaker é um serviço de machine learning que pode ser usado para criar e treinar modelos, mas não é ideal para garantir a responsabilidade e a ética. AWS Lambda é um serviço de computação serverless que pode ser usado para executar funções, mas não é ideal para garantir a responsabilidade e a ética. Amazon S3 é um serviço de armazenamento de objetos que pode ser usado para armazenar dados, mas não é adequado para garantir a responsabilidade e a ética."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "machine learning",
+    "service": "Amazon SageMaker",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "machine learning",
+      "Amazon SageMaker"
+    ],
+    "question": "Um empresa de varejo online deseja criar um modelo de recomendação de produtos personalizados para seus clientes. Qual serviço AWS pode ser utilizado para criar, treinar e implantar esse modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon DynamoDB",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker é o serviço AWS mais adequado para criar, treinar e implantar modelos de machine learning, incluindo modelos de recomendação de produtos. Ele fornece recursos de processamento de dados, algoritmos de aprendizado de máquina e integração com outros serviços AWS."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "ética e responsabilidade",
+    "service": "Amazon Rekognition",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "ética",
+      "responsabilidade",
+      "Amazon Rekognition"
+    ],
+    "question": "Uma empresa de segurança deseja utilizar um serviço de reconhecimento facial para monitorar e identificar indivíduos em áreas públicas. Qual é a principal consideração ética que deve ser levada em conta ao utilizar esse serviço?",
+    "options": [
+      "Privacidade dos indivíduos",
+      "Segurança dos dados",
+      "Desempenho do modelo",
+      "Custo do serviço"
+    ],
+    "correct": 0,
+    "explanation": "A privacidade dos indivíduos é a principal consideração ética ao utilizar um serviço de reconhecimento facial, pois envolve a coleta e processamento de dados pessoais sensíveis. É fundamental garantir que o uso do serviço seja transparente, justo e respeite os direitos dos indivíduos."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "modelo de linguagem",
+    "service": "Amazon Comprehend",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "modelo de linguagem",
+      "Amazon Comprehend"
+    ],
+    "question": "Um provedor de serviços de saúde deseja analisar grandes volumes de texto de registros médicos para extrair informações relevantes sobre diagnósticos e tratamentos. Qual serviço AWS pode ser utilizado para realizar essa tarefa?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend é o serviço AWS mais adequado para analisar texto e extrair informações relevantes, incluindo diagnósticos e tratamentos. Ele fornece recursos de processamento de linguagem natural e pode ser utilizado para realizar tarefas de extração de informações e análise de sentimento."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança de dados",
+    "service": "AWS Key Management Service",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "segurança de dados",
+      "AWS KMS"
+    ],
+    "question": "Uma empresa financeira deseja proteger os dados sensíveis de seus clientes armazenados em um banco de dados relacional. Qual serviço AWS pode ser utilizado para gerenciar as chaves de criptografia e garantir a segurança dos dados?",
+    "options": [
+      "AWS Key Management Service",
+      "Amazon S3",
+      "AWS IAM",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "AWS Key Management Service (KMS) é o serviço AWS mais adequado para gerenciar as chaves de criptografia e garantir a segurança dos dados. Ele fornece recursos de gerenciamento de chaves, criptografia e autenticação para proteger os dados sensíveis."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "inteligência artificial geral",
+    "service": "Amazon Bedrock",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "inteligência artificial geral",
+      "Amazon Bedrock"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um modelo de inteligência artificial geral que possa realizar tarefas complexas e aprender com os dados. Qual serviço AWS pode ser utilizado para criar e treinar esse modelo?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock é o serviço AWS mais adequado para criar e treinar modelos de inteligência artificial geral. Ele fornece recursos de processamento de dados, algoritmos de aprendizado de máquina e integração com outros serviços AWS para criar modelos de IA avançados."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "ética e responsabilidade",
+    "service": "Amazon Rekognition",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "ética",
+      "responsabilidade",
+      "Amazon Rekognition"
+    ],
+    "question": "Uma empresa de segurança deseja utilizar um serviço de reconhecimento facial para monitorar e identificar indivíduos em áreas públicas. Qual é a principal consideração ética que deve ser levada em conta ao utilizar esse serviço?",
+    "options": [
+      "Privacidade dos indivíduos",
+      "Segurança dos dados",
+      "Desempenho do modelo",
+      "Custo do serviço"
+    ],
+    "correct": 0,
+    "explanation": "A privacidade dos indivíduos é a principal consideração ética ao utilizar um serviço de reconhecimento facial, pois envolve a coleta e processamento de dados pessoais sensíveis. É fundamental garantir que o uso do serviço seja transparente, justo e respeite os direitos dos indivíduos."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "modelo de linguagem",
+    "service": "Amazon Comprehend",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "modelo de linguagem",
+      "Amazon Comprehend"
+    ],
+    "question": "Um provedor de serviços de saúde deseja analisar grandes volumes de texto de registros médicos para extrair informações relevantes sobre diagnósticos e tratamentos. Qual serviço AWS pode ser utilizado para realizar essa tarefa?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend é o serviço AWS mais adequado para analisar texto e extrair informações relevantes, incluindo diagnósticos e tratamentos. Ele fornece recursos de processamento de linguagem natural e pode ser utilizado para realizar tarefas de extração de informações e análise de sentimento."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança de dados",
+    "service": "AWS Key Management Service",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "segurança de dados",
+      "AWS KMS"
+    ],
+    "question": "Uma empresa financeira deseja proteger os dados sensíveis de seus clientes armazenados em um banco de dados relacional. Qual serviço AWS pode ser utilizado para gerenciar as chaves de criptografia e garantir a segurança dos dados?",
+    "options": [
+      "AWS Key Management Service",
+      "Amazon S3",
+      "AWS IAM",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "AWS Key Management Service (KMS) é o serviço AWS mais adequado para gerenciar as chaves de criptografia e garantir a segurança dos dados. Ele fornece recursos de gerenciamento de chaves, criptografia e autenticação para proteger os dados sensíveis."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "inteligência artificial geral",
+    "service": "Amazon Bedrock",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "inteligência artificial geral",
+      "Amazon Bedrock"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar um modelo de inteligência artificial geral que possa realizar tarefas complexas e aprender com os dados. Qual serviço AWS pode ser utilizado para criar e treinar esse modelo?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock é o serviço AWS mais adequado para criar e treinar modelos de inteligência artificial geral. Ele fornece recursos de processamento de dados, algoritmos de aprendizado de máquina e integração com outros serviços AWS para criar modelos de IA avançados."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "machine learning",
+    "service": "Amazon SageMaker",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "machine learning",
+      "Amazon SageMaker"
+    ],
+    "question": "Um empresa de varejo online deseja criar um modelo de recomendação de produtos personalizados para seus clientes. Qual serviço AWS pode ser utilizado para criar, treinar e implantar esse modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon DynamoDB",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker é o serviço AWS mais adequado para criar, treinar e implantar modelos de machine learning, incluindo modelos de recomendação de produtos. Ele fornece recursos de processamento de dados, algoritmos de aprendizado de máquina e integração com outros serviços AWS."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "desenvolvimento de modelos de machine learning",
+    "service": "Amazon SageMaker",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "treinamento de modelos",
+      "otimização de hiperparâmetros"
+    ],
+    "question": "Uma empresa de varejo online deseja desenvolver um modelo de machine learning para prever a probabilidade de um cliente realizar uma compra com base em seu histórico de navegação e compras. Qual serviço AWS pode ser utilizado para treinar e otimizar o modelo de machine learning?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon SageMaker é o serviço mais adequado para treinar e otimizar o modelo de machine learning, pois oferece recursos de treinamento automatizado e otimização de hiperparâmetros."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "desenvolvimento de modelos de inteligência artificial geral",
+    "service": "Amazon Bedrock",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "desenvolvimento de modelos de IA",
+      "barreiras de proteção"
+    ],
+    "question": "Uma empresa de tecnologia deseja desenvolver um modelo de inteligência artificial geral para automatizar tarefas complexas. Qual serviço AWS pode ser utilizado para desenvolver e implantar o modelo de IA, garantindo a segurança e conformidade?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon Bedrock é o serviço mais adequado para desenvolver e implantar o modelo de IA, pois oferece barreiras de proteção e recursos de segurança para garantir a conformidade e a segurança do modelo."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "desenvolvimento de modelos de linguagem natural",
+    "service": "Amazon Comprehend",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "análise de texto",
+      "extração de informações"
+    ],
+    "question": "Uma empresa de serviços financeiros deseja desenvolver um modelo de linguagem natural para analisar e extrair informações de documentos financeiros. Qual serviço AWS pode ser utilizado para desenvolver o modelo de linguagem natural?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon Comprehend é o serviço mais adequado para desenvolver o modelo de linguagem natural, pois oferece recursos de análise de texto e extração de informações."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "desenvolvimento de modelos de IA responsáveis",
+    "service": "Amazon SageMaker Clarify",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "desenvolvimento de modelos de IA responsáveis",
+      "detecção de vieses"
+    ],
+    "question": "Uma empresa de tecnologia deseja desenvolver um modelo de IA responsável para evitar vieses e garantir a justiça. Qual serviço AWS pode ser utilizado para detectar e mitigar vieses no modelo de IA?",
+    "options": [
+      "Amazon SageMaker Clarify",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon SageMaker Clarify é o serviço mais adequado para detectar e mitigar vieses no modelo de IA, pois oferece recursos de detecção de vieses e explicabilidade."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança de dados de treinamento de modelos de IA",
+    "service": "AWS Lake Formation",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "segurança de dados",
+      "treinamento de modelos de IA"
+    ],
+    "question": "Uma empresa de saúde deseja treinar um modelo de IA para analisar dados de saúde, mas precisa garantir a segurança e conformidade dos dados de treinamento. Qual serviço AWS pode ser utilizado para gerenciar e proteger os dados de treinamento?",
+    "options": [
+      "AWS Lake Formation",
+      "Amazon S3",
+      "Amazon SageMaker",
+      "AWS Lambda"
+    ],
+    "correct": 0,
+    "explanation": "O AWS Lake Formation é o serviço mais adequado para gerenciar e proteger os dados de treinamento, pois oferece recursos de segurança e governança de dados."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "desenvolvimento de modelos de aprendizado de máquina",
+    "service": "Amazon SageMaker Autopilot",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "desenvolvimento de modelos de aprendizado de máquina",
+      "otimização de hiperparâmetros"
+    ],
+    "question": "Uma empresa de varejo online deseja desenvolver um modelo de aprendizado de máquina para prever a probabilidade de um cliente realizar uma compra com base em seu histórico de navegação e compras. Qual serviço AWS pode ser utilizado para treinar e otimizar o modelo de aprendizado de máquina?",
+    "options": [
+      "Amazon SageMaker Autopilot",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon SageMaker Autopilot é o serviço mais adequado para treinar e otimizar o modelo de aprendizado de máquina, pois oferece recursos de treinamento automatizado e otimização de hiperparâmetros."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "desenvolvimento de modelos de IA explicáveis",
+    "service": "Amazon SageMaker Model Monitor",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "desenvolvimento de modelos de IA explicáveis",
+      "monitoramento de modelos"
+    ],
+    "question": "Uma empresa de tecnologia deseja desenvolver um modelo de IA explicável para evitar vieses e garantir a justiça. Qual serviço AWS pode ser utilizado para monitorar e explicar o modelo de IA?",
+    "options": [
+      "Amazon SageMaker Model Monitor",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon SageMaker Model Monitor é o serviço mais adequado para monitorar e explicar o modelo de IA, pois oferece recursos de monitoramento e explicabilidade."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "desenvolvimento de modelos de processamento de linguagem natural",
+    "service": "Amazon Comprehend Medical",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "análise de texto médico",
+      "extração de informações médicas"
+    ],
+    "question": "Uma empresa de saúde deseja desenvolver um modelo de processamento de linguagem natural para analisar e extrair informações de documentos médicos. Qual serviço AWS pode ser utilizado para desenvolver o modelo de processamento de linguagem natural?",
+    "options": [
+      "Amazon Comprehend Medical",
+      "Amazon Comprehend",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon Comprehend Medical é o serviço mais adequado para desenvolver o modelo de processamento de linguagem natural, pois oferece recursos de análise de texto médico e extração de informações médicas."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "segurança de dados de treinamento de modelos de IA",
+    "service": "AWS IAM",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "segurança de dados",
+      "treinamento de modelos de IA"
+    ],
+    "question": "Uma empresa de tecnologia deseja treinar um modelo de IA para analisar dados de clientes, mas precisa garantir a segurança e conformidade dos dados de treinamento. Qual serviço AWS pode ser utilizado para gerenciar e proteger os dados de treinamento?",
+    "options": [
+      "AWS IAM",
+      "AWS Lake Formation",
+      "Amazon S3",
+      "AWS Lambda"
+    ],
+    "correct": 0,
+    "explanation": "O AWS IAM é o serviço mais adequado para gerenciar e proteger os dados de treinamento, pois oferece recursos de segurança e governança de dados."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "desenvolvimento de modelos de inteligência artificial geral",
+    "service": "Amazon Bedrock Barreiras de Proteção",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "desenvolvimento de modelos de IA",
+      "barreiras de proteção"
+    ],
+    "question": "Uma empresa de tecnologia deseja desenvolver um modelo de inteligência artificial geral para automatizar tarefas complexas. Qual serviço AWS pode ser utilizado para desenvolver e implantar o modelo de IA, garantindo a segurança e conformidade?",
+    "options": [
+      "Amazon Bedrock Barreiras de Proteção",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon Bedrock Barreiras de Proteção é o serviço mais adequado para desenvolver e implantar o modelo de IA, pois oferece barreiras de proteção e recursos de segurança para garantir a conformidade e a segurança do modelo."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "machine-learning",
+    "service": "Amazon SageMaker",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "machine learning",
+      "Amazon SageMaker"
+    ],
+    "question": "Um empresa de varejo online deseja criar um modelo de recomendação de produtos personalizado para seus clientes. O modelo precisa ser treinado com um conjunto de dados grande e em constante evolução. Qual serviço AWS pode ser utilizado para gerenciar e otimizar o treinamento do modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker é um serviço de machine learning que permite gerenciar e otimizar o treinamento de modelos, além de fornecer recursos para deploy e gerenciamento de modelos em produção. As outras opções não são adequadas para gerenciar o treinamento de modelos de machine learning."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "natural-language-processing",
+    "service": "Amazon Comprehend",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "natural language processing",
+      "Amazon Comprehend"
+    ],
+    "question": "Uma empresa de mídia social deseja analisar as opiniões dos usuários sobre seus produtos e serviços. Eles precisam de uma solução para processar grandes volumes de texto e identificar sentimentos, entidades e conceitos. Qual serviço AWS pode ser utilizado para realizar essa tarefa?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon SageMaker",
+      "AWS Lake Formation",
+      "Amazon QuickSight"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend é um serviço de processamento de linguagem natural que permite analisar texto e identificar sentimentos, entidades e conceitos. As outras opções não são adequadas para realizar essa tarefa."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "foundation-models",
+    "service": "Amazon Bedrock",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "foundation models",
+      "Amazon Bedrock"
+    ],
+    "question": "Um instituto de pesquisa deseja criar um modelo de linguagem grande para realizar tarefas de processamento de linguagem natural. Eles precisam de uma solução para treinar e deployar o modelo de forma eficiente e segura. Qual serviço AWS pode ser utilizado para realizar essa tarefa?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lake Formation",
+      "Amazon QuickSight"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock é um serviço que permite treinar e deployar modelos de linguagem grandes de forma eficiente e segura. As outras opções não são adequadas para realizar essa tarefa."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "ai-governance",
+    "service": "AWS AI Services",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "ai governance",
+      "responsible ai"
+    ],
+    "question": "Uma empresa de tecnologia deseja implementar práticas de AI responsável em sua organização. Eles precisam de uma solução para monitorar e controlar o uso de modelos de AI em sua empresa. Qual serviço AWS pode ser utilizado para realizar essa tarefa?",
+    "options": [
+      "AWS AI Services",
+      "Amazon SageMaker",
+      "AWS Lake Formation",
+      "Amazon QuickSight"
+    ],
+    "correct": 0,
+    "explanation": "AWS AI Services fornece recursos para monitorar e controlar o uso de modelos de AI, além de fornecer diretrizes para implementar práticas de AI responsável. As outras opções não são adequadas para realizar essa tarefa."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "ai-security",
+    "service": "AWS IAM",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "ai security",
+      "aws iam"
+    ],
+    "question": "Uma empresa de saúde deseja proteger seus modelos de AI contra acessos não autorizados. Eles precisam de uma solução para controlar o acesso aos modelos e aos dados utilizados para treinar os modelos. Qual serviço AWS pode ser utilizado para realizar essa tarefa?",
+    "options": [
+      "AWS IAM",
+      "Amazon SageMaker",
+      "AWS Lake Formation",
+      "Amazon QuickSight"
+    ],
+    "correct": 0,
+    "explanation": "AWS IAM fornece recursos para controlar o acesso aos recursos AWS, incluindo modelos de AI e dados. As outras opções não são adequadas para realizar essa tarefa."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "deep-learning",
+    "service": "Amazon SageMaker",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "deep learning",
+      "Amazon SageMaker"
+    ],
+    "question": "Uma empresa de automação industrial deseja criar um modelo de visão computacional para detectar defeitos em produtos. O modelo precisa ser treinado com um conjunto de dados grande e complexo. Qual serviço AWS pode ser utilizado para gerenciar e otimizar o treinamento do modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker é um serviço de machine learning que permite gerenciar e otimizar o treinamento de modelos, além de fornecer recursos para deploy e gerenciamento de modelos em produção. As outras opções não são adequadas para gerenciar o treinamento de modelos de machine learning."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "reinforcement-learning",
+    "service": "Amazon SageMaker",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "reinforcement learning",
+      "Amazon SageMaker"
+    ],
+    "question": "Uma empresa de jogos deseja criar um modelo de aprendizado por reforço para criar agentes que joguem jogos de forma autônoma. O modelo precisa ser treinado com um conjunto de dados grande e em constante evolução. Qual serviço AWS pode ser utilizado para gerenciar e otimizar o treinamento do modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker é um serviço de machine learning que permite gerenciar e otimizar o treinamento de modelos, além de fornecer recursos para deploy e gerenciamento de modelos em produção. As outras opções não são adequadas para gerenciar o treinamento de modelos de machine learning."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "foundation-models",
+    "service": "Amazon Bedrock",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "foundation models",
+      "Amazon Bedrock"
+    ],
+    "question": "Um instituto de pesquisa deseja criar um modelo de linguagem grande para realizar tarefas de processamento de linguagem natural. Eles precisam de uma solução para treinar e deployar o modelo de forma eficiente e segura. Qual serviço AWS pode ser utilizado para realizar essa tarefa?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lake Formation",
+      "Amazon QuickSight"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock é um serviço que permite treinar e deployar modelos de linguagem grandes de forma eficiente e segura. As outras opções não são adequadas para realizar essa tarefa."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "ai-governance",
+    "service": "AWS AI Services",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "ai governance",
+      "responsible ai"
+    ],
+    "question": "Uma empresa de tecnologia deseja implementar práticas de AI responsável em sua organização. Eles precisam de uma solução para monitorar e controlar o uso de modelos de AI em sua empresa. Qual serviço AWS pode ser utilizado para realizar essa tarefa?",
+    "options": [
+      "AWS AI Services",
+      "Amazon SageMaker",
+      "AWS Lake Formation",
+      "Amazon QuickSight"
+    ],
+    "correct": 0,
+    "explanation": "AWS AI Services fornece recursos para monitorar e controlar o uso de modelos de AI, além de fornecer diretrizes para implementar práticas de AI responsável. As outras opções não são adequadas para realizar essa tarefa."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "ai-security",
+    "service": "AWS IAM",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "ai security",
+      "aws iam"
+    ],
+    "question": "Uma empresa de saúde deseja proteger seus modelos de AI contra acessos não autorizados. Eles precisam de uma solução para controlar o acesso aos modelos e aos dados utilizados para treinar os modelos. Qual serviço AWS pode ser utilizado para realizar essa tarefa?",
+    "options": [
+      "AWS IAM",
+      "Amazon SageMaker",
+      "AWS Lake Formation",
+      "Amazon QuickSight"
+    ],
+    "correct": 0,
+    "explanation": "AWS IAM fornece recursos para controlar o acesso aos recursos AWS, incluindo modelos de AI e dados. As outras opções não são adequadas para realizar essa tarefa."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "machine learning",
+    "service": "Amazon SageMaker",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Machine Learning",
+      "Modelo de Aprendizado de Máquina"
+    ],
+    "question": "Uma empresa de varejo online deseja criar um modelo de aprendizado de máquina para prever a probabilidade de um cliente realizar uma compra com base em seu histórico de navegação e compras. Qual serviço AWS pode ser utilizado para criar, treinar e implantar esse modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker é o serviço mais adequado para criar, treinar e implantar modelos de aprendizado de máquina, pois oferece ferramentas e recursos para desenvolver e implantar modelos de ML em larga escala."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "general intelligence",
+    "service": "Amazon Bedrock",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Inteligência Geral",
+      "Modelo de Linguagem"
+    ],
+    "question": "Um pesquisador de inteligência artificial deseja criar um modelo de linguagem que possa entender e responder a perguntas complexas de forma mais humana. Qual serviço AWS pode ser utilizado para criar e treinar esse modelo?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Comprehend"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock é o serviço mais adequado para criar e treinar modelos de linguagem avançados, pois oferece capacidades de processamento de linguagem natural e aprendizado de máquina."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "foundation models",
+    "service": "Amazon S3",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Modelos de Fundação",
+      "Armazenamento de Dados"
+    ],
+    "question": "Uma empresa de tecnologia deseja armazenar e gerenciar grandes conjuntos de dados para treinar modelos de fundação. Qual serviço AWS pode ser utilizado para armazenar e gerenciar esses dados?",
+    "options": [
+      "Amazon S3",
+      "Amazon DynamoDB",
+      "Amazon EBS",
+      "AWS Lake Formation"
+    ],
+    "correct": 0,
+    "explanation": "Amazon S3 é o serviço mais adequado para armazenar e gerenciar grandes conjuntos de dados, pois oferece armazenamento de objetos escalável e durável."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "responsible ai",
+    "service": "AWS AI Services",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Inteligência Artificial Responsável",
+      "Diretrizes"
+    ],
+    "question": "Uma empresa de tecnologia deseja desenvolver soluções de inteligência artificial que sejam responsáveis e éticas. Qual serviço AWS pode ser utilizado para obter diretrizes e melhores práticas para desenvolver soluções de IA responsáveis?",
+    "options": [
+      "AWS AI Services",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Comprehend"
+    ],
+    "correct": 0,
+    "explanation": "AWS AI Services é o serviço mais adequado para obter diretrizes e melhores práticas para desenvolver soluções de IA responsáveis, pois oferece recursos e ferramentas para desenvolver soluções de IA que sejam transparentes, explicações e justas."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "governance",
+    "service": "AWS IAM",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Governança",
+      "Segurança"
+    ],
+    "question": "Uma empresa de tecnologia deseja gerenciar e controlar o acesso a seus recursos de nuvem. Qual serviço AWS pode ser utilizado para gerenciar e controlar o acesso a esses recursos?",
+    "options": [
+      "AWS IAM",
+      "Amazon Cognito",
+      "AWS Lake Formation",
+      "AWS Organizations"
+    ],
+    "correct": 0,
+    "explanation": "AWS IAM é o serviço mais adequado para gerenciar e controlar o acesso a recursos de nuvem, pois oferece recursos para gerenciar identidades e acesso a recursos da AWS."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "compliance",
+    "service": "AWS Compliance Hub",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Conformidade",
+      "Governança"
+    ],
+    "question": "Uma empresa de tecnologia deseja garantir a conformidade com regulamentações e padrões de segurança para seus recursos de nuvem. Qual serviço AWS pode ser utilizado para garantir a conformidade?",
+    "options": [
+      "AWS Compliance Hub",
+      "AWS IAM",
+      "Amazon Cognito",
+      "AWS Lake Formation"
+    ],
+    "correct": 0,
+    "explanation": "AWS Compliance Hub é o serviço mais adequado para garantir a conformidade com regulamentações e padrões de segurança, pois oferece recursos para gerenciar e monitorar a conformidade com regulamentações e padrões de segurança."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "machine learning",
+    "service": "Amazon SageMaker Autopilot",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Aprendizado de Máquina",
+      "Autopilot"
+    ],
+    "question": "Uma empresa de varejo online deseja criar um modelo de aprendizado de máquina para prever a probabilidade de um cliente realizar uma compra com base em seu histórico de navegação e compras, mas não tem experiência em desenvolvimento de modelos de ML. Qual serviço AWS pode ser utilizado para criar e treinar esse modelo de forma automática?",
+    "options": [
+      "Amazon SageMaker Autopilot",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Autopilot é o serviço mais adequado para criar e treinar modelos de ML de forma automática, pois oferece recursos para automatizar o processo de desenvolvimento de modelos de ML."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "general intelligence",
+    "service": "Amazon Bedrock",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Inteligência Geral",
+      "Modelo de Linguagem"
+    ],
+    "question": "Um pesquisador de inteligência artificial deseja criar um modelo de linguagem que possa entender e responder a perguntas complexas de forma mais humana, e também possa aprender e se adaptar a novas situações. Qual serviço AWS pode ser utilizado para criar e treinar esse modelo?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Comprehend"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock é o serviço mais adequado para criar e treinar modelos de linguagem avançados, pois oferece capacidades de processamento de linguagem natural e aprendizado de máquina."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "foundation models",
+    "service": "AWS Lake Formation",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Modelos de Fundação",
+      "Armazenamento de Dados"
+    ],
+    "question": "Uma empresa de tecnologia deseja armazenar e gerenciar grandes conjuntos de dados para treinar modelos de fundação, e também precisa de recursos para processar e analisar esses dados. Qual serviço AWS pode ser utilizado para armazenar, gerenciar e processar esses dados?",
+    "options": [
+      "AWS Lake Formation",
+      "Amazon S3",
+      "Amazon DynamoDB",
+      "Amazon EBS"
+    ],
+    "correct": 0,
+    "explanation": "AWS Lake Formation é o serviço mais adequado para armazenar, gerenciar e processar grandes conjuntos de dados, pois oferece recursos para armazenar, processar e analisar dados em larga escala."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "responsible ai",
+    "service": "AWS AI Services",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Inteligência Artificial Responsável",
+      "Diretrizes"
+    ],
+    "question": "Uma empresa de tecnologia deseja desenvolver soluções de inteligência artificial que sejam responsáveis e éticas, e também precisa de recursos para monitorar e auditar a conformidade com regulamentações e padrões de segurança. Qual serviço AWS pode ser utilizado para obter diretrizes e recursos para desenvolver soluções de IA responsáveis?",
+    "options": [
+      "AWS AI Services",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Comprehend"
+    ],
+    "correct": 0,
+    "explanation": "AWS AI Services é o serviço mais adequado para obter diretrizes e recursos para desenvolver soluções de IA responsáveis, pois oferece recursos e ferramentas para desenvolver soluções de IA que sejam transparentes, explicações e justas."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "Machine Learning",
+    "service": "Amazon SageMaker",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Amazon SageMaker",
+      "Machine Learning"
+    ],
+    "question": "Um empresa de varejo online deseja criar um modelo de machine learning para prever a probabilidade de um cliente comprar um produto com base em seu histórico de compras e comportamento no site. Qual serviço AWS pode ser utilizado para criar, treinar e implantar esse modelo?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker é o serviço AWS mais adequado para criar, treinar e implantar modelos de machine learning, pois oferece ferramentas e recursos para todo o ciclo de vida do desenvolvimento de modelos de ML."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "General AI",
+    "service": "Amazon Bedrock",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Amazon Bedrock",
+      "General AI"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar uma aplicação que utilize inteligência artificial geral para automatizar tarefas complexas. Qual serviço AWS pode ser utilizado para criar e gerenciar essa aplicação?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock é o serviço AWS mais adequado para criar e gerenciar aplicações que utilizam inteligência artificial geral, pois oferece recursos e ferramentas para criar e implantar modelos de IA."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "Foundation Models",
+    "service": "Amazon SageMaker JumpStart",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Amazon SageMaker JumpStart",
+      "Foundation Models"
+    ],
+    "question": "Um time de cientistas de dados deseja criar um modelo de foundation para uma aplicação de processamento de linguagem natural. Qual serviço AWS pode ser utilizado para criar e treinar esse modelo?",
+    "options": [
+      "Amazon SageMaker JumpStart",
+      "Amazon SageMaker Autopilot",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker JumpStart é o serviço AWS mais adequado para criar e treinar modelos de foundation, pois oferece recursos e ferramentas para criar e implantar modelos de ML pré-treinados."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "Responsible AI",
+    "service": "AWS AI Services",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "AWS AI Services",
+      "Responsible AI"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar uma aplicação que utilize inteligência artificial de forma responsável e ética. Qual serviço AWS pode ser utilizado para garantir que a aplicação atenda às diretrizes de IA responsável?",
+    "options": [
+      "AWS AI Services",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "AWS AI Services é o serviço AWS mais adequado para garantir que as aplicações de IA atendam às diretrizes de IA responsável, pois oferece recursos e ferramentas para criar e implantar modelos de IA de forma ética e responsável."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "Governance",
+    "service": "AWS IAM",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "AWS IAM",
+      "Governance"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar uma política de governança para garantir que as aplicações de IA sejam criadas e implantadas de forma segura e conforme as políticas de segurança da empresa. Qual serviço AWS pode ser utilizado para criar e gerenciar essa política?",
+    "options": [
+      "AWS IAM",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "AWS IAM é o serviço AWS mais adequado para criar e gerenciar políticas de governança, pois oferece recursos e ferramentas para criar e implantar políticas de segurança e acesso."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "Compliance",
+    "service": "Amazon Macie",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Amazon Macie",
+      "Compliance"
+    ],
+    "question": "Uma empresa de tecnologia deseja criar uma aplicação que utilize inteligência artificial para detectar e prevenir violações de dados sensíveis. Qual serviço AWS pode ser utilizado para detectar e prevenir essas violações?",
+    "options": [
+      "Amazon Macie",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Macie é o serviço AWS mais adequado para detectar e prevenir violações de dados sensíveis, pois oferece recursos e ferramentas para detectar e prevenir acessos não autorizados a dados sensíveis."
   }
 ]
