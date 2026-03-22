@@ -128,3 +128,87 @@ export function getStudyResourcesForDomains(domains) {
   });
   return resources;
 }
+
+// Glossário de Termos AWS para Flashcards
+export const glossaryTerms = [
+  {
+    term: "ACM (AWS Certificate Manager)",
+    definition: "Serviço que provisiona, gerencia e implanta certificados SSL/TLS públicos e privados para uso com serviços AWS e recursos internos conectados."
+  },
+  {
+    term: "AMI (Amazon Machine Image)",
+    definition: "Imagem pré-configurada que contém o sistema operacional e software necessário para lançar uma instância EC2. Funciona como um template para criar servidores virtuais."
+  },
+  {
+    term: "ASG (Auto Scaling Group)",
+    definition: "Coleção de instâncias EC2 que são tratadas como um grupo lógico para fins de escalabilidade automática e gerenciamento. Ajusta automaticamente a capacidade para manter a performance e otimizar custos."
+  },
+  {
+    term: "AZ (Availability Zone)",
+    definition: "Data center isolado dentro de uma região AWS, com energia, rede e conectividade redundantes. Múltiplas AZs em uma região permitem alta disponibilidade e tolerância a falhas."
+  },
+  {
+    term: "AWS Artifact",
+    definition: "Portal de autoatendimento para acesso sob demanda a relatórios de conformidade e acordos da AWS. Fornece documentação de auditoria e certificações de segurança."
+  },
+  {
+    term: "AWS Config",
+    definition: "Serviço que avalia, audita e avalia as configurações dos recursos AWS. Monitora e registra continuamente as configurações e permite automatizar a avaliação de conformidade."
+  },
+  {
+    term: "Amazon GuardDuty",
+    definition: "Serviço de detecção de ameaças que monitora continuamente atividades maliciosas e comportamentos não autorizados para proteger contas, cargas de trabalho e dados armazenados na AWS."
+  },
+  {
+    term: "AWS KMS (Key Management Service)",
+    definition: "Serviço gerenciado que facilita a criação e o controle de chaves de criptografia usadas para proteger dados. Integra-se com outros serviços AWS para criptografia de dados."
+  },
+  {
+    term: "Amazon Route 53",
+    definition: "Serviço de DNS (Domain Name System) altamente disponível e escalável. Roteia usuários finais para aplicações da Internet traduzindo nomes de domínio em endereços IP."
+  },
+  {
+    term: "AWS Shield",
+    definition: "Serviço gerenciado de proteção contra DDoS (Distributed Denial of Service) que protege aplicações executadas na AWS. Shield Standard é automático e gratuito; Shield Advanced oferece proteção adicional."
+  },
+  {
+    term: "AWS WAF (Web Application Firewall)",
+    definition: "Firewall de aplicação web que protege aplicações contra explorações comuns da web que podem afetar disponibilidade, comprometer segurança ou consumir recursos excessivos."
+  },
+  {
+    term: "AWS Trusted Advisor",
+    definition: "Ferramenta online que fornece orientação em tempo real para ajudar a provisionar recursos seguindo as melhores práticas da AWS em otimização de custos, performance, segurança e tolerância a falhas."
+  },
+  {
+    term: "Amazon CloudWatch",
+    definition: "Serviço de monitoramento e observabilidade que fornece dados e insights acionáveis para monitorar aplicações, responder a mudanças de performance e otimizar a utilização de recursos."
+  },
+  {
+    term: "AWS IAM (Identity and Access Management)",
+    definition: "Serviço que permite gerenciar com segurança o acesso aos serviços e recursos AWS. Controla quem está autenticado (conectado) e autorizado (tem permissões) para usar recursos."
+  },
+  {
+    term: "Amazon S3 (Simple Storage Service)",
+    definition: "Serviço de armazenamento de objetos que oferece escalabilidade, disponibilidade de dados, segurança e performance. Armazena e protege qualquer quantidade de dados para diversos casos de uso."
+  },
+  {
+    term: "AWS Lambda",
+    definition: "Serviço de computação sem servidor que executa código em resposta a eventos e gerencia automaticamente os recursos de computação. Você paga apenas pelo tempo de computação consumido."
+  },
+  {
+    term: "Amazon VPC (Virtual Private Cloud)",
+    definition: "Rede virtual logicamente isolada na AWS Cloud onde você pode lançar recursos AWS em uma rede virtual que você define, com controle completo sobre o ambiente de rede."
+  },
+  {
+    term: "Amazon RDS (Relational Database Service)",
+    definition: "Serviço de banco de dados relacional gerenciado que facilita configurar, operar e escalar bancos de dados na nuvem. Suporta vários mecanismos de banco de dados como MySQL, PostgreSQL, Oracle e SQL Server."
+  },
+  {
+    term: "AWS CloudFormation",
+    definition: "Serviço de infraestrutura como código que permite modelar e provisionar recursos AWS e de terceiros usando templates. Automatiza e padroniza a criação de infraestrutura."
+  },
+  {
+    term: "Amazon CloudFront",
+    definition: "Serviço de rede de entrega de conteúdo (CDN) que entrega dados, vídeos, aplicações e APIs com segurança para clientes globalmente com baixa latência e altas velocidades de transferência."
+  }
+];

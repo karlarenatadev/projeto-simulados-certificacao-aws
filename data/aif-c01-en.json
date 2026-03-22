@@ -1,0 +1,2735 @@
+[
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "text-summarization",
+    "service": "Amazon Comprehend",
+    "difficulty": "medium",
+    "type": "multiple_choice",
+    "tags": [
+      "processamento de linguagem natural",
+      "resumo de texto",
+      "análise de texto"
+    ],
+    "question": "A media company receives thousands of news articles daily and needs to generate concise summaries for its news platform. The volume of data is high and the need for summaries is almost real-time to keep the content up to date. Which AWS service is best suited to automate the generation of news article summaries at scale and efficiently?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon Rekognition",
+      "Amazon Transcribe",
+      "Amazon Textract"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend is a natural language processing service that can perform text analysis, including summary extraction and entity detection, making it perfect for the mass news article summarization scenario. Amazon Rekognition is for image and video analysis, Amazon Transcribe for speech-to-text, and Amazon Textract for extracting text and data from documents, not directly meeting the text summarization requirement."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "fine-tuning",
+    "service": "Amazon SageMaker",
+    "difficulty": "medium",
+    "type": "multiple_choice",
+    "tags": [
+      "ia generativa",
+      "modelos de base",
+      "ajuste fino",
+      "machine learning"
+    ],
+    "question": "A technology startup is developing a custom large language model (LLM) for its specific industry, using a pre-trained base model. They have a large volume of proprietary data and need to tune the model to improve its performance on domain-specific tasks, such as generating code or answering technical questions. Which AWS service provides the environment and tools needed to fine-tune base models with custom data in a scalable, managed way?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon EC2",
+      "AWS Fargate"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker is AWS's fully managed machine learning platform that provides tools for building, training, and deploying models at scale, including fine-tuning base models with custom data. AWS Lambda is a serverless compute engine for functions, Amazon EC2 provides virtual compute capacity, and AWS Fargate is a serverless compute engine for containers, none of which are designed specifically for the full lifecycle of machine learning and fine-tuning AI models."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "fairness-transparency",
+    "service": "Amazon SageMaker Clarify",
+    "difficulty": "medium",
+    "type": "multiple_choice",
+    "tags": [
+      "ia responsável",
+      "viés",
+      "explicabilidade",
+      "machine learning"
+    ],
+    "question": "A recruitment company uses an AI model to pre-screen resumes, but there are concerns that the model may be introducing unfair biases based on demographic attributes. They need a way to audit and mitigate these biases to ensure fair and transparent hiring decisions. Which AWS service should be used to detect and mitigate bias in machine learning models and provide explanations for model predictions, ensuring responsible AI?",
+    "options": [
+      "Amazon SageMaker Clarify",
+      "Amazon Rekognition",
+      "Amazon Comprehend",
+      "Amazon Forecast"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Clarify helps data scientists detect biases in training data and machine learning models and provides explanations for model predictions, which is crucial for ensuring fairness and transparency in a recruiting system. The other services (Rekognition for computer vision, Comprehend for NLP, and Forecast for time series forecasting) are not designed for bias detection or model explainability."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "machine-learning-workflow",
+    "service": "Amazon SageMaker",
+    "difficulty": "medium",
+    "type": "multiple_choice",
+    "tags": [
+      "machine learning",
+      "ciclo de vida de ml",
+      "plataforma gerenciada"
+    ],
+    "question": "A team of data scientists is developing a new sales forecasting model. They need a fully managed environment that supports the complete machine learning lifecycle, from data preparation, model training, tuning, and deployment, without worrying about the underlying infrastructure. Which AWS service provides a managed development and deployment environment for the entire machine learning lifecycle?",
+    "options": [
+      "Amazon SageMaker",
+      "Amazon EKS",
+      "AWS Glue",
+      "Amazon Athena"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker is the ideal platform for this scenario, as it offers a complete set of features and tools for every step of the machine learning lifecycle, from data preparation and training to model deployment and monitoring, all in a managed environment. Amazon EKS is a container orchestration service, AWS Glue is a serverless ETL service, and Amazon Athena is an interactive query service, none of which cover the full ML lifecycle like SageMaker."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "code-generation",
+    "service": "Amazon CodeWhisperer",
+    "difficulty": "medium",
+    "type": "multiple_choice",
+    "tags": [
+      "ia generativa",
+      "desenvolvimento",
+      "produtividade",
+      "geração de código"
+    ],
+    "question": "A team of developers is working on a complex project and needs to speed up the coding process, minimizing errors and following best practices. They are looking for a tool that can generate real-time code suggestions directly in their integrated development environment (IDE). Which AWS service can be integrated into the development environment to automatically generate code recommendations, speeding development and improving quality?",
+    "options": [
+      "Amazon CodeWhisperer",
+      "AWS CodePipeline",
+      "AWS CodeCommit",
+      "AWS CodeBuild"
+    ],
+    "correct": 0,
+    "explanation": "Amazon CodeWhisperer is a generative AI coding assistant that provides real-time code recommendations directly in developers' IDE, speeding code writing and improving quality. AWS CodePipeline is for continuous delivery, AWS CodeCommit is a version control service, and AWS CodeBuild is a fully managed build service; none of them offer real-time AI-based code suggestions."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "data-governance",
+    "service": "AWS Key Management Service (KMS)",
+    "difficulty": "medium",
+    "type": "multiple_choice",
+    "tags": [
+      "segurança",
+      "criptografia",
+      "gerenciamento de chaves",
+      "conformidade"
+    ],
+    "question": "A healthcare company is storing large volumes of patient data, including electronic medical records, in Amazon S3 buckets. Compliance with regulations like HIPAA requires that all sensitive data be encrypted both in transit and at rest, and that encryption keys be managed in a secure and auditable manner. Which AWS service should be used to securely create and manage encryption keys, enabling centralized control and auditing of key access to protect sensitive data?",
+    "options": [
+      "AWS Key Management Service (KMS)",
+      "AWS Secrets Manager",
+      "AWS CloudHSM",
+      "AWS Identity and Access Management (IAM)"
+    ],
+    "correct": 0,
+    "explanation": "The AWS Key Management Service (KMS) is the ideal service for this scenario because it allows you to create and control encryption keys to protect your data. It integrates with other AWS services like S3 for encryption at rest and offers audit trails. AWS Secrets Manager is for managing application secrets, AWS CloudHSM offers dedicated hardware security modules for keys, and AWS IAM manages resource access permissions, but KMS is best suited for centralized, auditable management of encryption keys."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "prompt-engineering",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple_choice",
+    "tags": [
+      "ia generativa",
+      "modelos de base",
+      "engenharia de prompt",
+      "experimentação"
+    ],
+    "question": "A marketing team is experimenting with generative AI models to create personalized advertising campaigns. They need a platform that allows them to quickly test different prompts and base templates to generate creative and effective marketing copy without needing to manage the underlying infrastructure. Which AWS service provides unified access to a variety of generative AI base models in a managed way, enabling experimentation and tweaking of prompts?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker Canvas",
+      "Amazon Comprehend",
+      "Amazon Lex"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock is a fully managed service that provides access to a variety of generative AI base models (FMs) in a unified way, enabling experimentation with different prompts and models to build generative AI applications. Amazon SageMaker Canvas is for business users to build ML models without code, Amazon Comprehend is for NLP analytics, and Amazon Lex is for building conversational interfaces, none of which are the central platform for accessing and experimenting with generative FMs like Bedrock."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "content-moderation",
+    "service": "Amazon Rekognition",
+    "difficulty": "medium",
+    "type": "multiple_choice",
+    "tags": [
+      "ia responsável",
+      "moderação de conteúdo",
+      "visão computacional",
+      "segurança"
+    ],
+    "question": "A social media platform allows its users to upload and share images and videos. To maintain a safe environment and comply with company policies, they need to automatically identify and moderate inappropriate content, such as nudity, violence, or explicit material, before it is widely distributed. Which AWS service should be used to perform large-scale content moderation on images and videos, identifying potentially unsafe or inappropriate material?",
+    "options": [
+      "Amazon Rekognition",
+      "Amazon Comprehend",
+      "Amazon Textract",
+      "Amazon Transcribe"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Rekognition is a computer vision service that offers content moderation capabilities to identify images and videos that contain potentially unsafe or inappropriate content, making it the perfect solution for this social media use case. Amazon Comprehend is for text analysis, Amazon Textract for extracting text from documents, and Amazon Transcribe for speech-to-text conversion, not applicable to visual moderation."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "natural-language-processing",
+    "service": "Amazon Polly",
+    "difficulty": "medium",
+    "type": "multiple_choice",
+    "tags": [
+      "processamento de linguagem natural",
+      "texto para fala",
+      "acessibilidade",
+      "e-learning"
+    ],
+    "question": "An e-learning company is developing a new online course and wants to add high-quality audio narrations to its modules to improve accessibility and student engagement. They need a solution that converts text into speech naturally and with diverse voices, without the need to hire professional voice actors. Which AWS service can be used to transform text into realistic speech with natural voices in multiple languages, ideal for generating course narrations?",
+    "options": [
+      "Amazon Polly",
+      "Amazon Transcribe",
+      "Amazon Lex",
+      "Amazon Kendra"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Polly is a service that turns text into realistic speech, allowing you to create high-quality audio narrations with natural voices in multiple languages, making it perfect for the e-learning scenario. Amazon Transcribe converts speech to text, Amazon Lex is for building conversational interfaces (chatbots), and Amazon Kendra is an intelligent search service, none of which focus on text-to-speech."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "foundation-models",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "foundation-models",
+      "model-access",
+      "serverless"
+    ],
+    "question": "A technology startup is developing an innovative application that requires access to multiple foundation models (FMs) from different providers, including models from Amazon and third-party providers. The development team wants a unified, serverless way to access, manage, and deploy these models without having to deal with the underlying infrastructure. The company needs a platform that offers a wide range of foundation models, ease of use for experimentation and integration, and the ability to automatically scale as the application demands. Which AWS service should a startup use to access and manage multiple foundation models in a unified, serverless way?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "Amazon EC2",
+      "AWS Lambda"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock is a fully managed service that provides access to a wide range of foundation models (FMs) via API, including Amazon and third-party models, simplifying the development of generative AI applications. Amazon SageMaker is a complete platform for building, training, and deploying custom ML models, but it doesn't offer direct access to third-party FMs in the same way. Amazon EC2 provides virtual computing capacity, requiring infrastructure management. AWS Lambda is a serverless compute service for functions, not a platform for managing FMs."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "rag",
+    "service": "Amazon Kendra",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "rag",
+      "knowledge-base",
+      "search"
+    ],
+    "question": "A large legal consulting firm has a vast repository of internal legal documents, including contracts, precedents, and research articles. They want to develop an internal chatbot that can answer lawyers' complex questions using accurate, up-to-date information from these documents, without the foundation model needing to be retrained with each new document update. The chatbot must be able to provide contextualized responses based on the company's internal documents, ensuring that the information generated is factual and relevant. What architectural approach, combining a foundational model with proprietary data, should the company implement to achieve this objective?",
+    "options": [
+      "Recovery Augmented Generation (RAG) with Amazon Kendra",
+      "Fine-tuning the foundation model",
+      "Training a new model from scratch",
+      "Usage of Amazon Translate"
+    ],
+    "correct": 0,
+    "explanation": "Retrieval Augmented Generation (RAG) allows a foundation model to retrieve information from an external knowledge base (such as internal legal documents via Amazon Kendra) and use it to generate more accurate, contextualized responses without the need to retrain the model. Fine-tuning the foundation model would change the model weights, making it expensive and time-consuming for frequent data updates. Training a new model from scratch is impractical and extremely expensive. Amazon Translate is a translation service."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "data-privacy",
+    "service": "AWS KMS",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "security",
+      "encryption",
+      "data-protection",
+      "compliance",
+      "iam"
+    ],
+    "question": "A financial institution is building a machine learning model to detect transaction fraud. The training dataset contains highly sensitive customer information such as account numbers and transaction history. The institution needs to ensure that this data is protected from unauthorized access both at rest and in transit, and that regulatory compliance is maintained. It is essential to implement strong encryption for the storage and processing of training data, as well as strictly controlling who can access this data. What AWS services should a financial institution use to encrypt ML training data at rest and manage access to it?",
+    "options": [
+      "AWS KMS and AWS IAM",
+      "AWS Shield and AWS WAF",
+      "Amazon GuardDuty and AWS Security Hub",
+      "AWS Artifact and AWS Organizations"
+    ],
+    "correct": 0,
+    "explanation": "AWS KMS (Key Management Service) is used to create and manage encryption keys to protect data at rest, and AWS IAM (Identity and Access Management) is critical for managing permissions and controlling who can access the data and keys. AWS Shield and AWS WAF are services to protect against DDoS attacks and web applications, respectively. Amazon GuardDuty and AWS Security Hub are for threat detection and security management, not directly for data encryption at rest and granular access control. AWS Artifact and AWS Organizations are for compliance reporting and multi-account management."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "model-deployment",
+    "service": "Amazon SageMaker",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "machine-learning",
+      "model-deployment",
+      "scalability",
+      "monitoring"
+    ],
+    "question": "A retail company developed a highly personalized product recommendation model using machine learning algorithms. This model was trained in a development environment and now needs to be deployed in production to serve millions of customers, requiring high availability and automatic scaling to handle traffic spikes. The company seeks a solution that enables efficient model deployment, offers continuous performance monitoring, and ensures scalability without the need to intensively manage the underlying infrastructure. Which AWS service is best suited for deploying and managing the lifecycle of custom machine learning models in production, ensuring scalability and monitoring?",
+    "options": [
+      "Amazon SageMaker Endpoints",
+      "Amazon EC2",
+      "AWS Lambda",
+      "Amazon Machine Learning"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Endpoints offers a fully managed solution for deploying machine learning models to production, providing automatic scaling, monitoring, and high availability. Amazon EC2 would require the company to manage the entire infrastructure, including scalability and load balancing. AWS Lambda is best suited for short-lived serverless functions and not persistent ML models. Amazon Machine Learning is an older, less flexible service for custom models and is deprecated by SageMaker."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "bias-mitigation",
+    "service": "Amazon SageMaker",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "responsible-ai",
+      "bias",
+      "fairness",
+      "ml-governance"
+    ],
+    "question": "A government agency is developing an AI system to help screen applications for social programs. There is significant concern that the model may inadvertently introduce or amplify existing biases in the training data, leading to unfair decisions for certain demographic groups. The agency needs tools to evaluate and mitigate bias in the AI ​​model, both in training data and model predictions, ensuring fairness and transparency in decisions. Which Amazon SageMaker feature should an agency use to detect and mitigate bias in data and the AI ​​model throughout the development cycle?",
+    "options": [
+      "Amazon SageMaker Clarify",
+      "Amazon SageMaker Feature Store",
+      "Amazon SageMaker Ground Truth",
+      "Amazon SageMaker Studio"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Clarify is designed to detect biases in data and machine learning models and provide explainability for model predictions, helping to ensure fairness and transparency. Amazon SageMaker Feature Store is a repository for ML features. Amazon SageMaker Ground Truth is for data labeling. Amazon SageMaker Studio is an IDE for ML."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "model-customization",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "fine-tuning",
+      "domain-adaptation",
+      "custom-models"
+    ],
+    "question": "A telecommunications company wants to adapt an existing foundation model for a very specific use case: generating summaries of customer service interactions using the company's internal communications style and terminology. The base model is good, but it doesn't fully understand the nuances of technical vocabulary and abbreviations used by agents. It is necessary to adjust the foundation model so that it becomes more proficient in the company-specific language, improving the accuracy and relevance of the generated summaries. What technique should a company apply to an existing foundation model to adapt it to a specific domain with a smaller, targeted data set?",
+    "options": [
+      "Fine-tuning",
+      "Advanced prompt engineering",
+      "Training a model from scratch",
+      "Using computer vision models"
+    ],
+    "correct": 0,
+    "explanation": "Fine-tuning is the process of taking a pre-trained foundation model and continuing training with a smaller, domain- or task-specific dataset, adapting it for optimal performance in that context. Advanced prompt engineering can help, but does not change model weights to better understand terminology. Training a model from scratch is costly and time-consuming. Computer vision models are not relevant to natural language processing tasks."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "text-summarization",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "text-generation",
+      "summarization",
+      "nlp"
+    ],
+    "question": "An online news platform receives hundreds of long articles from various sources every day. To improve user experience and allow readers to absorb information quickly, the platform wants to automatically generate concise summaries of each article. The system must be capable of processing large volumes of text and producing accurate, coherent summaries that capture the main points of each article. What type of foundation template functionality, accessible via Amazon Bedrock, is best suited for generating summaries of long articles?",
+    "options": [
+      "Text Generation",
+      "Sentiment Analysis",
+      "Text classification",
+      "Named entity recognition"
+    ],
+    "correct": 0,
+    "explanation": "Text Generation is the core functionality of foundation models for tasks such as summarization, where the model creates new coherent text based on the input. Sentiment analysis assesses emotional tone. Text Classification categorizes text into predefined classes. Named entity recognition identifies entities such as people, places, and organizations."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "access-control",
+    "service": "AWS IAM",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "security",
+      "iam",
+      "access-management",
+      "least-privilege"
+    ],
+    "question": "A team of data scientists is working on a machine learning project that uses sensitive resources such as Amazon SageMaker notebooks, datasets stored in Amazon S3, and deployed models. The company needs to ensure that only authorized team members have access to these resources and that their permissions are the minimum necessary to perform their tasks. It is essential to implement granular access control for ML resources, following the principle of least privilege, and audit who accessed what. Which AWS service should be used to manage identities and access permissions for machine learning resources, ensuring the principle of least privilege?",
+    "options": [
+      "AWS IAM",
+      "AWS Organizations",
+      "AWS Config",
+      "AWS CloudTrail"
+    ],
+    "correct": 0,
+    "explanation": "AWS IAM (Identity and Access Management) is the fundamental service for managing users, groups, and roles, and defining granular permissions policies that control access to AWS resources, including ML resources, ensuring the principle of least privilege. AWS Organizations helps you manage multiple AWS accounts. AWS Config evaluates, audits, and evaluates the configurations of your AWS resources. AWS CloudTrail records actions taken by an AWS user, role, or service, and is for auditing and compliance, not for access management itself."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "data-preparation",
+    "service": "AWS Glue",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "machine-learning",
+      "data-preprocessing",
+      "etl",
+      "data-lakes"
+    ],
+    "question": "A data analytics company collected large volumes of raw data from IoT sensors. This data contains noise, missing values, and inconsistent formats, making it unsuitable for directly training machine learning models. Data needs to be cleaned, transformed and prepared to be used effectively in ML pipelines, ensuring quality and consistency for model training. Which AWS service, often integrated with Amazon S3, is ideal for performing ETL (Extract, Transform, and Load) tasks and preparing large datasets for machine learning?",
+    "options": [
+      "AWS Glue",
+      "Amazon Kinesis",
+      "Amazon Redshift",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "AWS Glue is a serverless ETL service that makes it easy to prepare and load data for analytics and machine learning, handling data cleansing, transformation, and cataloging tasks. Amazon Kinesis is for real-time data processing. Amazon Redshift is a data warehouse for data analysis. Amazon DynamoDB is a NoSQL database."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "model-access",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "tags": [
+      "Modelos de Base",
+      "IA Generativa",
+      "Plataformas"
+    ],
+    "question": "A digital marketing startup wants to create blog content and social media posts at scale using generative AI. They need a service that offers access to multiple base models (FMs) from different providers, allowing them to experiment and choose the most appropriate model for each type of content, without the need to manage the underlying infrastructure. Which AWS service is best suited for this purpose?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Rekognition"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock provides access to a variety of base models from different providers through a unified API, simplifying experimentation and deployment of generative AI applications without the need to manage infrastructure. Amazon SageMaker is a complete platform for building, training, and deploying ML models, but Bedrock is more focused on consuming FMs. AWS Lambda is a serverless compute service, and Amazon Rekognition is for image and video analysis."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "auditing",
+    "service": "AWS CloudTrail",
+    "difficulty": "medium",
+    "tags": [
+      "Auditoria",
+      "Conformidade",
+      "Logs",
+      "IA Generativa"
+    ],
+    "question": "A financial institution is implementing a generative AI system to assist its analysts in writing financial reports. Due to the sensitive nature of the data involved, the company requires that all interactions with the model and the outputs generated are recorded and auditable for regulatory compliance purposes. Which AWS service, in conjunction with Amazon Bedrock, can be used to record detailed logs of API calls and model outputs for auditing purposes?",
+    "options": [
+      "AWS CloudTrail",
+      "Amazon CloudWatch",
+      "AWS Config",
+      "AWS Audit Manager"
+    ],
+    "correct": 0,
+    "explanation": "AWS CloudTrail records API calls made to AWS services, including Amazon Bedrock, enabling you to monitor activity and audit all interactions with your generative AI models, such as invocations and configurations. Amazon CloudWatch is for monitoring application metrics and logs. AWS Config evaluates resource compliance. AWS Audit Manager helps you collect evidence for audits, but CloudTrail is the primary source for activity logs."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "capabilities",
+    "service": "Generative AI",
+    "difficulty": "medium",
+    "tags": [
+      "NLG",
+      "IA Generativa",
+      "Diálogo",
+      "Modelos de Linguagem"
+    ],
+    "question": "A game development company is exploring the use of generative AI to create non-playable characters (NPCs) with more dynamic and personalized dialogue. They need a model that can understand the context of the conversation and generate coherent responses in real time, while maintaining a specific language style for each NPC. What capability of generative AI models is critical to meeting this requirement, allowing the model to produce text that fits the desired context and style?",
+    "options": [
+      "Natural Language Generation (NLG)",
+      "Natural Language Processing (NLP)",
+      "Computer Vision",
+      "Reinforcement Learning"
+    ],
+    "correct": 0,
+    "explanation": "Natural Language Generation (NLG) is the ability of generative AI models to produce coherent and relevant text from structured data or a given context, and is essential for creating dynamic and personalized dialogues. Natural Language Processing (NLP) focuses on understanding text. Computer Vision deals with images and videos, and Reinforcement Learning is a training paradigm."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "ai-services",
+    "service": "Amazon Comprehend",
+    "difficulty": "medium",
+    "tags": [
+      "NLP",
+      "Análise de Sentimento",
+      "Extração de Entidades",
+      "Serviços Pré-treinados"
+    ],
+    "question": "A team of data scientists is working on a sentiment analysis project for customer feedback. They have collected a large amount of unstructured text and need an efficient way to extract the key entities (product names, organizations, locations) and sentiment (positive, negative, neutral) from each comment, without the need to build and train ML models from scratch. Which pre-trained artificial intelligence AWS service can be used to parse text and extract this information automatically?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon Textract",
+      "Amazon Translate",
+      "Amazon Polly"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend is a natural language processing (NLP) service that uses machine learning to find insights and relationships in text. It can identify entities, analyze sentiment, detect language, and more without the need to build custom ML models. Amazon Textract extracts text and data from documents. Amazon Translate translates text. Amazon Polly converts text to speech."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "customization",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "tags": [
+      "Ajuste Fino",
+      "Modelos de Base",
+      "Personalização",
+      "IA Generativa"
+    ],
+    "question": "An e-commerce platform wants to improve the customer experience by offering more personalized product recommendations and automatically generated product descriptions. They plan to use a base template to generate these descriptions, but they need the template to be fine-tuned with their own product catalog data to ensure accuracy and brand style. What technique or approach should be employed to adapt a pre-trained base model with company-specific data, without the need to retrain the entire model from scratch?",
+    "options": [
+      "Fine-tuning",
+      "Supervised Training",
+      "Unsupervised Learning",
+      "Reinforcement Learning"
+    ],
+    "correct": 0,
+    "explanation": "Fine-tuning is the technique of taking a pre-trained Foundation Model and adapting it to a specific task or a particular dataset, training it with a smaller, more specific dataset. This allows the model to learn brand nuances and styles without the need for expensive training from scratch. Supervised and unsupervised training are general paradigms, and reinforcement learning is for decision making in dynamic environments."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "benefits",
+    "service": "Generative AI",
+    "difficulty": "medium",
+    "tags": [
+      "IA Generativa",
+      "Sumarização",
+      "Criação de Conteúdo"
+    ],
+    "question": "A consulting firm is exploring how generative AI can be used to automate the creation of executive summaries from long project documents. They need a template that can not only summarize but also highlight the most critical points and generate cohesive, grammatically correct text. What is the main benefit of generative AI over traditional NLP models for the task of creatively summarizing documents with high quality?",
+    "options": [
+      "Ability to create new and original content",
+      "Increased text processing speed",
+      "Lower computational cost",
+      "Improved text classification accuracy"
+    ],
+    "correct": 0,
+    "explanation": "The main benefit of generative AI for tasks like summarization is its ability to create new and original content (abstractive summaries), rather than just extracting existing sentences (extractive summaries, typical of traditional NLP). This allows for more fluid, cohesive summaries that capture the essence of the document more effectively. Speed, cost and classification accuracy are different characteristics and not the primary benefit of *generating* content."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "principles",
+    "service": "Responsible AI",
+    "difficulty": "medium",
+    "tags": [
+      "IA Responsável",
+      "Segurança",
+      "Ética",
+      "Mitigação de Riscos"
+    ],
+    "question": "A non-profit organization is developing a generative AI application to help educate children. They are concerned that the model could generate inappropriate or biased content, which could have a negative impact on young users. The company needs to implement a system to mitigate these risks and ensure that the content generated is always safe and age-appropriate. Which Responsible AI principle is most relevant to guide the development and implementation of this application, ensuring the system is designed to prevent harm?",
+    "options": [
+      "Security and Protection",
+      "Justice and Equity",
+      "Privacy and Data Security",
+      "Transparency and Explainability"
+    ],
+    "correct": 0,
+    "explanation": "The principle of Safety and Security in Responsible AI focuses on ensuring that AI systems are developed and operated in a way that minimizes risks and prevents harm to users and society. This includes avoiding the generation of inappropriate, biased, or dangerous content, which is crucial for a children's educational application. Justice and Equity deals with bias and discrimination. Privacy and Data Security focuses on protecting information. Transparency and Explainability deals with the comprehensibility of the model."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "ml-fields",
+    "service": "Computer Vision",
+    "difficulty": "medium",
+    "tags": [
+      "Visão Computacional",
+      "Controle de Qualidade",
+      "Detecção de Defeitos",
+      "Imagens"
+    ],
+    "question": "A manufacturing company wants to optimize its quality control processes by identifying defects in products on an assembly line. They have a large volume of product images and need a solution that can automatically analyze these images to detect anomalies without the need for constant human intervention. Which subfield of artificial intelligence is most appropriate for developing a solution that can visually analyze images and identify defects?",
+    "options": [
+      "Computer Vision",
+      "Natural Language Processing (NLP)",
+      "Speech Recognition",
+      "Sentiment Analysis"
+    ],
+    "correct": 0,
+    "explanation": "Computer Vision is the field of artificial intelligence that allows computers to 'see' and interpret images and videos. It is the ideal technology for tasks such as object detection, pattern recognition and identifying anomalies in products on an assembly line for quality control. Natural Language Processing deals with text. Speech Recognition deals with audio. Sentiment Analysis is an application of NLP."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "n/a",
+    "service": "Amazon SageMaker",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "foundation-models",
+      "custom-models",
+      "deployment"
+    ],
+    "question": "A technology startup is developing a virtual assistant for customer support that requires a custom large language model (LLM) trained on company-specific data. They need a platform that allows them to deploy and manage this model with scalability and low latency to serve thousands of requests per second. Which AWS service should be used to host and manage the full lifecycle of machine learning models, including custom LLMs?",
+    "options": [
+      "Amazon SageMaker",
+      "Amazon Bedrock",
+      "AWS Lambda",
+      "Amazon EC2"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker provides a complete platform for building, training, and deploying machine learning models at scale, including the ability to host custom LLMs and manage your inference with high performance and scalability. Amazon Bedrock is for accessing pre-trained FMs. AWS Lambda is for serverless functions. Amazon EC2 is for raw compute instances without managed ML resources."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "n/a",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "foundation-models",
+      "api-access"
+    ],
+    "question": "A digital marketing agency wants to quickly experiment with multiple foundation templates (FMs) from different providers to generate creative content such as campaign copy and video scripts. They need a unified, serverless way to access these models without worrying about the underlying infrastructure. Which AWS service allows access to a variety of high-performance foundation models, including text and image models, through a unified API?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker JumpStart",
+      "Amazon Comprehend",
+      "Amazon Textract"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock is a fully managed service that provides access to high-performance foundation models from leading providers, as well as models from Amazon, through a unified API, simplifying generative application development. Amazon SageMaker JumpStart offers pre-trained models and ML solutions, but Bedrock is more focused on FMs from different providers. Amazon Comprehend is for NLP and Amazon Textract for extracting text from documents."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "n/a",
+    "service": "Amazon SageMaker Clarify",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "responsible-ai",
+      "bias-detection",
+      "ml-governance",
+      "fairness"
+    ],
+    "question": "A financial institution is developing a machine learning model for credit assessment and is concerned about the possibility of unfair biases in the model that could lead to discriminatory decisions. They need a tool to analyze and mitigate these biases during model development. Which feature of Amazon SageMaker can be used to help detect and mitigate bias in machine learning models, both in training data and predictions?",
+    "options": [
+      "Amazon SageMaker Clarify",
+      "Amazon SageMaker Feature Store",
+      "Amazon SageMaker Ground Truth",
+      "Amazon SageMaker Pipelines"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Clarify helps you detect biases in your data and model, and explains model predictions, promoting transparency and fairness. Amazon SageMaker Feature Store is for storing and sharing ML features. Amazon SageMaker Ground Truth is for data labeling. Amazon SageMaker Pipelines is for orchestrating ML workflows."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "n/a",
+    "service": "Amazon Bedrock Guardrails",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "data-privacy",
+      "pii",
+      "security"
+    ],
+    "question": "A healthcare company is building an LLM-based chatbot to answer patient questions. It is crucial that no patients' personally identifiable information (PII) is accidentally exposed in the model output or used for training without consent. How should the company ensure that patients' personal information is protected when using large language models?",
+    "options": [
+      "Implement personal information (PII) filters using Amazon Bedrock Protection Barriers.",
+      "Store all health data in Amazon S3 with default encryption.",
+      "Use Amazon Macie to discover sensitive data in your training data.",
+      "Restrict model access to only authorized users via IAM."
+    ],
+    "correct": 0,
+    "explanation": "Implementing personal information (PII) filters using Amazon Bedrock Protection Barriers is the most effective way to protect sensitive data when interacting with LLMs, as it can detect and redact PII on input and output. Storing in S3 with encryption is a good storage practice, but it does not filter the model output. Amazon Macie helps discover PII but not real-time filtering in inference. Restricting access via IAM is a security measure, but it does not prevent the model from generating PII if it is not configured to do so."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "n/a",
+    "service": "Regressão",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "machine-learning",
+      "model-types",
+      "prediction"
+    ],
+    "question": "A retail chain needs to forecast product sales for the next quarter, based on historical sales data, promotions, holidays and seasonal trends. Forecast accuracy is crucial for inventory management and campaign planning. What type of Machine Learning problem is the company trying to solve to predict future sales?",
+    "options": [
+      "Regression",
+      "Classification",
+      "Clustering",
+      "Reinforcement Learning"
+    ],
+    "correct": 0,
+    "explanation": "Predicting future sales, which are continuous numerical values, is a classic regression problem. Classification would be to categorize data into discrete classes (e.g. 'buy/don't buy'). Clustering is for grouping similar data together without labels. Reinforcement Learning is for training agents to make decisions in an environment."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "n/a",
+    "service": "Fine-tuning",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "foundation-models",
+      "fine-tuning",
+      "model-adaptation"
+    ],
+    "question": "A software development company is using a generic foundation model (FM) to generate code, but has realized that the model is not optimized for the company's specific coding conventions and standards. They want to improve the quality of the generated code to adhere to their internal standards. Which Machine Learning technique should be applied to tune an existing foundation model with company-specific data to improve its performance in a particular domain?",
+    "options": [
+      "Fine-tuning",
+      "Transfer Learning",
+      "Few-shot Learning",
+      "Zero-shot Learning"
+    ],
+    "correct": 0,
+    "explanation": "Fine-tuning is the technique of taking a pre-trained model (such as an FM) and continuing training with a smaller, more specific dataset for the desired task or domain, adjusting its weights to improve performance. Transfer Learning is the broader concept of using a pre-trained model for a new task. Few-shot and Zero-shot Learning are inference techniques with few or no examples, not a training method to adapt the model."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "n/a",
+    "service": "Engenharia de Prompt",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "prompt-engineering",
+      "llm-optimization"
+    ],
+    "question": "A developer is working on an application that uses a generative language model to create abstracts of scientific articles. He noticed that the model outputs are inconsistent and sometimes miss important details. The developer needs to improve the relevance and accuracy of the generated summaries. What technique should be applied to optimize the input instructions for a generative AI model in order to obtain more accurate and relevant outputs?",
+    "options": [
+      "Prompt Engineering",
+      "Fine-tuning",
+      "Reinforcement Learning with Human Feedback (RLHF)",
+      "Model Quantization"
+    ],
+    "correct": 0,
+    "explanation": "Prompt engineering involves creating and refining instructions and input examples for generative models in order to direct the model to produce desired outputs, improving accuracy and relevance without retraining the model. Fine Tuning is a retraining of the model. RLHF is a technique for aligning models with human preferences. Quantization is an optimization of model performance and size."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "n/a",
+    "service": "AWS IAM, AWS CloudTrail",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "data-governance",
+      "security",
+      "compliance",
+      "ml-governance"
+    ],
+    "question": "A financial services company is developing multiple machine learning models that use customer data. They need to ensure that all data used for training and inference complies with regulations such as LGPD and GDPR, and that access to this data is strictly controlled and auditable. What approach is critical to establishing effective data governance for Machine Learning projects in AWS, ensuring compliance and security?",
+    "options": [
+      "Implement granular access policies with AWS IAM, data encryption at rest and in transit, and auditing with AWS CloudTrail.",
+      "Store all data in encrypted Amazon EC2 instances.",
+      "Use only publicly available data for model training.",
+      "Migrate all data to a data warehouse on Amazon Redshift."
+    ],
+    "correct": 0,
+    "explanation": "A robust data governance approach for ML involves using AWS IAM for granular access control, encryption at rest (e.g. S3, EBS, RDS) and in transit (TLS), and logging all activity with AWS CloudTrail to auditing and compliance. Storing in encrypted EC2 is not a complete solution for governance. Using only public data limits use cases. Migrating to Redshift is a data warehouse solution, not a complete governance framework for ML."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "n/a",
+    "service": "Explicabilidade",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "responsible-ai",
+      "explainability",
+      "transparency",
+      "ml-ethics"
+    ],
+    "question": "An insurance company is using an ML model to decide whether to approve claims. Users and regulators demand that the model's decisions are transparent and explainable, so that the company can justify why a claim was approved or rejected. What principle of responsible AI does the company need to focus on to meet the ML model's transparency and decision justification requirements?",
+    "options": [
+      "Explainability",
+      "Biases and Equity",
+      "Privacy and Security",
+      "Robustness and Reliability"
+    ],
+    "correct": 0,
+    "explanation": "Explainability is the principle that focuses on making AI decisions understandable to humans, allowing companies to justify model outputs. Biases and Equity is about avoiding discrimination. Privacy and Security focuses on data protection. Robustness and Reliability deals with the resilience of the model to failures and attacks."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "foundation-models",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "llms",
+      "model-management",
+      "bedrock"
+    ],
+    "question": "A technology company is developing a customer service chatbot that needs to flexibly integrate different large language models (LLMs) and manage the lifecycle of these models, including fine-tuning with first-party data. The company seeks a fully managed solution that minimizes operational overhead. The company needs a unified platform to access and manage multiple LLMs, enabling customization and simplified integration into its application. Which AWS service should the company use to meet these requirements?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Polly"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock is a fully managed service that provides access to multiple base models (FMs) through a single API, making it easy to choose and use the right model for each use case. It also supports fine-tuning with first-party data. Amazon SageMaker is for building, training, and deploying ML models, but Bedrock is more focused on FMs. AWS Lambda is a serverless compute service. Amazon Polly is for turning text into speech."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "model-customization",
+    "service": "Fine-tuning LLMs",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "fine-tuning",
+      "customization",
+      "llms",
+      "domain-adaptation"
+    ],
+    "question": "A healthcare startup is developing a generative AI system to generate medical record summaries. While the available base templates are powerful, they need to be tuned to understand specific medical terminology and the desired format of summaries while maintaining data accuracy and confidentiality. The company needs to customize an existing large language model (LLM) for a specific domain with its own data, without needing to train a model from scratch. Which approach is most suitable for adapting the existing LLM to specific medical terminology and summary format requirements?",
+    "options": [
+      "Fine-tuning",
+      "Training from Scratch",
+      "Direct Inference",
+      "Prompt Engineering"
+    ],
+    "correct": 0,
+    "explanation": "Fine-tuning is the process of taking a pre-trained model and training it with a smaller, task-specific dataset, adapting it to a particular domain. Training from scratch is more expensive and time-consuming. Direct inference uses the model without adaptation. Prompt engineering is about optimizing the instructions for the model, but not fundamentally adapting it to the domain."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "computer-vision",
+    "service": "Amazon Rekognition",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "machine-learning",
+      "computer-vision",
+      "image-analysis",
+      "video-analysis"
+    ],
+    "question": "A media and entertainment company has a vast archive of videos and images from live events. They need to automate the process of identifying celebrities, sponsor logos and specific objects within that content to facilitate indexing, searching and monetization. The company seeks a managed service that can automatically analyze images and videos to detect faces, objects, activities and text, without the need to build and train machine learning models from scratch. Which AWS service should be used to efficiently perform visual analysis of these media files?",
+    "options": [
+      "Amazon Rekognition",
+      "Amazon SageMaker",
+      "AWS DeepLens",
+      "Amazon Textract"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Rekognition is an image and video analysis service that identifies objects, people, text, scenes, and activities, and detects inappropriate content. Amazon SageMaker is a platform for building, training, and deploying custom ML models. AWS DeepLens is a video camera for developers to learn ML. Amazon Textract is for extracting text and data from documents."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "data-privacy",
+    "service": "PII Detection",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "security",
+      "compliance",
+      "governance",
+      "data-privacy",
+      "generative-ai"
+    ],
+    "question": "A financial institution is implementing a generative AI assistant to help its customer service agents respond to queries. Given the sensitive nature of financial data, the institution has strict privacy and compliance policies that prohibit the exposure of customers' personal information to AI models or their outputs. The institution needs to ensure that no personally identifiable information (PII) of customers is processed or generated by AI models, while maintaining compliance with data protection regulations. What is the key security and data governance consideration that the institution must address when designing this generative AI solution?",
+    "options": [
+      "Detection and filtering of personal information",
+      "Cost optimization",
+      "Infrastructure scalability",
+      "Inference latency"
+    ],
+    "correct": 0,
+    "explanation": "Detecting and filtering personal information (PII) is crucial for financial institutions, ensuring that sensitive data is not inappropriately exposed or processed by AI models, meeting privacy and compliance requirements. The other options are important, but they do not directly address the critical issue of sensitive data privacy in this context."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "retrieval-augmented-generation",
+    "service": "Retrieval Augmented Generation (RAG)",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "rag",
+      "knowledge-base",
+      "accuracy"
+    ],
+    "question": "A legal consulting firm is developing a generative AI system to help its lawyers answer complex questions about cases and regulations. The model needs to access and reference a vast library of internal and external legal documents, ensuring responses are accurate, fact-based and up-to-date, without 'hallucinations'. The company needs the generative AI model to provide answers based on a private, real-time knowledge base, mitigating the chance of misinformation and ensuring contextual relevance. Which generative AI architecture technique should the company implement so that the model can access and utilize this external knowledge base effectively?",
+    "options": [
+      "Recovery Augmented Generation (RAG)",
+      "Supervised Training",
+      "Reinforcement Learning",
+      "Topic Modeling"
+    ],
+    "correct": 0,
+    "explanation": "Retrieval Augmented Generation (RAG) allows a large language model (LLM) to retrieve information from an external knowledge base to inform its responses, ensuring accuracy and contextual relevance and mitigating hallucinations. Supervised training and reinforcement learning are training methods. Topic modeling is for discovering themes in document collections."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "agent-orchestration",
+    "service": "Agents for Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "agents",
+      "orchestration",
+      "bedrock",
+      "api-integration"
+    ],
+    "question": "A financial services company wants to create a generative AI assistant for its customers that not only answers questions but also performs specific actions, such as checking an account balance, initiating a transfer, or requesting a bank statement. These actions need to be integrated with the company's existing backend systems. The company needs its generative AI assistant to be able to understand user intent, plan a sequence of steps, invoke backend APIs, and return the result to the user autonomously and securely. Which Amazon Bedrock feature should a company leverage to enable the generative AI assistant to perform these complex, orchestrated actions?",
+    "options": [
+      "Agents for Amazon Bedrock",
+      "Amazon Lex",
+      "AWS Step Functions",
+      "Amazon Connect"
+    ],
+    "correct": 0,
+    "explanation": "Agents for Amazon Bedrock enable base models to perform complex tasks by orchestrating calls to APIs from backend systems in response to user requests. Amazon Lex is for building conversational interfaces. AWS Step Functions is a workflow orchestration service. Amazon Connect is a cloud contact center service."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "bias-fairness",
+    "service": "AI Fairness",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "responsible-ai",
+      "fairness",
+      "bias",
+      "ethics",
+      "hr"
+    ],
+    "question": "A human resources company is developing an AI system for initial resume screening. The company is aware that historical hiring data may contain biases that, if transferred to the AI ​​model, could lead to unfair and discriminatory decisions. The company needs to implement practices to identify and mitigate bias in training data and AI model outputs, ensuring that the screening system is fair and equitable for all candidates. What is the main concern related to responsible AI that the company should address as a priority in this scenario?",
+    "options": [
+      "Model justice and equity",
+      "Model inference cost",
+      "Processing latency",
+      "Infrastructure availability"
+    ],
+    "correct": 0,
+    "explanation": "The main concern is the fairness and equity of the model, ensuring that the CV screening system does not reproduce or amplify existing biases in the data, resulting in discriminatory decisions. The other options are important for the operation, but do not directly address the ethical and social issue of biases in AI."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "forecasting",
+    "service": "Amazon Forecast",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "machine-learning",
+      "forecasting",
+      "time-series",
+      "retail",
+      "supply-chain"
+    ],
+    "question": "A large retail chain wants to optimize its inventory and supply chain management. They need to predict future demand for thousands of products in different regions, taking into account seasonality, promotions and external factors, to avoid excess or lack of stock. The company needs a fully managed service that uses machine learning to generate high-accuracy time series forecasts, without the need for ML expertise. Which AWS service should the company use to build product demand forecasts in an accurate and scalable way?",
+    "options": [
+      "Amazon Forecast",
+      "Amazon Rekognition",
+      "Amazon Transcribe",
+      "AWS Glue"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Forecast is a fully managed machine learning service that uses forecasting algorithms to generate highly accurate time series forecasts, ideal for forecasting product demand. Amazon Rekognition is for image and video analysis. Amazon Transcribe is for speech recognition. AWS Glue is an ETL service for data preparation."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "cost-optimization",
+    "service": "LLM Cost Optimization",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "cost-optimization",
+      "llms",
+      "efficiency"
+    ],
+    "question": "A startup is developing an app that uses a large language model (LLM) to generate personalized content for its users. As the user base increases, LLM inference costs are becoming a significant concern. The company needs to optimize costs without compromising the quality of content generation. The company needs strategies to reduce the costs associated with using large language models while maintaining good performance and output quality. What approach should a company consider to optimize LLM inference costs, especially in high-volume scenarios?",
+    "options": [
+      "Choose smaller, more efficient base models",
+      "Use only CPUs for inference",
+      "Disable prompt caching",
+      "Increase the complexity of prompts"
+    ],
+    "correct": 0,
+    "explanation": "Choosing smaller, more efficient base models for tasks that don't require the capacity of larger models can significantly reduce inference costs and processing time. Using only CPUs may be less efficient than GPUs for LLM inference in many cases. Disabling prompt caching would increase costs when reprocessing identical prompts. Increasing the complexity of prompts can increase costs and latency."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "model-customization",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "generative-ai",
+      "foundation-models",
+      "fine-tuning",
+      "customization"
+    ],
+    "question": "A technology startup is building an AI-based customer service application that needs to generate personalized, contextual answers to users' frequently asked questions. They want to leverage pre-trained large language models (LLMs), but they also need the ability to fine-tune these models with their specific product and service data to improve the accuracy and relevance of responses. Access a variety of base models while having the flexibility to customize a model for a specific domain without needing to manage the underlying infrastructure. Which AWS service allows your startup to efficiently access and customize base models?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "Amazon Lex",
+      "AWS Lambda"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock offers access to a variety of base models from different providers and allows you to customize these models using techniques such as fine-tuning with your company's own data, all without managing infrastructure. Amazon SageMaker is a complete platform for building, training, and deploying ML models, but Bedrock simplifies accessing and customizing base models. Amazon Lex is for building conversational chatbots. AWS Lambda is a serverless computing service."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "rag-pattern",
+    "service": "Geração Aumentada por Recuperação (RAG)",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "generative-ai",
+      "knowledge-retrieval",
+      "accuracy",
+      "llm"
+    ],
+    "question": "A large consulting firm has a vast repository of internal documents, such as project reports, policy manuals and knowledge bases, which are spread across different storage systems. They want to create a virtual assistant for their employees that can answer complex questions based on this internal information, ensuring that the answers are factually accurate and reference original sources. Develop a system where a language model can query and synthesize information from proprietary documents to generate accurate and reasoned responses, avoiding hallucinations. Which architectural pattern, using AWS services, is best suited to enable the language model to access and efficiently use the company's internal knowledge?",
+    "options": [
+      "Recovery Augmented Generation (RAG)",
+      "Fine-tuning",
+      "Transfer Learning",
+      "Topic Modeling"
+    ],
+    "correct": 0,
+    "explanation": "The Retrieval Augmented Generation (RAG) pattern is ideal for this scenario because it allows a language model to retrieve relevant information from a proprietary knowledge base (such as internal documents) and use that information to substantiate its responses, ensuring accuracy and reducing hallucinations. Fine-tuning adapts the model, but does not directly connect it to an external knowledge base for real-time retrieval. Transfer Learning is an ML technique. Topic Modeling is for identifying themes in a body of text."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "data-encryption",
+    "service": "AWS Key Management Service (KMS)",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "security",
+      "encryption",
+      "compliance",
+      "data-protection"
+    ],
+    "question": "A financial institution is developing an ML model for fraud detection, which will be trained on highly sensitive customer transaction data. Regulatory compliance requires that all data, both in transit and at rest, is encrypted with securely managed keys and that access to these keys is rigorously audited. Implement strong encryption for training and inference data, ensuring full control over encryption keys and compliance with data security regulations. Which AWS service should be used to manage encryption keys and protect your financial institution's sensitive data?",
+    "options": [
+      "AWS Key Management Service (KMS)",
+      "AWS Certificate Manager (ACM)",
+      "AWS Secrets Manager",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "AWS Key Management Service (KMS) is the appropriate service for creating and controlling encryption keys used to encrypt data at rest and in transit, offering integration with other AWS services and auditing key usage, which is crucial for regulatory compliance. AWS Certificate Manager (ACM) manages SSL/TLS certificates. AWS Secrets Manager is for managing secrets like database credentials. Amazon S3 is an object storage service, which can use KMS for encryption, but KMS is the core key management service."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "feature-management",
+    "service": "Amazon SageMaker Feature Store",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "machine-learning",
+      "mlops",
+      "data-management",
+      "feature-engineering"
+    ],
+    "question": "An e-commerce company is building several Machine Learning (ML) models for different purposes, such as product recommendation, fraud detection, and demand forecasting. They noticed that many of these models use the same customer data features, such as purchase history, demographics and browsing behavior. The ML team faces challenges in feature consistency, reuse, and latency during inference. Centralize the storage, sharing, and management of ML features to ensure consistency across models, facilitate reuse, and optimize latency for real-time inference. Which AWS service provides a managed solution for storing, versioning, and serving ML features for training and inference?",
+    "options": [
+      "Amazon SageMaker Feature Store",
+      "Amazon DynamoDB",
+      "Amazon Redshift",
+      "Amazon Kinesis"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Feature Store is a fully managed feature store that makes it easy to store, share, and manage features for ML models. It ensures consistency between training and inference environments and offers low latency for real-time feature retrieval. Amazon DynamoDB is a NoSQL key-value database. Amazon Redshift is a data warehouse. Amazon Kinesis is for processing streaming data."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "bias-detection",
+    "service": "Amazon SageMaker Clarify",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "responsible-ai",
+      "fairness",
+      "explainability",
+      "ml-governance"
+    ],
+    "question": "A human resources company is developing an AI system to help screen resumes and recommend candidates. Concerned about equity and accountability, they want to ensure that the model does not introduce or amplify existing biases in the training data, which could lead to discriminatory decisions based on attributes such as gender, ethnicity, or age. Evaluate the Machine Learning model to identify and mitigate potential biases in training data and model predictions, promoting fairness and transparency. Which Amazon SageMaker feature can help your company detect and explain biases in your ML models?",
+    "options": [
+      "Amazon SageMaker Clarify",
+      "Amazon SageMaker Canvas",
+      "Amazon SageMaker Ground Truth",
+      "Amazon SageMaker Studio"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Clarify is designed to help detect biases in training data and model predictions and provide explanations for model behavior, which is essential to ensuring fairness and accountability in AI systems. Amazon SageMaker Canvas is a visual interface for business users to build ML models without code. Amazon SageMaker Ground Truth is for data labeling. Amazon SageMaker Studio is an IDE for ML."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "agents",
+    "service": "Agentes para Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "generative-ai",
+      "conversational-ai",
+      "api-integration",
+      "task-automation"
+    ],
+    "question": "A financial services company wants to create an AI assistant for its customers that not only answers product questions but can also perform specific actions, such as checking account balances, initiating transfers, or updating contact information, by interacting with its backend systems. Build a conversational AI agent that can interact with users, understand intent, and orchestrate calls to internal system APIs to perform complex tasks. What capability of Amazon Bedrock allows your company to build an AI assistant that can perform complex actions and interact with backend systems?",
+    "options": [
+      "Agents for Amazon Bedrock",
+      "Amazon Lex",
+      "Amazon Kendra",
+      "Amazon Customize"
+    ],
+    "correct": 0,
+    "explanation": "Agents for Amazon Bedrock enable base models to perform complex tasks by orchestrating calls to backend APIs and retrieving information from knowledge bases, which is ideal for an AI assistant that needs to interact with internal systems and perform actions. Amazon Lex is for building chatbots with NLU, but Bedrock Agents offer more advanced orchestration with LLMs. Amazon Kendra is an intelligent search service. Amazon Personalize is for personalized recommendations."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "data-residency",
+    "service": "AWS Regions",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "compliance",
+      "data-privacy",
+      "regulations",
+      "geographic-restriction"
+    ],
+    "question": "A global healthcare organization is developing an AI-based medical diagnostic application that will be deployed in multiple regions around the world. Due to strict patient data privacy regulations (such as GDPR and HIPAA), it is imperative that health data used for training and inference of AI models remains within the specific geographic boundaries of each region where the application is used. Ensure that patient data, both at rest and being processed by AI models, remains confined to specific geographic regions to comply with data residency laws. How should your organization configure your AWS services to meet the data residency requirements for your AI models?",
+    "options": [
+      "Deploy AI and data warehousing capabilities in geographically specific AWS regions.",
+      "Use AWS Global Accelerator to route data traffic to the nearest region.",
+      "Implement AWS PrivateLink for private connections between VPCs.",
+      "Configurar Amazon CloudFront for caching data in edge locations."
+    ],
+    "correct": 0,
+    "explanation": "To meet data residency requirements, your organization must deploy all AI resources (such as models, training data, and inference) and data storage services (such as Amazon S3, Amazon RDS) in AWS regions that match specific geographic requirements. AWS Global Accelerator, AWS PrivateLink, and Amazon CloudFront are for network optimization, private connectivity, and content delivery, respectively, and do not guarantee data residency by themselves."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "prompt-engineering",
+    "service": "Prompt Engineering",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "generative-ai",
+      "llm-optimization",
+      "output-quality",
+      "interaction-design"
+    ],
+    "question": "A digital marketing agency is using a large language model (LLM) to generate draft advertising campaigns and social media posts. They noticed that the model outputs are inconsistent and often don't follow the client's tone of voice and brand style. The team needs to improve the quality and relevance of LLM outputs without needing to retrain the model or perform complex fine-tuning. Improve the quality, consistency and style adherence of the outputs generated by the language model, guiding the model effectively. Which technique should be applied to optimize interactions with the language model and obtain results more in line with the agency's expectations?",
+    "options": [
+      "Prompt Engineering",
+      "Fine-tuning",
+      "Supervised Learning",
+      "Unsupervised Learning"
+    ],
+    "correct": 0,
+    "explanation": "Prompt Engineering is the most appropriate technique for optimizing interactions with language models, allowing the agency to refine the instructions and examples provided to the model to guide its outputs and obtain more consistent results aligned with the desired tone and style, without the need to retrain the model. Fine-tuning would be more complex and time-consuming. Supervised and Unsupervised Learning are broader ML paradigms."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "natural-language-processing",
+    "service": "Amazon Comprehend",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "machine-learning",
+      "nlp",
+      "sentiment-analysis",
+      "entity-recognition"
+    ],
+    "question": "A social media sentiment analysis company needs to process millions of user comments daily to understand public perception of its products and campaigns. They need to automatically identify the sentiment (positive, negative, neutral) of texts, extract key entities (such as product and organization names), and detect the language of comments. Analyze large volumes of text to automatically identify sentiment, extract entities, and detect languages, without the need to build or train Natural Language Processing (NLP) models from scratch. Which managed NLP AWS service should be used to perform this large-scale text analysis?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon Transcribe",
+      "Amazon Translate",
+      "Amazon Textract"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend is a fully managed NLP service that can be used to extract insights from text, including sentiment analysis, entity detection, language detection, and more, without the need to build and train NLP models. Amazon Transcribe converts speech to text. Amazon Translate translates text. Amazon Textract extracts text and data from documents."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "foundation-models",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "genai",
+      "foundation-models",
+      "chatbot",
+      "personalization"
+    ],
+    "question": "A technology startup is developing a customer service chatbot app that needs to generate contextual and creative responses to a wide range of user queries. They are looking for a solution that offers pre-trained base models, high scalability, and allows customization without the need to manage complex machine learning infrastructure. The company needs a platform to access and customize base models, optimizing text generation for the chatbot. Which AWS service should be used to meet these requirements?",
+    "options": [
+      "Amazon SageMaker",
+      "Amazon Bedrock",
+      "Amazon Comprehend",
+      "Amazon Lex"
+    ],
+    "correct": 1,
+    "explanation": "Amazon Bedrock is a fully managed service that gives you access to high-performance base templates from leading providers and Amazon, enabling customization with your own data and simplified integration into applications. Amazon SageMaker is a complete ML platform, but it doesn't just focus on base models. Amazon Comprehend is for pre-trained NLP (sentiment analysis, entity detection), not text generation. Amazon Lex is for building conversational interfaces, not the underlying text generation model."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "generative-ai-use-cases",
+    "service": "Foundation Models",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "genai",
+      "content-creation",
+      "marketing",
+      "nlg"
+    ],
+    "question": "A digital marketing agency wants to automate the creation of personalized content for email and social media campaigns, generating text variations for different audience segments from an initial set of information. They need a solution that can generate creative, coherent text at scale. The agency needs an efficient way to automatically generate multiple versions of marketing content tailored to different audiences. How should the agency leverage baseline models to solve this challenge?",
+    "options": [
+      "Using base models for language translation.",
+      "Using base models for document summarization.",
+      "Employing base models for text generation (NLG).",
+      "Applying base models for sentiment analysis."
+    ],
+    "correct": 2,
+    "explanation": "Base templates, when applied to Natural Language Generation (NLG), are ideal for creating new and creative textual content, such as product descriptions, blog posts and marketing emails, adapting to different styles and audiences. The other options are valid use cases for base templates, but they don't directly address creating new and varied content for campaigns."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "ai-ethics",
+    "service": "Responsible AI",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "responsible-ai",
+      "bias",
+      "fairness",
+      "ethics"
+    ],
+    "question": "A financial services company is developing an AI system to evaluate loan applications. They are concerned that the AI ​​model could develop biases that could lead to unfair or discriminatory decisions against certain groups of customers, resulting in reputational and regulatory harm. The company needs to ensure that the AI ​​model is fair and equitable in its decisions, avoiding unwanted biases. Which responsible AI principle is most relevant to addressing this concern?",
+    "options": [
+      "Explainability",
+      "Transparency",
+      "Justice and Equity",
+      "Privacy"
+    ],
+    "correct": 2,
+    "explanation": "The principle of Justice and Equity focuses on preventing bias and discrimination in AI systems, ensuring that decisions are impartial and do not harm specific groups. Explainability and Transparency are important to understand how the model arrives at a decision, and Privacy is about protecting data, but not directly about the fairness of the decisions themselves."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "ml-lifecycle",
+    "service": "Machine Learning",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ml",
+      "predictive-maintenance",
+      "ml-pipeline"
+    ],
+    "question": "A manufacturing company is collecting large volumes of sensor data from equipment in its factories. They want to predict machine failures before they occur in order to perform predictive maintenance and avoid costly production disruptions. To do this, they need a machine learning model that can identify patterns in historical data and predict future events. The company needs to develop an ML model that can predict equipment failures based on sensor data. What is the main stage of the Machine Learning lifecycle that the company should focus on to build and train this model?",
+    "options": [
+      "Model Deployment",
+      "Data Collection",
+      "Model Training and Validation",
+      "Model Monitoring"
+    ],
+    "correct": 2,
+    "explanation": "To predict failures and identify patterns, the crucial step is Model Training and Validation, where ML algorithms learn from historical data and are evaluated to ensure their accuracy and robustness. Data Collection is an earlier step, Deployment and Monitoring are later steps after the model is built."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "generative-ai-use-cases",
+    "service": "Foundation Models",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "genai",
+      "content-summarization",
+      "media",
+      "nlg"
+    ],
+    "question": "A media company has a large volume of news articles and video transcripts that need to be quickly summarized to create newsletters and summaries for social media. Manual summarization is time-consuming and inefficient. The company needs an automated solution to generate concise and accurate summaries from long documents. Which base model application is ideal for this scenario?",
+    "options": [
+      "Language Translation",
+      "Code Generation",
+      "Text Summarization",
+      "Sentiment Analysis"
+    ],
+    "correct": 2,
+    "explanation": "Text summarization using base templates is the perfect application for this scenario, as it allows you to automatically condense long articles and transcripts into concise summaries, saving the media company time and resources. The other options are base template applications, but they don't solve the problem of creating content briefs."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "ai-ethics",
+    "service": "Responsible AI",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "responsible-ai",
+      "explainability",
+      "trust",
+      "ethics"
+    ],
+    "question": "A technology company is developing a new AI model to recommend products to its customers. They want to ensure that users understand why certain recommendations are being made and that they can trust the system's suggestions. The company needs the AI ​​model to provide clear and understandable justifications for its recommendations. Which responsible AI principle is critical to meeting this requirement and building user trust?",
+    "options": [
+      "Privacy",
+      "Security",
+      "Explainability",
+      "Responsibility"
+    ],
+    "correct": 2,
+    "explanation": "Explainability is the responsible AI principle that focuses on making the decisions and functioning of AI systems understandable to humans. By providing clear justifications for recommendations, the company increases user confidence. Privacy and Security are important, but they do not directly address understanding the logic of the model. Accountability is about who is responsible for the results of the model."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "data-privacy",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "security",
+      "compliance",
+      "privacy",
+      "pii",
+      "genai",
+      "guardrails"
+    ],
+    "question": "A healthcare institution is using a language model to process anonymized medical records. Although the input data is anonymized, there is concern that the model may inadvertently generate outputs that contain information that, if combined, could re-identify patients or violate regulations such as LGPD in Brazil or HIPAA in the US. The institution needs a mechanism to detect and prevent the output of personally identifiable information (PII) or sensitive information generated by the model. Which type of filter should be prioritized when configuring the model's protection barriers to mitigate this risk?",
+    "options": [
+      "Topic Filters",
+      "Word Filters",
+      "Personal Information (PII) Filters",
+      "Bad Language Filters"
+    ],
+    "correct": 2,
+    "explanation": "Personal Information (PII) Filters are specifically designed to identify and block the output of data that can re-identify individuals, such as names, social security numbers, addresses, etc., and are crucial for compliance with data privacy regulations such as LGPD and HIPAA. Topic Filters control subject matter, Word Filters block specific terms, and Bad Language Filters target offensive content, but none of them focus on PII detection as the correct option."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "ml-concepts",
+    "service": "Machine Learning",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ml",
+      "optimization",
+      "logistics",
+      "prediction"
+    ],
+    "question": "A logistics company wants to optimize its delivery routes and vehicle allocation. They have historical data on deliveries, traffic conditions and vehicle capacity. The goal is to reduce operational costs and delivery time by finding the most efficient routes. The company needs a system that can learn from historical data to make complex predictions and optimizations. Which field of Artificial Intelligence is best suited to solving this problem of route optimization and resource allocation?",
+    "options": [
+      "Computer Vision",
+      "Natural Language Processing (NLP)",
+      "Machine Learning",
+      "Robotics"
+    ],
+    "correct": 2,
+    "explanation": "Machine Learning is the field of AI that focuses on enabling systems to learn from data to identify patterns, make predictions, and optimize results without explicit programming, making it ideal for problems such as route optimization and resource allocation in logistics. Computer Vision deals with images, NLP with text and Robotics with physical control, not being the best choices for this scenario."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "model-customization",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "tags": [
+      "genai",
+      "foundation-models",
+      "customization",
+      "fine-tuning",
+      "bedrock"
+    ],
+    "question": "A software development company wants to use a pre-trained large language model (LLM) available in Amazon Bedrock to generate code. However, the template must follow a company-specific coding style, utilize internal libraries, and adhere to proprietary naming conventions. Adapting the model to these particularities is crucial for developer productivity. What approach in Amazon Bedrock should a company take to customize a base template for its specific code generation needs, ensuring it learns about its libraries and style?",
+    "options": [
+      "Fine-tuning in Amazon Bedrock",
+      "Amazon SageMaker Ground Truth",
+      "Amazon CodeGuru",
+      "Amazon Kendra"
+    ],
+    "correct": 0,
+    "explanation": "Fine-tuning in Amazon Bedrock lets you adapt existing base models with company-specific data, improving their performance and relevance for custom tasks like generating styled code and specific libraries. Amazon SageMaker Ground Truth is for data labeling, Amazon CodeGuru is for code review and performance optimization, and Amazon Kendra is for intelligent document search, not LLM customization."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "knowledge-retrieval",
+    "service": "Amazon Bedrock (Knowledge Bases)",
+    "difficulty": "medium",
+    "tags": [
+      "genai",
+      "rag",
+      "knowledge-base",
+      "information-retrieval",
+      "bedrock",
+      "kendr"
+    ],
+    "question": "A large corporation has a vast collection of internal documents, such as product manuals, FAQs, technical reports, and company policies, stored in different formats in Amazon S3. They want to build a generative AI chatbot that can answer employee questions based on this information, without the model 'hallucinating' or providing incorrect data. It is vital that answers are factual and come only from company documents. What is the best AWS approach and service to enable a generative AI model in Amazon Bedrock to retrieve accurate information from internal company documents to generate responses?",
+    "options": [
+      "Knowledge Bases for Amazon Bedrock",
+      "Amazon Textract",
+      "Amazon Translate",
+      "Amazon Transcribe"
+    ],
+    "correct": 0,
+    "explanation": "Bedrock Knowledge Bases for Amazon implement the Retrieval Augmented Generation (RAG) architecture, enabling generative AI models to query and retrieve information from internal documents, ensuring accurate, fact-based responses without the need to retrain the model. Amazon Textract is for text extraction, Amazon Translate is for translation, and Amazon Transcribe is for speech transcription and are not suitable for contextualized information retrieval for LLMs."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "bias-detection",
+    "service": "Amazon SageMaker Clarify",
+    "difficulty": "medium",
+    "tags": [
+      "responsible-ai",
+      "bias",
+      "fairness",
+      "machine-learning",
+      "sagemaker"
+    ],
+    "question": "A financial institution developed a machine learning model for loan approval. They are concerned that the model may introduce biases that could lead to unfair or discriminatory decisions against certain demographic groups, such as minorities or lower-income people. Before putting the model into production, it is crucial to evaluate and mitigate these biases to ensure regulatory compliance and fairness. Which AWS service should an institution use to identify and analyze biases in its loan approval model, ensuring decisions are fair and equitable?",
+    "options": [
+      "Amazon SageMaker Clarify",
+      "Amazon Macie",
+      "AWS Audit Manager",
+      "Amazon Detective"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Clarify is designed to help detect biases in machine learning models and provide explanations for model predictions, ensuring fairness and transparency before deployment. Amazon Macie is for sensitive data discovery, AWS Audit Manager is for compliance auditing, and Amazon Detective is for security investigation and are not tools for detecting bias in ML models."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "model-deployment",
+    "service": "Amazon SageMaker",
+    "difficulty": "medium",
+    "tags": [
+      "genai",
+      "model-deployment",
+      "inference",
+      "sagemaker",
+      "bedrock"
+    ],
+    "question": "A technology startup has developed a custom AI model for product recommendation and needs to deploy it in production to serve millions of users with low latency and high availability. The model is quite large, requires significant computing resources, and the startup does not want to manage the underlying server infrastructure. Which AWS service is best suited for deploying a custom AI model for real-time inference, ensuring scalability, high availability, and low latency?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon EC2",
+      "Amazon SQS"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker provides end-to-end capabilities for deploying machine learning models to scalable, high-availability endpoints for real-time inference, handling infrastructure provisioning, monitoring, and model lifecycle management. AWS Lambda is for short-lived serverless functions, Amazon EC2 requires server management, and Amazon SQS is a message queue, not a model deployment service."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "data-protection",
+    "service": "AWS KMS",
+    "difficulty": "medium",
+    "tags": [
+      "security",
+      "data-protection",
+      "encryption",
+      "kms",
+      "s3",
+      "ai-ml"
+    ],
+    "question": "A healthcare company is training AI models with sensitive patient data, including information from medical records and test results. It is mandatory that all data, both at rest in Amazon S3 and in transit to ML services, be encrypted to comply with strict privacy regulations such as HIPAA and GDPR. The company needs full control over the encryption keys. Which AWS service should be used to manage encryption keys and ensure that sensitive patient data used for training AI models and stored in Amazon S3 is securely encrypted?",
+    "options": [
+      "AWS Key Management Service (KMS)",
+      "AWS Secrets Manager",
+      "AWS Certificate Manager (ACM)",
+      "AWS Identity and Access Management (IAM)"
+    ],
+    "correct": 0,
+    "explanation": "AWS Key Management Service (KMS) lets you create, manage, and control the encryption keys used to encrypt data at rest in services like Amazon S3 and in transit, ensuring regulatory compliance and the security of sensitive data. AWS Secrets Manager is for managing credentials, ACM for SSL/TLS certificates, and IAM for access control, not for managing data encryption keys."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "model-monitoring",
+    "service": "Amazon SageMaker Model Monitor",
+    "difficulty": "medium",
+    "tags": [
+      "ai-ml",
+      "model-monitoring",
+      "performance",
+      "cloudwatch",
+      "sagemaker"
+    ],
+    "question": "An e-commerce company implemented a product recommendation model that was initially successful and generated a significant increase in sales. However, over time, due to changes in customer purchasing patterns and the introduction of new products, the operations team noticed that the quality of recommendations began to degrade, negatively impacting sales. They need an automatic mechanism to identify this degradation. Which AWS service is best suited to continuously monitor the quality of input data and predictions from a machine learning model in production, alerting you to any performance degradation?",
+    "options": [
+      "Amazon SageMaker Model Monitor",
+      "AWS CloudTrail",
+      "Amazon GuardDuty",
+      "Amazon Inspector"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Model Monitor is specifically designed to detect drift in input data and prediction quality from production ML models, providing alerts and insights for proactive model maintenance. AWS CloudTrail records API activity, Amazon GuardDuty is a threat detection service, and Amazon Inspector is for vulnerability assessment, not for ML model performance monitoring."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "cost-optimization",
+    "service": "AWS Lambda",
+    "difficulty": "medium",
+    "tags": [
+      "ai-ml",
+      "cost-optimization",
+      "serverless",
+      "lambda",
+      "sagemaker"
+    ],
+    "question": "A small startup has developed an AI function for natural language processing that runs sporadically in response to specific events, such as the arrival of new emails for sentiment analysis or the upload of a document for summarization. They need a solution that is cost-effective, automatically scales with demand, and does not require server management as the team is small and focused on feature development. Which AWS service should be used to run AI model inference serverless, minimizing costs by only paying for execution and automatically scaling in response to events?",
+    "options": [
+      "AWS Lambda",
+      "Amazon EC2",
+      "Amazon EKS",
+      "AWS Batch"
+    ],
+    "correct": 0,
+    "explanation": "AWS Lambda lets you run code without provisioning or managing servers, making it ideal for event-driven and sporadic AI inference because the cost is based solely on the compute time consumed. Amazon EC2 requires server management, Amazon EKS is for containers and requires cluster management, and AWS Batch is for batch workloads, not real-time, event-driven serverless inference."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "access-control",
+    "service": "AWS IAM",
+    "difficulty": "medium",
+    "tags": [
+      "security",
+      "access-control",
+      "governance",
+      "iam",
+      "ai-ml"
+    ],
+    "question": "A large company has different teams of data scientists and developers working on multiple AI and machine learning projects. Each team needs restricted access to specific datasets in Amazon S3, models in SageMaker, and compute resources, to ensure that only authorized users can perform specific operations, such as training models or deploying endpoints. It is essential to implement robust access control to prevent unauthorized access and ensure the security of data and models. Which AWS service should your company use to set permissions and manage team and user access to AI/ML resources, such as SageMaker notebooks, data in S3, and inference endpoints?",
+    "options": [
+      "AWS Identity and Access Management (IAM)",
+      "AWS Organizations",
+      "AWS Resource Access Manager (RAM)",
+      "AWS Single Sign-On (SSO)"
+    ],
+    "correct": 0,
+    "explanation": "AWS Identity and Access Management (IAM) lets you manage users, groups, and roles, and apply granular permission policies to control access to all AWS resources, including AI/ML services like Amazon SageMaker and data in Amazon S3. AWS Organizations is for managing multiple AWS accounts, RAM for sharing resources across accounts, and SSO for centralized identity management, but IAM is the cornerstone for granular access control."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "data-preparation",
+    "service": "Amazon SageMaker Ground Truth",
+    "difficulty": "medium",
+    "tags": [
+      "ai-ml",
+      "data-labeling",
+      "dataset-preparation",
+      "sagemaker"
+    ],
+    "question": "A computer vision company is developing a model to detect defects in industrial parts from high-resolution images. They have a large volume of millions of unlabeled images and need accurate annotations like bounding boxes and semantic segmentation to train the model effectively. The manual labeling process is time-consuming and expensive, and they need a scalable solution that can involve both human workers and automation. Which AWS service should a company use to efficiently label a large volume of images with bounding boxes and other annotations to train its computer vision model?",
+    "options": [
+      "Amazon SageMaker Ground Truth",
+      "Amazon Textract",
+      "Amazon Comprehend",
+      "Amazon Rekognition"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Ground Truth is a data labeling service that helps you build high-quality training datasets for machine learning models, including computer vision annotations like bounding boxes and segmentation, in an efficient and scalable way, using human workers and machine-assisted labeling. Amazon Textract is for text extraction, Amazon Comprehend for text analysis, and Amazon Rekognition for pre-trained image and video analysis, not for labeling data for training."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "text-generation",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "foundation-models",
+      "text-generation",
+      "bedrock"
+    ],
+    "question": "A digital marketing agency wants to automate the creation of product descriptions for a large e-commerce catalog. Descriptions must be unique, engaging, and optimized for SEO, but the agency doesn't have the expertise to train AI models from scratch. The company needs a way to generate high-quality, creative text at scale, using foundational templates, without the need to manage the underlying infrastructure. Which AWS service would be best suited for this task?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon EC2"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock offers access to high-performance foundation templates via API, enabling you to generate creative, optimized text without managing infrastructure. Amazon SageMaker is a complete platform for building, training, and deploying models, requiring more expertise. AWS Lambda is for running serverless code and Amazon EC2 is a virtual machine, not direct services for consuming foundation models."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "retrieval-augmented-generation",
+    "service": "RAG",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "RAG",
+      "foundation-models",
+      "knowledge-base"
+    ],
+    "question": "A development team is exploring creating a virtual assistant that can answer complex questions about a company's internal technical documentation. They want the AI ​​model to be able to 'understand' and 'respond' based on proprietary documents, without needing to retrain the foundation model. The team is looking for a technique that allows the foundation model to access and use information from an external knowledge base to generate more accurate and contextual responses. What technique should be applied so that the foundation model can use private data for its outputs?",
+    "options": [
+      "Recovery Augmented Generation (RAG)",
+      "Supervised Learning",
+      "Reinforcement Learning",
+      "Distributed Training"
+    ],
+    "correct": 0,
+    "explanation": "Retrieval Augmented Generation (RAG) allows a foundation model to retrieve information from an external knowledge base (internal technical documentation, in this case) and use it to improve its outputs, making them more accurate and contextual without retraining the model. Supervised and Reinforcement Learning are model training methods, and Distributed Training is a scalability technique for training."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "data-privacy",
+    "service": "Amazon Bedrock Guardrails",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "PII",
+      "data-privacy",
+      "bedrock",
+      "guardrails"
+    ],
+    "question": "A financial institution is implementing a generative AI model to assist in writing personalized communications for customers. Due to strict regulations, it is imperative to ensure that no personally identifiable information (PII) is included in model outputs. The company needs an automated way to detect and, if possible, redact or block the output of sensitive personal information generated by the AI ​​model. What capability of Amazon Bedrock Barriers would be most effective in meeting this requirement?",
+    "options": [
+      "Personal Information (PII) Filters",
+      "Topic filters",
+      "Word filters",
+      "Token Limits"
+    ],
+    "correct": 0,
+    "explanation": "Personal Information (PII) Filters within Amazon Bedrock Protection Barriers are specifically designed to detect and redact or block sensitive information such as names, addresses, and document numbers in model outputs, ensuring compliance and privacy. Topic filters control subjects, word filters block specific terms, and token limits manage output size, but are not focused on PII."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "natural-language-processing",
+    "service": "Amazon Comprehend",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ai-ml",
+      "nlp",
+      "sentiment-analysis",
+      "comprehend"
+    ],
+    "question": "A social media company wants to analyze sentiment from millions of user comments in real time to identify trends and quickly react to crises. The volume of data is enormous and varies seasonally. The enterprise needs a fully managed service that can perform sentiment analysis at scale without needing to provision or manage servers for inference. Which Machine Learning AWS service would be best suited to process and analyze the sentiment of these comments?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon Textract",
+      "Amazon Transcribe",
+      "Amazon Forecast"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend is a natural language processing (NLP) service that provides sentiment analysis at scale by identifying the polarity of text (positive, negative, neutral). It is fully managed, eliminating the need to manage servers. Amazon Textract is for extracting text from documents, Amazon Transcribe for audio transcription, and Amazon Forecast for time series forecasting, not suitable for text sentiment analysis."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "creative-content-generation",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "foundation-models",
+      "text-generation",
+      "creative-ai",
+      "bedrock"
+    ],
+    "question": "A game development startup is exploring creating dynamic dialogue and branching stories for its NPCs (non-playable characters). They want characters to be able to generate creative responses that are coherent with the context of the conversation and the personality defined for each NPC. The company needs access to large language models (LLMs) that can be easily integrated into its application to generate creative, conversational text. Which AWS service allows the startup to access and use foundation models to generate these dynamic conversations?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon Polly",
+      "Amazon Lex",
+      "Amazon Kendra"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock offers access to a variety of foundation templates, including LLMs, which are ideal for generating creative, contextual dialogue for NPCs. Amazon Polly is for text-to-speech, Amazon Lex is for building chatbots and voice assistants, and Amazon Kendra is for intelligent search, not the main focus on generating creative text."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "content-moderation",
+    "service": "Amazon Bedrock Guardrails",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "content-policy",
+      "word-filters",
+      "bedrock",
+      "guardrails"
+    ],
+    "question": "An e-learning platform is developing an automatic summary feature for classes and study materials using generative AI. To comply with internal content moderation policies, the platform needs to ensure that the output generated does not include vulgar language or inappropriate terms. The platform needs a way to filter out specific, unwanted terms in the outputs of generative AI models before they are presented to students. Which Amazon Bedrock Firewalls feature should the platform configure to block these specific terms?",
+    "options": [
+      "Word filters",
+      "Topic filters",
+      "Personal Information (PII) Filters",
+      "Custom foundation models"
+    ],
+    "correct": 0,
+    "explanation": "Word Filters in Amazon Bedrock Guardrails allow users to define lists of prohibited words and phrases, blocking or redacting them from model output. This is ideal for ensuring that vulgar or inappropriate language is not generated. Topic filters control subjects, personal information (PII) filters focus on sensitive data, and custom foundation models are for model adaptation, not for filtering specific words."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "data-governance",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "data-privacy",
+      "governance",
+      "bedrock",
+      "compliance"
+    ],
+    "question": "A healthcare company is using generative AI to assist doctors in writing clinical reports. It is vital that when using this service, the company maintains full control over its data and ensures that sensitive patient information is not used to train third-party AI models or accidentally leaked. The company needs a solution that offers data isolation and strict governance when interacting with foundation models, ensuring that its data remains private and is not used to enhance models that it does not own. How should a company ensure the privacy and control of its data when using generative AI services in AWS?",
+    "options": [
+      "Use Amazon Bedrock with data isolation",
+      "Store data in Amazon S3 with encryption",
+      "Implement AWS KMS for key management",
+      "Configurar AWS IAM for access control"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock, by default, ensures that customer input and output data is not used to train providers' foundation models. Additionally, when using custom templates or tweaking templates, customer data remains under the customer's control, in their own account, and is not shared. The other options (Amazon S3, AWS KMS, AWS IAM) are fundamental for general security, but do not directly address data isolation policy and foundation model training in generative AI managed services."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "recommendation-systems",
+    "service": "Amazon Personalize",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ai-ml",
+      "recommendation-engine",
+      "personalization",
+      "machine-learning",
+      "personalize"
+    ],
+    "question": "An online news platform wants to personalize the news feed for each user based on their reading interests. They need a system that can analyze a user's reading history and recommend relevant articles on an ongoing basis. The company needs a fully managed Machine Learning service that can build and deploy recommendation models at scale without the need for deep ML expertise. Which AWS service would be best suited to building and deploying this custom news recommendation system?",
+    "options": [
+      "Amazon Customize",
+      "Amazon SageMaker",
+      "Amazon Kinesis",
+      "Amazon DynamoDB"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Personalize is a Machine Learning service that allows you to create applications with real-time personalization and recommendation capabilities, using the same technology used by Amazon.com, without the need for ML expertise. Amazon SageMaker is a more comprehensive platform for ML that requires more expertise. Amazon Kinesis is for real-time data processing, and Amazon DynamoDB is a NoSQL database, not direct services for recommender systems."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "content-generation",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "IA Generativa",
+      "Modelos de Fundação",
+      "Geração de Texto",
+      "Marketing Digital"
+    ],
+    "question": "A digital marketing agency wants to automate the creation of text ad variations for different campaigns, tailoring the tone and style for specific audiences. The agency needs a solution that allows it to interact with large language models to programmatically generate these texts. Which AWS service allows your agency to access and use foundation templates in a managed way to generate marketing content?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon Polly"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock offers access to a variety of foundation models (FMs) via API, making it easy to build generative AI applications for creating personalized content. Amazon SageMaker is for training and deploying custom ML models, AWS Lambda is a serverless compute service, and Amazon Polly is for text-to-speech."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "llm-capabilities",
+    "service": "Foundation Models",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "IA Generativa",
+      "LLM",
+      "Sumarização",
+      "Geração de Linguagem Natural"
+    ],
+    "question": "A development team is building an application that summarizes long technical documents for engineers. The goal is for the generative AI model to be able to understand the context of the document and generate a concise and accurate summary while maintaining coherence. Which core capability of a large language model (LLM) is most relevant to this summarization task?",
+    "options": [
+      "Natural Language Generation (NLG)",
+      "Natural Language Processing (NLP)",
+      "Natural Language Understanding (NLU)",
+      "Optical Character Recognition (OCR)"
+    ],
+    "correct": 0,
+    "explanation": "Natural Language Generation (NLG) is the ability of a model to generate coherent and relevant text from data, being essential for the task of summarization. NLP is a broader field that includes NLU, which focuses on understanding, and OCR is for extracting text from images, not generating content."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "data-privacy",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "Segurança",
+      "Conformidade",
+      "LGPD",
+      "PII",
+      "IA Generativa"
+    ],
+    "question": "A financial institution is developing a virtual assistant for its customers that can handle account and transaction queries. Due to the sensitive nature of the data, the company needs to ensure that all interactions with the generative AI model comply with data privacy regulations, such as LGPD in Brazil, and that the model's outputs do not expose sensitive information. Which aspect should be prioritized in the generative AI architecture to ensure the governance and protection of customers' personal information?",
+    "options": [
+      "Implementation of protective barriers with personal information filters",
+      "Use of open source templates",
+      "Prioritization of models with lower latency",
+      "Storing all prompts in public logs"
+    ],
+    "correct": 0,
+    "explanation": "Implementing protective barriers with personal information (PII) filters is crucial to detecting and redacting sensitive data while ensuring regulatory compliance. Using open source models or prioritizing lowest latency does not directly address data compliance, and storing prompts in public logs is a security and privacy violation."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "ml-pipelines",
+    "service": "Amazon Kinesis",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "Machine Learning",
+      "Dados em Tempo Real",
+      "Manutenção Preditiva",
+      "Análise de Dados"
+    ],
+    "question": "A manufacturing company is collecting large volumes of data from equipment sensors to predict failures. They need a solution that can process and analyze this data in real time to identify anomalous patterns and trigger alerts before failures occur. Which AWS service is best suited for building a machine learning pipeline that ingests real-time sensor data, processes it, and trains models for failure prediction?",
+    "options": [
+      "Amazon Kinesis",
+      "Amazon DynamoDB",
+      "Amazon S3",
+      "AWS Step Functions"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Kinesis is ideal for ingesting and processing real-time streaming data, critical for anomaly detection and predictive maintenance. Amazon DynamoDB is a NoSQL database for structured data, Amazon S3 is for object storage, and AWS Step Functions is for workflow orchestration, not streaming ingestion."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "personalization",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "IA Generativa",
+      "Modelos de Fundação",
+      "Personalização",
+      "E-commerce"
+    ],
+    "question": "An e-commerce platform wants to improve the customer experience by offering highly personalized product recommendations. The company plans to use a foundational model to understand users' preferences from their browsing and purchasing history, and generate compelling product descriptions tailored to each customer. How can the e-commerce platform leverage foundation models to achieve this personalization and dynamic content generation?",
+    "options": [
+      "Tuning a foundation model with customer-specific data to generate personalized outputs.",
+      "Using Amazon Rekognition to analyze product images.",
+      "Implementing Amazon Transcribe to convert query audio to text.",
+      "Hosting the model on an Amazon EC2 cluster."
+    ],
+    "correct": 0,
+    "explanation": "Tuning a foundation model (via fine-tuning or RAG) with customer-specific data is the right approach for personalizing recommendations and generating descriptions. Amazon Rekognition is for image analysis, Amazon Transcribe for audio transcription, and hosting on EC2 is infrastructure, not the solution for personalization and content generation."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "fairness-bias",
+    "service": "Amazon SageMaker Clarify",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "IA Responsável",
+      "Viés",
+      "Equidade",
+      "Machine Learning",
+      "Auditoria"
+    ],
+    "question": "A software development company is creating an AI system to help screen resumes. To avoid bias and ensure fairness in decisions, the company needs a way to evaluate and mitigate bias in training data and model outputs, ensuring that the system does not discriminate against candidates based on sensitive attributes. What responsible AI practice should be implemented to identify and reduce bias in the resume screening system?",
+    "options": [
+      "Continuous assessment of model bias and interpretability.",
+      "Increased model complexity for greater accuracy.",
+      "Ignoring demographic data during training.",
+      "Use only public datasets."
+    ],
+    "correct": 0,
+    "explanation": "Continuous bias assessment and model interpretability are essential for identifying, quantifying, and mitigating bias in AI systems such as resume screening. Increasing complexity does not guarantee a reduction in bias, ignoring demographic data can hide bias, and using only public data does not guarantee the absence of bias."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "prompt-engineering",
+    "service": "Foundation Models",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "IA Generativa",
+      "Engenharia de Prompt",
+      "Coesão",
+      "Estilo",
+      "Geração de Conteúdo"
+    ],
+    "question": "A media company is exploring creating automated news articles from real-time data feeds. They need a model that not only generates text, but is also capable of maintaining thematic cohesion and predefined editorial style, even when dealing with dynamic information. Which prompt engineering technique would be most effective in guiding a generative AI model to produce news articles with the desired style and structure?",
+    "options": [
+      "Few-shot prompting",
+      "Zero-shot prompting",
+      "Chain-of-thought prompting",
+      "temperature tuning"
+    ],
+    "correct": 0,
+    "explanation": "Few-shot prompting (providing some example articles in the desired style and structure) is ideal for guiding the template to maintain cohesion and style. Zero-shot is for no examples, Chain-of-thought is for complex reasoning, and Temperature tuning controls the randomness of the output, not the style or structure."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "access-control-auditing",
+    "service": "AWS IAM",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "Segurança",
+      "Conformidade",
+      "PHS",
+      "Controle de Acesso",
+      "Auditoria",
+      "IA Generativa"
+    ],
+    "question": "A healthcare company is developing a generative AI application to help doctors write clinical notes. It is imperative that the application does not store any protected health information (PHI) in the prompts or intermediate outputs, and that access to the model is strictly controlled and auditable. What security and compliance measures should the company implement to protect PHI and control access to the generative AI model?",
+    "options": [
+      "Use AWS Identity and Access Management (IAM) and Amazon Bedrock Protection Barriers.",
+      "Publish the prompts to an open source repository.",
+      "Disable encryption at rest and in transit.",
+      "Grant unrestricted access to all developers."
+    ],
+    "correct": 0,
+    "explanation": "AWS IAM is critical for granular access control and auditability, while Amazon Bedrock Security Guards can filter PHI, ensuring sensitive data protection and compliance. Posting prompts, disabling encryption, or granting unrestricted access are poor security practices and would violate compliance."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "ai-services",
+    "service": "Amazon Rekognition",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "Inteligência Artificial",
+      "Visão Computacional",
+      "Reconhecimento Facial",
+      "Serviços Gerenciados"
+    ],
+    "question": "A startup is building a facial recognition application for user authentication. They need a service that can detect and compare faces in images and videos, but they don't want to worry about training and managing complex machine learning models. Which pre-trained artificial intelligence AWS service should be used to implement facial recognition functionality?",
+    "options": [
+      "Amazon Rekognition",
+      "Amazon SageMaker",
+      "Amazon Comprehend",
+      "Amazon Lex"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Rekognition is a pre-trained computer vision service that provides face detection and comparison, ideal for this functionality without the need to manage ML models. Amazon SageMaker is for building and training custom models, Amazon Comprehend for natural language processing, and Amazon Lex for building chatbots."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "n/a",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ia-generativa",
+      "modelos-de-base",
+      "geracao-de-conteudo",
+      "sem-servidor"
+    ],
+    "question": "A digital marketing startup wants to create personalized content at scale for email and social media campaigns, generating different text variants for different target audiences. They need a solution that allows them to choose between multiple base models (FMs) and tune their outputs without needing to manage the underlying infrastructure. Access and use pre-trained base models for text generation, with flexibility for experimentation and customization, without operational complexity. Which AWS service should a startup use to access and manage a variety of base templates for its content generation needs?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "Amazon Comprehend",
+      "Amazon Textract"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock is a fully managed service that offers access to a variety of base models from different providers through a unified API, ideal for building generative AI applications without managing infrastructure. Amazon SageMaker is a complete platform for building, training, and deploying custom ML models, but does not offer pre-trained base models directly for use via a simple API. Amazon Comprehend is for preconfigured natural language processing, and Amazon Textract for extracting text from documents, not content generation."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "n/a",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ia-generativa",
+      "engenharia-de-prompt",
+      "few-shot-learning",
+      "llm"
+    ],
+    "question": "A team of data scientists is exploring the use of large language models (LLMs) to summarize long technical documents and research articles. They need an efficient way to provide specific examples of desired summaries to the model to guide its behavior, without the need to retrain the entire model. Influence the output of a base model with specific examples at run time to obtain summaries in the desired format and style, without modifying the model weights. Which prompt engineering technique should the team apply to guide the model to generate summaries according to provided examples?",
+    "options": [
+      "Few-shot learning",
+      "Zero-shot learning",
+      "Fine-tuning",
+      "Supervised training"
+    ],
+    "correct": 0,
+    "explanation": "Few-shot learning involves providing a few examples of desired input and output within the prompt to guide the model to generate responses in the desired format or style. Zero-example learning does not use examples. Fine-tuning and supervised training involve retraining the model with new data, which is not the goal here to influence the model at runtime without retraining."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "n/a",
+    "service": "Amazon Comprehend",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ia-servicos",
+      "nlp",
+      "moderacao-de-conteudo",
+      "deteccao-de-toxicidade"
+    ],
+    "question": "A social media company wants to implement a system to automatically detect inappropriate content, such as hate speech or harassment, in user posts. They need a solution that can analyze large volumes of text in real time and flag content that violates community guidelines. Analyze text to automatically identify and classify content that falls into toxicity or policy violation categories, at scale. Which pre-trained AI AWS service should a company use to automatically identify unsafe or inappropriate content in text?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon Transcribe",
+      "Amazon Translate",
+      "Amazon Polly"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend provides toxicity detection and content moderation capabilities, making it ideal for identifying hate speech, harassment, and other categories of inappropriate content in text. Amazon Transcribe is for audio-to-text transcription. Amazon Translate is for language translation. Amazon Polly is for text-to-speech."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "n/a",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ia-generativa",
+      "geracao-de-imagem",
+      "prompt-to-image",
+      "modelos-de-base"
+    ],
+    "question": "An advertising agency is developing a new product that allows clients to quickly create personalized visual ads. They need a tool that can generate high-quality images from detailed textual descriptions (prompts), enabling rapid iterations and creativity without the need for graphic designers at every step. Generate original, high-quality images from textual descriptions, supporting rapid creation of visual assets. Which AWS service, or base template accessible through an AWS service, should the agency use to generate images from text?",
+    "options": [
+      "Amazon Bedrock (with imaging templates)",
+      "Amazon Rekognition",
+      "Amazon SageMaker Canvas",
+      "Amazon Textract"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock, by offering access to base models like Stable Diffusion from Stability AI, enables the generation of images from textual prompts, directly addressing the requirement to create personalized visual ads. Amazon Rekognition is for image and video analysis. Amazon SageMaker Canvas is for business users to build ML models without code, not for generating image from text. Amazon Textract is for extracting text from documents."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "n/a",
+    "service": "AWS CloudTrail",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "auditoria",
+      "conformidade",
+      "seguranca",
+      "ia-generativa",
+      "logs"
+    ],
+    "question": "A healthcare company is developing an AI application that processes patient data to generate medical reports. Due to the sensitive nature of this data, the company must ensure that all interactions with AI models, including prompts and outputs, are recorded and auditable for compliance and security purposes. Maintain a detailed and immutable record of all inputs (prompts) and outputs of AI models for auditing and compliance with healthcare regulations (HIPAA, LGPD). Which AWS service should be integrated with the AI ​​application to record and monitor interactions with models, ensuring auditability?",
+    "options": [
+      "AWS CloudTrail",
+      "Amazon CloudWatch",
+      "AWS Config",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "AWS CloudTrail records all API calls made to AWS services, including interactions with AI models in Amazon Bedrock or SageMaker. This provides a detailed audit trail of activities, essential for compliance. Amazon CloudWatch is for monitoring application metrics and logs. AWS Config evaluates and audits configurations for AWS resources. Amazon S3 is for object storage."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "n/a",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ia-generativa",
+      "incorporacao-de-texto",
+      "sistemas-de-recomendacao",
+      "nlp"
+    ],
+    "question": "An e-commerce company wants to implement a more sophisticated product recommendation system that not only suggests items based on purchase history but also understands preferences expressed in natural language by customers. They need a model that can process product descriptions and customer queries in text to find the best matches. Use an AI model to understand the context and meaning of natural language product descriptions and customer queries to make accurate recommendations. Which type of base model (FM) is best suited to understanding and processing the semantic meaning of text for an advanced recommender system?",
+    "options": [
+      "Text embedding models",
+      "Imaging Models",
+      "Text-to-speech templates",
+      "Speech transcription templates"
+    ],
+    "correct": 0,
+    "explanation": "Text embedding models transform text into numerical representations (vectors) that capture semantic meaning. This allows you to calculate the similarity between different texts (product descriptions and customer queries) to make accurate recommendations. Imaging, text-to-speech, and speech transcription models are not designed to understand the semantic meaning of text for the purposes of similarity-based recommendation."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "n/a",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ia generativa",
+      "modelos de base",
+      "geração de texto",
+      "marketing"
+    ],
+    "question": "A digital marketing startup wants to automatically create text variations for advertising campaigns, such as product titles and descriptions, to test different approaches and optimize customer engagement. They need a solution that can generate creative, coherent text at scale. The company seeks an efficient way to access and use large language models (LLMs) for text generation, without the complexity of managing the underlying infrastructure. Which AWS service provides a fully managed way to access high-performance base models (FMs) for tasks such as text generation, summarization, and conversation?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon EC2"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock is the fully managed service that provides access to a variety of high-performance base models, enabling startups to quickly build generative AI applications, such as generating text variations, without worrying about infrastructure. Amazon SageMaker is a broader ML platform for building, training, and deploying models. AWS Lambda is a serverless compute service and Amazon EC2 is a virtual compute service, both of which are not focused on direct access to pre-trained base models for generative AI."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "n/a",
+    "service": "Amazon Bedrock Guardrails",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "segurança",
+      "conformidade",
+      "privacidade",
+      "PII",
+      "ia generativa",
+      "barreiras de proteção"
+    ],
+    "question": "A financial institution is implementing an AI system to process loan applications. It is crucial that the privacy of customer data is maintained and that no personally identifiable information (PII) is exposed in model outputs or logs, in compliance with regulations such as LGPD. The company needs a solution that can detect and mask sensitive personal information in real time, before model outputs are presented to users or stored. How can your financial institution use Amazon Bedrock capabilities to ensure the protection of personally identifiable information (PII) in the outputs of your generative AI models?",
+    "options": [
+      "Configusing personal information filters at firewalls",
+      "Using AWS IAM access policies",
+      "Encrypting data in Amazon S3",
+      "Implementing AWS PrivateLink"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock guardrails let you configure personal information filters to identify and redact or block sensitive data in model outputs, ensuring compliance and privacy. AWS IAM access policies control who can access services, but do not filter the content generated. Encrypting data in Amazon S3 protects data at rest, and AWS PrivateLink provides private connectivity, but neither of these addresses PII filtering in real-time model outputs."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "n/a",
+    "service": "Agents for Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ia generativa",
+      "orquestração",
+      "modelos de base",
+      "agentes"
+    ],
+    "question": "An e-commerce company is exploring the use of generative AI to improve the customer experience, but faces the challenge of ensuring models understand and respond to complex queries that may involve multiple steps or intents. They need a way to orchestrate interactions with large language models (LLMs) so that they can perform a sequence of operations, such as collecting information, calling external APIs, and returning a coherent final response to the user. What functionality in Amazon Bedrock allows developers to build generative AI applications that can perform complex tasks by calling APIs and accessing knowledge bases to orchestrate multi-step workflows?",
+    "options": [
+      "Agents for Amazon Bedrock",
+      "Base Models (FMs)",
+      "Amazon Bedrock Protective Barriers",
+      "Amazon SageMaker JumpStart"
+    ],
+    "correct": 0,
+    "explanation": "Bedrock Agents for Amazon are designed to orchestrate complex tasks, enabling base models to call APIs to perform actions, access knowledge bases for additional information, and complete multi-step workflows, which is ideal for the complex query scenario. Base Models are the models themselves, Guardrails are for content security, and Amazon SageMaker JumpStart is an ML hub for pre-built models and solutions, not for orchestrating agent workflows."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "n/a",
+    "service": "Amazon S3",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "armazenamento",
+      "machine learning",
+      "dados de treinamento",
+      "escalabilidade"
+    ],
+    "question": "A research and development team is working on a new Machine Learning model that requires a large volume of training data. They need a service that can store this data in a durable, scalable and highly available way so that the model can be trained efficiently. The team requires an object store that is highly durable and scalable for their ML training datasets, allowing easy access to the training processes. Which AWS service is best suited for storing large volumes of training data for Machine Learning models, offering high durability, scalability, and availability?",
+    "options": [
+      "Amazon S3",
+      "Amazon RDS",
+      "Amazon EBS",
+      "AWS Glue Catalog Data"
+    ],
+    "correct": 0,
+    "explanation": "Amazon S3 (Simple Storage Service) is the ideal object storage service for large volumes of Machine Learning training data due to its high durability, virtually unlimited scalability, and availability. Amazon RDS is a relational database, Amazon EBS provides block storage volumes for EC2 instances, and AWS Glue Data Catalog is a metadata catalog, none of which are the primary service for raw storage of large data sets. ML."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "n/a",
+    "service": "Amazon SageMaker Clarify",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "machine learning",
+      "vieses",
+      "equidade",
+      "responsabilidade",
+      "moderação de conteúdo"
+    ],
+    "question": "A social media company is developing an AI-based content moderation system to identify and remove posts that violate its usage policies, such as hate speech or explicit content. They need to ensure that the system is not biased against certain groups of users. The company needs tools to evaluate and mitigate biases in its Machine Learning models, ensuring that moderation decisions are fair and equitable across different demographics. Which Amazon SageMaker functionality can be used to detect and mitigate biases in Machine Learning models, helping to build fairer and more responsible AI systems?",
+    "options": [
+      "Amazon SageMaker Clarify",
+      "Amazon SageMaker Canvas",
+      "Amazon SageMaker Feature Store",
+      "Amazon SageMaker Ground Truth"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Clarify is the tool designed to detect potential biases in data and machine learning models and provide explanations of model predictions, which is crucial to ensuring fairness and accountability in content moderation systems. Amazon SageMaker Canvas is for business users to build models without code, Feature Store is for managing ML resources, and Ground Truth is for data labeling."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "n/a",
+    "service": "Foundation Model (FM) Capability",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ia generativa",
+      "modelos de base",
+      "sumarização",
+      "processamento de linguagem natural"
+    ],
+    "question": "A news agency wants to create quick summaries of long articles for its readers, allowing them to get the essential information without having to read the full text. They need an automated solution that can process large volumes of articles daily. The agency seeks an efficient way to apply large language models (LLMs) to the task of text summarization at scale, without the need to develop and train its own models from scratch. Which capability of a base model (FM) is most directly applicable to generating concise and coherent versions of documents or lengthy articles, such as the news agency scenario?",
+    "options": [
+      "Summarization",
+      "Image generation",
+      "Text classification",
+      "Language Translation"
+    ],
+    "correct": 0,
+    "explanation": "Summarization is the specific capability of base models (LLMs) that allows you to create concise and coherent summaries of long texts, directly meeting the needs of the news agency. Image generation, text classification, and language translation are other AI capabilities, but not the main one for this use case."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "n/a",
+    "service": "Amazon Transcribe",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ia generativa",
+      "processamento de fala",
+      "modelos de linguagem",
+      "interação por voz"
+    ],
+    "question": "A software development company is creating an application that allows users to interact with a large language model (LLM) through voice commands. They need a way to convert the user's speech into text so that LLM can process it. The company needs an AWS service that can transcribe audio to text accurately and in real time to feed input to the language model. Which AWS service is best suited for converting speech to text so that a large language model can process user input in a voice interaction application?",
+    "options": [
+      "Amazon Transcribe",
+      "Amazon Polly",
+      "Amazon Rekognition",
+      "Amazon Comprehend"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Transcribe is the automatic speech recognition (ASR) service that converts audio to text, and is essential for the voice interaction scenario with LLMs. Amazon Polly converts text to speech, Amazon Rekognition is for image and video analysis, and Amazon Comprehend is for text analysis."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "n/a",
+    "service": "AWS CloudTrail",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "segurança",
+      "conformidade",
+      "auditoria",
+      "ia generativa",
+      "governança"
+    ],
+    "question": "A healthcare company is developing an AI-based virtual assistant to help doctors access information from electronic medical records. Due to the sensitive nature of health data, the company is under strict compliance regulations. The company needs to ensure that all interactions with the virtual assistant, including user input and model output, are auditable and that model activity is logged for compliance and security purposes. Which AWS service is critical for logging and monitoring Amazon Bedrock API activity, enabling auditing and compliance for generative AI applications in regulated environments?",
+    "options": [
+      "AWS CloudTrail",
+      "Amazon CloudWatch",
+      "AWS Config",
+      "AWS Security Hub"
+    ],
+    "correct": 0,
+    "explanation": "AWS CloudTrail records API actions made by an AWS user, role, or service in Amazon Bedrock, providing a history of events for auditing, security, and compliance, which is crucial for regulated environments like healthcare. Amazon CloudWatch is for monitoring metrics and logs, AWS Config evaluates resource compliance, and AWS Security Hub provides a consolidated view of security."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "n/a",
+    "service": "Amazon SageMaker",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "machine learning",
+      "personalização",
+      "recomendações",
+      "plataforma ml"
+    ],
+    "question": "An online retail company wants to personalize product recommendations for its customers based on their shopping and browsing history. They need a solution that can efficiently train and deploy Machine Learning models without the need to manage complex ML infrastructures. The company seeks a fully managed Machine Learning platform that supports the entire ML lifecycle, from data preparation to training, tuning, and deployment of custom models. Which AWS fully managed machine learning platform provides the tools and infrastructure to build, train, and deploy ML models at scale, including personalizing recommendations?",
+    "options": [
+      "Amazon SageMaker",
+      "Amazon Rekognition",
+      "Amazon Customize",
+      "AWS Step Functions"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker is AWS's fully managed machine learning platform that spans the entire ML lifecycle, enabling retail enterprises to build, train, and deploy custom models for product recommendations. While Amazon Personalize is a recommendations-specific service, SageMaker gives you the flexibility and control to build and manage any ML model. Amazon Rekognition is for image and video analysis, and AWS Step Functions is for orchestrating distributed workflows."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "model-deployment",
+    "service": "Amazon SageMaker",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "modelos-de-fundação",
+      "mlops",
+      "desenvolvimento-ia",
+      "sageMaker"
+    ],
+    "question": "A technology startup is building a content generation app for marketing using foundation models. They need a solution that allows them to choose from multiple available foundation models, customize those models with their own data, optimize inference costs, and manage the full model lifecycle (training, fine-tuning, deployment) without the overhead of managing underlying infrastructure. The company seeks agility and scalability. Which AWS service provides a fully managed platform for building, training, and deploying ML models, including accessing and customizing foundation models?",
+    "options": [
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon EC2",
+      "Amazon EKS"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker is the most suitable platform as it offers a comprehensive set of tools for the full ML lifecycle, including access to foundation models via SageMaker JumpStart and the ability to perform fine-tuning and managed deployment of models. It abstracts the complexity of the infrastructure. AWS Lambda is for serverless functions, Amazon EC2 for virtual machines, and Amazon EKS for container orchestration, none of which are fully managed ML platforms for foundation models."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "natural-language-processing",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "modelos-de-fundação",
+      "processamento-linguagem-natural",
+      "geração-de-texto"
+    ],
+    "question": "A legal consulting firm wants to automate the creation of summaries of large legal documents and answer complex questions about those documents, such as identifying specific clauses or precedents. They need a solution that can understand and generate complex text, but they don't want to manage the AI ​​model infrastructure directly. The solution must be scalable and secure. Which AWS service allows you to interact with foundation models to perform these natural language processing and generation tasks in a managed way?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon Textract",
+      "Amazon Comprehend",
+      "Amazon Translate"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock is the right service as it provides access to a variety of high-performance foundation models via API, allowing you to generate summaries, answer questions, and other natural language tasks without needing to manage infrastructure. Amazon Textract is for extracting text and data from documents, Amazon Comprehend for pre-trained text analysis, and Amazon Translate for language translation, and is not an ideal solution for complex generation and interaction with foundation models."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "data-privacy",
+    "service": "Amazon Bedrock Guardrails",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "segurança",
+      "conformidade",
+      "privacidade-de-dados",
+      "pii",
+      "barreiras-de-proteção"
+    ],
+    "question": "A financial technology company is building a customer service chatbot that handles sensitive banking information like account numbers and balances. They need to ensure that the chatbot does not expose sensitive data in outputs and that all interactions comply with financial and data privacy regulations. The company seeks an automated way to detect and, if necessary, redact personally identifiable information (PII) and other sensitive financial information. Which AWS service, when integrated with a foundation model, can be configured to redact or block sensitive information (PII) in the model's outputs?",
+    "options": [
+      "Amazon Bedrock Protective Barriers",
+      "Amazon Macie",
+      "AWS WAF",
+      "AWS Config"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock Protection Barriers is the right choice because it allows you to configure sensitive information filters to detect and redact PII and other sensitive information in the foundation model outputs, ensuring compliance. Amazon Macie is for data discovery and protection in S3, AWS WAF is a web application firewall, and AWS Config is for resource compliance assessment and is not designed to filter real-time AI model outputs."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "time-series-forecasting",
+    "service": "Amazon Forecast",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "machine-learning",
+      "previsão",
+      "séries-temporais",
+      "varejo"
+    ],
+    "question": "A retail company wants to predict demand for specific products in its stores to optimize its inventory and reduce losses due to excess or lack of products. They have large volumes of historical sales data, promotion data and information about external events. The company needs a machine learning solution that can handle the complexity of time series data and generate accurate predictions without requiring in-depth ML expertise or infrastructure management. Which AWS service offers out-of-the-box ML capabilities for forecasting time series such as product demand?",
+    "options": [
+      "Amazon Forecast",
+      "Amazon Customize",
+      "Amazon Rekognition",
+      "Amazon Lex"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Forecast is the right service for this scenario as it is a fully managed machine learning solution that uses the same ML algorithms used by Amazon to forecast high-accuracy time series, such as product demand. Amazon Personalize is for personalized recommendations, Amazon Rekognition for image and video analysis, and Amazon Lex for building chatbots and are not suitable for demand forecasting."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "recommendation-systems",
+    "service": "Amazon Personalize",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "machine-learning",
+      "personalização",
+      "e-commerce",
+      "sistemas-de-recomendação"
+    ],
+    "question": "An e-commerce platform wants to personalize product recommendations for each of its millions of users in real time, based on their purchasing history, browsing history and viewed items. The company needs a service that can build, train, and deploy efficient and scalable recommendation models without the need for a team of ML experts. The solution must easily integrate with the existing application. Which AWS service is specifically designed to build and deploy personalized recommendation systems using machine learning?",
+    "options": [
+      "Amazon Customize",
+      "Amazon Comprehend",
+      "Amazon Kinesis",
+      "Amazon Redshift"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Personalize is the ideal service in this case, as it is a fully managed machine learning service that allows companies to create and deploy personalized recommendation systems for their customers in real time. Amazon Comprehend is for text analysis, Amazon Kinesis for streaming data processing, and Amazon Redshift is a data warehouse, none of which are designed for custom recommender systems."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "access-control-auditing",
+    "service": "AWS IAM e AWS CloudTrail",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "segurança",
+      "conformidade",
+      "governança",
+      "auditoria",
+      "controle-de-acesso"
+    ],
+    "question": "A government agency is developing an AI application that processes sensitive citizen documents. It is crucial that all interactions with foundation models are auditable, that access to models and data is strictly controlled, and that the agency can demonstrate compliance with strict security and privacy regulations. They need a solution to manage who can access what and to record all activity. Which AWS service should be used to manage identities and permissions, and which service to log all API calls made to AWS resources, including AI models?",
+    "options": [
+      "AWS IAM and AWS CloudTrail",
+      "AWS KMS and AWS WAF",
+      "AWS Organizations and AWS Config",
+      "Amazon GuardDuty and AWS Shield"
+    ],
+    "correct": 0,
+    "explanation": "AWS IAM (Identity and Access Management) is essential for managing identities and access permissions to AWS resources, including AI models. AWS CloudTrail is critical for logging all API calls and activities in the AWS account, providing a complete audit trail for compliance. AWS KMS is for encryption key management, AWS WAF is a web application firewall, AWS Organizations for account management, AWS Config for resource compliance assessment, Amazon GuardDuty for threat detection and AWS Shield for protection DDoS, not the primary combination for access control and auditing."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "text-summarization",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "geração-ia",
+      "modelos-de-fundação",
+      "sumarização-de-texto",
+      "processamento-linguagem-natural"
+    ],
+    "question": "A media company wants to automatically generate news summaries and long-form articles for its readers to provide a more efficient and engaging reading experience. They need a model that can understand the context and essence of a lengthy text and condense it into a concise, coherent format while keeping the information more relevant. The solution must be scalable and easy to integrate into your content management system. Which AWS service can be used to access foundation models capable of text summarization in a managed way?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon Comprehend",
+      "Amazon Transcribe",
+      "Amazon Translate"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock is the most suitable service because it provides access to foundation models (FMs) that are highly capable of complex and coherent text summarization, allowing the company to use these models via API without managing the infrastructure. While Amazon Comprehend has summarization capabilities, Bedrock offers the flexibility and power of foundation templates for more advanced and customizable tasks. Amazon Transcribe is for speech transcription and Amazon Translate for language translation."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "anomaly-detection",
+    "service": "Amazon Lookout for Metrics",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "machine-learning",
+      "detecção-de-anomalias",
+      "dados-de-log",
+      "operações"
+    ],
+    "question": "A data analytics startup needs to process large volumes of log data from its servers and applications to identify patterns, anomalies and potential security flaws in real time. They want to use machine learning to detect unusual behaviors and deviations from normal patterns without having to manually define rules or build complex models. The solution must be fully managed and able to alert on anomalies quickly. Which AWS service provides a fully managed solution for detecting anomalies in time series data, such as log metrics?",
+    "options": [
+      "Amazon Lookout for Metrics",
+      "Amazon Kinesis Analytics",
+      "Amazon OpenSearch Service",
+      "Amazon CloudWatch"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Lookout for Metrics is the right choice because it is a fully managed service that uses machine learning to automatically detect anomalies in your data, such as log data and performance metrics, in real time. Amazon Kinesis Analytics is for streaming data processing, Amazon OpenSearch Service for search and log analysis, and Amazon CloudWatch for monitoring and observability, but none offer ML-based anomaly detection in as specialized and managed a way as Lookout for Metrics."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "model-customization",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "fine-tuning",
+      "generative-ai",
+      "marketing",
+      "no-infrastructure"
+    ],
+    "question": "A digital marketing company is developing a new tool to generate creative and personalized texts for email campaigns and social media posts. They need a large language model (LLM) that can be tuned with their own tag and style data, but without needing to manage the model's underlying infrastructure. Which AWS service should be used to tune an existing base model and generate creative content in a managed way?",
+    "options": [
+      "Amazon SageMaker",
+      "Amazon Bedrock",
+      "AWS Lambda",
+      "Amazon Textract"
+    ],
+    "correct": 1,
+    "explanation": "Amazon Bedrock provides access to a variety of base models and allows you to fine-tune these models with custom data, ideal for generating marketing content without managing the underlying infrastructure. Amazon SageMaker is for building, training, and deploying models from scratch, which would be more complex for this use case. AWS Lambda is a serverless compute service and is not designed for fine-tuning LLMs. Amazon Textract is for extracting text from documents."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "fairness-explainability",
+    "service": "Amazon SageMaker Clarify",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "responsible-ai",
+      "bias-detection",
+      "explainability",
+      "credit-scoring"
+    ],
+    "question": "A financial institution is implementing an AI-based credit assessment system. To ensure regulatory compliance and customer trust, the company needs a mechanism to identify and mitigate biases in AI models and explain model decisions transparently. What capabilities of Amazon SageMaker can help your company achieve these responsible AI goals?",
+    "options": [
+      "Amazon SageMaker Canvas",
+      "Amazon SageMaker Clarify",
+      "Amazon SageMaker Ground Truth",
+      "Amazon SageMaker Feature Store"
+    ],
+    "correct": 1,
+    "explanation": "Amazon SageMaker Clarify enables you to detect biases in machine learning models and provides explainability for model predictions, which is crucial for ensuring fairness and transparency in credit rating systems and regulatory compliance. SageMaker Canvas is for no-code business users. Ground Truth is for data labeling. Feature Store is for feature management."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "text-generation",
+    "service": "Large Language Models",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "product-descriptions",
+      "scalability",
+      "fine-tuning"
+    ],
+    "question": "An e-commerce startup wants to create dynamic, compelling product descriptions for thousands of items in its catalog. They want to use generative AI for this task, but they need a solution that can generate high-quality text based on specific product attributes (color, size, material, etc.) and that is scalable to high volume. What is the best approach for a company to use generative AI models to create personalized product descriptions at scale?",
+    "options": [
+      "Use a machine translation template.",
+      "Implement a text classification model.",
+      "Tune a large language model (LLM) with example descriptions.",
+      "Create a computer vision model."
+    ],
+    "correct": 2,
+    "explanation": "Tuning a large language model (LLM) with example product and attribute descriptions allows the model to learn the desired style and terminology to generate new, high-quality descriptions at scale. Translation or classification models are not for text generation, and computer vision is for image analysis."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "predictive-analytics",
+    "service": "Amazon Forecast",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "time-series",
+      "predictive-maintenance",
+      "no-ml-expertise",
+      "automation"
+    ],
+    "question": "A manufacturing company is collecting large volumes of sensor data from its machines to predict failures and optimize maintenance. The raw data is complex and includes time series, but the engineering team does not have deep machine learning experience to build and train models from scratch. Which machine learning AWS service can help your company develop and deploy predictive models in an automated way?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon Forecast",
+      "Amazon Rekognition",
+      "Amazon Polly"
+    ],
+    "correct": 1,
+    "explanation": "Amazon Forecast is a fully managed machine learning service that uses ML algorithms to deliver highly accurate time series forecasts, ideal for predicting machine failures and optimizing maintenance without the need for deep ML expertise. Comprehend is for NLP, Rekognition for computer vision, and Polly for text-to-speech."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "text-summarization",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "text-summarization",
+      "content-creation",
+      "media"
+    ],
+    "question": "An online news outlet wants to improve the reader experience by offering concise summaries of long articles and generating alternative headlines that are more appealing. They need a solution that can process large volumes of text and programmatically generate summaries and titles. Which AWS service, which provides access to base templates, should be used to implement article summarization and title generation?",
+    "options": [
+      "Amazon Transcribe",
+      "Amazon Bedrock",
+      "Amazon Translate",
+      "Amazon Kendra"
+    ],
+    "correct": 1,
+    "explanation": "Amazon Bedrock provides access to powerful base templates that can be used for text generation tasks such as article summarization and title creation, allowing you to process large volumes of data in a scalable and efficient way. Transcribe is for speech to text, Translate for translation, and Kendra for intelligent document search."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "fairness-bias",
+    "service": "MLOps",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "responsible-ai",
+      "bias-mitigation",
+      "fairness",
+      "recommendation-systems"
+    ],
+    "question": "A retail company is using AI to personalize product recommendations for its customers. To maintain customer trust and comply with privacy regulations, the company needs to ensure that the data used to train models is representative and that recommendations do not perpetuate unfair stereotypes or biases. Which responsible AI practice should be prioritized to address the issue of bias and fairness in personalized product recommendations?",
+    "options": [
+      "Focus only on model accuracy.",
+      "Ignore the source of training data.",
+      "Implement bias detection and mitigation in the ML lifecycle.",
+      "Exclude clients from minority groups from recommendations."
+    ],
+    "correct": 2,
+    "explanation": "Implementing bias detection and mitigation throughout the machine learning lifecycle (from data collection to deployment and monitoring) is crucial to ensuring fairness and equity in product recommendations, avoiding stereotyping, and maintaining customer trust and regulatory compliance. Focusing solely on accuracy, ignoring the data source, or excluding groups are irresponsible and unethical practices."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "text-generation",
+    "service": "Large Language Models",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "creative-writing",
+      "advertising",
+      "slogans"
+    ],
+    "question": "An advertising agency is exploring the use of generative AI to create multiple variations of slogans and advertising copy for a new product campaign. They need a tool that can generate creative, cohesive text based on an initial set of ideas and keywords. Which type of generative AI model is best suited for the task of creating multiple slogans and advertising texts from a set of keywords?",
+    "options": [
+      "Classification models.",
+      "Regression models.",
+      "Large language models (LLMs).",
+      "Object detection models."
+    ],
+    "correct": 2,
+    "explanation": "Large language models (LLMs) are ideal for generating creative and cohesive text, such as slogans and advertising copy, as they can understand the context of keywords and produce multiple high-quality variations, tapping into creativity and linguistic fluency. Classification, regression, and object detection models are not designed for text generation."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "access-control",
+    "service": "AWS Identity and Access Management (IAM)",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "access-management",
+      "security",
+      "compliance",
+      "generative-ai",
+      "banking"
+    ],
+    "question": "A banking company is developing a virtual assistant for its customers that uses a generative AI model. Given the sensitive nature of financial information, the company needs a strategy to tightly control access to AI models, training data, and generated outputs, ensuring that only authorized users can interact and access information. Which AWS service is critical for managing granular access control and permissions for AI and data resources in an AWS environment?",
+    "options": [
+      "AWS Key Management Service (KMS)",
+      "AWS Identity and Access Management (IAM)",
+      "AWS CloudTrail",
+      "Amazon S3"
+    ],
+    "correct": 1,
+    "explanation": "AWS Identity and Access Management (IAM) is the foundational service for managing access control and permissions at a granular level, enabling your business to define who can use AI models, access training data, and generated outputs, ensuring security and strict compliance in a banking environment. KMS is for encryption, CloudTrail for log auditing, and S3 for object storage."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "foundation-models",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "generative-ai",
+      "foundation-models",
+      "customization",
+      "deployment"
+    ],
+    "question": "A technology company is implementing generative AI solutions using Amazon Bedrock. What capabilities does Amazon Bedrock offer for working with foundation models? (Choose 3)",
+    "options": [
+      "Access multiple foundation models from different providers via unified API",
+      "Ability to customize models through fine-tuning with proprietary data",
+      "Managed deployment without needing to manage infrastructure",
+      "Automatic development of complete web applications"
+    ],
+    "correct": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "Amazon Bedrock offers unified access to multiple foundation models (FMs) from providers such as Anthropic, AI21 Labs, and Amazon, enables customization through fine-tuning with first-party data, and provides fully managed deployment without the need to provision servers. It does not develop web applications automatically - this requires manual development or specific tools. The distraction about automatic application development does not apply to Bedrock."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "bias-fairness",
+    "service": "Amazon SageMaker Clarify",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "responsible-ai",
+      "bias",
+      "explainability",
+      "fairness"
+    ],
+    "question": "A human resources company is developing an AI model for resume screening and needs to ensure responsible AI practices. What functionality does Amazon SageMaker Clarify provide? (Choose 2)",
+    "options": [
+      "Detecting bias in training data and model predictions",
+      "Explainability of model decisions through feature importance analysis",
+      "Automatic model training with no code required",
+      "Static website hosting for AI dashboards"
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "Amazon SageMaker Clarify helps detect potential bias in data and ML models, and provides explainability of predictions through feature importance analysis, essential for responsible AI in HR decisions. It doesn't automatically train models without code (that would be SageMaker Canvas) or host static websites (that would be S3). Distractors confuse Clarify with other tools in the SageMaker ecosystem."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "rag",
+    "service": "Amazon Kendra",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "rag",
+      "search",
+      "knowledge-base",
+      "retrieval"
+    ],
+    "question": "A company is implementing a RAG (Retrieval-Augmented Generation) architecture for its corporate chatbot. What components are essential for an effective RAG implementation? (Choose 3)",
+    "options": [
+      "An intelligent search service like Amazon Kendra to retrieve relevant documents",
+      "A foundational model for generating responses based on retrieved context",
+      "A knowledge base with proprietary company documents and data",
+      "An automatic translation service for multiple languages"
+    ],
+    "correct": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "RAG (Retrieval-Augmented Generation) combines three essential components: (1) an information retrieval system like Amazon Kendra to search for relevant documents, (2) a foundation model to generate contextualized responses, and (3) a knowledge base with proprietary data. Machine translation is not an essential component of RAG, although it can be added as extra functionality. The translation distractor confuses optional features with essential components of the RAG."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "data-protection",
+    "service": "AWS KMS e Amazon Macie",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "security",
+      "encryption",
+      "data-protection",
+      "compliance"
+    ],
+    "question": "A healthcare institution needs to protect sensitive patient data used to train ML models. What AWS services should be implemented for comprehensive data protection? (Choose 2)",
+    "options": [
+      "AWS KMS to manage encryption keys and encrypt data at rest",
+      "Amazon Macie to automatically discover and protect sensitive data",
+      "Amazon CloudWatch to monitor performance metrics",
+      "AWS CodePipeline for deployment automation"
+    ],
+    "correct": [
+      0,
+      1
+    ],
+    "explanation": "AWS KMS (Key Management Service) manages encryption keys to protect data at rest and in transit, while Amazon Macie uses machine learning to automatically discover, classify, and protect sensitive data like health information (PHI). CloudWatch is for metrics monitoring, not data protection. CodePipeline is for CI/CD, not data security. Distractors confuse data protection with monitoring and deployment."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "ml-lifecycle",
+    "service": "Amazon SageMaker",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "machine-learning",
+      "mlops",
+      "lifecycle",
+      "deployment"
+    ],
+    "question": "A data science team needs a complete platform for the ML lifecycle. What capabilities does Amazon SageMaker offer? (Choose 3)",
+    "options": [
+      "Data Preparation and Labeling with SageMaker Ground Truth",
+      "Large-scale distributed model training",
+      "Model deployment with scalable endpoints and monitoring",
+      "Relational database management"
+    ],
+    "correct": [
+      0,
+      1,
+      2
+    ],
+    "explanation": "Amazon SageMaker is a complete ML platform that offers tools for the entire lifecycle: data preparation (Ground Truth for labeling), large-scale distributed training with automatic optimization, and model deployment with managed endpoints and continuous monitoring. It doesn't manage relational databases (that's Amazon RDS). The distractor about relational databases does not apply to SageMaker, which is focused on ML."
+  }
+]

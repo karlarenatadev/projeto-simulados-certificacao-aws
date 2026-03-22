@@ -2603,5 +2603,90 @@
     ],
     "correct": 1,
     "explanation": "AWS Identity and Access Management (IAM) é o serviço fundamental para gerenciar o controle de acesso e as permissões de forma granular, permitindo que a empresa defina quem pode usar os modelos de IA, acessar os dados de treinamento e as saídas geradas, garantindo segurança e conformidade rigorosa em um ambiente bancário. KMS é para criptografia, CloudTrail para auditoria de logs, e S3 para armazenamento de objetos."
+  },
+  {
+    "domain": "fundamentals-genai",
+    "subdomain": "foundation-models",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": ["generative-ai", "foundation-models", "customization", "deployment"],
+    "question": "Uma empresa de tecnologia está implementando soluções de IA generativa usando Amazon Bedrock. Quais capacidades o Amazon Bedrock oferece para trabalhar com modelos de fundação? (Escolha 3)",
+    "options": [
+      "Acesso a múltiplos modelos de fundação de diferentes provedores via API unificada",
+      "Capacidade de personalizar modelos através de fine-tuning com dados proprietários",
+      "Implantação gerenciada sem necessidade de gerenciar infraestrutura",
+      "Desenvolvimento automático de aplicações web completas"
+    ],
+    "correct": [0, 1, 2],
+    "explanation": "O Amazon Bedrock oferece acesso unificado a diversos modelos de fundação (FMs) de provedores como Anthropic, AI21 Labs e Amazon, permite personalização através de fine-tuning com dados próprios, e fornece implantação totalmente gerenciada sem necessidade de provisionar servidores. Ele não desenvolve aplicações web automaticamente - isso requer desenvolvimento manual ou ferramentas específicas. O distrator sobre desenvolvimento automático de aplicações não se aplica ao Bedrock."
+  },
+  {
+    "domain": "guidelines-responsible-ai",
+    "subdomain": "bias-fairness",
+    "service": "Amazon SageMaker Clarify",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": ["responsible-ai", "bias", "explainability", "fairness"],
+    "question": "Uma empresa de recursos humanos está desenvolvendo um modelo de IA para triagem de currículos e precisa garantir práticas de IA responsável. Quais funcionalidades o Amazon SageMaker Clarify fornece? (Escolha 2)",
+    "options": [
+      "Detecção de viés nos dados de treinamento e nas previsões do modelo",
+      "Explicabilidade das decisões do modelo através de análise de importância de features",
+      "Treinamento automático de modelos sem necessidade de código",
+      "Hospedagem de sites estáticos para dashboards de IA"
+    ],
+    "correct": [0, 1],
+    "explanation": "O Amazon SageMaker Clarify ajuda a detectar viés potencial nos dados e modelos de ML, e fornece explicabilidade das previsões através de análise de importância de features, essencial para IA responsável em decisões de RH. Ele não treina modelos automaticamente sem código (isso seria o SageMaker Canvas) nem hospeda sites estáticos (isso seria o S3). Os distratores confundem Clarify com outras ferramentas do ecossistema SageMaker."
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "rag",
+    "service": "Amazon Kendra",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": ["rag", "search", "knowledge-base", "retrieval"],
+    "question": "Uma empresa está implementando uma arquitetura RAG (Retrieval-Augmented Generation) para seu chatbot corporativo. Quais componentes são essenciais para uma implementação RAG eficaz? (Escolha 3)",
+    "options": [
+      "Um serviço de busca inteligente como Amazon Kendra para recuperar documentos relevantes",
+      "Um modelo de fundação para gerar respostas baseadas no contexto recuperado",
+      "Uma base de conhecimento com documentos e dados proprietários da empresa",
+      "Um serviço de tradução automática para múltiplos idiomas"
+    ],
+    "correct": [0, 1, 2],
+    "explanation": "RAG (Retrieval-Augmented Generation) combina três componentes essenciais: (1) um sistema de recuperação de informações como Amazon Kendra para buscar documentos relevantes, (2) um modelo de fundação para gerar respostas contextualizadas, e (3) uma base de conhecimento com dados proprietários. Tradução automática não é um componente essencial do RAG, embora possa ser adicionada como funcionalidade extra. O distrator sobre tradução confunde funcionalidades opcionais com componentes essenciais do RAG."
+  },
+  {
+    "domain": "security-compliance-governance",
+    "subdomain": "data-protection",
+    "service": "AWS KMS e Amazon Macie",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": ["security", "encryption", "data-protection", "compliance"],
+    "question": "Uma instituição de saúde precisa proteger dados sensíveis de pacientes usados para treinar modelos de ML. Quais serviços AWS devem ser implementados para proteção abrangente de dados? (Escolha 2)",
+    "options": [
+      "AWS KMS para gerenciar chaves de criptografia e criptografar dados em repouso",
+      "Amazon Macie para descobrir e proteger dados sensíveis automaticamente",
+      "Amazon CloudWatch para monitorar métricas de performance",
+      "AWS CodePipeline para automação de deployment"
+    ],
+    "correct": [0, 1],
+    "explanation": "O AWS KMS (Key Management Service) gerencia chaves de criptografia para proteger dados em repouso e em trânsito, enquanto o Amazon Macie usa machine learning para descobrir, classificar e proteger automaticamente dados sensíveis como informações de saúde (PHI). CloudWatch é para monitoramento de métricas, não proteção de dados. CodePipeline é para CI/CD, não para segurança de dados. Os distratores confundem proteção de dados com monitoramento e deployment."
+  },
+  {
+    "domain": "fundamentals-ai-ml",
+    "subdomain": "ml-lifecycle",
+    "service": "Amazon SageMaker",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": ["machine-learning", "mlops", "lifecycle", "deployment"],
+    "question": "Uma equipe de ciência de dados precisa de uma plataforma completa para o ciclo de vida de ML. Quais capacidades o Amazon SageMaker oferece? (Escolha 3)",
+    "options": [
+      "Preparação e rotulagem de dados com SageMaker Ground Truth",
+      "Treinamento distribuído de modelos em larga escala",
+      "Implantação de modelos com endpoints escaláveis e monitoramento",
+      "Gerenciamento de bancos de dados relacionais"
+    ],
+    "correct": [0, 1, 2],
+    "explanation": "O Amazon SageMaker é uma plataforma completa de ML que oferece ferramentas para todo o ciclo de vida: preparação de dados (Ground Truth para rotulagem), treinamento distribuído em larga escala com otimização automática, e implantação de modelos com endpoints gerenciados e monitoramento contínuo. Ele não gerencia bancos de dados relacionais (isso é o Amazon RDS). O distrator sobre bancos de dados relacionais não se aplica ao SageMaker, que é focado em ML."
   }
 ]

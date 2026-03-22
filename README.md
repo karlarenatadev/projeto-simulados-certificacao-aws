@@ -1,130 +1,180 @@
-# ☁️ AWS Certification Simulator (AI-Powered ETL)
+# ☁️ AWS Certification Simulator
 
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
 ![Python](https://img.shields.io/badge/Python-3670A0?style=flat&logo=python)
 ![Google Gemini](https://img.shields.io/badge/Google%20Gemini-8E75B2?style=flat&logo=google&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=flat&logo=tailwind-css&logoColor=white)
-![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=flat&logo=chart.js)
 ![PWA](https://img.shields.io/badge/PWA-000?style=flat&logo=progressive-web-apps)
 
-Uma plataforma de elite para **simulados AWS**, unindo um **Pipeline de Engenharia de Dados autônomo em Python**, **IA Generativa** e um **Frontend Modular de alta performance**. 
-
-Este projeto vai além de um simples quiz web: ele é um ecossistema completo focado em *Data Quality*, *Clean Code* e *Experiência do Usuário (UX)*.
+> **Simulador profissional de certificações AWS** com suporte a 4 certificações oficiais, questões de múltipla resposta, modo flashcards e geração automática de conteúdo via IA Generativa (Google Gemini).
 
 ---
 
-## 📑 Índice
+## 🎯 Descrição
 
-[🚀 Visão Geral](#-visão-geral-da-arquitetura) | [⚙️ Engenharia de Dados](#-engenharia-de-dados-e-ia-backend) | [💻 Frontend Modular](#-frontend-modular-es6-e-pwa) | [🎯 Funcionalidades](#-funcionalidades-premium) | [🔄 Atualizações](#-atualizações-recentes) | [🛠 Como Executar](#-como-executar-o-projeto) | [📂 Estrutura](#-estrutura-do-projeto) | [🌐 Demo](#-demo-online)
+Plataforma completa de preparação para exames de certificação AWS que combina:
 
----
-
-## 🚀 Visão Geral da Arquitetura
-
-O projeto é dividido em duas camadas principais que operam de forma desacoplada:
-
-1. **A Fábrica de Dados (Python):** Uma esteira ETL (Extract, Transform, Load) que utiliza a API do Google Gemini para gerar questões inéditas, aplicar validações rigorosas de esquema e negócio (semântica AWS) e salvar datasets JSON limpos.
-2. **O Consumidor (Vanilla JS):** Um Progressive Web App (PWA) construído com Módulos ES6 que consome esses JSONs. Ele orquestra a lógica do simulado, renderiza gráficos de desempenho e aplica gamificação 100% no lado do cliente.
+- **Simulador de Exames Realista**: Questões no formato oficial AWS, incluindo múltipla resposta ("Escolha 2" ou "Escolha 3")
+- **IA Generativa**: Pipeline Python automatizado que gera questões inéditas usando Google Gemini 2.5 Flash
+- **Modo Flashcards**: Sistema de revisão rápida com 20 termos AWS essenciais e efeito 3D
+- **Escala Oficial AWS**: Pontuação convertida para escala 100-1000 pontos com selo de aprovação
+- **PWA Offline**: Funciona 100% offline após instalação, ideal para estudo em qualquer lugar
 
 ---
 
-## ⚙️ Engenharia de Dados e IA (Backend)
+## ✨ Funcionalidades
 
-O diferencial deste projeto é a garantia de que nenhuma "alucinação" da IA chegue ao usuário final. O pipeline Python executa em lote e possui 4 camadas de validação:
+### 🎓 Simulação de Exames
+- ✅ **4 Certificações Oficiais**: CLF-C02, SAA-C03, AIF-C01, DVA-C02
+- ✅ **Questões de Múltipla Resposta**: Suporte completo para "Escolha 2" ou "Escolha 3"
+- ✅ **Modo Exame**: Timer em tempo real baseado nos exames oficiais AWS
+- ✅ **Modo Revisão**: Estudo sem pressão de tempo com explicações imediatas
+- ✅ **Escala Oficial**: Pontuação 100-1000 pontos (padrão AWS)
+- ✅ **Selo de Aprovação**: Feedback visual (verde >= 700, laranja < 700)
 
-* **Extract (`generator.py`):** Utiliza **Gemini 2.5 Flash** com *Prompt Engineering* focado em **cenários práticos de negócios** (não apenas definições). A saída é forçada para um JSON estruturado através da integração nativa com o **Pydantic V2**. O prompt foi aprimorado com exemplos explícitos de questões válidas e inválidas.
-* **Transform 1 - Schema Enforcement (`sanity_check.py`):** Valida a tipagem de dados, garantindo que a resposta da IA possua exatamente 4 alternativas, um índice de resposta correto válido e justificativas com tamanho mínimo.
-* **Transform 2 - Semantic Validation (`aws_semantic_validator.py`):** O "fiscal" de regras de negócio. Garante que a resposta correta esteja explícita na justificativa e impede que a IA insira serviços fora do escopo do exame. **NOVO:** Validação de cenário que rejeita questões diretas de definição ("O que é...?") e exige contexto de negócio.
-* **Transform 3 - Deduplication (`duplicate_detector.py`):** Utiliza o `SequenceMatcher` nativo do Python para calcular a similaridade (Threshold de 85%) entre a nova questão e o banco existente, impedindo perguntas repetidas.
-* **Load (`pipeline_runner.py`):** O orquestrador. Roda o processo em loop para múltiplas certificações (CLF-C02, SAA-C03, AIF-C01, DVA-C02), gerenciando o limite de requisições da API com pausas estratégicas.
+### 📚 Modo Flashcards
+- ✅ **20 Termos Essenciais**: ACM, AMI, ASG, AZ, Artifact, Config, GuardDuty, KMS, Route 53, Shield, WAF, Trusted Advisor, CloudWatch, IAM, S3, Lambda, VPC, RDS, CloudFormation, CloudFront
+- ✅ **Efeito 3D**: Animação de flip ao clicar no cartão
+- ✅ **Definições Oficiais**: Conteúdo alinhado com documentação AWS
+- ✅ **Navegação Intuitiva**: Contador de progresso e botões anterior/próximo
 
----
+### 🌍 Internacionalização
+- ✅ **Português (PT-BR)**: Idioma padrão
+- ✅ **Inglês (EN-US)**: Alternância em tempo real
+- ✅ **Sincronização**: IDs de questões idênticos entre idiomas
 
-## 💻 Frontend Modular (ES6) e PWA
+### 📊 Análise de Desempenho
+- ✅ **Desempenho por Domínio**: Análise detalhada seguindo pesos oficiais AWS
+- ✅ **Relatórios Históricos**: Acompanhamento de evolução ao longo do tempo
+- ✅ **Recomendações Inteligentes**: IA identifica domínios fracos e sugere estudos
+- ✅ **Exportação PDF**: Relatórios profissionais para impressão
 
-A interface do usuário foi refatorada para seguir as melhores práticas de Engenharia de Software no Frontend, eliminando o anti-pattern do "Deus JS".
+### 🎮 Gamificação
+- ✅ **Sistema de Streaks**: Ofensivas de estudo diário
+- ✅ **Badges de Conquista**: Medalhas virtuais por marcos alcançados
+- ✅ **Persistência Local**: Progresso salvo no navegador
 
-* **Arquitetura Desacoplada:**
-  * `quizEngine.js`: O "cérebro" em JavaScript puro. Contém apenas a lógica de negócio (cálculo de pontuação, progressão, embaralhamento), sem manipulação de DOM. **NOVO:** Calcula múltiplos domínios fracos.
-  * `storageManager.js`: **NOVO** - Módulo dedicado que encapsula toda a lógica de persistência (localStorage), facilitando manutenção e testes. Inclui métodos para salvar resultados, histórico, gamificação e exportação/importação de dados.
-  * `data.js`: Módulo ES6 que armazena a configuração global, trilhas de exames e mapeamento de domínios oficiais da AWS. **ATUALIZADO:** Certificação AIF-C01 agora possui os 5 domínios oficiais.
-  * `app.js`: O orquestrador de UI (Controller). Apenas importa os módulos, reage às interações do usuário e atualiza o HTML. **ATUALIZADO:** Recomendações personalizadas baseadas em múltiplos domínios fracos.
-* **Experiência PWA:** Instalável em Desktop/Mobile e capaz de funcionar **100% offline** através do cache de Service Workers.
-
----
-
-## 🎯 Funcionalidades Premium
-
-* ✅ **Simulação Realista:** Modo Exame (com timer rigoroso) ou Modo Estudo (com justificativas imediatas).
-* ✅ **Análise de Desempenho Visual:** Gráficos Radar interativos (Chart.js) que mapeiam o conhecimento do usuário frente aos domínios oficiais da AWS.
-* ✅ **Relatórios Históricos:** Geração de relatórios detalhados com sugestões de estudo guiadas por IA. **NOVO:** Recomendações inteligentes baseadas em múltiplos domínios fracos.
-* ✅ **Gamificação:** Sistema de Streaks (ofensivas de estudo diário) e Badges de conquista persistidos no navegador.
-* ✅ **Design Responsivo:** UI construída com Tailwind CSS, com suporte nativo a Dark/Light mode e navegação fluida em dispositivos móveis.
-* ✅ **Persistência Robusta:** Sistema de armazenamento modular com suporte a exportação/importação de dados e compatibilidade retroativa.
-
----
-
-## 🔄 Atualizações Recentes
-
-### Refatoração 1: StorageManager Modular
-- ✅ Extraída toda a lógica de localStorage para um módulo dedicado (js/storageManager.js)
-- ✅ API limpa e documentada com JSDoc completo
-- ✅ Métodos para gerenciamento de resultados, histórico, gamificação e backup/restore
-- ✅ Compatibilidade retroativa garantida (mesmo prefixo aws_sim_)
-
-### Refatoração 2: Domínios Oficiais AIF-C01
-- ✅ Atualizada certificação AIF-C01 de 4 para 5 domínios oficiais AWS:
-  - Fundamentos de IA e ML (20%)
-  - Fundamentos de IA Generativa (24%)
-  - Aplicações de Modelos de Fundação (28%)
-  - Diretrizes para IA Responsável (14%)
-  - Segurança, Conformidade e Governança (14%)
-- ✅ Sincronização completa entre Frontend e Backend
-- ✅ Migração automática de 138 questões existentes
-
-### Refatoração 3: Múltiplos Domínios Fracos
-- ✅ Sistema de recomendação evoluído para identificar **todos** os domínios com desempenho < 70%
-- ✅ Mensagens personalizadas baseadas na quantidade de domínios fracos:
-  - 0 domínios: "Excelente! Consistência em todos os domínios"
-  - 1 domínio: Foco no domínio específico
-  - 2+ domínios: "Atenção! Múltiplas áreas críticas: [lista]"
-- ✅ Compatibilidade com relatórios históricos (cálculo on-the-fly)
-
-### Refatoração 4: Questões Baseadas em Cenário
-- ✅ Validação semântica aprimorada que rejeita questões diretas de definição
-- ✅ Prompt de geração otimizado com exemplos explícitos de questões válidas/inválidas
-- ✅ Garantia de que todas as questões apresentam casos de uso reais de negócio
-- ✅ Frases proibidas: "O que é", "Qual é a definição", "Como funciona"
-- ✅ Indicadores obrigatórios: "empresa", "sistema", "precisa", "deve", etc.
+### 🎨 Interface Moderna
+- ✅ **Design Responsivo**: Otimizado para desktop, tablet e mobile
+- ✅ **Dark Mode**: Alternância automática ou manual
+- ✅ **Tailwind CSS**: Interface moderna e profissional
+- ✅ **Animações Suaves**: Transições e feedbacks visuais
 
 ---
 
-## 🛠 Como Executar o Projeto
+## 🛠️ Tecnologias
 
-### 1. Rodando a Aplicação Web (Frontend)
-Como o projeto utiliza Módulos ES6 (import/export), ele **não pode** ser aberto com um duplo clique no arquivo HTML (devido a políticas de CORS do navegador).
+### Frontend
+- **JavaScript ES6+**: Módulos, Classes, Async/Await
+- **Tailwind CSS**: Framework CSS utility-first
+- **PWA**: Service Workers para funcionamento offline
+- **LocalStorage API**: Persistência de dados no navegador
 
-1. Clone o repositório:
+### Backend (Pipeline de Dados)
+- **Python 3.12+**: Linguagem principal do pipeline
+- **Google Gemini 2.5 Flash**: IA Generativa para criação de questões
+- **Pydantic V2**: Validação de schema e tipagem
+- **JSON**: Formato de armazenamento de dados
+
+### Arquitetura
+```
+┌─────────────────────────────────────────┐
+│         Frontend (ES6 Modules)          │
+├─────────────────────────────────────────┤
+│  app.js          │ UI Controller        │
+│  quizEngine.js   │ Lógica de Negócio   │
+│  data.js         │ Configuração + Dados │
+│  storageManager  │ Persistência         │
+└─────────────────────────────────────────┘
+           ↓
+┌─────────────────────────────────────────┐
+│         Camada de Dados (JSON)          │
+├─────────────────────────────────────────┤
+│  clf-c02.json    │ 195 questões         │
+│  aif-c01.json    │ 143 questões         │
+│  saa-c03.json    │ 184 questões         │
+│  dva-c02.json    │ 14 questões          │
+└─────────────────────────────────────────┘
+```
+
+---
+
+## 📖 Pesos Oficiais dos Domínios
+
+O simulador respeita rigorosamente a distribuição de domínios oficial da AWS:
+
+### CLF-C02 (Cloud Practitioner)
+- **Domínio 1**: Conceitos de nuvem (24%)
+- **Domínio 2**: Segurança e conformidade (30%)
+- **Domínio 3**: Tecnologia e serviços de nuvem (34%)
+- **Domínio 4**: Faturamento, definição de preço e suporte (12%)
+
+### SAA-C03 (Solutions Architect Associate)
+- **Domínio 1**: Design de arquiteturas seguras (30%)
+- **Domínio 2**: Design de arquiteturas resilientes (26%)
+- **Domínio 3**: Design de arquiteturas de alta performance (24%)
+- **Domínio 4**: Design de arquiteturas com otimização de custos (20%)
+
+### AIF-C01 (AI Practitioner)
+- **Domínio 1**: Fundamentos de IA e ML (20%)
+- **Domínio 2**: Fundamentos de IA Generativa (24%)
+- **Domínio 3**: Aplicações de Modelos de Fundação (28%)
+- **Domínio 4**: Diretrizes para IA Responsável (14%)
+- **Domínio 5**: Segurança, Conformidade e Governança (14%)
+
+### DVA-C02 (Developer Associate)
+- **Domínio 1**: Desenvolvimento com Serviços AWS (32%)
+- **Domínio 2**: Segurança (26%)
+- **Domínio 3**: Implementação (Deployment) (24%)
+- **Domínio 4**: Solução de problemas e otimização (18%)
+
+---
+
+## 🚀 Como Executar
+
+### Pré-requisitos
+- Navegador moderno (Chrome, Firefox, Safari, Edge)
+- Python 3.12+ (apenas para geração de questões)
+
+### Executar o Simulador (Frontend)
+
+1. **Clone o repositório**:
    ```bash
    git clone https://github.com/karlarenatadev/projeto-simulados-certificacao-aws.git
+   cd projeto-simulados-certificacao-aws
    ```
-2. Abra a pasta raiz do projeto no terminal e inicie um servidor local:
-   ```bash
-   python -m http.server 8000
-   ```
-3. Acesse `http://localhost:8000` no seu navegador. *(Alternativa: Use a extensão Live Server no VS Code).*
 
-### 2. Alimentando o Banco de Dados com IA (Backend)
-1. Certifique-se de ter o Python 3.12+ instalado.
-2. Crie um ambiente virtual e instale as dependências:
+2. **Inicie um servidor local**:
+   ```bash
+   # Opção 1: Python
+   python -m http.server 8000
+   
+   # Opção 2: Node.js
+   npx http-server -p 8000
+   
+   # Opção 3: VS Code Live Server
+   # Clique com botão direito no index.html > "Open with Live Server"
+   ```
+
+3. **Acesse no navegador**:
+   ```
+   http://localhost:8000
+   ```
+
+### Gerar Novas Questões (Backend)
+
+1. **Instale as dependências**:
    ```bash
    pip install google-genai pydantic python-dotenv
    ```
-3. Crie um arquivo `.env` na raiz do projeto e adicione sua chave de API do Google Gemini:
-   ```text
+
+2. **Configure a API Key**:
+   Crie um arquivo `.env` na raiz:
+   ```env
    GEMINI_API_KEY=sua_chave_de_api_aqui
    ```
-4. Execute o Orquestrador do Pipeline para gerar novas questões em lote:
+
+3. **Execute o pipeline**:
    ```bash
    python scripts_python/pipeline_runner.py
    ```
@@ -133,49 +183,186 @@ Como o projeto utiliza Módulos ES6 (import/export), ele **não pode** ser abert
 
 ## 📂 Estrutura do Projeto
 
-```text
-├── 📂 data/               # Bancos de dados JSON validados
-│   ├── aif-c01.json       # AWS AI Practitioner (138 questões)
-│   ├── clf-c02.json       # Cloud Practitioner (190 questões)
-│   ├── saa-c03.json       # Solutions Architect Associate (184 questões)
-│   └── dva-c02.json       # Developer Associate (14 questões)
-├── 📂 js/                 
-│   ├── quizEngine.js      # Lógica de negócio pura (Classes ES6)
-│   └── storageManager.js  # Gerenciamento de persistência
-├── 📂 scripts_python/     # Backend: Pipeline de Engenharia de Dados
-│   ├── generator.py       # Extração via API do Gemini
-│   ├── sanity_check.py    # Validador de Schema
-│   ├── aws_semantic_validator.py  # Validador de Negócio + Cenário
-│   ├── duplicate_detector.py      # Filtro de similaridade
-│   ├── fix_all_data.py    # Migração e correção de dados
-│   └── pipeline_runner.py # Orquestrador do ETL
-├── app.js                 # UI Controller
-├── data.js                # Configuração de trilhas e domínios
-├── index.html             # Interface principal
-├── style.css              # Customizações de tema
-├── sw.js                  # Service Worker (PWA)
-├── manifest.json          # Manifesto PWA
-└── webpack.config.js      # Configuração de build
 ```
+projeto-simulados-certificacao-aws/
+├── 📂 js/                      # Módulos JavaScript
+│   ├── app.js                  # Controller da UI
+│   ├── quizEngine.js           # Lógica de negócio
+│   ├── storageManager.js       # Persistência de dados
+│   └── data.js                 # Configuração e glossário
+├── 📂 data/                    # Banco de questões
+│   ├── clf-c02.json            # Cloud Practitioner (195)
+│   ├── clf-c02-en.json         # Cloud Practitioner (EN)
+│   ├── aif-c01.json            # AI Practitioner (143)
+│   ├── saa-c03.json            # Solutions Architect (184)
+│   ├── saa-c03-en.json         # Solutions Architect (EN)
+│   ├── dva-c02.json            # Developer Associate (14)
+│   └── 📂 backups/             # Backups de dados
+├── 📂 scripts_python/          # Pipeline de IA
+│   ├── generator.py            # Geração via Gemini
+│   ├── sanity_check.py         # Validação de schema
+│   ├── aws_semantic_validator.py # Validação semântica
+│   ├── duplicate_detector.py   # Detecção de duplicatas
+│   └── pipeline_runner.py      # Orquestrador
+├── index.html                  # Interface principal
+├── style.css                   # Estilos customizados
+├── sw.js                       # Service Worker (PWA)
+├── manifest.json               # Manifesto PWA
+└── README.md                   # Este arquivo
+```
+
+---
+
+## 🎓 Certificações Suportadas
+
+| Código | Nome | Questões | Status |
+|--------|------|----------|--------|
+| **CLF-C02** | AWS Certified Cloud Practitioner | 195 | ✅ Completo |
+| **SAA-C03** | AWS Certified Solutions Architect Associate | 184 | ✅ Completo |
+| **AIF-C01** | AWS Certified AI Practitioner | 143 | ✅ Completo |
+| **DVA-C02** | AWS Certified Developer Associate | 14 | 🚧 Em desenvolvimento |
+
+**Total**: 536 questões validadas
+
+---
+
+## 🌟 Diferenciais
+
+### 1. Fidelidade aos Exames Oficiais
+- Questões de múltipla resposta ("Escolha 2" ou "Escolha 3")
+- Escala de pontuação oficial AWS (100-1000)
+- Pesos de domínios conforme guias oficiais
+- Timer baseado nos exames reais
+
+### 2. IA Generativa Integrada
+- Pipeline automatizado de geração de questões
+- Validação semântica em 4 camadas
+- Detecção de duplicatas por similaridade
+- Garantia de qualidade e relevância
+
+### 3. Modo Flashcards Único
+- Único simulador com flashcards integrados
+- 20 termos essenciais com definições oficiais
+- Efeito 3D profissional
+- Ideal para revisão rápida
+
+### 4. Explicações Aprimoradas
+- Justificativa da resposta correta
+- Explicação do porquê os distratores não se aplicam
+- Links para documentação oficial AWS
+- Foco em aprendizado, não apenas memorização
+
+### 5. PWA Completo
+- Funciona 100% offline
+- Instalável em desktop e mobile
+- Atualizações automáticas
+- Performance otimizada
+
+---
+
+## 📊 Estatísticas
+
+- **536 questões** validadas e revisadas
+- **10 questões** de múltipla resposta
+- **20 termos** no glossário de flashcards
+- **4 certificações** oficiais AWS
+- **2 idiomas** (PT-BR e EN-US)
+- **100% offline** após instalação
+- **0 dependências** externas no frontend
 
 ---
 
 ## 🌐 Demo Online
 
-Teste a plataforma ao vivo, hospedada via **GitHub Pages**:
+Teste a plataforma ao vivo:
 
 🔗 **[Acessar o AWS Cloud Simulator](https://karlarenatadev.github.io/projeto-simulados-certificacao-aws/)**
 
 ---
 
-## 💡 Dica Final
+## 📚 Documentação Detalhada
 
-> "A certificação é o seu destino, a disciplina é o seu motor.
-> Pratique até o gráfico de radar estar totalmente preenchido."
-> – Karla Renata
+Para informações técnicas aprofundadas, consulte:
+
+- **[Guia de Geração de Questões](./docs/guia-geracao.md)** - Como gerar questões automaticamente com IA
+- **[Status da Tradução](./docs/status-traducao.md)** - Progresso das traduções PT-BR → EN-US
+- **[Resolução de Problemas Técnicos](./docs/resolucao-problemas.md)** - Soluções para problemas comuns
+- **[Checklist de Validação](./docs/checklist-validacao.md)** - Lista de verificação para garantir qualidade
+- **[Instruções de Deploy](./docs/instrucoes-deploy.md)** - Como publicar o simulador em produção
+- **[Guia de Flashcards](./docs/guia-flashcards.md)** - Documentação do modo de revisão rápida
+- **[Atualizações Implementadas](./docs/atualizacoes-implementadas.md)** - Histórico de melhorias e features
+- **[Guia de Automação Python](./scripts_python/README.md)** - Pipeline completo de geração e tradução
 
 ---
 
-## 📄 Licença
+## 🤝 Contribuindo
 
-Projeto **educacional**, desenvolvido por **Karla Renata**. Destinado a portfólio técnico e demonstração de competências avançadas em Engenharia de Dados, Integração com IA e Desenvolvimento Frontend.
+Contribuições são bem-vindas! Para contribuir:
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/NovaFuncionalidade`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/NovaFuncionalidade`)
+5. Abra um Pull Request
+
+---
+
+## 📝 Licença
+
+Este projeto é **educacional** e destinado a fins de portfólio técnico. Desenvolvido por **Karla Renata A. Rosario**.
+
+---
+
+## 👩‍💻 Autora
+
+**Karla Renata A. Rosario**
+
+- 💼 [LinkedIn](https://www.linkedin.com/in/karlarenata-rosario/)
+- 🐙 [GitHub](https://github.com/karlarenatadev)
+- 🌐 [Portfolio](https://karlarenatadev.github.io/projeto-simulados-certificacao-aws/)
+
+---
+
+## 🙏 Agradecimentos
+
+- **AWS** pela documentação oficial e guias de estudo
+- **Google** pelo acesso à API do Gemini
+- **Comunidade Open Source** pelas ferramentas e bibliotecas
+
+---
+
+## 📈 Roadmap
+
+### v2.1.0 (Próxima Release)
+- [ ] Tradução completa para inglês (AIF-C01)
+- [ ] Mais 20 questões de múltipla resposta
+- [ ] Expansão do glossário para 40 termos
+- [ ] Estatísticas de uso de flashcards
+
+### v2.2.0 (Futuro)
+- [ ] Sistema de marcação de flashcards "dominados"
+- [ ] Modo quiz com termos do glossário
+- [ ] Exportação de flashcards para Anki
+- [ ] Integração com Google Analytics
+
+### v3.0.0 (Visão de Longo Prazo)
+- [ ] Backend com Node.js e MongoDB
+- [ ] Sistema de autenticação de usuários
+- [ ] Sincronização multi-dispositivo
+- [ ] Aplicativo mobile nativo
+
+---
+
+<div align="center">
+
+**⭐ Se este projeto foi útil, considere dar uma estrela no GitHub!**
+
+[![GitHub stars](https://img.shields.io/github/stars/karlarenatadev/projeto-simulados-certificacao-aws?style=social)](https://github.com/karlarenatadev/projeto-simulados-certificacao-aws)
+
+</div>
+
+---
+
+<div align="center">
+  <sub>Desenvolvido com ❤️ por Karla Renata | © 2026</sub>
+</div>

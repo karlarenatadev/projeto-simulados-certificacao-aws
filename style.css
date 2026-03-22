@@ -244,18 +244,8 @@ body {
 }
 
 /* ============================================================================
-   COMPONENTES GERAIS (Gráficos, Scroll, Timer, etc.)
+   COMPONENTES GERAIS (Scroll, Timer, etc.)
    ============================================================================ */
-
-/* Gráfico Radar */
-.chart-container {
-  position: relative;
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  height: 350px;
-  max-height: 400px;
-}
 
 /* Scrollbar Customizada */
 .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -308,19 +298,15 @@ body {
   /* Empilha botões verticalmente */
   .mt-auto.pt-6.flex { flex-direction: column; width: 100%; gap: 0.75rem !important; }
   .mt-auto.pt-6.flex button { width: 100%; margin: 0 !important; }
-
-  .chart-container { height: 320px !important; min-height: 320px; }
 }
 
 /* Telas Médias (Tablets - 641px a 1024px) */
 @media (min-width: 641px) and (max-width: 1024px) {
-  .chart-container { height: 300px !important; }
   #screen-start { padding: 2rem !important; }
 }
 
 /* Telas Grandes (Desktops - Acima de 1024px) */
 @media (min-width: 1025px) {
-  .chart-container { height: 350px !important; }
   .option-card { padding: 1.25rem !important; }
 }
 
@@ -370,7 +356,7 @@ body {
 
   /* 3. OCULTAR LIXO VISUAL E RODAPÉ */
   /* Adicionado o 'footer' aqui para sumir com o "Desenvolvido por" e a borda dele */
-  header, aside, footer, .no-print, #last-score-banner, .chart-container, #ai-recommendation { 
+  header, aside, footer, .no-print, #last-score-banner, #ai-recommendation { 
       display: none !important; 
   }
   
@@ -418,5 +404,89 @@ body {
       border-top: 1px dashed #888 !important; 
       margin-top: 15px !important; 
       padding-top: 15px !important; 
+  }
+}
+
+
+/* ============================================================================
+   FLASHCARDS (Modo de Revisão Rápida)
+   ============================================================================ */
+
+.flashcard-container {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 600px;
+  height: 400px;
+  cursor: pointer;
+}
+
+.flashcard {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flashcard-container.flipped .flashcard {
+  transform: rotateY(180deg);
+}
+
+.flashcard-front,
+.flashcard-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border: 2px solid #e5e7eb;
+}
+
+.dark .flashcard-front,
+.dark .flashcard-back {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-color: #334155;
+}
+
+.flashcard-back {
+  transform: rotateY(180deg);
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+}
+
+.dark .flashcard-back {
+  background: linear-gradient(135deg, #422006 0%, #292524 100%);
+}
+
+.flashcard-front:hover,
+.flashcard-back:hover {
+  box-shadow: 0 15px 40px rgba(255, 153, 0, 0.3);
+  transform: scale(1.02);
+  transition: all 0.3s ease;
+}
+
+/* Responsividade dos Flashcards */
+@media (max-width: 640px) {
+  .flashcard-container {
+    height: 350px;
+  }
+  
+  .flashcard-front,
+  .flashcard-back {
+    padding: 1.5rem;
+  }
+  
+  #flashcard-term {
+    font-size: 1.5rem !important;
+  }
+  
+  #flashcard-definition {
+    font-size: 1rem !important;
   }
 }

@@ -3,9 +3,9 @@
  * Integração completa com Módulos ES6 e QuizEngine
  */
 
-import { QuizEngine } from './js/quizEngine.js';
-import { certificationPaths } from './data.js';
-import { storageManager } from './js/storageManager.js';
+import { QuizEngine } from './quizEngine.js';
+import { certificationPaths, glossaryTerms } from './data.js';
+import { storageManager } from './storageManager.js';
 
 const APP_CONFIG = {
     PASSING_SCORE: 70,
@@ -20,7 +20,9 @@ let uiState = {
     timeRemaining: 0,
     isPaused: false,
     tempSelectedAnswer: null, // Será null (escolha única) ou [] (múltipla)
-    language: localStorage.getItem('aws_sim_lang') || 'pt'
+    language: localStorage.getItem('aws_sim_lang') || 'pt',
+    flashcardIndex: 0,
+    flashcardFlipped: false
 };
 
 // ============================================================================
@@ -28,7 +30,6 @@ let uiState = {
 // ============================================================================
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
-    initializeRadarChart(); // Mantido por segurança, caso o HTML ainda tenha o canvas
     updateHistoryDisplay();
     renderGamification();
     updateLanguageButtonUI();
@@ -46,11 +47,16 @@ document.addEventListener('DOMContentLoaded', () => {
     certSelect?.addEventListener('change', () => {
         if (certificationPaths[certSelect.value]) {
             uiState.currentCertificationInfo = certificationPaths[certSelect.value];
-            reinitializeRadarChart();
             updateTopicDropdown(); 
             loadLastScore();
+            updateDifficultyFilters(certSelect.value);
         }
     });
+    
+    // Inicializa filtros de dificuldade
+    if (certSelect) {
+        updateDifficultyFilters(certSelect.value);
+    }
 });
 
 // ============================================================================
@@ -105,8 +111,6 @@ async function startQuiz() {
         if (oldReport) oldReport.remove();
 
         showScreen('quiz');
-        
-        // Verifica o modo e inicia o timer
         const timerContainer = document.getElementById('timer-container');
         if (filters.mode === 'exam') {
             if (timerContainer) timerContainer.classList.remove('hidden');
@@ -115,7 +119,6 @@ async function startQuiz() {
             if (timerContainer) timerContainer.classList.add('hidden');
         }
         
-        reinitializeRadarChart();
         loadQuestionUI();
 
     } catch (err) {
@@ -330,7 +333,6 @@ function submitAnswer() {
     }
 
     updateScoreDisplayUI();
-    updateRadarChartUI();
 }
 
 // Função Auxiliar de Estilos de Acerto/Erro
@@ -379,7 +381,7 @@ function toggleFlag() {
 // 4. TELAS E RELATÓRIOS
 // ============================================================================
 function showScreen(screenName) {
-    const screens = ['start', 'quiz', 'results'];
+    const screens = ['start', 'quiz', 'results', 'flashcards'];
     screens.forEach(s => {
         const el = document.getElementById(`screen-${s}`);
         if (el) el.classList.add('hidden');
@@ -407,6 +409,28 @@ function displayReportFromResult(results) {
     document.getElementById('final-score-percent').textContent = awsScore; // Escala 100-1000
     document.getElementById('final-correct').textContent = results.score;
     document.getElementById('final-incorrect').textContent = results.total - results.score;
+
+    // Adiciona selo de aprovação/revisão
+    const scoreDisplay = document.getElementById('final-score-percent');
+    const parentDiv = scoreDisplay.parentElement;
+    
+    // Remove selo anterior se existir
+    const oldBadge = parentDiv.querySelector('.approval-badge');
+    if (oldBadge) oldBadge.remove();
+    
+    // Adiciona novo selo
+    const badge = document.createElement('div');
+    badge.className = 'approval-badge mt-3 px-4 py-2 rounded-lg font-bold text-sm';
+    
+    if (awsScore >= 700) {
+        badge.classList.add('bg-green-100', 'dark:bg-green-900/30', 'text-green-700', 'dark:text-green-400', 'border-2', 'border-green-500');
+        badge.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i>APROVADO';
+    } else {
+        badge.classList.add('bg-orange-100', 'dark:bg-orange-900/30', 'text-orange-700', 'dark:text-orange-400', 'border-2', 'border-orange-500');
+        badge.innerHTML = '<i class="fa-solid fa-exclamation-triangle mr-2"></i>PRECISA DE REVISÃO';
+    }
+    
+    parentDiv.appendChild(badge);
 
     const recText = document.getElementById('recommendation-text');
 
@@ -728,82 +752,8 @@ function updateGamification(pct) {
 }
 
 // ============================================================================
-// 6. CHART E UTILITÁRIOS GERAIS
+// 6. UTILITÁRIOS GERAIS
 // ============================================================================
-
-function initializeRadarChart() {
-    const ctx = document.getElementById('radarChart');
-    if (!ctx || typeof Chart === 'undefined') return;
-    
-    window.radarChartInstance = new Chart(ctx, {
-        type: 'radar',
-        data: {
-            labels: ['Domínio 1', 'Domínio 2', 'Domínio 3', 'Domínio 4'],
-            datasets: [{
-                label: 'Conhecimento (%)',
-                data: [0, 0, 0, 0],
-                fill: true,
-                backgroundColor: 'rgba(255, 153, 0, 0.2)',
-                borderColor: '#ff9900',
-                borderWidth: 2,
-                pointBackgroundColor: '#ff9900'
-            }]
-        },
-        options: {
-            maintainAspectRatio: false, 
-            layout: { padding: 15 },
-            scales: {
-                r: { 
-                    beginAtZero: true, 
-                    max: 100, 
-                    ticks: { display: false, stepSize: 25 },
-                    grid: { color: 'rgba(200, 200, 200, 0.2)' },
-                    pointLabels: { font: { size: 11, family: "'Open Sans', sans-serif" }, padding: 5 }
-                }
-            },
-            plugins: { legend: { display: false } }
-        }
-    });
-}
-
-function formatChartLabel(name) {
-    const words = name.split(' ');
-    if (words.length > 2) {
-        const mid = Math.ceil(words.length / 2);
-        return [words.slice(0, mid).join(' '), words.slice(mid).join(' ')];
-    }
-    return name;
-}
-
-function reinitializeRadarChart() {
-    if (!uiState.currentCertificationInfo || !window.radarChartInstance) return;
-    const labels = uiState.currentCertificationInfo.domains.map(d => formatChartLabel(d.name));
-    window.radarChartInstance.data.labels = labels;
-    
-    const certId = uiState.currentCertificationInfo.id;
-    const lastResult = storageManager.loadLastResult(certId);
-
-    if (lastResult && lastResult.domainScores) {
-        const data = uiState.currentCertificationInfo.domains.map(d => {
-            const s = lastResult.domainScores[d.id];
-            return (s && s.total > 0) ? (s.correct / s.total) * 100 : 0;
-        });
-        window.radarChartInstance.data.datasets[0].data = data;
-    } else {
-        window.radarChartInstance.data.datasets[0].data = labels.map(() => 0);
-    }
-    window.radarChartInstance.update();
-}
-
-function updateRadarChartUI() {
-    if (!window.radarChartInstance || !uiState.currentCertificationInfo) return;
-    const data = uiState.currentCertificationInfo.domains.map(d => {
-        const s = engine.state.domainScores[d.id];
-        return (s && s.total > 0) ? (s.correct / s.total) * 100 : 0;
-    });
-    window.radarChartInstance.data.datasets[0].data = data;
-    window.radarChartInstance.update();
-}
 
 function updateScoreDisplayUI() {
     const el = document.getElementById('score-display');
@@ -824,6 +774,62 @@ function updateTopicDropdown() {
     });
 }
 
+async function updateDifficultyFilters(certId) {
+    try {
+        // Carrega o arquivo JSON para verificar dificuldades disponíveis
+        const fileSuffix = uiState.language === 'en' ? '-en' : '';
+        const response = await fetch(`data/${certId}${fileSuffix}.json`);
+        if (!response.ok) return;
+        
+        const questions = await response.json();
+        
+        // Conta questões por dificuldade
+        const difficultyCounts = {
+            all: questions.length,
+            easy: questions.filter(q => q.difficulty === 'easy').length,
+            medium: questions.filter(q => q.difficulty === 'medium').length,
+            hard: questions.filter(q => q.difficulty === 'hard').length
+        };
+        
+        // Atualiza os botões de dificuldade
+        const difficultyInputs = document.querySelectorAll('input[name="difficulty-level"]');
+        difficultyInputs.forEach(input => {
+            const value = input.value;
+            const label = input.closest('label');
+            const count = difficultyCounts[value];
+            
+            if (count === 0 && value !== 'all') {
+                // Desabilita opções sem questões
+                label.style.opacity = '0.4';
+                label.style.cursor = 'not-allowed';
+                input.disabled = true;
+                
+                // Adiciona tooltip
+                label.title = 'Nenhuma questão disponível neste nível';
+            } else {
+                // Habilita opções com questões
+                label.style.opacity = '1';
+                label.style.cursor = 'pointer';
+                input.disabled = false;
+                
+                // Atualiza tooltip com contagem
+                if (value === 'all') {
+                    label.title = `${count} questões disponíveis`;
+                } else {
+                    label.title = `${count} questões neste nível`;
+                }
+            }
+        });
+        
+        // Se a opção selecionada não tem questões, volta para "Todas"
+        const selectedInput = document.querySelector('input[name="difficulty-level"]:checked');
+        if (selectedInput && selectedInput.disabled) {
+            const allOption = document.querySelector('input[name="difficulty-level"][value="all"]');
+            if (allOption) allOption.checked = true;
+        }
+    }
+}
+
 function getDomainName(id) {
     return uiState.currentCertificationInfo?.domains.find(d => d.id === id)?.name || id;
 }
@@ -842,6 +848,13 @@ function toggleLanguage() {
     uiState.language = uiState.language === 'pt' ? 'en' : 'pt';
     localStorage.setItem('aws_sim_lang', uiState.language);
     updateLanguageButtonUI();
+    
+    // Atualiza filtros de dificuldade para o novo idioma
+    const certSelect = document.getElementById('certification-select');
+    if (certSelect) {
+        updateDifficultyFilters(certSelect.value);
+    }
+    
     alert(uiState.language === 'en' 
         ? 'Idioma alterado para Inglês! Certifique-se de ter os arquivos -en.json na pasta data.' 
         : 'Idioma alterado para Português!');
@@ -876,6 +889,81 @@ function generatePerformanceReport() {
 }
 
 // ============================================================================
+// 8. MODO FLASHCARDS
+// ============================================================================
+function startFlashcards() {
+    uiState.flashcardIndex = 0;
+    uiState.flashcardFlipped = false;
+    showScreen('flashcards');
+    loadFlashcard();
+}
+
+function loadFlashcard() {
+    if (!glossaryTerms || glossaryTerms.length === 0) {
+        alert('Nenhum termo disponível no glossário.');
+        return;
+    }
+    
+    const card = glossaryTerms[uiState.flashcardIndex];
+    const termEl = document.getElementById('flashcard-term');
+    const definitionEl = document.getElementById('flashcard-definition');
+    const counterEl = document.getElementById('flashcard-counter');
+    const cardContainer = document.getElementById('flashcard-container');
+    
+    if (termEl) termEl.textContent = card.term;
+    if (definitionEl) definitionEl.textContent = card.definition;
+    if (counterEl) counterEl.textContent = `${uiState.flashcardIndex + 1} / ${glossaryTerms.length}`;
+    
+    // Reset do flip
+    if (cardContainer) {
+        cardContainer.classList.remove('flipped');
+        uiState.flashcardFlipped = false;
+    }
+    
+    // Atualiza botões de navegação
+    updateFlashcardButtons();
+}
+
+function flipFlashcard() {
+    const cardContainer = document.getElementById('flashcard-container');
+    if (cardContainer) {
+        cardContainer.classList.toggle('flipped');
+        uiState.flashcardFlipped = !uiState.flashcardFlipped;
+    }
+}
+
+function nextFlashcard() {
+    if (uiState.flashcardIndex < glossaryTerms.length - 1) {
+        uiState.flashcardIndex++;
+        loadFlashcard();
+    }
+}
+
+function prevFlashcard() {
+    if (uiState.flashcardIndex > 0) {
+        uiState.flashcardIndex--;
+        loadFlashcard();
+    }
+}
+
+function updateFlashcardButtons() {
+    const prevBtn = document.getElementById('btn-prev-flashcard');
+    const nextBtn = document.getElementById('btn-next-flashcard');
+    
+    if (prevBtn) {
+        prevBtn.disabled = uiState.flashcardIndex === 0;
+        prevBtn.classList.toggle('opacity-50', uiState.flashcardIndex === 0);
+        prevBtn.classList.toggle('cursor-not-allowed', uiState.flashcardIndex === 0);
+    }
+    
+    if (nextBtn) {
+        nextBtn.disabled = uiState.flashcardIndex === glossaryTerms.length - 1;
+        nextBtn.classList.toggle('opacity-50', uiState.flashcardIndex === glossaryTerms.length - 1);
+        nextBtn.classList.toggle('cursor-not-allowed', uiState.flashcardIndex === glossaryTerms.length - 1);
+    }
+}
+
+// ============================================================================
 // 7. EXPOSIÇÃO GLOBAL (Ponte para o index.html)
 // ============================================================================
 window.startQuiz = startQuiz;
@@ -892,3 +980,7 @@ window.showLastReport = showLastReport;
 window.showHistoricalReport = showHistoricalReport;
 window.generatePerformanceReport = generatePerformanceReport;
 window.toggleFlag = toggleFlag;
+window.startFlashcards = startFlashcards;
+window.flipFlashcard = flipFlashcard;
+window.nextFlashcard = nextFlashcard;
+window.prevFlashcard = prevFlashcard;

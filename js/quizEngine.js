@@ -86,7 +86,18 @@ export class QuizEngine {
     // 3. AVALIAÇÃO
     submitAnswer(selectedIndex) {
         const q = this.getCurrentQuestion();
-        const isCorrect = selectedIndex === q.correct;
+        
+        // Verifica se é múltipla resposta (correct é Array)
+        let isCorrect;
+        if (Array.isArray(q.correct)) {
+            // Múltipla resposta: compara arrays ordenados
+            const userSorted = Array.isArray(selectedIndex) ? [...selectedIndex].sort() : [];
+            const correctSorted = [...q.correct].sort();
+            isCorrect = JSON.stringify(userSorted) === JSON.stringify(correctSorted);
+        } else {
+            // Escolha única
+            isCorrect = selectedIndex === q.correct;
+        }
         
         // Salva histórico
         this.state.answers.push({ ...q, userSelection: selectedIndex, isCorrect });

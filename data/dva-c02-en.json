@@ -1,0 +1,311 @@
+[
+  {
+    "id": 1001,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "armazenamento",
+    "service": "DynamoDB",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "NoSQL",
+      "Performance",
+      "TTL"
+    ],
+    "question": "A developer needs to ensure that old session items are automatically removed from an DynamoDB table after 24 hours. Which feature should be enabled?",
+    "options": [
+      "DynamoDB Streams",
+      "Global Secondary Index",
+      "Time to Live (TTL)",
+      "Provisioned Throughput"
+    ],
+    "correct": 2,
+    "explanation": "Time to Live (TTL) allows you to set a timestamp for DynamoDB to delete expired items at no additional recording cost."
+  },
+  {
+    "id": 1002,
+    "domain": "implementacao",
+    "subdomain": "serverless",
+    "service": "Lambda",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Cold Start",
+      "Concurrency"
+    ],
+    "question": "Which configuration reduces the cold start time of an Lambda function while keeping instances pre-initialized?",
+    "options": [
+      "Increase the Timeout time",
+      "Provisioned Concurrency",
+      "Reserved Competition",
+      "Enable VPC Peering"
+    ],
+    "correct": 1,
+    "explanation": "Provisioned Concurrency maintains a specific number of role instances initialized and ready to respond immediately."
+  },
+  {
+    "id": 1003,
+    "domain": "seguranca-app",
+    "subdomain": "identidade",
+    "service": "Cognito",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "Auth",
+      "Mobile"
+    ],
+    "question": "Which Amazon Cognito feature is used to provide temporary IAM credentials to mobile application users?",
+    "options": [
+      "User Pools",
+      "Identity Pools",
+      "Sync Groups",
+      "API Keys"
+    ],
+    "correct": 1,
+    "explanation": "Identity Pools (Federated Identities) exchange authentication tokens for temporary IAM credentials to access AWS resources."
+  },
+  {
+    "id": 1004,
+    "domain": "resolucao-problemas",
+    "subdomain": "monitoramento",
+    "service": "X-Ray",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "Debugging",
+      "Analytics"
+    ],
+    "question": "To perform advanced searching and filtering in the AWS X-Ray console using indexed metadata, the developer must use:",
+    "options": [
+      "Metadata",
+      "Segments",
+      "Annotations",
+      "Sampling Rules"
+    ],
+    "correct": 2,
+    "explanation": "Annotations are indexed key-value pairs that allow you to efficiently filter traces in X-Ray."
+  },
+  {
+    "id": 1005,
+    "domain": "implementacao",
+    "subdomain": "cicd",
+    "service": "CodeDeploy",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "Deployment",
+      "Blue/Green"
+    ],
+    "question": "Which CodeDeploy deployment method allows you to create a new parallel environment and gradually switch traffic to minimize risks?",
+    "options": [
+      "All-at-once",
+      "Rolling Update",
+      "Blue/Green Deployment",
+      "In-place Update"
+    ],
+    "correct": 2,
+    "explanation": "Blue/Green Deployment creates a new set of instances and redirects traffic, allowing quick rollback if necessary."
+  },
+  {
+    "id": 1006,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "api",
+    "service": "API Gateway",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "Throttling",
+      "Scale"
+    ],
+    "question": "How can a developer limit the rate of requests from a specific client to prevent it from consuming all of the API's capacity?",
+    "options": [
+      "Enable Cache in the API",
+      "Configuse Usage Plans with Throttling",
+      "Increase the number of Shards",
+      "Switch to HTTP Proxy Integration"
+    ],
+    "correct": 1,
+    "explanation": "Usage Plans allow you to define quota and throttling limits (request rate per second) per API key."
+  },
+  {
+    "id": 1007,
+    "domain": "resolucao-problemas",
+    "subdomain": "performance",
+    "service": "DynamoDB",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Optimistic Locking",
+      "Consistency"
+    ],
+    "question": "When implementing Optimistic Locking in DynamoDB to prevent write overlaps, which feature should you use?",
+    "options": [
+      "Strongly Consistent Reads",
+      "Conditional Writes with the ExpressionAttributeValues ​​parameter",
+      "ACID transactions in DynamoDB",
+      "Global Tables with active replication"
+    ],
+    "correct": 1,
+    "explanation": "Optimistic locking is done using Conditional Writes that check the item version before allowing the update."
+  },
+  {
+    "id": 1008,
+    "domain": "seguranca-app",
+    "subdomain": "criptografia",
+    "service": "S3",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "SSE-KMS",
+      "Compliance"
+    ],
+    "question": "An enterprise requires that each object in S3 be encrypted with a unique KMS key and that the encryption context be recorded in CloudTrail. Which header should be used in the PUT?",
+    "options": [
+      "x-amz-server-side-encryption: AES256",
+      "x-amz-server-side-encryption: aws:kms and x-amz-server-side-encryption-context",
+      "x-amz-mfa-delete: true",
+      "x-amz-acl: private-encryption"
+    ],
+    "correct": 1,
+    "explanation": "Using SSE-KMS with Encryption Context enables fine-grained traceability and key-based security of KMS."
+  },
+  {
+    "id": 1009,
+    "domain": "implementacao",
+    "subdomain": "iac",
+    "service": "CloudFormation",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Custom Resources",
+      "Automation"
+    ],
+    "question": "A developer needs to perform custom Python logic when creating an CloudFormation stack. What should be used?",
+    "options": [
+      "Template Mappings Section",
+      "CloudFormation Custom Resources with Lambda",
+      "WaitCondition Handle",
+      "Parameters section with AllowedValues"
+    ],
+    "correct": 1,
+    "explanation": "Custom Resources allow CloudFormation to call an Lambda function to perform complex tasks outside of native resources."
+  },
+  {
+    "id": 1010,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "orquestracao",
+    "service": "Step Functions",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "State Machine",
+      "Workflows"
+    ],
+    "question": "In an Step Functions workflow, how do you handle automatic retries if a specific Lambda fails?",
+    "options": [
+      "Configuse a Dead Letter Queue (DLQ)",
+      "Use the 'Retry' field in the State Machine state",
+      "Increase Lambda timeout",
+      "Implement a 'while' loop within the Lambda code"
+    ],
+    "correct": 1,
+    "explanation": "Step Functions has native support for 'Retry' and 'Catch', allowing you to manage flow errors declaratively."
+  },
+  {
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "gerenciamento-configuracao",
+    "service": "AWS AppConfig",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "serverless",
+      "lambda",
+      "api-gateway",
+      "configuracao",
+      "feature-flags",
+      "rollback"
+    ],
+    "question": "A company is developing a serverless application using AWS Lambda and Amazon API Gateway. They need a solution to centrally manage application configurations and feature flags, enabling dynamic updates and secure rollbacks without the need to redeploy the Lambda function code. Which AWS service should be used to meet this requirement?",
+    "options": [
+      "AWS AppConfig",
+      "AWS Systems Manager Parameter Store",
+      "Amazon S3",
+      "AWS Secrets Manager"
+    ],
+    "correct": 0,
+    "explanation": "AWS AppConfig is the ideal service for managing application configurations and feature flags, allowing updates to be deployed in a controlled manner and with rapid rollback capability without the need to redeploy the application code. AWS Systems Manager Parameter Store is suitable for storing parameters, but does not offer the built-in validation, staged deployment, and rollback capabilities of AppConfig. Amazon S3 can store configuration files, but does not provide configuration lifecycle management. AWS Secrets Manager is for secrets, not general application settings.",
+    "id": 1011
+  },
+  {
+    "domain": "resolucao-problemas",
+    "subdomain": "acesso-seguro",
+    "service": "AWS Systems Manager Session Manager",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ec2",
+      "seguranca",
+      "acesso-remoto",
+      "troubleshooting",
+      "private-subnet"
+    ],
+    "question": "A developer needs to access an Amazon EC2 instance that resides in a private subnet to perform diagnostics and troubleshoot the application. The company's security policy prohibits opening gateways in security groups for direct SSH access and the use of bastion hosts. Which AWS service allows the developer to establish a secure session with the instance without the need for SSH keys, gateways, or bastion hosts?",
+    "options": [
+      "AWS Systems Manager Session Manager",
+      "Amazon EC2 Instance Connect",
+      "AWS Direct Connect",
+      "AWS VPN Client"
+    ],
+    "correct": 0,
+    "explanation": "AWS Systems Manager Session Manager enables secure access to EC2 instances, in both public and private subnets, without the need to open inbound SSH ports, manage SSH keys, or use bastion hosts. It uses the SSM agent installed on the instance to establish a session. Amazon EC2 Instance Connect is for SSH access via browser or SSH client, but still requires SSH keys and gateways or a bastion host for private subnets. AWS Direct Connect and AWS VPN Client are network connectivity services between your on-premises network and AWS, not for direct access to individual EC2 instances without other tools.",
+    "id": 1012
+  },
+  {
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "gerenciamento-configuracao",
+    "service": "AWS AppConfig",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "serverless",
+      "lambda",
+      "api-gateway",
+      "configuracao",
+      "feature-flags",
+      "rollback"
+    ],
+    "question": "A company is developing a serverless application using AWS Lambda and Amazon API Gateway. They need a solution to centrally manage application configurations and feature flags, enabling dynamic updates and secure rollbacks without the need to redeploy the Lambda function code. Which AWS service should be used to meet this requirement?",
+    "options": [
+      "AWS AppConfig",
+      "AWS Systems Manager Parameter Store",
+      "Amazon S3",
+      "AWS Secrets Manager"
+    ],
+    "correct": 0,
+    "explanation": "AWS AppConfig is the ideal service for managing application configurations and feature flags, allowing updates to be deployed in a controlled manner and with rapid rollback capability without the need to redeploy the application code. AWS Systems Manager Parameter Store is suitable for storing parameters, but does not offer the built-in validation, staged deployment, and rollback capabilities of AppConfig. Amazon S3 can store configuration files, but does not provide configuration lifecycle management. AWS Secrets Manager is for secrets, not general application settings.",
+    "id": 1011
+  },
+  {
+    "domain": "resolucao-problemas",
+    "subdomain": "acesso-seguro",
+    "service": "AWS Systems Manager Session Manager",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "ec2",
+      "seguranca",
+      "acesso-remoto",
+      "troubleshooting",
+      "private-subnet"
+    ],
+    "question": "A developer needs to access an Amazon EC2 instance that resides in a private subnet to perform diagnostics and troubleshoot the application. The company's security policy prohibits opening gateways in security groups for direct SSH access and the use of bastion hosts. Which AWS service allows the developer to establish a secure session with the instance without the need for SSH keys, gateways, or bastion hosts?",
+    "options": [
+      "AWS Systems Manager Session Manager",
+      "Amazon EC2 Instance Connect",
+      "AWS Direct Connect",
+      "AWS VPN Client"
+    ],
+    "correct": 0,
+    "explanation": "AWS Systems Manager Session Manager enables secure access to EC2 instances, in both public and private subnets, without the need to open inbound SSH ports, manage SSH keys, or use bastion hosts. It uses the SSM agent installed on the instance to establish a session. Amazon EC2 Instance Connect is for SSH access via browser or SSH client, but still requires SSH keys and gateways or a bastion host for private subnets. AWS Direct Connect and AWS VPN Client are network connectivity services between your on-premises network and AWS, not for direct access to individual EC2 instances without other tools.",
+    "id": 1012
+  }
+]
