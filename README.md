@@ -5,8 +5,29 @@
 ![Google Gemini](https://img.shields.io/badge/Google%20Gemini-8E75B2?style=flat&logo=google&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=flat&logo=tailwind-css&logoColor=white)
 ![PWA](https://img.shields.io/badge/PWA-000?style=flat&logo=progressive-web-apps)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
 
-> **Simulador profissional de certificações AWS** com suporte a 4 certificações oficiais, questões de múltipla resposta, modo flashcards e geração automática de conteúdo via IA Generativa (Google Gemini).
+> **Simulador profissional de certificações AWS** com suporte a 4 certificações oficiais, questões de múltipla resposta, modo flashcards interativo e geração automática de conteúdo via IA Generativa (Google Gemini 2.5 Flash).
+
+---
+
+## 🎉 Novidades da Versão 2.0.0 (Março 2026)
+
+### Principais Atualizações
+
+🎯 **Questões de Múltipla Resposta**: Suporte completo para questões "Escolha 2" ou "Escolha 3", idênticas aos exames oficiais AWS
+
+📚 **Modo Flashcards 3D**: Sistema interativo de revisão rápida com 20 termos AWS essenciais e efeito flip 3D profissional
+
+📊 **Escala Oficial AWS**: Pontuação convertida para escala 100-1000 pontos com selo visual de aprovação (verde ≥700, laranja <700)
+
+🌐 **Tradução Automática**: Pipeline completo de tradução PT-BR → EN-US usando Google Translate API com preservação de termos técnicos
+
+🤖 **Pipeline de IA Aprimorado**: Geração automática e balanceamento inteligente de questões com validação semântica rigorosa
+
+📝 **10 Novas Questões**: 5 para CLF-C02 e 5 para AIF-C01, todas com múltipla resposta e explicações aprimoradas
+
+Veja o [CHANGELOG.md](./CHANGELOG.md) para detalhes completos das mudanças.
 
 ---
 
@@ -16,10 +37,11 @@ Plataforma completa de preparação para exames de certificação AWS que combin
 
 - **Simulador de Exames Realista**: Questões no formato oficial AWS, incluindo múltipla resposta ("Escolha 2" ou "Escolha 3")
 - **IA Generativa**: Pipeline Python automatizado que gera questões inéditas usando Google Gemini 2.5 Flash
-- **Banco de Dados Balanceado**: "Padrão Ouro" com distribuição exata de dificuldades (65 Fáceis, 65 Médias, 65 Difíceis por certificação)
-- **Modo Flashcards**: Sistema de revisão rápida com 20 termos AWS essenciais e efeito 3D
-- **Escala Oficial AWS**: Pontuação convertida para escala 100-1000 pontos com selo de aprovação
+- **Banco de Dados Balanceado**: Distribuição equilibrada de dificuldades por certificação
+- **Modo Flashcards 3D**: Sistema de revisão rápida com 20 termos AWS essenciais e efeito flip interativo
+- **Escala Oficial AWS**: Pontuação convertida para escala 100-1000 pontos com selo visual de aprovação
 - **PWA Offline**: Funciona 100% offline após instalação, ideal para estudo em qualquer lugar
+- **Tradução Automática**: Suporte bilíngue (PT-BR/EN-US) com preservação de termos técnicos
 
 ---
 
@@ -33,22 +55,27 @@ Plataforma completa de preparação para exames de certificação AWS que combin
 - ✅ **Escala Oficial**: Pontuação 100-1000 pontos (padrão AWS)
 - ✅ **Selo de Aprovação**: Feedback visual (verde >= 700, laranja < 700)
 
-### 📚 Modo Flashcards
+### 📚 Modo Flashcards (NOVO v2.0)
 - ✅ **20 Termos Essenciais**: ACM, AMI, ASG, AZ, Artifact, Config, GuardDuty, KMS, Route 53, Shield, WAF, Trusted Advisor, CloudWatch, IAM, S3, Lambda, VPC, RDS, CloudFormation, CloudFront
-- ✅ **Efeito 3D**: Animação de flip ao clicar no cartão
+- ✅ **Efeito 3D Interativo**: Animação de flip ao clicar no cartão com perspectiva 3D
 - ✅ **Definições Oficiais**: Conteúdo alinhado com documentação AWS
 - ✅ **Navegação Intuitiva**: Contador de progresso e botões anterior/próximo
+- ✅ **Responsivo**: Otimizado para desktop, tablet e mobile
+- ✅ **Dark Mode**: Suporte completo ao tema escuro
 
 ### 🌍 Internacionalização
-- ✅ **Português (PT-BR)**: Idioma padrão
-- ✅ **Inglês (EN-US)**: Alternância em tempo real suportada por API de tradução automática
+- ✅ **Português (PT-BR)**: Idioma padrão com validação rigorosa
+- ✅ **Inglês (EN-US)**: Tradução automática via Google Translate API
 - ✅ **Sincronização**: IDs de questões idênticos entre idiomas
+- ✅ **Preservação de Termos**: Termos técnicos AWS mantidos em inglês
+- ✅ **Alternância em Tempo Real**: Botão de idioma na interface
 
 ### 📊 Análise de Desempenho
 - ✅ **Desempenho por Domínio**: Análise detalhada seguindo pesos oficiais AWS
 - ✅ **Relatórios Históricos**: Acompanhamento de evolução ao longo do tempo
-- ✅ **Recomendações Inteligentes**: IA identifica domínios fracos e sugere estudos
-- ✅ **Exportação PDF**: Relatórios profissionais para impressão
+- ✅ **Recomendações Inteligentes**: Sistema identifica domínios fracos e sugere estudos
+- ✅ **Escala Oficial**: Pontuação 100-1000 pontos (padrão AWS)
+- ✅ **Selo de Aprovação**: Badge visual verde (≥700) ou laranja (<700)
 
 ### 🎮 Gamificação
 - ✅ **Sistema de Streaks**: Ofensivas de estudo diário
@@ -75,6 +102,7 @@ Plataforma completa de preparação para exames de certificação AWS que combin
 - **Python 3.12+**: Linguagem principal do pipeline
 - **Google Gemini 2.5 Flash**: IA Generativa para criação de questões
 - **Pydantic V2**: Validação de schema e tipagem
+- **Deep Translator**: Tradução automática PT-BR → EN-US
 - **JSON**: Formato de armazenamento de dados
 
 ### Arquitetura
@@ -143,6 +171,8 @@ O simulador respeita rigorosamente a distribuição de domínios oficial da AWS:
   - Python 3.12+ (apenas para geração de questões)
   - Node.js (opcional, para ambiente de testes Jest e Tailwind)
 
+**💡 Dica**: Para começar rapidamente, veja o [Guia de Início Rápido](./docs/guia-inicio-rapido.md)
+
 ### Executar o Simulador (Frontend)
 
 1.  **Clone o repositório**:
@@ -189,11 +219,17 @@ O simulador respeita rigorosamente a distribuição de domínios oficial da AWS:
 3.  **Execute o pipeline**:
 
     ```bash
-    # Gerar e balancear questões para uma certificação:
+    # Gerar e balancear questões automaticamente:
     python scripts_python/auto_generate_questions.py clf-c02
 
-    # Traduzir as questões geradas para Inglês:
+    # Gerar quantidade específica rapidamente:
+    python scripts_python/quick_generate.py clf-c02 easy 10
+
+    # Traduzir as questões para Inglês:
     python scripts_python/translate_with_api.py clf-c02
+
+    # Traduzir todas as certificações:
+    python scripts_python/translate_with_api.py all
     ```
 
 -----
@@ -210,23 +246,41 @@ projeto-simulados-certificacao-aws/
 ├── 📂 data/                    # Banco de questões
 │   ├── clf-c02.json            # Cloud Practitioner (195)
 │   ├── clf-c02-en.json         # Cloud Practitioner (EN)
-│   ├── aif-c01.json            # AI Practitioner (195)
+│   ├── aif-c01.json            # AI Practitioner (143)
 │   ├── saa-c03.json            # Solutions Architect (195)
 │   ├── saa-c03-en.json         # Solutions Architect (EN)
 │   ├── dva-c02.json            # Developer Associate (195)
+│   ├── dva-c02-en.json         # Developer Associate (EN)
 │   └── 📂 backups/             # Backups de dados
 ├── 📂 scripts_python/          # Pipeline de IA e Automação
 │   ├── auto_generate_questions.py # Gerador e Balanceador
-│   ├── translate_with_api.py   # Tradutor PT-BR -> EN-US
+│   ├── quick_generate.py       # Geração rápida
+│   ├── translate_with_api.py   # Tradutor PT-BR → EN-US
+│   ├── translate_aws_questions.py # Tradutor baseado em padrões
+│   ├── generator.py            # Motor de geração com Gemini
 │   ├── analyzer.py             # Auditoria de Banco de Dados
 │   ├── sanity_check.py         # Validação de schema
 │   ├── aws_semantic_validator.py # Validação semântica
-│   └── duplicate_detector.py   # Detecção de duplicatas
+│   ├── duplicate_detector.py   # Detecção de duplicatas
+│   ├── pipeline_runner.py      # Orquestrador do pipeline
+│   ├── requirements.txt        # Dependências Python
+│   └── README.md               # Documentação do pipeline
+├── 📂 docs/                    # Documentação completa
+│   ├── atualizacoes-implementadas.md # Histórico de mudanças
+│   ├── guia-flashcards.md      # Guia do modo flashcards
+│   ├── guia-geracao.md         # Guia de geração de questões
+│   ├── status-traducao.md      # Status das traduções
+│   ├── checklist-validacao.md  # Checklist de qualidade
+│   ├── instrucoes-deploy.md    # Instruções de deploy
+│   └── resolucao-problemas.md  # Troubleshooting
 ├── package.json                # Configurações de testes (Jest)
+├── webpack.config.js           # Configuração do Webpack
 ├── index.html                  # Interface principal
 ├── style.css                   # Estilos customizados
 ├── sw.js                       # Service Worker (PWA)
 ├── manifest.json               # Manifesto PWA
+├── CHANGELOG.md                # Registro de mudanças
+├── .env                        # Variáveis de ambiente (API keys)
 └── README.md                   # Este arquivo
 ```
 
@@ -234,14 +288,14 @@ projeto-simulados-certificacao-aws/
 
 ## 🎓 Certificações Suportadas
 
-| Código | Nome | Questões | Status |
-|--------|------|----------|--------|
-| **CLF-C02** | AWS Certified Cloud Practitioner | 195 | ✅ Completo |
-| **SAA-C03** | AWS Certified Solutions Architect Associate | 195 | ✅ Completo |
-| **AIF-C01** | AWS Certified AI Practitioner | 195 | ✅ Completo |
-| **DVA-C02** | AWS Certified Developer Associate | 195 | ✅ Completo |
+| Código | Nome | Questões | Múltipla Resposta | Tradução EN |
+|--------|------|----------|-------------------|-------------|
+| **CLF-C02** | AWS Certified Cloud Practitioner | 195 | ✅ 5 questões | ✅ Completo |
+| **SAA-C03** | AWS Certified Solutions Architect Associate | 195 | - | ✅ Completo |
+| **AIF-C01** | AWS Certified AI Practitioner | 143 | ✅ 5 questões | 🚧 Pendente |
+| **DVA-C02** | AWS Certified Developer Associate | 195 | - | ✅ Completo |
 
-**Total**: 780 questões base validadas e balanceadas (Padrão Ouro).
+**Total**: 728 questões validadas e balanceadas | 10 questões de múltipla resposta
 
 -----
 
@@ -254,12 +308,17 @@ projeto-simulados-certificacao-aws/
   - Pesos de domínios conforme guias oficiais
   - Timer baseado nos exames reais
 
-### 2\. Banco de Dados "Padrão Ouro" e IA Generativa
+### 2\. Pipeline de IA Generativa Completo
 
-  - Pipeline automatizado com scripts Python robustos
-  - Distribuição perfeita de dificuldade (33% Fácil, 33% Média, 33% Difícil)
-  - Validação semântica e estrutural rígida
-  - Tradução automatizada com preservação de termos técnicos AWS
+  - Pipeline automatizado com scripts Python robustos e validações rigorosas
+  - **Motor Principal**: Google Gemini 2.5 Flash para geração de questões
+  - **Fallback Inteligente**: Groq (Llama 3.3 70B) ativado automaticamente quando quota esgota
+  - Validação semântica que rejeita questões diretas de definição
+  - Validação rigorosa de português brasileiro (rejeita anglicismos e termos de PT-PT)
+  - Balanceamento automático de dificuldade por certificação
+  - Tradução automatizada PT-BR → EN-US com preservação de 50+ termos técnicos AWS
+  - Detecção de duplicatas com similaridade < 85%
+  - Geração em lotes de 10 questões com retry automático
 
 ### 3\. Modo Flashcards Único
 
@@ -285,13 +344,17 @@ projeto-simulados-certificacao-aws/
 
 ## 📊 Estatísticas
 
-  - **780 questões base** validadas e revisadas
-  - **Perfeito Balanceamento** (65 Fáceis, 65 Médias, 65 Difíceis por certificação)
-  - **20 termos** no glossário de flashcards
-  - **4 certificações** oficiais AWS completas
-  - **2 idiomas** (PT-BR e EN-US) totalmente sincronizados
-  - **100% offline** após instalação
-  - **0 dependências** externas no frontend
+  - **728 questões** validadas e revisadas manualmente
+  - **10 questões de múltipla resposta** ("Escolha 2" ou "Escolha 3") - formato oficial AWS
+  - **20 termos AWS** no glossário de flashcards com efeito 3D interativo
+  - **4 certificações** oficiais AWS (CLF-C02, SAA-C03, AIF-C01, DVA-C02)
+  - **2 idiomas** (PT-BR e EN-US) com tradução automática via Google Translate
+  - **100% offline** após instalação como PWA (Progressive Web App)
+  - **0 dependências** externas no frontend (apenas CDNs para Tailwind e Font Awesome)
+  - **Escala oficial AWS** 100-1000 pontos (conversão automática)
+  - **2 motores de IA** (Gemini 2.5 Flash + Groq Llama 3.3 70B como fallback)
+  - **988 linhas** de código JavaScript no controller principal
+  - **50+ termos técnicos** AWS preservados na tradução automática
 
 -----
 
@@ -307,14 +370,18 @@ Teste a plataforma ao vivo:
 
 Para informações técnicas aprofundadas, consulte:
 
-  - **[Guia de Geração de Questões](https://www.google.com/search?q=./docs/guia-geracao.md)** - Como gerar e balancear questões com IA
-  - **[Status da Tradução](https://www.google.com/search?q=./docs/status-traducao.md)** - Progresso das traduções PT-BR → EN-US
-  - **[Resolução de Problemas Técnicos](https://www.google.com/search?q=./docs/resolucao-problemas.md)** - Soluções para problemas comuns de JS e CSS
-  - **[Checklist de Validação](https://www.google.com/search?q=./docs/checklist-validacao.md)** - Lista de verificação para garantir qualidade
-  - **[Instruções de Deploy](https://www.google.com/search?q=./docs/instrucoes-deploy.md)** - Como publicar o simulador no GitHub Pages
-  - **[Guia de Flashcards](https://www.google.com/search?q=./docs/guia-flashcards.md)** - Documentação do modo de revisão rápida
-  - **[Atualizações Implementadas](https://www.google.com/search?q=./docs/atualizacoes-implementadas.md)** - Histórico de melhorias e features
-  - **[Guia de Automação Python](https://www.google.com/search?q=./scripts_python/README.md)** - Pipeline completo de geração e auditoria de dados
+  - **[Guia de Início Rápido](./docs/guia-inicio-rapido.md)** - Comece a usar em 5 minutos
+  - **[Análise Completa do Projeto](./docs/analise-completa-projeto.md)** - Análise técnica detalhada de toda a arquitetura
+  - **[Métricas do Projeto](./docs/metricas-projeto.md)** - Estatísticas completas de código, dados e performance
+  - **[Resumo Executivo v2.0](./docs/resumo-executivo-v2.md)** - Visão geral executiva do projeto
+  - **[Guia de Geração de Questões](./docs/guia-geracao.md)** - Como gerar e balancear questões com IA
+  - **[Status da Tradução](./docs/status-traducao.md)** - Progresso das traduções PT-BR → EN-US
+  - **[Resolução de Problemas Técnicos](./docs/resolucao-problemas.md)** - Soluções para problemas comuns
+  - **[Checklist de Validação](./docs/checklist-validacao.md)** - Lista de verificação para garantir qualidade
+  - **[Instruções de Deploy](./docs/instrucoes-deploy.md)** - Como publicar o simulador no GitHub Pages
+  - **[Guia de Flashcards](./docs/guia-flashcards.md)** - Documentação do modo de revisão rápida 3D
+  - **[Atualizações Implementadas](./docs/atualizacoes-implementadas.md)** - Histórico completo de melhorias
+  - **[Guia de Automação Python](./scripts_python/README.md)** - Pipeline completo de geração e tradução
 
 -----
 
@@ -356,25 +423,29 @@ Este projeto é **educacional** e destinado a fins de portfólio técnico. Desen
 
 ## 📈 Roadmap
 
-### v2.1.0 (Próxima Release)
+### v2.1.0 (Planejado - Abril 2026)
 
-  - [ ] Mais 20 questões de múltipla resposta complexas (Escolha 3)
-  - [ ] Expansão do glossário para 40 termos
+  - [ ] Tradução completa do AIF-C01 para inglês
+  - [ ] Mais 10 questões de múltipla resposta complexas
+  - [ ] Expansão do glossário para 30 termos
   - [ ] Estatísticas de uso de flashcards no Dashboard
+  - [ ] Balanceamento completo de todas as certificações
 
-### v2.2.0 (Futuro)
+### v2.2.0 (Planejado - Maio 2026)
 
   - [ ] Sistema de marcação de flashcards "dominados"
   - [ ] Modo quiz rápido apenas com os termos do glossário
   - [ ] Exportação de flashcards para formato Anki
   - [ ] Integração com Google Analytics
+  - [ ] Flashcards específicos por certificação
 
-### v3.0.0 (Visão de Longo Prazo)
+### v3.0.0 (Planejado - Junho 2026)
 
   - [ ] Simulados adaptativos (CAT - Computer Adaptive Testing)
   - [ ] Sistema opcional de autenticação e backup em nuvem
   - [ ] Sincronização multi-dispositivo
   - [ ] Modo colaborativo/Desafio entre usuários
+  - [ ] Aplicativo mobile nativo
 
 -----
 

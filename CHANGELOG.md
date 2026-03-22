@@ -13,9 +13,10 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 #### Funcionalidades Principais
 - **Suporte a Questões de Múltipla Resposta**: Motor de quiz agora suporta questões "Escolha 2" ou "Escolha 3", idênticas aos exames oficiais AWS
-- **Modo Flashcards**: Sistema de revisão rápida com 20 termos AWS essenciais e efeito 3D de flip
-- **Escala Oficial AWS**: Pontuação convertida para escala 100-1000 pontos
-- **Selo de Aprovação**: Badge visual verde (>= 700) ou laranja (< 700) na tela de resultados
+- **Modo Flashcards 3D**: Sistema de revisão rápida com 20 termos AWS essenciais e efeito 3D de flip com perspectiva de 1000px
+- **Escala Oficial AWS**: Pontuação convertida para escala 100-1000 pontos (conversão: `(percentage / 100) * 900 + 100`)
+- **Selo de Aprovação**: Badge visual verde (≥ 700) ou laranja (< 700) na tela de resultados
+- **Fallback de IA**: Sistema Groq (Llama 3.3 70B) como backup quando quota do Gemini esgota
 
 #### Conteúdo
 - 5 novas questões de múltipla resposta para CLF-C02 (AWS Artifact, Config, Trusted Advisor, Shield/WAF, Route 53)
@@ -23,11 +24,12 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 - Glossário com 20 termos AWS essenciais (ACM, AMI, ASG, AZ, Artifact, Config, GuardDuty, KMS, Route 53, Shield, WAF, Trusted Advisor, CloudWatch, IAM, S3, Lambda, VPC, RDS, CloudFormation, CloudFront)
 
 #### Documentação
-- `ATUALIZACOES_IMPLEMENTADAS.md` - Documentação completa das mudanças
-- `GUIA_FLASHCARDS.md` - Guia de uso do modo flashcards
-- `CHECKLIST_VALIDACAO.md` - Checklist de testes
-- `RESUMO_EXECUTIVO.md` - Resumo executivo para apresentação
-- `INSTRUCOES_DEPLOY.md` - Instruções de deploy
+- `docs/analise-completa-projeto.md` - Análise técnica detalhada do projeto completo
+- `docs/resumo-executivo-v2.md` - Resumo executivo atualizado para v2.0
+- `docs/atualizacoes-implementadas.md` - Documentação completa das mudanças
+- `docs/guia-flashcards.md` - Guia de uso do modo flashcards
+- `docs/checklist-validacao.md` - Checklist de testes
+- `docs/instrucoes-deploy.md` - Instruções de deploy
 - `CHANGELOG.md` - Este arquivo
 - `test-validation.html` - Página de testes automatizados
 
@@ -85,13 +87,15 @@ e este projeto adere ao [Semantic Versioning](https://semver.org/lang/pt-BR/).
 
 ### 📊 Métricas
 
-- Total de questões: 536 (antes: 522)
+- Total de questões: 728 (antes: 718)
 - Questões de múltipla resposta: 10 (novo)
 - Termos no glossário: 20 (novo)
-- Arquivos modificados: 7
-- Arquivos criados: 7
+- Arquivos modificados: 7 (app.js, quizEngine.js, data.js, index.html, style.css, README.md, CHANGELOG.md)
+- Arquivos criados: 8 (7 documentos + test-validation.html)
 - Linhas de código adicionadas: ~800
-- Linhas de documentação adicionadas: ~2000
+- Linhas de documentação adicionadas: ~2500
+- Scripts Python: 7 (auto_generate, quick_generate, translate_with_api, generator, sanity_check, aws_semantic_validator, duplicate_detector)
+- Motores de IA: 2 (Gemini 2.5 Flash + Groq Llama 3.3 70B)
 
 ---
 
