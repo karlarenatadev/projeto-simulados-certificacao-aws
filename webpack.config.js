@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 module.exports = {
   mode: process.env.NODE_ENV || 'production',
-  entry: './src/app.js',
+  entry: './js/app.js',
   output: {
     filename: 'bundle.[contenthash:8].min.js',
     path: path.resolve(__dirname, 'dist'),
@@ -28,7 +28,9 @@ module.exports = {
     ]
   },
   devServer: {
-    static: './',
+    static: {
+      directory: path.resolve(__dirname, './')
+    },
     port: 8080,
     compress: true
   },

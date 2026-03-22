@@ -90,7 +90,7 @@ async function startQuiz() {
         const result = await engine.loadQuestions(certId, currentCertInfo.domains, filters, uiState.language);
 
         if (!result.success) {
-            alert(result.message);
+            alert(`❌ Erro ao carregar o banco de questões: ${result.message}\n\nVerifique se o ficheiro de dados existe e tente novamente.`);
             return;
         }
 
@@ -122,7 +122,8 @@ async function startQuiz() {
         loadQuestionUI();
 
     } catch (err) {
-        alert("Erro ao iniciar o simulado: " + err.message);
+        alert(`❌ Erro ao carregar o banco de questões\n\nNão foi possível iniciar o simulado. Verifique se os ficheiros de dados estão disponíveis.\n\nDetalhes técnicos: ${err.message}`);
+        console.error('Erro ao iniciar quiz:', err);
     } finally {
         btn.disabled = false;
         btn.innerHTML = 'Iniciar Simulação <i class="fa-solid fa-arrow-right ml-2"></i>';
