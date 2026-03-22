@@ -171,7 +171,7 @@ REGRAS ADICIONAIS:
     try:
         # Usando a API nova para forçar a saída em JSON estruturado com base numa lista de AWSQuestion
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-2.5-pro",
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
@@ -197,7 +197,9 @@ REGRAS ADICIONAIS:
         
         if questoes_rejeitadas > 0:
             print(f"  📊 Validação: {len(questoes_validas)} aceitas, {questoes_rejeitadas} rejeitadas")
-        
+            
+        print("⏳ Pausa de segurança (15s) para resfriar a API do Gemini...")
+        time.sleep(15)
         # Retorna apenas questões válidas
         return questoes_validas if questoes_validas else None
 

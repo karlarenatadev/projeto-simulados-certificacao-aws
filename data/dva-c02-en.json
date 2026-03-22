@@ -307,5 +307,335 @@
     "correct": 0,
     "explanation": "AWS Systems Manager Session Manager enables secure access to EC2 instances, in both public and private subnets, without the need to open inbound SSH ports, manage SSH keys, or use bastion hosts. It uses the SSM agent installed on the instance to establish a session. Amazon EC2 Instance Connect is for SSH access via browser or SSH client, but still requires SSH keys and gateways or a bastion host for private subnets. AWS Direct Connect and AWS VPN Client are network connectivity services between your on-premises network and AWS, not for direct access to individual EC2 instances without other tools.",
     "id": 1012
+  },
+  {
+    "id": 1013,
+    "domain": "seguranca-app",
+    "subdomain": "criptografia",
+    "service": "AWS KMS",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "KMS",
+      "Envelope Encryption",
+      "S3"
+    ],
+    "question": "An application encrypts large volumes of video data locally before uploading it to Amazon S3. The application uses the AWS KMS API. What is the most efficient and correct approach for this client-side encryption scenario?",
+    "options": [
+      "Use the KMS Encrypt API by passing the video file directly in the request.",
+      "Use the GenerateDataKey API to obtain a data key, encrypt the video locally, and discard the key in plain text.",
+      "Use the GenerateRandom API to create a key, encrypt the video, and send the plaintext key to S3.",
+      "Configuse S3 to use SSE-KMS and upload the video in plain text."
+    ],
+    "correct": 1,
+    "explanation": "For large volumes of data, Envelope Encryption must be used. KMS does not support direct encryption of large files (4KB limit in the Encrypt API). The GenerateDataKey API returns a data key that is used to efficiently encrypt data locally."
+  },
+  {
+    "id": 1014,
+    "domain": "resolucao-problemas",
+    "subdomain": "serverless",
+    "service": "AWS Lambda",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Lambda",
+      "SQS",
+      "Error Handling"
+    ],
+    "question": "An AWS Lambda function processes messages from a standard Amazon SQS queue in batches of 10. If the function fails to process the 8th message in the batch but processes the other 9 successfully, what happens by default if the developer has not implemented batch failure handling (ReportBatchItemFailures)?",
+    "options": [
+      "Only the 8th message returns to the SQS queue.",
+      "All 10 messages are deleted from the queue automatically.",
+      "The entire batch of 10 messages returns to the queue and becomes visible again after the visibility time expires.",
+      "The 8th message is automatically sent to a Dead Letter Queue (DLQ)."
+    ],
+    "correct": 2,
+    "explanation": "By default, if the Lambda function returns an error when processing an SQS batch, the entire batch fails and the messages become visible again in the queue, which means that the 9 successfully processed messages will be processed again (duplicate processing)."
+  },
+  {
+    "id": 1015,
+    "domain": "implementacao",
+    "subdomain": "cicd",
+    "service": "AWS CodeBuild",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "CI/CD",
+      "CodeBuild",
+      "Configuração"
+    ],
+    "question": "A developer is setting up a new build project in AWS CodeBuild. Where should the developer place the configuration file that contains the commands and compilation phases by default?",
+    "options": [
+      "In the appspec.yml file in the root of the source code.",
+      "In the buildspec.yml file in the source code root.",
+      "In an S3 bucket statically referenced in environment variables.",
+      "Directly in the AWS CodePipeline pipeline configuration."
+    ],
+    "correct": 1,
+    "explanation": "AWS CodeBuild looks by default for a file called buildspec.yml in the root of the source code directory to know which commands to run at each phase (pre_build, build, post_build)."
+  },
+  {
+    "id": 1016,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "api",
+    "service": "API Gateway",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "API Gateway",
+      "Lambda Proxy",
+      "Troubleshooting"
+    ],
+    "question": "A developer has configured a REST API on Amazon API Gateway with Lambda proxy integration (Lambda Proxy Integration). The Lambda function processes the request successfully and does not throw exceptions, but the client receives a '502 Bad Gateway' error. What is the most likely cause for this error?",
+    "options": [
+      "The Lambda function does not have the correct IAM permissions to be invoked by API Gateway.",
+      "API Gateway is experiencing throttling (rate limiting) due to too many requests.",
+      "The Lambda function is not returning the response in the required JSON format, with the 'statusCode' and 'body' fields.",
+      "The Cross-Origin Resource Sharing (CORS) feature was not enabled in the API Gateway options."
+    ],
+    "correct": 2,
+    "explanation": "In the Lambda proxy integration, API Gateway requires the Lambda function to return the response in a strict format (a JSON object containing 'isBase64Encoded', 'statusCode', 'headers', and 'body'). If the format is incorrect, API Gateway returns a 502 Bad Gateway error."
+  },
+  {
+    "id": 1017,
+    "domain": "seguranca-app",
+    "subdomain": "identidade",
+    "service": "Amazon ECS",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "ECS",
+      "IAM Roles",
+      "Docker"
+    ],
+    "question": "An application developed in Node.js and running in Docker containers on Amazon ECS needs read access to a bucket on Amazon S3. How should the developer grant these permissions following the practice of least privilege?",
+    "options": [
+      "Insert an IAM user's credentials directly into the Dockerfile.",
+      "Store the IAM access keys in AWS Secrets Manager and inject them into the container as environment variables.",
+      "Attach an IAM role to the underlying EC2 instance that hosts the ECS container.",
+      "Create an IAM Task Role with permission for S3 and associate it with the ECS Task Definition."
+    ],
+    "correct": 3,
+    "explanation": "The security best practice for providing AWS credentials to containers in ECS is to use IAM Roles for Tasks. This isolates permissions at the container level rather than granting permissions to the entire host EC2 instance."
+  },
+  {
+    "id": 1018,
+    "domain": "seguranca-app",
+    "subdomain": "api-security",
+    "service": "API Gateway",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "API Gateway",
+      "Cognito",
+      "Custom Authorizer"
+    ],
+    "question": "A developer is creating a REST API on Amazon API Gateway and needs to authenticate users using a third-party identity provider that uses custom OAuth 2.0 tokens. What is the most appropriate way to implement this authentication?",
+    "options": [
+      "Configuse an Amazon Cognito User Pool Authorizer.",
+      "Create an Lambda Authorizer (Custom Authorizer) to validate the tokens.",
+      "Enable IAM Authorization in the API and pass credentials in the headers.",
+      "Use AWS Secrets Manager to store valid API tokens."
+    ],
+    "correct": 1,
+    "explanation": "Because the provider uses custom OAuth 2.0 tokens that are not natively supported by Cognito directly, an Lambda Authorizer is the correct choice. It allows you to run custom code to verify the third-party provider's token before allowing access to the API."
+  },
+  {
+    "id": 1019,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "banco-de-dados",
+    "service": "DynamoDB",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "DynamoDB",
+      "DAX",
+      "Caching"
+    ],
+    "question": "A gaming application has a table in Amazon DynamoDB with a high volume of reads for a real-time leaderboard. The developers noticed that the response time of the readings is in the milliseconds, but they need to reduce it to microseconds. Which service should be used?",
+    "options": [
+      "Amazon ElastiCache for Redis",
+      "Amazon CloudFront",
+      "Amazon DynamoDB Accelerator (DAX)",
+      "AWS Global Accelerator"
+    ],
+    "correct": 2,
+    "explanation": "The Amazon DynamoDB Accelerator (DAX) is a fully managed, highly available, in-memory cache built specifically for DynamoDB. It provides a millisecond to microsecond performance improvement without requiring changes to application logic (supported by the DynamoDB API)."
+  },
+  {
+    "id": 1020,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "mensageria",
+    "service": "Amazon SQS",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "SQS",
+      "Visibility Timeout",
+      "Workers"
+    ],
+    "question": "A worker reads messages from a standard Amazon SQS queue. Processing a message typically takes 30 seconds, but occasionally a message requires 2 minutes to process. The queue's Visibility Timeout is set to 1 minute. What should the developer do to prevent slower messages from being processed twice?",
+    "options": [
+      "Increase the message retention time (Message Retention Period) in the queue.",
+      "Make the worker call the ChangeMessageVisibility API to extend the timeout while it is still processing.",
+      "Change the default queue to an SQS FIFO queue.",
+      "Configuse a Dead Letter Queue (DLQ) to capture slow messages."
+    ],
+    "correct": 1,
+    "explanation": "If processing takes longer than the Visibility Timeout, the message will become visible again and another worker can pick it up. To avoid this dynamically without increasing the global timeout (which would delay messages that fail quickly), the worker must call ChangeMessageVisibility to gain more time."
+  },
+  {
+    "id": 1021,
+    "domain": "resolucao-problemas",
+    "subdomain": "monitoramento",
+    "service": "Amazon ECS",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "ECS",
+      "Fargate",
+      "CloudWatch"
+    ],
+    "question": "A developer deployed an application to an Amazon ECS cluster using the AWS Fargate release type. The application is crashing intermittently, and the developer needs to analyze the containers' standard output (stdout) logs. How should logs be routed to Amazon CloudWatch?",
+    "options": [
+      "Install the CloudWatch Agent in the application's Dockerfile.",
+      "Access the underlying EC2 instance via SSH and read the files in /var/log/containers.",
+      "Configuse the 'awslogs' log driver in the Task Definition.",
+      "Enable CloudTrail Data Events to capture container logs."
+    ],
+    "correct": 2,
+    "explanation": "In AWS Fargate, you don't manage the underlying EC2 instances, so you can't SSH or install agents on the host. The native way to send standard output (stdout/stderr) from containers to CloudWatch Logs is to configure the 'awslogs' log driver within the Task Definition."
+  },
+  {
+    "id": 1022,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "armazenamento",
+    "service": "Amazon S3",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "S3",
+      "CORS",
+      "Frontend"
+    ],
+    "question": "A frontend application hosted at 'https://my-app.com' attempts to upload files directly to an Amazon S3 bucket via PUT Ajax requests (JavaScript), but the browser blocks the request by returning a same-origin policy error. What should be configured in S3 to resolve the issue?",
+    "options": [
+      "Disable Block Public Access for the S3 bucket.",
+      "Configcreate a Bucket Policy allowing s3:PutObject from any source.",
+      "Add a CORS (Cross-Origin Resource Sharing) configuration to the bucket allowing PUT methods from the 'https://my-app.com' origin.",
+      "Enable S3 Transfer Acceleration on the bucket."
+    ],
+    "correct": 2,
+    "explanation": "The same origin policy error occurs because the frontend (hosted in one domain) is calling an S3 API (which is in another domain). S3 requires that CORS (Cross-Origin Resource Sharing) be enabled specifically to allow cross-domain requests, defining the origins and methods (PUT, GET, etc.) allowed."
+  },
+  {
+    "id": 1023,
+    "domain": "implementacao",
+    "subdomain": "iac",
+    "service": "AWS SAM",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "SAM",
+      "CloudFormation",
+      "Serverless"
+    ],
+    "question": "A developer is using the AWS Serverless Application Model (SAM) to define an AWS function, Lambda, an API Gateway endpoint, and an DynamoDB table. Which special section of the SAM template allows you to package the application and publish it as a unified serverless environment?",
+    "options": [
+      "Mandatory use of the 'AWS::Serverless::Function' type and the 'Transform: AWS::Serverless-2016-10-31' directive.",
+      "The declaration of variables in the samconfig.toml file.",
+      "Creating a swagger.yaml file in the same folder as the template.",
+      "The use of the 'AWS::CloudFormation::Macro' resource."
+    ],
+    "correct": 0,
+    "explanation": "The AWS SAM is an extension of the AWS CloudFormation. In order for CloudFormation to know that it is reading a SAM template (which uses simplified types like AWS::Serverless::Function), you must include the declaration 'Transform: AWS::Serverless-2016-10-31' at the beginning of the YAML file."
+  },
+  {
+    "id": 1024,
+    "domain": "resolucao-problemas",
+    "subdomain": "performance",
+    "service": "Amazon Kinesis",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Kinesis Data Streams",
+      "Throttling",
+      "Sharding"
+    ],
+    "question": "A producer application sends thousands of records per second to an Kinesis Data Stream, but started receiving the 'ProvisionedThroughputExceededException' error. The data rate sent by a specific partition key (Partition Key) is disproportionately high (Hot Shard). What is the correct architectural solution?",
+    "options": [
+      "Increase the maximum number of retries in the AWS SDK to 100.",
+      "Change the capacity mode from Kinesis to On-Demand.",
+      "Use a UUID generator or add a random suffix to the Partition Key to distribute data more evenly across shards.",
+      "Configuse a Dead Letter Queue in Kinesis to handle rejected records."
+    ],
+    "correct": 2,
+    "explanation": "A 'Hot Shard' occurs when too much data is mapped to the same Partition Key, exceeding the 1 MB/s write limit for a single shard. Adding a random element to the Partition Key distributes records across multiple shards, resolving the bottleneck."
+  },
+  {
+    "id": 1025,
+    "domain": "seguranca-app",
+    "subdomain": "iam",
+    "service": "IAM",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "IAM",
+      "EC2",
+      "Roles"
+    ],
+    "question": "An application running on an Amazon EC2 instance needs to download private objects from an S3 bucket and read messages from an SQS queue. How should credentials be managed?",
+    "options": [
+      "Create an IAM user, generate Access Keys and add them to ~/.aws/credentials of the EC2 instance.",
+      "Attach an IAM Role to the EC2 instance using an Instance Profile.",
+      "Store an administrator's keys in Amazon S3 and download via User Data at EC2 startup.",
+      "Enable AWS Security Token Service (STS) on Security Group of EC2."
+    ],
+    "correct": 1,
+    "explanation": "The absolute AWS best practice for EC2 instances is to never store long-term static credentials (Access Keys). You must use an IAM Role (through an EC2 Instance Profile), which the EC2 service uses to assume temporary STS credentials transparently to applications running on the instance."
+  },
+  {
+    "id": 1026,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "banco-de-dados",
+    "service": "Amazon ElastiCache",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "ElastiCache",
+      "Redis",
+      "Memcached"
+    ],
+    "question": "A developer needs to store user session data for a web application running on Auto Scaling. The caching solution must support complex data structures (such as lists and sets), have automatic failover, and optional persistence. Which service/engine is appropriate?",
+    "options": [
+      "Amazon ElastiCache for Memcached",
+      "Amazon DynamoDB with DAX",
+      "Amazon ElastiCache for Redis",
+      "Amazon RDS Multi-AZ"
+    ],
+    "correct": 2,
+    "explanation": "ElastiCache for Redis supports complex data structures (hashes, lists, sets), automatic failover (via Multi-AZ with replication), and has persistence capabilities (snapshots). Memcached is much simpler (just key-value strings) and does not support native high availability and failover."
+  },
+  {
+    "id": 1027,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "mensageria",
+    "service": "Amazon SNS",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "SNS",
+      "SQS",
+      "Fanout"
+    ],
+    "question": "An e-commerce application generates an 'OrderCreated' event. This event needs to trigger two different microservices in a parallel and asynchronous way: the 'Billing Service' and the 'Inventory Service'. If one of the services fails, messages cannot be lost. Which architectural pattern should the developer use?",
+    "options": [
+      "An SNS Topic sending direct requests via HTTP/HTTPS to microservices APIs.",
+      "An SQS Queue where the two services read the same queue concurrently.",
+      "A continuous flow of Kinesis Data Firehose mapped to Lambda functions.",
+      "Fan-out Pattern: An SNS Topic with subscriptions pointing to two distinct SQS Queues (one for each microservice)."
+    ],
+    "correct": 3,
+    "explanation": "The Fan-out pattern (SNS -> SQS) is the recommended solution. An Amazon SNS topic receives the message and distributes it to multiple independent SQS queues. This ensures that the services receive separate copies of the event and process it at their own pace, and that messages are not lost if one of the systems is temporarily down."
   }
 ]

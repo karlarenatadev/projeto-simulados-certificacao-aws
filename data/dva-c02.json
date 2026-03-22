@@ -307,5 +307,605 @@
     "correct": 0,
     "explanation": "AWS Systems Manager Session Manager permite acesso seguro a instâncias EC2, tanto em sub-redes públicas quanto privadas, sem a necessidade de abrir portas SSH de entrada, gerenciar chaves SSH ou usar bastion hosts. Ele utiliza o agente SSM instalado na instância para estabelecer uma sessão. Amazon EC2 Instance Connect é para acesso SSH via navegador ou cliente SSH, mas ainda requer chaves SSH e portas de entrada ou um bastion host para sub-redes privadas. AWS Direct Connect e AWS VPN Client são serviços de conectividade de rede entre a rede on-premises e a AWS, não para acesso direto a instâncias EC2 individuais sem outras ferramentas.",
     "id": 1012
+  },
+  {
+    "id": 1013,
+    "domain": "seguranca-app",
+    "subdomain": "criptografia",
+    "service": "AWS KMS",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "KMS",
+      "Envelope Encryption",
+      "S3"
+    ],
+    "question": "Uma aplicação criptografa grandes volumes de dados de vídeo localmente antes de fazer o upload para o Amazon S3. A aplicação utiliza a API do AWS KMS. Qual é a abordagem mais eficiente e correta para este cenário de criptografia do lado do cliente?",
+    "options": [
+      "Usar a API Encrypt do KMS passando o ficheiro de vídeo diretamente na requisição.",
+      "Usar a API GenerateDataKey para obter uma chave de dados, criptografar o vídeo localmente e descartar a chave em texto plano.",
+      "Usar a API GenerateRandom para criar uma chave, criptografar o vídeo e enviar a chave em texto plano para o S3.",
+      "Configurar o S3 para usar SSE-KMS e fazer o upload do vídeo em texto plano."
+    ],
+    "correct": 1,
+    "explanation": "Para grandes volumes de dados, deve-se usar a Criptografia de Envelope (Envelope Encryption). O KMS não suporta a criptografia direta de ficheiros grandes (limite de 4KB na API Encrypt). A API GenerateDataKey devolve uma chave de dados que é usada para criptografar os dados localmente de forma eficiente."
+  },
+  {
+    "id": 1014,
+    "domain": "resolucao-problemas",
+    "subdomain": "serverless",
+    "service": "AWS Lambda",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Lambda",
+      "SQS",
+      "Error Handling"
+    ],
+    "question": "Uma função AWS Lambda processa mensagens de uma fila do Amazon SQS padrão em lotes de 10. Se a função falhar ao processar a 8ª mensagem do lote, mas processar as outras 9 com sucesso, o que acontece por padrão se o desenvolvedor não tiver implementado o tratamento de falhas em lote (ReportBatchItemFailures)?",
+    "options": [
+      "Apenas a 8ª mensagem retorna para a fila do SQS.",
+      "Todas as 10 mensagens são excluídas da fila automaticamente.",
+      "Todo o lote de 10 mensagens retorna para a fila e fica visível novamente após o tempo de visibilidade expirar.",
+      "A 8ª mensagem é enviada automaticamente para uma Dead Letter Queue (DLQ)."
+    ],
+    "correct": 2,
+    "explanation": "Por padrão, se a função Lambda retornar um erro ao processar um lote do SQS, todo o lote falha e as mensagens tornam-se visíveis novamente na fila, o que significa que as 9 mensagens processadas com sucesso serão processadas novamente (processamento duplicado)."
+  },
+  {
+    "id": 1015,
+    "domain": "implementacao",
+    "subdomain": "cicd",
+    "service": "AWS CodeBuild",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "CI/CD",
+      "CodeBuild",
+      "Configuração"
+    ],
+    "question": "Um desenvolvedor está a configurar um novo projeto de compilação no AWS CodeBuild. Onde o desenvolvedor deve colocar o ficheiro de configuração que contém os comandos e as fases de compilação por padrão?",
+    "options": [
+      "No ficheiro appspec.yml na raiz do código-fonte.",
+      "No ficheiro buildspec.yml na raiz do código-fonte.",
+      "Num bucket do S3 referenciado de forma estática nas variáveis de ambiente.",
+      "Diretamente na configuração de pipeline do AWS CodePipeline."
+    ],
+    "correct": 1,
+    "explanation": "O AWS CodeBuild procura por padrão um ficheiro chamado buildspec.yml na raiz do diretório de código-fonte para saber quais comandos executar em cada fase (pre_build, build, post_build)."
+  },
+  {
+    "id": 1016,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "api",
+    "service": "API Gateway",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "API Gateway",
+      "Lambda Proxy",
+      "Troubleshooting"
+    ],
+    "question": "Um desenvolvedor configurou uma API REST no Amazon API Gateway com integração de proxy do Lambda (Lambda Proxy Integration). A função Lambda processa a requisição com sucesso e não lança exceções, mas o cliente recebe um erro '502 Bad Gateway'. Qual é a causa mais provável para este erro?",
+    "options": [
+      "A função Lambda não tem as permissões corretas do IAM para ser invocada pelo API Gateway.",
+      "O API Gateway está a sofrer throttling (limitação de taxa) devido a muitas requisições.",
+      "A função Lambda não está a retornar a resposta no formato JSON exigido, com os campos 'statusCode' e 'body'.",
+      "O recurso CORS (Cross-Origin Resource Sharing) não foi habilitado nas opções do API Gateway."
+    ],
+    "correct": 2,
+    "explanation": "Na integração de proxy do Lambda, o API Gateway exige que a função Lambda devolva a resposta num formato rigoroso (um objeto JSON contendo 'isBase64Encoded', 'statusCode', 'headers' e 'body'). Se o formato estiver incorreto, o API Gateway devolve um erro 502 Bad Gateway."
+  },
+  {
+    "id": 1017,
+    "domain": "seguranca-app",
+    "subdomain": "identidade",
+    "service": "Amazon ECS",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "ECS",
+      "IAM Roles",
+      "Docker"
+    ],
+    "question": "Uma aplicação desenvolvida em Node.js e executada em contentores Docker no Amazon ECS precisa de acesso de leitura a um bucket do Amazon S3. Como o desenvolvedor deve conceder estas permissões seguindo a prática de menor privilégio (least privilege)?",
+    "options": [
+      "Inserir as credenciais de um utilizador do IAM diretamente no ficheiro Dockerfile.",
+      "Armazenar as chaves de acesso do IAM no AWS Secrets Manager e injetá-las no contentor como variáveis de ambiente.",
+      "Anexar uma IAM Role à instância EC2 subjacente que hospeda o contentor do ECS.",
+      "Criar uma IAM Task Role com permissão para o S3 e associá-la à definição de tarefa (Task Definition) do ECS."
+    ],
+    "correct": 3,
+    "explanation": "A melhor prática de segurança para fornecer credenciais AWS a contentores no ECS é usar IAM Roles for Tasks (Task Roles). Isso isola as permissões ao nível do contentor em vez de conceder permissões a toda a instância EC2 hospedeira."
+  },
+  {
+    "id": 1018,
+    "domain": "seguranca-app",
+    "subdomain": "api-security",
+    "service": "API Gateway",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "API Gateway",
+      "Cognito",
+      "Custom Authorizer"
+    ],
+    "question": "Um desenvolvedor está a criar uma API REST no Amazon API Gateway e precisa de autenticar os utilizadores usando um provedor de identidade de terceiros que utiliza tokens OAuth 2.0 personalizados. Qual é a forma mais adequada de implementar esta autenticação?",
+    "options": [
+      "Configurar um Amazon Cognito User Pool Authorizer.",
+      "Criar um Lambda Authorizer (Custom Authorizer) para validar os tokens.",
+      "Habilitar o IAM Authorization na API e passar as credenciais nos cabeçalhos.",
+      "Usar o AWS Secrets Manager para armazenar os tokens válidos da API."
+    ],
+    "correct": 1,
+    "explanation": "Como o provedor usa tokens OAuth 2.0 personalizados que não são nativamente suportados pelo Cognito de forma direta, um Lambda Authorizer é a escolha correta. Ele permite executar código personalizado para verificar o token do provedor terceirizado antes de permitir o acesso à API."
+  },
+  {
+    "id": 1019,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "banco-de-dados",
+    "service": "DynamoDB",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "DynamoDB",
+      "DAX",
+      "Caching"
+    ],
+    "question": "Uma aplicação de jogos tem uma tabela no Amazon DynamoDB com alto volume de leituras para um ranking em tempo real (leaderboard). Os desenvolvedores notaram que o tempo de resposta das leituras está na casa dos milissegundos, mas eles precisam reduzi-lo para microssegundos. Qual serviço deve ser utilizado?",
+    "options": [
+      "Amazon ElastiCache for Redis",
+      "Amazon CloudFront",
+      "Amazon DynamoDB Accelerator (DAX)",
+      "AWS Global Accelerator"
+    ],
+    "correct": 2,
+    "explanation": "O Amazon DynamoDB Accelerator (DAX) é um cache em memória totalmente gerenciado, altamente disponível e construído especificamente para o DynamoDB. Ele oferece uma melhoria de desempenho de milissegundos para microssegundos, sem exigir mudanças na lógica da aplicação (compatível com a API do DynamoDB)."
+  },
+  {
+    "id": 1020,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "mensageria",
+    "service": "Amazon SQS",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "SQS",
+      "Visibility Timeout",
+      "Workers"
+    ],
+    "question": "Um worker lê mensagens de uma fila padrão do Amazon SQS. O processamento de uma mensagem costuma demorar 30 segundos, mas ocasionalmente, uma mensagem exige 2 minutos para ser processada. O Visibility Timeout da fila está configurado para 1 minuto. O que o desenvolvedor deve fazer para evitar que as mensagens mais lentas sejam processadas duas vezes?",
+    "options": [
+      "Aumentar o tempo de retenção da mensagem (Message Retention Period) na fila.",
+      "Fazer o worker chamar a API ChangeMessageVisibility para estender o timeout enquanto ainda estiver processando.",
+      "Mudar a fila padrão para uma fila SQS FIFO.",
+      "Configurar uma Dead Letter Queue (DLQ) para capturar mensagens lentas."
+    ],
+    "correct": 1,
+    "explanation": "Se o processamento levar mais tempo que o Visibility Timeout, a mensagem ficará visível de novo e outro worker poderá pegá-la. Para evitar isso dinamicamente sem aumentar o timeout global (o que atrasaria mensagens que falham rápido), o worker deve chamar ChangeMessageVisibility para ganhar mais tempo."
+  },
+  {
+    "id": 1021,
+    "domain": "resolucao-problemas",
+    "subdomain": "monitoramento",
+    "service": "Amazon ECS",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "ECS",
+      "Fargate",
+      "CloudWatch"
+    ],
+    "question": "Um desenvolvedor implantou uma aplicação num cluster do Amazon ECS usando o tipo de lançamento AWS Fargate. A aplicação está a falhar de forma intermitente, e o desenvolvedor precisa analisar os logs da saída padrão (stdout) dos contentores. Como os logs devem ser roteados para o Amazon CloudWatch?",
+    "options": [
+      "Instalar o CloudWatch Agent no Dockerfile da aplicação.",
+      "Acessar a instância EC2 subjacente via SSH e ler os arquivos em /var/log/containers.",
+      "Configurar o log driver 'awslogs' na definição da tarefa (Task Definition).",
+      "Habilitar o CloudTrail Data Events para capturar os logs dos contentores."
+    ],
+    "correct": 2,
+    "explanation": "No AWS Fargate, você não gerencia as instâncias EC2 subjacentes, então não pode usar SSH ou instalar agentes no host. A forma nativa de enviar a saída padrão (stdout/stderr) dos contentores para o CloudWatch Logs é configurar o driver de log 'awslogs' dentro da Task Definition."
+  },
+  {
+    "id": 1022,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "armazenamento",
+    "service": "Amazon S3",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "S3",
+      "CORS",
+      "Frontend"
+    ],
+    "question": "Uma aplicação frontend hospedada em 'https://meu-app.com' tenta fazer o upload de arquivos diretamente para um bucket do Amazon S3 via requisições PUT Ajax (JavaScript), mas o navegador bloqueia a requisição retornando um erro de política de mesma origem. O que deve ser configurado no S3 para resolver o problema?",
+    "options": [
+      "Desativar o Block Public Access do bucket S3.",
+      "Configurar uma política de bucket (Bucket Policy) permitindo s3:PutObject de qualquer origem.",
+      "Adicionar uma configuração de CORS (Cross-Origin Resource Sharing) no bucket permitindo métodos PUT da origem 'https://meu-app.com'.",
+      "Habilitar o S3 Transfer Acceleration no bucket."
+    ],
+    "correct": 2,
+    "explanation": "O erro de política de mesma origem ocorre porque o frontend (hospedado num domínio) está chamando uma API do S3 (que está noutro domínio). O S3 requer que o CORS (Cross-Origin Resource Sharing) seja ativado especificamente para permitir requisições de domínios cruzados, definindo as origens e os métodos (PUT, GET, etc.) permitidos."
+  },
+  {
+    "id": 1023,
+    "domain": "implementacao",
+    "subdomain": "iac",
+    "service": "AWS SAM",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "SAM",
+      "CloudFormation",
+      "Serverless"
+    ],
+    "question": "Um desenvolvedor está a usar o AWS SAM (Serverless Application Model) para definir uma função AWS Lambda, um endpoint do API Gateway e uma tabela do DynamoDB. Qual seção especial do template do SAM permite empacotar a aplicação e publicá-la como um ambiente serverless unificado?",
+    "options": [
+      "O uso obrigatório do tipo 'AWS::Serverless::Function' e a diretiva 'Transform: AWS::Serverless-2016-10-31'.",
+      "A declaração de variáveis no ficheiro samconfig.toml.",
+      "A criação de um arquivo swagger.yaml na mesma pasta do template.",
+      "O uso do recurso 'AWS::CloudFormation::Macro'."
+    ],
+    "correct": 0,
+    "explanation": "O AWS SAM é uma extensão do AWS CloudFormation. Para que o CloudFormation saiba que está a ler um template do SAM (que usa tipos simplificados como AWS::Serverless::Function), é obrigatório incluir a declaração 'Transform: AWS::Serverless-2016-10-31' no início do ficheiro YAML."
+  },
+  {
+    "id": 1024,
+    "domain": "resolucao-problemas",
+    "subdomain": "performance",
+    "service": "Amazon Kinesis",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "Kinesis Data Streams",
+      "Throttling",
+      "Sharding"
+    ],
+    "question": "Uma aplicação produtora envia milhares de registros por segundo para um Kinesis Data Stream, mas começou a receber o erro 'ProvisionedThroughputExceededException'. A taxa de dados enviada por uma chave de partição específica (Partition Key) é desproporcionalmente alta (Hot Shard). Qual é a solução arquitetônica correta?",
+    "options": [
+      "Aumentar o número máximo de retentativas no SDK da AWS para 100.",
+      "Mudar o modo de capacidade do Kinesis para On-Demand.",
+      "Usar um gerador de UUID ou adicionar um sufixo aleatório à Partition Key para distribuir os dados mais uniformemente entre os shards.",
+      "Configurar um Dead Letter Queue no Kinesis para lidar com os registros rejeitados."
+    ],
+    "correct": 2,
+    "explanation": "Um 'Hot Shard' ocorre quando muitos dados são mapeados para a mesma chave de partição (Partition Key), excedendo o limite de 1 MB/s de gravação de um shard único. Adicionar um elemento aleatório à chave de partição (Partition Key) distribui os registros por vários shards, resolvendo o gargalo."
+  },
+  {
+    "id": 1025,
+    "domain": "seguranca-app",
+    "subdomain": "iam",
+    "service": "IAM",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "IAM",
+      "EC2",
+      "Roles"
+    ],
+    "question": "Uma aplicação rodando numa instância Amazon EC2 precisa baixar objetos privados de um bucket S3 e ler mensagens de uma fila do SQS. Como as credenciais devem ser gerenciadas?",
+    "options": [
+      "Criar um utilizador IAM, gerar chaves de acesso (Access Keys) e adicioná-las no ~/.aws/credentials da instância EC2.",
+      "Anexar uma IAM Role à instância EC2 usando um Instance Profile.",
+      "Armazenar as chaves de um administrador no Amazon S3 e fazer o download via User Data no boot da EC2.",
+      "Habilitar o AWS Security Token Service (STS) no Security Group da EC2."
+    ],
+    "correct": 1,
+    "explanation": "A melhor prática absoluta da AWS para instâncias EC2 é nunca armazenar credenciais estáticas de longo prazo (Access Keys). Deve-se usar um IAM Role (através de um EC2 Instance Profile), que o serviço EC2 usa para assumir credenciais temporárias do STS de forma transparente para as aplicações rodando na instância."
+  },
+  {
+    "id": 1026,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "banco-de-dados",
+    "service": "Amazon ElastiCache",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "ElastiCache",
+      "Redis",
+      "Memcached"
+    ],
+    "question": "Um desenvolvedor precisa armazenar dados de sessão do usuário para uma aplicação web rodando em Auto Scaling. A solução de cache precisa suportar estruturas de dados complexas (como listas e conjuntos), possuir failover automático e persistência opcional. Qual serviço/motor é apropriado?",
+    "options": [
+      "Amazon ElastiCache for Memcached",
+      "Amazon DynamoDB com DAX",
+      "Amazon ElastiCache for Redis",
+      "Amazon RDS Multi-AZ"
+    ],
+    "correct": 2,
+    "explanation": "O ElastiCache for Redis suporta estruturas de dados complexas (hashes, listas, sets), failover automático (via Multi-AZ com replicação) e possui recursos de persistência (snapshots). O Memcached é muito mais simples (apenas chave-valor de strings) e não suporta alta disponibilidade e failover nativos."
+  },
+  {
+    "id": 1027,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "mensageria",
+    "service": "Amazon SNS",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "SNS",
+      "SQS",
+      "Fanout"
+    ],
+    "question": "Uma aplicação de e-commerce gera um evento 'PedidoCriado'. Este evento precisa acionar dois microsserviços distintos de forma paralela e assíncrona: o 'Serviço de Faturamento' e o 'Serviço de Inventário'. Se um dos serviços falhar, as mensagens não podem ser perdidas. Qual padrão de arquitetura o desenvolvedor deve usar?",
+    "options": [
+      "Um Tópico do SNS enviando requisições diretas via HTTP/HTTPS para APIs dos microsserviços.",
+      "Uma Fila do SQS onde os dois serviços leem a mesma fila de forma concorrente.",
+      "Um fluxo contínuo do Kinesis Data Firehose mapeado para funções Lambda.",
+      "Padrão Fan-out: Um Tópico do SNS com assinaturas (subscriptions) apontando para duas Filas SQS distintas (uma para cada microsserviço)."
+    ],
+    "correct": 3,
+    "explanation": "O padrão Fan-out (SNS -> SQS) é a solução recomendada. Um tópico do Amazon SNS recebe a mensagem e a distribui para múltiplas filas SQS independentes. Isso garante que os serviços recebam cópias separadas do evento e processem no seu próprio ritmo, e que as mensagens não sejam perdidas caso um dos sistemas esteja temporariamente inativo."
+  },
+  {
+    "id": 1028,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "serverless",
+    "service": "AWS Lambda",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "tags": ["Lambda", "Handler", "Context"],
+    "question": "Um desenvolvedor está a escrever uma função AWS Lambda em Python. Quais são os dois argumentos padrão que a função handler (manipulador) deve aceitar para ser executada corretamente pela AWS?",
+    "options": [
+      "request e response",
+      "event e context",
+      "input e output",
+      "payload e callback"
+    ],
+    "correct": 1,
+    "explanation": "Na AWS Lambda (para Python, Node.js e outras linguagens), a função handler recebe sempre dois argumentos: o 'event' (que contém os dados da requisição ou gatilho) e o 'context' (que contém informações de tempo de execução e metadados da função)."
+  },
+  {
+    "id": 1029,
+    "domain": "implementacao",
+    "subdomain": "cicd",
+    "service": "AWS CodeCommit",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": ["CodeCommit", "Git", "Version Control"],
+    "question": "Uma equipa de desenvolvimento migrou o seu repositório de código para o AWS CodeCommit. Um desenvolvedor fez alterações locais e precisa enviá-las para o repositório remoto na AWS. Qual comando padrão do Git deve ser utilizado?",
+    "options": [
+      "git commit -m 'mensagem'",
+      "aws codecommit upload",
+      "git push",
+      "git fetch"
+    ],
+    "correct": 2,
+    "explanation": "O AWS CodeCommit funciona como qualquer outro repositório Git padrão. Após fazer o commit localmente, o comando 'git push' é usado para enviar as alterações para o repositório remoto na AWS."
+  },
+  {
+    "id": 1030,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "api",
+    "service": "API Gateway",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": ["API Gateway", "Stages", "Deployment"],
+    "question": "Um desenvolvedor criou uma nova versão de uma API no Amazon API Gateway. Como ele pode disponibilizar esta nova versão para testes num ambiente isolado sem afetar os utilizadores de produção?",
+    "options": [
+      "Criar uma nova API REST separada.",
+      "Implantar a API num novo Stage (Estágio) chamado 'teste' ou 'dev'.",
+      "Usar o AWS API Gateway Versioning Manager.",
+      "Clonar o recurso raiz da API."
+    ],
+    "correct": 1,
+    "explanation": "No API Gateway, os 'Stages' (Estágios) são referências independentes a diferentes implantações (deployments) de uma API. É a prática padrão criar stages como 'dev', 'test' e 'prod' para gerir diferentes ambientes da mesma API."
+  },
+  {
+    "id": 1031,
+    "domain": "resolucao-problemas",
+    "subdomain": "monitoramento",
+    "service": "Amazon CloudWatch",
+    "difficulty": "easy",
+    "type": "multiple-choice",
+    "tags": ["CloudWatch", "Metrics", "Resolution"],
+    "question": "Qual é a granularidade de tempo padrão para métricas básicas enviadas pelos serviços da AWS (como o Amazon EC2) para o Amazon CloudWatch?",
+    "options": [
+      "1 segundo",
+      "1 minuto",
+      "5 minutos",
+      "1 hora"
+    ],
+    "correct": 2,
+    "explanation": "A monitorização básica (Basic Monitoring) envia pontos de dados de métricas para o CloudWatch a cada 5 minutos. A monitorização detalhada (Detailed Monitoring), que tem custos adicionais, envia dados a cada 1 minuto."
+  },
+  {
+    "id": 1032,
+    "domain": "seguranca-app",
+    "subdomain": "iam",
+    "service": "AWS IAM",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": ["IAM", "Execution Role", "Lambda"],
+    "question": "Para que uma função AWS Lambda consiga gravar logs no Amazon CloudWatch e ler ficheiros do Amazon S3, onde o desenvolvedor deve anexar as políticas de permissão?",
+    "options": [
+      "Na Resource Policy do CloudWatch.",
+      "Nas variáveis de ambiente da Lambda.",
+      "Na Execution Role (Função de Execução) anexada à Lambda.",
+      "No Security Group associado à Lambda."
+    ],
+    "correct": 2,
+    "explanation": "A Execution Role (Função de Execução) é uma IAM Role que concede à função Lambda as permissões necessárias para interagir com outros serviços da AWS, como gravar logs no CloudWatch e ler do S3."
+  },
+  {
+    "id": 1033,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "armazenamento",
+    "service": "Amazon S3",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": ["S3", "Multipart Upload", "Performance"],
+    "question": "Uma aplicação web precisa fazer o upload de ficheiros de vídeo de 10 GB para o Amazon S3. A rede dos utilizadores é instável, e os uploads falham frequentemente a meio do processo. Qual recurso do S3 o desenvolvedor deve usar para melhorar a resiliência e a velocidade?",
+    "options": [
+      "S3 Transfer Acceleration",
+      "S3 Multipart Upload",
+      "AWS Direct Connect",
+      "S3 Select"
+    ],
+    "correct": 1,
+    "explanation": "O S3 Multipart Upload permite fazer o upload de um único objeto como um conjunto de partes. Pode fazer o upload dessas partes de forma independente e em paralelo. Se a transmissão de uma parte falhar, é possível retransmitir apenas essa parte, sendo ideal para ficheiros grandes e redes instáveis."
+  },
+  {
+    "id": 1034,
+    "domain": "implementacao",
+    "subdomain": "iac",
+    "service": "AWS SAM",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": ["SAM", "Testing", "CLI"],
+    "question": "Um desenvolvedor está a usar o AWS SAM CLI para criar uma aplicação serverless. Ele quer testar uma função Lambda específica localmente na sua máquina antes de fazer o deploy. Qual comando do SAM CLI ele deve usar?",
+    "options": [
+      "sam local start-api",
+      "sam deploy --local",
+      "sam build --test",
+      "sam local invoke"
+    ],
+    "correct": 3,
+    "explanation": "O comando 'sam local invoke' é usado para invocar uma função Lambda específica uma única vez de forma local (usando um contentor Docker), permitindo passar um payload de evento simulado para testar o código."
+  },
+  {
+    "id": 1035,
+    "domain": "seguranca-app",
+    "subdomain": "identidade",
+    "service": "Amazon Cognito",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": ["Cognito", "User Pools", "Tokens"],
+    "question": "Após a autenticação num Amazon Cognito User Pool, um aplicativo web recebe três tokens: ID Token, Access Token e Refresh Token. O ID Token expirou. Qual é a prática recomendada para obter um novo token sem forçar o utilizador a fazer login novamente?",
+    "options": [
+      "Fazer uma chamada para a API GetCredentialsForIdentity usando o Access Token.",
+      "Usar o Refresh Token para solicitar novos ID Token e Access Token ao Cognito.",
+      "Aumentar o tempo de expiração do token diretamente no console do Cognito.",
+      "Usar o AWS STS AssumeRoleWithWebIdentity passando o token expirado."
+    ],
+    "correct": 1,
+    "explanation": "O Refresh Token é projetado especificamente para obter novos Access Tokens e ID Tokens quando estes expiram, garantindo que o utilizador mantenha a sua sessão ativa sem precisar inserir as credenciais novamente."
+  },
+  {
+    "id": 1036,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "banco-de-dados",
+    "service": "DynamoDB",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": ["DynamoDB", "Indexes", "LSI vs GSI"],
+    "question": "Um desenvolvedor percebeu que precisa fazer consultas numa tabela do DynamoDB usando um atributo que não faz parte da chave primária (Partition Key). Ele decidiu criar um índice. Qual é uma limitação exclusiva do Local Secondary Index (LSI) em comparação com o Global Secondary Index (GSI)?",
+    "options": [
+      "O LSI tem os seus próprios limites provisionados de leitura e gravação.",
+      "O LSI suporta consistência de leitura fortemente consistente (Strongly Consistent Reads).",
+      "O LSI só pode ser criado no momento em que a tabela é criada.",
+      "O LSI pode ter uma chave de partição (Partition Key) diferente da tabela base."
+    ],
+    "correct": 2,
+    "explanation": "Os Local Secondary Indexes (LSI) só podem ser criados no momento da criação da tabela e não podem ser modificados ou excluídos depois. Já os Global Secondary Indexes (GSI) podem ser criados, modificados ou excluídos a qualquer momento após a tabela já existir."
+  },
+  {
+    "id": 1037,
+    "domain": "resolucao-problemas",
+    "subdomain": "performance",
+    "service": "DynamoDB",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": ["DynamoDB", "Capacity", "RCU"],
+    "question": "Uma aplicação faz uma leitura fortemente consistente (Strongly Consistent Read) de um item que pesa 6 KB no Amazon DynamoDB. Quantas Unidades de Capacidade de Leitura (RCUs) são consumidas por esta operação?",
+    "options": [
+      "1 RCU",
+      "2 RCUs",
+      "3 RCUs",
+      "6 RCUs"
+    ],
+    "correct": 1,
+    "explanation": "No DynamoDB, 1 RCU permite uma leitura fortemente consistente de até 4 KB. Como o item tem 6 KB, ele é arredondado para o próximo múltiplo de 4 KB (que é 8 KB). Portanto, são necessárias 2 RCUs (8 / 4 = 2)."
+  },
+  {
+    "id": 1038,
+    "domain": "seguranca-app",
+    "subdomain": "criptografia",
+    "service": "AWS KMS",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": ["KMS", "Key Policy", "IAM"],
+    "question": "Um utilizador do IAM tem a permissão 'kms:Decrypt' anexada à sua política de identidade. No entanto, ao tentar descriptografar um ficheiro, ele recebe um erro de 'Access Denied'. Qual é a causa arquitetural provável para este bloqueio?",
+    "options": [
+      "A chave KMS é gerida pela AWS (AWS Managed Key) e não pode ser usada por utilizadores IAM.",
+      "A política da chave KMS (Key Policy) não autorizou explicitamente a conta da AWS ou o utilizador IAM a usar a chave.",
+      "O utilizador esqueceu de incluir o parâmetro '--encryption-context' na chamada da API.",
+      "Apenas a Role de raiz (Root) tem permissão para usar as APIs de descriptografia no KMS."
+    ],
+    "correct": 1,
+    "explanation": "No AWS KMS, diferentemente da maioria dos serviços AWS, as permissões do IAM não são suficientes por si só. A Política de Chave (Key Policy) do KMS *deve* delegar permissões para as políticas do IAM ou conceder permissão explícita ao utilizador; caso contrário, o acesso será negado, mesmo que a política do IAM permita."
+  },
+  {
+    "id": 1039,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "orquestracao",
+    "service": "AWS Step Functions",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": ["Step Functions", "Task Token", "Asynchronous"],
+    "question": "Num fluxo do AWS Step Functions, um estado de tarefa (Task state) precisa invocar um serviço externo e pausar a execução até que o serviço externo devolva uma resposta assíncrona (como uma aprovação humana num sistema de terceiros). Como o desenvolvedor deve configurar este estado?",
+    "options": [
+      "Configurar o estado com um timeout de 365 dias.",
+      "Usar o padrão de integração '.waitForTaskToken' e passar o token gerado para o serviço externo.",
+      "Criar um estado de 'Wait' seguido de um estado de 'Choice' em loop até obter resposta.",
+      "Invocar uma Lambda de polling constante consumindo recursos de execução."
+    ],
+    "correct": 1,
+    "explanation": "O padrão WaitForTaskToken (.waitForTaskToken) faz com que o Step Functions pause a execução do fluxo. Ele envia um token exclusivo ao serviço chamado. O fluxo só prossegue quando o serviço externo chama as APIs SendTaskSuccess ou SendTaskFailure devolvendo esse mesmo token."
+  },
+  {
+    "id": 1040,
+    "domain": "resolucao-problemas",
+    "subdomain": "serverless",
+    "service": "AWS Lambda",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": ["Lambda", "VPC", "Networking"],
+    "question": "Uma função AWS Lambda foi configurada para ser executada dentro de uma VPC privada para acessar um banco de dados Amazon RDS. Subitamente, a Lambda parou de conseguir comunicar com uma API pública na internet (ex: Stripe). Qual é a solução para restaurar o acesso à internet da Lambda?",
+    "options": [
+      "Atribuir um Elastic IP (EIP) diretamente à Elastic Network Interface (ENI) da Lambda.",
+      "Garantir que as sub-redes da Lambda na VPC tenham uma rota apontando para um NAT Gateway numa sub-rede pública.",
+      "Alterar as configurações da Lambda para usar uma sub-rede pública e um Internet Gateway.",
+      "Habilitar o recurso 'Public IPv4 Address' nas configurações avançadas da função Lambda."
+    ],
+    "correct": 1,
+    "explanation": "Quando uma função Lambda é conectada a uma VPC, ela perde o acesso padrão à internet. Para recuperar esse acesso, a Lambda deve ser colocada numa sub-rede privada com uma tabela de roteamento (Route Table) que direcione o tráfego de saída (0.0.0.0/0) para um NAT Gateway localizado numa sub-rede pública."
+  },
+  {
+    "id": 1041,
+    "domain": "implementacao",
+    "subdomain": "cicd",
+    "service": "AWS CodePipeline",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": ["CodePipeline", "Cross-Account", "KMS"],
+    "question": "Um desenvolvedor está a construir um pipeline no AWS CodePipeline na Conta A que precisa implantar (deploy) recursos na Conta B via AWS CloudFormation. Quais componentes são essenciais para que os artefatos possam ser partilhados de forma segura entre as contas?",
+    "options": [
+      "Um bucket S3 com Block Public Access desativado e um IAM User comum compartilhado.",
+      "Um bucket S3 na Conta A, uma chave AWS KMS gerenciada pelo cliente (CMK), e Cross-Account IAM Roles.",
+      "Usar o AWS Secrets Manager para replicar os artefatos compactados entre as regiões.",
+      "Apenas configurar uma Role na Conta B com 'AdministratorAccess'."
+    ],
+    "correct": 1,
+    "explanation": "Para partilha de artefatos cross-account no CodePipeline, o bucket S3 de artefatos (na Conta A) deve usar uma Chave KMS Gerida pelo Cliente (Customer Managed Key), e não a chave padrão do S3. A Conta B precisa ter permissões tanto na Role do IAM para acessar o bucket quanto na Key Policy do KMS para descriptografar o artefato."
+  },
+  {
+    "id": 1042,
+    "domain": "desenvolvimento-servicos",
+    "subdomain": "banco-de-dados",
+    "service": "DynamoDB",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": ["DynamoDB", "Pagination", "Query"],
+    "question": "Uma operação de Query no DynamoDB retorna um grande conjunto de dados que excede 1 MB. O SDK da AWS interrompe a resposta. Como o desenvolvedor deve recuperar o restante dos dados na sua aplicação?",
+    "options": [
+      "Usar o parâmetro 'Limit' definido como 0 para ignorar a limitação de 1 MB.",
+      "Fazer uma nova requisição Query passando o valor de 'LastEvaluatedKey' retornado na requisição anterior como 'ExclusiveStartKey'.",
+      "Mudar de uma operação de Query para uma operação de Scan paralela.",
+      "Aumentar o valor das RCUs (Read Capacity Units) provisionadas da tabela."
+    ],
+    "correct": 1,
+    "explanation": "O DynamoDB pagina automaticamente os resultados de Query ou Scan que excedem 1 MB. Quando isso ocorre, a resposta inclui um elemento 'LastEvaluatedKey'. Para obter a próxima página de resultados, a aplicação deve enviar uma nova requisição usando esse valor como 'ExclusiveStartKey'."
   }
 ]
