@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderGamification();
     updateLanguageButtonUI();
     initPWAInstall();
+    renderGlobalRadarChart(); // Renderiza gráfico global na inicialização
 
     const certSelect = document.getElementById('certification-select');
     
@@ -371,6 +372,7 @@ function finishQuiz() {
     saveQuizResult();
     updateHistoryDisplay();
     loadLastScore();
+    renderGlobalRadarChart(); // Atualiza gráfico global após completar quiz
     showResultsScreen();
 }
 
@@ -711,6 +713,7 @@ function clearHistory() {
     if(confirm("Tem certeza que deseja apagar todo o histórico de simulados?")) {
         storageManager.clearHistory();
         updateHistoryDisplay();
+        renderGlobalRadarChart(); // Atualiza gráfico global após limpar histórico
         
         const insightEl = document.getElementById('dynamic-insight');
         if (insightEl) insightEl.innerHTML = "Comece o simulado para que a IA mapeie seu perfil de conhecimento.";
@@ -848,10 +851,16 @@ function toggleDarkMode() {
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('aws_sim_theme', isDark ? 'dark' : 'light');
     
-    // Atualiza o gráfico se estiver visível
+    // Atualiza os gráficos se estiverem visíveis
     if (window.radarChartInstance) {
         const results = engine.getFinalResults();
-        renderRadarChart(results);
+        if (results) {
+            renderRadarChart(results);
+        }
+    }
+    
+    if (window.globalRadarChartInstance) {
+        renderGlobalRadarChart();
     }
 }
 
@@ -884,6 +893,7 @@ function goHome() {
     if (uiState.timerInterval) clearInterval(uiState.timerInterval);
     showScreen('start');
     loadLastScore();
+    renderGlobalRadarChart(); // Atualiza gráfico global ao voltar para home
 }
 
 function retakeQuiz() {
@@ -977,13 +987,34 @@ function updateFlashcardButtons() {
 // ============================================================================
 // 9. GRÁFICO DE RADAR (CHART.JS)
 // ============================================================================
-function renderRadarChart(results) {
+async function renderRadarChart(results) {
+    console.log('🎯 renderRadarChart chamado', results);
+    
     const canvas = document.getElementById('radarChart');
-    if (!canvas) return;
+    console.log('📊 Canvas encontrado:', canvas);
+    
+    if (!canvas) {
+        console.error('❌ Canvas radarChart não encontrado no DOM');
+        return;
+    }
+
+    // Aguarda Chart.js estar disponível
+    if (typeof Chart === 'undefined') {
+        console.log('⏳ Aguardando Chart.js carregar...');
+        if (window.chartJsLoaded) {
+            await window.chartJsLoaded;
+        } else {
+            console.error('❌ Chart.js não está disponível');
+            return;
+        }
+    }
+
+    console.log('✅ Chart.js disponível, criando gráfico...');
 
     // Destrói gráfico anterior se existir
     if (window.radarChartInstance) {
         window.radarChartInstance.destroy();
+        console.log('🗑️ Gráfico anterior destruído');
     }
 
     const ctx = canvas.getContext('2d');
@@ -991,6 +1022,11 @@ function renderRadarChart(results) {
     const data = [];
 
     // Coleta dados dos domínios
+    if (!uiState.currentCertificationInfo || !uiState.currentCertificationInfo.domains) {
+        console.error('❌ Informações de certificação não disponíveis');
+        return;
+    }
+
     uiState.currentCertificationInfo.domains.forEach(domain => {
         const scoreData = results.domainScores[domain.id];
         if (scoreData && scoreData.total > 0) {
@@ -1000,97 +1036,370 @@ function renderRadarChart(results) {
         }
     });
 
+    console.log('📈 Dados do gráfico:', { labels, data });
+
+    if (labels.length === 0) {
+        console.warn('⚠️ Nenhum dado disponível para o gráfico');
+        return;
+    }
+
     // Detecta modo escuro
     const isDarkMode = document.documentElement.classList.contains('dark');
     const textColor = isDarkMode ? '#e5e7eb' : '#374151';
     const gridColor = isDarkMode ? 'rgba(148, 163, 184, 0.2)' : 'rgba(0, 0, 0, 0.1)';
 
-    // Configuração do gráfico
-    window.radarChartInstance = new Chart(ctx, {
-        type: 'radar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Desempenho (%)',
-                data: data,
-                backgroundColor: 'rgba(255, 153, 0, 0.2)',
-                borderColor: '#ff9900',
-                borderWidth: 2,
-                pointBackgroundColor: '#ff9900',
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: '#ff9900',
-                pointRadius: 4,
-                pointHoverRadius: 6
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            scales: {
-                r: {
-                    beginAtZero: true,
-                    max: 100,
-                    ticks: {
-                        stepSize: 20,
-                        color: textColor,
-                        backdropColor: 'transparent',
-                        callback: function(value) {
-                            return value + '%';
-                        },
-                        font: {
-                            size: 11
-                        }
-                    },
-                    grid: {
-                        color: gridColor
-                    },
-                    angleLines: {
-                        color: gridColor
-                    },
-                    pointLabels: {
-                        color: textColor,
-                        font: {
-                            size: 12,
-                            weight: '500'
-                        }
-                    }
-                }
+    try {
+        // Configuração do gráfico
+        window.radarChartInstance = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Desempenho (%)',
+                    data: data,
+                    backgroundColor: 'rgba(255, 153, 0, 0.2)',
+                    borderColor: '#ff9900',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ff9900',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#ff9900',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
             },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                    labels: {
-                        color: textColor,
-                        font: {
-                            size: 13,
-                            weight: 'bold'
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            stepSize: 20,
+                            color: textColor,
+                            backdropColor: 'transparent',
+                            callback: function(value) {
+                                return value + '%';
+                            },
+                            font: {
+                                size: 11
+                            }
                         },
-                        padding: 15
+                        grid: {
+                            color: gridColor
+                        },
+                        angleLines: {
+                            color: gridColor
+                        },
+                        pointLabels: {
+                            color: textColor,
+                            font: {
+                                size: 12,
+                                weight: '500'
+                            }
+                        }
                     }
                 },
-                tooltip: {
-                    backgroundColor: isDarkMode ? 'rgba(30, 41, 59, 0.95)' : 'rgba(0, 0, 0, 0.8)',
-                    titleColor: '#fff',
-                    bodyColor: '#fff',
-                    borderColor: '#ff9900',
-                    borderWidth: 1,
-                    padding: 12,
-                    displayColors: true,
-                    callbacks: {
-                        label: function(context) {
-                            return context.dataset.label + ': ' + context.parsed.r + '%';
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: textColor,
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            },
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: isDarkMode ? 'rgba(30, 41, 59, 0.95)' : 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: '#ff9900',
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: true,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.r + '%';
+                            }
                         }
                     }
                 }
             }
-        }
-    });
+        });
+        
+        console.log('✅ Gráfico criado com sucesso!', window.radarChartInstance);
+    } catch (error) {
+        console.error('❌ Erro ao criar gráfico:', error);
+    }
 }
 
 // ============================================================================
-// 10. PWA INSTALL BUTTON
+// 10. DASHBOARD DE DESEMPENHO GLOBAL
+// ============================================================================
+
+/**
+ * Calcula estatísticas globais de desempenho agregando todo o histórico
+ * @returns {Object} Objeto com domainStats (porcentagens por domínio) e summary (estatísticas gerais)
+ */
+function calculateGlobalDomainStats() {
+    console.log('📊 Calculando estatísticas globais...');
+    
+    const history = storageManager.getHistory();
+    
+    if (!history || history.length === 0) {
+        console.log('⚠️ Nenhum histórico encontrado');
+        return null;
+    }
+
+    // Estrutura para acumular dados por domínio
+    const domainAccumulator = {};
+    let totalQuizzes = 0;
+    let totalQuestionsAnswered = 0;
+    let totalCorrect = 0;
+
+    // Itera sobre todo o histórico
+    history.forEach(quiz => {
+        if (!quiz.domainScores) return;
+        
+        totalQuizzes++;
+        totalQuestionsAnswered += quiz.total || 0;
+        totalCorrect += quiz.score || 0;
+
+        // Acumula dados por domínio
+        Object.entries(quiz.domainScores).forEach(([domainId, scoreData]) => {
+            if (!domainAccumulator[domainId]) {
+                domainAccumulator[domainId] = {
+                    total: 0,
+                    correct: 0,
+                    name: null
+                };
+            }
+            
+            domainAccumulator[domainId].total += scoreData.total || 0;
+            domainAccumulator[domainId].correct += scoreData.correct || 0;
+        });
+    });
+
+    // Calcula porcentagens por domínio
+    const domainStats = {};
+    const labels = [];
+    const percentages = [];
+
+    Object.entries(domainAccumulator).forEach(([domainId, data]) => {
+        if (data.total > 0) {
+            const percentage = (data.correct / data.total) * 100;
+            
+            // Tenta encontrar o nome do domínio em qualquer certificação
+            let domainName = domainId;
+            for (const certPath of Object.values(certificationPaths)) {
+                const domain = certPath.domains.find(d => d.id === domainId);
+                if (domain) {
+                    domainName = domain.name;
+                    break;
+                }
+            }
+            
+            domainStats[domainId] = {
+                name: domainName,
+                percentage: percentage.toFixed(1),
+                total: data.total,
+                correct: data.correct
+            };
+            
+            labels.push(domainName);
+            percentages.push(percentage.toFixed(1));
+        }
+    });
+
+    const avgScore = totalQuestionsAnswered > 0 
+        ? ((totalCorrect / totalQuestionsAnswered) * 100).toFixed(1)
+        : 0;
+
+    const summary = {
+        totalQuizzes,
+        totalQuestionsAnswered,
+        totalCorrect,
+        avgScore
+    };
+
+    console.log('✅ Estatísticas calculadas:', { domainStats, summary, labels, percentages });
+
+    return {
+        domainStats,
+        summary,
+        labels,
+        percentages
+    };
+}
+
+/**
+ * Renderiza o gráfico de radar global na tela inicial
+ */
+async function renderGlobalRadarChart() {
+    console.log('🌍 Renderizando gráfico global...');
+    
+    const canvas = document.getElementById('globalRadarChart');
+    const emptyState = document.getElementById('global-chart-empty');
+    const chartContainer = document.getElementById('global-chart-container');
+    const statsContainer = document.getElementById('global-stats-summary');
+    
+    if (!canvas) {
+        console.error('❌ Canvas globalRadarChart não encontrado');
+        return;
+    }
+
+    // Calcula estatísticas
+    const stats = calculateGlobalDomainStats();
+
+    // Se não há dados, mostra estado vazio
+    if (!stats || stats.labels.length === 0) {
+        console.log('📭 Sem dados - mostrando estado vazio');
+        if (emptyState) emptyState.classList.remove('hidden');
+        if (chartContainer) chartContainer.classList.add('hidden');
+        if (statsContainer) statsContainer.classList.add('hidden');
+        return;
+    }
+
+    // Esconde estado vazio e mostra gráfico
+    if (emptyState) emptyState.classList.add('hidden');
+    if (chartContainer) chartContainer.classList.remove('hidden');
+    if (statsContainer) statsContainer.classList.remove('hidden');
+
+    // Atualiza estatísticas resumidas
+    const totalQuizzesEl = document.getElementById('total-quizzes');
+    const avgScoreEl = document.getElementById('avg-score');
+    const totalQuestionsEl = document.getElementById('total-questions');
+    
+    if (totalQuizzesEl) totalQuizzesEl.textContent = stats.summary.totalQuizzes;
+    if (avgScoreEl) avgScoreEl.textContent = stats.summary.avgScore + '%';
+    if (totalQuestionsEl) totalQuestionsEl.textContent = stats.summary.totalQuestionsAnswered;
+
+    // Aguarda Chart.js estar disponível
+    if (typeof Chart === 'undefined') {
+        console.log('⏳ Aguardando Chart.js carregar...');
+        if (window.chartJsLoaded) {
+            await window.chartJsLoaded;
+        } else {
+            console.error('❌ Chart.js não está disponível');
+            return;
+        }
+    }
+
+    // Destrói gráfico anterior se existir
+    if (window.globalRadarChartInstance) {
+        window.globalRadarChartInstance.destroy();
+        console.log('🗑️ Gráfico global anterior destruído');
+    }
+
+    const ctx = canvas.getContext('2d');
+
+    // Detecta modo escuro
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    const textColor = isDarkMode ? '#e5e7eb' : '#374151';
+    const gridColor = isDarkMode ? 'rgba(148, 163, 184, 0.2)' : 'rgba(0, 0, 0, 0.1)';
+
+    try {
+        // Configuração do gráfico global
+        window.globalRadarChartInstance = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: stats.labels,
+                datasets: [{
+                    label: 'Desempenho Médio (%)',
+                    data: stats.percentages,
+                    backgroundColor: 'rgba(255, 153, 0, 0.2)',
+                    borderColor: '#ff9900',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ff9900',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#ff9900',
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            stepSize: 20,
+                            color: textColor,
+                            backdropColor: 'transparent',
+                            callback: function(value) {
+                                return value + '%';
+                            },
+                            font: {
+                                size: 11
+                            }
+                        },
+                        grid: {
+                            color: gridColor
+                        },
+                        angleLines: {
+                            color: gridColor
+                        },
+                        pointLabels: {
+                            color: textColor,
+                            font: {
+                                size: 11,
+                                weight: '500'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            color: textColor,
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            padding: 10
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: isDarkMode ? 'rgba(30, 41, 59, 0.95)' : 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: '#ff9900',
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: true,
+                        callbacks: {
+                            label: function(context) {
+                                const domainId = Object.keys(stats.domainStats)[context.dataIndex];
+                                const domainData = stats.domainStats[domainId];
+                                return [
+                                    context.dataset.label + ': ' + context.parsed.r + '%',
+                                    `${domainData.correct} de ${domainData.total} questões`
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        console.log('✅ Gráfico global criado com sucesso!', window.globalRadarChartInstance);
+    } catch (error) {
+        console.error('❌ Erro ao criar gráfico global:', error);
+    }
+}
+
+// ============================================================================
+// 11. PWA INSTALL BUTTON
 // ============================================================================
 let deferredPrompt = null;
 
