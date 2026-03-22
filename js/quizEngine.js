@@ -155,12 +155,24 @@ export class QuizEngine {
     }
 
     _shuffleOptions(q) {
-        let opts = q.options.map((t, i) => ({ t, isCorrect: i === q.correct }));
-        opts = this._shuffleArray(opts);
-        return { 
-            ...q, 
-            options: opts.map(o => o.t), 
-            correct: opts.findIndex(o => o.isCorrect) 
-        };
-    }
+            const isMulti = Array.isArray(q.correct);
+            
+            // Mapeia as opções mantendo a referência se estão corretas
+            let opts = q.options.map((t, i) => ({ 
+                t, 
+                isCorrect: isMulti ? q.correct.includes(i) : i === q.correct 
+            }));
+            
+            // Embaralha
+            opts = this._shuffleArray(opts);
+            
+            // Reconstrói a propriedade 'correct' com os novos índices
+            return { 
+                ...q, 
+                options: opts.map(o => o.t), 
+                correct: isMulti 
+                    ? opts.map((o, index) => o.isCorrect ? index : -1).filter(idx => idx !== -1)
+                    : opts.findIndex(o => o.isCorrect) 
+            };
+        }
 }

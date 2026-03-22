@@ -827,6 +827,8 @@ async function updateDifficultyFilters(certId) {
             const allOption = document.querySelector('input[name="difficulty-level"][value="all"]');
             if (allOption) allOption.checked = true;
         }
+    } catch (error) {
+        console.error('Erro ao atualizar filtros de dificuldade:', error);
     }
 }
 
