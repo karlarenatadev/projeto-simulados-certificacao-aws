@@ -8,14 +8,15 @@ INSTALAÇÃO:
     pip install deep-translator
 
 USO:
-    python translate_with_api.py clf-c02
-    python translate_with_api.py all
+    python scripts_python/translate_with_api.py clf-c02
+    python scripts_python/translate_with_api.py all
 """
 
 import json
 import sys
 import re
 import time
+import os
 from pathlib import Path
 
 try:
@@ -45,7 +46,6 @@ AWS_TECHNICAL_TERMS = [
     "CapEx", "OpEx", "SQL", "NoSQL", "DDoS", "XSS", "HTML", "CSS", "JavaScript",
 ]
 
-
 def protect_aws_terms(text):
     """
     Substitui termos técnicos AWS por placeholders antes da tradução.
@@ -61,7 +61,6 @@ def protect_aws_terms(text):
     
     return protected_text, placeholders
 
-
 def restore_aws_terms(text, placeholders):
     """
     Restaura os termos técnicos AWS após a tradução.
@@ -70,7 +69,6 @@ def restore_aws_terms(text, placeholders):
     for placeholder, term in placeholders.items():
         restored_text = restored_text.replace(placeholder, term)
     return restored_text
-
 
 def translate_text(text, translator):
     """
@@ -92,8 +90,8 @@ def translate_text(text, translator):
         # Restaura termos técnicos
         final_text = restore_aws_terms(translated, placeholders)
         
-        # Pequeno delay para evitar rate limiting
-        time.sleep(0.1)
+        # Delay seguro para evitar bloqueio do Google Translate
+        time.sleep(1)
         
         return final_text
         
@@ -101,7 +99,6 @@ def translate_text(text, translator):
         print(f"\n   ⚠️  Erro na tradução: {e}")
         print(f"   Retornando texto original...")
         return text
-
 
 def translate_question_obj(question, translator):
     """
@@ -123,18 +120,14 @@ def translate_question_obj(question, translator):
     if "explanation" in translated:
         translated["explanation"] = translate_text(translated["explanation"], translator)
     
-    # Mantém campos intactos: domain, subdomain, service, difficulty, type, tags, correct
-    
     return translated
-
 
 def process_file(cert_id):
     """
-    Processa um arquivo de certificação específico.
+    Processa um arquivo de certificação específico de forma incremental.
     """
     if not TRANSLATOR_AVAILABLE:
         print(f"\n❌ Não é possível traduzir sem a biblioteca 'deep-translator'")
-        print(f"   Instale com: pip install deep-translator")
         return False
     
     input_file = f"data/{cert_id}.json"
@@ -143,71 +136,77 @@ def process_file(cert_id):
     print(f"\n{'='*70}")
     print(f"📁 Processando: {cert_id.upper()}")
     print(f"{'='*70}")
-    print(f"   Entrada:  {input_file}")
-    print(f"   Saída:    {output_file}")
     
     try:
-        # Inicializa o tradutor
         translator = GoogleTranslator(source='pt', target='en')
         
-        # Lê o arquivo original
+        # 1. Lê o arquivo original (PT-BR)
         with open(input_file, 'r', encoding='utf-8') as f:
-            questions = json.load(f)
+            questions_pt = json.load(f)
+            
+        # 2. Lê o arquivo já traduzido (EN-US), se existir, para evitar re-tradução
+        translated_map = {}
+        if os.path.exists(output_file):
+            with open(output_file, 'r', encoding='utf-8') as f:
+                try:
+                    existing_en = json.load(f)
+                    for q in existing_en:
+                        if 'id' in q:
+                            translated_map[q['id']] = q
+                except json.JSONDecodeError:
+                    print(f"   ⚠️ Aviso: Arquivo {output_file} corrompido. Traduzindo do zero.")
         
-        print(f"   ✅ Carregado: {len(questions)} questões")
-        print(f"   🔄 Iniciando tradução (isso pode levar alguns minutos)...")
+        print(f"   ✅ Carregado: {len(questions_pt)} questões em PT-BR.")
+        if translated_map:
+            print(f"   ✅ Encontradas: {len(translated_map)} questões já traduzidas em EN-US.")
+            
+        print(f"   🔄 Iniciando verificação/tradução...")
         
-        # Traduz cada questão
         translated_questions = []
-        for i, q in enumerate(questions, 1):
-            print(f"   🔄 Traduzindo questão {i}/{len(questions)}...", end='\r')
-            translated_q = translate_question_obj(q, translator)
-            translated_questions.append(translated_q)
+        novas_traducoes = 0
         
-        print(f"\n   ✅ Tradução concluída: {len(translated_questions)} questões")
+        # 3. Processa cada questão
+        for i, q in enumerate(questions_pt, 1):
+            q_id = q.get('id')
+            
+            # Se a questão já existe no arquivo em inglês, apenas copia
+            if q_id and q_id in translated_map:
+                translated_questions.append(translated_map[q_id])
+                print(f"   ⏭️ Pulando {i}/{len(questions_pt)} (ID {q_id}) - Já traduzida.     ", end='\r')
+            else:
+                # Se não existe, traduz
+                print(f"   🔄 Traduzindo nova questão {i}/{len(questions_pt)} (ID {q_id})...      ", end='\r')
+                translated_q = translate_question_obj(q, translator)
+                translated_questions.append(translated_q)
+                novas_traducoes += 1
+                
+        print(f"\n   ✅ Processo concluído: {novas_traducoes} novas questões traduzidas.")
         
-        # Salva o arquivo traduzido
+        # Salva o arquivo traduzido consolidado
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(translated_questions, f, ensure_ascii=False, indent=2)
         
         print(f"   💾 Arquivo salvo: {output_file}")
-        print(f"   ✅ SUCESSO!")
-        
         return True
         
     except FileNotFoundError:
         print(f"   ❌ ERRO: Arquivo não encontrado: {input_file}")
         return False
-    except json.JSONDecodeError as e:
-        print(f"   ❌ ERRO: JSON inválido: {e}")
-        return False
     except Exception as e:
         print(f"   ❌ ERRO: {e}")
-        import traceback
-        traceback.print_exc()
         return False
 
-
 def main():
-    """
-    Função principal.
-    """
     print("\n" + "="*70)
-    print("🌐 TRADUTOR PROFISSIONAL DE QUESTÕES AWS")
+    print("🌐 TRADUTOR PROFISSIONAL DE QUESTÕES AWS (INCREMENTAL)")
     print("   PT-BR -> EN-US (Google Translate)")
     print("="*70)
     
     if not TRANSLATOR_AVAILABLE:
         print("\n❌ ERRO: Biblioteca 'deep-translator' não instalada")
-        print("\n📦 Para instalar, execute:")
-        print("   pip install deep-translator")
-        print("\nOu se estiver usando requirements.txt:")
-        print("   pip install -r scripts_python/requirements.txt")
         sys.exit(1)
     
-    # Define quais arquivos processar
     cert_ids = []
-    
     if len(sys.argv) > 1:
         arg = sys.argv[1].lower()
         if arg == "all":
@@ -215,29 +214,16 @@ def main():
         else:
             cert_ids = [arg]
     else:
-        # Padrão: apenas CLF-C02
         cert_ids = ["clf-c02"]
     
-    print(f"\n📋 Arquivos a processar: {', '.join([c.upper() for c in cert_ids])}")
-    
-    # Processa cada arquivo
     success_count = 0
     for cert_id in cert_ids:
         if process_file(cert_id):
             success_count += 1
-    
-    # Resumo final
+            
     print(f"\n{'='*70}")
-    print(f"✅ CONCLUÍDO: {success_count}/{len(cert_ids)} arquivos traduzidos")
-    print(f"{'='*70}")
-    
-    if success_count < len(cert_ids):
-        print("\n⚠️  Alguns arquivos falharam. Verifique os erros acima.")
-    
-    print("\n💡 Tradução realizada com Google Translate (gratuito)")
-    print("   Termos técnicos AWS preservados automaticamente")
-    print()
-
+    print(f"✅ CONCLUÍDO: {success_count}/{len(cert_ids)} arquivos atualizados")
+    print(f"{'='*70}\n")
 
 if __name__ == "__main__":
     main()
