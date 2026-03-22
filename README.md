@@ -21,11 +21,17 @@
 
 📊 **Escala Oficial AWS**: Pontuação convertida para escala 100-1000 pontos com selo visual de aprovação (verde ≥700, laranja <700)
 
+📈 **Gráfico de Radar Interativo**: Visualização em tempo real do desempenho por domínio com suporte a modo escuro usando Chart.js
+
 🌐 **Tradução Automática**: Pipeline completo de tradução PT-BR → EN-US usando Google Translate API com preservação de termos técnicos
 
 🤖 **Pipeline de IA Aprimorado**: Geração automática e balanceamento inteligente de questões com validação semântica rigorosa
 
 📝 **10 Novas Questões**: 5 para CLF-C02 e 5 para AIF-C01, todas com múltipla resposta e explicações aprimoradas
+
+💾 **App Instalável**: Botão de instalação PWA visível no cabeçalho para uso offline completo
+
+🏠 **Navegação Rápida**: Ícone da nuvem clicável no cabeçalho para retorno instantâneo ao início
 
 Veja o [CHANGELOG.md](./CHANGELOG.md) para detalhes completos das mudanças.
 
@@ -344,9 +350,10 @@ projeto-simulados-certificacao-aws/
 ### 5\. PWA Completo
 
   - Funciona 100% offline
-  - Instalável em desktop e mobile
+  - Instalável em desktop e mobile via botão no cabeçalho
   - Persistência robusta de dados em LocalStorage
-  - Performance otimizada (sem dependências pesadas no frontend)
+  - Performance otimizada com CDNs leves (Tailwind, Font Awesome, Chart.js)
+  - Navegação rápida via ícone da nuvem clicável
 
 -----
 
@@ -358,10 +365,11 @@ projeto-simulados-certificacao-aws/
   - **4 certificações** oficiais AWS (CLF-C02, SAA-C03, AIF-C01, DVA-C02)
   - **2 idiomas** (PT-BR e EN-US) com tradução automática via Google Translate
   - **100% offline** após instalação como PWA (Progressive Web App)
-  - **0 dependências** externas no frontend (apenas CDNs para Tailwind e Font Awesome)
+  - **Gráfico de radar** interativo com suporte a modo escuro usando Chart.js
+  - **0 dependências** externas no frontend (apenas CDNs para Tailwind, Font Awesome e Chart.js)
   - **Escala oficial AWS** 100-1000 pontos (conversão automática)
   - **2 motores de IA** (Gemini 2.5 Flash + Groq Llama 3.3 70B como fallback)
-  - **988 linhas** de código JavaScript no controller principal
+  - **1000+ linhas** de código JavaScript no controller principal
   - **50+ termos técnicos** AWS preservados na tradução automática
 
 -----
