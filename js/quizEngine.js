@@ -23,13 +23,14 @@ export class QuizEngine {
     }
 
     // 1. CARREGAMENTO E FILTRAGEM
-    async loadQuestions(certId, domainsConfig, filters) {
+    async loadQuestions(certId, domainsConfig, filters, language = 'pt') {
         this.resetState();
         this.state.certId = certId;
         this.state.mode = filters.mode || 'exam';
 
         try {
-            const response = await fetch(`data/${certId}.json`);
+            const fileSuffix = language === 'en' ? '-en' : '';
+            const response = await fetch(`data/${certId}${fileSuffix}.json`);
             if (!response.ok) throw new Error('Arquivo de questões não encontrado.');
             
             let data = await response.json();

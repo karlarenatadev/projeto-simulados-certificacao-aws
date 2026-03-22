@@ -32,6 +32,10 @@
             </div>
         </div>
         <div class="flex items-center gap-4 text-sm font-semibold">
+            <button id="btn-language" onclick="toggleLanguage()" class="text-gray-300 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-gray-700 flex items-center gap-2" aria-label="Alternar idioma" title="Alternar idioma">
+                <span class="text-xs font-bold">🇧🇷 PT-BR</span>
+            </button>
+            
             <button id="theme-toggle" onclick="toggleDarkMode()" class="text-gray-300 hover:text-white transition-colors p-2 rounded-full hover:bg-gray-700" aria-label="Alternar modo escuro">
                 <i id="theme-icon" class="fa-solid fa-moon text-xl" aria-hidden="true"></i>
             </button>
@@ -72,63 +76,117 @@
                 <div class="w-full max-w-md mb-6 bg-gray-50 dark:bg-slate-700 p-6 rounded-xl border border-gray-200 dark:border-slate-600">
                     <h3 class="text-lg font-bold aws-text-dark dark:text-white mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-sliders aws-text-orange" aria-hidden="true"></i>
-                        Modo de Simulação
+                        Filtros e Configurações
                     </h3>
-                    <div class="flex gap-4 justify-center">
-                        <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="quiz-mode" value="exam" id="mode-exam" class="peer sr-only" checked>
-                            <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg p-4 text-center transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-slate-600 hover:border-gray-400">
-                                <i class="fa-solid fa-clock text-2xl mb-2 text-gray-600 dark:text-gray-300 peer-checked:text-orange-600" aria-hidden="true"></i>
-                                <div class="font-bold text-gray-700 dark:text-gray-200">Modo Exame</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Timer de 15 min</div>
+                    
+                    <div class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-3">
+                                <i class="fa-solid fa-clock mr-1 text-aws-orange"></i> Modo de Simulação
+                            </label>
+                            <div class="flex gap-3">
+                                <label class="flex-1 cursor-pointer">
+                                    <input type="radio" name="quiz-mode" value="exam" class="peer sr-only" checked>
+                                    <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg p-3 text-center transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/30 hover:border-gray-400 dark:hover:border-slate-400">
+                                        <i class="fa-solid fa-clock text-xl mb-1 text-gray-600 dark:text-gray-300 peer-checked:text-orange-600" aria-hidden="true"></i>
+                                        <div class="font-bold text-sm text-gray-700 dark:text-gray-200">Modo Exame</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Com Tempo</div>
+                                    </div>
+                                </label>
+                                <label class="flex-1 cursor-pointer">
+                                    <input type="radio" name="quiz-mode" value="review" class="peer sr-only">
+                                    <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg p-3 text-center transition-all peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-blue-900/30 hover:border-gray-400 dark:hover:border-slate-400">
+                                        <i class="fa-solid fa-book-open text-xl mb-1 text-gray-600 dark:text-gray-300 peer-checked:text-blue-600" aria-hidden="true"></i>
+                                        <div class="font-bold text-sm text-gray-700 dark:text-gray-200">Modo Revisão</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Sem Tempo</div>
+                                    </div>
+                                </label>
                             </div>
-                        </label>
-                        <label class="flex-1 cursor-pointer">
-                            <input type="radio" name="quiz-mode" value="study" id="mode-study" class="peer sr-only">
-                            <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg p-4 text-center transition-all peer-checked:border-blue-500 peer-checked:bg-blue-50 dark:peer-checked:bg-slate-600 hover:border-gray-400">
-                                <i class="fa-solid fa-book-open text-2xl mb-2 text-gray-600 dark:text-gray-300 peer-checked:text-blue-600" aria-hidden="true"></i>
-                                <div class="font-bold text-gray-700 dark:text-gray-200">Modo Estudo</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Sem limite</div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-3">
+                                <i class="fa-solid fa-list-ol mr-1 text-aws-orange"></i> Quantidade de Questões
+                            </label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="question-quantity" value="5" class="peer sr-only">
+                                    <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg py-2 px-3 text-center transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/30 peer-checked:font-bold hover:border-gray-400 dark:hover:border-slate-400">
+                                        <span class="text-sm text-gray-700 dark:text-gray-200">5</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="question-quantity" value="10" class="peer sr-only" checked>
+                                    <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg py-2 px-3 text-center transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/30 peer-checked:font-bold hover:border-gray-400 dark:hover:border-slate-400">
+                                        <span class="text-sm text-gray-700 dark:text-gray-200">10</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="question-quantity" value="15" class="peer sr-only">
+                                    <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg py-2 px-3 text-center transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/30 peer-checked:font-bold hover:border-gray-400 dark:hover:border-slate-400">
+                                        <span class="text-sm text-gray-700 dark:text-gray-200">15</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="question-quantity" value="20" class="peer sr-only">
+                                    <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg py-2 px-3 text-center transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/30 peer-checked:font-bold hover:border-gray-400 dark:hover:border-slate-400">
+                                        <span class="text-sm text-gray-700 dark:text-gray-200">20</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="question-quantity" value="30" class="peer sr-only">
+                                    <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg py-2 px-3 text-center transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/30 peer-checked:font-bold hover:border-gray-400 dark:hover:border-slate-400">
+                                        <span class="text-sm text-gray-700 dark:text-gray-200">30</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="question-quantity" value="65" class="peer sr-only">
+                                    <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg py-2 px-3 text-center transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/30 peer-checked:font-bold hover:border-gray-400 dark:hover:border-slate-400">
+                                        <span class="text-sm text-gray-700 dark:text-gray-200">65</span>
+                                    </div>
+                                </label>
                             </div>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-md mb-6">
-                    <div class="bg-gray-50 dark:bg-slate-700 p-4 rounded-xl border border-gray-200 dark:border-slate-600">
-                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2">Quantidade</label>
-                        <select id="question-quantity" class="w-full p-2 border rounded-lg outline-none focus:border-orange-500 dark:bg-slate-600 dark:text-white dark:border-slate-500">
-                            <option value="10">10 Questões</option>
-                            <option value="30">30 Questões</option>
-                            <option value="60">60 Questões</option>
-                        </select>
-                    </div>
+                        </div>
 
-                    <div class="bg-gray-50 dark:bg-slate-700 p-4 rounded-xl border border-gray-200 dark:border-slate-600">
-                        <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2">Dificuldade</label>
-                        <select id="difficulty-level" class="w-full p-2 border rounded-lg outline-none focus:border-orange-500 dark:bg-slate-600 dark:text-white dark:border-slate-500">
-                            <option value="all">Todas</option>
-                            <option value="easy">Iniciante</option>
-                            <option value="medium">Intermediário</option>
-                            <option value="hard">Especialista</option>
-                        </select>
-                    </div>
-                </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-3">
+                                <i class="fa-solid fa-signal mr-1 text-aws-orange"></i> Nível de Dificuldade
+                            </label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="difficulty-level" value="all" class="peer sr-only" checked>
+                                    <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg py-2 px-3 text-center transition-all peer-checked:border-orange-500 peer-checked:bg-orange-50 dark:peer-checked:bg-orange-900/30 peer-checked:font-bold hover:border-gray-400 dark:hover:border-slate-400">
+                                        <span class="text-sm text-gray-700 dark:text-gray-200">Todas</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="difficulty-level" value="easy" class="peer sr-only">
+                                    <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg py-2 px-3 text-center transition-all peer-checked:border-green-500 peer-checked:bg-green-50 dark:peer-checked:bg-green-900/30 peer-checked:font-bold hover:border-gray-400 dark:hover:border-slate-400">
+                                        <span class="text-sm text-gray-700 dark:text-gray-200">Iniciante</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="difficulty-level" value="medium" class="peer sr-only">
+                                    <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg py-2 px-3 text-center transition-all peer-checked:border-yellow-500 peer-checked:bg-yellow-50 dark:peer-checked:bg-yellow-900/30 peer-checked:font-bold hover:border-gray-400 dark:hover:border-slate-400">
+                                        <span class="text-sm text-gray-700 dark:text-gray-200">Intermediário</span>
+                                    </div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="difficulty-level" value="hard" class="peer sr-only">
+                                    <div class="border-2 border-gray-300 dark:border-slate-500 rounded-lg py-2 px-3 text-center transition-all peer-checked:border-red-500 peer-checked:bg-red-50 dark:peer-checked:bg-red-900/30 peer-checked:font-bold hover:border-gray-400 dark:hover:border-slate-400">
+                                        <span class="text-sm text-gray-700 dark:text-gray-200">Especialista</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
 
-                <div class="w-full max-w-md mb-6 text-left">
-                    <label class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-2">
-                        Filtro por Tópico (Opcional):
-                    </label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                            <i class="fa-solid fa-filter"></i>
-                        </span>
-                        <select id="topic-filter" 
-                            class="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-300 dark:border-slate-500 bg-white dark:bg-slate-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none transition-all appearance-none cursor-pointer">
-                            <option value="">Todos os Tópicos</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
-                            <i class="fa-solid fa-chevron-down"></i>
+                        <div>
+                            <label for="topic-filter" class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-3">
+                                <i class="fa-solid fa-filter mr-1 text-aws-orange"></i> Filtro por Tópico
+                            </label>
+                            <select id="topic-filter" class="w-full p-3 rounded-lg border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-200 outline-none focus:ring-2 focus:ring-aws-orange transition-all cursor-pointer">
+                                <option value="">Todos os Tópicos</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -168,6 +226,11 @@
                     </span>
                     
                     <div class="flex items-center gap-4 bg-white dark:bg-slate-800 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-600 shadow-sm">
+                        <div id="timer-container" class="hidden flex items-center gap-2 font-bold text-orange-600 dark:text-orange-400">
+                            <i class="fa-solid fa-clock" aria-hidden="true"></i>
+                            <span id="timer-text">00:00</span>
+                        </div>
+                        <div class="w-px h-5 bg-gray-300 dark:bg-slate-600"></div>
                         <button id="btn-flag" onclick="toggleFlag()" class="text-gray-400 hover:text-orange-500 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded" aria-label="Marcar questão para revisão" title="Marcar para revisão">
                             <i class="fa-solid fa-flag text-lg" aria-hidden="true"></i>
                         </button>
@@ -209,8 +272,8 @@
                 <p class="text-gray-500 dark:text-gray-400 mb-6">Análise detalhada do seu desempenho.</p>
                 
                 <div class="bg-gray-50 dark:bg-slate-700 border border-gray-200 dark:border-slate-600 p-6 rounded-xl w-full max-w-md mb-4 shadow-sm">
-                    <div class="text-6xl font-black mb-1 dark:text-white" id="final-score-percent" aria-live="polite">0%</div>
-                    <p class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">Pontuação Final</p>
+                    <div class="text-6xl font-black mb-1 dark:text-white" id="final-score-percent" aria-live="polite">0</div>
+                    <p class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">Pontuação Oficial AWS (100 - 1000)</p>
                     <div id="improvement-badge" class="text-sm font-bold mb-4 hidden" role="status"></div>
                     <div class="flex justify-between border-t border-gray-200 dark:border-slate-500 pt-4 text-sm">
                         <div class="text-green-600 dark:text-green-400 font-bold"><i class="fa-solid fa-check-circle" aria-hidden="true"></i> Acertos: <span id="final-correct">0</span></div>
@@ -259,7 +322,7 @@
                     <i class="fa-solid fa-microchip aws-text-orange mr-2" aria-hidden="true"></i> Análise de Domínios
                 </h3>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mb-4 leading-relaxed">
-                    Mapa de radar atualizado em tempo real com base nos domínios oficiais do exame.
+                    Visualização do desempenho por domínio oficial do exame AWS.
                 </p>
                 <div class="chart-container" role="img" aria-label="Gráfico radar de desempenho por domínio">
                     <canvas id="radarChart"></canvas>

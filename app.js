@@ -19,7 +19,8 @@ let uiState = {
     timerInterval: null,
     timeRemaining: 0,
     isPaused: false,
-    tempSelectedAnswer: null // Será null (escolha única) ou [] (múltipla)
+    tempSelectedAnswer: null, // Será null (escolha única) ou [] (múltipla)
+    language: localStorage.getItem('aws_sim_lang') || 'pt'
 };
 
 // ============================================================================
@@ -30,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeRadarChart(); // Mantido por segurança, caso o HTML ainda tenha o canvas
     updateHistoryDisplay();
     renderGamification();
+    updateLanguageButtonUI();
 
     const certSelect = document.getElementById('certification-select');
     
@@ -56,13 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // ============================================================================
 async function startQuiz() {
     const certSelect = document.getElementById('certification-select');
-    const quantitySelect = document.getElementById('question-quantity');
-    const difficultySelect = document.getElementById('difficulty-level');
-    const topicSelect = document.getElementById('topic-filter');
-    const modeInput = document.querySelector('input[name="quiz-mode"]:checked');
+    const quantityInput = document.querySelector('input[name="question-quantity"]:checked')?.value || 10;
+    const difficultyInput = document.querySelector('input[name="difficulty-level"]:checked')?.value || 'all';
+    const modeInput = document.querySelector('input[name="quiz-mode"]:checked')?.value || 'exam';
+    const topicSelect = document.getElementById('topic-filter')?.value || '';
     const btn = document.getElementById('btn-start-quiz');
     
-    if (!certSelect || !quantitySelect) return;
+    if (!certSelect) return;
 
     try {
         btn.disabled = true;
@@ -73,13 +75,13 @@ async function startQuiz() {
         uiState.currentCertificationInfo = currentCertInfo;
 
         const filters = {
-            quantity: parseInt(quantitySelect.value),
-            difficulty: difficultySelect.value,
-            topic: topicSelect ? topicSelect.value : '',
-            mode: modeInput ? modeInput.value : 'exam'
+            quantity: parseInt(quantityInput),
+            difficulty: difficultyInput,
+            topic: topicSelect,
+            mode: modeInput
         };
 
-        const result = await engine.loadQuestions(certId, currentCertInfo.domains, filters);
+        const result = await engine.loadQuestions(certId, currentCertInfo.domains, filters, uiState.language);
 
         if (!result.success) {
             alert(result.message);
@@ -477,14 +479,14 @@ function renderDetailedReportUI(results) {
             const icon = meets ? "fa-check-circle" : "fa-exclamation-triangle";
 
             html += `
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-50 dark:bg-slate-700/30 rounded-lg border border-gray-200 dark:border-slate-600 transition-all hover:shadow-sm">
-                    <div class="mb-3 sm:mb-0">
-                        <span class="font-bold text-gray-800 dark:text-gray-200 block text-md">${domain.name}</span>
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-50 dark:bg-slate-700/30 rounded-lg border border-gray-200 dark:border-slate-600 transition-all hover:shadow-sm gap-4">
+                    <div class="flex-1 min-w-0">
+                        <span class="font-bold text-gray-800 dark:text-gray-200 block text-md truncate whitespace-normal">${domain.name}</span>
                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1 block">
                             Score do Domínio: ${pct.toFixed(0)}% <span class="opacity-75">(${scoreData.correct} de ${scoreData.total} corretas)</span>
                         </span>
                     </div>
-                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-bold border ${statusColor} shrink-0">
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-bold border ${statusColor} shrink-0 whitespace-nowrap">
                         <i class="fa-solid ${icon}"></i> ${statusText}
                     </div>
                 </div>
@@ -836,6 +838,24 @@ function toggleDarkMode() {
     localStorage.setItem('aws_sim_theme', isDark ? 'dark' : 'light');
 }
 
+function toggleLanguage() {
+    uiState.language = uiState.language === 'pt' ? 'en' : 'pt';
+    localStorage.setItem('aws_sim_lang', uiState.language);
+    updateLanguageButtonUI();
+    alert(uiState.language === 'en' 
+        ? 'Idioma alterado para Inglês! Certifique-se de ter os arquivos -en.json na pasta data.' 
+        : 'Idioma alterado para Português!');
+}
+
+function updateLanguageButtonUI() {
+    const langBtn = document.getElementById('btn-language');
+    if (langBtn) {
+        langBtn.innerHTML = uiState.language === 'pt' 
+            ? '<span class="text-xs font-bold">🇧🇷 PT-BR</span>' 
+            : '<span class="text-xs font-bold">🇺🇸 EN-US</span>';
+    }
+}
+
 function goHome() {
     if (uiState.timerInterval) clearInterval(uiState.timerInterval);
     showScreen('start');
@@ -866,6 +886,7 @@ window.cancelQuiz = cancelQuiz;
 window.goHome = goHome;
 window.retakeQuiz = retakeQuiz;
 window.toggleDarkMode = toggleDarkMode;
+window.toggleLanguage = toggleLanguage;
 window.clearHistory = clearHistory;
 window.showLastReport = showLastReport;
 window.showHistoricalReport = showHistoricalReport;
