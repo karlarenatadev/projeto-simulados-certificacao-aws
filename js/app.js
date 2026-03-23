@@ -681,7 +681,7 @@ function updateHistoryDisplay() {
         const isPass = item.percentage >= APP_CONFIG.PASSING_SCORE;
         const color = isPass ? 'text-green-500' : 'text-red-500';
         const icon = isPass ? 'fa-check-circle' : 'fa-times-circle';
-        const certName = item.certId.toUpperCase();
+        const certName = item.certId ? item.certId.toUpperCase() : 'SIMULADO GERAL';
         const awsScore = Math.floor((item.percentage / 100) * 900) + 100;
         
         const originalIndex = history.length - 1 - index;
@@ -931,7 +931,7 @@ function generateSmartInsight(history) {
     
     // 10. Precisa melhorar - foco nos estudos
     if (avgScore < 70) {
-        const certName = last.certId.toUpperCase();
+        const certName = last.certId ? last.certId.toUpperCase() : 'AWS';
         return {
             icon: 'fa-solid fa-book-open',
             iconColor: 'text-orange-500',
