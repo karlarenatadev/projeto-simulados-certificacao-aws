@@ -40,10 +40,10 @@ jobs:
           DVA_MULTI=$(jq '[.[] | select(.type == "multiple-answer")] | length' data/dva-c02.json)
           MULTI_TOTAL=$((CLF_MULTI + SAA_MULTI + AIF_MULTI + DVA_MULTI))
           
-          CLF_PENDING=$(ls data/contributions/clf-c02/*.json 2>/dev/null | grep -v "_TEMPLATE" | grep -v "exemplo" | wc -l || echo "0")
-          SAA_PENDING=$(ls data/contributions/saa-c03/*.json 2>/dev/null | grep -v "_TEMPLATE" | wc -l || echo "0")
-          AIF_PENDING=$(ls data/contributions/aif-c01/*.json 2>/dev/null | grep -v "_TEMPLATE" | wc -l || echo "0")
-          DVA_PENDING=$(ls data/contributions/dva-c02/*.json 2>/dev/null | grep -v "_TEMPLATE" | wc -l || echo "0")
+          CLF_PENDING=$(find data/contributions/clf-c02 -maxdepth 1 -name "*.json" ! -name "_TEMPLATE*" ! -name "exemplo*" 2>/dev/null | wc -l || echo "0")
+          SAA_PENDING=$(find data/contributions/saa-c03 -maxdepth 1 -name "*.json" ! -name "_TEMPLATE*" 2>/dev/null | wc -l || echo "0")
+          AIF_PENDING=$(find data/contributions/aif-c01 -maxdepth 1 -name "*.json" ! -name "_TEMPLATE*" 2>/dev/null | wc -l || echo "0")
+          DVA_PENDING=$(find data/contributions/dva-c02 -maxdepth 1 -name "*.json" ! -name "_TEMPLATE*" 2>/dev/null | wc -l || echo "0")
           PENDING_TOTAL=$((CLF_PENDING + SAA_PENDING + AIF_PENDING + DVA_PENDING))
           
           echo "total=$TOTAL" >> $GITHUB_OUTPUT

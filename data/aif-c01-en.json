@@ -2609,7 +2609,7 @@
     "subdomain": "foundation-models",
     "service": "Amazon Bedrock",
     "difficulty": "medium",
-    "type": "multiple-choice",
+    "type": "multiple-answer",
     "tags": [
       "generative-ai",
       "foundation-models",
@@ -2635,7 +2635,7 @@
     "subdomain": "bias-fairness",
     "service": "Amazon SageMaker Clarify",
     "difficulty": "medium",
-    "type": "multiple-choice",
+    "type": "multiple-answer",
     "tags": [
       "responsible-ai",
       "bias",
@@ -2660,7 +2660,7 @@
     "subdomain": "rag",
     "service": "Amazon Kendra",
     "difficulty": "medium",
-    "type": "multiple-choice",
+    "type": "multiple-answer",
     "tags": [
       "rag",
       "search",
@@ -2686,7 +2686,7 @@
     "subdomain": "data-protection",
     "service": "AWS KMS e Amazon Macie",
     "difficulty": "medium",
-    "type": "multiple-choice",
+    "type": "multiple-answer",
     "tags": [
       "security",
       "encryption",
@@ -2711,7 +2711,7 @@
     "subdomain": "ml-lifecycle",
     "service": "Amazon SageMaker",
     "difficulty": "medium",
-    "type": "multiple-choice",
+    "type": "multiple-answer",
     "tags": [
       "machine-learning",
       "mlops",

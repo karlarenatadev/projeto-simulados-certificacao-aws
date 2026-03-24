@@ -13,6 +13,10 @@ jobs:
     name: Validate Question Files
     runs-on: ubuntu-latest
     
+    permissions:
+      contents: read
+      pull-requests: write
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -62,6 +66,12 @@ jobs:
           for file in "${FILES[@]}"; do
             file=$(echo "$file" | xargs)
             [ -z "$file" ] && continue
+            
+            # Skip if file doesn't exist (deleted files)
+            if [ ! -f "$file" ]; then
+              echo "Skipping deleted file: $file"
+              continue
+            fi
             
             echo "Validating: $file"
             

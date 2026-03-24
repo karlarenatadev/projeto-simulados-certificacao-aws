@@ -57,8 +57,13 @@ jobs:
             python scripts_python/merge_contributions.py ${{ inputs.cert_id }}
           fi
           
-          MERGED=$(ls data/contributions/${{ inputs.cert_id }}/_processed/*.json 2>/dev/null | wc -l || echo "0")
-          PENDING=$(ls data/contributions/${{ inputs.cert_id }}/*.json 2>/dev/null | grep -v "_TEMPLATE" | wc -l || echo "0")
+          if [ -d "data/contributions/${{ inputs.cert_id }}/_processed" ]; then
+            MERGED=$(ls data/contributions/${{ inputs.cert_id }}/_processed/*.json 2>/dev/null | wc -l || echo "0")
+          else
+            MERGED=0
+          fi
+          
+          PENDING=$(find data/contributions/${{ inputs.cert_id }} -maxdepth 1 -name "*.json" ! -name "_TEMPLATE*" 2>/dev/null | wc -l || echo "0")
           TOTAL=$(jq '. | length' data/${{ inputs.cert_id }}.json)
           
           echo "merged=$MERGED" >> $GITHUB_OUTPUT
@@ -73,7 +78,7 @@ jobs:
           echo "Total: ${{ steps.merge.outputs.total }}"
       
       - name: Commit changes
-        if: inputs.dry_run == false && steps.merge.outputs.merged > 0
+        if: inputs.dry_run == false && steps.merge.outputs.merged != '0'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"

@@ -76,8 +76,31 @@ class AWSQuestion(BaseModel):
     tags: List[str]
     question: str = Field(..., min_length=10)
     options: List[str] = Field(..., min_length=4, max_length=4)
-    correct: int = Field(..., ge=0, le=3)
+    correct: int | List[int] = Field(...)  # Suporta múltipla escolha (int) e múltipla resposta (List[int])
     explanation: str = Field(..., min_length=30)
+
+    @field_validator('correct')
+    @classmethod
+    def validar_correct(cls, v, info):
+        question_type = info.data.get('type', 'multiple-choice')
+        
+        # Para múltipla escolha, deve ser int
+        if question_type == 'multiple-choice':
+            if isinstance(v, list):
+                raise ValueError("Para type='multiple-choice', 'correct' deve ser um inteiro (índice da resposta)")
+            if not isinstance(v, int) or v < 0 or v > 3:
+                raise ValueError("'correct' deve ser um inteiro entre 0 e 3")
+        
+        # Para múltipla resposta, deve ser lista
+        elif question_type == 'multiple-answer':
+            if not isinstance(v, list):
+                raise ValueError("Para type='multiple-answer', 'correct' deve ser uma lista de índices")
+            if not all(isinstance(idx, int) and 0 <= idx <= 3 for idx in v):
+                raise ValueError("Todos os índices em 'correct' devem ser inteiros entre 0 e 3")
+            if len(v) < 2:
+                raise ValueError("'multiple-answer' deve ter pelo menos 2 respostas corretas")
+        
+        return v
 
     @field_validator('domain')
     @classmethod

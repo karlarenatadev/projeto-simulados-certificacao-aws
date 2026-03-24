@@ -4171,7 +4171,7 @@
     "subdomain": "conformidade",
     "service": "AWS Artifact",
     "difficulty": "medium",
-    "type": "multiple-choice",
+    "type": "multiple-answer",
     "tags": [
       "conformidade",
       "auditoria",
@@ -4196,7 +4196,7 @@
     "subdomain": "monitoramento",
     "service": "AWS Config",
     "difficulty": "medium",
-    "type": "multiple-choice",
+    "type": "multiple-answer",
     "tags": [
       "configuracao",
       "auditoria",
@@ -4221,7 +4221,7 @@
     "subdomain": "otimizacao",
     "service": "AWS Trusted Advisor",
     "difficulty": "medium",
-    "type": "multiple-choice",
+    "type": "multiple-answer",
     "tags": [
       "otimizacao",
       "custos",
@@ -4247,7 +4247,7 @@
     "subdomain": "protecao",
     "service": "AWS Shield e AWS WAF",
     "difficulty": "medium",
-    "type": "multiple-choice",
+    "type": "multiple-answer",
     "tags": [
       "seguranca",
       "ddos",
@@ -4272,7 +4272,7 @@
     "subdomain": "rede",
     "service": "Amazon Route 53",
     "difficulty": "medium",
-    "type": "multiple-choice",
+    "type": "multiple-answer",
     "tags": [
       "dns",
       "roteamento",
