@@ -464,11 +464,16 @@ body {
   background: linear-gradient(135deg, #422006 0%, #292524 100%);
 }
 
-.flashcard-front:hover,
-.flashcard-back:hover {
+/* Removido o hover que causava o "piscar" durante o flip */
+.flashcard-container:hover .flashcard-front,
+.flashcard-container:hover .flashcard-back {
   box-shadow: 0 15px 40px rgba(255, 153, 0, 0.3);
+}
+
+/* Efeito hover apenas quando NÃO está flipando */
+.flashcard-container:not(.flipped):hover .flashcard {
   transform: scale(1.02);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
 /* Responsividade dos Flashcards */

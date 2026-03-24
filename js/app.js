@@ -191,12 +191,19 @@ function loadQuestionUI() {
 
     renderOptionsUI(q);
     
-    // Reset de botões e caixas
-    document.getElementById('btn-submit').disabled = true;
-    document.getElementById('explanation-box').classList.add('hidden');
-    document.getElementById('btn-next').classList.add('hidden');
-    document.getElementById('btn-finish').classList.add('hidden');
-    document.getElementById('btn-submit').classList.remove('hidden');
+    // Reset de botões e caixas (com validação de null)
+    const btnSubmit = document.getElementById('btn-submit');
+    const explanationBox = document.getElementById('explanation-box');
+    const btnNext = document.getElementById('btn-next');
+    const btnFinish = document.getElementById('btn-finish');
+    
+    if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.classList.remove('hidden');
+    }
+    if (explanationBox) explanationBox.classList.add('hidden');
+    if (btnNext) btnNext.classList.add('hidden');
+    if (btnFinish) btnFinish.classList.add('hidden');
     
     // Reset da Flag
     const flagBtn = document.getElementById('btn-flag');
@@ -270,7 +277,9 @@ function submitAnswer() {
     const isMulti = Array.isArray(question.correct);
     const result = engine.submitAnswer(uiState.tempSelectedAnswer);
 
-    document.getElementById('btn-submit').classList.add('hidden');
+    const btnSubmit = document.getElementById('btn-submit');
+    if (btnSubmit) btnSubmit.classList.add('hidden');
+    
     // Opaca as opções para foco na resposta
     document.querySelectorAll('.option-card').forEach(card => card.classList.add('opacity-70'));
 
@@ -308,14 +317,21 @@ function submitAnswer() {
 
     // Explicações e Referências
     const expBox = document.getElementById('explanation-box');
+    if (!expBox) return; // Proteção contra elemento não encontrado
+    
     const docLink = result.referenceUrl ? 
         `<a href="${result.referenceUrl}" target="_blank" class="mt-3 inline-block text-orange-600 font-bold hover:underline">
             <i class="fa-solid fa-book-open mr-1"></i> Ver Documentação Oficial
          </a>` : '';
 
-    expBox.querySelector('h4').innerHTML = result.isCorrect ? 
-        '<i class="fa-solid fa-check"></i> Correto!' : '<i class="fa-solid fa-xmark"></i> Incorreto';
-    expBox.querySelector('h4').className = result.isCorrect ? "font-bold text-green-600 mb-3" : "font-bold text-red-600 mb-3";
+    const titleEl = expBox.querySelector('h4');
+    const textEl = document.getElementById('explanation-text');
+    
+    if (titleEl) {
+        titleEl.innerHTML = result.isCorrect ? 
+            '<i class="fa-solid fa-check"></i> Correto!' : '<i class="fa-solid fa-xmark"></i> Incorreto';
+        titleEl.className = result.isCorrect ? "font-bold text-green-600 mb-3" : "font-bold text-red-600 mb-3";
+    }
     
     let feedbackHTML = "";
     if (!result.isCorrect) {
@@ -326,13 +342,16 @@ function submitAnswer() {
     feedbackHTML += `<div class="mb-3"><strong class="text-gray-800 dark:text-gray-200">Resposta correta:</strong> <span class="text-green-600 dark:text-green-400"><br>• ${correctText}</span></div>`;
     feedbackHTML += `<div class="pt-3 mt-2 border-t border-blue-200 dark:border-slate-600"><strong class="text-gray-800 dark:text-gray-200">Por que?</strong><br>${result.explanation}</div>`;
 
-    document.getElementById('explanation-text').innerHTML = `${feedbackHTML} ${docLink}`;
+    if (textEl) textEl.innerHTML = `${feedbackHTML} ${docLink}`;
     expBox.classList.remove('hidden');
 
+    const btnNext = document.getElementById('btn-next');
+    const btnFinish = document.getElementById('btn-finish');
+    
     if (!result.isFinished) {
-        document.getElementById('btn-next').classList.remove('hidden');
+        if (btnNext) btnNext.classList.remove('hidden');
     } else {
-        document.getElementById('btn-finish').classList.remove('hidden');
+        if (btnFinish) btnFinish.classList.remove('hidden');
     }
 
     updateScoreDisplayUI();
@@ -760,6 +779,19 @@ function updateDynamicInsight(history) {
  * Gera insights inteligentes baseados em análise profunda do histórico
  */
 function generateSmartInsight(history) {
+    // Validação: histórico vazio
+    if (!history || history.length === 0) {
+        return {
+            icon: 'fa-solid fa-rocket',
+            iconColor: 'text-blue-500',
+            title: 'Comece sua jornada! 🚀',
+            titleColor: 'text-blue-600 dark:text-blue-400',
+            message: 'Faça seu primeiro simulado para receber insights personalizados baseados no seu desempenho.',
+            action: '💡 Dica: Comece pelo modo Revisão para se familiarizar',
+            actionColor: 'text-blue-600 dark:text-blue-400'
+        };
+    }
+    
     const stats = calculateGlobalDomainStats();
     const last = history[history.length - 1];
     const recentTests = history.slice(-3); // Últimos 3 testes
