@@ -330,18 +330,26 @@
                 <h2 class="text-3xl font-bold mb-2 aws-text-dark dark:text-white">
                     <i class="fa-solid fa-layer-group aws-text-orange mr-2"></i> Modo Flashcards
                 </h2>
-                <p class="text-gray-500 dark:text-gray-400 mb-8">Revise termos essenciais da AWS de forma rápida e eficiente</p>
+                <p class="text-gray-500 dark:text-gray-400 mb-6">Revise termos essenciais da AWS de forma rápida e eficiente</p>
+                
+                <!-- Filtro por Certificação -->
+                <div class="w-full max-w-4xl mb-8">
+                    <p class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3">Filtrar por Certificação:</p>
+                    <div id="flashcard-filter" class="flex flex-wrap gap-2 justify-center">
+                        <!-- Botões de filtro serão inseridos aqui via JavaScript -->
+                    </div>
+                </div>
                 
                 <div class="w-full max-w-2xl mb-6">
                     <div class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-4">
-                        Cartão <span id="flashcard-counter">1 / 20</span>
+                        Cartão <span id="flashcard-counter">1 / 96</span>
                     </div>
                     
                     <div id="flashcard-container" class="flashcard-container" onclick="flipFlashcard()" role="button" tabindex="0" aria-label="Cartão de estudo. Clique para virar e ver a definição">
                         <div class="flashcard">
                             <div class="flashcard-front">
                                 <div class="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 font-bold">Termo AWS</div>
-                                <h3 id="flashcard-term" class="text-2xl md:text-3xl font-bold aws-text-dark dark:text-white mb-4">ACM</h3>
+                                <h3 id="flashcard-term" class="text-2xl md:text-3xl font-bold aws-text-dark dark:text-white mb-4">Região AWS</h3>
                                 <div class="text-sm text-gray-400 dark:text-gray-500 italic mt-8">
                                     <i class="fa-solid fa-hand-pointer mr-2"></i> Clique para ver a definição
                                 </div>
@@ -349,7 +357,7 @@
                             <div class="flashcard-back">
                                 <div class="text-sm uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-4 font-bold">Definição Oficial</div>
                                 <p id="flashcard-definition" class="text-lg text-gray-700 dark:text-gray-200 leading-relaxed">
-                                    Serviço que provisiona, gerencia e implanta certificados SSL/TLS...
+                                    Área geográfica que contém múltiplas Zonas de Disponibilidade isoladas...
                                 </p>
                                 <div class="text-sm text-gray-400 dark:text-gray-500 italic mt-8">
                                     <i class="fa-solid fa-hand-pointer mr-2"></i> Clique para voltar ao termo

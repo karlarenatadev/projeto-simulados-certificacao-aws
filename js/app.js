@@ -1271,76 +1271,31 @@ function generatePerformanceReport() {
 }
 
 // ============================================================================
-// 8. MODO FLASHCARDS
+// 8. MODO FLASHCARDS - Importado do módulo flashcards.js
 // ============================================================================
-function startFlashcards() {
-    uiState.flashcardIndex = 0;
-    uiState.flashcardFlipped = false;
-    showScreen('flashcards');
-    loadFlashcard();
-}
+import { 
+    startFlashcards as startFlashcardsModule, 
+    flipFlashcard as flipFlashcardModule,
+    nextFlashcard as nextFlashcardModule,
+    prevFlashcard as prevFlashcardModule,
+    filterFlashcardsByCert
+} from './flashcards.js';
 
-function loadFlashcard() {
-    if (!glossaryTerms || glossaryTerms.length === 0) {
-        alert('Nenhum termo disponível no glossário.');
-        return;
-    }
-    
-    const card = glossaryTerms[uiState.flashcardIndex];
-    const termEl = document.getElementById('flashcard-term');
-    const definitionEl = document.getElementById('flashcard-definition');
-    const counterEl = document.getElementById('flashcard-counter');
-    const cardContainer = document.getElementById('flashcard-container');
-    
-    if (termEl) termEl.textContent = card.term;
-    if (definitionEl) definitionEl.textContent = card.definition;
-    if (counterEl) counterEl.textContent = `${uiState.flashcardIndex + 1} / ${glossaryTerms.length}`;
-    
-    if (cardContainer) {
-        cardContainer.classList.remove('flipped');
-        uiState.flashcardFlipped = false;
-    }
-    
-    updateFlashcardButtons();
+// Wrappers para manter compatibilidade
+function startFlashcards() {
+    startFlashcardsModule(showScreen);
 }
 
 function flipFlashcard() {
-    const cardContainer = document.getElementById('flashcard-container');
-    if (cardContainer) {
-        cardContainer.classList.toggle('flipped');
-        uiState.flashcardFlipped = !uiState.flashcardFlipped;
-    }
+    flipFlashcardModule();
 }
 
 function nextFlashcard() {
-    if (uiState.flashcardIndex < glossaryTerms.length - 1) {
-        uiState.flashcardIndex++;
-        loadFlashcard();
-    }
+    nextFlashcardModule();
 }
 
 function prevFlashcard() {
-    if (uiState.flashcardIndex > 0) {
-        uiState.flashcardIndex--;
-        loadFlashcard();
-    }
-}
-
-function updateFlashcardButtons() {
-    const prevBtn = document.getElementById('btn-prev-flashcard');
-    const nextBtn = document.getElementById('btn-next-flashcard');
-    
-    if (prevBtn) {
-        prevBtn.disabled = uiState.flashcardIndex === 0;
-        prevBtn.classList.toggle('opacity-50', uiState.flashcardIndex === 0);
-        prevBtn.classList.toggle('cursor-not-allowed', uiState.flashcardIndex === 0);
-    }
-    
-    if (nextBtn) {
-        nextBtn.disabled = uiState.flashcardIndex === glossaryTerms.length - 1;
-        nextBtn.classList.toggle('opacity-50', uiState.flashcardIndex === glossaryTerms.length - 1);
-        nextBtn.classList.toggle('cursor-not-allowed', uiState.flashcardIndex === glossaryTerms.length - 1);
-    }
+    prevFlashcardModule();
 }
 
 // ============================================================================
@@ -1395,3 +1350,4 @@ window.startFlashcards = startFlashcards;
 window.flipFlashcard = flipFlashcard;
 window.nextFlashcard = nextFlashcard;
 window.prevFlashcard = prevFlashcard;
+window.filterFlashcardsByCert = filterFlashcardsByCert;

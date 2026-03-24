@@ -122,13 +122,15 @@ export function flipFlashcard() {
 }
 
 export function nextFlashcard() {
-    // VALIDAÇÃO: Verifica se glossaryTerms existe
-    if (!glossaryTerms || !Array.isArray(glossaryTerms)) {
-        console.warn('glossaryTerms não disponível em nextFlashcard');
+    const terms = flashcardState.filteredTerms || glossaryTerms;
+    
+    // VALIDAÇÃO: Verifica se terms existe
+    if (!terms || !Array.isArray(terms)) {
+        console.warn('Termos não disponíveis em nextFlashcard');
         return;
     }
     
-    if (flashcardState.index < glossaryTerms.length - 1) {
+    if (flashcardState.index < terms.length - 1) {
         flashcardState.index++;
         loadFlashcard();
     }
@@ -142,9 +144,11 @@ export function prevFlashcard() {
 }
 
 function updateFlashcardButtons() {
-    // VALIDAÇÃO: Verifica se glossaryTerms existe
-    if (!glossaryTerms || !Array.isArray(glossaryTerms)) {
-        console.warn('glossaryTerms não disponível em updateFlashcardButtons');
+    const terms = flashcardState.filteredTerms || glossaryTerms;
+    
+    // VALIDAÇÃO: Verifica se terms existe
+    if (!terms || !Array.isArray(terms)) {
+        console.warn('Termos não disponíveis em updateFlashcardButtons');
         return;
     }
     
@@ -159,8 +163,8 @@ function updateFlashcardButtons() {
     }
     
     if (nextBtn) {
-        nextBtn.disabled = flashcardState.index === glossaryTerms.length - 1;
-        nextBtn.classList.toggle('opacity-50', flashcardState.index === glossaryTerms.length - 1);
-        nextBtn.classList.toggle('cursor-not-allowed', flashcardState.index === glossaryTerms.length - 1);
+        nextBtn.disabled = flashcardState.index === terms.length - 1;
+        nextBtn.classList.toggle('opacity-50', flashcardState.index === terms.length - 1);
+        nextBtn.classList.toggle('cursor-not-allowed', flashcardState.index === terms.length - 1);
     }
 }
