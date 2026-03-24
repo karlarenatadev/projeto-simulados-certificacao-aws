@@ -9,21 +9,56 @@ import { storageManager } from './storageManager.js';
 // GRÁFICO DE RADAR (CHART.JS) - TELA DE RESULTADOS
 // ============================================================================
 export async function renderRadarChart(results, currentCertInfo) {
+    // VALIDAÇÃO DOM: Verifica se canvas existe
     const canvas = document.getElementById('radarChart');
-    if (!canvas) return;
-
-    if (typeof Chart === 'undefined') {
-        if (window.chartJsLoaded) await window.chartJsLoaded;
-        else return;
+    if (!canvas) {
+        console.warn('Canvas radarChart não encontrado');
+        return;
+    }
+    
+    // VALIDAÇÃO: Verifica se results existe e tem dados válidos
+    if (!results || !results.domainScores || typeof results.domainScores !== 'object') {
+        console.warn('Dados de resultado inválidos em renderRadarChart');
+        return;
     }
 
-    if (window.radarChartInstance) window.radarChartInstance.destroy();
+    // VALIDAÇÃO: Aguarda Chart.js carregar
+    if (typeof Chart === 'undefined') {
+        if (window.chartJsLoaded) {
+            try {
+                await window.chartJsLoaded;
+            } catch (error) {
+                console.error('Erro ao carregar Chart.js:', error);
+                return;
+            }
+        } else {
+            console.warn('Chart.js não está disponível');
+            return;
+        }
+    }
+
+    if (window.radarChartInstance) {
+        try {
+            window.radarChartInstance.destroy();
+        } catch (error) {
+            console.warn('Erro ao destruir instância anterior do gráfico:', error);
+        }
+    }
 
     const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('Não foi possível obter contexto 2D do canvas');
+        return;
+    }
+    
     const labels = [];
     const data = [];
 
-    if (!currentCertInfo || !currentCertInfo.domains) return;
+    // VALIDAÇÃO: Verifica se currentCertInfo existe e tem domains
+    if (!currentCertInfo || !Array.isArray(currentCertInfo.domains)) {
+        console.warn('currentCertInfo inválido em renderRadarChart');
+        return;
+    }
 
     currentCertInfo.domains.forEach(domain => {
         const scoreData = results.domainScores[domain.id];
@@ -120,9 +155,16 @@ export async function renderRadarChart(results, currentCertInfo) {
 // ============================================================================
 
 export function calculateGlobalDomainStats(targetCertId) {
-    const rawHistory = storageManager.getHistory();
+    let rawHistory = storageManager.getHistory();
     
-    if (!rawHistory || rawHistory.length === 0) return null;
+    // CORREÇÃO CRÍTICA: Valida se rawHistory é um Array antes de usar .filter()
+    if (!Array.isArray(rawHistory)) {
+        console.warn('Histórico corrompido detectado em calculateGlobalDomainStats. Forçando limpeza...');
+        rawHistory = [];
+        storageManager.clearHistory();
+    }
+    
+    if (rawHistory.length === 0) return null;
 
     const domainAccumulator = {};
     let totalQuizzes = 0;
@@ -138,13 +180,19 @@ export function calculateGlobalDomainStats(targetCertId) {
         totalQuestionsAnswered += quiz.total || 0;
         totalCorrect += quiz.score || 0;
 
-        Object.entries(quiz.domainScores).forEach(([domainId, scoreData]) => {
-            if (!domainAccumulator[domainId]) {
-                domainAccumulator[domainId] = { total: 0, correct: 0, name: null };
-            }
-            domainAccumulator[domainId].total += scoreData.total || 0;
-            domainAccumulator[domainId].correct += scoreData.correct || 0;
-        });
+        // VALIDAÇÃO: Verifica se domainScores existe e é um objeto
+        if (quiz.domainScores && typeof quiz.domainScores === 'object') {
+            Object.entries(quiz.domainScores).forEach(([domainId, scoreData]) => {
+                // VALIDAÇÃO: Verifica se scoreData é válido
+                if (!scoreData || typeof scoreData !== 'object') return;
+                
+                if (!domainAccumulator[domainId]) {
+                    domainAccumulator[domainId] = { total: 0, correct: 0, name: null };
+                }
+                domainAccumulator[domainId].total += scoreData.total || 0;
+                domainAccumulator[domainId].correct += scoreData.correct || 0;
+            });
+        }
     });
 
     const domainStats = {};
@@ -152,48 +200,55 @@ export function calculateGlobalDomainStats(targetCertId) {
     const percentages = [];
 
     Object.entries(domainAccumulator).forEach(([domainId, data]) => {
-        if (data.total > 0) {
-            const percentage = (data.correct / data.total) * 100;
-            
-            let domainName = domainId;
+        // VALIDAÇÃO: Verifica se data é válido
+        if (!data || typeof data.total !== 'number' || data.total <= 0) return;
+        
+        const percentage = (data.correct / data.total) * 100;
+        
+        let domainName = domainId;
+        
+        // VALIDAÇÃO: Verifica se certificationPaths existe
+        if (certificationPaths && typeof certificationPaths === 'object') {
             for (const certPath of Object.values(certificationPaths)) {
-                const domain = certPath.domains.find(d => d.id === domainId);
-                if (domain) {
+                if (!certPath || !Array.isArray(certPath.domains)) continue;
+                
+                const domain = certPath.domains.find(d => d && d.id === domainId);
+                if (domain && domain.name) {
                     domainName = domain.name;
                     break;
                 }
             }
-            
-            let cleanName = domainName.replace(/^Domínio \d+: /, '');
-            
-            let formattedLabel = cleanName;
-            if (cleanName.length > 20) {
-                const words = cleanName.split(' ');
-                const lines = [];
-                let currentLine = '';
-
-                words.forEach(word => {
-                    if ((currentLine + word).length > 20) {
-                        if (currentLine) lines.push(currentLine.trim());
-                        currentLine = word + ' ';
-                    } else {
-                        currentLine += word + ' ';
-                    }
-                });
-                if (currentLine) lines.push(currentLine.trim());
-                formattedLabel = lines; 
-            }
-            
-            domainStats[domainId] = {
-                name: cleanName,
-                percentage: percentage.toFixed(1),
-                total: data.total,
-                correct: data.correct
-            };
-            
-            labels.push(formattedLabel);
-            percentages.push(percentage.toFixed(1));
         }
+        
+        let cleanName = domainName.replace(/^Domínio \d+: /, '');
+        
+        let formattedLabel = cleanName;
+        if (cleanName.length > 20) {
+            const words = cleanName.split(' ');
+            const lines = [];
+            let currentLine = '';
+
+            words.forEach(word => {
+                if ((currentLine + word).length > 20) {
+                    if (currentLine) lines.push(currentLine.trim());
+                    currentLine = word + ' ';
+                } else {
+                    currentLine += word + ' ';
+                }
+            });
+            if (currentLine) lines.push(currentLine.trim());
+            formattedLabel = lines; 
+        }
+        
+        domainStats[domainId] = {
+            name: cleanName,
+            percentage: percentage.toFixed(1),
+            total: data.total,
+            correct: data.correct
+        };
+        
+        labels.push(formattedLabel);
+        percentages.push(percentage.toFixed(1));
     });
 
     const avgScore = totalQuestionsAnswered > 0 
@@ -206,15 +261,19 @@ export function calculateGlobalDomainStats(targetCertId) {
 }
 
 export async function renderGlobalRadarChart() {
+    // VALIDAÇÃO DOM: Verifica se elementos existem
     const canvas = document.getElementById('globalRadarChart');
     const emptyState = document.getElementById('global-chart-empty');
     const chartContainer = document.getElementById('global-chart-container');
     const statsContainer = document.getElementById('global-stats-summary');
     
+    if (!canvas) {
+        console.warn('Canvas globalRadarChart não encontrado');
+        return;
+    }
+    
     const certSelect = document.getElementById('certification-select');
     const currentCertId = certSelect ? certSelect.value : 'clf-c02';
-
-    if (!canvas) return;
 
     const stats = calculateGlobalDomainStats(currentCertId);
 
@@ -237,14 +296,34 @@ export async function renderGlobalRadarChart() {
     if (avgScoreEl) avgScoreEl.textContent = stats.summary.avgScore + '%';
     if (totalQuestionsEl) totalQuestionsEl.textContent = stats.summary.totalQuestionsAnswered;
 
+    // VALIDAÇÃO: Aguarda Chart.js carregar
     if (typeof Chart === 'undefined') {
-        if (window.chartJsLoaded) await window.chartJsLoaded;
-        else return;
+        if (window.chartJsLoaded) {
+            try {
+                await window.chartJsLoaded;
+            } catch (error) {
+                console.error('Erro ao carregar Chart.js:', error);
+                return;
+            }
+        } else {
+            console.warn('Chart.js não está disponível');
+            return;
+        }
     }
 
-    if (window.globalRadarChartInstance) window.globalRadarChartInstance.destroy();
+    if (window.globalRadarChartInstance) {
+        try {
+            window.globalRadarChartInstance.destroy();
+        } catch (error) {
+            console.warn('Erro ao destruir instância anterior do gráfico global:', error);
+        }
+    }
 
     const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('Não foi possível obter contexto 2D do canvas global');
+        return;
+    }
     const isDarkMode = document.documentElement.classList.contains('dark');
     const textColor = isDarkMode ? '#e5e7eb' : '#374151';
     const gridColor = isDarkMode ? 'rgba(148, 163, 184, 0.2)' : 'rgba(0, 0, 0, 0.1)';

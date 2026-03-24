@@ -6,7 +6,7 @@
 import { QuizEngine } from './quizEngine.js';
 import { certificationPaths, glossaryTerms } from './data.js';
 import { storageManager } from './storageManager.js';
-import { renderRadarChart, renderGlobalRadarChart } from './chartManager.js'; // <-- NOVO IMPORT AQUI
+import { renderRadarChart, renderGlobalRadarChart, calculateGlobalDomainStats } from './chartManager.js';
 
 const APP_CONFIG = {
     PASSING_SCORE: 70,
@@ -35,27 +35,37 @@ document.addEventListener('DOMContentLoaded', () => {
     renderGamification();
     updateLanguageButtonUI();
     initPWAInstall();
-    renderGlobalRadarChart(); // Renderiza gráfico global na inicialização
+    
+    // VALIDAÇÃO: Verifica se a função existe antes de chamar
+    if (typeof renderGlobalRadarChart === 'function') {
+        renderGlobalRadarChart();
+    }
 
     const certSelect = document.getElementById('certification-select');
     
     // Inicializa com a certificação selecionada por padrão
-    if (certSelect && certificationPaths[certSelect.value]) {
+    if (certSelect && certificationPaths && certificationPaths[certSelect.value]) {
         uiState.currentCertificationInfo = certificationPaths[certSelect.value];
         updateTopicDropdown();
         loadLastScore();
     }
 
     // Atualiza quando o usuário troca de certificação no dropdown
-    certSelect?.addEventListener('change', () => {
-        if (certificationPaths[certSelect.value]) {
-            uiState.currentCertificationInfo = certificationPaths[certSelect.value];
-            updateTopicDropdown(); 
-            loadLastScore();
-            updateDifficultyFilters(certSelect.value);
-            renderGlobalRadarChart(); // Atualiza o gráfico global para a nova certificação
-        }
-    });
+    if (certSelect) {
+        certSelect.addEventListener('change', () => {
+            if (certificationPaths && certificationPaths[certSelect.value]) {
+                uiState.currentCertificationInfo = certificationPaths[certSelect.value];
+                updateTopicDropdown(); 
+                loadLastScore();
+                updateDifficultyFilters(certSelect.value);
+                
+                // VALIDAÇÃO: Verifica se a função existe antes de chamar
+                if (typeof renderGlobalRadarChart === 'function') {
+                    renderGlobalRadarChart();
+                }
+            }
+        });
+    }
     
     // Inicializa filtros de dificuldade
     if (certSelect) {
@@ -393,7 +403,12 @@ function finishQuiz() {
     saveQuizResult();
     updateHistoryDisplay();
     loadLastScore();
-    renderGlobalRadarChart(); // Atualiza gráfico global após completar quiz
+    
+    // VALIDAÇÃO: Verifica se a função existe antes de chamar
+    if (typeof renderGlobalRadarChart === 'function') {
+        renderGlobalRadarChart();
+    }
+    
     showResultsScreen();
 }
 
@@ -420,30 +435,55 @@ function showScreen(screenName) {
 
 function showResultsScreen() {
     const results = engine.getFinalResults();
+    
+    // VALIDAÇÃO: Verifica se results existe antes de processar
+    if (!results) {
+        console.error('Erro ao obter resultados finais do quiz');
+        alert('Erro ao exibir resultados. Tente novamente.');
+        return;
+    }
+    
     displayReportFromResult(results);
     
     // Pequeno atraso para garantir que a tela ficou visível antes de desenhar o gráfico
-    // Agora passa também o currentCertificationInfo do uiState
     setTimeout(() => {
-        renderRadarChart(results, uiState.currentCertificationInfo);
+        // VALIDAÇÃO: Verifica se a função existe antes de chamar
+        if (typeof renderRadarChart === 'function') {
+            renderRadarChart(results, uiState.currentCertificationInfo);
+        }
     }, 50);
 }
 
 function displayReportFromResult(results) {
-    if (certificationPaths) {
+    // VALIDAÇÃO: Verifica se results existe e tem dados mínimos
+    if (!results || typeof results.percentage !== 'number') {
+        console.error('Dados de resultado inválidos em displayReportFromResult');
+        alert('Erro ao exibir relatório. Dados corrompidos.');
+        return;
+    }
+    
+    if (certificationPaths && results.certId) {
         uiState.currentCertificationInfo = certificationPaths[results.certId];
     }
 
     // Converte a pontuação para a escala oficial AWS (100-1000)
     const awsScore = Math.floor((results.percentage / 100) * 900) + 100;
     
-    document.getElementById('final-score-percent').textContent = awsScore; // Escala 100-1000
-    document.getElementById('final-correct').textContent = results.score;
-    document.getElementById('final-incorrect').textContent = results.total - results.score;
+    // VALIDAÇÃO DOM: Verifica se elementos existem antes de manipular
+    const scorePercentEl = document.getElementById('final-score-percent');
+    const finalCorrectEl = document.getElementById('final-correct');
+    const finalIncorrectEl = document.getElementById('final-incorrect');
+    
+    if (scorePercentEl) scorePercentEl.textContent = awsScore;
+    if (finalCorrectEl) finalCorrectEl.textContent = results.score || 0;
+    if (finalIncorrectEl) finalIncorrectEl.textContent = (results.total || 0) - (results.score || 0);
 
     // Adiciona selo de aprovação/revisão
     const scoreDisplay = document.getElementById('final-score-percent');
+    if (!scoreDisplay) return; // Proteção contra elemento não encontrado
+    
     const parentDiv = scoreDisplay.parentElement;
+    if (!parentDiv) return; // Proteção contra parent não encontrado
     
     // Remove selo anterior se existir
     const oldBadge = parentDiv.querySelector('.approval-badge');
@@ -486,9 +526,20 @@ function displayReportFromResult(results) {
 }
 
 function renderDetailedReportUI(results) {
+    // VALIDAÇÃO: Verifica se results existe e tem dados mínimos
+    if (!results || !results.answers || !Array.isArray(results.answers)) {
+        console.error('Dados de resultado inválidos em renderDetailedReportUI');
+        return;
+    }
+    
     const resultsScreen = document.getElementById('screen-results');
+    if (!resultsScreen) {
+        console.error('Tela de resultados não encontrada');
+        return;
+    }
+    
     const buttonsContainer = resultsScreen.querySelector('.flex.gap-3.flex-wrap'); 
-    if(buttonsContainer) buttonsContainer.classList.add('no-print');
+    if (buttonsContainer) buttonsContainer.classList.add('no-print');
 
     let reportDiv = document.getElementById('detailed-report');
     if (!reportDiv) {
@@ -521,33 +572,40 @@ function renderDetailedReportUI(results) {
             <div class="space-y-3">
     `;
 
-    uiState.currentCertificationInfo.domains.forEach(domain => {
-        const scoreData = results.domainScores[domain.id];
-        if (scoreData && scoreData.total > 0) {
-            const pct = (scoreData.correct / scoreData.total) * 100;
-            const meets = pct >= 70; 
+    // VALIDAÇÃO: Verifica se currentCertificationInfo e domains existem
+    if (uiState.currentCertificationInfo && Array.isArray(uiState.currentCertificationInfo.domains)) {
+        // VALIDAÇÃO: Verifica se domainScores existe antes de iterar
+        if (results.domainScores && typeof results.domainScores === 'object') {
+            uiState.currentCertificationInfo.domains.forEach(domain => {
+                const scoreData = results.domainScores[domain.id];
+                
+                if (scoreData && scoreData.total > 0) {
+                    const pct = (scoreData.correct / scoreData.total) * 100;
+                    const meets = pct >= 70; 
 
-            const statusText = meets ? "Atende às Competências" : "Precisa de Melhoria";
-            const statusColor = meets 
-                ? "text-green-700 bg-green-100 dark:bg-green-900/40 dark:text-green-400 border-green-200 dark:border-green-800" 
-                : "text-red-700 bg-red-100 dark:bg-red-900/40 dark:text-red-400 border-red-200 dark:border-red-800";
-            const icon = meets ? "fa-check-circle" : "fa-exclamation-triangle";
+                    const statusText = meets ? "Atende às Competências" : "Precisa de Melhoria";
+                    const statusColor = meets 
+                        ? "text-green-700 bg-green-100 dark:bg-green-900/40 dark:text-green-400 border-green-200 dark:border-green-800" 
+                        : "text-red-700 bg-red-100 dark:bg-red-900/40 dark:text-red-400 border-red-200 dark:border-red-800";
+                    const icon = meets ? "fa-check-circle" : "fa-exclamation-triangle";
 
-            html += `
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-50 dark:bg-slate-700/30 rounded-lg border border-gray-200 dark:border-slate-600 transition-all hover:shadow-sm gap-4">
-                    <div class="flex-1 min-w-0">
-                        <span class="font-bold text-gray-800 dark:text-gray-200 block text-md whitespace-normal">${domain.name}</span>
-                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1 block">
-                            Score do Domínio: ${pct.toFixed(0)}% <span class="opacity-75">(${scoreData.correct} de ${scoreData.total} corretas)</span>
-                        </span>
-                    </div>
-                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-bold border ${statusColor} shrink-0 whitespace-nowrap">
-                        <i class="fa-solid ${icon}"></i> ${statusText}
-                    </div>
-                </div>
-            `;
+                    html += `
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-50 dark:bg-slate-700/30 rounded-lg border border-gray-200 dark:border-slate-600 transition-all hover:shadow-sm gap-4">
+                            <div class="flex-1 min-w-0">
+                                <span class="font-bold text-gray-800 dark:text-gray-200 block text-md whitespace-normal">${domain.name}</span>
+                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1 block">
+                                    Score do Domínio: ${pct.toFixed(0)}% <span class="opacity-75">(${scoreData.correct} de ${scoreData.total} corretas)</span>
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-bold border ${statusColor} shrink-0 whitespace-nowrap">
+                                <i class="fa-solid ${icon}"></i> ${statusText}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
         }
-    });
+    }
 
     html += `
             </div>
@@ -618,12 +676,18 @@ function saveQuizResult() {
 
 function loadLastScore() {
     const banner = document.getElementById('last-score-banner');
-    const certId = document.getElementById('certification-select')?.value;
-    if (!banner || !certId) return;
+    const certSelect = document.getElementById('certification-select');
+    
+    // VALIDAÇÃO DOM: Verifica se elementos existem
+    if (!banner || !certSelect) return;
+    
+    const certId = certSelect.value;
+    if (!certId) return;
 
     const last = storageManager.loadLastScore(certId);
     
-    if (last && last.percentage !== undefined) {
+    // VALIDAÇÃO: Verifica se last existe e tem dados válidos
+    if (last && typeof last.percentage === 'number') {
         banner.classList.remove('hidden');
         banner.classList.add('cursor-pointer', 'hover:bg-blue-100', 'dark:hover:bg-blue-800', 'transition-all');
         const awsScore = Math.floor((last.percentage / 100) * 900) + 100;
@@ -646,15 +710,23 @@ function loadLastScore() {
 
 function showLastReport(certId) {
     const lastResult = storageManager.loadLastResult(certId);
-    if(!lastResult || !lastResult.answers) {
+    
+    // VALIDAÇÃO: Verifica se o resultado existe e tem dados válidos
+    if (!lastResult || !lastResult.answers) {
         alert("Os detalhes deste relatório não foram salvos. Faça um novo simulado!");
+        return;
+    }
+    
+    // VALIDAÇÃO: Garante que domainScores existe antes de iterar
+    if (!lastResult.domainScores || typeof lastResult.domainScores !== 'object') {
+        alert("Dados do relatório estão corrompidos. Faça um novo simulado!");
         return;
     }
     
     if (!lastResult.weakDomains) {
         lastResult.weakDomains = [];
         for (const [domainId, scoreData] of Object.entries(lastResult.domainScores)) {
-            if (scoreData.total > 0) {
+            if (scoreData && scoreData.total > 0) {
                 const domainPct = (scoreData.correct / scoreData.total) * 100;
                 if (domainPct < 70) {
                     lastResult.weakDomains.push(domainId);
@@ -666,18 +738,35 @@ function showLastReport(certId) {
 }
 
 function showHistoricalReport(index) {
-    const history = storageManager.getHistory();
+    let history = storageManager.getHistory();
+    
+    // VALIDAÇÃO CRÍTICA: Garante que history é um Array
+    if (!Array.isArray(history)) {
+        console.warn('Histórico corrompido em showHistoricalReport. Forçando limpeza...');
+        history = [];
+        storageManager.clearHistory();
+        alert("Histórico corrompido foi limpo. Faça um novo simulado!");
+        return;
+    }
+    
     const result = history[index];
     
-    if(!result || !result.answers) {
+    // VALIDAÇÃO: Verifica se o resultado existe e tem dados válidos
+    if (!result || !result.answers) {
         alert("Os detalhes deste relatório não estão mais disponíveis.");
+        return;
+    }
+    
+    // VALIDAÇÃO: Garante que domainScores existe antes de iterar
+    if (!result.domainScores || typeof result.domainScores !== 'object') {
+        alert("Dados do relatório estão corrompidos.");
         return;
     }
     
     if (!result.weakDomains) {
         result.weakDomains = [];
         for (const [domainId, scoreData] of Object.entries(result.domainScores)) {
-            if (scoreData.total > 0) {
+            if (scoreData && scoreData.total > 0) {
                 const domainPct = (scoreData.correct / scoreData.total) * 100;
                 if (domainPct < 70) {
                     result.weakDomains.push(domainId);
@@ -692,8 +781,16 @@ function updateHistoryDisplay() {
     const historyList = document.getElementById('history-list');
     if (!historyList) return;
 
-    // Busca e filtra dados corrompidos
-    const rawHistory = storageManager.getHistory();
+    // CORREÇÃO CRÍTICA: Valida se rawHistory é um Array antes de usar .filter()
+    let rawHistory = storageManager.getHistory();
+    
+    // Salva-vidas: Se não for array, força array vazio e limpa cache corrompido
+    if (!Array.isArray(rawHistory)) {
+        console.warn('Histórico corrompido detectado em updateHistoryDisplay. Forçando limpeza...');
+        rawHistory = [];
+        storageManager.clearHistory();
+    }
+    
     const history = rawHistory.filter(item => item && item.certId && item.percentage !== undefined);
 
     if (history.length === 0) {
@@ -740,10 +837,14 @@ function updateHistoryDisplay() {
 }
 
 function clearHistory() {
-    if(confirm("Tem certeza que deseja apagar todo o histórico de simulados?")) {
+    if (confirm("Tem certeza que deseja apagar todo o histórico de simulados?")) {
         storageManager.clearHistory();
         updateHistoryDisplay();
-        renderGlobalRadarChart(); // Atualiza gráfico global após limpar histórico
+        
+        // VALIDAÇÃO: Verifica se a função existe antes de chamar
+        if (typeof renderGlobalRadarChart === 'function') {
+            renderGlobalRadarChart();
+        }
         
         // Atualiza insights para estado inicial
         updateDynamicInsight([]);
@@ -754,8 +855,14 @@ function updateDynamicInsight(history) {
     const insightEl = document.getElementById('dynamic-insight');
     if (!insightEl) return;
     
+    // VALIDAÇÃO: Garante que history é um Array
+    if (!Array.isArray(history)) {
+        console.warn('updateDynamicInsight recebeu dados inválidos. Usando array vazio.');
+        history = [];
+    }
+    
     // Se não há histórico, mostra mensagem padrão
-    if (!history || history.length === 0) {
+    if (history.length === 0) {
         insightEl.innerHTML = `
             <div class="flex items-start gap-3">
                 <i class="fa-solid fa-lightbulb text-yellow-500 text-xl mt-1"></i>
@@ -787,8 +894,8 @@ function updateDynamicInsight(history) {
  * Gera insights inteligentes baseados em análise profunda do histórico
  */
 function generateSmartInsight(history) {
-    // Validação: histórico vazio
-    if (!history || history.length === 0) {
+    // VALIDAÇÃO CRÍTICA: Garante que history é um Array válido
+    if (!Array.isArray(history) || history.length === 0) {
         return {
             icon: 'fa-solid fa-rocket',
             iconColor: 'text-blue-500',
@@ -914,25 +1021,30 @@ function generateSmartInsight(history) {
 }
 
 function renderGamification() {
+    // VALIDAÇÃO: Verifica se storageManager existe
+    if (!storageManager || typeof storageManager.getGamification !== 'function') {
+        console.warn('storageManager não disponível em renderGamification');
+        return;
+    }
+    
     const data = storageManager.getGamification();
+    
+    // VALIDAÇÃO DOM: Verifica se elemento existe
     const streakEl = document.getElementById('streak-counter');
-    if (streakEl) streakEl.textContent = data.streak;
+    if (streakEl && data && typeof data.currentStreak === 'number') {
+        streakEl.textContent = data.currentStreak;
+    }
 }
 
 function updateGamification(pct) {
-    let data = storageManager.getGamification();
-    const today = new Date().toISOString().split('T')[0];
-
-    if (data.lastDate !== today) {
-        data.streak++;
-        data.lastDate = today;
+    // VALIDAÇÃO: Verifica se storageManager existe e pct é válido
+    if (!storageManager || typeof pct !== 'number') {
+        console.warn('Dados inválidos em updateGamification');
+        return;
     }
-
-    if (pct === 100 && !data.badges.some(b => b.id === 'perfect')) {
-        data.badges.push({ id: 'perfect', name: 'Gabarito', icon: 'fa-star' });
-    }
-
-    storageManager.updateGamification(data);
+    
+    // Usa a função do storageManager que já faz toda a lógica
+    storageManager.updateGamification(pct);
     renderGamification();
 }
 
@@ -960,12 +1072,28 @@ function updateTopicDropdown() {
 }
 
 async function updateDifficultyFilters(certId) {
+    // VALIDAÇÃO: Verifica se certId é válido
+    if (!certId || typeof certId !== 'string') {
+        console.warn('certId inválido em updateDifficultyFilters');
+        return;
+    }
+    
     try {
         const fileSuffix = uiState.language === 'en' ? '-en' : '';
         const response = await fetch(`data/${certId}${fileSuffix}.json`);
-        if (!response.ok) return;
+        
+        if (!response.ok) {
+            console.warn(`Arquivo de dados não encontrado: data/${certId}${fileSuffix}.json`);
+            return;
+        }
         
         const questions = await response.json();
+        
+        // VALIDAÇÃO: Verifica se questions é um array válido
+        if (!Array.isArray(questions)) {
+            console.error('Dados de questões inválidos (não é array)');
+            return;
+        }
         
         const difficultyCounts = {
             all: questions.length,
@@ -1016,15 +1144,15 @@ function toggleDarkMode() {
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('aws_sim_theme', isDark ? 'dark' : 'light');
     
-    if (window.radarChartInstance) {
+    // VALIDAÇÃO: Verifica se instâncias e funções existem antes de chamar
+    if (window.radarChartInstance && typeof renderRadarChart === 'function') {
         const results = engine.getFinalResults();
         if (results) {
-            // Passa currentCertificationInfo agora
             renderRadarChart(results, uiState.currentCertificationInfo);
         }
     }
     
-    if (window.globalRadarChartInstance) {
+    if (window.globalRadarChartInstance && typeof renderGlobalRadarChart === 'function') {
         renderGlobalRadarChart();
     }
 }
@@ -1057,9 +1185,21 @@ function goHome() {
     if (uiState.timerInterval) clearInterval(uiState.timerInterval);
     showScreen('start');
     loadLastScore();
-    renderGlobalRadarChart();
     
-    const history = storageManager.getHistory();
+    // VALIDAÇÃO: Verifica se a função existe antes de chamar
+    if (typeof renderGlobalRadarChart === 'function') {
+        renderGlobalRadarChart();
+    }
+    
+    let history = storageManager.getHistory();
+    
+    // VALIDAÇÃO: Garante que history é um Array
+    if (!Array.isArray(history)) {
+        console.warn('Histórico corrompido em goHome. Forçando limpeza...');
+        history = [];
+        storageManager.clearHistory();
+    }
+    
     updateDynamicInsight(history);
 }
 
@@ -1075,8 +1215,15 @@ function cancelQuiz() {
 function generatePerformanceReport() {
     const reportElement = document.getElementById('detailed-report');
     
+    // VALIDAÇÃO DOM: Verifica se elemento existe
     if (!reportElement) {
         alert('Relatório não encontrado para gerar PDF.');
+        return;
+    }
+    
+    // VALIDAÇÃO: Verifica se html2pdf está disponível
+    if (typeof html2pdf !== 'function') {
+        alert('Biblioteca de geração de PDF não está carregada. Recarregue a página e tente novamente.');
         return;
     }
 
@@ -1096,12 +1243,31 @@ function generatePerformanceReport() {
         btn.disabled = true;
     }
 
-    html2pdf().set(opt).from(reportElement).save().then(() => {
+    // TRATAMENTO DE ERROS: Adiciona try/catch para capturar erros de geração
+    try {
+        html2pdf().set(opt).from(reportElement).save()
+            .then(() => {
+                if (btn) {
+                    btn.innerHTML = oldHtml;
+                    btn.disabled = false;
+                }
+            })
+            .catch((error) => {
+                console.error('Erro ao gerar PDF:', error);
+                alert('Erro ao gerar PDF. Tente novamente.');
+                if (btn) {
+                    btn.innerHTML = oldHtml;
+                    btn.disabled = false;
+                }
+            });
+    } catch (error) {
+        console.error('Erro ao iniciar geração de PDF:', error);
+        alert('Erro ao gerar PDF. Tente novamente.');
         if (btn) {
             btn.innerHTML = oldHtml;
             btn.disabled = false;
         }
-    });
+    }
 }
 
 // ============================================================================

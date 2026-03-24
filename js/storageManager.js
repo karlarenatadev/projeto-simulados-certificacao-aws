@@ -147,9 +147,23 @@ export class StorageManager {
     try {
       const historyKey = this._getKey('history');
       const data = localStorage.getItem(historyKey);
-      return data ? JSON.parse(data) : [];
+      
+      if (!data) return [];
+      
+      const parsed = JSON.parse(data);
+      
+      // VALIDAÇÃO CRÍTICA: Garante que sempre retorna um Array válido
+      if (!Array.isArray(parsed)) {
+        console.warn('Histórico corrompido detectado (não é array). Limpando cache...');
+        this.clearHistory();
+        return [];
+      }
+      
+      return parsed;
     } catch (error) {
-      console.error('Erro ao carregar histórico:', error);
+      console.error('Erro ao carregar histórico (JSON inválido). Limpando cache...', error);
+      // Se o JSON está corrompido, limpa silenciosamente
+      this.clearHistory();
       return [];
     }
   }
