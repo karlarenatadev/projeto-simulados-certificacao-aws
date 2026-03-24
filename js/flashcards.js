@@ -73,19 +73,21 @@ export function filterFlashcardsByCert(certId) {
 }
 
 export function loadFlashcard() {
-    // VALIDAÇÃO: Verifica se glossaryTerms existe e é válido
-    if (!glossaryTerms || !Array.isArray(glossaryTerms) || glossaryTerms.length === 0) {
-        alert('Nenhum termo disponível no glossário.');
+    // VALIDAÇÃO: Verifica se filteredTerms existe e é válido
+    const terms = flashcardState.filteredTerms || glossaryTerms;
+    
+    if (!terms || !Array.isArray(terms) || terms.length === 0) {
+        alert('Nenhum termo disponível para esta certificação.');
         return;
     }
     
     // VALIDAÇÃO: Verifica se o índice está dentro dos limites
-    if (flashcardState.index < 0 || flashcardState.index >= glossaryTerms.length) {
+    if (flashcardState.index < 0 || flashcardState.index >= terms.length) {
         console.warn('Índice de flashcard inválido. Resetando para 0.');
         flashcardState.index = 0;
     }
     
-    const card = glossaryTerms[flashcardState.index];
+    const card = terms[flashcardState.index];
     
     // VALIDAÇÃO: Verifica se o card existe e tem as propriedades necessárias
     if (!card || !card.term || !card.definition) {
@@ -101,7 +103,7 @@ export function loadFlashcard() {
     
     if (termEl) termEl.textContent = card.term;
     if (definitionEl) definitionEl.textContent = card.definition;
-    if (counterEl) counterEl.textContent = `${flashcardState.index + 1} / ${glossaryTerms.length}`;
+    if (counterEl) counterEl.textContent = `${flashcardState.index + 1} / ${terms.length}`;
     
     if (cardContainer) {
         cardContainer.classList.remove('flipped');
