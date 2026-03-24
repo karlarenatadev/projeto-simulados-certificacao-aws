@@ -1,4 +1,4 @@
-name: 🚫 Prevent Main File Edits
+name: Prevent Main File Edits
 
 on:
   pull_request:
@@ -15,10 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: 🔍 Check for main file edits
+      - name: Check for main file edits
         id: check-files
         uses: tj-actions/changed-files@v44
         with:
@@ -29,85 +29,29 @@ jobs:
             data/dva-c02.json
             data/*-en.json
       
-      - name: 🚫 Block PR if main files were edited
+      - name: Block PR if main files were edited
         if: steps.check-files.outputs.any_changed == 'true'
         run: |
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "🚫 ERRO: Edição direta de arquivos principais detectada!"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "ERROR: Direct edit of main files detected!"
           echo ""
-          echo "❌ Arquivos modificados:"
+          echo "Modified files:"
           echo "${{ steps.check-files.outputs.all_changed_files }}"
           echo ""
-          echo "⚠️  NÃO edite os arquivos principais diretamente!"
-          echo ""
-          echo "✅ Use o novo fluxo de contribuição modular:"
-          echo "   1. Crie um arquivo individual em data/contributions/<cert-id>/"
-          echo "   2. Use os templates fornecidos"
-          echo "   3. Valide com: python scripts_python/validate_contribution.py"
-          echo ""
-          echo "📖 Leia o guia completo:"
-          echo "   https://github.com/${{ github.repository }}/blob/main/docs/guia-contribuicao-questoes.md"
-          echo ""
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Please use the modular contribution system instead."
+          echo "See: docs/guia-contribuicao-questoes.md"
           exit 1
       
-      - name: 💬 Comment on PR
+      - name: Comment on PR
         if: failure()
         uses: actions/github-script@v7
         with:
           script: |
-            const files = '${{ steps.check-files.outputs.all_changed_files }}'.split(' ').filter(f => f);
-            const fileList = files.map(f => `- 🚫 \`${f}\``).join('\n');
+            const files = '${{ steps.check-files.outputs.all_changed_files }}'.split(' ').filter(Boolean);
+            const fileList = files.map(f => `- ${f}`).join('\n');
             
-            const body = `## 🚫 Edição Direta de Arquivos Principais Bloqueada
-
-Este PR tenta editar arquivos principais do banco de questões diretamente, o que não é mais permitido para evitar conflitos de merge.
-
-### ❌ Arquivos bloqueados:
-${fileList}
-
-### ✅ Como contribuir corretamente:
-
-**Novo Fluxo Modular (sem conflitos!):**
-
-1. **Crie um arquivo individual** na pasta de contribuições:
-   \`\`\`bash
-   cp data/contributions/_TEMPLATE.json \\
-      data/contributions/clf-c02/sua-questao-unica.json
-   \`\`\`
-
-2. **Preencha sua questão** no arquivo JSON
-
-3. **Valide localmente**:
-   \`\`\`bash
-   python scripts_python/validate_contribution.py \\
-     data/contributions/clf-c02/sua-questao-unica.json
-   \`\`\`
-
-4. **Faça commit apenas do seu arquivo**:
-   \`\`\`bash
-   git add data/contributions/clf-c02/sua-questao-unica.json
-   git commit -m "feat(clf-c02): adiciona questão sobre X"
-   \`\`\`
-
-### 📚 Documentação:
-
-- 📖 [Guia Completo de Contribuição](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/docs/guia-contribuicao-questoes.md)
-- 📝 [Templates Disponíveis](https://github.com/${context.repo.owner}/${context.repo.repo}/tree/main/data/contributions)
-- 🤝 [CONTRIBUTING.md](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/CONTRIBUTING.md)
-
-### ❓ Por que essa mudança?
-
-O novo sistema modular permite que **múltiplos contribuidores trabalhem simultaneamente sem conflitos de merge**. Cada pessoa cria seu próprio arquivo, e os mantenedores fazem o merge automático periodicamente.
-
----
-
-Por favor, feche este PR e crie um novo seguindo o fluxo modular. Obrigado! 🙏`;
-            
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: body
-            })
+              body: `## Direct Edit of Main Files Blocked\n\nThis PR attempts to edit main database files directly, which is not allowed to avoid merge conflicts.\n\n### Blocked files:\n${fileList}\n\n### How to contribute correctly:\n\n1. Create an individual file in data/contributions/<cert-id>/\n2. Use the provided templates\n3. Validate with: python scripts_python/validate_contribution.py\n\nSee the contribution guide for details.`
+            });

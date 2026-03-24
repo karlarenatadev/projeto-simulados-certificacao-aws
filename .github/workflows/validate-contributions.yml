@@ -1,4 +1,4 @@
-name: 🔍 Validate Contributions
+name: Validate Contributions
 
 on:
   pull_request:
@@ -14,153 +14,107 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
       
-      - name: 🐍 Setup Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
       
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r scripts_python/requirements.txt
+          if [ -f scripts_python/requirements.txt ]; then
+            pip install -r scripts_python/requirements.txt
+          fi
       
-      - name: 🔍 Get changed files
+      - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v44
         with:
-          # ✅ CORREÇÃO: separator explícito para evitar quebra com espaços em nomes de arquivo
-          separator: "\n"
+          separator: ","
           files: |
             data/contributions/**/*.json
           files_ignore: |
             data/contributions/**/_processed/**
             data/contributions/_TEMPLATE*.json
       
-      - name: 📋 List changed files
+      - name: List changed files
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
-          echo "🔍 Arquivos de contribuição detectados:"
+          echo "Files detected:"
           echo "${{ steps.changed-files.outputs.all_changed_files }}"
       
-      - name: ✅ Validate each contribution
+      - name: Validate each contribution
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
-          echo "🚀 Iniciando validação de contribuições..."
+          echo "Starting validation..."
           echo ""
           
           FAILED=0
           PASSED=0
           
-          # ✅ CORREÇÃO: lê arquivos linha a linha (respeita espaços em nomes)
-          while IFS= read -r file; do
+          IFS=',' read -ra FILES <<< "${{ steps.changed-files.outputs.all_changed_files }}"
+          for file in "${FILES[@]}"; do
+            file=$(echo "$file" | xargs)
             [ -z "$file" ] && continue
-            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-            echo "📄 Validando: $file"
-            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            
+            echo "Validating: $file"
             
             if python scripts_python/validate_contribution.py "$file"; then
-              echo "✅ PASSOU: $file"
+              echo "PASSED: $file"
               PASSED=$((PASSED + 1))
             else
-              echo "❌ FALHOU: $file"
+              echo "FAILED: $file"
               FAILED=$((FAILED + 1))
             fi
             echo ""
-          done <<< "${{ steps.changed-files.outputs.all_changed_files }}"
+          done
           
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "📊 RESUMO DA VALIDAÇÃO"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "✅ Questões aprovadas: $PASSED"
-          echo "❌ Questões reprovadas: $FAILED"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Summary:"
+          echo "Passed: $PASSED"
+          echo "Failed: $FAILED"
           
           if [ $FAILED -gt 0 ]; then
-            echo ""
-            echo "❌ Validação falhou! Corrija os erros acima antes de mergear."
+            echo "Validation failed!"
             exit 1
           else
-            echo ""
-            echo "✅ Todas as questões passaram na validação!"
+            echo "All validations passed!"
             exit 0
           fi
       
-      - name: 💬 Comment on PR (Success)
+      - name: Comment on PR Success
         if: success() && steps.changed-files.outputs.any_changed == 'true'
         uses: actions/github-script@v7
         with:
           script: |
-            // ✅ CORREÇÃO: split por '\n' em vez de ' ', com filter robusto
-            const rawFiles = `${{ steps.changed-files.outputs.all_changed_files }}`;
-            const files = rawFiles.split('\n').map(f => f.trim()).filter(Boolean);
-            const fileList = files.map(f => `- ✅ \`${f}\``).join('\n');
+            const files = '${{ steps.changed-files.outputs.all_changed_files }}'.split(',').map(f => f.trim()).filter(Boolean);
+            const fileList = files.map(f => `- ${f}`).join('\n');
             
-            const body = `## ✅ Validação de Contribuições Passou!
-
-Todas as questões foram validadas com sucesso! 🎉
-
-### Arquivos validados:
-${fileList}
-
-### Próximos passos:
-- ✅ Validação automática concluída
-- 👀 Aguardando review de um mantenedor
-- 🔄 Após aprovação, suas questões serão mergeadas no banco principal
-
-Obrigado por contribuir com a Guilda! 🙏`;
-            
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: body
+              body: `## Validation Passed!\n\nAll questions validated successfully!\n\n### Files validated:\n${fileList}\n\nThank you for contributing!`
             });
       
-      - name: 💬 Comment on PR (Failure)
+      - name: Comment on PR Failure
         if: failure() && steps.changed-files.outputs.any_changed == 'true'
         uses: actions/github-script@v7
         with:
           script: |
-            const body = `## ❌ Validação de Contribuições Falhou
-
-Algumas questões não passaram na validação automática. Por favor, revise os erros acima e corrija antes de prosseguir.
-
-### Como corrigir:
-
-1. **Veja os logs acima** para identificar os erros específicos
-2. **Corrija localmente** usando o validador:
-   \`\`\`bash
-   python scripts_python/validate_contribution.py data/contributions/clf-c02/sua-questao.json
-   \`\`\`
-3. **Faça commit das correções** e push para atualizar o PR
-
-### Erros comuns:
-
-- ❌ Campos obrigatórios faltando
-- ❌ JSON inválido (vírgulas, chaves, aspas)
-- ❌ Dificuldade inválida (use: easy, medium, hard)
-- ❌ Tipo inválido (use: multiple-choice, multiple-answer)
-- ❌ Resposta correta fora do range de opções
-
-### Precisa de ajuda?
-
-Consulte o [Guia de Contribuição](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/docs/guia-contribuicao-questoes.md) ou abra uma discussão!`;
-            
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: body
+              body: `## Validation Failed\n\nSome questions did not pass validation. Please check the logs above and fix the errors.\n\n### How to fix:\n\n1. Check the logs for specific errors\n2. Fix locally using:\n   \`\`\`bash\n   python scripts_python/validate_contribution.py your-file.json\n   \`\`\`\n3. Commit and push the fixes`
             });
       
-      - name: 🎉 No contributions detected
+      - name: No contributions detected
         if: steps.changed-files.outputs.any_changed != 'true'
         run: |
-          echo "ℹ️  Nenhuma contribuição de questão detectada neste PR."
-          echo "   Este workflow só valida arquivos em data/contributions/"
+          echo "No contribution files detected in this PR."

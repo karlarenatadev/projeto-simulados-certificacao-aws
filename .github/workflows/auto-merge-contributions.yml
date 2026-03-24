@@ -1,10 +1,10 @@
-name: 🔄 Auto-Merge Contributions (Manual)
+name: Auto-Merge Contributions
 
 on:
   workflow_dispatch:
     inputs:
       cert_id:
-        description: 'Certification ID (clf-c02, saa-c03, aif-c01, dva-c02)'
+        description: 'Certification ID'
         required: true
         type: choice
         options:
@@ -28,58 +28,52 @@ jobs:
       pull-requests: write
     
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: 🐍 Setup Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
       
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r scripts_python/requirements.txt
       
-      - name: 🔄 Run merge script
+      - name: Run merge script
         id: merge
         run: |
-          echo "🚀 Iniciando merge de contribuições para: ${{ inputs.cert_id }}"
+          echo "Starting merge for: ${{ inputs.cert_id }}"
           echo ""
           
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            echo "🔍 Modo DRY-RUN ativado (nenhuma alteração será feita)"
+            echo "DRY-RUN mode activated"
             python scripts_python/merge_contributions.py ${{ inputs.cert_id }} --dry-run
           else
             python scripts_python/merge_contributions.py ${{ inputs.cert_id }}
           fi
           
-          # Captura estatísticas
-          MERGED=$(ls data/contributions/${{ inputs.cert_id }}/_processed/*.json 2>/dev/null | wc -l | tr -d ' ' || echo "0")
-          PENDING=$(ls data/contributions/${{ inputs.cert_id }}/*.json 2>/dev/null | grep -v "_TEMPLATE" | wc -l | tr -d ' ' || echo "0")
+          MERGED=$(ls data/contributions/${{ inputs.cert_id }}/_processed/*.json 2>/dev/null | wc -l || echo "0")
+          PENDING=$(ls data/contributions/${{ inputs.cert_id }}/*.json 2>/dev/null | grep -v "_TEMPLATE" | wc -l || echo "0")
           TOTAL=$(jq '. | length' data/${{ inputs.cert_id }}.json)
           
           echo "merged=$MERGED" >> $GITHUB_OUTPUT
           echo "pending=$PENDING" >> $GITHUB_OUTPUT
           echo "total=$TOTAL" >> $GITHUB_OUTPUT
       
-      - name: 📊 Display statistics
+      - name: Display statistics
         run: |
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "📊 ESTATÍSTICAS DO MERGE"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "✅ Questões mergeadas: ${{ steps.merge.outputs.merged }}"
-          echo "⏳ Questões pendentes: ${{ steps.merge.outputs.pending }}"
-          echo "📚 Total no banco: ${{ steps.merge.outputs.total }}"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Merge Statistics:"
+          echo "Merged: ${{ steps.merge.outputs.merged }}"
+          echo "Pending: ${{ steps.merge.outputs.pending }}"
+          echo "Total: ${{ steps.merge.outputs.total }}"
       
-      # ✅ CORREÇÃO: mensagem multilinha extraída para variável de ambiente
-      #    evita conflito entre aspas do shell e delimitadores ${{ }}
-      - name: 💾 Commit changes
-        if: ${{ inputs.dry_run == false && steps.merge.outputs.merged != '0' }}
+      - name: Commit changes
+        if: inputs.dry_run == false && steps.merge.outputs.merged > 0
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -88,35 +82,13 @@ jobs:
           git add data/contributions/${{ inputs.cert_id }}/_processed/
           git add data/backups/
           
-          # Mensagem separada em variável para evitar problemas de interpolação
-          COMMIT_MSG="chore(${{ inputs.cert_id }}): merge ${{ steps.merge.outputs.merged }} contributions"
-          COMMIT_BODY=$(printf '- Merged: %s questions\n- Total: %s questions in database\n- Pending: %s contributions\n\nAuto-merged by GitHub Actions' \
-            "${{ steps.merge.outputs.merged }}" \
-            "${{ steps.merge.outputs.total }}" \
-            "${{ steps.merge.outputs.pending }}")
-          
-          git commit -m "$COMMIT_MSG" -m "$COMMIT_BODY"
-          
+          git commit -m "chore(${{ inputs.cert_id }}): merge ${{ steps.merge.outputs.merged }} contributions"
           git push
       
-      - name: 📝 Create summary
+      - name: Create summary
         run: |
-          echo "## 🔄 Merge de Contribuições Concluído" >> $GITHUB_STEP_SUMMARY
+          echo "## Merge Completed" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📊 Estatísticas" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ **Questões mergeadas**: ${{ steps.merge.outputs.merged }}" >> $GITHUB_STEP_SUMMARY
-          echo "- ⏳ **Questões pendentes**: ${{ steps.merge.outputs.pending }}" >> $GITHUB_STEP_SUMMARY
-          echo "- 📚 **Total no banco**: ${{ steps.merge.outputs.total }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          if [ "${{ inputs.dry_run }}" = "true" ]; then
-            echo "🔍 **Modo**: Dry-run (nenhuma alteração foi feita)" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "✅ **Modo**: Merge real (alterações commitadas)" >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📁 Certificação" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "\`${{ inputs.cert_id }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Merged: ${{ steps.merge.outputs.merged }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Pending: ${{ steps.merge.outputs.pending }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Total: ${{ steps.merge.outputs.total }}" >> $GITHUB_STEP_SUMMARY

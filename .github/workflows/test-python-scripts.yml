@@ -1,4 +1,4 @@
-name: 🧪 Test Python Scripts
+name: Test Python Scripts
 
 on:
   push:
@@ -23,44 +23,31 @@ jobs:
         python-version: ['3.11', '3.12']
     
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: 🐍 Setup Python ${{ matrix.python-version }}
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: 'pip'
       
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r scripts_python/requirements.txt
-          pip install pytest pytest-cov
       
-      - name: 🔍 Lint with flake8 (optional)
-        continue-on-error: true
+      - name: Test validator script
         run: |
-          pip install flake8
-          flake8 scripts_python/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          echo "Testing validator..."
+          python scripts_python/validate_contribution.py data/contributions/clf-c02/exemplo-questao-s3.json
       
-      - name: ✅ Test validator script
+      - name: Test merger script dry-run
         run: |
-          echo "🧪 Testando validador com questão de exemplo..."
-          python scripts_python/validate_contribution.py \
-            data/contributions/clf-c02/exemplo-questao-s3.json
-      
-      - name: ✅ Test merger script (dry-run)
-        run: |
-          echo "🧪 Testando merger em modo dry-run..."
+          echo "Testing merger in dry-run mode..."
           python scripts_python/merge_contributions.py clf-c02 --dry-run
       
-      - name: 📊 Display test results
+      - name: Display test results
         run: |
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "✅ Todos os testes passaram!"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "🐍 Python: ${{ matrix.python-version }}"
-          echo "✅ Validador: OK"
-          echo "✅ Merger: OK"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "All tests passed!"
+          echo "Python: ${{ matrix.python-version }}"

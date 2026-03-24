@@ -1,8 +1,7 @@
-name: 📊 Generate Statistics Report
+name: Generate Statistics Report
 
 on:
   schedule:
-    # Executa toda segunda-feira às 9h UTC
     - cron: '0 9 * * 1'
   workflow_dispatch:
 
@@ -16,42 +15,37 @@ jobs:
       issues: write
     
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
       
-      - name: 🐍 Setup Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       
-      - name: 📊 Calculate statistics
+      - name: Calculate statistics
         id: stats
         run: |
-          echo "📊 Calculando estatísticas do projeto..."
-          echo ""
+          echo "Calculating statistics..."
           
-          # Total de questões por certificação
           CLF_TOTAL=$(jq '. | length' data/clf-c02.json)
           SAA_TOTAL=$(jq '. | length' data/saa-c03.json)
           AIF_TOTAL=$(jq '. | length' data/aif-c01.json)
           DVA_TOTAL=$(jq '. | length' data/dva-c02.json)
           TOTAL=$((CLF_TOTAL + SAA_TOTAL + AIF_TOTAL + DVA_TOTAL))
           
-          # Questões de múltipla resposta
           CLF_MULTI=$(jq '[.[] | select(.type == "multiple-answer")] | length' data/clf-c02.json)
           SAA_MULTI=$(jq '[.[] | select(.type == "multiple-answer")] | length' data/saa-c03.json)
           AIF_MULTI=$(jq '[.[] | select(.type == "multiple-answer")] | length' data/aif-c01.json)
           DVA_MULTI=$(jq '[.[] | select(.type == "multiple-answer")] | length' data/dva-c02.json)
           MULTI_TOTAL=$((CLF_MULTI + SAA_MULTI + AIF_MULTI + DVA_MULTI))
           
-          # Contribuições pendentes
           CLF_PENDING=$(ls data/contributions/clf-c02/*.json 2>/dev/null | grep -v "_TEMPLATE" | grep -v "exemplo" | wc -l || echo "0")
           SAA_PENDING=$(ls data/contributions/saa-c03/*.json 2>/dev/null | grep -v "_TEMPLATE" | wc -l || echo "0")
           AIF_PENDING=$(ls data/contributions/aif-c01/*.json 2>/dev/null | grep -v "_TEMPLATE" | wc -l || echo "0")
           DVA_PENDING=$(ls data/contributions/dva-c02/*.json 2>/dev/null | grep -v "_TEMPLATE" | wc -l || echo "0")
           PENDING_TOTAL=$((CLF_PENDING + SAA_PENDING + AIF_PENDING + DVA_PENDING))
           
-          # Exporta para outputs
           echo "total=$TOTAL" >> $GITHUB_OUTPUT
           echo "clf_total=$CLF_TOTAL" >> $GITHUB_OUTPUT
           echo "saa_total=$SAA_TOTAL" >> $GITHUB_OUTPUT
@@ -60,91 +54,39 @@ jobs:
           echo "multi_total=$MULTI_TOTAL" >> $GITHUB_OUTPUT
           echo "pending_total=$PENDING_TOTAL" >> $GITHUB_OUTPUT
           
-          # Exibe no log
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "📊 ESTATÍSTICAS DO PROJETO"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "📚 Total de questões: $TOTAL"
-          echo "   - CLF-C02: $CLF_TOTAL"
-          echo "   - SAA-C03: $SAA_TOTAL"
-          echo "   - AIF-C01: $AIF_TOTAL"
-          echo "   - DVA-C02: $DVA_TOTAL"
-          echo ""
-          echo "🎯 Questões de múltipla resposta: $MULTI_TOTAL"
-          echo "⏳ Contribuições pendentes: $PENDING_TOTAL"
-          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Statistics:"
+          echo "Total: $TOTAL"
+          echo "Multiple-answer: $MULTI_TOTAL"
+          echo "Pending: $PENDING_TOTAL"
       
-      - name: 📝 Update README badge
+      - name: Update README badge
         run: |
-          # Atualiza badge de total de questões no README
           TOTAL="${{ steps.stats.outputs.total }}"
           sed -i "s/questões-[0-9]*-blue/questões-$TOTAL-blue/g" README.md || true
       
-      - name: 💾 Commit statistics
+      - name: Commit statistics
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           
           if git diff --quiet; then
-            echo "ℹ️  Nenhuma alteração para commitar"
+            echo "No changes to commit"
           else
             git add README.md
-            git commit -m "docs: update statistics badge [skip ci]
-
-Total questions: ${{ steps.stats.outputs.total }}
-- CLF-C02: ${{ steps.stats.outputs.clf_total }}
-- SAA-C03: ${{ steps.stats.outputs.saa_total }}
-- AIF-C01: ${{ steps.stats.outputs.aif_total }}
-- DVA-C02: ${{ steps.stats.outputs.dva_total }}
-
-Multiple-answer: ${{ steps.stats.outputs.multi_total }}
-Pending contributions: ${{ steps.stats.outputs.pending_total }}"
-            
+            git commit -m "docs: update statistics badge [skip ci]"
             git push
           fi
       
-      - name: 📊 Create issue with stats
+      - name: Create issue with stats
         uses: actions/github-script@v7
         with:
           script: |
             const date = new Date().toISOString().split('T')[0];
             
-            const body = `## 📊 Estatísticas do Projeto - ${date}
-
-### 📚 Banco de Questões
-
-| Certificação | Total | Múltipla Resposta | Pendentes |
-|--------------|-------|-------------------|-----------|
-| **CLF-C02** | ${{ steps.stats.outputs.clf_total }} | - | - |
-| **SAA-C03** | ${{ steps.stats.outputs.saa_total }} | - | - |
-| **AIF-C01** | ${{ steps.stats.outputs.aif_total }} | - | - |
-| **DVA-C02** | ${{ steps.stats.outputs.dva_total }} | - | - |
-| **TOTAL** | **${{ steps.stats.outputs.total }}** | **${{ steps.stats.outputs.multi_total }}** | **${{ steps.stats.outputs.pending_total }}** |
-
-### 📈 Crescimento
-
-- 📚 Total de questões no banco: **${{ steps.stats.outputs.total }}**
-- 🎯 Questões de múltipla resposta: **${{ steps.stats.outputs.multi_total }}**
-- ⏳ Contribuições aguardando merge: **${{ steps.stats.outputs.pending_total }}**
-
-### 🎯 Próximas Metas
-
-- [ ] Atingir 1000 questões totais
-- [ ] 50 questões de múltipla resposta
-- [ ] Tradução completa para EN-US
-
-### 🤝 Como Contribuir
-
-Quer ajudar a crescer esses números? Confira nosso [Guia de Contribuição](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/docs/guia-contribuicao-questoes.md)!
-
----
-
-*Relatório gerado automaticamente por GitHub Actions*`;
-            
-            github.rest.issues.create({
+            await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `📊 Relatório Semanal de Estatísticas - ${date}`,
+              title: `Weekly Statistics Report - ${date}`,
               labels: ['statistics', 'automated'],
-              body: body
-            })
+              body: `## Project Statistics - ${date}\n\n### Question Bank\n\n| Certification | Total |\n|--------------|-------|\n| CLF-C02 | ${{ steps.stats.outputs.clf_total }} |\n| SAA-C03 | ${{ steps.stats.outputs.saa_total }} |\n| AIF-C01 | ${{ steps.stats.outputs.aif_total }} |\n| DVA-C02 | ${{ steps.stats.outputs.dva_total }} |\n| TOTAL | **${{ steps.stats.outputs.total }}** |\n\n### Summary\n\n- Total questions: **${{ steps.stats.outputs.total }}**\n- Multiple-answer questions: **${{ steps.stats.outputs.multi_total }}**\n- Pending contributions: **${{ steps.stats.outputs.pending_total }}**\n\n*Report generated automatically by GitHub Actions*`
+            });
