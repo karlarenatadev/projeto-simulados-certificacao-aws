@@ -6,6 +6,7 @@
 import { QuizEngine } from './quizEngine.js';
 import { certificationPaths, glossaryTerms } from './data.js';
 import { storageManager } from './storageManager.js';
+import { renderRadarChart, renderGlobalRadarChart } from './chartManager.js'; // <-- NOVO IMPORT AQUI
 
 const APP_CONFIG = {
     PASSING_SCORE: 70,
@@ -52,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateTopicDropdown(); 
             loadLastScore();
             updateDifficultyFilters(certSelect.value);
+            renderGlobalRadarChart(); // Atualiza o gráfico global para a nova certificação
         }
     });
     
@@ -419,7 +421,12 @@ function showScreen(screenName) {
 function showResultsScreen() {
     const results = engine.getFinalResults();
     displayReportFromResult(results);
-    renderRadarChart(results);
+    
+    // Pequeno atraso para garantir que a tela ficou visível antes de desenhar o gráfico
+    // Agora passa também o currentCertificationInfo do uiState
+    setTimeout(() => {
+        renderRadarChart(results, uiState.currentCertificationInfo);
+    }, 50);
 }
 
 function displayReportFromResult(results) {
@@ -529,7 +536,7 @@ function renderDetailedReportUI(results) {
             html += `
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-50 dark:bg-slate-700/30 rounded-lg border border-gray-200 dark:border-slate-600 transition-all hover:shadow-sm gap-4">
                     <div class="flex-1 min-w-0">
-                        <span class="font-bold text-gray-800 dark:text-gray-200 block text-md truncate whitespace-normal">${domain.name}</span>
+                        <span class="font-bold text-gray-800 dark:text-gray-200 block text-md whitespace-normal">${domain.name}</span>
                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1 block">
                             Score do Domínio: ${pct.toFixed(0)}% <span class="opacity-75">(${scoreData.correct} de ${scoreData.total} corretas)</span>
                         </span>
@@ -685,28 +692,29 @@ function updateHistoryDisplay() {
     const historyList = document.getElementById('history-list');
     if (!historyList) return;
 
+    // Busca e filtra dados corrompidos
     const rawHistory = storageManager.getHistory();
-    
-    // Filtra itens inválidos/corrompidos do histórico
     const history = rawHistory.filter(item => item && item.certId && item.percentage !== undefined);
 
     if (history.length === 0) {
         historyList.innerHTML = 'Nenhum simulado realizado ainda.';
+        updateDynamicInsight([]);
         return;
     }
 
-    const reversedHistory = [...history].reverse();
+    // REMOVA O REVERSE! Use o history diretamente para ter os recentes primeiro
     let html = '<ul class="space-y-3 w-full">';
 
-    reversedHistory.forEach((item, index) => {
+    history.forEach((item, index) => {
         const date = new Date(item.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
         const isPass = item.percentage >= APP_CONFIG.PASSING_SCORE;
         const color = isPass ? 'text-green-500' : 'text-red-500';
         const icon = isPass ? 'fa-check-circle' : 'fa-times-circle';
-        const certName = item.certId ? item.certId.toUpperCase() : 'SIMULADO GERAL';
+        const certName = item.certId ? item.certId.toUpperCase() : 'AWS';
         const awsScore = Math.floor((item.percentage / 100) * 900) + 100;
         
-        const originalIndex = history.length - 1 - index;
+        // Mantém a referência correta do índice original para clicar e abrir
+        const originalIndex = rawHistory.indexOf(item);
 
         html += `
         <li onclick="showHistoricalReport(${originalIndex})" class="flex justify-between items-center p-3 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-lg shadow-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-600 transition-all group">
@@ -792,14 +800,16 @@ function generateSmartInsight(history) {
         };
     }
     
-    const stats = calculateGlobalDomainStats();
-    const last = history[history.length - 1];
-    const recentTests = history.slice(-3); // Últimos 3 testes
+    // Como os gráficos agora vivem fora do app.js, vamos simular uma análise básica se 
+    // a função calculateGlobalDomainStats não estiver injetada (ou injetá-la depois).
+    // Por enquanto, o insight analisa apenas o item mais recente.
     
-    // Calcula tendência (melhorando, estável, piorando)
+    const last = history[0]; 
+    const recentTests = history.slice(0, 3); 
+    
     let trend = 'stable';
     if (recentTests.length >= 2) {
-        const scores = recentTests.map(t => t.percentage);
+        const scores = recentTests.map(t => t.percentage).reverse(); 
         const avgFirst = scores.slice(0, Math.floor(scores.length / 2)).reduce((a, b) => a + b, 0) / Math.floor(scores.length / 2);
         const avgLast = scores.slice(Math.floor(scores.length / 2)).reduce((a, b) => a + b, 0) / Math.ceil(scores.length / 2);
         
@@ -807,186 +817,99 @@ function generateSmartInsight(history) {
         else if (avgLast < avgFirst - 5) trend = 'declining';
     }
     
-    // Identifica domínios fracos globalmente
-    let weakestDomains = [];
-    if (stats && stats.domainStats) {
-        weakestDomains = Object.entries(stats.domainStats)
-            .filter(([_, data]) => parseFloat(data.percentage) < 70)
-            .sort((a, b) => parseFloat(a[1].percentage) - parseFloat(b[1].percentage))
-            .slice(0, 2)
-            .map(([_, data]) => data.name);
-    }
-    
-    // Verifica consistência (desvio padrão das últimas 5 tentativas)
     let isConsistent = true;
     if (history.length >= 3) {
-        const lastScores = history.slice(-5).map(t => t.percentage);
+        const lastScores = history.slice(0, 5).map(t => t.percentage);
         const avg = lastScores.reduce((a, b) => a + b, 0) / lastScores.length;
         const variance = lastScores.reduce((sum, score) => sum + Math.pow(score - avg, 2), 0) / lastScores.length;
         const stdDev = Math.sqrt(variance);
-        isConsistent = stdDev < 15; // Desvio padrão menor que 15%
+        isConsistent = stdDev < 15; 
     }
     
-    // Verifica se está próximo da aprovação
-    const avgScore = stats ? parseFloat(stats.summary.avgScore) : last.percentage;
+    const avgScore = last.percentage; // fallback
     const isNearPassing = avgScore >= 65 && avgScore < 70;
     
-    // Verifica se há muitos testes recentes (possível burnout)
     const today = new Date();
     const testsToday = history.filter(t => {
         const testDate = new Date(t.date);
         return testDate.toDateString() === today.toDateString();
     }).length;
     
-    // Verifica streak de aprovações
     let passingStreak = 0;
-    for (let i = history.length - 1; i >= 0; i--) {
+    for (let i = 0; i < history.length; i++) {
         if (history[i].percentage >= 70) passingStreak++;
         else break;
     }
     
-    // LÓGICA DE DECISÃO DE INSIGHTS
-    
-    // 1. Burnout - muitos testes no mesmo dia
     if (testsToday >= 4) {
         return {
-            icon: 'fa-solid fa-battery-quarter',
-            iconColor: 'text-red-500',
-            title: 'Cuidado com o Burnout!',
-            titleColor: 'text-red-600 dark:text-red-400',
-            message: `Você já fez ${testsToday} simulados hoje. Seu cérebro precisa de descanso para consolidar o aprendizado. Que tal fazer uma pausa e voltar amanhã?`,
-            action: '💡 Dica: Estudos mostram que pausas melhoram a retenção em até 30%',
-            actionColor: 'text-blue-600 dark:text-blue-400'
+            icon: 'fa-solid fa-battery-quarter', iconColor: 'text-red-500',
+            title: 'Cuidado com o Burnout!', titleColor: 'text-red-600 dark:text-red-400',
+            message: `Você já fez ${testsToday} simulados hoje. Seu cérebro precisa de descanso para consolidar o aprendizado.`,
+            action: '💡 Dica: Pausas melhoram a retenção em até 30%', actionColor: 'text-blue-600 dark:text-blue-400'
         };
     }
     
-    // 2. Streak de aprovações - está dominando!
     if (passingStreak >= 3 && avgScore >= 80) {
         return {
-            icon: 'fa-solid fa-trophy',
-            iconColor: 'text-yellow-500',
-            title: 'Você está dominando! 🔥',
-            titleColor: 'text-green-600 dark:text-green-400',
-            message: `${passingStreak} aprovações seguidas com média de ${avgScore.toFixed(0)}%! Você está pronto para o exame real. Considere agendar sua certificação.`,
-            action: '🎯 Próximo passo: Agende seu exame oficial AWS',
-            actionColor: 'text-green-600 dark:text-green-400'
+            icon: 'fa-solid fa-trophy', iconColor: 'text-yellow-500',
+            title: 'Você está dominando! 🔥', titleColor: 'text-green-600 dark:text-green-400',
+            message: `${passingStreak} aprovações seguidas com média de ${avgScore.toFixed(0)}%! Você está pronto para o exame.`,
+            action: '🎯 Próximo passo: Agende seu exame AWS', actionColor: 'text-green-600 dark:text-green-400'
         };
     }
     
-    // 3. Tendência de melhora
     if (trend === 'improving' && avgScore >= 60) {
         return {
-            icon: 'fa-solid fa-chart-line',
-            iconColor: 'text-green-500',
-            title: 'Evolução Consistente! 📈',
-            titleColor: 'text-green-600 dark:text-green-400',
-            message: `Sua pontuação está melhorando a cada teste! Média atual: ${avgScore.toFixed(0)}%. Continue nesse ritmo e você alcançará a aprovação em breve.`,
-            action: weakestDomains.length > 0 ? `🎯 Foco: ${weakestDomains[0]}` : '💪 Continue praticando!',
-            actionColor: 'text-blue-600 dark:text-blue-400'
+            icon: 'fa-solid fa-chart-line', iconColor: 'text-green-500',
+            title: 'Evolução Consistente! 📈', titleColor: 'text-green-600 dark:text-green-400',
+            message: `Sua pontuação está melhorando! Média atual: ${avgScore.toFixed(0)}%. Continue nesse ritmo.`,
+            action: '💪 Continue praticando!', actionColor: 'text-blue-600 dark:text-blue-400'
         };
     }
     
-    // 4. Tendência de queda - precisa de atenção
     if (trend === 'declining') {
         return {
-            icon: 'fa-solid fa-chart-line-down',
-            iconColor: 'text-orange-500',
-            title: 'Atenção: Queda no Desempenho',
-            titleColor: 'text-orange-600 dark:text-orange-400',
-            message: `Suas últimas pontuações estão caindo. Isso pode indicar cansaço ou falta de revisão. Revise os conceitos básicos antes de continuar.`,
-            action: '💡 Sugestão: Faça uma pausa de 1 dia e revise suas anotações',
-            actionColor: 'text-orange-600 dark:text-orange-400'
+            icon: 'fa-solid fa-chart-line-down', iconColor: 'text-orange-500',
+            title: 'Atenção: Queda no Desempenho', titleColor: 'text-orange-600 dark:text-orange-400',
+            message: `Suas últimas pontuações estão caindo. Isso pode indicar cansaço ou falta de revisão.`,
+            action: '💡 Sugestão: Faça uma pausa e revise', actionColor: 'text-orange-600 dark:text-orange-400'
         };
     }
     
-    // 5. Próximo da aprovação - motivação extra
     if (isNearPassing) {
         return {
-            icon: 'fa-solid fa-bullseye',
-            iconColor: 'text-blue-500',
-            title: 'Quase lá! Falta pouco! 🎯',
-            titleColor: 'text-blue-600 dark:text-blue-400',
-            message: `Você está a apenas ${(70 - avgScore).toFixed(0)}% da aprovação! ${weakestDomains.length > 0 ? `Foque em: ${weakestDomains.join(' e ')}` : 'Continue praticando!'}.`,
-            action: '💪 Você consegue! Mais alguns simulados e estará pronto',
-            actionColor: 'text-blue-600 dark:text-blue-400'
+            icon: 'fa-solid fa-bullseye', iconColor: 'text-blue-500',
+            title: 'Quase lá! Falta pouco! 🎯', titleColor: 'text-blue-600 dark:text-blue-400',
+            message: `Você está a apenas ${(70 - avgScore).toFixed(0)}% da aprovação!`,
+            action: '💪 Mais alguns simulados e estará pronto', actionColor: 'text-blue-600 dark:text-blue-400'
         };
     }
     
-    // 6. Domínios fracos identificados
-    if (weakestDomains.length > 0 && avgScore < 70) {
-        return {
-            icon: 'fa-solid fa-crosshairs',
-            iconColor: 'text-purple-500',
-            title: 'Foco Estratégico Necessário',
-            titleColor: 'text-purple-600 dark:text-purple-400',
-            message: `Seus pontos fracos: ${weakestDomains.join(' e ')}. Dedique 70% do seu tempo de estudo nesses domínios para melhorar rapidamente.`,
-            action: '📚 Recomendação: Revise a documentação oficial AWS sobre esses tópicos',
-            actionColor: 'text-purple-600 dark:text-purple-400'
-        };
-    }
-    
-    // 7. Inconsistência - precisa de mais prática
     if (!isConsistent && history.length >= 5) {
         return {
-            icon: 'fa-solid fa-wave-square',
-            iconColor: 'text-yellow-500',
-            title: 'Desempenho Inconsistente',
-            titleColor: 'text-yellow-600 dark:text-yellow-500',
-            message: `Suas pontuações variam muito entre os testes. Isso indica que você precisa consolidar melhor os conceitos fundamentais.`,
-            action: '💡 Dica: Faça simulados menores (10-15 questões) focados em um domínio por vez',
-            actionColor: 'text-yellow-600 dark:text-yellow-500'
+            icon: 'fa-solid fa-wave-square', iconColor: 'text-yellow-500',
+            title: 'Desempenho Inconsistente', titleColor: 'text-yellow-600 dark:text-yellow-500',
+            message: `Suas pontuações variam muito. Isso indica que precisa consolidar melhor os fundamentos.`,
+            action: '💡 Dica: Faça simulados focados em um domínio', actionColor: 'text-yellow-600 dark:text-yellow-500'
         };
     }
     
-    // 8. Desempenho excelente consistente
-    if (avgScore >= 85 && isConsistent) {
-        return {
-            icon: 'fa-solid fa-star',
-            iconColor: 'text-yellow-500',
-            title: 'Desempenho Excepcional! ⭐',
-            titleColor: 'text-green-600 dark:text-green-400',
-            message: `Média de ${avgScore.toFixed(0)}% com consistência impressionante! Você está mais do que pronto para o exame oficial.`,
-            action: '🎓 Próximo passo: Agende sua certificação AWS',
-            actionColor: 'text-green-600 dark:text-green-400'
-        };
-    }
-    
-    // 9. Bom desempenho - continuar praticando
-    if (avgScore >= 70 && avgScore < 85) {
-        return {
-            icon: 'fa-solid fa-thumbs-up',
-            iconColor: 'text-blue-500',
-            title: 'Bom Desempenho! 👍',
-            titleColor: 'text-blue-600 dark:text-blue-400',
-            message: `Média de ${avgScore.toFixed(0)}% - você está aprovado! Para garantir ainda mais segurança, continue praticando até atingir 85%+.`,
-            action: weakestDomains.length > 0 ? `🎯 Melhore em: ${weakestDomains[0]}` : '💪 Continue assim!',
-            actionColor: 'text-blue-600 dark:text-blue-400'
-        };
-    }
-    
-    // 10. Precisa melhorar - foco nos estudos
     if (avgScore < 70) {
         const certName = last && last.certId ? last.certId.toUpperCase() : 'AWS';
         return {
-            icon: 'fa-solid fa-book-open',
-            iconColor: 'text-orange-500',
-            title: 'Foco nos Estudos Necessário 📖',
-            titleColor: 'text-orange-600 dark:text-orange-400',
-            message: `Média atual: ${avgScore.toFixed(0)}%. Você precisa de ${(70 - avgScore).toFixed(0)}% a mais para aprovação. ${weakestDomains.length > 0 ? `Priorize: ${weakestDomains.join(' e ')}.` : 'Revise os conceitos fundamentais.'}`,
-            action: `📚 Recomendação: Estude a documentação oficial da ${certName}`,
-            actionColor: 'text-orange-600 dark:text-orange-400'
+            icon: 'fa-solid fa-book-open', iconColor: 'text-orange-500',
+            title: 'Foco nos Estudos Necessário 📖', titleColor: 'text-orange-600 dark:text-orange-400',
+            message: `Sua pontuação atual: ${avgScore.toFixed(0)}%. Revise os conceitos fundamentais para chegar aos 70%.`,
+            action: `📚 Estude a documentação da ${certName}`, actionColor: 'text-orange-600 dark:text-orange-400'
         };
     }
     
-    // 11. Fallback - mensagem genérica motivacional
     return {
-        icon: 'fa-solid fa-rocket',
-        iconColor: 'text-blue-500',
-        title: 'Continue Praticando! 🚀',
-        titleColor: 'text-blue-600 dark:text-blue-400',
-        message: `Você já fez ${history.length} simulado${history.length > 1 ? 's' : ''}! Cada teste é uma oportunidade de aprender. Continue assim!`,
-        action: '💡 Dica: A prática leva à perfeição',
-        actionColor: 'text-blue-600 dark:text-blue-400'
+        icon: 'fa-solid fa-rocket', iconColor: 'text-blue-500',
+        title: 'Continue Praticando! 🚀', titleColor: 'text-blue-600 dark:text-blue-400',
+        message: `Você já fez ${history.length} simulado${history.length > 1 ? 's' : ''}! Continue assim!`,
+        action: '💡 A prática leva à perfeição', actionColor: 'text-blue-600 dark:text-blue-400'
     };
 }
 
@@ -1038,14 +961,12 @@ function updateTopicDropdown() {
 
 async function updateDifficultyFilters(certId) {
     try {
-        // Carrega o arquivo JSON para verificar dificuldades disponíveis
         const fileSuffix = uiState.language === 'en' ? '-en' : '';
         const response = await fetch(`data/${certId}${fileSuffix}.json`);
         if (!response.ok) return;
         
         const questions = await response.json();
         
-        // Conta questões por dificuldade
         const difficultyCounts = {
             all: questions.length,
             easy: questions.filter(q => q.difficulty === 'easy').length,
@@ -1053,7 +974,6 @@ async function updateDifficultyFilters(certId) {
             hard: questions.filter(q => q.difficulty === 'hard').length
         };
         
-        // Atualiza os botões de dificuldade
         const difficultyInputs = document.querySelectorAll('input[name="difficulty-level"]');
         difficultyInputs.forEach(input => {
             const value = input.value;
@@ -1061,29 +981,18 @@ async function updateDifficultyFilters(certId) {
             const count = difficultyCounts[value];
             
             if (count === 0 && value !== 'all') {
-                // Desabilita opções sem questões
                 label.style.opacity = '0.4';
                 label.style.cursor = 'not-allowed';
                 input.disabled = true;
-                
-                // Adiciona tooltip
                 label.title = 'Nenhuma questão disponível neste nível';
             } else {
-                // Habilita opções com questões
                 label.style.opacity = '1';
                 label.style.cursor = 'pointer';
                 input.disabled = false;
-                
-                // Atualiza tooltip com contagem
-                if (value === 'all') {
-                    label.title = `${count} questões disponíveis`;
-                } else {
-                    label.title = `${count} questões neste nível`;
-                }
+                label.title = value === 'all' ? `${count} questões disponíveis` : `${count} questões neste nível`;
             }
         });
         
-        // Se a opção selecionada não tem questões, volta para "Todas"
         const selectedInput = document.querySelector('input[name="difficulty-level"]:checked');
         if (selectedInput && selectedInput.disabled) {
             const allOption = document.querySelector('input[name="difficulty-level"][value="all"]');
@@ -1107,11 +1016,11 @@ function toggleDarkMode() {
     const isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('aws_sim_theme', isDark ? 'dark' : 'light');
     
-    // Atualiza os gráficos se estiverem visíveis
     if (window.radarChartInstance) {
         const results = engine.getFinalResults();
         if (results) {
-            renderRadarChart(results);
+            // Passa currentCertificationInfo agora
+            renderRadarChart(results, uiState.currentCertificationInfo);
         }
     }
     
@@ -1125,7 +1034,6 @@ function toggleLanguage() {
     localStorage.setItem('aws_sim_lang', uiState.language);
     updateLanguageButtonUI();
     
-    // Atualiza filtros de dificuldade para o novo idioma
     const certSelect = document.getElementById('certification-select');
     if (certSelect) {
         updateDifficultyFilters(certSelect.value);
@@ -1149,9 +1057,8 @@ function goHome() {
     if (uiState.timerInterval) clearInterval(uiState.timerInterval);
     showScreen('start');
     loadLastScore();
-    renderGlobalRadarChart(); // Atualiza gráfico global ao voltar para home
+    renderGlobalRadarChart();
     
-    // Atualiza insights ao voltar para home
     const history = storageManager.getHistory();
     updateDynamicInsight(history);
 }
@@ -1166,7 +1073,35 @@ function cancelQuiz() {
 }
 
 function generatePerformanceReport() {
-    window.print();
+    const reportElement = document.getElementById('detailed-report');
+    
+    if (!reportElement) {
+        alert('Relatório não encontrado para gerar PDF.');
+        return;
+    }
+
+    const opt = {
+        margin:       10,
+        filename:     'relatorio-simulado-aws.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    const btn = document.querySelector('button[onclick="generatePerformanceReport()"]');
+    const oldHtml = btn ? btn.innerHTML : '<i class="fa-solid fa-file-pdf mr-2"></i> Relatório PDF';
+    
+    if (btn) {
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Gerando...';
+        btn.disabled = true;
+    }
+
+    html2pdf().set(opt).from(reportElement).save().then(() => {
+        if (btn) {
+            btn.innerHTML = oldHtml;
+            btn.disabled = false;
+        }
+    });
 }
 
 // ============================================================================
@@ -1195,13 +1130,11 @@ function loadFlashcard() {
     if (definitionEl) definitionEl.textContent = card.definition;
     if (counterEl) counterEl.textContent = `${uiState.flashcardIndex + 1} / ${glossaryTerms.length}`;
     
-    // Reset do flip
     if (cardContainer) {
         cardContainer.classList.remove('flipped');
         uiState.flashcardFlipped = false;
     }
     
-    // Atualiza botões de navegação
     updateFlashcardButtons();
 }
 
@@ -1245,422 +1178,7 @@ function updateFlashcardButtons() {
 }
 
 // ============================================================================
-// 9. GRÁFICO DE RADAR (CHART.JS)
-// ============================================================================
-async function renderRadarChart(results) {
-    console.log('🎯 renderRadarChart chamado', results);
-    
-    const canvas = document.getElementById('radarChart');
-    console.log('📊 Canvas encontrado:', canvas);
-    
-    if (!canvas) {
-        console.error('❌ Canvas radarChart não encontrado no DOM');
-        return;
-    }
-
-    // Aguarda Chart.js estar disponível
-    if (typeof Chart === 'undefined') {
-        console.log('⏳ Aguardando Chart.js carregar...');
-        if (window.chartJsLoaded) {
-            await window.chartJsLoaded;
-        } else {
-            console.error('❌ Chart.js não está disponível');
-            return;
-        }
-    }
-
-    console.log('✅ Chart.js disponível, criando gráfico...');
-
-    // Destrói gráfico anterior se existir
-    if (window.radarChartInstance) {
-        window.radarChartInstance.destroy();
-        console.log('🗑️ Gráfico anterior destruído');
-    }
-
-    const ctx = canvas.getContext('2d');
-    const labels = [];
-    const data = [];
-
-    // Coleta dados dos domínios
-    if (!uiState.currentCertificationInfo || !uiState.currentCertificationInfo.domains) {
-        console.error('❌ Informações de certificação não disponíveis');
-        return;
-    }
-
-    uiState.currentCertificationInfo.domains.forEach(domain => {
-        const scoreData = results.domainScores[domain.id];
-        if (scoreData && scoreData.total > 0) {
-            labels.push(domain.name);
-            const percentage = (scoreData.correct / scoreData.total) * 100;
-            data.push(percentage.toFixed(1));
-        }
-    });
-
-    console.log('📈 Dados do gráfico:', { labels, data });
-
-    if (labels.length === 0) {
-        console.warn('⚠️ Nenhum dado disponível para o gráfico');
-        return;
-    }
-
-    // Detecta modo escuro
-    const isDarkMode = document.documentElement.classList.contains('dark');
-    const textColor = isDarkMode ? '#e5e7eb' : '#374151';
-    const gridColor = isDarkMode ? 'rgba(148, 163, 184, 0.2)' : 'rgba(0, 0, 0, 0.1)';
-
-    try {
-        // Configuração do gráfico
-        window.radarChartInstance = new Chart(ctx, {
-            type: 'radar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Desempenho (%)',
-                    data: data,
-                    backgroundColor: 'rgba(255, 153, 0, 0.2)',
-                    borderColor: '#ff9900',
-                    borderWidth: 2,
-                    pointBackgroundColor: '#ff9900',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: '#ff9900',
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                scales: {
-                    r: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                            stepSize: 20,
-                            color: textColor,
-                            backdropColor: 'transparent',
-                            callback: function(value) {
-                                return value + '%';
-                            },
-                            font: {
-                                size: 11
-                            }
-                        },
-                        grid: {
-                            color: gridColor
-                        },
-                        angleLines: {
-                            color: gridColor
-                        },
-                        pointLabels: {
-                            color: textColor,
-                            font: {
-                                size: 12,
-                                weight: '500'
-                            }
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                        labels: {
-                            color: textColor,
-                            font: {
-                                size: 13,
-                                weight: 'bold'
-                            },
-                            padding: 15
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: isDarkMode ? 'rgba(30, 41, 59, 0.95)' : 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        borderColor: '#ff9900',
-                        borderWidth: 1,
-                        padding: 12,
-                        displayColors: true,
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': ' + context.parsed.r + '%';
-                            }
-                        }
-                    }
-                }
-            }
-        });
-        
-        console.log('✅ Gráfico criado com sucesso!', window.radarChartInstance);
-    } catch (error) {
-        console.error('❌ Erro ao criar gráfico:', error);
-    }
-}
-
-// ============================================================================
-// 10. DASHBOARD DE DESEMPENHO GLOBAL
-// ============================================================================
-
-/**
- * Calcula estatísticas globais de desempenho agregando todo o histórico
- * @returns {Object} Objeto com domainStats (porcentagens por domínio) e summary (estatísticas gerais)
- */
-function calculateGlobalDomainStats() {
-    console.log('📊 Calculando estatísticas globais...');
-    
-    const history = storageManager.getHistory();
-    
-    if (!history || history.length === 0) {
-        console.log('⚠️ Nenhum histórico encontrado');
-        return null;
-    }
-
-    // Estrutura para acumular dados por domínio
-    const domainAccumulator = {};
-    let totalQuizzes = 0;
-    let totalQuestionsAnswered = 0;
-    let totalCorrect = 0;
-
-    // Itera sobre todo o histórico
-    history.forEach(quiz => {
-        // Ignora simulados corrompidos ou inválidos
-        if (!quiz || !quiz.certId || !quiz.domainScores) return;
-        
-        totalQuizzes++;
-        totalQuestionsAnswered += quiz.total || 0;
-        totalCorrect += quiz.score || 0;
-
-        // Acumula dados por domínio
-        Object.entries(quiz.domainScores).forEach(([domainId, scoreData]) => {
-            if (!domainAccumulator[domainId]) {
-                domainAccumulator[domainId] = {
-                    total: 0,
-                    correct: 0,
-                    name: null
-                };
-            }
-            
-            domainAccumulator[domainId].total += scoreData.total || 0;
-            domainAccumulator[domainId].correct += scoreData.correct || 0;
-        });
-    });
-
-    // Calcula porcentagens por domínio
-    const domainStats = {};
-    const labels = [];
-    const percentages = [];
-
-    Object.entries(domainAccumulator).forEach(([domainId, data]) => {
-        if (data.total > 0) {
-            const percentage = (data.correct / data.total) * 100;
-            
-            // Tenta encontrar o nome do domínio em qualquer certificação
-            let domainName = domainId;
-            for (const certPath of Object.values(certificationPaths)) {
-                const domain = certPath.domains.find(d => d.id === domainId);
-                if (domain) {
-                    domainName = domain.name;
-                    break;
-                }
-            }
-            
-            domainStats[domainId] = {
-                name: domainName,
-                percentage: percentage.toFixed(1),
-                total: data.total,
-                correct: data.correct
-            };
-            
-            labels.push(domainName);
-            percentages.push(percentage.toFixed(1));
-        }
-    });
-
-    const avgScore = totalQuestionsAnswered > 0 
-        ? ((totalCorrect / totalQuestionsAnswered) * 100).toFixed(1)
-        : 0;
-
-    const summary = {
-        totalQuizzes,
-        totalQuestionsAnswered,
-        totalCorrect,
-        avgScore
-    };
-
-    console.log('✅ Estatísticas calculadas:', { domainStats, summary, labels, percentages });
-
-    return {
-        domainStats,
-        summary,
-        labels,
-        percentages
-    };
-}
-
-/**
- * Renderiza o gráfico de radar global na tela inicial
- */
-async function renderGlobalRadarChart() {
-    console.log('🌍 Renderizando gráfico global...');
-    
-    const canvas = document.getElementById('globalRadarChart');
-    const emptyState = document.getElementById('global-chart-empty');
-    const chartContainer = document.getElementById('global-chart-container');
-    const statsContainer = document.getElementById('global-stats-summary');
-    
-    if (!canvas) {
-        console.error('❌ Canvas globalRadarChart não encontrado');
-        return;
-    }
-
-    // Calcula estatísticas
-    const stats = calculateGlobalDomainStats();
-
-    // Se não há dados, mostra estado vazio
-    if (!stats || stats.labels.length === 0) {
-        console.log('📭 Sem dados - mostrando estado vazio');
-        if (emptyState) emptyState.classList.remove('hidden');
-        if (chartContainer) chartContainer.classList.add('hidden');
-        if (statsContainer) statsContainer.classList.add('hidden');
-        return;
-    }
-
-    // Esconde estado vazio e mostra gráfico
-    if (emptyState) emptyState.classList.add('hidden');
-    if (chartContainer) chartContainer.classList.remove('hidden');
-    if (statsContainer) statsContainer.classList.remove('hidden');
-
-    // Atualiza estatísticas resumidas
-    const totalQuizzesEl = document.getElementById('total-quizzes');
-    const avgScoreEl = document.getElementById('avg-score');
-    const totalQuestionsEl = document.getElementById('total-questions');
-    
-    if (totalQuizzesEl) totalQuizzesEl.textContent = stats.summary.totalQuizzes;
-    if (avgScoreEl) avgScoreEl.textContent = stats.summary.avgScore + '%';
-    if (totalQuestionsEl) totalQuestionsEl.textContent = stats.summary.totalQuestionsAnswered;
-
-    // Aguarda Chart.js estar disponível
-    if (typeof Chart === 'undefined') {
-        console.log('⏳ Aguardando Chart.js carregar...');
-        if (window.chartJsLoaded) {
-            await window.chartJsLoaded;
-        } else {
-            console.error('❌ Chart.js não está disponível');
-            return;
-        }
-    }
-
-    // Destrói gráfico anterior se existir
-    if (window.globalRadarChartInstance) {
-        window.globalRadarChartInstance.destroy();
-        console.log('🗑️ Gráfico global anterior destruído');
-    }
-
-    const ctx = canvas.getContext('2d');
-
-    // Detecta modo escuro
-    const isDarkMode = document.documentElement.classList.contains('dark');
-    const textColor = isDarkMode ? '#e5e7eb' : '#374151';
-    const gridColor = isDarkMode ? 'rgba(148, 163, 184, 0.2)' : 'rgba(0, 0, 0, 0.1)';
-
-    try {
-        // Configuração do gráfico global
-        window.globalRadarChartInstance = new Chart(ctx, {
-            type: 'radar',
-            data: {
-                labels: stats.labels,
-                datasets: [{
-                    label: 'Desempenho Médio (%)',
-                    data: stats.percentages,
-                    backgroundColor: 'rgba(255, 153, 0, 0.2)',
-                    borderColor: '#ff9900',
-                    borderWidth: 2,
-                    pointBackgroundColor: '#ff9900',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: '#ff9900',
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                scales: {
-                    r: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                            stepSize: 20,
-                            color: textColor,
-                            backdropColor: 'transparent',
-                            callback: function(value) {
-                                return value + '%';
-                            },
-                            font: {
-                                size: 11
-                            }
-                        },
-                        grid: {
-                            color: gridColor
-                        },
-                        angleLines: {
-                            color: gridColor
-                        },
-                        pointLabels: {
-                            color: textColor,
-                            font: {
-                                size: 11,
-                                weight: '500'
-                            }
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                        labels: {
-                            color: textColor,
-                            font: {
-                                size: 12,
-                                weight: 'bold'
-                            },
-                            padding: 10
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: isDarkMode ? 'rgba(30, 41, 59, 0.95)' : 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        borderColor: '#ff9900',
-                        borderWidth: 1,
-                        padding: 12,
-                        displayColors: true,
-                        callbacks: {
-                            label: function(context) {
-                                const domainId = Object.keys(stats.domainStats)[context.dataIndex];
-                                const domainData = stats.domainStats[domainId];
-                                return [
-                                    context.dataset.label + ': ' + context.parsed.r + '%',
-                                    `${domainData.correct} de ${domainData.total} questões`
-                                ];
-                            }
-                        }
-                    }
-                }
-            }
-        });
-        
-        console.log('✅ Gráfico global criado com sucesso!', window.globalRadarChartInstance);
-    } catch (error) {
-        console.error('❌ Erro ao criar gráfico global:', error);
-    }
-}
-
-// ============================================================================
-// 11. PWA INSTALL BUTTON
+// 9. PWA INSTALL BUTTON
 // ============================================================================
 let deferredPrompt = null;
 
@@ -1668,33 +1186,21 @@ function initPWAInstall() {
     const installButton = document.getElementById('install-app');
     if (!installButton) return;
 
-    // Captura o evento beforeinstallprompt
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        
-        // Mostra o botão de instalação
         installButton.classList.remove('hidden');
     });
 
-    // Adiciona listener ao botão
     installButton.addEventListener('click', async () => {
         if (!deferredPrompt) return;
-
-        // Mostra o prompt de instalação
         deferredPrompt.prompt();
-
-        // Aguarda a escolha do usuário
         const { outcome } = await deferredPrompt.userChoice;
-        
         console.log(`Usuário ${outcome === 'accepted' ? 'aceitou' : 'recusou'} a instalação`);
-
-        // Limpa o prompt e esconde o botão
         deferredPrompt = null;
         installButton.classList.add('hidden');
     });
 
-    // Esconde o botão se o app já estiver instalado
     window.addEventListener('appinstalled', () => {
         console.log('PWA instalado com sucesso!');
         installButton.classList.add('hidden');
@@ -1703,7 +1209,7 @@ function initPWAInstall() {
 }
 
 // ============================================================================
-// 7. EXPOSIÇÃO GLOBAL (Ponte para o index.html)
+// 10. EXPOSIÇÃO GLOBAL (Ponte para o index.html)
 // ============================================================================
 window.startQuiz = startQuiz;
 window.submitAnswer = submitAnswer;
