@@ -27,4 +27,7 @@ jobs:
           pip install -r scripts_python/requirements.txt
 
       - name: Executar validação de sanidade dos dados
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: python scripts_python/sanity_check.py
