@@ -48,7 +48,6 @@ Através da combinação de um front-end moderno (PWA) e um back-end automatizad
 ### Diferenciais Técnicos e Educacionais:
 * 🧠 **Banco de Dados Dinâmico:** Questões inéditas e cenários corporativos gerados via *Google Gemini 2.5 Flash*, com **fallback resiliente via Groq (llama-3.3-70b-versatile)** para garantir 100% de disponibilidade na geração.
 * 📊 **Análise Comportamental:** O sistema avalia seu desempenho usando 11 métricas de IA (burnout, domínios fracos, consistência).
-* 📊 **Análise Comportamental:** O sistema avalia seu desempenho usando 11 métricas de IA (burnout, domínios fracos, consistência).
 * 💾 **100% Offline (PWA):** Estude no metrô ou no avião. O app funciona sem internet após o primeiro acesso.
 * 🌐 **Bilíngue Automatizado:** Suporte nativo a Português e Inglês com tradução neural.
 
