@@ -151,15 +151,15 @@ Sua missão é gerar exatamente {qtd} questões INÉDITAS para a certificação 
 Nível de Dificuldade: {nivel}.
 Domínios permitidos: {dominios}.
 
-⚠️⚠️⚠️ REGRA CRÍTICA - FORMATO DE CASO DE USO ⚠️⚠️⚠️
-NUNCA faça perguntas diretas de definição. TODAS as questões devem obrigatoriamente apresentar um caso de uso ou problema de negócio arquitetural prático.
+⚠️⚠️⚠️ REGRAS CRÍTICAS DE QUALIDADE E ESTRUTURA ⚠️⚠️⚠️
 
-ESTRUTURA OBRIGATÓRIA:
-1. CONTEXTO: Descreva um cenário de negócio real com requisitos específicos
-2. REQUISITO: Especifique o que precisa ser resolvido
-3. PERGUNTA: "Qual serviço/solução AWS..."
-4. OPÇÕES: Apenas nomes de serviços AWS (ex: "Amazon S3", "AWS Lambda")
-5. EXPLICAÇÃO: Por que a resposta correta atende ao cenário e por que as outras não
+1. NARRATIVA FLUÍDA (ZERO RÓTULOS): NUNCA use palavras engessadas como "Contexto:", "Requisito:", "Cenário:" ou "Problema:" no texto da questão. Apresente um caso de uso corporativo real em um ou dois parágrafos contínuos e bem escritos.
+2. TAG DE SERVIÇO PRECISA: No JSON, o campo "service" DEVE ser preenchido com o nome EXATO do serviço AWS primário sendo testado (ex: "Amazon S3", "Amazon EC2", "AWS Lambda", "Amazon VPC"). NUNCA preencha este campo apenas com a palavra "AWS".
+3. DISTRATORES DE ALTO NÍVEL (PEGADINHAS): As alternativas incorretas NÃO podem ser respostas óbvias. Elas devem obrigatoriamente citar outros serviços reais da AWS que atuam na mesma área, mas que falham em atender a um requisito específico da narrativa.
+4. CALIBRAGEM DA DIFICULDADE ({nivel}):
+   - Se for 'easy': O cenário é mais direto e foca na funcionalidade principal do serviço.
+   - Se for 'medium': A arquitetura envolve dois ou mais serviços interagindo.
+   - Se for 'hard': Adicione restrições de arquitetura rigorosas (ex: menor custo absoluto, menor esforço operacional, alta disponibilidade multirregião).
 """
 
     novas_questoes_raw = []
@@ -263,5 +263,5 @@ ESTRUTURA OBRIGATÓRIA:
 
 # 5. EXECUÇÃO DE EXEMPLO
 if __name__ == "__main__":
-    resultado = fabricar_questoes("clf-c02", "hard", 2) 
+    resultado = fabricar_questoes("clf-c02", "hard", 5) 
     print(resultado)

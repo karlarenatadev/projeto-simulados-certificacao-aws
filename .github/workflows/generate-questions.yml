@@ -1,0 +1,22 @@
+name: Geração Automática de Questões
+on:
+  schedule:
+    - cron: '0 9 * * 1' # Executa toda segunda-feira às 09:00 UTC
+  workflow_dispatch: # Permite rodar manualmente pelo painel do GitHub
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.14'
+      - name: Install dependencies
+        run: pip install -r scripts_python/requirements.txt
+      - name: Run Pipeline
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python scripts_python/pipeline_runner.py
