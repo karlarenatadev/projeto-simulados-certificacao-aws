@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Script de Geração Automática de Questões AWS
 Balanceia automaticamente os níveis de dificuldade em cada certificação.

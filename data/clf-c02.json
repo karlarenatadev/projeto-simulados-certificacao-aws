@@ -6985,5 +6985,105 @@
     "correct": 0,
     "explanation": "O AWS Cost Explorer é um serviço da AWS que fornece uma visão detalhada dos gastos com a nuvem, permitindo que as empresas visualizem e analisem seus gastos, identifiquem áreas de otimização e criem orçamentos. Isso ajuda as empresas a tomar decisões informadas sobre seus gastos com a nuvem e a otimizar seus custos. As outras opções não são corretas porque o Amazon CloudWatch é um serviço de monitoramento e logging, o AWS Lambda é um serviço de computação sem servidor e o Amazon S3 é um serviço de armazenamento de objetos.",
     "id": 1002
+  },
+  {
+    "domain": "faturamento",
+    "subdomain": "otimizacao-custos",
+    "service": "AWS Budgets",
+    "difficulty": "medium",
+    "type": "múltipla escolha",
+    "tags": [
+      "custos",
+      "faturamento",
+      "orçamento",
+      "alerta",
+      "monitoramento"
+    ],
+    "question": "Uma empresa de software está expandindo suas operações na AWS e deseja manter um controle rigoroso sobre seus gastos mensais. Eles precisam de uma forma proativa de serem notificados se seus custos reais ou previstos excederem um determinado limite definido, a fim de evitar surpresas na fatura. Qual serviço AWS deve ser utilizado para configurar alertas e gerenciar o orçamento de custos da conta?",
+    "options": [
+      "AWS Budgets",
+      "AWS Cost Explorer",
+      "AWS Trusted Advisor",
+      "Amazon CloudWatch"
+    ],
+    "correct": 0,
+    "explanation": "O AWS Budgets permite que os clientes definam orçamentos personalizados e recebam alertas quando os custos ou o uso excederem (ou estiverem previstos para exceder) os limites orçamentários. O AWS Cost Explorer é uma ferramenta de visualização para analisar custos históricos e projetados, mas não define alertas de orçamento diretamente. O AWS Trusted Advisor fornece recomendações para otimização de custos, segurança e desempenho, mas não gerencia orçamentos. O Amazon CloudWatch monitora recursos e aplicações, mas não é a ferramenta principal para orçamentação de custos da AWS.",
+    "id": 1003
+  },
+  {
+    "domain": "seguranca",
+    "subdomain": "gerenciamento-identidade-e-acesso",
+    "service": "AWS Identity and Access Management (IAM)",
+    "difficulty": "medium",
+    "type": "múltipla escolha",
+    "tags": [
+      "segurança",
+      "acesso",
+      "permissões",
+      "usuários",
+      "grupos",
+      "autenticação",
+      "autorização"
+    ],
+    "question": "Uma nova startup está configurando seu ambiente na AWS e precisa garantir que seus desenvolvedores e administradores tenham acesso apenas aos recursos necessários para suas funções específicas. Eles desejam implementar o princípio do menor privilégio e gerenciar as identidades de usuários, grupos e as permissões de acesso aos serviços da AWS de forma centralizada e segura. Qual serviço AWS deve ser utilizado para atender a esses requisitos de gerenciamento de identidade e acesso?",
+    "options": [
+      "AWS Identity and Access Management (IAM)",
+      "Amazon GuardDuty",
+      "AWS WAF",
+      "AWS Key Management Service (KMS)"
+    ],
+    "correct": 0,
+    "explanation": "O AWS Identity and Access Management (IAM) é o serviço que permite gerenciar o acesso a serviços e recursos da AWS de forma segura. Com o IAM, é possível criar e gerenciar usuários, grupos e políticas de permissão para controlar quem pode acessar o quê. O Amazon GuardDuty é um serviço de detecção de ameaças que monitora atividades maliciosas e comportamentos não autorizados. O AWS WAF (Web Application Firewall) protege aplicações web contra exploits comuns. O AWS Key Management Service (KMS) facilita a criação e o controle de chaves de criptografia, mas não gerencia identidades e permissões de acesso aos recursos da AWS.",
+    "id": 1004
+  },
+  {
+    "domain": "faturamento",
+    "subdomain": "otimizacao-custos",
+    "service": "AWS Budgets",
+    "difficulty": "medium",
+    "type": "múltipla escolha",
+    "tags": [
+      "custos",
+      "faturamento",
+      "orçamento",
+      "alerta",
+      "monitoramento"
+    ],
+    "question": "Uma empresa de software está expandindo suas operações na AWS e deseja manter um controle rigoroso sobre seus gastos mensais. Eles precisam de uma forma proativa de serem notificados se seus custos reais ou previstos excederem um determinado limite definido, a fim de evitar surpresas na fatura. Qual serviço AWS deve ser utilizado para configurar alertas e gerenciar o orçamento de custos da conta?",
+    "options": [
+      "AWS Budgets",
+      "AWS Cost Explorer",
+      "AWS Trusted Advisor",
+      "Amazon CloudWatch"
+    ],
+    "correct": 0,
+    "explanation": "O AWS Budgets permite que os clientes definam orçamentos personalizados e recebam alertas quando os custos ou o uso excederem (ou estiverem previstos para exceder) os limites orçamentários. O AWS Cost Explorer é uma ferramenta de visualização para analisar custos históricos e projetados, mas não define alertas de orçamento diretamente. O AWS Trusted Advisor fornece recomendações para otimização de custos, segurança e desempenho, mas não gerencia orçamentos. O Amazon CloudWatch monitora recursos e aplicações, mas não é a ferramenta principal para orçamentação de custos da AWS.",
+    "id": 1003
+  },
+  {
+    "domain": "seguranca",
+    "subdomain": "gerenciamento-identidade-e-acesso",
+    "service": "AWS Identity and Access Management (IAM)",
+    "difficulty": "medium",
+    "type": "múltipla escolha",
+    "tags": [
+      "segurança",
+      "acesso",
+      "permissões",
+      "usuários",
+      "grupos",
+      "autenticação",
+      "autorização"
+    ],
+    "question": "Uma nova startup está configurando seu ambiente na AWS e precisa garantir que seus desenvolvedores e administradores tenham acesso apenas aos recursos necessários para suas funções específicas. Eles desejam implementar o princípio do menor privilégio e gerenciar as identidades de usuários, grupos e as permissões de acesso aos serviços da AWS de forma centralizada e segura. Qual serviço AWS deve ser utilizado para atender a esses requisitos de gerenciamento de identidade e acesso?",
+    "options": [
+      "AWS Identity and Access Management (IAM)",
+      "Amazon GuardDuty",
+      "AWS WAF",
+      "AWS Key Management Service (KMS)"
+    ],
+    "correct": 0,
+    "explanation": "O AWS Identity and Access Management (IAM) é o serviço que permite gerenciar o acesso a serviços e recursos da AWS de forma segura. Com o IAM, é possível criar e gerenciar usuários, grupos e políticas de permissão para controlar quem pode acessar o quê. O Amazon GuardDuty é um serviço de detecção de ameaças que monitora atividades maliciosas e comportamentos não autorizados. O AWS WAF (Web Application Firewall) protege aplicações web contra exploits comuns. O AWS Key Management Service (KMS) facilita a criação e o controle de chaves de criptografia, mas não gerencia identidades e permissões de acesso aos recursos da AWS.",
+    "id": 1004
   }
 ]

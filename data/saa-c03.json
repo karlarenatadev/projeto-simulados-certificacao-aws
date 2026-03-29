@@ -4051,5 +4051,101 @@
     "correct": 0,
     "explanation": "O AWS Cost Explorer é um serviço que fornece análise e visualização dos gastos com a nuvem, permitindo que as empresas identifiquem áreas de ineficiência e otimizem seus gastos. As outras opções não são adequadas para essa tarefa, pois o AWS CloudWatch é um serviço de monitoramento, o AWS CloudFormation é um serviço de gerenciamento de infraestrutura e o AWS CloudTrail é um serviço de auditoria.",
     "id": 2195
+  },
+  {
+    "domain": "design-resiliente",
+    "subdomain": "alta-disponibilidade",
+    "service": "AWS Global Accelerator",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "rede",
+      "resiliência",
+      "performance",
+      "disponibilidade",
+      "failover"
+    ],
+    "question": "Uma empresa de e-commerce global está lançando uma nova plataforma de vendas com usuários distribuídos em várias regiões geográficas. A plataforma utiliza balanceadores de carga de aplicação (ALBs) em diferentes regiões da AWS. O principal requisito é garantir que os usuários sempre se conectem ao endpoint de aplicação mais próximo e saudável, minimizando a latência e proporcionando failover automático e transparente entre regiões em caso de indisponibilidade de um endpoint. Eles precisam de uma solução que direcione o tráfego de forma inteligente pela rede global da AWS, evitando a internet pública sempre que possível, para melhorar a experiência do usuário e a resiliência. Qual serviço AWS deve ser utilizado para atender a esses requisitos?",
+    "options": [
+      "Amazon CloudFront",
+      "AWS Global Accelerator",
+      "AWS Direct Connect",
+      "Amazon Route 53"
+    ],
+    "correct": 1,
+    "explanation": "O AWS Global Accelerator é a escolha mais adequada, pois utiliza a rede global da AWS para direcionar o tráfego dos usuários para o endpoint de aplicação mais próximo e saudável. Ele fornece endereços IP estáticos de entrada que atuam como pontos de entrada fixos para a aplicação, roteando o tráfego sobre a rede de borda da AWS, o que reduz a latência e oferece failover automático entre regiões. O Amazon CloudFront é uma CDN focada em cache de conteúdo estático e dinâmico, não em roteamento de tráfego de aplicação para o endpoint mais próximo com base na saúde. O AWS Direct Connect é para conectividade privada entre o datacenter do cliente e a AWS, não para roteamento de usuários globais para aplicações. O Amazon Route 53 pode realizar roteamento baseado em latência e saúde, mas não utiliza a rede de borda da AWS para o roteamento do tráfego em si, o que significa que o tráfego ainda pode viajar pela internet pública por uma parte significativa do caminho, potencialmente aumentando a latência e a variabilidade.",
+    "id": 2196
+  },
+  {
+    "domain": "seguranca-aplicacoes",
+    "subdomain": "gerenciamento-chaves",
+    "service": "AWS Key Management Service (KMS)",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "segurança",
+      "criptografia",
+      "chaves",
+      "conformidade",
+      "dados"
+    ],
+    "question": "Uma instituição financeira está migrando suas aplicações legadas para a AWS. Essas aplicações lidam com informações financeiras altamente sensíveis e exigem que todos os dados em repouso sejam criptografados usando chaves de criptografia gerenciadas centralmente, com trilhas de auditoria completas de todas as operações de chave. Além disso, a empresa precisa ter controle granular sobre quem pode usar quais chaves e para quais operações, e deseja a opção de importar suas próprias chaves para o serviço. Qual serviço AWS deve ser implementado para atender a esses requisitos de criptografia e gerenciamento de chaves?",
+    "options": [
+      "AWS Secrets Manager",
+      "AWS Certificate Manager (ACM)",
+      "AWS Key Management Service (KMS)",
+      "AWS CloudHSM"
+    ],
+    "correct": 2,
+    "explanation": "O AWS Key Management Service (KMS) é a solução ideal para este cenário. Ele permite criar e controlar as chaves de criptografia usadas para criptografar seus dados, oferece integração com outros serviços AWS, fornece trilhas de auditoria via AWS CloudTrail, e permite controle granular de acesso (IAM) às chaves. O KMS também suporta a importação de chaves do cliente. O AWS Secrets Manager é usado para gerenciar segredos como credenciais de banco de dados, não para criptografia de dados em larga escala. O AWS Certificate Manager (ACM) é para gerenciar certificados SSL/TLS. O AWS CloudHSM oferece um módulo de segurança de hardware (HSM) dedicado e de instância única, que proporciona um nível mais alto de controle e conformidade (FIPS 140-2 Nível 3), mas o KMS é geralmente a escolha preferida para a maioria dos casos de uso devido à sua facilidade de uso, escalabilidade e menor custo, enquanto ainda atende aos requisitos de segurança e auditoria para dados sensíveis. O KMS é uma solução gerenciada que atende perfeitamente aos requisitos de gerenciamento centralizado, auditoria e controle granular.",
+    "id": 2197
+  },
+  {
+    "domain": "design-resiliente",
+    "subdomain": "alta-disponibilidade",
+    "service": "AWS Global Accelerator",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "rede",
+      "resiliência",
+      "performance",
+      "disponibilidade",
+      "failover"
+    ],
+    "question": "Uma empresa de e-commerce global está lançando uma nova plataforma de vendas com usuários distribuídos em várias regiões geográficas. A plataforma utiliza balanceadores de carga de aplicação (ALBs) em diferentes regiões da AWS. O principal requisito é garantir que os usuários sempre se conectem ao endpoint de aplicação mais próximo e saudável, minimizando a latência e proporcionando failover automático e transparente entre regiões em caso de indisponibilidade de um endpoint. Eles precisam de uma solução que direcione o tráfego de forma inteligente pela rede global da AWS, evitando a internet pública sempre que possível, para melhorar a experiência do usuário e a resiliência. Qual serviço AWS deve ser utilizado para atender a esses requisitos?",
+    "options": [
+      "Amazon CloudFront",
+      "AWS Global Accelerator",
+      "AWS Direct Connect",
+      "Amazon Route 53"
+    ],
+    "correct": 1,
+    "explanation": "O AWS Global Accelerator é a escolha mais adequada, pois utiliza a rede global da AWS para direcionar o tráfego dos usuários para o endpoint de aplicação mais próximo e saudável. Ele fornece endereços IP estáticos de entrada que atuam como pontos de entrada fixos para a aplicação, roteando o tráfego sobre a rede de borda da AWS, o que reduz a latência e oferece failover automático entre regiões. O Amazon CloudFront é uma CDN focada em cache de conteúdo estático e dinâmico, não em roteamento de tráfego de aplicação para o endpoint mais próximo com base na saúde. O AWS Direct Connect é para conectividade privada entre o datacenter do cliente e a AWS, não para roteamento de usuários globais para aplicações. O Amazon Route 53 pode realizar roteamento baseado em latência e saúde, mas não utiliza a rede de borda da AWS para o roteamento do tráfego em si, o que significa que o tráfego ainda pode viajar pela internet pública por uma parte significativa do caminho, potencialmente aumentando a latência e a variabilidade.",
+    "id": 2196
+  },
+  {
+    "domain": "seguranca-aplicacoes",
+    "subdomain": "gerenciamento-chaves",
+    "service": "AWS Key Management Service (KMS)",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "segurança",
+      "criptografia",
+      "chaves",
+      "conformidade",
+      "dados"
+    ],
+    "question": "Uma instituição financeira está migrando suas aplicações legadas para a AWS. Essas aplicações lidam com informações financeiras altamente sensíveis e exigem que todos os dados em repouso sejam criptografados usando chaves de criptografia gerenciadas centralmente, com trilhas de auditoria completas de todas as operações de chave. Além disso, a empresa precisa ter controle granular sobre quem pode usar quais chaves e para quais operações, e deseja a opção de importar suas próprias chaves para o serviço. Qual serviço AWS deve ser implementado para atender a esses requisitos de criptografia e gerenciamento de chaves?",
+    "options": [
+      "AWS Secrets Manager",
+      "AWS Certificate Manager (ACM)",
+      "AWS Key Management Service (KMS)",
+      "AWS CloudHSM"
+    ],
+    "correct": 2,
+    "explanation": "O AWS Key Management Service (KMS) é a solução ideal para este cenário. Ele permite criar e controlar as chaves de criptografia usadas para criptografar seus dados, oferece integração com outros serviços AWS, fornece trilhas de auditoria via AWS CloudTrail, e permite controle granular de acesso (IAM) às chaves. O KMS também suporta a importação de chaves do cliente. O AWS Secrets Manager é usado para gerenciar segredos como credenciais de banco de dados, não para criptografia de dados em larga escala. O AWS Certificate Manager (ACM) é para gerenciar certificados SSL/TLS. O AWS CloudHSM oferece um módulo de segurança de hardware (HSM) dedicado e de instância única, que proporciona um nível mais alto de controle e conformidade (FIPS 140-2 Nível 3), mas o KMS é geralmente a escolha preferida para a maioria dos casos de uso devido à sua facilidade de uso, escalabilidade e menor custo, enquanto ainda atende aos requisitos de segurança e auditoria para dados sensíveis. O KMS é uma solução gerenciada que atende perfeitamente aos requisitos de gerenciamento centralizado, auditoria e controle granular.",
+    "id": 2197
   }
 ]
