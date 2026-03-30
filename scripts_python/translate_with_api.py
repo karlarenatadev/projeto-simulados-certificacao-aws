@@ -144,41 +144,68 @@ def process_file(cert_id):
         with open(input_file, 'r', encoding='utf-8') as f:
             questions_pt = json.load(f)
             
-        # 2. Lê o arquivo já traduzido (EN-US), se existir, para evitar re-tradução
-        translated_map = {}
+        # 2. Lê o arquivo já traduzido (EN-US) e mapeia
+        existing_en = []
+        translated_map_by_id = {}
+        
         if os.path.exists(output_file):
             with open(output_file, 'r', encoding='utf-8') as f:
                 try:
                     existing_en = json.load(f)
                     for q in existing_en:
                         if 'id' in q:
-                            translated_map[q['id']] = q
+                            translated_map_by_id[q['id']] = q
                 except json.JSONDecodeError:
                     print(f"   ⚠️ Aviso: Arquivo {output_file} corrompido. Traduzindo do zero.")
         
         print(f"   ✅ Carregado: {len(questions_pt)} questões em PT-BR.")
-        if translated_map:
-            print(f"   ✅ Encontradas: {len(translated_map)} questões já traduzidas em EN-US.")
+        if len(existing_en) > 0:
+            print(f"   ✅ Encontradas: {len(existing_en)} questões no arquivo EN-US existente.")
             
         print(f"   🔄 Iniciando verificação/tradução...")
         
         translated_questions = []
         novas_traducoes = 0
+        used_en_indices = set()
         
         # 3. Processa cada questão
-        for i, q in enumerate(questions_pt, 1):
+        for i, q in enumerate(questions_pt):
             q_id = q.get('id')
             
-            # Se a questão já existe no arquivo em inglês, apenas copia
-            if q_id and q_id in translated_map:
-                translated_questions.append(translated_map[q_id])
-                print(f"   ⏭️ Pulando {i}/{len(questions_pt)} (ID {q_id}) - Já traduzida.     ", end='\r')
-            else:
-                # Se não existe, traduz
-                print(f"   🔄 Traduzindo nova questão {i}/{len(questions_pt)} (ID {q_id})...      ", end='\r')
-                translated_q = translate_question_obj(q, translator)
-                translated_questions.append(translated_q)
-                novas_traducoes += 1
+            # ESTRATÉGIA 1: Match por ID explícito
+            if q_id and q_id in translated_map_by_id:
+                translated_questions.append(translated_map_by_id[q_id])
+                print(f"   ⏭️ Pulando {i+1}/{len(questions_pt)} (ID detectado) - Já traduzida.     ", end='\r')
+                continue
+                
+            # ESTRATÉGIA 2: Match posicional com verificação de metadados (Fallback)
+            matched = False
+            if i < len(existing_en) and i not in used_en_indices:
+                en_q = existing_en[i]
+                
+                # Coleta metadados estruturais para garantir que é a mesma questão
+                pt_meta = (q.get('service'), q.get('difficulty'), q.get('correct'), len(q.get('options', [])))
+                en_meta = (en_q.get('service'), en_q.get('difficulty'), en_q.get('correct'), len(en_q.get('options', [])))
+                
+                if pt_meta == en_meta:
+                    # Se PT-BR recebeu um ID recentemente, garante que a cópia em inglês o herde
+                    en_q_copy = en_q.copy()
+                    if q_id:
+                        en_q_copy['id'] = q_id
+                        
+                    translated_questions.append(en_q_copy)
+                    used_en_indices.add(i)
+                    matched = True
+                    print(f"   ⏭️ Pulando {i+1}/{len(questions_pt)} (Match de Posição) - Já traduzida. ", end='\r')
+            
+            if matched:
+                continue
+
+            # 4. Se não achou por ID nem por Posição, invoca a API para traduzir!
+            print(f"   🔄 Traduzindo nova questão {i+1}/{len(questions_pt)}...{' '*20}", end='\r')
+            translated_q = translate_question_obj(q, translator)
+            translated_questions.append(translated_q)
+            novas_traducoes += 1
                 
         print(f"\n   ✅ Processo concluído: {novas_traducoes} novas questões traduzidas.")
         
@@ -205,16 +232,14 @@ def main():
     if not TRANSLATOR_AVAILABLE:
         print("\n❌ ERRO: Biblioteca 'deep-translator' não instalada")
         sys.exit(1)
+
+    cert_ids = ["clf-c02", "saa-c03", "dva-c02", "aif-c01"]
     
-    cert_ids = []
+    # Se o utilizador passar um argumento específico (ex: saa-c03), processa só esse
     if len(sys.argv) > 1:
         arg = sys.argv[1].lower()
-        if arg == "all":
-            cert_ids = ["clf-c02", "saa-c03", "dva-c02", "aif-c01"]
-        else:
+        if arg != "all":
             cert_ids = [arg]
-    else:
-        cert_ids = ["clf-c02"]
     
     success_count = 0
     for cert_id in cert_ids:
