@@ -4438,5 +4438,97 @@
     "correct": 2,
     "explanation": "AWS WAF (Web Application Firewall) is the appropriate service to protect web applications against common exploits such as SQL and XSS injection. It allows you to create custom rules to filter traffic based on conditions such as IP addresses, HTTP headers, HTTP body or URI strings, without the need to modify the application code. AWS Shield provides protection against DDoS attacks, but does not focus on application-layer exploits like SQL injection or XSS. Amazon GuardDuty is a threat detection service that continuously monitors for malicious activity and unauthorized behavior, but does not block real-time traffic. AWS Security Hub is a security posture management hub that aggregates and organizes security alerts from multiple AWS services, but it is not an application firewall.",
     "id": 1044
+  },
+  {
+    "domain": "seguranca-app",
+    "subdomain": "api-gateway",
+    "service": "AWS WAF",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "seguranca",
+      "api",
+      "lambda",
+      "protecao-web"
+    ],
+    "question": "A company is developing a new serverless application that exposes APIs through Amazon API Gateway and uses AWS Lambda functions. To protect the application against common web attacks, such as SQL injection and cross-site scripting (XSS), and also to control access based on specific IP addresses, the security team requires implementing a robust layer of protection. Which AWS service should a developer use to efficiently meet these security requirements?",
+    "options": [
+      "AWS WAF",
+      "AWS Shield",
+      "Amazon GuardDuty",
+      "AWS Config"
+    ],
+    "correct": 0,
+    "explanation": "AWS WAF (Web Application Firewall) is the right choice because it allows developers to protect web applications and APIs against common web exploits that can impact availability, compromise security, or consume excessive resources. It can filter traffic based on custom rules, such as IP addresses, and protect against attacks such as SQL and XSS injection. AWS Shield provides protection against DDoS attacks, but not specific protections against web vulnerabilities. Amazon GuardDuty is a threat detection service that continuously monitors AWS accounts for malicious activity, but does not act as a firewall. AWS Config evaluates, audits, and evaluates the configurations of AWS resources, but does not provide real-time protection against attacks.",
+    "id": 1045
+  },
+  {
+    "domain": "implementacao",
+    "subdomain": "lambda",
+    "service": "AWS Systems Manager Parameter Store",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "configuracao",
+      "lambda",
+      "seguranca",
+      "microsservicos"
+    ],
+    "question": "A development team is building a microservices application using AWS Lambda functions. They need to manage configuration parameters such as external API endpoint URLs, API keys, and rate limits centrally and securely. It is crucial that these settings can be updated without needing to redeploy the Lambda roles, and that the roles can access them dynamically at run time. Which AWS service should a developer use to meet these requirements?",
+    "options": [
+      "AWS Systems Manager Parameter Store",
+      "AWS Secrets Manager",
+      "Amazon S3",
+      "AWS CloudFormation"
+    ],
+    "correct": 0,
+    "explanation": "AWS Systems Manager Parameter Store is the ideal solution for storing and managing configuration data and secrets in a secure, hierarchical manner. It allows Lambda functions to retrieve these parameters at run time, and updates to the parameters do not require reimplementation of the Lambda code, meeting the dynamic update requirement. AWS Secrets Manager is great for managing database secrets and credentials, but Parameter Store is more comprehensive for general configuration parameters, including secrets. Amazon S3 is for object storage and is not the best choice for dynamic application configuration management. AWS CloudFormation is an infrastructure-as-code tool and not a service for managing runtime configurations for applications.",
+    "id": 1046
+  },
+  {
+    "domain": "seguranca-app",
+    "subdomain": "api-gateway",
+    "service": "AWS WAF",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "seguranca",
+      "api",
+      "lambda",
+      "protecao-web"
+    ],
+    "question": "A company is developing a new serverless application that exposes APIs through Amazon API Gateway and uses AWS Lambda functions. To protect the application against common web attacks, such as SQL injection and cross-site scripting (XSS), and also to control access based on specific IP addresses, the security team requires implementing a robust layer of protection. Which AWS service should a developer use to efficiently meet these security requirements?",
+    "options": [
+      "AWS WAF",
+      "AWS Shield",
+      "Amazon GuardDuty",
+      "AWS Config"
+    ],
+    "correct": 0,
+    "explanation": "AWS WAF (Web Application Firewall) is the right choice because it allows developers to protect web applications and APIs against common web exploits that can impact availability, compromise security, or consume excessive resources. It can filter traffic based on custom rules, such as IP addresses, and protect against attacks such as SQL and XSS injection. AWS Shield provides protection against DDoS attacks, but not specific protections against web vulnerabilities. Amazon GuardDuty is a threat detection service that continuously monitors AWS accounts for malicious activity, but does not act as a firewall. AWS Config evaluates, audits, and evaluates the configurations of AWS resources, but does not provide real-time protection against attacks.",
+    "id": 1045
+  },
+  {
+    "domain": "implementacao",
+    "subdomain": "lambda",
+    "service": "AWS Systems Manager Parameter Store",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "configuracao",
+      "lambda",
+      "seguranca",
+      "microsservicos"
+    ],
+    "question": "A development team is building a microservices application using AWS Lambda functions. They need to manage configuration parameters such as external API endpoint URLs, API keys, and rate limits centrally and securely. It is crucial that these settings can be updated without needing to redeploy the Lambda roles, and that the roles can access them dynamically at run time. Which AWS service should a developer use to meet these requirements?",
+    "options": [
+      "AWS Systems Manager Parameter Store",
+      "AWS Secrets Manager",
+      "Amazon S3",
+      "AWS CloudFormation"
+    ],
+    "correct": 0,
+    "explanation": "AWS Systems Manager Parameter Store is the ideal solution for storing and managing configuration data and secrets in a secure, hierarchical manner. It allows Lambda functions to retrieve these parameters at run time, and updates to the parameters do not require reimplementation of the Lambda code, meeting the dynamic update requirement. AWS Secrets Manager is great for managing database secrets and credentials, but Parameter Store is more comprehensive for general configuration parameters, including secrets. Amazon S3 is for object storage and is not the best choice for dynamic application configuration management. AWS CloudFormation is an infrastructure-as-code tool and not a service for managing runtime configurations for applications.",
+    "id": 1046
   }
 ]

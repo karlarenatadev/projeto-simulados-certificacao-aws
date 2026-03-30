@@ -5379,5 +5379,51 @@
     "correct": 2,
     "explanation": "Amazon Bedrock is a fully managed service that provides access to a selection of high-performance foundation models from Amazon and leading AI companies such as Anthropic, AI21 Labs, and Cohere through a unified API. It simplifies the development of generative AI applications by eliminating the need to manage the underlying infrastructure. Amazon SageMaker is a broader ML platform for building, training, and deploying models, but Bedrock is specific to Foundation Models (FMs). AWS Lambda is a serverless compute service. Amazon Comprehend is a pre-trained NLP service.",
     "id": 1001
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "model-customization",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "generative-ai",
+      "fine-tuning",
+      "foundation-models",
+      "customization"
+    ],
+    "question": "A digital marketing agency is using a pre-trained large language model (LLM) available in Amazon Bedrock to generate advertising copy and captions for social media. While the base model is effective, the agency realizes that the generated texts don't always capture their clients' specific tone of voice and brand jargon, requiring a lot of manual editing. The agency has a large volume of high-quality, approved marketing content from previous campaigns. They want to adapt LLM so that it produces content that is more aligned with each client's identity and style, using their own data, without having to train a model from scratch. What approach should the agency employ to optimize the large language model (LLM) in Amazon Bedrock for its specific needs?",
+    "options": [
+      "Custom training (Fine-tuning) of a base model in Amazon Bedrock",
+      "Use Amazon Translate to adapt your tone of voice",
+      "Implement an ETL pipeline with AWS Glue to preprocess input data",
+      "Develop a new language model from scratch using Amazon SageMaker"
+    ],
+    "correct": 0,
+    "explanation": "Fine-tuning a base model in Amazon Bedrock is the best approach. It allows you to adapt an existing base model to a specific domain or style using a smaller, targeted dataset, such as your agency's approved marketing content. This significantly improves the quality and relevance of model outputs to specific customer requirements. Amazon Translate is for translation between languages, not style adaptation. AWS Glue is for data integration and transformation, not model optimization. Developing a new model from scratch in Amazon SageMaker would be excessively complex and time-consuming, and would not take advantage of the benefits of an already optimized base model.",
+    "id": 1002
+  },
+  {
+    "domain": "applications-foundation-models",
+    "subdomain": "model-customization",
+    "service": "Amazon Bedrock",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "generative-ai",
+      "fine-tuning",
+      "foundation-models",
+      "customization"
+    ],
+    "question": "A digital marketing agency is using a pre-trained large language model (LLM) available in Amazon Bedrock to generate advertising copy and captions for social media. While the base model is effective, the agency realizes that the generated texts don't always capture their clients' specific tone of voice and brand jargon, requiring a lot of manual editing. The agency has a large volume of high-quality, approved marketing content from previous campaigns. They want to adapt LLM so that it produces content that is more aligned with each client's identity and style, using their own data, without having to train a model from scratch. What approach should the agency employ to optimize the large language model (LLM) in Amazon Bedrock for its specific needs?",
+    "options": [
+      "Custom training (Fine-tuning) of a base model in Amazon Bedrock",
+      "Use Amazon Translate to adapt your tone of voice",
+      "Implement an ETL pipeline with AWS Glue to preprocess input data",
+      "Develop a new language model from scratch using Amazon SageMaker"
+    ],
+    "correct": 0,
+    "explanation": "Fine-tuning a base model in Amazon Bedrock is the best approach. It allows you to adapt an existing base model to a specific domain or style using a smaller, targeted dataset, such as your agency's approved marketing content. This significantly improves the quality and relevance of model outputs to specific customer requirements. Amazon Translate is for translation between languages, not style adaptation. AWS Glue is for data integration and transformation, not model optimization. Developing a new model from scratch in Amazon SageMaker would be excessively complex and time-consuming, and would not take advantage of the benefits of an already optimized base model.",
+    "id": 1002
   }
 ]

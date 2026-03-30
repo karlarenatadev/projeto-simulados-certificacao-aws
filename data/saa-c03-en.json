@@ -3672,6 +3672,30 @@
     "id": 2181
   },
   {
+    "domain": "design-resiliente",
+    "subdomain": "armazenamento-resiliente",
+    "service": "Amazon S3",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "storage",
+      "durability",
+      "compliance",
+      "resilience",
+      "audit-logs"
+    ],
+    "question": "A financial institution needs to store critical audit logs that require high durability, availability, and protection against accidental deletion or unauthorized access. Logs are accessed infrequently after initial storage, but should be immediately available for compliance audits. Which AWS service is best suited to meet these requirements?",
+    "options": [
+      "Amazon EBS",
+      "Amazon S3",
+      "Amazon Glacier",
+      "AWS Backup"
+    ],
+    "correct": 1,
+    "explanation": "Amazon S3 offers 99.999999999% (eleven nines) durability and high availability, making it ideal for storing critical logs. With features like versioning and S3 Object Lock, it protects data from accidental deletion and ensures immutability for compliance. Amazon EBS is block storage for EC2 instances and is not the best option for distributed logs. Amazon Glacier (now part of S3 Glacier Flexible Retrieval) is optimized for long-term archiving with slower retrieval and does not meet the 'immediately available' requirement. AWS Backup is a backup and restore service, not primary object storage.",
+    "id": 2181
+  },
+  {
     "domain": "design-performance",
     "subdomain": "otimizacao-banco-dados",
     "service": "Amazon ElastiCache",
@@ -3694,5 +3718,434 @@
     "correct": 2,
     "explanation": "Amazon ElastiCache is an in-memory cache service that can be used to store frequently accessed product data, significantly reducing the load on the primary relational database and improving response times for your e-commerce platform. Amazon RDS is the relational database service and is not a caching solution. Amazon DynamoDB is a NoSQL database, and although fast, it is not primarily a caching solution for an existing relational database. AWS Global Accelerator improves the availability and performance of user traffic for global applications, but does not resolve the database cache bottleneck directly.",
     "id": 2182
+  },
+  {
+    "id": 2183,
+    "domain": "design-resiliente",
+    "subdomain": "alta-disponibilidade",
+    "service": "AWS Auto Scaling",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "ec2",
+      "auto-scaling",
+      "elb",
+      "resiliencia"
+    ],
+    "question": "A startup needs to ensure that its new web application can handle sudden spikes in traffic without manual intervention by automatically adding new servers when the CPU reaches 80%. What is the most appropriate combination of AWS services?",
+    "options": [
+      "Amazon CloudFront and AWS Lambda",
+      "Amazon EC2 Auto Scaling and Application Load Balancer (ALB)",
+      "AWS Elastic Beanstalk and Amazon S3",
+      "Amazon RDS Multi-AZ and Amazon DynamoDB"
+    ],
+    "correct": 1,
+    "explanation": "Combining an Application Load Balancer (ALB) to distribute traffic with an Auto Scaling group (ASG) for EC2 instances is the fundamental AWS pattern for ensuring elasticity and high availability in the face of unpredictable traffic spikes."
+  },
+  {
+    "id": 2184,
+    "domain": "design-custo",
+    "subdomain": "armazenamento",
+    "service": "Amazon S3",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "s3",
+      "lifecycle",
+      "custos"
+    ],
+    "question": "A company stores millions of PDF invoices in Amazon S3. Invoices are frequently accessed in the first month, but are almost never opened afterwards and must be kept for legal reasons for 5 years. What is the most automated and economical way to manage this storage?",
+    "options": [
+      "Manually move files to Amazon Glacier every 30 days.",
+      "Create a function AWS Lambda that deletes old files every week.",
+      "Configuse S3 Lifecycle Policies to transition objects to S3 Glacier after 30 days.",
+      "Enable S3 Transfer Acceleration to compress old data."
+    ],
+    "correct": 2,
+    "explanation": "S3 Lifecycle Policies allow you to define automatic rules to move objects between different storage classes (for example, from S3 Standard to Glacier) after a certain number of days, dramatically optimizing costs without manual intervention."
+  },
+  {
+    "id": 2185,
+    "domain": "seguranca-aplicacoes",
+    "subdomain": "identidade-acesso",
+    "service": "AWS IAM",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "iam",
+      "ec2",
+      "roles",
+      "seguranca"
+    ],
+    "question": "A developer needs an application running on an Amazon EC2 instance to securely access photos stored in an Amazon S3 bucket. What is the safest method to grant this access without storing credentials in the application code?",
+    "options": [
+      "Write the IAM Access Keys directly to the application configuration file.",
+      "Assign an IAM Role with S3 access permissions directly to the EC2 instance.",
+      "Make the S3 bucket public for reading only from the instance's IP address.",
+      "Put the passwords in a notebook saved in Amazon EBS."
+    ],
+    "correct": 1,
+    "explanation": "The security best practice in AWS for giving an EC2 instance access to other services (such as S3) is by assigning an IAM Role (Instance Profile). This provides dynamic temporary credentials, avoiding the need to expose static keys (Access Keys)."
+  },
+  {
+    "id": 2186,
+    "domain": "design-performance",
+    "subdomain": "entrega-conteudo",
+    "service": "Amazon CloudFront",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "cloudfront",
+      "cdn",
+      "latencia"
+    ],
+    "question": "A news platform aims to deliver its images, videos and style sheets to readers across Europe and Asia with the shortest possible load time (latency). What is the ideal AWS service for this scenario?",
+    "options": [
+      "AWS Global Accelerator",
+      "Amazon Route 53",
+      "Amazon CloudFront",
+      "AWS Direct Connect"
+    ],
+    "correct": 2,
+    "explanation": "Amazon CloudFront is the Content Delivery Network (CDN) for AWS. It caches static and dynamic content at edge locations around the world, delivering files from the user's closest location to reduce latency."
+  },
+  {
+    "id": 2187,
+    "domain": "design-resiliente",
+    "subdomain": "banco-de-dados",
+    "service": "Amazon RDS",
+    "difficulty": "easy",
+    "type": "scenario",
+    "tags": [
+      "rds",
+      "multi-az",
+      "ha"
+    ],
+    "question": "How can an architect ensure that a relational database (Amazon RDS) does not suffer prolonged downtime if a total hardware failure occurs in the Availability Zone (AZ) where it is located?",
+    "options": [
+      "Configuse Read Replicas in the same Availability Zone.",
+      "Enable Multi-AZ deployment for the Amazon RDS instance.",
+      "Increase the size of the EBS disk associated with the database.",
+      "Take manual backups every hour and export them to S3."
+    ],
+    "correct": 1,
+    "explanation": "When you enable Multi-AZ on Amazon RDS, AWS automatically provisions and maintains a synchronous replica in a different Availability Zone. If the primary instance or AZ fails, RDS automatically fails over to the standby replica, ensuring high availability."
+  },
+  {
+    "id": 2188,
+    "domain": "design-performance",
+    "subdomain": "desacoplamento",
+    "service": "Amazon SQS",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "sqs",
+      "desacoplamento",
+      "performance"
+    ],
+    "question": "An order processing application receives unpredictable spikes in orders during campaigns. Currently, the web interface connects directly to the processing servers in the backend, causing timeouts under heavy load. What is the architectural solution to decouple reception from processing and avoid lost orders?",
+    "options": [
+      "Replace backend servers with larger EC2 instances (Scale Up).",
+      "Use Amazon SQS to introduce a message queue between the frontend and backend.",
+      "Configuse Amazon ElastiCache to temporarily store requests in RAM.",
+      "Add a Network Load Balancer (NLB) instead of the Application Load Balancer (ALB)."
+    ],
+    "correct": 1,
+    "explanation": "Amazon SQS (Simple Queue Service) allows the decoupling of application components. The frontend places the order in the SQS queue immediately and returns success to the user. Backend servers consume messages from the queue at their own pace, ensuring that no requests are lost during extreme traffic spikes."
+  },
+  {
+    "id": 2189,
+    "domain": "seguranca-aplicacoes",
+    "subdomain": "protecao-perimetro",
+    "service": "AWS WAF",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "waf",
+      "alb",
+      "owasp",
+      "seguranca"
+    ],
+    "question": "A company will release a new API and anticipates sophisticated attacks, including SQL injection and Cross-Site Scripting patterns (XSS). Incoming traffic will be managed by an Application Load Balancer (ALB). What is the recommended way to protect the application against these threats at level 7 of the OSI model natively?",
+    "options": [
+      "Configuse rules in Security Groups of EC2 instances to block specific keywords in HTTP.",
+      "Use the AWS Shield Standard, which already natively protects against SQL injections.",
+      "Associate AWS WAF (Web Application Firewall) with the Application Load Balancer and implement rules to block malicious traffic.",
+      "Install third-party firewall agents directly on the operating system of EC2 instances."
+    ],
+    "correct": 2,
+    "explanation": "AWS WAF is designed to protect web applications and APIs against common web vulnerabilities (such as SQL and XSS injection) acting at Layer 7. It can be easily associated with an ALB, API Gateway or CloudFront, allowing you to create custom rules or use managed rules. AWS without needing to change backend servers."
+  },
+  {
+    "id": 2190,
+    "domain": "design-resiliente",
+    "subdomain": "dns-roteamento",
+    "service": "Amazon Route 53",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "route53",
+      "failover",
+      "dr",
+      "multi-region"
+    ],
+    "question": "An 'Active-Passive' Disaster Recovery architecture is configured between Region us-east-1 (primary) and us-west-2 (secondary standby). User traffic should be redirected to the secondary region only if the application in the primary region fails completely. How should Amazon Route 53 be configured to ensure this behavior?",
+    "options": [
+      "Create a Multi-Value Answer routing policy with weights of 100 and 0.",
+      "Use the Geolocation routing policy, prioritizing the us-east-1 region.",
+      "Use the Failover Routing Policy with Health Checks associated with the primary endpoint.",
+      "Configuse the Latency Routing policy with an Alias ​​record for the standby region."
+    ],
+    "correct": 2,
+    "explanation": "The Route 53 Failover routing policy is designed exactly for 'Active-Passive' architectures. Through monitoring with Health Checks, Route 53 sends all traffic to the active primary resource. If it fails the health check, Route 53 automatically changes DNS records to send traffic to the secondary (passive) resource."
+  },
+  {
+    "id": 2191,
+    "domain": "design-custo",
+    "subdomain": "computacao-economica",
+    "service": "Amazon EC2",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "ec2",
+      "spot",
+      "custos",
+      "batch"
+    ],
+    "question": "A data analysis team runs huge batch processing tasks that take around 3 to 5 hours to complete. These tasks are fault tolerant and can be interrupted midway and resumed from the last recorded point. The team has an extremely strict budget. What is the most profitable computational strategy?",
+    "options": [
+      "Reserve EC2 (Reserved Instances) instances with a 1-year contract for a discount.",
+      "Use EC2 On-Demand instances together with the AWS Instance Scheduler.",
+      "Using EC2 Spot instances through an Auto Scaling Group, allowing execution to stop if the market price rises above the maximum bid.",
+      "Migrate all heavy batch processing to AWS Lambda."
+    ],
+    "correct": 2,
+    "explanation": "For tasks that do not require uninterrupted completion (fault tolerant) and where cost is the critical factor, EC2 Spot instances offer up to 90% discount compared to On-Demand instances. The risk of interruption (with 2 minutes' notice) is mitigated by the fact that tasks can be resumed through 'checkpoints'."
+  },
+  {
+    "id": 2192,
+    "domain": "design-performance",
+    "subdomain": "ingestao-dados",
+    "service": "Amazon Kinesis",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "kinesis",
+      "firehose",
+      "streaming",
+      "s3"
+    ],
+    "question": "A vast fleet of thousands of automotive telemetry IoT devices sends gigabytes of log data per minute. This data needs to be stored in Amazon S3 in an aggregated form for future analysis (Data Lake). The team aims for a fully managed solution (serverless) that supports real-time transformation and format conversion (e.g. JSON to Parquet). What is the ideal AWS service?",
+    "options": [
+      "Amazon SQS",
+      "AWS Data Pipeline",
+      "Amazon Kinesis Data Firehose",
+      "Amazon EMR"
+    ],
+    "correct": 2,
+    "explanation": "Amazon Kinesis Data Firehose is the ideal service for capturing, transforming, and uploading real-time streams of data (streaming) in a fully managed manner to destinations such as Amazon S3, Amazon Redshift or OpenSearch. It manages batching, compression and, if configured, can convert log formats on the fly without requiring intermediate servers."
+  },
+  {
+    "id": 2193,
+    "domain": "seguranca-aplicacoes",
+    "subdomain": "criptografia",
+    "service": "AWS KMS",
+    "difficulty": "hard",
+    "type": "scenario",
+    "tags": [
+      "kms",
+      "s3",
+      "criptografia",
+      "sse-kms"
+    ],
+    "question": "A healthcare corporation manages highly confidential patient exam files. Regulatory compliance requires that each document in Amazon S3 be encrypted at rest. Additionally, the company insists on having audit control over who attempted to use the encryption key (via AWS CloudTrail) and intends to use Envelope Encryption. What technique should you implement?",
+    "options": [
+      "Use Server-Side Encryption with keys managed by Amazon S3 (SSE-S3).",
+      "Use Client-Side Encryption by managing the encryption SDK within the company's Windows operating system.",
+      "Use Server-Side Encryption with customer-supplied keys (SSE-C) carried in the HTTP header.",
+      "Use Server-Side Encryption with keys managed by the AWS Key Management Service (SSE-KMS)."
+    ],
+    "correct": 3,
+    "explanation": "The SSE-KMS option combines the power of Envelope Encryption (using a unique data key for the file and protecting it with an KMS Customer Master Key) with robust auditing capabilities. With KMS, each call to encrypt or decrypt the object in S3 generates a detailed event that is logged in AWS CloudTrail, meeting stringent security requirements."
+  },
+  {
+    "domain": "design-resiliente",
+    "subdomain": "arquitetura de sistema",
+    "service": "Amazon Route 53",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "roteamento de tráfego",
+      "tolerância a falhas"
+    ],
+    "question": "A video streaming service provider needs to ensure that its users have continuous access to the service, even if one of the data centers fails. Which AWS service/solution can be used to automatically and scalably route traffic to active data centers?",
+    "options": [
+      "Amazon Route 53",
+      "AWS Lambda",
+      "Amazon S3",
+      "Amazon EC2"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Route 53 is a DNS service that can be used to automatically and scalably route traffic to active data centers, ensuring that users have continuous access to the service. The other options are not suitable for this task because AWS Lambda is a serverless compute service, Amazon S3 is an object storage service, and Amazon EC2 is a cloud computing service.",
+    "id": 2194
+  },
+  {
+    "domain": "design-custo",
+    "subdomain": "otimização de custos",
+    "service": "AWS Cost Explorer",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "análise de custos",
+      "otimização de gastos"
+    ],
+    "question": "A technology company needs to optimize its cloud spending and identify areas of inefficiency. Which AWS service/solution can be used to analyze and visualize cloud spend and identify savings opportunities?",
+    "options": [
+      "AWS Cost Explorer",
+      "AWS CloudWatch",
+      "AWS CloudFormation",
+      "AWS CloudTrail"
+    ],
+    "correct": 0,
+    "explanation": "AWS Cost Explorer is a service that provides analysis and visualization of cloud spend, enabling businesses to identify areas of inefficiency and optimize their spend. The other options are not suitable for this task because AWS CloudWatch is a monitoring service, AWS CloudFormation is an infrastructure management service, and AWS CloudTrail is an auditing service.",
+    "id": 2195
+  },
+  {
+    "domain": "design-resiliente",
+    "subdomain": "arquitetura de sistema",
+    "service": "Amazon Route 53",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "roteamento de tráfego",
+      "tolerância a falhas"
+    ],
+    "question": "A video streaming service provider needs to ensure that its users have continuous access to the service, even if one of the data centers fails. Which AWS service/solution can be used to automatically and scalably route traffic to active data centers?",
+    "options": [
+      "Amazon Route 53",
+      "AWS Lambda",
+      "Amazon S3",
+      "Amazon EC2"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Route 53 is a DNS service that can be used to automatically and scalably route traffic to active data centers, ensuring that users have continuous access to the service. The other options are not suitable for this task because AWS Lambda is a serverless compute service, Amazon S3 is an object storage service, and Amazon EC2 is a cloud computing service.",
+    "id": 2194
+  },
+  {
+    "domain": "design-custo",
+    "subdomain": "otimização de custos",
+    "service": "AWS Cost Explorer",
+    "difficulty": "medium",
+    "type": "scenario",
+    "tags": [
+      "análise de custos",
+      "otimização de gastos"
+    ],
+    "question": "A technology company needs to optimize its cloud spending and identify areas of inefficiency. Which AWS service/solution can be used to analyze and visualize cloud spend and identify savings opportunities?",
+    "options": [
+      "AWS Cost Explorer",
+      "AWS CloudWatch",
+      "AWS CloudFormation",
+      "AWS CloudTrail"
+    ],
+    "correct": 0,
+    "explanation": "AWS Cost Explorer is a service that provides analysis and visualization of cloud spend, enabling businesses to identify areas of inefficiency and optimize their spend. The other options are not suitable for this task because AWS CloudWatch is a monitoring service, AWS CloudFormation is an infrastructure management service, and AWS CloudTrail is an auditing service.",
+    "id": 2195
+  },
+  {
+    "domain": "design-resiliente",
+    "subdomain": "alta-disponibilidade",
+    "service": "AWS Global Accelerator",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "rede",
+      "resiliência",
+      "performance",
+      "disponibilidade",
+      "failover"
+    ],
+    "question": "A global e-commerce company is launching a new sales platform with users distributed across multiple geographic regions. The platform uses application load balancers (ALBs) in different AWS regions. The main requirement is to ensure that users always connect to the closest and healthiest application endpoint, minimizing latency and providing automatic and transparent failover between regions in the event of an endpoint unavailability. They need a solution that intelligently routes traffic across the AWS global network, avoiding the public internet whenever possible, to improve user experience and resiliency. Which AWS service should be used to meet these requirements?",
+    "options": [
+      "Amazon CloudFront",
+      "AWS Global Accelerator",
+      "AWS Direct Connect",
+      "Amazon Route 53"
+    ],
+    "correct": 1,
+    "explanation": "AWS Global Accelerator is the best choice because it uses the AWS global network to direct user traffic to the closest, healthiest application endpoint. It provides static ingress IP addresses that act as fixed entry points for your application, routing traffic over the AWS edge network, which reduces latency and provides automatic failover between regions. Amazon CloudFront is a CDN focused on caching static and dynamic content, not routing application traffic to the nearest health-based endpoint. AWS Direct Connect is for private connectivity between the customer's data center and AWS, not for routing global users to applications. Amazon Route 53 can perform latency- and health-based routing, but does not use the AWS edge network for the traffic routing itself, which means that traffic may still travel over the public internet for a significant portion of the path, potentially increasing latency and variability.",
+    "id": 2196
+  },
+  {
+    "domain": "seguranca-aplicacoes",
+    "subdomain": "gerenciamento-chaves",
+    "service": "AWS Key Management Service (KMS)",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "segurança",
+      "criptografia",
+      "chaves",
+      "conformidade",
+      "dados"
+    ],
+    "question": "A financial institution is migrating its legacy applications to AWS. These applications handle highly sensitive financial information and require all data at rest to be encrypted using centrally managed encryption keys, with full audit trails of all key operations. Additionally, the company needs to have granular control over who can use which keys for which operations, and wants the option to import its own keys into the service. Which AWS service must be implemented to meet these encryption and key management requirements?",
+    "options": [
+      "AWS Secrets Manager",
+      "AWS Certificate Manager (ACM)",
+      "AWS Key Management Service (KMS)",
+      "AWS CloudHSM"
+    ],
+    "correct": 2,
+    "explanation": "The AWS Key Management Service (KMS) is the ideal solution for this scenario. It allows you to create and control the encryption keys used to encrypt your data, offers integration with other AWS services, provides audit trails via AWS CloudTrail, and allows granular access control (IAM) to keys. KMS also supports importing customer keys. AWS Secrets Manager is used to manage secrets such as database credentials, not for large-scale data encryption. AWS Certificate Manager (ACM) is for managing SSL/TLS certificates. AWS CloudHSM offers a dedicated, single-instance hardware security module (HSM) that provides a higher level of control and compliance (FIPS 140-2 Level 3), but KMS is generally the preferred choice for most use cases due to its ease of use, scalability, and lower cost, while still meeting security and auditing requirements for sensitive data. KMS is a managed solution that seamlessly meets centralized management, auditing, and granular control requirements.",
+    "id": 2197
+  },
+  {
+    "domain": "design-resiliente",
+    "subdomain": "alta-disponibilidade",
+    "service": "AWS Global Accelerator",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "rede",
+      "resiliência",
+      "performance",
+      "disponibilidade",
+      "failover"
+    ],
+    "question": "A global e-commerce company is launching a new sales platform with users distributed across multiple geographic regions. The platform uses application load balancers (ALBs) in different AWS regions. The main requirement is to ensure that users always connect to the closest and healthiest application endpoint, minimizing latency and providing automatic and transparent failover between regions in the event of an endpoint unavailability. They need a solution that intelligently routes traffic across the AWS global network, avoiding the public internet whenever possible, to improve user experience and resiliency. Which AWS service should be used to meet these requirements?",
+    "options": [
+      "Amazon CloudFront",
+      "AWS Global Accelerator",
+      "AWS Direct Connect",
+      "Amazon Route 53"
+    ],
+    "correct": 1,
+    "explanation": "AWS Global Accelerator is the best choice because it uses the AWS global network to direct user traffic to the closest, healthiest application endpoint. It provides static ingress IP addresses that act as fixed entry points for your application, routing traffic over the AWS edge network, which reduces latency and provides automatic failover between regions. Amazon CloudFront is a CDN focused on caching static and dynamic content, not routing application traffic to the nearest health-based endpoint. AWS Direct Connect is for private connectivity between the customer's data center and AWS, not for routing global users to applications. Amazon Route 53 can perform latency- and health-based routing, but does not use the AWS edge network for the traffic routing itself, which means that traffic may still travel over the public internet for a significant portion of the path, potentially increasing latency and variability.",
+    "id": 2196
+  },
+  {
+    "domain": "seguranca-aplicacoes",
+    "subdomain": "gerenciamento-chaves",
+    "service": "AWS Key Management Service (KMS)",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "segurança",
+      "criptografia",
+      "chaves",
+      "conformidade",
+      "dados"
+    ],
+    "question": "A financial institution is migrating its legacy applications to AWS. These applications handle highly sensitive financial information and require all data at rest to be encrypted using centrally managed encryption keys, with full audit trails of all key operations. Additionally, the company needs to have granular control over who can use which keys for which operations, and wants the option to import its own keys into the service. Which AWS service must be implemented to meet these encryption and key management requirements?",
+    "options": [
+      "AWS Secrets Manager",
+      "AWS Certificate Manager (ACM)",
+      "AWS Key Management Service (KMS)",
+      "AWS CloudHSM"
+    ],
+    "correct": 2,
+    "explanation": "The AWS Key Management Service (KMS) is the ideal solution for this scenario. It allows you to create and control the encryption keys used to encrypt your data, offers integration with other AWS services, provides audit trails via AWS CloudTrail, and allows granular access control (IAM) to keys. KMS also supports importing customer keys. AWS Secrets Manager is used to manage secrets such as database credentials, not for large-scale data encryption. AWS Certificate Manager (ACM) is for managing SSL/TLS certificates. AWS CloudHSM offers a dedicated, single-instance hardware security module (HSM) that provides a higher level of control and compliance (FIPS 140-2 Level 3), but KMS is generally the preferred choice for most use cases due to its ease of use, scalability, and lower cost, while still meeting security and auditing requirements for sensitive data. KMS is a managed solution that seamlessly meets centralized management, auditing, and granular control requirements.",
+    "id": 2197
   }
 ]
