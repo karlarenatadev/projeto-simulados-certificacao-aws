@@ -7085,5 +7085,358 @@
     "correct": 0,
     "explanation": "O AWS Identity and Access Management (IAM) é o serviço que permite gerenciar o acesso a serviços e recursos da AWS de forma segura. Com o IAM, é possível criar e gerenciar usuários, grupos e políticas de permissão para controlar quem pode acessar o quê. O Amazon GuardDuty é um serviço de detecção de ameaças que monitora atividades maliciosas e comportamentos não autorizados. O AWS WAF (Web Application Firewall) protege aplicações web contra exploits comuns. O AWS Key Management Service (KMS) facilita a criação e o controle de chaves de criptografia, mas não gerencia identidades e permissões de acesso aos recursos da AWS.",
     "id": 1004
-  }
+  },
+  {
+    "domain": "seguranca",
+    "subdomain": "modelo-de-responsabilidade-compartilhada",
+    "service": "AWS Shared Responsibility Model",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "segurança",
+      "responsabilidade-compartilhada",
+      "clf-c02",
+      "criptografia"
+    ],
+    "question": "De acordo com o Modelo de Responsabilidade Compartilhada da AWS avaliado no exame CLF-C02, qual das seguintes tarefas é uma responsabilidade intransferível do cliente (segurança 'na' nuvem) e não da AWS?",
+    "options": [
+      "Manutenção e atualização dos hipervisores.",
+      "Segurança física das instalações dos data centers.",
+      "Gerenciamento e configuração da infraestrutura global.",
+      "Criptografia de dados de clientes e configuração de firewalls virtuais."
+    ],
+    "correct": 3,
+    "explanation": "O candidato deve ser capaz de distinguir categoricamente o que constitui a segurança 'da' nuvem (infraestrutura global, hipervisores, data centers físicos), cuja responsabilidade é da AWS, versus a segurança 'na' nuvem (criptografia de dados de clientes, configuração de firewalls virtuais, gerenciamento de chaves de acesso), que é responsabilidade intransferível do cliente[cite: 536]."
+  },
+  {
+    "domain": "tecnologia",
+    "subdomain": "computacao",
+    "service": "Amazon EC2 e AWS Lambda",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "computacao",
+      "ec2",
+      "lambda",
+      "casos-de-uso"
+    ],
+    "question": "Uma equipe de desenvolvimento possui duas cargas de trabalho: a primeira é uma aplicação monolítica que exige controle total sobre o sistema operacional, e a segunda é um processo de execução de código orientado a eventos que não deve requerer o provisionamento de servidores. Quais serviços da AWS são os mais apropriados para essas cargas de trabalho, respectivamente?",
+    "options": [
+      "Amazon EC2 e AWS Lambda",
+      "AWS Lambda e Amazon EC2",
+      "Amazon ECS e AWS Fargate",
+      "Amazon S3 e Amazon EBS"
+    ],
+    "correct": 0,
+    "explanation": "A topologia de questões do CLF-C02 explora a habilidade de diferenciar casos de uso[cite: 538]. Deve-se escolher o Amazon EC2 para cargas de trabalho monolíticas que requerem controle do sistema operacional, versus a adoção do AWS Lambda para execução de código orientado a eventos sem a necessidade de provisionamento de servidores[cite: 539]."
+  },
+  {
+    "domain": "tecnologia",
+    "subdomain": "armazenamento",
+    "service": "Amazon S3",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "armazenamento",
+      "s3",
+      "arquivamento",
+      "conformidade"
+    ],
+    "question": "Uma organização possui dois conjuntos de dados no Amazon S3. O primeiro possui padrões de acesso desconhecidos e imprevisíveis. O segundo consiste em dados que requerem arquivamento de longo prazo por exigências de conformidade regulatória. Quais classes de armazenamento do Amazon S3 são as mais adequadas e otimizadas para esses cenários, respectivamente?",
+    "options": [
+      "S3 Standard e S3 One Zone-IA",
+      "S3 Intelligent-Tiering e S3 Glacier",
+      "S3 Glacier e S3 Intelligent-Tiering",
+      "S3 Standard-IA e Amazon EBS"
+    ],
+    "correct": 1,
+    "explanation": "O exame testa as estratégias de retenção de dados e as classes do S3[cite: 540]. É exigido o conhecimento de classes como o S3 Intelligent-Tiering para padrões de acesso desconhecidos e o S3 Glacier para arquivamento de longo prazo por questões de conformidade regulatória[cite: 540]."
+  },
+  {
+    "domain": "seguranca",
+    "subdomain": "rede",
+    "service": "Security Groups e NACLs",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "tags": [
+      "rede",
+      "seguranca",
+      "firewall",
+      "stateful"
+    ],
+    "question": "Ao configurar a segurança de rede na AWS, um analista precisa de um portão de controle de tráfego que mantenha o estado da conexão ('stateful') operando no nível da instância de computação, e outro que atue como um firewall de sub-rede operando de maneira 'stateless'. Quais recursos atendem a essas necessidades, respectivamente?",
+    "options": [
+      "Security Groups e Network Access Control Lists (NACLs)",
+      "Network Access Control Lists (NACLs) e Security Groups",
+      "AWS WAF e AWS Shield",
+      "Amazon VPC e AWS Transit Gateway"
+    ],
+    "correct": 0,
+    "explanation": "O candidato é rotineiramente testado sobre a diferença funcional entre os Security Groups — que operam no nível da instância de computação de forma 'stateful' (mantendo o estado da conexão) — e as Network Access Control Lists (NACLs), que funcionam como firewalls de sub-rede operando de maneira 'stateless'[cite: 542]."
+  },
+  {
+    "domain": "faturamento",
+    "subdomain": "otimizacao-de-custos",
+    "service": "Savings Plans",
+    "difficulty": "medium",
+    "type": "multiple-choice",
+    "tags": [
+      "faturamento",
+      "finops",
+      "economia",
+      "savings-plans"
+    ],
+    "question": "Uma empresa busca otimizar a engenharia de custos de sua nuvem sem se prender rigidamente a configurações de hardware ou famílias de instâncias EC2 específicas. Eles preferem um modelo de otimização que reflita um mecanismo contratual baseado inteiramente no compromisso de um fluxo estipulado de investimento monetário (ex: compromisso de consumo igual a US$ 10.00 por hora). Qual modelo de precificação da AWS corresponde a essa descrição?",
+    "options": [
+      "Savings Plans",
+      "Instâncias Reservadas (RIs)",
+      "Instâncias Spot",
+      "Faturamento Consolidado"
+    ],
+    "correct": 0,
+    "explanation": "Diferenciando-se das tradicionais abordagens monolíticas inerentes aos vínculos restritivos de Instâncias Reservadas (RIs) que forçam alocações diretas baseadas rigidamente nas pré-configurações rígidas de hardwares de contêineres, o Savings Plans reflete um mecanismo baseado inteiramente no compromisso de um fluxo estipulado de investimento monetário, medido através de cálculos condicionados nas estruturas temporais relativas às frações monetárias horárias[cite: 650]. A proposição de valor de mecanismos contratuais como os Savings Plans compõe uma porção vital da prova[cite: 542]."
+  },
+  {
+    "domain": "arquitetura",
+    "subdomain": "migracao-hibrida-e-redes",
+    "service": "AWS Transit Gateway e AWS DMS",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "tags": [
+      "sap-c02",
+      "migracao",
+      "transit-gateway",
+      "direct-connect",
+      "dms"
+    ],
+    "question": "No contexto do exame AWS Certified Solutions Architect - Professional (SAP-C02), uma corporação global está migrando frotas complexas de data centers legados. O projeto exige a interconexão de centenas de VPCs em um plano transitivo, além da refatoração e migração de bancos de dados massivos sem interrupção do tráfego. Qual arquitetura atende estritamente a essas exigências?",
+    "options": [
+      "VPC Peering cruzado entre todas as VPCs, com túneis IPsec simples, e uso do Amazon S3 Transfer Acceleration para migrar arquivos de dump do banco de dados.",
+      "AWS Transit Gateway interconectando as centenas de VPCs com conexões redundantes dedicadas via AWS Direct Connect (DX), aliado ao AWS Database Migration Service (DMS) e Schema Conversion Tool (SCT) usando captura de alteração de dados (CDC).",
+      "AWS Application Migration Service (MGN) para hospedar o plano de controle de redes, roteando tráfego via NAT Gateways, e AWS Glue Crawlers para replicar dados em tempo real para o Amazon Redshift.",
+      "Virtual Private Network (VPN) Hub-and-Spoke gerenciada pelo AWS Systems Manager, utilizando o AWS DataSync para transações contínuas de bancos de dados relacionais."
+    ],
+    "correct": 1,
+    "explanation": "No exame SAP-C02 [cite: 83], o desenho topológico para centenas de VPCs com redes On-Premises exige a configuração minuciosa do AWS Transit Gateway associada a conexões redundantes do AWS Direct Connect (DX)[cite: 91]. Para a migração ininterrupta de bancos de dados massivos, a solução oficial exigida é o fluxo logístico do AWS DMS associado ao Schema Conversion Tool (SCT) e ferramentas de captura de alteração de dados (CDC)[cite: 89]."
+  },
+  {
+    "domain": "automacao",
+    "subdomain": "auto-remediacao-de-incidentes",
+    "service": "AWS Config e Amazon EventBridge",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "tags": [
+      "dop-c02",
+      "devops",
+      "event-driven",
+      "auto-healing"
+    ],
+    "question": "Um Engenheiro DevOps prestando o exame DOP-C02 precisa desenhar uma arquitetura orientada a eventos ('event-driven') que aplique remediação automática 'zero-touch' diante de violações de conformidade de infraestrutura. Qual fluxo operacional realiza essa autocura antes mesmo de alertar os administradores?",
+    "options": [
+      "O Amazon GuardDuty identifica anomalias de rede e aciona regras no AWS WAF, que notifica administradores via Amazon SES.",
+      "O AWS CloudTrail grava eventos restritos no Amazon S3, acionando um AWS Glue Job que aplica patches de correção via AWS CodeDeploy ao final do dia.",
+      "O AWS Config detecta falhas nas regras corporativas e aciona o Amazon EventBridge, que dispara documentos de ação curativa do AWS Systems Manager ou funções AWS Lambda para reparar o cenário violado antes da notificação via SNS.",
+      "O Amazon Inspector emite um alarme no CloudWatch, que restringe imediatamente as Network Access Control Lists (NACLs) de todas as sub-redes da VPC."
+    ],
+    "correct": 2,
+    "explanation": "Conforme cobrado no exame DOP-C02 [cite: 92, 93], a arquitetura proativa orientada a eventos atua com o AWS Config detectando violações e acionando o Amazon EventBridge[cite: 96, 98]. Este, por sua vez, dispara de forma automática ('zero-touch') ações via documentos do AWS Systems Manager ou funções Lambda para reparar a infraestrutura antes que qualquer notificação seja enviada aos administradores via SNS ou SQS[cite: 97, 99]."
+  },
+  {
+    "domain": "inteligencia-artificial",
+    "subdomain": "rag-e-modelos-fundacionais",
+    "service": "Amazon Bedrock e OpenSearch Serverless",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "tags": [
+      "aip-c01",
+      "genai",
+      "rag",
+      "vetores"
+    ],
+    "question": "Para o exame AIP-C01, ao orquestrar uma arquitetura corporativa avançada de Geração Aumentada de Recuperação (RAG), qual cadeia de serviços da AWS deve ser aplicada sistematicamente para extração de texto, criação de dimensões vetoriais e indexação semântica, respectivamente?",
+    "options": [
+      "Amazon Comprehend, Amazon SageMaker Model Registry e Amazon RDS.",
+      "Amazon Textract, Amazon Titan Embeddings e Amazon OpenSearch Serverless (integrado ao Knowledge Bases for Amazon Bedrock).",
+      "Amazon Rekognition, AWS Glue Crawlers e Amazon DynamoDB DAX.",
+      "Amazon Translate, Amazon Bedrock Guardrails e Amazon S3 Glacier."
+    ],
+    "correct": 1,
+    "explanation": "No nível profissional de GenAI (AIP-C01) [cite: 100], a arquitetura RAG ponta-a-ponta requer o roteamento seguro de dados textuais a partir de fontes de origem utilizando o Amazon Textract[cite: 104]. Em seguida, as dimensões vetoriais são calculadas por modelos base como o Amazon Titan Embeddings [cite: 105], e finalmente depositadas no Amazon OpenSearch Serverless, que atua como motor unificado estrutural para o Knowledge Bases for Amazon Bedrock[cite: 106]."
+  },
+  {
+    "domain": "rede",
+    "subdomain": "roteamento-bgp",
+    "service": "AWS Direct Connect e BGP",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "tags": [
+      "ans-c01",
+      "bgp",
+      "direct-connect",
+      "roteamento-hibrido"
+    ],
+    "question": "Durante o exame ANS-C01 (Advanced Networking - Specialty), um engenheiro analisa um cenário de roteamento dinâmico via AWS Direct Connect (DX). Devido a restrições de um equipamento legado no data center on-premises (Customer Gateway), existe uma proibição técnica sistêmica de modificar a variável AS PATH Prepending. Como o engenheiro deve forçar um balanço assimétrico para garantir a prioridade do tráfego unificado?",
+    "options": [
+      "Configurando a preferência de tráfego baseada no atributo base de infraestrutura MED (Multi-Exit Discriminator) no protocolo BGP.",
+      "Removendo o roteamento BGP completamente e isolando o roteamento via túneis estáticos IPsec pelo AWS Transit Gateway.",
+      "Alterando as regras do VPC Reachability Analyzer para descartar pacotes não otimizados.",
+      "Implementando o Appliance Mode no Transit Gateway associado a um Gateway Load Balancer."
+    ],
+    "correct": 0,
+    "explanation": "O exame de redes avançadas (ANS-C01) cobra o controle fluente sobre planos de roteamento BGP assimétricos[cite: 118, 120]. De acordo com a topologia de restrições determinísticas, quando a infraestrutura local impede a modificação da variável AS PATH Prepending para manipulação do BGP, a prioridade controlada unificada deve ser forçada pelo atributo base de infra (MED)[cite: 121]."
+  },
+  {
+    "domain": "faturamento",
+    "subdomain": "algoritmos-de-otimizacao",
+    "service": "Savings Plans e Instâncias Reservadas",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "tags": [
+      "sap-c02",
+      "finops",
+      "savings-plans",
+      "faturamento"
+    ],
+    "question": "O motor analítico do AWS Billing opera com regras rígidas de precedência lógica. Em um ambiente gerenciado pelo AWS Organizations (Consolidated Billing) avaliado no SAP-C02, se uma frota de Amazon EC2 se qualificar simultaneamente para Instâncias Reservadas (RIs) e para um Compute Savings Plan ativos, qual é a Regra Hierárquica Absoluta aplicada pelo algoritmo de faturamento?",
+    "options": [
+      "O algoritmo divide as horas operacionais proporcionalmente, dedicando 50% às Instâncias Reservadas e 50% aos Savings Plans.",
+      "O Compute Savings Plan é aplicado peremptoriamente primeiro devido à sua natureza de maior flexibilidade operacional.",
+      "A capacidade contratada fixada nas Instâncias Reservadas (RIs) é aplicada com prioridade máxima. O Savings Plan é ativado automaticamente apenas para o uso qualificável remanescente após a exaustão das RIs.",
+      "A escolha da precedência é uma configuração manual que o Engenheiro de CloudOps deve ajustar no AWS Cost Explorer mensalmente."
+    ],
+    "correct": 2,
+    "explanation": "Para o escrutínio de contas globais e algoritmos de faturamento do exame SAP-C02 [cite: 144, 145], a 'Regra Hierárquica Absoluta de Precedência Lógica Residual Analítica' determina que as Instâncias Reservadas (RIs), por terem menor maleabilidade, aplicam-se peremptoriamente com prioridade máxima[cite: 147]. Somente após a exaustão sistêmica e total das horas base das RIs, o contrato do Savings Plan ativa sua aplicação lógica sobre o uso remanescente qualificado[cite: 148]."
+  },
+  {
+    "domain": "faturamento",
+    "subdomain": "algoritmos-de-otimizacao",
+    "service": "AWS Savings Plans e Instâncias Reservadas",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "tags": [
+      "sap-c02",
+      "finops",
+      "savings-plans",
+      "faturamento",
+      "casos-de-uso"
+    ],
+    "question": "Uma corporação migrou suas cargas de trabalho para a AWS e possui Instâncias Reservadas (RIs) ativas, além de um compromisso horário de US$ 19,60 em um Compute Savings Plan. Em uma determinada hora, o ambiente executa instâncias Linux r5.4xlarge (potencial de 30% de desconto), contêineres no AWS Fargate (25% de desconto) e instâncias Windows m5.24xlarge (18% de desconto). De acordo com os algoritmos de faturamento do AWS Organizations (Consolidated Billing), como o desconto será aplicado pelo motor analítico?",
+    "options": [
+      "O Savings Plan cobrirá inicialmente o Fargate por ser um serviço serverless, seguido pelas instâncias Linux e Windows, e as RIs serão aplicadas ao final.",
+      "As Instâncias Reservadas (RIs) serão aplicadas com prioridade máxima; em seguida, o Savings Plan cobrirá primeiramente a frota Linux r5.4xlarge (30%), depois o Fargate (25%), e o saldo excedente da frota Windows m5.24xlarge será cobrado sob a tarifa On-Demand.",
+      "O algoritmo dividirá os US$ 19,60 proporcionalmente entre as três frotas computacionais para garantir um balanço assimétrico de descontos.",
+      "A frota Windows m5.24xlarge receberá o desconto do Savings Plan primeiro por possuir a tarifa nominal mais cara, esgotando o compromisso de US$ 19,60 imediatamente."
+    ],
+    "correct": 1,
+    "explanation": "A regra hierárquica absoluta determina que as Instâncias Reservadas (RIs) aplicam-se peremptoriamente em prioridade máxima[cite: 147]. Após a exaustão das RIs, o Compute Savings Plan aplica-se primeiro à instância que fornece a maior porcentagem de economia (Linux r5.4xlarge com 30%)[cite: 148, 149, 158, 159]. Se houver saldo, ele migra para o Fargate (25%)[cite: 160]. O que exceder o teto contratual (neste caso, as instâncias Windows m5.24xlarge) começará a ser faturado sem descontos na tarifa On-Demand[cite: 161, 162, 163]."
+  },
+  {
+    "domain": "rede",
+    "subdomain": "roteamento-bgp",
+    "service": "AWS Direct Connect",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "tags": [
+      "ans-c01",
+      "bgp",
+      "direct-connect",
+      "transit-gateway"
+    ],
+    "question": "Um Engenheiro de Redes está configurando o roteamento híbrido via AWS Direct Connect (DX) conectado a um AWS Transit Gateway. O equipamento local (Customer Gateway) possui um firmware legado que impõe uma proibição técnica sistêmica, impedindo qualquer modificação autônoma na variável AS PATH Prepending. Como o engenheiro deve forçar a prioridade controlada unificada para o tráfego de entrada em um cenário de balanço assimétrico?",
+    "options": [
+      "Forçando o roteamento estático rígido local e desativando completamente o BGP no Transit Gateway.",
+      "Configurando a preferência de tráfego baseada unicamente no atributo de infraestrutura MED (Multi-Exit Discriminator).",
+      "Alterando o Local Preference no roteador da AWS para descartar pacotes não otimizados.",
+      "Utilizando o VPC Reachability Analyzer em conjunto com o Appliance Mode no Transit Gateway."
+    ],
+    "correct": 1,
+    "explanation": "No exame ANS-C01, são testadas restrições determinísticas do BGP. Quando a infraestrutura local impede a alteração da variável AS PATH Prepending, a prioridade controlada unificada e o balanço assimétrico sistêmico devem ser forçados configurando o atributo base de infra MED (Multi-Exit Discriminator)[cite: 121]."
+  },
+  {
+    "domain": "automacao",
+    "subdomain": "auto-remediacao-de-incidentes",
+    "service": "AWS Config e EventBridge",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "tags": [
+      "dop-c02",
+      "devops",
+      "event-driven",
+      "auto-healing"
+    ],
+    "question": "Para atender a uma rigorosa auditoria de conformidade, um Arquiteto DevOps precisa garantir que qualquer alteração indevida nas políticas de criptografia do S3 seja revertida instantaneamente (zero-touch), sem aguardar a intervenção humana. Qual arquitetura orientada a eventos realiza esta remediação proativa antes mesmo do envio de notificações?",
+    "options": [
+      "O AWS CloudTrail captura o evento e invoca um AWS Glue Job que corrige a política diariamente, enviando um relatório via Amazon SES.",
+      "O Amazon GuardDuty detecta a anomalia e aciona o AWS WAF para bloquear o tráfego de rede até que o administrador aprove a mudança.",
+      "O Amazon Macie identifica a alteração estrutural e dispara um alarme no CloudWatch, que restringe imediatamente as Network Access Control Lists (NACLs).",
+      "O AWS Config detecta a falha de conformidade e aciona o Amazon EventBridge, que dispara runbooks do AWS Systems Manager ou funções Lambda para reparar o cenário antes de notificar os administradores via SNS."
+    ],
+    "correct": 3,
+    "explanation": "Cargas de trabalho complexas baseiam-se em respostas automáticas a falhas sem toque humano (zero-touch)[cite: 97]. O padrão arquitetural correto, altamente cobrado no DOP-C02, exige que o AWS Config detecte falhas de conformidade e acione o Amazon EventBridge[cite: 98]. Este, por sua vez, dispara documentos do AWS Systems Manager ou funções AWS Lambda para reparar o cenário violado antes que administradores sejam notificados via SNS ou SQS[cite: 99]."
+  },
+  {
+    "domain": "inteligencia-artificial",
+    "subdomain": "arquitetura-rag",
+    "service": "Amazon Bedrock e OpenSearch Serverless",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "tags": [
+      "aip-c01",
+      "genai",
+      "rag",
+      "opensearch"
+    ],
+    "question": "Uma instituição financeira deseja construir um sistema de Geração Aumentada de Recuperação (RAG) para consultar milhares de contratos em formato PDF digitalizados. A solução precisa ser totalmente gerenciada e utilizar o Amazon Bedrock. Qual é a cadeia de serviços correta para extrair o texto, calcular a sintaxe vetorial e indexar semanticamente esses dados, respectivamente?",
+    "options": [
+      "Amazon Textract, Amazon Titan Embeddings e Amazon OpenSearch Serverless.",
+      "Amazon Comprehend, SageMaker Model Registry e Amazon RDS Multi-AZ.",
+      "Amazon Rekognition, AWS Glue Crawlers e Amazon DynamoDB DAX.",
+      "Amazon Translate, Amazon Bedrock Guardrails e Amazon S3 Glacier."
+    ],
+    "correct": 0,
+    "explanation": "No exame AIP-C01, a arquitetura RAG ponta-a-ponta exige o roteamento seguro de dados extrativos a partir de fontes de origem utilizando o Amazon Textract[cite: 104]. Em seguida, as dimensões vetoriais devem ser calculadas por modelos base como o Amazon Titan Embeddings [cite: 105], e finalmente depositadas no Amazon OpenSearch Serverless, que atua como motor unificado para o Knowledge Bases for Amazon Bedrock[cite: 106]."
+  },
+  {
+    "domain": "operacoes",
+    "subdomain": "monitoramento-financeiro",
+    "service": "Amazon EventBridge e Savings Plans",
+    "difficulty": "hard",
+    "type": "multiple-choice",
+    "tags": [
+      "soa-c03",
+      "finops",
+      "event-bridge",
+      "automacao"
+    ],
+    "question": "Um Engenheiro de CloudOps precisa garantir que a equipe financeira seja alertada automaticamente com exatamente 7 dias de antecedência antes do fim do ciclo contratual de um Compute Savings Plan. Qual solução técnica baseada em eventos ('event-driven') atende a esse requisito da forma mais autônoma possível?",
+    "options": [
+      "Configurar o AWS Cost Explorer para gerar relatórios diários de cobertura (Coverage Reports) e enviá-los via Amazon SES.",
+      "Programar o Amazon EventBridge para ler o evento 'Savings Plans state change alert event' pré-configurado para uma janela de 7 dias antes do término, disparando um tópico no Amazon SNS ou uma função AWS Lambda.",
+      "Utilizar a ferramenta Purchase Analyzer para realizar cálculos retrospectivos ('lookback period') de 7 dias e prever a expiração.",
+      "Configurar alarmes no AWS Budgets para alertar quando a utilização dos recursos EC2 cair abaixo de 100% durante 7 dias seguidos."
+    ],
+    "correct": 1,
+    "explanation": "A orquestração autônoma de alertas baseada em eventos para o gerenciamento do Savings Plans utiliza a configuração do Amazon EventBridge[cite: 169]. O sistema atua lendo o evento 'Savings Plans state change alert event', que pode ser programado para prever transições numa janela única de 1 ou 7 dias antes da execução final[cite: 170, 171]. Este alerta pode disparar ativações sistêmicas nativas num tópico do Amazon SNS ou funções no AWS Lambda[cite: 172]."
+  },
+  {
+  "domain": "seguranca",
+  "subdomain": "controle-de-acesso",
+  "service": "AWS IAM",
+  "difficulty": "medium",
+  "type": "multiple-answer", 
+  "tags": [
+    "iam",
+    "segurança",
+    "mfa"
+  ],
+  "question": "Quais das seguintes opções são práticas recomendadas de segurança para o AWS Identity and Access Management (IAM)? (Escolha 2)",
+  "options": [
+    "Compartilhar as chaves de acesso do usuário root com a equipe de desenvolvimento.",
+    "Habilitar o Multi-Factor Authentication (MFA) para usuários privilegiados.",
+    "Conceder permissões administrativas totais por padrão para agilizar o trabalho.",
+    "Aplicar o princípio do menor privilégio (Least Privilege) usando políticas do IAM."
+  ],
+  "correct": [1, 3],
+  "explanation": "Habilitar o MFA (opção 1) e aplicar o princípio do menor privilégio (opção 3) são práticas essenciais de segurança. Nunca se deve compartilhar as chaves do root (opção 0) ou conceder permissões totais por padrão (opção 2)."
+}
 ]
