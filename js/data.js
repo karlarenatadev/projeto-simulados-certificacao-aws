@@ -704,9 +704,9 @@ export const certificationPaths = {
     code: "CLF-C02",
     domains: [
       { id: "conceitos-cloud", name: "Conceitos de Cloud" },
-      { id: "seguranca-conformidade", name: "Segurança e Conformidade" },
+      { id: "seguranca", name: "Segurança e Conformidade" }, 
       { id: "tecnologia", name: "Tecnologia" },
-      { id: "faturamento-precos", name: "Faturamento e Preços" }
+      { id: "faturamento", name: "Faturamento e Preços" } 
     ]
   },
   "saa-c03": {
@@ -714,29 +714,30 @@ export const certificationPaths = {
     code: "SAA-C03",
     domains: [
       { id: "design-resiliente", name: "Design de Arquiteturas Resilientes" },
-      { id: "design-alto-desempenho", name: "Design de Alto Desempenho" },
-      { id: "design-seguro", name: "Design de Aplicações Seguras" },
-      { id: "design-otimizado-custos", name: "Design Otimizado para Custos" }
+      { id: "design-performance", name: "Design de Alto Desempenho" }, 
+      { id: "seguranca-aplicacoes", name: "Design de Aplicações Seguras" }, 
+      { id: "design-custo", name: "Design Otimizado para Custos" } 
     ]
   },
   "aif-c01": {
     name: "AWS Certified AI Practitioner",
     code: "AIF-C01",
     domains: [
-      { id: "fundamentos-ia", name: "Fundamentos de IA e ML" },
-      { id: "ia-generativa", name: "IA Generativa" },
-      { id: "aplicacoes-ia", name: "Aplicações de IA" },
-      { id: "ia-responsavel", name: "IA Responsável" }
+      { id: "fundamentals-ai-ml", name: "Fundamentos de IA e ML" }, 
+      { id: "fundamentals-genai", name: "Fundamentos de IA Generativa" }, 
+      { id: "applications-foundation-models", name: "Aplicações e Modelos de Fundação" }, 
+      { id: "guidelines-responsible-ai", name: "Diretrizes para IA Responsável" }, 
+      { id: "security-compliance-governance", name: "Segurança e Governança" } 
     ]
   },
   "dva-c02": {
     name: "AWS Certified Developer - Associate",
     code: "DVA-C02",
     domains: [
-      { id: "desenvolvimento", name: "Desenvolvimento com Serviços AWS" },
-      { id: "seguranca", name: "Segurança" },
-      { id: "deployment", name: "Deployment" },
-      { id: "troubleshooting", name: "Troubleshooting e Otimização" }
+      { id: "desenvolvimento-servicos", name: "Desenvolvimento com Serviços AWS" }, 
+      { id: "seguranca-app", name: "Segurança" }, 
+      { id: "implementacao", name: "Deployment e Implementação" }, 
+      { id: "resolucao-problemas", name: "Troubleshooting e Resolução de Problemas" } 
     ]
   }
 };
