@@ -7,6 +7,8 @@ import { QuizEngine } from './quizEngine.js';
 import { certificationPaths, glossaryTerms } from './data.js';
 import { storageManager } from './storageManager.js';
 import { renderRadarChart, renderGlobalRadarChart, calculateGlobalDomainStats } from './chartManager.js';
+import { t } from './i18n/useTranslation.js';
+import { initializeUI } from './i18n/initUI.js';
 
 const APP_CONFIG = {
     PASSING_SCORE: 70,
@@ -31,6 +33,7 @@ let uiState = {
 // ============================================================================
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
+    initializeUI(uiState.language); // Initialize UI with translations
     updateHistoryDisplay();
     renderGamification();
     updateLanguageButtonUI();
@@ -83,7 +86,7 @@ async function startQuiz() {
 
     try {
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>A carregar...';
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>${t('loading', uiState.language)}`;
 
         const certId = certSelect.value;
         const currentCertInfo = certificationPaths[certId];
@@ -99,7 +102,7 @@ async function startQuiz() {
         const result = await engine.loadQuestions(certId, currentCertInfo.domains, filters, uiState.language);
 
         if (!result.success) {
-            alert(`❌ Erro ao carregar o banco de questões: ${result.message}\n\nVerifique se o ficheiro de dados existe e tente novamente.`);
+            alert(t('error_loading_questions', uiState.language, { message: result.message }));
             return;
         }
 
@@ -129,11 +132,11 @@ async function startQuiz() {
         loadQuestionUI();
 
     } catch (err) {
-        alert(`❌ Erro ao carregar o banco de questões\n\nNão foi possível iniciar o simulado. Verifique se os ficheiros de dados estão disponíveis.\n\nDetalhes técnicos: ${err.message}`);
+        alert(t('error_starting_quiz', uiState.language, { message: err.message }));
         console.error('Erro ao iniciar quiz:', err);
     } finally {
         btn.disabled = false;
-        btn.innerHTML = 'Iniciar Simulação <i class="fa-solid fa-arrow-right ml-2"></i>';
+        btn.innerHTML = `${t('start_simulation', uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>`;
     }
 }
 
@@ -150,7 +153,7 @@ function startTimer() {
 
         if (uiState.timeRemaining <= 0) {
             clearInterval(uiState.timerInterval);
-            alert("⏰ O tempo esgotou! O seu simulado será finalizado automaticamente e as questões em branco serão dadas como erradas.");
+            alert(t('time_up', uiState.language));
             finishQuiz();
         }
     }, 1000);
@@ -181,7 +184,7 @@ function loadQuestionUI() {
 
     document.getElementById('question-category').textContent = getDomainName(q.domain);
 
-    const questionText = isMulti ? `${q.question} <br><span class="text-sm text-aws-orange italic mt-2 block">(Escolha ${q.correct.length} opções)</span>` : q.question;
+    const questionText = isMulti ? `${q.question} <br><span class="text-sm text-aws-orange italic mt-2 block">(${t('choose_options', uiState.language, { count: q.correct.length })})</span>` : q.question;
     document.getElementById('question-text').innerHTML = questionText;
 
     document.getElementById('current-q-num').textContent = progress.current;
@@ -309,7 +312,7 @@ function submitAnswer() {
 
     const docLink = result.referenceUrl ?
         `<a href="${result.referenceUrl}" target="_blank" class="mt-3 inline-block text-orange-600 font-bold hover:underline">
-            <i class="fa-solid fa-book-open mr-1"></i> Ver Documentação Oficial
+            <i class="fa-solid fa-book-open mr-1"></i> ${t('see_official_docs', uiState.language)}
          </a>` : '';
 
     const titleEl = expBox.querySelector('h4');
@@ -317,18 +320,18 @@ function submitAnswer() {
 
     if (titleEl) {
         titleEl.innerHTML = result.isCorrect ?
-            '<i class="fa-solid fa-check"></i> Correto!' : '<i class="fa-solid fa-xmark"></i> Incorreto';
+            `<i class="fa-solid fa-check"></i> ${t('correct', uiState.language)}` : `<i class="fa-solid fa-xmark"></i> ${t('incorrect', uiState.language)}`;
         titleEl.className = result.isCorrect ? "font-bold text-green-600 mb-3" : "font-bold text-red-600 mb-3";
     }
 
     let feedbackHTML = "";
     if (!result.isCorrect) {
         let userText = isMulti ? uiState.tempSelectedAnswer.map(i => question.options[i]).join("<br>• ") : question.options[uiState.tempSelectedAnswer];
-        feedbackHTML += `<div class="mb-2"><strong class="text-gray-800 dark:text-gray-200">Sua resposta:</strong> <span class="text-red-600 dark:text-red-400"><br>• ${userText}</span></div>`;
+        feedbackHTML += `<div class="mb-2"><strong class="text-gray-800 dark:text-gray-200">${t('your_answer', uiState.language)}</strong> <span class="text-red-600 dark:text-red-400"><br>• ${userText}</span></div>`;
     }
     let correctText = isMulti ? question.correct.map(i => question.options[i]).join("<br>• ") : question.options[result.correctIndex];
-    feedbackHTML += `<div class="mb-3"><strong class="text-gray-800 dark:text-gray-200">Resposta correta:</strong> <span class="text-green-600 dark:text-green-400"><br>• ${correctText}</span></div>`;
-    feedbackHTML += `<div class="pt-3 mt-2 border-t border-blue-200 dark:border-slate-600"><strong class="text-gray-800 dark:text-gray-200">Por que?</strong><br>${result.explanation}</div>`;
+    feedbackHTML += `<div class="mb-3"><strong class="text-gray-800 dark:text-gray-200">${t('correct_answer', uiState.language)}</strong> <span class="text-green-600 dark:text-green-400"><br>• ${correctText}</span></div>`;
+    feedbackHTML += `<div class="pt-3 mt-2 border-t border-blue-200 dark:border-slate-600"><strong class="text-gray-800 dark:text-gray-200">${t('why', uiState.language)}</strong><br>${result.explanation}</div>`;
 
     if (textEl) textEl.innerHTML = `${feedbackHTML} ${docLink}`;
     expBox.classList.remove('hidden');
@@ -477,10 +480,10 @@ function displayReportFromResult(results) {
 
     if (awsScore >= 700) {
         badge.classList.add('bg-green-100', 'dark:bg-green-900/30', 'text-green-700', 'dark:text-green-400', 'border-2', 'border-green-500');
-        badge.innerHTML = '<i class="fa-solid fa-check-circle mr-2"></i>APROVADO';
+        badge.innerHTML = `<i class="fa-solid fa-check-circle mr-2"></i>${t('approved', uiState.language)}`;
     } else {
         badge.classList.add('bg-orange-100', 'dark:bg-orange-900/30', 'text-orange-700', 'dark:text-orange-400', 'border-2', 'border-orange-500');
-        badge.innerHTML = '<i class="fa-solid fa-exclamation-triangle mr-2"></i>PRECISA DE REVISÃO';
+        badge.innerHTML = `<i class="fa-solid fa-exclamation-triangle mr-2"></i>${t('needs_review', uiState.language)}`;
     }
 
     parentDiv.appendChild(badge);
@@ -667,10 +670,10 @@ function loadLastScore() {
             <div class="flex justify-between items-center w-full h-full" onclick="showLastReport('${certId}')">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-history"></i>
-                    <span>Último Teste: <strong>${awsScore} Pontos</strong></span>
+                    <span>${t('last_test', uiState.language)} <strong>${awsScore} ${t('points', uiState.language)}</strong></span>
                 </div>
                 <div class="text-xs font-bold underline flex items-center gap-1 opacity-80 hover:opacity-100">
-                    <i class="fa-solid fa-file-pdf"></i> Ver Relatório
+                    <i class="fa-solid fa-file-pdf"></i> ${t('see_report', uiState.language)}
                 </div>
             </div>
         `;
@@ -683,12 +686,12 @@ function showLastReport(certId) {
     const lastResult = storageManager.loadLastResult(certId);
 
     if (!lastResult || !lastResult.answers) {
-        alert("Os detalhes deste relatório não foram salvos. Faça um novo simulado!");
+        alert(t('no_report_details', uiState.language));
         return;
     }
 
     if (!lastResult.domainScores || typeof lastResult.domainScores !== 'object') {
-        alert("Dados do relatório estão corrompidos. Faça um novo simulado!");
+        alert(t('corrupted_report', uiState.language));
         return;
     }
 
@@ -710,19 +713,19 @@ function showHistoricalReport(index) {
     if (!Array.isArray(history)) {
         history = [];
         storageManager.clearHistory();
-        alert("Histórico corrompido foi limpo. Faça um novo simulado!");
+        alert(t('corrupted_history', uiState.language));
         return;
     }
 
     const result = history[index];
 
     if (!result || !result.answers) {
-        alert("Os detalhes deste relatório não estão mais disponíveis.");
+        alert(t('report_unavailable', uiState.language));
         return;
     }
 
     if (!result.domainScores || typeof result.domainScores !== 'object') {
-        alert("Dados do relatório estão corrompidos.");
+        alert(t('corrupted_report', uiState.language));
         return;
     }
 
@@ -752,7 +755,7 @@ function updateHistoryDisplay() {
     const history = rawHistory.filter(item => item && item.certId && item.percentage !== undefined);
 
     if (history.length === 0) {
-        historyList.innerHTML = 'Nenhum simulado realizado ainda.';
+        historyList.innerHTML = t('no_quizzes_yet', uiState.language);
         updateDynamicInsight([]);
         return;
     }
@@ -793,7 +796,7 @@ function updateHistoryDisplay() {
 }
 
 function clearHistory() {
-    if (confirm("Tem certeza que deseja apagar todo o histórico de simulados?")) {
+    if (confirm(t('clear_history_confirm', uiState.language))) {
         storageManager.clearHistory();
         updateHistoryDisplay();
 
@@ -1003,21 +1006,24 @@ function toggleLanguage() {
     uiState.language = uiState.language === 'pt' ? 'en' : 'pt';
     localStorage.setItem('aws_sim_lang', uiState.language);
     updateLanguageButtonUI();
+    initializeUI(uiState.language); // Re-initialize UI with new language
+    
+    // Recarrega flashcard atual se estiver na tela de flashcards
+    const flashcardsScreen = document.getElementById('screen-flashcards');
+    if (flashcardsScreen && !flashcardsScreen.classList.contains('hidden')) {
+        reloadCurrentFlashcard();
+    }
 
     const certSelect = document.getElementById('certification-select');
     if (certSelect) updateDifficultyFilters(certSelect.value);
-
-    alert(uiState.language === 'en'
-        ? 'Idioma alterado para Inglês! Certifique-se de ter os arquivos -en.json na pasta data.'
-        : 'Idioma alterado para Português!');
 }
 
 function updateLanguageButtonUI() {
     const langBtn = document.getElementById('btn-language');
     if (langBtn) {
         langBtn.innerHTML = uiState.language === 'pt'
-            ? '<span class="text-xs font-bold">🇧🇷 PT-BR</span>'
-            : '<span class="text-xs font-bold">🇺🇸 EN-US</span>';
+            ? '<span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>'
+            : '<span class="text-[10px] md:text-xs font-bold">🇺🇸 <span class="hidden sm:inline">EN-US</span></span>';
     }
 }
 
@@ -1039,16 +1045,16 @@ function retakeQuiz() {
 }
 
 function cancelQuiz() {
-    if (confirm('Sair do simulado?')) goHome();
+    if (confirm(t('exit_quiz_confirm', uiState.language))) goHome();
 }
 
 function startMistakesQuiz() {
-    alert('Funcionalidade em desenvolvimento! Em breve você poderá revisar suas questões erradas.');
+    alert(t('mistakes_feature_coming', uiState.language));
 }
 
 function clearMistakes() {
-    if (confirm('Tem certeza que deseja limpar o histórico de erros?')) {
-        alert('Histórico de erros limpo com sucesso!');
+    if (confirm(t('clear_mistakes_confirm', uiState.language))) {
+        alert(t('mistakes_cleared', uiState.language));
         const btnPractice = document.getElementById('btn-practice-mistakes');
         const btnClear = document.getElementById('btn-clear-mistakes');
         if (btnPractice) btnPractice.classList.add('hidden');
@@ -1057,22 +1063,22 @@ function clearMistakes() {
 }
 
 // ============================================================================
-// 7. GERAÇÃO DE PDF
+// 8. GERAÇÃO DE PDF
 // ============================================================================
 function generatePerformanceReport() {
     const reportElement = document.getElementById('detailed-report');
     const screenResults = document.getElementById('screen-results');
     
     if (!reportElement || !screenResults) {
-        alert('Relatório não encontrado para gerar PDF.');
+        alert(t('report_not_found', uiState.language));
         return;
     }
 
     const btn = document.querySelector('button[onclick="generatePerformanceReport()"]');
-    const oldHtml = btn ? btn.innerHTML : '<i class="fa-solid fa-file-pdf mr-2"></i> Relatório PDF';
+    const oldHtml = btn ? btn.innerHTML : `<i class="fa-solid fa-file-pdf mr-2"></i> ${t('pdf_report', uiState.language)}`;
     
     if (btn) {
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Formatando prova...';
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> ${t('formatting_exam', uiState.language)}`;
         btn.disabled = true;
     }
 
@@ -1155,7 +1161,7 @@ function generatePerformanceReport() {
             })
             .catch((error) => {
                 console.error('Erro ao gerar PDF:', error);
-                alert('Erro ao processar o PDF.');
+                alert(t('pdf_error', uiState.language));
                 // RESTAURAR MESMO EM CASO DE ERRO
                 document.body.classList.remove('is-generating-pdf');
                 if (btn) {
@@ -1167,14 +1173,15 @@ function generatePerformanceReport() {
 }
 
 // ============================================================================
-// 8. MODO FLASHCARDS
+// 9. MODO FLASHCARDS
 // ============================================================================
 import {
     startFlashcards as startFlashcardsModule,
     flipFlashcard as flipFlashcardModule,
     nextFlashcard as nextFlashcardModule,
     prevFlashcard as prevFlashcardModule,
-    filterFlashcardsByCert
+    filterFlashcardsByCert,
+    reloadCurrentFlashcard
 } from './flashcards.js';
 
 function startFlashcards() { startFlashcardsModule(showScreen); }
@@ -1183,7 +1190,7 @@ function nextFlashcard() { nextFlashcardModule(); }
 function prevFlashcard() { prevFlashcardModule(); }
 
 // ============================================================================
-// 9. PWA INSTALL BUTTON
+// 10. PWA INSTALL BUTTON
 // ============================================================================
 let deferredPrompt = null;
 
@@ -1212,7 +1219,7 @@ function initPWAInstall() {
 }
 
 // ============================================================================
-// 10. EXPOSIÇÃO GLOBAL
+// 11. EXPOSIÇÃO GLOBAL
 // ============================================================================
 window.startQuiz = startQuiz;
 window.submitAnswer = submitAnswer;

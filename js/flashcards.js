@@ -1,4 +1,10 @@
 import { glossaryTerms } from './data.js';
+import { t } from './i18n/useTranslation.js';
+
+// Get current language from localStorage
+function getCurrentLanguage() {
+    return localStorage.getItem('aws_sim_lang') || 'pt';
+}
 
 // Movemos o estado específico dos flashcards para cá!
 let flashcardState = {
@@ -12,7 +18,7 @@ let flashcardState = {
 export function startFlashcards(showScreenFn) {
     // VALIDAÇÃO: Verifica se glossaryTerms existe e é um array válido
     if (!glossaryTerms || !Array.isArray(glossaryTerms) || glossaryTerms.length === 0) {
-        alert('Nenhum termo disponível no glossário.');
+        alert(t('no_terms_available', getCurrentLanguage()));
         return;
     }
     
@@ -47,12 +53,12 @@ function renderCertificationFilter() {
     };
     
     const certifications = [
-        { id: 'all', name: 'Todos', icon: '📚', count: counts.all },
-        { id: 'general', name: 'Termos Gerais', icon: '🌐', count: counts.general },
-        { id: 'clf-c02', name: 'Cloud Practitioner', icon: '☁️', count: counts['clf-c02'] },
-        { id: 'saa-c03', name: 'Solutions Architect', icon: '🏗️', count: counts['saa-c03'] },
-        { id: 'dva-c02', name: 'Developer', icon: '💻', count: counts['dva-c02'] },
-        { id: 'aif-c01', name: 'AI Practitioner', icon: '🤖', count: counts['aif-c01'] }
+        { id: 'all', name: t('all_terms', getCurrentLanguage()), icon: '📚', count: counts.all },
+        { id: 'general', name: t('general_terms', getCurrentLanguage()), icon: '🌐', count: counts.general },
+        { id: 'clf-c02', name: t('cloud_practitioner', getCurrentLanguage()), icon: '☁️', count: counts['clf-c02'] },
+        { id: 'saa-c03', name: t('solutions_architect', getCurrentLanguage()), icon: '🏗️', count: counts['saa-c03'] },
+        { id: 'dva-c02', name: t('developer', getCurrentLanguage()), icon: '💻', count: counts['dva-c02'] },
+        { id: 'aif-c01', name: t('ai_practitioner', getCurrentLanguage()), icon: '🤖', count: counts['aif-c01'] }
     ];
     
     filterContainer.innerHTML = certifications.map(cert => `
@@ -100,7 +106,7 @@ export function loadFlashcard() {
     const terms = flashcardState.filteredTerms || glossaryTerms;
     
     if (!terms || !Array.isArray(terms) || terms.length === 0) {
-        alert('Nenhum termo disponível para esta certificação.');
+        alert(t('no_terms_for_cert', getCurrentLanguage()));
         return;
     }
     
@@ -118,20 +124,37 @@ export function loadFlashcard() {
         return;
     }
     
+    // Get current language
+    const currentLang = getCurrentLanguage();
+    
     // VALIDAÇÃO DOM: Verifica se elementos existem antes de manipular
     const termEl = document.getElementById('flashcard-term');
     const definitionEl = document.getElementById('flashcard-definition');
     const counterEl = document.getElementById('flashcard-counter');
     const cardContainer = document.getElementById('flashcard-container');
     
-    if (termEl) termEl.textContent = card.term;
-    if (definitionEl) definitionEl.textContent = card.definition;
+    if (termEl) termEl.textContent = card.term[currentLang];
+    if (definitionEl) definitionEl.textContent = card.definition[currentLang];
     if (counterEl) counterEl.textContent = `${flashcardState.index + 1} / ${terms.length}`;
     
+    // Preserva o estado de virado ao recarregar
     if (cardContainer) {
-        cardContainer.classList.remove('flipped');
-        flashcardState.flipped = false;
+        if (flashcardState.flipped) {
+            cardContainer.classList.add('flipped');
+        } else {
+            cardContainer.classList.remove('flipped');
+        }
     }
+    
+    // Update click hints with current language
+    const frontHint = document.querySelector('.flashcard-front .text-sm.italic');
+    if (frontHint) frontHint.innerHTML = `<i class="fa-solid fa-hand-pointer mr-2"></i> ${t('click_to_see_definition', currentLang)}`;
+    
+    const backHint = document.querySelector('.flashcard-back .text-sm.italic');
+    if (backHint) backHint.innerHTML = `<i class="fa-solid fa-hand-pointer mr-2"></i> ${t('click_to_see_term', currentLang)}`;
+    
+    const officialDef = document.querySelector('.flashcard-back .text-sm.uppercase');
+    if (officialDef) officialDef.textContent = t('official_definition', currentLang);
     
     updateFlashcardButtons();
 }
@@ -142,6 +165,43 @@ export function flipFlashcard() {
         cardContainer.classList.toggle('flipped');
         flashcardState.flipped = !flashcardState.flipped;
     }
+}
+
+// Nova função para recarregar flashcard quando idioma muda
+export function reloadCurrentFlashcard() {
+    updateFlashcardContent();
+}
+
+// Função para atualizar apenas o conteúdo do texto (sem resetar animação)
+function updateFlashcardContent() {
+    const terms = flashcardState.filteredTerms || glossaryTerms;
+    if (!terms || !Array.isArray(terms) || terms.length === 0) return;
+    
+    const card = terms[flashcardState.index];
+    if (!card || !card.term || !card.definition) return;
+    
+    const currentLang = getCurrentLanguage();
+    
+    const termEl = document.getElementById('flashcard-term');
+    const definitionEl = document.getElementById('flashcard-definition');
+    const counterEl = document.getElementById('flashcard-counter');
+    
+    if (termEl) termEl.textContent = card.term[currentLang];
+    if (definitionEl) definitionEl.textContent = card.definition[currentLang];
+    if (counterEl) counterEl.textContent = `${flashcardState.index + 1} / ${terms.length}`;
+    
+    // Update hints
+    const frontHint = document.querySelector('.flashcard-front .text-sm.italic');
+    if (frontHint) frontHint.innerHTML = `<i class="fa-solid fa-hand-pointer mr-2"></i> ${t('click_to_see_definition', currentLang)}`;
+    
+    const backHint = document.querySelector('.flashcard-back .text-sm.italic');
+    if (backHint) backHint.innerHTML = `<i class="fa-solid fa-hand-pointer mr-2"></i> ${t('click_to_see_term', currentLang)}`;
+    
+    const officialDef = document.querySelector('.flashcard-back .text-sm.uppercase');
+    if (officialDef) officialDef.textContent = t('official_definition', currentLang);
+    
+    // Update filter buttons with new language
+    renderCertificationFilter();
 }
 
 export function nextFlashcard() {
