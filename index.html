@@ -29,6 +29,7 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E">
 
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/gamificacao.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff9900">
 </head>
@@ -36,7 +37,7 @@
 <body class="min-h-screen flex flex-col bg-gray-100 dark:bg-slate-900 transition-colors duration-300">
 
     <header class="aws-bg-dark text-white shadow-md py-3 px-4 md:py-4 md:px-6 flex justify-between items-center sticky top-0 z-50">
-        <div class="flex items-center gap-2 md:gap-3 cursor-pointer group" onclick="goHome()" title="Voltar ao início">
+        <div id="home-trigger" class="flex items-center gap-2 md:gap-3 cursor-pointer group" title="Voltar ao início">
             <i class="fa-solid fa-cloud aws-text-orange text-xl md:text-2xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
             <div>
                 <h1 class="text-base md:text-xl font-bold leading-tight group-hover:text-aws-orange transition-colors">Simulador IA</h1>
@@ -48,11 +49,11 @@
                 <i class="fa-solid fa-download"></i> Baixar App
             </button>
             
-            <button id="btn-language" onclick="toggleLanguage()" class="text-gray-300 hover:text-white transition-colors px-2 py-1 md:px-3 md:py-2 rounded-lg hover:bg-gray-700 flex items-center gap-1 md:gap-2" aria-label="Alternar idioma" title="Alternar idioma">
+            <button id="btn-language" class="text-gray-300 hover:text-white transition-colors px-2 py-1 md:px-3 md:py-2 rounded-lg hover:bg-gray-700 flex items-center gap-1 md:gap-2" aria-label="Alternar idioma" title="Alternar idioma">
                 <span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>
             </button>
             
-            <button id="theme-toggle" onclick="toggleDarkMode()" class="text-gray-300 hover:text-white transition-colors p-1.5 md:p-2 rounded-full hover:bg-gray-700" aria-label="Alternar modo escuro">
+            <button id="theme-toggle" class="text-gray-300 hover:text-white transition-colors p-1.5 md:p-2 rounded-full hover:bg-gray-700" aria-label="Alternar modo escuro">
                 <i id="theme-icon" class="fa-solid fa-moon text-base md:text-xl" aria-hidden="true"></i>
             </button>
             
@@ -216,25 +217,53 @@
                     <div class="flex items-center gap-2"><i class="fa-solid fa-lightbulb aws-text-orange"></i> Feedback real</div>
                 </div>
                 
-                <button id="btn-start-quiz" onclick="startQuiz()" class="aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all hover:shadow-lg transform hover:-translate-y-1 w-full max-w-md" aria-label="Iniciar simulação">
+                <button id="btn-start-quiz" class="aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all hover:shadow-lg transform hover:-translate-y-1 w-full max-w-md" aria-label="Iniciar simulação">
                     Iniciar Simulação <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
                 </button>
                 
-                <button onclick="startFlashcards()" class="mt-3 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all hover:shadow-lg transform hover:-translate-y-1 w-full max-w-md" aria-label="Iniciar modo flashcards para revisão rápida de termos AWS">
+                <button id="btn-start-flashcards" class="mt-3 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all hover:shadow-lg transform hover:-translate-y-1 w-full max-w-md" aria-label="Iniciar modo flashcards para revisão rápida de termos AWS">
                     <i class="fa-solid fa-layer-group mr-2" aria-hidden="true"></i> Modo Flashcards (Revisão Rápida)
+                </button>
+
+                <button onclick="startJornada()" class="mt-3 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all hover:shadow-lg transform hover:-translate-y-1 w-full max-w-md flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-route"></i> Minha Jornada (Trilha)
                 </button>
                 
                 <div class="w-full max-w-md flex flex-col items-center">
-                    <button id="btn-practice-mistakes" onclick="startMistakesQuiz()" class="hidden w-full mt-4 bg-red-100 dark:bg-red-900 hover:bg-red-200 dark:hover:bg-red-800 text-red-700 dark:text-red-100 font-bold py-3 px-8 rounded-lg border-2 border-red-300 dark:border-red-700 transition-all flex items-center justify-center gap-2 shadow-sm">
+                    <button id="btn-practice-mistakes" class="hidden w-full mt-4 bg-red-100 dark:bg-red-900 hover:bg-red-200 dark:hover:bg-red-800 text-red-700 dark:text-red-100 font-bold py-3 px-8 rounded-lg border-2 border-red-300 dark:border-red-700 transition-all flex items-center justify-center gap-2 shadow-sm">
                         <i class="fa-solid fa-triangle-exclamation"></i> Praticar Questões Erradas (<span id="mistakes-count">0</span>)
                     </button>
-                    <button id="btn-clear-mistakes" onclick="clearMistakes()" class="hidden text-xs text-gray-400 hover:text-red-500 underline mt-3 transition-colors">
+                    <button id="btn-clear-mistakes" class="hidden text-xs text-gray-400 hover:text-red-500 underline mt-3 transition-colors">
                         Limpar histórico de erros
                     </button>
                 </div>
             </div>
+            
+            <div id="screen-jornada" class="hidden p-8 md:p-12 flex flex-col items-center h-full overflow-y-auto custom-scroll fade-in">
+                <div class="w-full max-w-2xl text-center mb-10">
+                    <h2 class="text-3xl font-bold aws-text-dark dark:text-white mb-2">
+                        <i class="fa-solid fa-map-location-dot text-aws-orange mr-2"></i> Jornada AWS
+                    </h2>
+                    <p class="text-gray-500 dark:text-gray-400">Complete os módulos para desbloquear novas certificações e ganhar insígnias.</p>
+                </div>
 
-            <div id="screen-quiz" class="hidden flex-col h-full relative p-6 md:p-8">
+                <div class="trail-container w-full mb-16" id="trail-render-area">
+                    </div>
+
+                <div class="w-full max-w-4xl mb-12">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-medal text-yellow-500"></i> Suas Conquistas
+                    </h3>
+                    <div id="gamificacao-badges-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        </div>
+                </div>
+
+                <button onclick="goHome()" class="aws-bg-dark hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all mt-auto">
+                    <i class="fa-solid fa-house mr-2"></i> Voltar ao Início
+                </button>
+            </div>
+
+<div id="screen-quiz" class="hidden flex-col h-full relative p-6 md:p-8">
                 
                 <div class="absolute top-0 left-0 h-2 w-full bg-gray-200 dark:bg-slate-700">
                     <div id="progress-bar" class="h-2 aws-bg-orange transition-all duration-500" style="width: 0%"></div>
@@ -246,22 +275,47 @@
                     </span>
                     
                     <div class="flex items-center gap-4 bg-white dark:bg-slate-800 px-4 py-2 rounded-lg border border-gray-200 dark:border-slate-600 shadow-sm">
+                        
                         <div id="timer-container" class="hidden flex items-center gap-2 font-bold text-orange-600 dark:text-orange-400">
                             <i class="fa-solid fa-clock" aria-hidden="true"></i>
                             <span id="timer-text">00:00</span>
                         </div>
+                        
                         <div class="w-px h-5 bg-gray-300 dark:bg-slate-600"></div>
-                        <button id="btn-flag" onclick="toggleFlag()" class="text-gray-400 hover:text-orange-500 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded" aria-label="Marcar questão para revisão" title="Marcar para revisão">
+
+                        <button id="btn-flag" class="text-gray-400 hover:text-orange-500 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-orange-500 rounded" aria-label="Marcar questão para revisão" title="Marcar para revisão">
                             <i class="fa-solid fa-flag text-lg" aria-hidden="true"></i>
                         </button>
+
                         <div class="w-px h-5 bg-gray-300 dark:bg-slate-600"></div>
+                        
                         <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">
                             Questão <span id="current-q-num" class="text-aws-dark dark:text-white text-base mx-1">1</span> de <span id="total-q-num" class="ml-1">10</span>
                         </span>
                     </div>
                 </div>
-                
-                <h3 id="question-text" class="text-xl md:text-2xl font-semibold aws-text-dark dark:text-white mb-8 leading-snug">Carregando questão...</h3>
+
+                <div id="mission-hud" class="hidden w-full flex justify-between items-center bg-white dark:bg-slate-800 p-3 rounded-xl mb-6 border border-gray-200 dark:border-slate-700 shadow-sm">
+                    
+                    <div class="flex gap-1.5" id="mission-hearts" title="Vidas Restantes">
+                        </div>
+                    
+                    <div class="flex-1 mx-4 sm:mx-8">
+                        <div class="flex justify-between text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-wider">
+                            <span>Tempo da Questão</span>
+                            <span id="mission-time-text" class="text-orange-500">45s</span>
+                        </div>
+                        <div class="h-2 w-full bg-gray-100 dark:bg-slate-700 rounded-full overflow-hidden shadow-inner">
+                            <div id="mission-time-bar" class="h-full bg-gradient-to-r from-orange-400 to-red-500 transition-all duration-1000 ease-linear" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-xs font-bold text-gray-500 uppercase flex flex-col items-end">
+                        Meta 
+                        <span class="text-green-500 text-sm">80%</span>
+                    </div>
+                </div>
+                <h3 id="question-text" class="text-xl md:text-2xl font-semibold aws-text-dark dark:text-white mb-8 leading-snug">Carregando questão...</h3>              
                 <div id="options-container" class="flex flex-col gap-3 mb-8"></div>
                 
                 <div id="explanation-box" class="hidden mt-4 bg-blue-50 dark:bg-slate-700 border-l-4 border-blue-500 p-5 rounded-r-lg shadow-sm">
@@ -272,16 +326,16 @@
                 </div>
                 
                 <div class="mt-auto pt-6 flex flex-wrap justify-end gap-3 items-center w-full border-t border-gray-100 dark:border-slate-700">
-                    <button id="btn-cancel" onclick="cancelQuiz()" class="mr-auto bg-white dark:bg-slate-700 hover:bg-gray-100 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-slate-500 font-bold py-3 px-6 rounded-lg shadow-sm transition-all" aria-label="Cancelar simulado">
+                    <button id="btn-cancel" class="mr-auto bg-white dark:bg-slate-700 hover:bg-gray-100 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-slate-500 font-bold py-3 px-6 rounded-lg shadow-sm transition-all" aria-label="Cancelar simulado">
                         <i class="fa-solid fa-xmark mr-2" aria-hidden="true"></i> Cancelar
                     </button>
-                    <button id="btn-submit" onclick="submitAnswer()" disabled class="aws-bg-dark hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button id="btn-submit" disabled class="aws-bg-dark hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed">
                         Confirmar Resposta
                     </button>
-                    <button id="btn-next" onclick="nextQuestion()" class="hidden aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all">
+                    <button id="btn-next" class="hidden aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all">
                         Próxima <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
                     </button>
-                    <button id="btn-finish" onclick="finishQuiz()" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all">
+                    <button id="btn-finish" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all">
                         Ver Resultado <i class="fa-solid fa-flag-checkered ml-2" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -317,13 +371,13 @@
                 </div>
                 
                 <div class="flex gap-3 flex-wrap justify-center w-full max-w-2xl">
-                    <button onclick="generatePerformanceReport()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all whitespace-nowrap" aria-label="Gerar relatório de desempenho em PDF">
+                    <button id="btn-generate-report" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all whitespace-nowrap" aria-label="Gerar relatório de desempenho em PDF">
                         <i class="fa-solid fa-file-pdf mr-2" aria-hidden="true"></i> Relatório PDF
                     </button>
-                    <button onclick="retakeQuiz()" class="flex-1 aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all whitespace-nowrap" aria-label="Refazer simulado">
+                    <button id="btn-retake-quiz" class="flex-1 aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all whitespace-nowrap" aria-label="Refazer simulado">
                         <i class="fa-solid fa-rotate-right mr-2" aria-hidden="true"></i> Refazer
                     </button>
-                    <button onclick="goHome()" class="flex-1 aws-bg-dark hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all whitespace-nowrap" aria-label="Voltar ao início">
+                    <button id="btn-results-home" class="flex-1 aws-bg-dark hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all whitespace-nowrap" aria-label="Voltar ao início">
                         <i class="fa-solid fa-house mr-2" aria-hidden="true"></i> Início
                     </button>
                 </div>
@@ -348,7 +402,7 @@
                         Cartão <span id="flashcard-counter">1 / 96</span>
                     </div>
                     
-                    <div id="flashcard-container" class="flashcard-container" onclick="flipFlashcard()" role="button" tabindex="0" aria-label="Cartão de estudo. Clique para virar e ver a definição">
+                    <div id="flashcard-container" class="flashcard-container" role="button" tabindex="0" aria-label="Cartão de estudo. Clique para virar e ver a definição">
                         <div class="flashcard">
                             <div class="flashcard-front">
                                 <div class="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 font-bold">Termo AWS</div>
@@ -371,15 +425,15 @@
                 </div>
                 
                 <div class="flex gap-4 mb-6">
-                    <button id="btn-prev-flashcard" onclick="prevFlashcard()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Cartão anterior">
+                    <button id="btn-prev-flashcard" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Cartão anterior">
                         <i class="fa-solid fa-arrow-left mr-2"></i> Anterior
                     </button>
-                    <button id="btn-next-flashcard" onclick="nextFlashcard()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Próximo cartão">
+                    <button id="btn-next-flashcard" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Próximo cartão">
                         Próximo <i class="fa-solid fa-arrow-right ml-2"></i>
                     </button>
                 </div>
                 
-                <button onclick="goHome()" class="aws-bg-dark hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all">
+                <button id="btn-flashcards-home" class="aws-bg-dark hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all">
                     <i class="fa-solid fa-house mr-2"></i> Voltar ao Início
                 </button>
             </div>
@@ -387,17 +441,40 @@
 
         <aside id="side-info" class="lg:w-1/3 flex flex-col gap-6">
 
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 transition-colors">
-                <div class="flex justify-between items-center border-b border-gray-200 dark:border-slate-600 pb-2 mb-4">
-                    <h3 class="text-lg font-bold aws-text-dark dark:text-white">
-                        <i class="fa-solid fa-medal text-yellow-500 mr-2" aria-hidden="true"></i> O Meu Progresso
-                    </h3>
-                    <div class="flex items-center gap-1 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 px-3 py-1 rounded-full font-bold text-sm shadow-sm" title="Dias seguidos a estudar">
-                        <i class="fa-solid fa-fire"></i> <span id="streak-counter">0</span>
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 fade-in transition-colors">
+                
+                <h3 class="text-lg font-bold border-b border-gray-200 dark:border-slate-600 pb-3 mb-4 aws-text-dark dark:text-white flex items-center">
+                    <i class="fa-solid fa-medal text-yellow-500 mr-2"></i> O Meu Progresso
+                </h3>
+
+                <div class="flex items-center gap-3 mb-5 mt-2">
+                    <div id="sidebar-cert-icon" class="w-10 h-10 rounded-lg bg-aws-orange/10 flex items-center justify-center border border-aws-orange/20">
+                        <i class="fa-solid fa-certificate text-aws-orange"></i>
+                    </div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold" id="sidebar-cert-label">Cloud Practitioner</p>
+                        <h4 class="text-sm font-bold aws-text-dark dark:text-white" id="sidebar-cert-status">Em andamento</h4>
                     </div>
                 </div>
-                <div id="badges-container" class="flex flex-wrap gap-2">
-                    <p class="text-sm text-gray-500 dark:text-gray-400 italic">Complete simulados para desbloquear medalhas virtuais!</p>
+
+                <div class="mb-5">
+                    <div class="flex justify-between items-end mb-1">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase">Progresso Total</span>
+                        <span class="text-xs font-mono font-bold text-aws-orange" id="sidebar-pct-text">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                        <div id="sidebar-pct-bar" class="bg-aws-orange h-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-slate-600">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-fire text-orange-500 text-xs"></i>
+                        <span class="text-[11px] font-medium text-gray-500 dark:text-gray-400">Ofensiva:</span>
+                    </div>
+                    <div class="flex gap-1" id="sidebar-streak-dots">
+                        <span class="text-xs font-bold text-aws-dark dark:text-gray-200" id="sidebar-streak-value">1 dia</span>
+                    </div>
                 </div>
             </div>
             
@@ -415,9 +492,9 @@
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 flex flex-col h-full transition-colors">
                     <div class="flex justify-between items-center border-b border-gray-200 dark:border-slate-600 pb-2 mb-3">
                         <h3 class="text-lg font-bold aws-text-dark dark:text-white">
-                            <i class="fa-solid fa-trophy text-yellow-500 mr-2" aria-hidden="true"></i> Histórico
+                            <i class="fa-solid fa-list-ul text-yellow-500 mr-2" aria-hidden="true"></i> Histórico
                         </h3>
-                        <button onclick="clearHistory()" class="text-gray-400 hover:text-red-500 transition-colors p-1" title="Limpar histórico" aria-label="Limpar histórico de simulados">
+                        <button id="btn-clear-history" class="text-gray-400 hover:text-red-500 transition-colors p-1" title="Limpar histórico" aria-label="Limpar histórico de simulados">
                             <i class="fa-solid fa-trash-can text-sm" aria-hidden="true"></i>
                         </button>
                     </div>
@@ -427,13 +504,11 @@
                 </div>
             </div>
             
-            <!-- Dashboard de Desempenho Global -->
             <div id="global-performance-dashboard" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 transition-colors">
                 <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                     <i class="fa-solid fa-chart-pie text-aws-orange"></i> Estatísticas da Certificação
                 </h3>
                 
-                <!-- Estado vazio (quando não há histórico) -->
                 <div id="global-chart-empty" class="hidden text-center py-8">
                     <div class="w-12 h-12 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-3">
                         <i class="fa-solid fa-chart-line text-2xl text-gray-400 dark:text-gray-500"></i>
@@ -443,12 +518,10 @@
                     </p>
                 </div>
                 
-                <!-- Gráfico de radar global -->
                 <div id="global-chart-container" class="relative h-[280px] w-full mb-4">
                     <canvas id="globalRadarChart"></canvas>
                 </div>
                 
-                <!-- Estatísticas resumidas -->
                 <div id="global-stats-summary" class="pt-4 border-t border-gray-200 dark:border-slate-600 grid grid-cols-3 gap-3 text-center text-xs">
                     <div>
                         <div class="text-xl font-bold text-aws-orange" id="total-quizzes">0</div>
@@ -464,6 +537,7 @@
                     </div>
                 </div>
             </div>
+
         </aside>
     </main>
 
@@ -491,34 +565,27 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                // Desregistar Service Workers antigos antes de registar o novo
-                navigator.serviceWorker.getRegistrations().then(registrations => {
-                    registrations.forEach(registration => {
-                        registration.unregister().then(() => {
-                            console.log('Service Worker antigo desregistado');
-                        });
-                    });
-                }).then(() => {
-                    // Registar o novo Service Worker
-                    navigator.serviceWorker.register('sw.js')
-                        .then(reg => {
-                            console.log('PWA Service Worker registado com sucesso!');
-                            // Forçar atualização se houver uma nova versão
-                            reg.addEventListener('updatefound', () => {
-                                const newWorker = reg.installing;
-                                newWorker.addEventListener('statechange', () => {
-                                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                        console.log('Nova versão do Service Worker disponível. Recarregando...');
-                                        window.location.reload();
-                                    }
-                                });
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => {
+                        console.log('PWA Service Worker registado com sucesso!');
+                        reg.addEventListener('updatefound', () => {
+                            const newWorker = reg.installing;
+                            if (!newWorker) return;
+
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('Nova versão do Service Worker disponível.');
+                                }
                             });
-                        })
-                        .catch(err => console.error('Erro ao registar o Service Worker:', err));
-                });
+                        });
+                    })
+                    .catch(err => console.error('Erro ao registar o Service Worker:', err));
             });
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </body>
 </html>
+
+
+

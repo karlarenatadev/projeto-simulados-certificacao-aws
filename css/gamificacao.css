@@ -1,0 +1,186 @@
+/**
+ * GAMIFICACAO.CSS
+ * Estilos exclusivos para a Jornada AWS (Trilha) e Dashboard da Guilda.
+ * Depende das variáveis globais definidas em style.css.
+ */
+
+/* ============================================================================
+   TRILHA DE APRENDIZADO (ESTILO ZIGUEZAGUE)
+   ============================================================================ */
+
+.trail-container {
+    position: relative;
+    padding: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem; /* Espaçamento vertical entre os nós */
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Linha pontilhada que conecta os módulos */
+.trail-container::before {
+    content: '';
+    position: absolute;
+    top: 2rem;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    border-left: 4px dashed var(--border-theme);
+    z-index: 0;
+}
+
+/* Container individual de cada nó (para alinhar o texto) */
+.trail-node-wrapper {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 120px;
+}
+
+/* A mágica do Ziguezague usando CSS puro */
+.trail-node-wrapper:nth-child(odd) {
+    transform: translateX(-40%);
+}
+
+.trail-node-wrapper:nth-child(even) {
+    transform: translateX(40%);
+}
+
+/* O botão circular do módulo */
+.trail-node {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 4px solid var(--bg-main); /* Cria um respiro visual com o fundo */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* ESTADOS DOS NÓS */
+
+/* 1. Bloqueado (Cinza, inativo) */
+.trail-node.locked {
+    background-color: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+    border-color: #f3f4f6;
+}
+.dark .trail-node.locked {
+    background-color: #334155;
+    color: #64748b;
+    border-color: #1e293b;
+}
+
+/* 2. Concluído (Laranja sólido ou Verde) */
+.trail-node.completed {
+    background-color: var(--aws-orange);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.3);
+}
+
+/* 3. Ativo/Atual (Com efeito de pulso e destaque) */
+.trail-node.active {
+    background-color: white;
+    color: var(--aws-orange);
+    border-color: var(--aws-orange);
+    animation: nodePulse 2s infinite;
+}
+.dark .trail-node.active {
+    background-color: #1e293b;
+}
+
+/* Texto abaixo do nó */
+.trail-node-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+.trail-node.active ~ .trail-node-title {
+    color: var(--aws-orange);
+}
+
+/* ============================================================================
+   BADGES & GLASSMORPHISM (Dark Tech Aesthetic)
+   ============================================================================ */
+
+/* Container da Insígnia com efeito de vidro fosco */
+.badge-glass {
+    background: rgba(255, 255, 255, 0.7);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 1rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.badge-glass:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+/* Adaptação do Glassmorphism para o Dark Mode */
+.dark .badge-glass {
+    background: rgba(30, 41, 59, 0.6); /* Slate 800 com transparência */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.dark .badge-glass:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 153, 0, 0.3);
+}
+
+/* Ícone da Insígnia */
+.badge-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* ============================================================================
+   ANIMAÇÕES ESPECÍFICAS
+   ============================================================================ */
+
+/* Animação suave de pulso para o nó atual da jornada */
+@keyframes nodePulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 153, 0, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(255, 153, 0, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 153, 0, 0);
+    }
+}
+
+/* Efeito de desbloqueio (quando um nó passa de cinza para ativo) */
+.unlock-animation {
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}

@@ -4,10 +4,9 @@ import { storageManager } from './storageManager.js';
 import { renderRadarChart, renderGlobalRadarChart, calculateGlobalDomainStats } from './chartManager.js';
 import { t } from './i18n/useTranslation.js';
 import { initializeUI } from './i18n/initUI.js';
-
 import { renderTrail, unlockNextModule } from './gamificacao/trailManager.js';
 import { renderGuildDashboard } from './gamificacao/leaderboard.js';
-
+import { renderBadges } from './gamificacao/badges.js';
 
 const APP_CONFIG = {
     PASSING_SCORE: 70,
@@ -24,19 +23,24 @@ let uiState = {
     tempSelectedAnswer: null,
     language: localStorage.getItem('aws_sim_lang') || 'pt',
     flashcardIndex: 0,
-    flashcardFlipped: false
+    flashcardFlipped: false,
+    currentMode: 'exam', // 'exam', 'review', 'mission'
+    lives: 3,
+    qTimerInterval: null,
+    qTimeRemaining: 45
 };
 
-// ============================================================================
-// 1. INICIALIZAÇÃO
-// ============================================================================
+// INICIALIZAÇÃO
+
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
-    initializeUI(uiState.language); // Initialize UI with translations
+    initializeUI(uiState.language);
     updateHistoryDisplay();
     renderGamification();
     updateLanguageButtonUI();
     initPWAInstall();
+    wireUIActions();
+    updateSidebarProgress();
 
     if (typeof renderGlobalRadarChart === 'function') {
         renderGlobalRadarChart();
@@ -70,9 +74,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ============================================================================
-// 2. MOTOR DO QUIZ E TIMER
-// ============================================================================
+function bindClick(id, handler) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.addEventListener('click', handler);
+    }
+}
+
+function wireUIActions() {
+    bindClick('home-trigger', goHome);
+    bindClick('btn-language', toggleLanguage);
+    bindClick('theme-toggle', toggleDarkMode);
+    bindClick('btn-start-quiz', startQuiz);
+    bindClick('btn-start-flashcards', startFlashcards);
+    bindClick('btn-practice-mistakes', startMistakesQuiz);
+    bindClick('btn-clear-mistakes', clearMistakes);
+    bindClick('btn-flag', toggleFlag);
+    bindClick('btn-cancel', cancelQuiz);
+    bindClick('btn-submit', submitAnswer);
+    bindClick('btn-next', nextQuestion);
+    bindClick('btn-finish', finishQuiz);
+    bindClick('btn-generate-report', generatePerformanceReport);
+    bindClick('btn-retake-quiz', retakeQuiz);
+    bindClick('btn-results-home', goHome);
+    bindClick('btn-prev-flashcard', prevFlashcard);
+    bindClick('btn-next-flashcard', nextFlashcard);
+    bindClick('btn-flashcards-home', goHome);
+    bindClick('btn-clear-history', clearHistory);
+
+    const flashcardContainer = document.getElementById('flashcard-container');
+    if (flashcardContainer) {
+        flashcardContainer.addEventListener('click', flipFlashcard);
+        flashcardContainer.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                flipFlashcard();
+            }
+        });
+    }
+}
+
+// MOTOR DO QUIZ E TIMER
+
 async function startQuiz() {
     const certSelect = document.getElementById('certification-select');
     const quantityInput = document.querySelector('input[name="question-quantity"]:checked')?.value || 10;
@@ -188,9 +231,8 @@ function updateTimerDisplay() {
     }
 }
 
-// ============================================================================
-// 3. UI DE QUESTÕES E MÚLTIPLAS ESCOLHAS
-// ============================================================================
+// UI DE QUESTÕES E MÚLTIPLAS ESCOLHAS
+
 function loadQuestionUI() {
     const q = engine.getCurrentQuestion();
     const progress = engine.getProgress();
@@ -288,6 +330,20 @@ function submitAnswer() {
     const question = engine.getCurrentQuestion();
     const isMulti = Array.isArray(question.correct);
     const result = engine.submitAnswer(uiState.tempSelectedAnswer);
+    
+    if (uiState.currentMode === 'mission') {
+        clearInterval(uiState.qTimerInterval); // Para o relógio enquanto lê a explicação
+        
+        if (!result.isCorrect) {
+            uiState.lives--;
+            updateHeartsUI();
+            
+            if (uiState.lives <= 0) {
+                setTimeout(() => handleMissionFailure("Você perdeu todos os corações!"), 500);
+                return; // Interrompe para não deixar avançar
+            }
+        }
+    }
 
     const btnSubmit = document.getElementById('btn-submit');
     if (btnSubmit) btnSubmit.classList.add('hidden');
@@ -388,6 +444,10 @@ function nextQuestion() {
     if (engine.nextQuestion()) {
         loadQuestionUI();
     }
+
+    if (uiState.currentMode === 'mission') {
+            startQuestionTimer();
+        }
 }
 
 function finishQuiz() {
@@ -408,11 +468,10 @@ function toggleFlag() {
     if (flagBtn) flagBtn.classList.toggle('text-orange-500');
 }
 
-// ============================================================================
-// 4. TELAS E RELATÓRIOS
-// ============================================================================
+//  TELAS E RELATÓRIOS
+
 function showScreen(screenName) {
-    const screens = ['start', 'quiz', 'results', 'flashcards'];
+    const screens = ['start', 'quiz', 'results', 'flashcards', 'jornada'];
     screens.forEach(s => {
         const el = document.getElementById(`screen-${s}`);
         if (el) el.classList.add('hidden');
@@ -424,7 +483,7 @@ function showScreen(screenName) {
     }
 }
 
-// CORREÇÃO: showResultsScreen com polling para garantir que o canvas está visível
+// showResultsScreen com polling para garantir que o canvas está visível
 function showResultsScreen() {
     const results = engine.getFinalResults();
 
@@ -655,9 +714,7 @@ function renderDetailedReportUI(results) {
     reportDiv.innerHTML = html;
 }
 
-// ============================================================================
-// 5. PERSISTÊNCIA E HISTÓRICO
-// ============================================================================
+// PERSISTÊNCIA E HISTÓRICO
 function saveQuizResult() {
     const results = engine.getFinalResults();
     storageManager.saveQuizResult(results);
@@ -983,9 +1040,7 @@ function updateGamification(pct) {
     renderGamification();
 }
 
-// ============================================================================
-// 6. UTILITÁRIOS GERAIS
-// ============================================================================
+// UTILITÁRIOS GERAIS
 function updateScoreDisplayUI() {
     const el = document.getElementById('score-display');
     const state = engine.state;
@@ -1125,6 +1180,14 @@ function goHome() {
     updateDynamicInsight(history);
 }
 
+function startJornada() {
+    if (uiState.timerInterval) clearInterval(uiState.timerInterval);
+    showScreen('jornada');
+    renderTrail();
+    renderGuildDashboard();
+    renderBadges();
+}
+
 function retakeQuiz() {
     goHome();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1148,9 +1211,7 @@ function clearMistakes() {
     }
 }
 
-// ============================================================================
-// 8. GERAÇÃO DE PDF
-// ============================================================================
+// GERAÇÃO DE PDF
 function generatePerformanceReport() {
     const reportElement = document.getElementById('detailed-report');
     const screenResults = document.getElementById('screen-results');
@@ -1164,52 +1225,76 @@ function generatePerformanceReport() {
     const oldHtml = btn ? btn.innerHTML : `<i class="fa-solid fa-file-pdf mr-2"></i> ${t('pdf_report', uiState.language)}`;
     
     if (btn) {
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> ${t('formatting_exam', uiState.language)}`;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Formatando Prova...`;
         btn.disabled = true;
     }
 
-    // 1. INJETAR CSS DE "MODO PROVA" NO HEAD (se ainda não existir)
-    // Esse CSS só afeta a página quando o body tiver a classe 'is-generating-pdf'
+    // CSS DE "MODO DOCUMENTO"
     if (!document.getElementById('pdf-print-styles')) {
         const style = document.createElement('style');
         style.id = 'pdf-print-styles';
         style.innerHTML = `
-            /* Força fundo branco, texto preto e remove sombras/bordas grossas */
+            /* Força formato de documento clássico */
             body.is-generating-pdf,
             body.is-generating-pdf #screen-results,
-            body.is-generating-pdf #detailed-report,
-            body.is-generating-pdf #detailed-report * {
+            body.is-generating-pdf #detailed-report {
                 background-color: #ffffff !important;
                 color: #000000 !important;
+                font-family: 'Times New Roman', Times, serif !important; /* Fonte acadêmica */
+            }
+
+            /* Transforma os "Cards" do site em blocos de texto divididos por linha */
+            body.is-generating-pdf #detailed-report > div {
+                background: transparent !important;
                 box-shadow: none !important;
-                border-color: #cccccc !important;
+                border: none !important;
+                border-bottom: 1px solid #cccccc !important; 
+                border-radius: 0 !important;
+                padding: 15px 0 !important;
+                margin-bottom: 15px !important;
+                page-break-inside: avoid !important; /* Mágica: Impede a questão de quebrar na metade da página */
             }
 
-            /* Mantém os ícones e textos de CERTO (Verde) e ERRADO (Vermelho) */
-            body.is-generating-pdf .text-green-600,
-            body.is-generating-pdf .text-green-400,
-            body.is-generating-pdf .fa-check,
-            body.is-generating-pdf .fa-check-circle {
-                color: #166534 !important; /* Verde escuro forte */
+            /* Estilo da Pergunta */
+            body.is-generating-pdf #detailed-report h3 {
+                font-family: Arial, Helvetica, sans-serif !important;
+                font-size: 12pt !important;
+                font-weight: bold !important;
+                color: #000000 !important;
+                margin-bottom: 10px !important;
+            }
+
+            /* Remove os fundos cinzas das alternativas */
+            body.is-generating-pdf .bg-gray-50, 
+            body.is-generating-pdf .dark\\:bg-slate-700,
+            body.is-generating-pdf .dark\\:bg-slate-800 {
+                background: transparent !important;
+                border: none !important;
+                padding: 4px 0 !important;
+            }
+
+            /* Cores precisas para o feedback (Acerto/Erro) */
+            body.is-generating-pdf .text-green-600, 
+            body.is-generating-pdf .text-green-400, 
+            body.is-generating-pdf .fa-check {
+                color: #166534 !important; /* Verde oficial impresso */
                 font-weight: bold !important;
             }
 
-            body.is-generating-pdf .text-red-600,
-            body.is-generating-pdf .text-red-400,
-            body.is-generating-pdf .fa-xmark,
-            body.is-generating-pdf .fa-times-circle {
-                color: #991b1b !important; /* Vermelho escuro forte */
+            body.is-generating-pdf .text-red-600, 
+            body.is-generating-pdf .text-red-400, 
+            body.is-generating-pdf .fa-xmark {
+                color: #991b1b !important; /* Vermelho oficial impresso */
                 font-weight: bold !important;
             }
 
-            /* Libera as amarras de scroll da tela original para não cortar o PDF */
+            /* Limpeza de UI: Tira botões, scrollbars e ícones inúteis no papel */
+            body.is-generating-pdf .no-print,
+            body.is-generating-pdf button,
             body.is-generating-pdf #screen-results {
                 height: auto !important;
                 overflow: visible !important;
             }
-
-            /* Esconde os botões para não saírem impressos no PDF */
-            body.is-generating-pdf .no-print,
             body.is-generating-pdf button {
                 display: none !important;
             }
@@ -1217,13 +1302,38 @@ function generatePerformanceReport() {
         document.head.appendChild(style);
     }
 
-    // 2. APLICAR MODO DE IMPRESSÃO AO DOM REAL
+    // INJEÇÃO DO CABEÇALHO DA PROVA
+    const headerId = 'pdf-exam-header';
+    let headerDiv = document.getElementById(headerId);
+    
+    if (!headerDiv) {
+        headerDiv = document.createElement('div');
+        headerDiv.id = headerId;
+        
+        // Tenta capturar a nota atual da tela (ajuste os IDs se necessário)
+        const scoreElement = document.getElementById('score-display'); 
+        const scoreText = scoreElement ? scoreElement.innerText : 'Concluído';
+        const dataAtual = new Date().toLocaleDateString('pt-BR');
+
+        headerDiv.innerHTML = `
+            <div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px; font-family: Arial, sans-serif;">
+                <h1 style="font-size: 16pt; font-weight: bold; margin: 0; text-transform: uppercase;">Relatório de Simulado AWS</h1>
+                <p style="font-size: 10pt; margin: 5px 0 0 0; color: #333;">
+                    <strong>Data:</strong> ${dataAtual} &nbsp;|&nbsp; <strong>Desempenho:</strong> ${scoreText}
+                </p>
+            </div>
+        `;
+        // Coloca o cabeçalho no topo da div de relatório
+        reportElement.insertBefore(headerDiv, reportElement.firstChild);
+    }
+
+    // APLICA A CLASSE GATILHO
     document.body.classList.add('is-generating-pdf');
 
-    // 3. CONFIGURAÇÃO DA FOLHA A4
+    // CONFIGURAÇÃO DA FOLHA A4
     const opt = {
-        margin:       15,
-        filename:     'prova-aws-simulado.pdf',
+        margin:       [15, 15, 15, 15], // Margens padrão de Word
+        filename:     `Prova_AWS_${new Date().toISOString().split('T')[0]}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { 
             scale: 2, 
@@ -1234,12 +1344,12 @@ function generatePerformanceReport() {
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    // 4. TIMEOUT PARA O BROWSER REPINTAR A TELA COM O CSS NOVO
+    // GERA O PDF E LIMPA A BAGUNÇA
     setTimeout(() => {
         html2pdf().set(opt).from(reportElement).save()
             .then(() => {
-                // 5. RESTAURAR O SITE PARA O ESTADO NORMAL
                 document.body.classList.remove('is-generating-pdf');
+                if (headerDiv) headerDiv.remove(); // Arranca o cabeçalho do site
                 if (btn) {
                     btn.innerHTML = oldHtml;
                     btn.disabled = false;
@@ -1248,19 +1358,18 @@ function generatePerformanceReport() {
             .catch((error) => {
                 console.error('Erro ao gerar PDF:', error);
                 alert(t('pdf_error', uiState.language));
-                // RESTAURAR MESMO EM CASO DE ERRO
                 document.body.classList.remove('is-generating-pdf');
+                if (headerDiv) headerDiv.remove(); // Limpa mesmo se der erro
                 if (btn) {
                     btn.innerHTML = oldHtml;
                     btn.disabled = false;
                 }
             });
-    }, 150); // 150ms é o suficiente para o repaint do browser
+    }, 200); 
 }
 
-// ============================================================================
-// 9. MODO FLASHCARDS
-// ============================================================================
+// MODO FLASHCARDS
+
 import {
     startFlashcards as startFlashcardsModule,
     flipFlashcard as flipFlashcardModule,
@@ -1275,9 +1384,7 @@ function flipFlashcard() { flipFlashcardModule(); }
 function nextFlashcard() { nextFlashcardModule(); }
 function prevFlashcard() { prevFlashcardModule(); }
 
-// ============================================================================
-// 10. PWA INSTALL BUTTON
-// ============================================================================
+// PWA INSTALL BUTTON
 let deferredPrompt = null;
 
 function initPWAInstall() {
@@ -1304,15 +1411,54 @@ function initPWAInstall() {
     });
 }
 
-function startJornada() {
-    showScreen('jornada');
-    renderTrail();
-}
-window.startJornada = startJornada; // Expoe globalmente para os botões do HTML para gamificação
+// ATUALIZAÇÃO DA BARRA LATERAL (STATUS)
+function updateSidebarProgress() {
+    const gamification = JSON.parse(localStorage.getItem('aws_sim_gamification')) || { completedStages: [], unlockedStages: [] };
+    const certSelect = document.getElementById('certification-select');
+    
+    // Tratamento absoluto contra undefined
+    let currentCertId = certSelect && certSelect.value ? String(certSelect.value).toLowerCase().trim() : 'clf-c02';
 
-// ============================================================================
-// 11. EXPOSIÇÃO GLOBAL
-// ============================================================================
+    const certNames = {
+        'clf-c02': 'Cloud Practitioner',
+        'saa-c03': 'Solutions Architect',
+        'aif-c01': 'AI Practitioner',
+        'dva-c02': 'Developer Associate'
+    };
+    
+    const labelEl = document.getElementById('sidebar-cert-label');
+    if (labelEl) {
+        // Se a busca falhar, escreve Cloud Practitioner, mantendo o visual limpo
+        labelEl.textContent = certNames[currentCertId] || 'Cloud Practitioner';
+    }
+
+    const statusEl = document.getElementById('sidebar-cert-status');
+    const currentLang = localStorage.getItem('aws_sim_lang') || 'pt';
+    if (statusEl) {
+        statusEl.textContent = currentLang === 'en' ? 'In Progress' : 'Em andamento';
+    }
+
+    const certPrefix = currentCertId.split('-')[0];
+    const completedCount = (gamification.completedStages || []).filter(id => id.startsWith(certPrefix)).length;
+    
+    const totalModules = 5;
+    const percentage = Math.min(Math.round((completedCount / totalModules) * 100), 100);
+
+    const bar = document.getElementById('sidebar-pct-bar');
+    const text = document.getElementById('sidebar-pct-text');
+    
+    if (bar) bar.style.width = `${percentage}%`;
+    if (text) text.textContent = `${percentage}%`;
+
+    const streakValue = document.getElementById('sidebar-streak-value');
+    if (streakValue) {
+        const days = gamification.currentStreak || 1;
+        streakValue.textContent = currentLang === 'en' ? `${days} ${days === 1 ? 'day' : 'days'}` : `${days} ${days === 1 ? 'dia' : 'dias'}`;
+    }
+}
+
+// EXPOSIÇÃO GLOBAL
+
 window.startQuiz = startQuiz;
 window.submitAnswer = submitAnswer;
 window.nextQuestion = nextQuestion;
@@ -1334,3 +1480,136 @@ window.prevFlashcard = prevFlashcard;
 window.filterFlashcardsByCert = filterFlashcardsByCert;
 window.startMistakesQuiz = startMistakesQuiz;
 window.clearMistakes = clearMistakes;
+window.showScreen = showScreen;
+window.startJornada = startJornada;
+window.updateSidebarProgress = updateSidebarProgress;
+
+
+// LÓGICA DE GAMIFICAÇÃO: MODO MISSÃO (TRILHA)
+
+window.startTrailMission = async function(stageId, stageTitle) {
+    const certSelect = document.getElementById('certification-select');
+    if (!certSelect) return;
+
+    uiState.currentMode = 'mission';
+    uiState.lives = 3;
+    
+    uiState.qTimeRemaining = 90; 
+    engine.passingScore = 80;    
+
+    try {
+        const certId = certSelect.value;
+        const currentCertInfo = certificationPaths[certId];
+        
+        let actualDomainId = '';
+        if (stageId.includes('-final')) {
+            actualDomainId = ''; 
+        } else {
+            const parts = stageId.split('-');
+            const stageIndex = parseInt(parts[parts.length - 1]) - 1;
+            
+            if (currentCertInfo && currentCertInfo.domains && currentCertInfo.domains[stageIndex]) {
+                actualDomainId = currentCertInfo.domains[stageIndex].id;
+            }
+        }
+
+        const filters = { quantity: 5, difficulty: 'all', topic: actualDomainId, mode: 'exam' };
+        const result = await engine.loadQuestions(certId, currentCertInfo.domains, filters, uiState.language);
+
+        if (!result.success || result.totalQuestions === 0) {
+            alert(`Ops! Ainda não temos questões cadastradas para o módulo "${stageTitle}" (Domínio: ${actualDomainId}). \n\nContinue estudando os outros módulos!`);
+            goHome(); 
+            return; 
+        }
+
+        showScreen('quiz');
+        
+        const sidebar = document.getElementById('side-info');
+        const mainSection = document.getElementById('main-section');
+        if (sidebar) sidebar.classList.add('hidden');
+        if (mainSection) mainSection.classList.replace('lg:w-2/3', 'w-full');
+        
+        const missionHud = document.getElementById('mission-hud');
+        const timerContainer = document.getElementById('timer-container');
+        if (missionHud) missionHud.classList.remove('hidden');
+        if (timerContainer) timerContainer.classList.add('hidden');
+        
+        updateHeartsUI();
+        loadQuestionUI(); 
+        startQuestionTimer();
+
+    } catch (err) {
+        console.error("Erro na missão:", err);
+        alert("Erro ao carregar a missão. Tente novamente.");
+        goHome();
+    }
+};
+
+function startQuestionTimer() {
+    if (uiState.currentMode !== 'mission') return;
+    
+    clearInterval(uiState.qTimerInterval);
+    
+    const MISSION_TIME = 90; 
+    uiState.qTimeRemaining = MISSION_TIME;
+    
+    const timeBar = document.getElementById('mission-time-bar');
+    const timeText = document.getElementById('mission-time-text');
+    
+    // Reseta a cor da barra para o padrão (laranja) ao iniciar nova questão
+    if (timeBar) {
+        timeBar.classList.add('from-orange-400');
+        timeBar.classList.remove('from-red-600');
+    }
+    
+    uiState.qTimerInterval = setInterval(() => {
+        uiState.qTimeRemaining--;
+        
+        const pct = (uiState.qTimeRemaining / MISSION_TIME) * 100;
+        
+        if (timeBar) {
+            timeBar.style.width = `${pct}%`;
+            // A barra fica vermelha de alerta só quando faltar 20% do tempo (18 segundos)
+            if (pct < 20) {
+                timeBar.classList.remove('from-orange-400');
+                timeBar.classList.add('from-red-600');
+            }
+        }
+        
+        if (timeText) {
+            if (uiState.qTimeRemaining >= 60) {
+                const m = Math.floor(uiState.qTimeRemaining / 60);
+                const s = uiState.qTimeRemaining % 60;
+                timeText.textContent = `${m}m ${s.toString().padStart(2, '0')}s`;
+            } else {
+                timeText.textContent = `${uiState.qTimeRemaining}s`;
+            }
+        }
+
+        if (uiState.qTimeRemaining <= 0) {
+            clearInterval(uiState.qTimerInterval);
+            handleMissionFailure("O tempo esgotou!"); 
+        }
+    }, 1000);
+}
+
+function updateHeartsUI() {
+    const heartsContainer = document.getElementById('mission-hearts');
+    if (!heartsContainer) return;
+    
+    heartsContainer.innerHTML = '';
+    for (let i = 0; i < 3; i++) {
+        if (i < uiState.lives) {
+            heartsContainer.innerHTML += `<i class="fa-solid fa-heart text-red-500 text-lg shadow-sm transform hover:scale-110 transition-transform"></i>`;
+        } else {
+            heartsContainer.innerHTML += `<i class="fa-solid fa-heart-crack text-gray-300 dark:text-gray-600 text-lg"></i>`;
+        }
+    }
+}
+
+function handleMissionFailure(reason) {
+    clearInterval(uiState.qTimerInterval);
+    alert(`💥 Missão Falhou!\n${reason}\n\nRetorne à trilha e tente novamente.`);
+    engine.passingScore = 70; // Restaura a nota padrão
+    goHome();
+}
