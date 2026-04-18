@@ -68,6 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
         certSelect.addEventListener('change', () => {
             if (certificationPaths && certificationPaths[certSelect.value]) {
                 uiState.currentCertificationInfo = certificationPaths[certSelect.value];
+                
+                const certId = certSelect.value;
+
                 updateTopicDropdown();
                 loadLastScore();
                 updateDifficultyFilters(certSelect.value);
@@ -75,6 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (typeof renderGlobalRadarChart === 'function') {
                     renderGlobalRadarChart();
                 }
+
+                const badge = document.getElementById('sprint-current-cert-badge');
+                if (badge) badge.innerText = certId.toUpperCase();
+                renderSprintUI(); // recarrega a sprint para nova certificação
             }
         });
     }
@@ -1999,6 +2006,12 @@ function renderSprintUI() {
     if (!grid) return;
 
     const lang = uiState.language || 'pt';
+    const certSelect = document.getElementById('certification-select');
+    const currentCertId = certSelect ? certSelect.value : 'clf-c02';
+    
+    // Atualiza a badge no carregamento inicial
+    const badge = document.getElementById('sprint-current-cert-badge');
+    if (badge) badge.innerText = currentCertId.toUpperCase();
     
     const labels = {
         pt: { 
@@ -2029,7 +2042,7 @@ function renderSprintUI() {
     if (sprintProgressLabel) sprintProgressLabel.textContent = labels[lang].progress;
     if (sprintStartBtn) sprintStartBtn.textContent = labels[lang].startBtn;
 
-    let currentSprintDay = parseInt(localStorage.getItem('aws_sprint_day')) || 1;
+    let currentSprintDay = parseInt(localStorage.getItem(`aws_sprint_day_${currentCertId}`)) || 1;
     if (currentSprintDay > 14) currentSprintDay = 14;
 
     // Atualiza a % de progresso
@@ -2073,6 +2086,9 @@ function renderSprintUI() {
 }
 
 window.startMicroSprint = function() {
+    const certSelect = document.getElementById('certification-select');
+    const currentCertId = certSelect ? certSelect.value : 'clf-c02';
+
     let currentSprintDay = parseInt(localStorage.getItem('aws_sprint_day')) || 1;
     const lang = uiState.language || 'pt';
     
@@ -2085,7 +2101,7 @@ window.startMicroSprint = function() {
     }
 
     const pillData = (typeof getPill === 'function')
-        ? getPill(currentSprintDay, lang)
+        ? getPill(currentSprintDay, lang, currentCertId)
         : (sprintPills ? sprintPills[currentSprintDay] : null);
     
     if (!pillData) {
@@ -2162,7 +2178,10 @@ window.closeSprintReader = function() {
 };
 
 window.completeSprintDay = function(completedDay) {
-    localStorage.setItem('aws_sprint_day', completedDay + 1);
+    const certSelect = document.getElementById('certification-select');
+    const currentCertId = certSelect ? certSelect.value : 'clf-c02';
+    
+    localStorage.setItem(`aws_sprint_day_${currentCertId}`, completedDay + 1);
     
     closeSprintReader();
     
