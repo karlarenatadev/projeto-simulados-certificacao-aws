@@ -1,18 +1,12 @@
-/**
- * STYLE.CSS - Estilos Customizados
- * * Complementa o Tailwind CSS com estilos específicos da aplicação,
- * animações, temas AWS e estilos de impressão para relatórios.
- */
+/* STYLE CSS Estilos Customizados
+   Complementa o Tailwind CSS com estilos especificos da aplicacao
+   animacoes temas AWS e estilos de impressao para relatorios */
 
-/* ============================================================================
-   IMPORTAÇÕES E FONTES
-   ============================================================================ */
+/* IMPORTACOES E FONTES */
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap');
 
-/* ============================================================================
-   VARIÁVEIS CSS (Tema Base e Cores AWS)
-   ============================================================================ */
+/* VARIAVEIS CSS Tema Base e Cores AWS */
 
 :root {
   /* Cores da Marca AWS */
@@ -27,7 +21,7 @@
   --error-red: #ef4444;
   --info-blue: #3b82f6;
 
-  /* Variáveis de Tema (Light Mode Padrão) */
+  /* Variaveis de Tema Light Mode Padrao */
   --bg-main: var(--aws-light-gray);
   --bg-card: #f5f5f5;
   --text-main: var(--aws-dark);
@@ -35,7 +29,7 @@
   --border-theme: #e5e7eb;
 }
 
-/* Variáveis de Tema (Dark Mode) */
+/* Variaveis de Tema Dark Mode */
 .dark {
   --bg-main: #0f172a;       /* Slate 900 */
   --bg-card: #1e293b;       /* Slate 800 */
@@ -44,9 +38,7 @@
   --border-theme: #334155;  /* Slate 700 */
 }
 
-/* ============================================================================
-   ESTILOS GLOBAIS E CLASSES AWS
-   ============================================================================ */
+/* ESTILOS GLOBAIS E CLASSES AWS */
 
 body {
   font-family: 'Open Sans', sans-serif;
@@ -54,13 +46,13 @@ body {
   color: var(--text-main);
   transition: background-color 0.3s ease, color 0.3s ease;
   
-  /* Deixa as fontes muito mais nítidas e suaves */
+  /* Deixa as fontes muito mais nitidas e suaves */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
-/* BÔNUS: Cor de seleção de texto temática da AWS */
+/* BONUS Cor de selecao de texto tematica da AWS */
 ::selection {
   background-color: rgba(255, 153, 0, 0.3);
   color: inherit;
@@ -71,9 +63,7 @@ body {
 .aws-text-orange { color: var(--aws-orange); }
 .aws-bg-orange:hover { background-color: var(--aws-orange-hover); }
 
-/* ============================================================================
-   ANIMAÇÕES
-   ============================================================================ */
+/* ANIMACOES */
 
 /* Fades */
 .fade-in { animation: fadeIn 0.4s ease-in forwards; }
@@ -89,7 +79,7 @@ body {
   to { opacity: 0; transform: translateY(-10px); }
 }
 
-/* Slides (Transição de Questões) */
+/* Slides Transicao de Questoes */
 .slide-in { animation: slideInRight 0.3s ease-out forwards; }
 .slide-out { animation: slideOutLeft 0.3s ease-out forwards; }
 
@@ -103,7 +93,7 @@ body {
   to { transform: translateX(-30px); opacity: 0; }
 }
 
-/* Utilitários Visuais */
+/* Utilitarios Visuais */
 .pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
 @keyframes pulse {
@@ -129,9 +119,7 @@ body {
   pointer-events: none;
 }
 
-/* ============================================================================
-   CARDS DE OPÇÕES (Quiz)
-   ============================================================================ */
+/* CARDS DE OPCOES Quiz */
 
 .option-card {
   transition: all 0.2s ease;
@@ -176,7 +164,7 @@ body {
   outline-offset: 2px;
 }
 
-/* Letras (A, B, C, D) destacadas - MOVIDAS PARA CÁ */
+/* Letras A B C D destacadas */
 .option-letter {
     width: 32px;
     height: 32px;
@@ -195,9 +183,7 @@ body {
     color: white;
 }
 
-/* ============================================================================
-   MODO ESCURO (DARK MODE - OVERRIDES DE COMPONENTES)
-   ============================================================================ */
+/* MODO ESCURO DARK MODE OVERRIDES DE COMPONENTES */
 
 .dark .aws-text-dark { color: var(--text-main) !important; }
 
@@ -243,9 +229,7 @@ body {
   color: #ffffff !important;
 }
 
-/* ============================================================================
-   COMPONENTES GERAIS (Scroll, Timer, etc.)
-   ============================================================================ */
+/* COMPONENTES GERAIS Scroll Timer etc */
 
 /* Scrollbar Customizada */
 .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -255,7 +239,7 @@ body {
 .dark .custom-scroll::-webkit-scrollbar-thumb { background: #475569; }
 .dark .custom-scroll::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
-/* Badges de Evolução */
+/* Badges de Evolucao */
 .improvement-up { color: #16a34a; }
 .improvement-down { color: #dc2626; }
 .improvement-same { color: #6b7280; }
@@ -285,11 +269,9 @@ body {
     display: none;
 }
 
-/* ============================================================================
-   RESPONSIVIDADE (MEDIA QUERIES)
-   ============================================================================ */
+/* RESPONSIVIDADE MEDIA QUERIES */
 
-/* Telas Pequenas (Smartphones - até 640px) */
+/* Telas Pequenas Smartphones ate 640px */
 @media (max-width: 640px) {
   body { font-size: 14px; }
   
@@ -314,12 +296,12 @@ body {
   .option-card { padding: 12px !important; }
   button { padding: 10px 16px; font-size: 14px; }
   
-  /* Empilha botões verticalmente */
+  /* Empilha botoes verticalmente */
   .mt-auto.pt-6.flex { flex-direction: column; width: 100%; gap: 0.75rem !important; }
   .mt-auto.pt-6.flex button { width: 100%; margin: 0 !important; }
 }
 
-/* Telas Extra Pequenas (até 380px) */
+/* Telas Extra Pequenas ate 380px */
 @media (max-width: 380px) {
   header {
     padding-left: 0.75rem !important;
@@ -343,19 +325,17 @@ body {
   }
 }
 
-/* Telas Médias (Tablets - 641px a 1024px) */
+/* Telas Medias Tablets 641px a 1024px */
 @media (min-width: 641px) and (max-width: 1024px) {
   #screen-start { padding: 2rem !important; }
 }
 
-/* Telas Grandes (Desktops - Acima de 1024px) */
+/* Telas Grandes Desktops Acima de 1024px */
 @media (min-width: 1025px) {
   .option-card { padding: 1.25rem !important; }
 }
 
-/* ============================================================================
-   ACESSIBILIDADE (A11Y)
-   ============================================================================ */
+/* ACESSIBILIDADE A11Y */
 
 *:focus-visible { outline: 2px solid var(--aws-orange) !important; outline-offset: 2px !important; }
 *:focus:not(:focus-visible) { outline: none; }
@@ -373,13 +353,11 @@ body {
   }
 }
 
-/* ============================================================================
-   ESTILOS DE IMPRESSÃO (DOCUMENTO PADRÃO A4)
-   ============================================================================ */
+/* ESTILOS DE IMPRESSAO DOCUMENTO PADRAO A4 */
 
 @media print {
-  /* 1. RESET ESTRUTURAL EXTREMO (ISSO RESOLVE O CORTE DAS QUESTÕES) 
-        Força o navegador a expandir todas as divs para imprimir todas as páginas */
+  /* 1 RESET ESTRUTURAL EXTREMO ISSO RESOLVE O CORTE DAS QUESTOES 
+        Forca o navegador a expandir todas as divs para imprimir todas as paginas */
   html, body, main, section, #screen-results, #detailed-report {
       height: auto !important;
       min-height: auto !important;
@@ -388,7 +366,7 @@ body {
       display: block !important;
   }
 
-  /* 2. RESET DE CORES E FUNDO (Puro Branco) */
+  /* 2 RESET DE CORES E FUNDO Puro Branco */
   html, body, main, section, #screen-results, #detailed-report {
       background: transparent !important;
       background-color: white !important;
@@ -397,35 +375,35 @@ body {
       border: none !important;
   }
 
-  /* 3. OCULTAR LIXO VISUAL E RODAPÉ */
-  /* Adicionado o 'footer' aqui para sumir com o "Desenvolvido por" e a borda dele */
+  /* 3 OCULTAR LIXO VISUAL E RODAPE */
+  /* Adicionado o footer aqui para sumir com o Desenvolvido por e a borda dele */
   header, aside, footer, .no-print, #last-score-banner, #ai-recommendation { 
       display: none !important; 
   }
   
-  /* Esconde as caixas originais da tela para deixar apenas o cabeçalho oficial do PDF */
+  /* Esconde as caixas originais da tela para deixar apenas o cabecalho oficial do PDF */
   #screen-results > div.bg-gray-50, #screen-results > h2.aws-text-dark, #screen-results > p.text-gray-500 {
       display: none !important;
   }
 
-  /* 4. CONFIGURAÇÕES DA PÁGINA (A4 Padrão) */
+  /* 4 CONFIGURACOES DA PAGINA A4 Padrao */
   @page { margin: 1.5cm; size: A4 portrait; }
 
-  /* 5. FORMATAÇÃO DO CONTAINER PRINCIPAL */
+  /* 5 FORMATACAO DO CONTAINER PRINCIPAL */
   #screen-results { padding: 0 !important; margin: 0 !important; width: 100% !important; }
   #detailed-report { width: 100% !important; padding: 0 !important; margin: 0 !important; }
 
-  /* 6. TIPOGRAFIA DE DOCUMENTO OFICIAL */
+  /* 6 TIPOGRAFIA DE DOCUMENTO OFICIAL */
   body { font-family: 'Times New Roman', Times, serif !important; font-size: 11pt !important; }
   h2, h3, .font-bold, strong { font-family: Arial, Helvetica, sans-serif !important; color: black !important; }
 
-  /* 7. GARANTIR QUE APENAS VERDE E VERMELHO SEJAM IMPRESSOS COM COR */
+  /* 7 GARANTIR QUE APENAS VERDE E VERMELHO SEJAM IMPRESSOS COM COR */
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   .print-text-green, .print-text-green * { color: #008000 !important; font-weight: bold !important; }
   .print-text-red, .print-text-red * { color: #cc0000 !important; font-weight: bold !important; }
   .print-text-black, .print-text-black * { color: #000000 !important; }
 
-  /* 8. FORMATAÇÃO DOS BLOCOS DE QUESTÕES E QUEBRA DE PÁGINA SEGURA */
+  /* 8 FORMATACAO DOS BLOCOS DE QUESTOES E QUEBRA DE PAGINA SEGURA */
   .page-break-safe {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
@@ -435,7 +413,7 @@ body {
       padding-bottom: 20px !important;
   }
 
-  /* 9. REMOVENDO BORDAS E FUNDOS DO TEXTO DE EXPLICAÇÃO E RESPOSTAS */
+  /* 9 REMOVENDO BORDAS E FUNDOS DO TEXTO DE EXPLICACAO E RESPOSTAS */
   .answer-block, .explanation-print { 
       background: transparent !important;
       border: none !important; 
@@ -450,10 +428,7 @@ body {
   }
 }
 
-
-/* ============================================================================
-   FLASHCARDS (Modo de Revisão Rápida)
-   ============================================================================ */
+/* FLASHCARDS Modo de Revisao Rapida */
 
 .flashcard-container {
   perspective: 1000px;
@@ -507,13 +482,13 @@ body {
   background: linear-gradient(135deg, #422006 0%, #292524 100%);
 }
 
-/* Removido o hover que causava o "piscar" durante o flip */
+/* Removido o hover que causava o piscar durante o flip */
 .flashcard-container:hover .flashcard-front,
 .flashcard-container:hover .flashcard-back {
   box-shadow: 0 15px 40px rgba(255, 153, 0, 0.3);
 }
 
-/* Efeito hover apenas quando NÃO está flipando */
+/* Efeito hover apenas quando NAO esta flipando */
 .flashcard-container:not(.flipped):hover .flashcard {
   transform: scale(1.02);
   transition: transform 0.3s ease;
@@ -537,4 +512,81 @@ body {
   #flashcard-definition {
     font-size: 1rem !important;
   }
+}
+
+/* BARRA LATERAL AJUSTE DE CORES E BORDAS */
+
+/* Reset Geral dos Cards para focar em Bordas e nao em Sombras */
+#side-info .bg-white, 
+#sprint-module, 
+#global-performance-dashboard {
+    box-shadow: none !important; /* Remove sombras para um look mais clean */
+    border: 1px solid #e2e8f0 !important; /* Borda padrao light */
+}
+
+.dark #side-info .bg-slate-800, 
+.dark #sprint-module, 
+.dark #global-performance-dashboard {
+    border: 1px solid #334155 !important; /* Borda padrao dark */
+    background-color: #1e293b !important;
+}
+
+/* MODULO SPRINT 14 DIAS */
+
+/* Grid de Dias Estilo dos Quadrantes */
+#sprint-days-grid div {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Dia Atual Forcando visibilidade total */
+.sprint-day-current {
+    background-color: #ff9900 !important; /* Laranja AWS */
+    border-color: #e68a00 !important;
+    color: #ffffff !important; /* Texto sempre branco no fundo laranja */
+    font-weight: 900 !important;
+}
+
+/* Dias Bloqueados no Light Mode Garantindo que o cadeado apareca */
+.light #sprint-days-grid .bg-gray-50 {
+    background-color: #f8fafc !important;
+    border-color: #e2e8f0 !important;
+    color: #94a3b8 !important; /* Slate 400 */
+}
+
+/* Rodape do Sprint Onde estava o Choque Visual */
+#sprint-module .bg-gray-50 {
+    background-color: #f8fafc !important; /* Light Mode */
+    border: 1px solid #e2e8f0 !important;
+    transition: all 0.3s ease;
+}
+
+.dark #sprint-module .dark\:bg-slate-750 {
+    background-color: #0f172a !important; /* Azul Marinho profundo no Dark Mode */
+    border: 1px solid #334155 !important;
+}
+
+/* Botao Iniciar Sprint Contraste Maximo */
+#sprint-module button {
+    background-color: #ff9900 !important;
+    color: #ffffff !important;
+    border: none !important;
+    font-weight: 700 !important;
+}
+
+#sprint-module button:hover {
+    background-color: #ec8b00 !important;
+}
+
+/* AJUSTES DE TEXTO */
+
+/* Forcar numeros e textos nos cards laterais no Light Mode */
+.light #side-info h3, 
+.light #side-info h4,
+.light #side-info p:not(.text-gray-400) {
+    color: #1e293b !important; /* Cor Navy escura para contraste */
+}
+
+/* Estilo do Historico e Insights */
+#dynamic-insight, #history-list {
+    border-top: none !important; /* Limpeza de linhas internas */
 }

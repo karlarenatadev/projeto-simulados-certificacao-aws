@@ -263,7 +263,7 @@
                 </button>
             </div>
 
-<div id="screen-quiz" class="hidden flex-col h-full relative p-6 md:p-8">
+            <div id="screen-quiz" class="hidden flex-col h-full relative p-6 md:p-8">
                 
                 <div class="absolute top-0 left-0 h-2 w-full bg-gray-200 dark:bg-slate-700">
                     <div id="progress-bar" class="h-2 aws-bg-orange transition-all duration-500" style="width: 0%"></div>
@@ -444,7 +444,7 @@
             <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 fade-in transition-colors">
                 
                 <h3 class="text-lg font-bold border-b border-gray-200 dark:border-slate-600 pb-3 mb-4 aws-text-dark dark:text-white flex items-center">
-                    <i class="fa-solid fa-medal text-yellow-500 mr-2"></i> O Meu Progresso
+                    <i class="fa-solid fa-medal text-yellow-500 mr-2"></i> <span id="sidebar-my-progress-title">O Meu Progresso</span>
                 </h3>
 
                 <div class="flex items-center gap-3 mb-5 mt-2">
@@ -459,7 +459,7 @@
 
                 <div class="mb-5">
                     <div class="flex justify-between items-end mb-1">
-                        <span class="text-[10px] font-bold text-gray-500 uppercase">Progresso Total</span>
+                        <span id="sidebar-progress-total-label" class="text-[10px] font-bold text-gray-500 uppercase">Progresso Total</span>
                         <span class="text-xs font-mono font-bold text-aws-orange" id="sidebar-pct-text">0%</span>
                     </div>
                     <div class="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
@@ -470,19 +470,54 @@
                 <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-slate-600">
                     <div class="flex items-center gap-2">
                         <i class="fa-solid fa-fire text-orange-500 text-xs"></i>
-                        <span class="text-[11px] font-medium text-gray-500 dark:text-gray-400">Ofensiva:</span>
+                        <span id="sidebar-streak-label" class="text-[11px] font-medium text-gray-500 dark:text-gray-400">Ofensiva:</span>
                     </div>
                     <div class="flex gap-1" id="sidebar-streak-dots">
                         <span class="text-xs font-bold text-aws-dark dark:text-gray-200" id="sidebar-streak-value">1 dia</span>
                     </div>
                 </div>
             </div>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4 w-full flex-grow">
+
+            <div id="sprint-module" class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-slate-700 transition-colors relative overflow-hidden">                <div class="absolute top-0 right-0 w-32 h-32 bg-aws-orange opacity-5 rounded-full -mr-10 -mt-10 pointer-events-none"></div>
+                
+                <div class="flex justify-between items-end mb-6">
+                    <div>
+                        <div class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-route text-aws-orange"></i> <span id="sprint-module-title">Sprint de Estudos (14 Dias)</span>
+                        </div>
+                        <p id="sprint-module-subtitle" class="text-sm text-gray-500 dark:text-slate-400 mt-1">Sua meta diária de 15 minutos para dominar a nuvem.</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="sprint-progress-label" class="text-xs font-bold uppercase tracking-wider text-gray-400">Progresso</span>
+                        <div class="text-2xl font-black text-aws-orange" id="sprint-progress-text">0%</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-7 md:grid-cols-14 gap-2 mb-6" id="sprint-days-grid">
+                    </div>
+
+                <div class="flex items-center justify-between bg-gray-50 dark:bg-slate-750 p-4 rounded-xl border border-gray-100 dark:border-slate-600">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-aws-orange border border-orange-200 dark:border-orange-800">
+                            <i class="fa-solid fa-stopwatch text-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 dark:text-white text-sm" id="sprint-current-day-label">Dia 1: Conceitos Cloud</h4>
+                            <p class="text-xs text-gray-500 dark:text-slate-400">10 Questões • Meta: 80%</p>
+                        </div>
+                    </div>
+
+                    <button id="sprint-start-btn" onclick="startMicroSprint()" class="bg-aws-orange hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-lg transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-sm">
+                        Iniciar Sprint (15m)
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full flex-grow">
                 
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 flex flex-col h-full transition-colors">
                     <h3 class="text-lg font-bold border-b border-gray-200 dark:border-slate-600 pb-2 mb-4 aws-text-dark dark:text-white">
-                        <i class="fa-solid fa-bolt text-yellow-500 mr-2" aria-hidden="true"></i> Insight de Estudo
+                        <i class="fa-solid fa-bolt text-yellow-500 mr-2" aria-hidden="true"></i> <span id="insight-card-title">Insight de Estudo</span>
                     </h3>
                     <div id="dynamic-insight" class="text-sm text-gray-600 dark:text-gray-300 italic leading-relaxed flex-grow" role="status" aria-live="polite">
                         Comece o simulado para que a IA mapeie seu perfil de conhecimento.
@@ -492,7 +527,7 @@
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 flex flex-col h-full transition-colors">
                     <div class="flex justify-between items-center border-b border-gray-200 dark:border-slate-600 pb-2 mb-3">
                         <h3 class="text-lg font-bold aws-text-dark dark:text-white">
-                            <i class="fa-solid fa-list-ul text-yellow-500 mr-2" aria-hidden="true"></i> Histórico
+                            <i class="fa-solid fa-list-ul text-yellow-500 mr-2" aria-hidden="true"></i> <span id="history-card-title">Histórico</span>
                         </h3>
                         <button id="btn-clear-history" class="text-gray-400 hover:text-red-500 transition-colors p-1" title="Limpar histórico" aria-label="Limpar histórico de simulados">
                             <i class="fa-solid fa-trash-can text-sm" aria-hidden="true"></i>
@@ -506,14 +541,14 @@
             
             <div id="global-performance-dashboard" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 transition-colors">
                 <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-chart-pie text-aws-orange"></i> Estatísticas da Certificação
+                    <i class="fa-solid fa-chart-pie text-aws-orange"></i> <span id="cert-stats-title">Estatísticas da Certificação</span>
                 </h3>
                 
                 <div id="global-chart-empty" class="hidden text-center py-8">
                     <div class="w-12 h-12 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-3">
                         <i class="fa-solid fa-chart-line text-2xl text-gray-400 dark:text-gray-500"></i>
                     </div>
-                    <p class="text-gray-500 dark:text-gray-400 text-xs">
+                    <p id="cert-stats-empty-msg" class="text-gray-500 dark:text-gray-400 text-xs">
                         Faça seu primeiro simulado para ver suas estatísticas aqui!
                     </p>
                 </div>
@@ -525,15 +560,15 @@
                 <div id="global-stats-summary" class="pt-4 border-t border-gray-200 dark:border-slate-600 grid grid-cols-3 gap-3 text-center text-xs">
                     <div>
                         <div class="text-xl font-bold text-aws-orange" id="total-quizzes">0</div>
-                        <div class="text-gray-600 dark:text-gray-400 text-[10px]">Simulados</div>
+                        <div id="stats-label-quizzes" class="text-gray-600 dark:text-gray-400 text-[10px]">Simulados</div>
                     </div>
                     <div>
                         <div class="text-xl font-bold text-green-600 dark:text-green-400" id="avg-score">0%</div>
-                        <div class="text-gray-600 dark:text-gray-400 text-[10px]">Média</div>
+                        <div id="stats-label-avg" class="text-gray-600 dark:text-gray-400 text-[10px]">Média</div>
                     </div>
                     <div>
                         <div class="text-xl font-bold text-blue-600 dark:text-blue-400" id="total-questions">0</div>
-                        <div class="text-gray-600 dark:text-gray-400 text-[10px]">Questões</div>
+                        <div id="stats-label-questions" class="text-gray-600 dark:text-gray-400 text-[10px]">Questões</div>
                     </div>
                 </div>
             </div>
@@ -561,6 +596,7 @@
             }
         });
     </script>
+    <script src="js/sprintData.js" type="module"></script>
     <script src="js/app.js" type="module"></script>
     <script>
         if ('serviceWorker' in navigator) {
@@ -583,9 +619,6 @@
             });
         }
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 </html>
-
-
-

@@ -16,6 +16,7 @@ const APP_CONFIG = {
 const engine = new QuizEngine(APP_CONFIG.PASSING_SCORE);
 
 let uiState = {
+    
     currentCertificationInfo: null,
     timerInterval: null,
     timeRemaining: 0,
@@ -30,17 +31,25 @@ let uiState = {
     qTimeRemaining: 45
 };
 
+let lastRenderedResult = null;
 // INICIALIZAÇÃO
 
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initializeUI(uiState.language);
-    updateHistoryDisplay();
+
+    // Garante que as atualizações dos cards rodam DEPOIS do initializeUI terminar
+    setTimeout(() => {
+        updateSidebarTexts();
+        updateHistoryDisplay();
+        updateSidebarProgress();
+        renderSprintUI();
+    }, 100);
+
     renderGamification();
     updateLanguageButtonUI();
     initPWAInstall();
     wireUIActions();
-    updateSidebarProgress();
 
     if (typeof renderGlobalRadarChart === 'function') {
         renderGlobalRadarChart();
@@ -525,6 +534,8 @@ function displayReportFromResult(results) {
         return;
     }
 
+    lastRenderedResult = results;
+
     if (certificationPaths && results.certId) {
         uiState.currentCertificationInfo = certificationPaths[results.certId];
     }
@@ -831,10 +842,14 @@ function updateHistoryDisplay() {
         return;
     }
 
+    const lang = uiState.language || 'pt';
+    const locale = lang === 'en' ? 'en-US' : 'pt-BR';
+    const viewReportLabel = lang === 'en' ? 'View Report' : 'Ver Relatório';
+
     let html = '<ul class="space-y-3 w-full">';
 
     history.forEach((item, index) => {
-        const date = new Date(item.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+        const date = new Date(item.date).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
         const isPass = item.percentage >= APP_CONFIG.PASSING_SCORE;
         const color = isPass ? 'text-green-500' : 'text-red-500';
         const icon = isPass ? 'fa-check-circle' : 'fa-times-circle';
@@ -853,8 +868,8 @@ function updateHistoryDisplay() {
                 <div class="${color} font-bold text-lg flex items-center gap-1">
                     ${awsScore} <i class="fa-solid ${icon}"></i>
                 </div>
-                <div class="text-[10px] text-blue-500 dark:text-blue-400 opacity-80 group-hover:opacity-100 group-hover:underline mt-1 transition-all">
-                    <i class="fa-solid fa-eye"></i> Ver Relatório
+                <div class="history-view-report text-[10px] text-blue-500 dark:text-blue-400 opacity-80 group-hover:opacity-100 group-hover:underline mt-1 transition-all">
+                    <i class="fa-solid fa-eye"></i> ${viewReportLabel}
                 </div>
             </div>
         </li>
@@ -885,19 +900,27 @@ function updateDynamicInsight(history) {
 
     if (!Array.isArray(history)) history = [];
 
+    const lang = uiState.language || 'pt';
+
     if (history.length === 0) {
+        insightEl.dataset.empty = 'true';
+        const journeyStart = lang === 'en' ? 'Start your journey!' : 'Comece sua jornada!';
+        const journeyMsg   = lang === 'en'
+            ? 'Complete your first quiz to receive personalized insights based on your performance.'
+            : 'Faça seu primeiro simulado para receber insights personalizados baseados no seu desempenho.';
         insightEl.innerHTML = `
             <div class="flex items-start gap-3">
                 <i class="fa-solid fa-lightbulb text-yellow-500 text-xl mt-1"></i>
                 <div>
-                    <div class="font-bold text-gray-800 dark:text-white mb-1">Comece sua jornada!</div>
-                    <div class="text-xs text-gray-600 dark:text-gray-400">Faça seu primeiro simulado para receber insights personalizados baseados no seu desempenho.</div>
+                    <div class="font-bold text-gray-800 dark:text-white mb-1">${journeyStart}</div>
+                    <div class="text-xs text-gray-600 dark:text-gray-400">${journeyMsg}</div>
                 </div>
             </div>
         `;
         return;
     }
 
+    insightEl.dataset.empty = 'false';
     const insight = generateSmartInsight(history);
 
     insightEl.innerHTML = `
@@ -913,12 +936,15 @@ function updateDynamicInsight(history) {
 }
 
 function generateSmartInsight(history) {
+    const lang = uiState.language || 'pt';
+
     if (!Array.isArray(history) || history.length === 0) {
         return {
             icon: 'fa-solid fa-rocket', iconColor: 'text-blue-500',
-            title: 'Comece sua jornada! 🚀', titleColor: 'text-blue-600 dark:text-blue-400',
-            message: 'Faça seu primeiro simulado para receber insights personalizados.',
-            action: '💡 Dica: Comece pelo modo Revisão para se familiarizar',
+            title: lang === 'en' ? 'Start your journey! 🚀' : 'Comece sua jornada! 🚀',
+            titleColor: 'text-blue-600 dark:text-blue-400',
+            message: lang === 'en' ? 'Complete your first quiz to receive personalized insights.' : 'Faça seu primeiro simulado para receber insights personalizados.',
+            action: lang === 'en' ? '💡 Tip: Start with Review mode to get familiar' : '💡 Dica: Comece pelo modo Revisão para se familiarizar',
             actionColor: 'text-blue-600 dark:text-blue-400'
         };
     }
@@ -1129,12 +1155,18 @@ function toggleDarkMode() {
 }
 
 function toggleLanguage() {
+    // Troca o estado global e persiste
     uiState.language = uiState.language === 'pt' ? 'en' : 'pt';
     localStorage.setItem('aws_sim_lang', uiState.language);
-    updateLanguageButtonUI();
-    initializeUI(uiState.language); // Re-initialize UI with new language
     
-    // Recarrega flashcard atual se estiver na tela de flashcards
+    // Atualiza componentes visuais imediatos
+    updateLanguageButtonUI();
+    
+    // O "Maestro" do i18n (Traduções estáticas)
+    // Chamamos primeiro para que ele traduza o que for padrão
+    initializeUI(uiState.language); 
+
+    // Tratamento de telas específicas (Flashcards)
     const flashcardsScreen = document.getElementById('screen-flashcards');
     if (flashcardsScreen && !flashcardsScreen.classList.contains('hidden')) {
         reloadCurrentFlashcard();
@@ -1143,8 +1175,24 @@ function toggleLanguage() {
     const certSelect = document.getElementById('certification-select');
     if (certSelect) {
         updateDifficultyFilters(certSelect.value);
-        updateTopicDropdown(); // Update topic dropdown with new language
+        updateTopicDropdown();
     }
+
+    //Sincronização Dinâmica
+    // Usamos o setTimeout para garantir que o DOM já foi processado pelo initializeUI
+    setTimeout(() => {
+        updateSidebarTexts(); 
+
+        renderSprintUI();
+        updateHistoryDisplay();
+        updateSidebarProgress();
+        
+        if (typeof updateDynamicInsight === 'function') {
+            updateDynamicInsight();
+        }
+        
+        console.log(`[i18n] Interface atualizada para: ${uiState.language.toUpperCase()}`);
+    }, 100);
 }
 
 function updateLanguageButtonUI() {
@@ -1178,6 +1226,8 @@ function goHome() {
     let history = storageManager.getHistory();
     if (!Array.isArray(history)) { history = []; storageManager.clearHistory(); }
     updateDynamicInsight(history);
+    updateSidebarTexts();
+    renderSprintUI();
 }
 
 function startJornada() {
@@ -1211,161 +1261,320 @@ function clearMistakes() {
     }
 }
 
-// GERAÇÃO DE PDF
 function generatePerformanceReport() {
-    const reportElement = document.getElementById('detailed-report');
-    const screenResults = document.getElementById('screen-results');
-    
-    if (!reportElement || !screenResults) {
-        alert(t('report_not_found', uiState.language));
+ 
+    // ── PEGA OS DADOS: lastRenderedResult (o que está na tela) ou fallback para o engine ──
+    const results = lastRenderedResult || engine.getFinalResults();
+ 
+    if (!results || !results.answers || results.answers.length === 0) {
+        alert('Nenhum resultado encontrado. Conclua um simulado ou abra um relatório do histórico primeiro.');
         return;
     }
-
-    const btn = document.querySelector('button[onclick="generatePerformanceReport()"]');
-    const oldHtml = btn ? btn.innerHTML : `<i class="fa-solid fa-file-pdf mr-2"></i> ${t('pdf_report', uiState.language)}`;
-    
+ 
+    // Garante que temos as informações da certificação
+    if (!uiState.currentCertificationInfo && results.certId && certificationPaths) {
+        uiState.currentCertificationInfo = certificationPaths[results.certId];
+    }
+ 
+    if (typeof window.jspdf === 'undefined' && typeof jsPDF === 'undefined') {
+        alert('Biblioteca jsPDF não carregada. Verifique se a tag <script> do jsPDF está no index.html.');
+        return;
+    }
+ 
+    const btn = document.getElementById('btn-generate-report');
+    const oldHtml = btn ? btn.innerHTML : '';
     if (btn) {
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Formatando Prova...`;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> GERANDO PDF...`;
         btn.disabled = true;
     }
-
-    // CSS DE "MODO DOCUMENTO"
-    if (!document.getElementById('pdf-print-styles')) {
-        const style = document.createElement('style');
-        style.id = 'pdf-print-styles';
-        style.innerHTML = `
-            /* Força formato de documento clássico */
-            body.is-generating-pdf,
-            body.is-generating-pdf #screen-results,
-            body.is-generating-pdf #detailed-report {
-                background-color: #ffffff !important;
-                color: #000000 !important;
-                font-family: 'Times New Roman', Times, serif !important; /* Fonte acadêmica */
-            }
-
-            /* Transforma os "Cards" do site em blocos de texto divididos por linha */
-            body.is-generating-pdf #detailed-report > div {
-                background: transparent !important;
-                box-shadow: none !important;
-                border: none !important;
-                border-bottom: 1px solid #cccccc !important; 
-                border-radius: 0 !important;
-                padding: 15px 0 !important;
-                margin-bottom: 15px !important;
-                page-break-inside: avoid !important; /* Mágica: Impede a questão de quebrar na metade da página */
-            }
-
-            /* Estilo da Pergunta */
-            body.is-generating-pdf #detailed-report h3 {
-                font-family: Arial, Helvetica, sans-serif !important;
-                font-size: 12pt !important;
-                font-weight: bold !important;
-                color: #000000 !important;
-                margin-bottom: 10px !important;
-            }
-
-            /* Remove os fundos cinzas das alternativas */
-            body.is-generating-pdf .bg-gray-50, 
-            body.is-generating-pdf .dark\\:bg-slate-700,
-            body.is-generating-pdf .dark\\:bg-slate-800 {
-                background: transparent !important;
-                border: none !important;
-                padding: 4px 0 !important;
-            }
-
-            /* Cores precisas para o feedback (Acerto/Erro) */
-            body.is-generating-pdf .text-green-600, 
-            body.is-generating-pdf .text-green-400, 
-            body.is-generating-pdf .fa-check {
-                color: #166534 !important; /* Verde oficial impresso */
-                font-weight: bold !important;
-            }
-
-            body.is-generating-pdf .text-red-600, 
-            body.is-generating-pdf .text-red-400, 
-            body.is-generating-pdf .fa-xmark {
-                color: #991b1b !important; /* Vermelho oficial impresso */
-                font-weight: bold !important;
-            }
-
-            /* Limpeza de UI: Tira botões, scrollbars e ícones inúteis no papel */
-            body.is-generating-pdf .no-print,
-            body.is-generating-pdf button,
-            body.is-generating-pdf #screen-results {
-                height: auto !important;
-                overflow: visible !important;
-            }
-            body.is-generating-pdf button {
-                display: none !important;
-            }
-        `;
-        document.head.appendChild(style);
+ 
+    const { jsPDF: JsPDF } = window.jspdf || {};
+    const Doc = JsPDF || jsPDF;
+    const doc = new Doc({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+ 
+    // ── CONFIGURAÇÕES ──
+    const pageW    = 210;
+    const pageH    = 297;
+    const marginL  = 15;
+    const marginR  = 15;
+    const contentW = pageW - marginL - marginR;
+    let marginT = 15;
+    let y = 15;
+ 
+    const certLabel = uiState.currentCertificationInfo?.name
+        || document.getElementById('sidebar-cert-label')?.innerText
+        || results.certId?.toUpperCase()
+        || 'AWS';
+    const awsScore  = Math.floor(((results.percentage || 0) / 100) * 900) + 100;
+    const dataHoje  = new Date().toLocaleDateString('pt-BR');
+ 
+    function wrap(text, maxW, size) {
+        doc.setFontSize(size);
+        return doc.splitTextToSize(String(text ?? ''), maxW);
     }
-
-    // INJEÇÃO DO CABEÇALHO DA PROVA
-    const headerId = 'pdf-exam-header';
-    let headerDiv = document.getElementById(headerId);
-    
-    if (!headerDiv) {
-        headerDiv = document.createElement('div');
-        headerDiv.id = headerId;
-        
-        // Tenta capturar a nota atual da tela (ajuste os IDs se necessário)
-        const scoreElement = document.getElementById('score-display'); 
-        const scoreText = scoreElement ? scoreElement.innerText : 'Concluído';
-        const dataAtual = new Date().toLocaleDateString('pt-BR');
-
-        headerDiv.innerHTML = `
-            <div style="text-align: center; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 20px; font-family: Arial, sans-serif;">
-                <h1 style="font-size: 16pt; font-weight: bold; margin: 0; text-transform: uppercase;">Relatório de Simulado AWS</h1>
-                <p style="font-size: 10pt; margin: 5px 0 0 0; color: #333;">
-                    <strong>Data:</strong> ${dataAtual} &nbsp;|&nbsp; <strong>Desempenho:</strong> ${scoreText}
-                </p>
-            </div>
-        `;
-        // Coloca o cabeçalho no topo da div de relatório
-        reportElement.insertBefore(headerDiv, reportElement.firstChild);
+ 
+    function newPageIfNeeded(needed = 10) {
+        if (y + needed > pageH - 15) { doc.addPage(); y = 15; }
     }
-
-    // APLICA A CLASSE GATILHO
-    document.body.classList.add('is-generating-pdf');
-
-    // CONFIGURAÇÃO DA FOLHA A4
-    const opt = {
-        margin:       [15, 15, 15, 15], // Margens padrão de Word
-        filename:     `Prova_AWS_${new Date().toISOString().split('T')[0]}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { 
-            scale: 2, 
-            useCORS: true,
-            scrollY: 0,
-            backgroundColor: '#ffffff'
-        },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    // GERA O PDF E LIMPA A BAGUNÇA
-    setTimeout(() => {
-        html2pdf().set(opt).from(reportElement).save()
-            .then(() => {
-                document.body.classList.remove('is-generating-pdf');
-                if (headerDiv) headerDiv.remove(); // Arranca o cabeçalho do site
-                if (btn) {
-                    btn.innerHTML = oldHtml;
-                    btn.disabled = false;
-                }
-            })
-            .catch((error) => {
-                console.error('Erro ao gerar PDF:', error);
-                alert(t('pdf_error', uiState.language));
-                document.body.classList.remove('is-generating-pdf');
-                if (headerDiv) headerDiv.remove(); // Limpa mesmo se der erro
-                if (btn) {
-                    btn.innerHTML = oldHtml;
-                    btn.disabled = false;
-                }
+ 
+    function fillRect(x, ry, w, h, r, g, b) {
+        doc.setFillColor(r, g, b);
+        doc.rect(x, ry, w, h, 'F');
+    }
+ 
+    function rgb(r, g, b) { doc.setTextColor(r, g, b); }
+    function black()       { doc.setTextColor(17, 17, 17); }
+ 
+    // ── 1. CABEÇALHO ──
+    fillRect(0, 0, pageW, 30, 26, 26, 46);
+    rgb(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text('RELATORIO OFICIAL DE SIMULACAO AWS', marginL, 12);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text(
+        `Certificacao: ${certLabel}   |   Pontuacao: ${awsScore} / 1000   |   Data: ${dataHoje}`,
+        marginL, 22
+    );
+    y = 38;
+ 
+    // ── 2. DOMÍNIOS ──
+    black();
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text('Desempenho por Dominio', marginL, y);
+    y += 2;
+    doc.setDrawColor(249, 115, 22);
+    doc.setLineWidth(0.5);
+    doc.line(marginL, y, pageW - marginR, y);
+    y += 6;
+ 
+    const hasDomainsData = results.domainScores
+        && typeof results.domainScores === 'object'
+        && Object.keys(results.domainScores).length > 0;
+ 
+    const hasDomainDefs = uiState.currentCertificationInfo?.domains?.length > 0;
+ 
+    if (hasDomainsData && hasDomainDefs) {
+        uiState.currentCertificationInfo.domains.forEach(domain => {
+            const sd = results.domainScores[domain.id];
+            if (!sd || sd.total === 0) return;
+ 
+            newPageIfNeeded(22);
+ 
+            const pct  = (sd.correct / sd.total) * 100;
+            const isOk = pct >= 70;
+            const bgR  = isOk ? 240 : 254; const bgG = isOk ? 253 : 242; const bgB = isOk ? 244 : 242;
+            const lcR  = isOk ?  22 : 220; const lcG = isOk ? 163 :  38; const lcB = isOk ?  74 :  38;
+ 
+            fillRect(marginL, y, contentW, 20, bgR, bgG, bgB);
+            doc.setFillColor(lcR, lcG, lcB);
+            doc.rect(marginL, y, 2.5, 20, 'F');
+ 
+            black();
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            const dname = wrap(domain.name, contentW - 35, 10);
+            doc.text(dname[0], marginL + 5, y + 7);
+ 
+            rgb(lcR, lcG, lcB);
+            doc.setFontSize(12);
+            doc.text(`${pct.toFixed(0)}%`, pageW - marginR - 2, y + 8, { align: 'right' });
+ 
+            // barra de progresso
+            const bx = marginL + 5; const by = y + 12; const bw = contentW - 30;
+            doc.setFillColor(220, 220, 220);
+            doc.rect(bx, by, bw, 3, 'F');
+            doc.setFillColor(lcR, lcG, lcB);
+            doc.rect(bx, by, bw * Math.min(pct / 100, 1), 3, 'F');
+ 
+            rgb(100, 100, 100);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.text(
+                `${sd.correct} de ${sd.total} corretas   ${isOk ? '| APROVADO' : '| ATENCAO'}`,
+                marginL + 5, y + 18
+            );
+            y += 24;
+        });
+    } else {
+        // Fallback: mostra scores diretamente de domainScores sem precisar de currentCertificationInfo
+        if (hasDomainsData) {
+            Object.entries(results.domainScores).forEach(([domainId, sd]) => {
+                if (!sd || sd.total === 0) return;
+                newPageIfNeeded(22);
+ 
+                const pct  = (sd.correct / sd.total) * 100;
+                const isOk = pct >= 70;
+                const lcR  = isOk ?  22 : 220; const lcG = isOk ? 163 :  38; const lcB = isOk ?  74 :  38;
+ 
+                fillRect(marginL, y, contentW, 14, isOk ? 240 : 254, isOk ? 253 : 242, isOk ? 244 : 242);
+                doc.setFillColor(lcR, lcG, lcB);
+                doc.rect(marginL, y, 2.5, 14, 'F');
+ 
+                black();
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(10);
+                doc.text(String(domainId), marginL + 5, y + 6);
+ 
+                rgb(lcR, lcG, lcB);
+                doc.setFontSize(10);
+                doc.text(`${pct.toFixed(0)}%  (${sd.correct}/${sd.total})  ${isOk ? 'APROVADO' : 'ATENCAO'}`,
+                    pageW - marginR - 2, y + 6, { align: 'right' });
+                y += 17;
             });
-    }, 200); 
+        } else {
+            rgb(150, 150, 150);
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'italic');
+            doc.text('Dados de dominio nao disponiveis para este relatorio.', marginL, y);
+            y += 8;
+        }
+    }
+ 
+    y += 6;
+ 
+    // ── 3. QUESTÕES ──
+    newPageIfNeeded(20);
+    black();
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text('Detalhamento das Questoes', marginL, y);
+    y += 2;
+    doc.setDrawColor(249, 115, 22);
+    doc.setLineWidth(0.5);
+    doc.line(marginL, y, pageW - marginR, y);
+    y += 7;
+ 
+    if (!results.answers || results.answers.length === 0) {
+        rgb(150, 150, 150);
+        doc.setFontSize(9);
+        doc.text('Nenhuma questao disponivel.', marginL, y);
+        y += 10;
+    } else {
+        results.answers.forEach((ans, index) => {
+            const isMulti   = Array.isArray(ans.correct);
+            const isCorrect = ans.isCorrect;
+ 
+            let userText = 'Nao respondida';
+            if (ans.userSelection !== null && ans.userSelection !== undefined) {
+                userText = isMulti && Array.isArray(ans.userSelection)
+                    ? ans.userSelection.map(i => ans.options?.[i] ?? '?').join(' / ')
+                    : (ans.options?.[ans.userSelection] ?? 'Opcao invalida');
+            }
+ 
+            let correctText = 'Gabarito indisponivel';
+            if (ans.correct !== null && ans.correct !== undefined) {
+                correctText = isMulti && Array.isArray(ans.correct)
+                    ? ans.correct.map(i => ans.options?.[i] ?? '?').join(' / ')
+                    : (ans.options?.[ans.correct] ?? 'Opcao invalida');
+            }
+ 
+            const explanText = ans.explanation || 'Sem explicacao adicional.';
+ 
+            // pré-calcula linhas para saber a altura do bloco inteiro
+            const LH = 4.5;
+            doc.setFontSize(10);
+            const qLines  = wrap(`${index + 1}. ${ans.question || 'Questao'}`, contentW - 4, 10);
+            doc.setFontSize(9);
+            const uLines  = wrap(userText, contentW - 14, 9);
+            const cLines  = isCorrect ? [] : wrap(correctText, contentW - 14, 9);
+            const eLines  = wrap(explanText, contentW - 14, 9);
+ 
+            const blockH  =
+                qLines.length  * LH + 8 +
+                uLines.length  * LH + 14 +
+                (isCorrect ? 0 : cLines.length * LH + 14) +
+                eLines.length  * LH + 14;
+ 
+            newPageIfNeeded(blockH);
+ 
+            // Enunciado
+            fillRect(marginL, y, contentW, qLines.length * LH + 6, 248, 249, 250);
+            black();
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text(qLines, marginL + 3, y + 5);
+            y += qLines.length * LH + 9;
+ 
+            // Resposta do usuário
+            const uR = isCorrect ?  22 : 220; const uG = isCorrect ? 163 :  38; const uB = isCorrect ?  74 :  38;
+            fillRect(marginL, y, contentW, uLines.length * LH + 11, isCorrect ? 240 : 254, isCorrect ? 253 : 242, isCorrect ? 244 : 242);
+            doc.setFillColor(uR, uG, uB);
+            doc.rect(marginL, y, 2.5, uLines.length * LH + 11, 'F');
+ 
+            rgb(100, 100, 100);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(7);
+            doc.text(`SUA RESPOSTA [${isCorrect ? 'CORRETA' : 'INCORRETA'}]`, marginL + 5, y + 5);
+ 
+            rgb(uR, uG, uB);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9);
+            doc.text(uLines, marginL + 5, y + 9);
+            y += uLines.length * LH + 14;
+ 
+            // Resposta correta (só se errou)
+            if (!isCorrect) {
+                fillRect(marginL, y, contentW, cLines.length * LH + 11, 240, 253, 244);
+                doc.setFillColor(22, 163, 74);
+                doc.rect(marginL, y, 2.5, cLines.length * LH + 11, 'F');
+ 
+                rgb(22, 101, 52);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(7);
+                doc.text('RESPOSTA OFICIAL', marginL + 5, y + 5);
+ 
+                rgb(21, 128, 61);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9);
+                doc.text(cLines, marginL + 5, y + 9);
+                y += cLines.length * LH + 14;
+            }
+ 
+            // Explicação
+            newPageIfNeeded(eLines.length * LH + 14);
+            fillRect(marginL, y, contentW, eLines.length * LH + 11, 239, 246, 255);
+            doc.setFillColor(59, 130, 246);
+            doc.rect(marginL, y, 2.5, eLines.length * LH + 11, 'F');
+ 
+            rgb(30, 64, 175);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(7);
+            doc.text('EXPLICACAO', marginL + 5, y + 5);
+ 
+            rgb(30, 58, 138);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.text(eLines, marginL + 5, y + 9);
+            y += eLines.length * LH + 15;
+ 
+            // separador
+            doc.setDrawColor(220, 220, 220);
+            doc.setLineWidth(0.2);
+            doc.line(marginL, y - 4, pageW - marginR, y - 4);
+        });
+    }
+ 
+    // ── 4. RODAPÉ EM TODAS AS PÁGINAS ──
+    const total = doc.getNumberOfPages();
+    for (let p = 1; p <= total; p++) {
+        doc.setPage(p);
+        rgb(170, 170, 170);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        doc.text(
+            `Simulador AWS  |  ${dataHoje}  |  Pagina ${p} de ${total}`,
+            pageW / 2, pageH - 7, { align: 'center' }
+        );
+    }
+ 
+    // ── 5. SALVA ──
+    const safeName = certLabel.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_-]/g, '').toUpperCase();
+    doc.save(`Relatorio_AWS_${safeName}_${new Date().toISOString().split('T')[0]}.pdf`);
+ 
+    if (btn) { btn.innerHTML = oldHtml; btn.disabled = false; }
 }
 
 // MODO FLASHCARDS
@@ -1411,29 +1620,114 @@ function initPWAInstall() {
     });
 }
 
-// ATUALIZAÇÃO DA BARRA LATERAL (STATUS)
+// TEXTOS ESTÁTICOS DOS CARDS DA SIDEBAR (i18n)
+function updateSidebarTexts() {
+    const lang = uiState.language || 'pt';
+
+    const texts = {
+        pt: {
+            myProgress:        'O Meu Progresso',
+            progressTotal:     'Progresso Total',
+            streakLabel:       'Ofensiva:',
+            insightTitle:      'Insight de Estudo',
+            historyTitle:      'Histórico',
+            certStatsTitle:    'Estatísticas da Certificação',
+            certStatsEmpty:    'Faça seu primeiro simulado para ver suas estatísticas aqui!',
+            statsQuizzes:      'Simulados',
+            statsAvg:          'Média',
+            statsQuestions:    'Questões',
+            journeyStart:      'Comece sua jornada!',
+            journeyMsg:        'Faça seu primeiro simulado para receber insights personalizados.'
+        },
+        en: {
+            myProgress:        'My Progress',
+            progressTotal:     'Total Progress',
+            streakLabel:       'Streak:',
+            insightTitle:      'Study Insight',
+            historyTitle:      'History',
+            certStatsTitle:    'Certification Statistics',
+            certStatsEmpty:    'Complete your first quiz to see your statistics here!',
+            statsQuizzes:      'Quizzes',
+            statsAvg:          'Average',
+            statsQuestions:    'Questions',
+            journeyStart:      'Start your journey!',
+            journeyMsg:        'Complete your first quiz to receive personalized insights.'
+        }
+    };
+
+    const T = texts[lang];
+
+    const set = (id, val) => { 
+        const el = document.getElementById(id); 
+        if (el) el.textContent = val; 
+    };
+
+    // 1. Card Progresso
+    set('sidebar-my-progress-title',    T.myProgress);
+    set('sidebar-progress-total-label', T.progressTotal);
+    set('sidebar-streak-label',         T.streakLabel);
+
+    // 2. Card Insight
+    set('insight-card-title',           T.insightTitle); 
+
+    // 3. Card Histórico
+    set('history-card-title',           T.historyTitle);
+
+    // 4. Card Estatísticas Globais
+    set('cert-stats-title',             T.certStatsTitle);
+    set('cert-stats-empty-msg',         T.certStatsEmpty);
+    set('stats-label-quizzes',          T.statsQuizzes);
+    set('stats-label-avg',              T.statsAvg);
+    set('stats-label-questions',        T.statsQuestions);
+
+    // Nota: O módulo Sprint é traduzido automaticamente pela renderSprintUI()!
+    // Nota: O botão "Ver Relatório" é traduzido automaticamente pela updateHistoryDisplay()!
+
+    // Atualiza o insight padrão preservando o ícone
+    const insightEl = document.getElementById('dynamic-insight');
+    if (insightEl && insightEl.dataset.empty === 'true') {
+        insightEl.innerHTML = `
+            <div class="flex items-start gap-3">
+                <i class="fa-solid fa-lightbulb text-yellow-500 text-xl mt-1"></i>
+                <div>
+                    <div class="font-bold text-gray-800 dark:text-white mb-1">${T.journeyStart}</div>
+                    <div class="text-xs text-gray-600 dark:text-gray-400">${T.journeyMsg}</div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+window.updateSidebarTexts = updateSidebarTexts;
 function updateSidebarProgress() {
     const gamification = JSON.parse(localStorage.getItem('aws_sim_gamification')) || { completedStages: [], unlockedStages: [] };
     const certSelect = document.getElementById('certification-select');
+    const currentLang = uiState.language || localStorage.getItem('aws_sim_lang') || 'pt';
     
     // Tratamento absoluto contra undefined
     let currentCertId = certSelect && certSelect.value ? String(certSelect.value).toLowerCase().trim() : 'clf-c02';
 
     const certNames = {
-        'clf-c02': 'Cloud Practitioner',
-        'saa-c03': 'Solutions Architect',
-        'aif-c01': 'AI Practitioner',
-        'dva-c02': 'Developer Associate'
+        pt: {
+            'clf-c02': 'Cloud Practitioner',
+            'saa-c03': 'Solutions Architect',
+            'aif-c01': 'AI Practitioner',
+            'dva-c02': 'Developer Associate'
+        },
+        en: {
+            'clf-c02': 'Cloud Practitioner',
+            'saa-c03': 'Solutions Architect',
+            'aif-c01': 'AI Practitioner',
+            'dva-c02': 'Developer Associate'
+        }
     };
     
     const labelEl = document.getElementById('sidebar-cert-label');
     if (labelEl) {
-        // Se a busca falhar, escreve Cloud Practitioner, mantendo o visual limpo
-        labelEl.textContent = certNames[currentCertId] || 'Cloud Practitioner';
+        labelEl.textContent = (certNames[currentLang] || certNames['pt'])[currentCertId] || 'Cloud Practitioner';
     }
 
     const statusEl = document.getElementById('sidebar-cert-status');
-    const currentLang = localStorage.getItem('aws_sim_lang') || 'pt';
     if (statusEl) {
         statusEl.textContent = currentLang === 'en' ? 'In Progress' : 'Em andamento';
     }
@@ -1613,3 +1907,207 @@ function handleMissionFailure(reason) {
     engine.passingScore = 70; // Restaura a nota padrão
     goHome();
 }
+
+// MÓDULO: SPRINT 14 DIAS
+// O mapa do tesouro: O que cai em cada dia do Sprint da certificação atual
+const sprintMap = {
+    1:  { domainIndex: 0,     pt: "Conceitos Cloud - Parte 1",   en: "Cloud Concepts - Part 1" },
+    2:  { domainIndex: 0,     pt: "Conceitos Cloud - Parte 2",   en: "Cloud Concepts - Part 2" },
+    3:  { domainIndex: 0,     pt: "Conceitos Cloud - Revisão",   en: "Cloud Concepts - Review" },
+    4:  { domainIndex: 1,     pt: "Segurança - Parte 1",         en: "Security - Part 1" },
+    5:  { domainIndex: 1,     pt: "Segurança - Parte 2",         en: "Security - Part 2" },
+    6:  { domainIndex: 1,     pt: "Segurança - Revisão",         en: "Security - Review" },
+    7:  { domainIndex: 2,     pt: "Tecnologia - Serviços Core",  en: "Technology - Core Services" },
+    8:  { domainIndex: 2,     pt: "Tecnologia - Redes e BD",     en: "Technology - Networks & DB" },
+    9:  { domainIndex: 2,     pt: "Tecnologia - Arquitetura",    en: "Technology - Architecture" },
+    10: { domainIndex: 3,     pt: "Faturamento - Parte 1",       en: "Billing - Part 1" },
+    11: { domainIndex: 3,     pt: "Faturamento - Parte 2",       en: "Billing - Part 2" },
+    12: { domainIndex: 'all', pt: "Simulado Misto - Fácil",      en: "Mixed Quiz - Easy" },
+    13: { domainIndex: 'all', pt: "Simulado Misto - Difícil",    en: "Mixed Quiz - Hard" },
+    14: { domainIndex: 'final', pt: "O Desafio Final (Boss)",    en: "The Final Challenge (Boss)" }
+};
+
+
+function renderSprintUI() {
+    const grid = document.getElementById('sprint-days-grid');
+    if (!grid) return;
+
+    const lang = uiState.language || 'pt';
+    
+    const labels = {
+        pt: { 
+            day: "Dia", 
+            meta: "10 Questões • Meta: 80%",
+            title: "Sprint de Estudos (14 Dias)",
+            subtitle: "Sua meta diária de 15 minutos para dominar a nuvem.",
+            progress: "Progresso",
+            startBtn: "Iniciar Sprint (15m)"
+        },
+        en: { 
+            day: "Day", 
+            meta: "10 Questions • Goal: 80%",
+            title: "Study Sprint (14 Days)",
+            subtitle: "Your daily 15-minute goal to master the cloud.",
+            progress: "Progress",
+            startBtn: "Start Sprint (15m)"
+        }
+    };
+
+    // Atualiza título e subtítulo do card de Sprint
+    const sprintTitleEl = document.getElementById('sprint-module-title');
+    const sprintSubtitleEl = document.getElementById('sprint-module-subtitle');
+    const sprintProgressLabel = document.getElementById('sprint-progress-label');
+    const sprintStartBtn = document.getElementById('sprint-start-btn');
+    if (sprintTitleEl) sprintTitleEl.textContent = labels[lang].title;
+    if (sprintSubtitleEl) sprintSubtitleEl.textContent = labels[lang].subtitle;
+    if (sprintProgressLabel) sprintProgressLabel.textContent = labels[lang].progress;
+    if (sprintStartBtn) sprintStartBtn.textContent = labels[lang].startBtn;
+
+    let currentSprintDay = parseInt(localStorage.getItem('aws_sprint_day')) || 1;
+    if (currentSprintDay > 14) currentSprintDay = 14;
+
+    // Atualiza a % de progresso
+    const progressText = document.getElementById('sprint-progress-text');
+    if (progressText) {
+        const pct = Math.round(((currentSprintDay - 1) / 14) * 100);
+        progressText.textContent = `${pct}%`;
+    }
+
+    // Atualiza o texto do botão do dia (Bilíngue)
+    const dayLabel = document.getElementById('sprint-current-day-label');
+    const metaLabel = dayLabel?.nextElementSibling;
+    
+    if (dayLabel && sprintMap[currentSprintDay]) {
+        const dayTitle = sprintMap[currentSprintDay][lang] || sprintMap[currentSprintDay].pt;
+        dayLabel.textContent = `${labels[lang].day} ${currentSprintDay}: ${dayTitle}`;
+        if (metaLabel) metaLabel.textContent = labels[lang].meta;
+    }
+
+    grid.innerHTML = '';
+
+    for (let i = 1; i <= 14; i++) {
+        const dayDiv = document.createElement('div');
+        
+        if (i < currentSprintDay) {
+            dayDiv.className = 'w-full aspect-square rounded-lg flex items-center justify-center text-xs font-bold border bg-green-50 border-green-200 text-green-600 dark:bg-green-900/20 dark:border-green-700 dark:text-green-400';
+            dayDiv.innerHTML = '<i class="fa-solid fa-check"></i>';
+        } else if (i === currentSprintDay) {
+            dayDiv.className = 'sprint-day-current w-full aspect-square rounded-lg flex items-center justify-center text-sm border-2 bg-aws-orange border-orange-600 text-white z-10';
+            dayDiv.textContent = i;
+        } else {
+            dayDiv.className = 'w-full aspect-square rounded-lg flex items-center justify-center text-xs font-bold border bg-gray-50 border-gray-100 text-gray-400 dark:bg-slate-700/50 dark:border-slate-600 dark:text-slate-500';
+            dayDiv.innerHTML = '<i class="fa-solid fa-lock text-[10px]"></i>';
+        }
+
+        const tooltipTitle = sprintMap[i] ? (sprintMap[i][lang] || sprintMap[i].pt) : `${labels[lang].day} ${i}`;
+        dayDiv.title = tooltipTitle;
+        
+        grid.appendChild(dayDiv);
+    }
+}
+
+window.startMicroSprint = function() {
+    let currentSprintDay = parseInt(localStorage.getItem('aws_sprint_day')) || 1;
+    const lang = uiState.language || 'pt';
+    
+    if (currentSprintDay > 14) {
+        const msg = lang === 'en'
+            ? "Congratulations! You have completed all 14 Sprint days."
+            : "Parabéns! Você já dominou os 14 dias de Sprint.";
+        alert(msg);
+        return;
+    }
+
+    const pillData = (typeof getPill === 'function')
+        ? getPill(currentSprintDay, lang)
+        : (sprintPills ? sprintPills[currentSprintDay] : null);
+    
+    if (!pillData) {
+        const msg = lang === 'en'
+            ? "Today's knowledge pill is being prepared by AI. Come back tomorrow!"
+            : "A pílula de conhecimento de hoje está sendo preparada pela IA. Volte amanhã!";
+        alert(msg);
+        return;
+    }
+
+    const ui = {
+        pt: {
+            readTime: "Tempo de leitura",
+            summary: "Resumo do Dia",
+            complete: "Marcar Pílula como Concluída",
+            day: "Dia"
+        },
+        en: {
+            readTime: "Read time",
+            summary: "Daily Summary",
+            complete: "Mark Pill as Completed",
+            day: "Day"
+        }
+    }[lang];
+
+    const readerOverlay = document.createElement('div');
+    readerOverlay.id = 'sprint-reader-overlay';
+    readerOverlay.className = 'fixed inset-0 bg-slate-900/95 backdrop-blur-md z-50 flex justify-center items-center overflow-y-auto p-4 md:p-8 animate-fade-in';
+    
+    readerOverlay.innerHTML = `
+        <div class="bg-white dark:bg-slate-800 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col relative my-auto">
+            
+            <div class="h-2 w-full bg-gray-100 dark:bg-slate-700">
+                <div class="h-full bg-aws-orange transition-all duration-1000" style="width: ${((currentSprintDay)/14)*100}%"></div>
+            </div>
+
+            <div class="p-8 md:p-12">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <span class="text-aws-orange text-sm font-bold uppercase tracking-widest">${ui.day} ${currentSprintDay} • ${pillData.topic}</span>
+                        <h2 class="text-3xl font-black text-gray-900 dark:text-white mt-2 leading-tight">${pillData.title}</h2>
+                        <span class="text-gray-500 dark:text-slate-400 text-sm mt-2 block"><i class="fa-regular fa-clock mr-1"></i> ${ui.readTime}: ${pillData.readTime}</span>
+                    </div>
+                    <button onclick="closeSprintReader()" class="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors">
+                        <i class="fa-solid fa-xmark text-2xl"></i>
+                    </button>
+                </div>
+
+                <div class="prose dark:prose-invert max-w-none">
+                    ${pillData.content}
+                </div>
+
+                <div class="mt-12 bg-gray-50 dark:bg-slate-700/50 p-6 rounded-xl border border-gray-100 dark:border-slate-600 text-center">
+                    <p class="text-sm text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-2 font-bold">${ui.summary}</p>
+                    <p class="text-lg font-medium text-gray-800 dark:text-gray-200 italic">"${pillData.keyTakeaway}"</p>
+                    
+                    <button onclick="completeSprintDay(${currentSprintDay})" class="mt-6 w-full md:w-auto bg-aws-orange hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg transition-all shadow-lg transform hover:-translate-y-1">
+                        <i class="fa-solid fa-check-double mr-2"></i> ${ui.complete}
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(readerOverlay);
+    document.body.style.overflow = 'hidden';
+};
+
+// Função para fechar sem salvar (se o usuário desistir)
+window.closeSprintReader = function() {
+    const overlay = document.getElementById('sprint-reader-overlay');
+    if (overlay) overlay.remove();
+    document.body.style.overflow = ''; // Devolve o scroll
+};
+
+window.completeSprintDay = function(completedDay) {
+    localStorage.setItem('aws_sprint_day', completedDay + 1);
+    
+    closeSprintReader();
+    
+    if (typeof renderSprintUI === 'function') {
+        renderSprintUI();
+    }
+
+    const lang = uiState.language || 'pt';
+    const msg = lang === 'en'
+        ? `🚀 Day ${completedDay} pill absorbed! The next knowledge awaits you tomorrow.`
+        : `🚀 Pílula do Dia ${completedDay} absorvida com sucesso! O próximo conhecimento te espera amanhã.`;
+    alert(msg);
+};
+
