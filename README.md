@@ -20,6 +20,17 @@
 
 ---
 
+## 📚 Navegue pela Documentação
+
+Para facilitar seus estudos e contribuições, separamos nossa documentação em guias específicos:
+
+* 🗺️ **[Roadmap do Projeto](./docs/roadmap.md):** Veja o que já concluímos e o que está planejado para as próximas Sprints.
+* 🏛️ **[Arquitetura AWS](./docs/ARCHITECTURE.md):** Entenda como nossa infraestrutura Serverless e o motor de dados funcionam.
+* 📖 **[Guia Completo](./docs/GUIA-COMPLETO.md):** O manual definitivo para quem quer entender todas as regras e dinâmicas do simulador.
+* 🤝 **[Como Contribuir](./CONTRIBUTING.md):** Padrões de commit e regras para enviar novas questões.
+
+---
+
 ## 📸 Conheça a Plataforma
 
 Uma interface moderna, responsiva e focada na experiência de aprendizado profundo.
@@ -44,6 +55,8 @@ Uma interface moderna, responsiva e focada na experiência de aprendizado profun
 O **Cloud Certification Study Tool** vai além de um simulador tradicional. É um **laboratório de engenharia de software e dados** open-source, criado para democratizar o acesso a materiais de estudo de alta qualidade. 
 
 Através da combinação de um front-end moderno (PWA) e um back-end automatizado por Inteligência Artificial, oferecemos uma experiência de aprendizado adaptativa, offline-first e baseada em dados reais de arquitetura Cloud.
+
+---
 
 ### Diferenciais Técnicos e Educacionais:
 * 🧠 **Banco de Dados Dinâmico:** Questões inéditas e cenários corporativos gerados via *Google Gemini 2.5 Flash*, com **fallback resiliente via Groq (llama-3.3-70b-versatile)** para garantir 100% de disponibilidade na geração.
