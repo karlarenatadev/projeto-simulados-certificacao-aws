@@ -14,8 +14,6 @@ O fluxo principal do projeto divide-se em duas grandes áreas:
 - **Experiência do Utilizador (Front-end)**  
 - **Motor de Contribuição (Back-end / Automação)**  
 
-> ⚠️ Diagrama do fluxo não compatível diretamente em Markdown padrão; recomenda-se visualização via Mermaid ou outro gerador de diagramas.
-
 ---
 
 ## 💻 1. Front-end (Aplicação Cliente)

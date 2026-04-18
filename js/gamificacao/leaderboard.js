@@ -86,3 +86,28 @@ export function renderGuildDashboard() {
         `;
     }).join('');
 }
+
+/**
+ * Gera um nome de usuário anônimo e divertido para o ranking.
+ * @returns {string} Ex: "CloudNinja_84"
+ */
+export function generateAnonymousUsername() {
+    const prefixes = ['Cloud', 'Data', 'Cyber', 'Tech', 'Byte', 'Code', 'Aws', 'Dev'];
+    const suffixes = ['Ninja', 'Jedi', 'Panda', 'Guru', 'Hacker', 'Ranger', 'Wizard', 'Titan'];
+    
+    const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+    const randomSuffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+    const randomNumber = Math.floor(Math.random() * 90) + 10; // Número entre 10 e 99
+
+    return `${randomPrefix}${randomSuffix}_${randomNumber}`;
+}
+
+// Exemplo de integração com o LocalStorage (até termos o DynamoDB)
+export function getOrCreateUsername() {
+    let username = localStorage.getItem('aws_sim_username');
+    if (!username) {
+        username = generateAnonymousUsername();
+        localStorage.setItem('aws_sim_username', username);
+    }
+    return username;
+}
