@@ -463,6 +463,7 @@ function nextQuestion() {
 function finishQuiz() {
     if (uiState.timerInterval) clearInterval(uiState.timerInterval);
     if (uiState.qTimerInterval) clearInterval(uiState.qTimerInterval);
+
     saveQuizResult();
     updateHistoryDisplay();
     loadLastScore();
@@ -472,74 +473,32 @@ function finishQuiz() {
     }
 
     const results = engine.getFinalResults();
-
     const btnNextMission = document.getElementById('btn-next-mission');
     if (btnNextMission) btnNextMission.classList.add('hidden');
 
-    // ─── LÓGICA DE GAMIFICAÇÃO: CONCLUSÃO DE MISSÃO ───
-    if (uiState.currentMode === 'mission') {
+    // --- LÓGICA DE GAMIFICAÇÃO ---
+    if (uiState.currentMode === 'mission' || uiState.currentMode === 'boss') {
         if (results && results.percentage >= engine.passingScore) {
-            // 🎉 APROVADO NA MISSÃO!
             const stageId = uiState.currentMissionStageId;
-            const certId = document.getElementById('certification-select')?.value || 'clf-c02';
             
             if (stageId) {
-                // 1. Puxa os dados do jogador
-                let gamification = JSON.parse(localStorage.getItem('aws_sim_gamification')) || { completedStages: [], unlockedStages: [] };
-                
-                // 2. Marca o atual como concluído
-                if (!gamification.completedStages.includes(stageId)) {
-                    gamification.completedStages.push(stageId);
-                }
-                
-                // 3. Força o desbloqueio do PRÓXIMO módulo somando +1 no ID
-                const parts = stageId.split('-'); 
-                const lastPart = parts[parts.length - 1]; // Pega o número (ex: "1")
-                
-                if (!isNaN(lastPart)) {
-                    const nextNum = parseInt(lastPart) + 1;
-                    parts[parts.length - 1] = nextNum;
-                    const nextStageId = parts.join('-'); // Monta o "2"
-                    
-                    if (!gamification.unlockedStages.includes(nextStageId)) {
-                        gamification.unlockedStages.push(nextStageId);
-                    }
-                }
-                
-                // Salva no navegador
-                localStorage.setItem('aws_sim_gamification', JSON.stringify(gamification));
-                
-                // Chama o fallback do trailManager se existir
-                if (typeof unlockNextModule === 'function') {
-                    unlockNextModule(certId, stageId); 
+                // Chama a sua função oficial do trailManager
+                if (typeof window.unlockNextModule === 'function') {
+                    window.unlockNextModule(stageId);
                 }
             }
 
-            // Atualiza os componentes visuais
             updateSidebarProgress();
             if (typeof renderTrail === 'function') renderTrail();
             if (typeof renderBadges === 'function') renderBadges();
             
-            // 4. Mostra o botão "Continuar Jornada" brilhando na tela
             if (btnNextMission) {
                 btnNextMission.classList.remove('hidden');
-                btnNextMission.onclick = () => {
-                    startJornada();
-                };
+                btnNextMission.onclick = () => { startJornada(); };
             }
-
-            setTimeout(() => {
-                alert(`🎉 Missão Concluída! Você alcançou ${results.percentage}%.\nNovo módulo e insígnias desbloqueados na sua Jornada!`);
-            }, 500);
-
-        } else {
-            // 💥 REPROVADO NA MISSÃO
-            setTimeout(() => {
-                alert(`💥 Missão Falhou!\nVocê fez ${results ? results.percentage : 0}%, mas a meta para avançar é de ${engine.passingScore}%.\nRevise e tente novamente!`);
-            }, 500);
         }
 
-        // Restaura o simulador para evitar bugs em quizzes normais futuros
+        // Restaura estados para o simulador normal
         engine.passingScore = 70;
         uiState.currentMode = 'exam';
         uiState.currentMissionStageId = null;
@@ -1866,53 +1825,76 @@ window.startTrailMission = async function(stageId, stageTitle) {
     const certSelect = document.getElementById('certification-select');
     if (!certSelect) return;
 
-    uiState.currentMode = 'mission';
-    uiState.currentMissionStageId = stageId; 
-    uiState.lives = 3;
+    const isBossFight = stageId.includes('-final');
+
+    // Se for o Boss, usamos o modo 'exam' tradicional para ter o cronômetro longo.
+    // Se for fase normal, usamos 'mission' com corações.
+    uiState.currentMode = isBossFight ? 'boss' : 'mission';
+    uiState.currentMissionStageId = stageId;
+    uiState.lives = 3; 
     
-    uiState.qTimeRemaining = 90; 
-    engine.passingScore = 80;    
+    // O Boss exige 70% (oficial). Missões normais exigem 80%.
+    engine.passingScore = isBossFight ? 70 : 80;    
 
     try {
         const certId = certSelect.value;
         const currentCertInfo = certificationPaths[certId];
         
         let actualDomainId = '';
-        if (stageId.includes('-final')) {
-            actualDomainId = ''; 
-        } else {
+        if (!isBossFight) {
             const parts = stageId.split('-');
             const stageIndex = parseInt(parts[parts.length - 1]) - 1;
-            
             if (currentCertInfo && currentCertInfo.domains && currentCertInfo.domains[stageIndex]) {
                 actualDomainId = currentCertInfo.domains[stageIndex].id;
             }
         }
 
-        const filters = { quantity: 5, difficulty: 'all', topic: actualDomainId, mode: 'exam' };
+        // O Boss carrega 65 questões de todos os domínios
+        const filters = { 
+            quantity: isBossFight ? 65 : 5, 
+            difficulty: 'all', 
+            topic: actualDomainId, 
+            mode: 'exam' 
+        };
+        
         const result = await engine.loadQuestions(certId, currentCertInfo.domains, filters, uiState.language);
 
         if (!result.success || result.totalQuestions === 0) {
-            alert(`Ops! Ainda não temos questões cadastradas para o módulo "${stageTitle}" (Domínio: ${actualDomainId}). \n\nContinue estudando os outros módulos!`);
+            alert(`Ops! Ainda não temos questões cadastradas para o módulo "${stageTitle}".`);
             goHome(); 
             return; 
         }
 
+        // Configuração de Tempo (90 min pro Boss, 90 seg pras missões normais)
+        if (isBossFight) {
+            uiState.timeRemaining = 90 * 60; // 90 Minutos
+        } else {
+            uiState.qTimeRemaining = 90; // 90 Segundos por questão
+        }
+
+        // Modificações de Layout para tela cheia
         showScreen('quiz');
-        
         const sidebar = document.getElementById('side-info');
         const mainSection = document.getElementById('main-section');
         if (sidebar) sidebar.classList.add('hidden');
         if (mainSection) mainSection.classList.replace('lg:w-2/3', 'w-full');
         
+        // Alterna os HUDs dependendo do modo
         const missionHud = document.getElementById('mission-hud');
         const timerContainer = document.getElementById('timer-container');
-        if (missionHud) missionHud.classList.remove('hidden');
-        if (timerContainer) timerContainer.classList.add('hidden');
         
-        updateHeartsUI();
+        if (isBossFight) {
+            if (missionHud) missionHud.classList.add('hidden');
+            if (timerContainer) timerContainer.classList.remove('hidden');
+            startTimer(); // Inicia o relógio global de 90 min
+        } else {
+            if (missionHud) missionHud.classList.remove('hidden');
+            if (timerContainer) timerContainer.classList.add('hidden');
+            updateHeartsUI();
+            startQuestionTimer(); // Inicia o relógio rápido de 90 seg
+        }
+
         loadQuestionUI(); 
-        startQuestionTimer();
 
     } catch (err) {
         console.error("Erro na missão:", err);

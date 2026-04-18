@@ -80,12 +80,16 @@ export function renderTrail() {
         let stateClass = 'locked';
         let iconHtml = `<i class="fa-solid fa-lock"></i>`;
 
+        const isBoss = stage.id.includes('final');
+
         if (isCompleted) {
-            stateClass = 'completed';
+            stateClass = `completed ${isBoss ? 'boss-node' : ''}`;
             iconHtml = `<i class="fa-solid fa-check"></i>`;
         } else if (isActive) {
-            stateClass = 'active';
-            iconHtml = `<i class="fa-solid ${stage.icon}"></i>`;
+            stateClass = `active ${isBoss ? 'boss-node' : ''}`;
+            iconHtml = isBoss ? `<i class="fa-solid fa-crown"></i>` : `<i class="fa-solid ${stage.icon}"></i>`;
+        } else if (isBoss) {
+            stateClass += ' boss-node'; // Aplica o estilo mesmo quando travado
         }
 
         // Prevenção extra de 'undefined' no título dos nós
