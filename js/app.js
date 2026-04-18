@@ -26,6 +26,7 @@ let uiState = {
     flashcardIndex: 0,
     flashcardFlipped: false,
     currentMode: 'exam', // 'exam', 'review', 'mission'
+    currentMissionStageId: null,
     lives: 3,
     qTimerInterval: null,
     qTimeRemaining: 45
@@ -461,12 +462,87 @@ function nextQuestion() {
 
 function finishQuiz() {
     if (uiState.timerInterval) clearInterval(uiState.timerInterval);
+    if (uiState.qTimerInterval) clearInterval(uiState.qTimerInterval);
     saveQuizResult();
     updateHistoryDisplay();
     loadLastScore();
 
     if (typeof renderGlobalRadarChart === 'function') {
         renderGlobalRadarChart();
+    }
+
+    const results = engine.getFinalResults();
+
+    const btnNextMission = document.getElementById('btn-next-mission');
+    if (btnNextMission) btnNextMission.classList.add('hidden');
+
+    // ─── LÓGICA DE GAMIFICAÇÃO: CONCLUSÃO DE MISSÃO ───
+    if (uiState.currentMode === 'mission') {
+        if (results && results.percentage >= engine.passingScore) {
+            // 🎉 APROVADO NA MISSÃO!
+            const stageId = uiState.currentMissionStageId;
+            const certId = document.getElementById('certification-select')?.value || 'clf-c02';
+            
+            if (stageId) {
+                // 1. Puxa os dados do jogador
+                let gamification = JSON.parse(localStorage.getItem('aws_sim_gamification')) || { completedStages: [], unlockedStages: [] };
+                
+                // 2. Marca o atual como concluído
+                if (!gamification.completedStages.includes(stageId)) {
+                    gamification.completedStages.push(stageId);
+                }
+                
+                // 3. Força o desbloqueio do PRÓXIMO módulo somando +1 no ID
+                const parts = stageId.split('-'); 
+                const lastPart = parts[parts.length - 1]; // Pega o número (ex: "1")
+                
+                if (!isNaN(lastPart)) {
+                    const nextNum = parseInt(lastPart) + 1;
+                    parts[parts.length - 1] = nextNum;
+                    const nextStageId = parts.join('-'); // Monta o "2"
+                    
+                    if (!gamification.unlockedStages.includes(nextStageId)) {
+                        gamification.unlockedStages.push(nextStageId);
+                    }
+                }
+                
+                // Salva no navegador
+                localStorage.setItem('aws_sim_gamification', JSON.stringify(gamification));
+                
+                // Chama o fallback do trailManager se existir
+                if (typeof unlockNextModule === 'function') {
+                    unlockNextModule(certId, stageId); 
+                }
+            }
+
+            // Atualiza os componentes visuais
+            updateSidebarProgress();
+            if (typeof renderTrail === 'function') renderTrail();
+            if (typeof renderBadges === 'function') renderBadges();
+            
+            // 4. Mostra o botão "Continuar Jornada" brilhando na tela
+            if (btnNextMission) {
+                btnNextMission.classList.remove('hidden');
+                btnNextMission.onclick = () => {
+                    startJornada();
+                };
+            }
+
+            setTimeout(() => {
+                alert(`🎉 Missão Concluída! Você alcançou ${results.percentage}%.\nNovo módulo e insígnias desbloqueados na sua Jornada!`);
+            }, 500);
+
+        } else {
+            // 💥 REPROVADO NA MISSÃO
+            setTimeout(() => {
+                alert(`💥 Missão Falhou!\nVocê fez ${results ? results.percentage : 0}%, mas a meta para avançar é de ${engine.passingScore}%.\nRevise e tente novamente!`);
+            }, 500);
+        }
+
+        // Restaura o simulador para evitar bugs em quizzes normais futuros
+        engine.passingScore = 70;
+        uiState.currentMode = 'exam';
+        uiState.currentMissionStageId = null;
     }
 
     showResultsScreen();
@@ -1206,7 +1282,12 @@ function updateLanguageButtonUI() {
 
 function goHome() {
     if (uiState.timerInterval) clearInterval(uiState.timerInterval);
+    if (uiState.qTimerInterval) clearInterval(uiState.qTimerInterval);
     
+    uiState.currentMode = 'exam';
+    uiState.currentMissionStageId = null;
+    if (typeof engine !== 'undefined') engine.passingScore = 70;
+
     const sidebar = document.getElementById('side-info');
     const mainSection = document.getElementById('main-section');
     const scoreContainer = document.getElementById('score-container');
@@ -1786,6 +1867,7 @@ window.startTrailMission = async function(stageId, stageTitle) {
     if (!certSelect) return;
 
     uiState.currentMode = 'mission';
+    uiState.currentMissionStageId = stageId; 
     uiState.lives = 3;
     
     uiState.qTimeRemaining = 90; 
@@ -1905,6 +1987,8 @@ function handleMissionFailure(reason) {
     clearInterval(uiState.qTimerInterval);
     alert(`💥 Missão Falhou!\n${reason}\n\nRetorne à trilha e tente novamente.`);
     engine.passingScore = 70; // Restaura a nota padrão
+    uiState.currentMode = 'exam';
+    uiState.currentMissionStageId = null;
     goHome();
 }
 
