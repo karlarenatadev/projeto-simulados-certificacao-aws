@@ -28,6 +28,9 @@ Para facilitar seus estudos e contribuições, separamos nossa documentação em
 * 🏛️ **[Arquitetura AWS](./docs/ARCHITECTURE.md):** Entenda como nossa infraestrutura Serverless e o motor de dados funcionam.
 * 📖 **[Guia Completo](./docs/GUIA-COMPLETO.md):** O manual definitivo para quem quer entender todas as regras e dinâmicas do simulador.
 * 🤝 **[Como Contribuir](./CONTRIBUTING.md):** Padrões de commit e regras para enviar novas questões.
+* 🐍 **[Pipeline de Automação Python - AWS Simulator](./docs/README.md):** Detalhes sobre a integração do pipeline de automação com o simulador.
+* 📊 **[Métricas de Desempenho](./docs/metrics.md):** Análise detalhada das métricas de desempenho e comportamento dos usuários.
+* 🧠 **[Glossário de Termos AWS](./docs/glossary.md):** Definições e explicações dos principais termos usados no simulador.
 
 ---
 

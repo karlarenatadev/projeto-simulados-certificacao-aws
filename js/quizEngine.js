@@ -62,6 +62,37 @@ export class QuizEngine {
         }
     }
 
+    // 1.5 CARREGAMENTO DO DIAGNÓSTICO DE NIVELAMENTO
+    async loadDiagnostic(certId, domainsConfig, language = 'pt') {
+        this.resetState();
+        this.state.certId = certId;
+        this.state.mode = 'diagnostic'; // Isola o estado do simulado real
+
+        try {
+            // Busca o arquivo isolado focado em conceitos
+            const fileSuffix = language === 'en' ? '-en' : '';
+
+            const response = await fetch(`data/nivelamento/diagnostic-${certId}${fileSuffix}.json`);
+            
+            if (!response.ok) throw new Error('Arquivo de diagnóstico não encontrado.');
+            
+            let data = await response.json();
+
+            // Embaralha as questões conceituais e suas opções
+            this.state.questions = this._shuffleArray(data).map(q => this._shuffleOptions(q));
+
+            // Inicializa o placar para o radar chart funcionar perfeitamente
+            domainsConfig.forEach(d => {
+                this.state.domainScores[d.id] = { total: 0, correct: 0 };
+            });
+
+            return { success: true, totalQuestions: this.state.questions.length };
+
+        } catch (error) {
+            return { success: false, message: error.message };
+        }
+    }
+
     // 2. NAVEGAÇÃO
     getCurrentQuestion() {
         return this.state.questions[this.state.currentIndex];

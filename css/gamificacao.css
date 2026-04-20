@@ -215,3 +215,18 @@
     border-color: #f59e0b;
     color: #f59e0b;
 }
+
+.aws-drag-item {
+    background-color: #232f3e;
+    color: #ffffff;
+    border: 1px solid #e47911;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 4px;
+    cursor: grab;
+    display: flex;
+    align-items: center;
+}
+.aws-drag-item:active {
+    cursor: grabbing;
+}

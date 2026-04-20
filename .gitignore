@@ -4,3 +4,19 @@ node_modules/
 dist/
 coverage/
 data/backups/
+
+# --- PYTHON (Essencial para sua pasta scripts_python/) ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+
+# --- SISTEMA OPERACIONAL ---
+.DS_Store
+Thumbs.db
+.vscode/

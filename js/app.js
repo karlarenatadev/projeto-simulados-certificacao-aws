@@ -118,6 +118,7 @@ function wireUIActions() {
     bindClick('btn-next-flashcard', nextFlashcard);
     bindClick('btn-flashcards-home', goHome);
     bindClick('btn-clear-history', clearHistory);
+    bindClick('btn-start-diagnostic', window.startDiagnostic);
 
     const flashcardContainer = document.getElementById('flashcard-container');
     if (flashcardContainer) {
@@ -213,6 +214,64 @@ async function startQuiz() {
         btn.innerHTML = `${t('start_simulation', uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>`;
     }
 }
+
+// MOTOR DO DIAGNÓSTICO (NIVELAMENTO)
+window.startDiagnostic = async function() {
+    const certSelect = document.getElementById('certification-select');
+    if (!certSelect) return;
+
+    const btn = document.getElementById('btn-start-diagnostic'); 
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>${t('loading', uiState.language)}`;
+    }
+
+    try {
+        const certId = certSelect.value;
+        const currentCertInfo = certificationPaths[certId];
+        uiState.currentCertificationInfo = currentCertInfo;
+        uiState.currentMode = 'diagnostic';
+
+        const result = await engine.loadDiagnostic(certId, currentCertInfo.domains, uiState.language);
+
+        if (!result.success) {
+            alert("Erro ao carregar o teste de nivelamento: " + result.message);
+            return;
+        }
+
+        // --- PREPARAÇÃO DO LAYOUT (Semelhante ao startQuiz, mas sem timer) ---
+        showScreen('quiz');
+
+        const sidebar = document.getElementById('side-info');
+        const mainSection = document.getElementById('main-section');
+        
+        if (sidebar) sidebar.classList.add('hidden');
+        if (mainSection) {
+            mainSection.classList.remove('lg:w-2/3');
+            mainSection.classList.add('w-full');
+        }
+
+        // Esconde timers e corações (Diagnóstico não tem punição de tempo/vida)
+        const timerContainer = document.getElementById('timer-container');
+        if (timerContainer) timerContainer.classList.add('hidden');
+        
+        const missionHud = document.getElementById('mission-hud');
+        if (missionHud) missionHud.classList.add('hidden');
+
+        const scoreContainer = document.getElementById('score-container');
+        if (scoreContainer) scoreContainer.style.display = 'flex';
+
+        loadQuestionUI();
+
+    } catch (err) {
+        console.error('Erro ao iniciar diagnóstico:', err);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `Fazer Diagnóstico <i class="fa-solid fa-stethoscope ml-2"></i>`;
+        }
+    }
+};
 
 function startTimer() {
     if (uiState.timerInterval) clearInterval(uiState.timerInterval);
@@ -576,6 +635,11 @@ function displayReportFromResult(results) {
         return;
     }
 
+    if (uiState.currentMode === 'diagnostic') {
+        renderDiagnosticReport(results);
+        return; 
+    }
+
     lastRenderedResult = results;
 
     if (certificationPaths && results.certId) {
@@ -767,8 +831,85 @@ function renderDetailedReportUI(results) {
     reportDiv.innerHTML = html;
 }
 
+function renderDiagnosticReport(results) {
+    const resultsScreen = document.getElementById('screen-results');
+    resultsScreen.innerHTML = ''; 
+
+    // Recupera os domínios fracos que o motor (getFinalResults) já calcula automaticamente
+    const weakDomains = results.weakDomains || [];
+    const encodedWeakDomains = weakDomains.join(',');
+
+    let html = `
+        <div class="text-center mb-8 fade-in">
+            <h2 class="text-3xl font-black text-gray-800 dark:text-white mb-2">Seu Raio-X da Nuvem</h2>
+            <p class="text-gray-500 dark:text-gray-400">Analisamos seus conceitos base. Aqui está o seu foco de estudos recomendado.</p>
+        </div>
+        
+        <div class="w-full max-w-md mx-auto mb-8 bg-white dark:bg-slate-800 p-4 rounded-xl border border-gray-100 dark:border-slate-700 shadow-sm fade-in flex justify-center">
+            <canvas id="radarChart" style="max-height: 250px;"></canvas>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto w-full">
+    `;
+
+    uiState.currentCertificationInfo.domains.forEach(domain => {
+        const scoreData = results.domainScores[domain.id];
+        if (scoreData && scoreData.total > 0) {
+            const pct = (scoreData.correct / scoreData.total) * 100;
+            const isWeak = pct < 70;
+            
+            const cardColor = isWeak ? 'bg-orange-50 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800' : 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800';
+            const iconColor = isWeak ? 'text-orange-500' : 'text-green-500';
+            const icon = isWeak ? 'fa-book-open' : 'fa-check-circle';
+            const msg = isWeak ? 'Recomendamos revisar este domínio nos Flashcards oficiais.' : 'Conceito consolidado! Ótimo trabalho.';
+
+            html += `
+                <div class="${cardColor} border p-6 rounded-xl flex flex-col justify-between transition-all hover:shadow-md">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-gray-800 dark:text-gray-200 text-lg">${domain.name}</h3>
+                            <i class="fa-solid ${icon} ${iconColor} text-2xl"></i>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">${msg}</p>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 mb-1">
+                        <div class="bg-${isWeak ? 'orange' : 'green'}-500 h-3 rounded-full" style="width: ${pct}%"></div>
+                    </div>
+                    <div class="text-right text-xs font-bold ${iconColor}">${pct.toFixed(0)}% de Acerto</div>
+                </div>
+            `;
+        }
+    });
+
+    // BOTÃO ATUALIZADO PARA ESTUDO INTELIGENTE
+    html += `
+        </div>
+        <div class="mt-10 text-center flex justify-center gap-4 fade-in">
+            <button onclick="goHome()" class="bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-gray-800 dark:text-white font-bold py-3 px-8 rounded-xl transition-all">
+                Voltar ao Início
+            </button>
+            <button onclick="startSmartFlashcards('${encodedWeakDomains}')" class="bg-aws-orange hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-md">
+                Estudar Meus Pontos Fracos <i class="fa-solid fa-bolt ml-2"></i>
+            </button>
+        </div>
+    `;
+
+    resultsScreen.innerHTML = html;
+    showScreen('results');
+
+    // Força a renderização do gráfico
+    setTimeout(() => {
+        if (typeof renderRadarChart === 'function') {
+            renderRadarChart(results, uiState.currentCertificationInfo);
+        }
+    }, 150);
+}
+
 // PERSISTÊNCIA E HISTÓRICO
 function saveQuizResult() {
+
+    if (uiState.currentMode === 'diagnostic') return; 
+    
     const results = engine.getFinalResults();
     storageManager.saveQuizResult(results);
     updateGamification(results.percentage);
@@ -1117,15 +1258,31 @@ function updateScoreDisplayUI() {
 
 function updateTopicDropdown() {
     const topicSelect = document.getElementById('topic-filter');
-    if (!topicSelect || !uiState.currentCertificationInfo) return;
+    const flashcardCategorySelect = document.getElementById('flashcard-category'); // NOVO: Captura o select dos flashcards
 
-    topicSelect.innerHTML = `<option value="">${t('all_topics', uiState.language)}</option>`;
-    uiState.currentCertificationInfo.domains.forEach(domain => {
-        const option = document.createElement('option');
-        option.value = domain.id;
-        option.textContent = domain.name;
-        topicSelect.appendChild(option);
-    });
+    if (!uiState.currentCertificationInfo) return;
+
+    // 1. Atualiza o dropdown do Quiz principal
+    if (topicSelect) {
+        topicSelect.innerHTML = `<option value="">${t('all_topics', uiState.language)}</option>`;
+        uiState.currentCertificationInfo.domains.forEach(domain => {
+            const option = document.createElement('option');
+            option.value = domain.id;
+            option.textContent = domain.name;
+            topicSelect.appendChild(option);
+        });
+    }
+
+    // 2. Atualiza o dropdown dos Flashcards automaticamente
+    if (flashcardCategorySelect) {
+        flashcardCategorySelect.innerHTML = `<option value="all">${t('all_topics', uiState.language) || 'Todos os Domínios'}</option>`;
+        uiState.currentCertificationInfo.domains.forEach(domain => {
+            const option = document.createElement('option');
+            option.value = domain.id; // Aqui está a chave: o ID exato para bater com o Raio-X!
+            option.textContent = domain.name;
+            flashcardCategorySelect.appendChild(option);
+        });
+    }
 }
 
 async function updateDifficultyFilters(certId) {
@@ -1825,6 +1982,80 @@ window.showScreen = showScreen;
 window.startJornada = startJornada;
 window.updateSidebarProgress = updateSidebarProgress;
 
+// SISTEMA DE RECOMENDAÇÃO INTELIGENTE
+window.startSmartFlashcards = function(weakDomainsStr) {
+    // 1. Salva os domínios fracos temporariamente para consulta na outra tela
+    const weakDomainsArray = weakDomainsStr.split(',').filter(d => d !== '');
+    sessionStorage.setItem('current_study_plan', JSON.stringify(weakDomainsArray));
+    
+    // 2. Abre a tela de flashcards
+    startFlashcards();
+    
+    // 3. Aguarda a montagem da UI para injetar o feedback visual
+    setTimeout(() => {
+        renderStudyPlanBanner();
+        
+        // Aplica o filtro automático no primeiro domínio da lista
+        if (weakDomainsArray.length > 0) {
+            const categorySelect = document.getElementById('flashcard-category');
+            if (categorySelect) {
+                categorySelect.value = weakDomainsArray[0];
+                categorySelect.dispatchEvent(new Event('change'));
+            }
+        }
+    }, 300);
+};
+
+function renderStudyPlanBanner() {
+    const studyPlanRaw = sessionStorage.getItem('current_study_plan');
+    if (!studyPlanRaw) return;
+
+    const weakDomainsIds = JSON.parse(studyPlanRaw);
+    if (weakDomainsIds.length === 0) return;
+
+    // Converte IDs em nomes legíveis usando seu certificationPaths
+    const domainNames = weakDomainsIds.map(id => {
+        return uiState.currentCertificationInfo?.domains.find(d => d.id === id)?.name || id;
+    });
+
+    const flashcardScreen = document.getElementById('screen-flashcards');
+    const container = flashcardScreen.querySelector('.max-w-4xl'); // Ajuste para seletor de container
+
+    // Evita duplicados se o usuário clicar várias vezes
+    const existingBanner = document.getElementById('study-recommendation-banner');
+    if (existingBanner) existingBanner.remove();
+
+    const banner = document.createElement('div');
+    banner.id = 'study-recommendation-banner';
+    banner.className = 'mb-6 p-5 bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange rounded-r-xl shadow-sm animate-fade-in';
+    
+    banner.innerHTML = `
+        <div class="flex items-start gap-4">
+            <div class="bg-aws-orange text-white p-2 rounded-lg">
+                <i class="fa-solid fa-graduation-cap text-xl"></i>
+            </div>
+            <div>
+                <h4 class="font-black text-orange-800 dark:text-orange-300 uppercase text-xs tracking-widest mb-1">Seu Plano de Estudo Personalizado</h4>
+                <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">
+                    Com base no seu diagnóstico, focamos nestes pontos de atenção:
+                </p>
+                <div class="flex flex-wrap gap-2">
+                    ${domainNames.map(name => `
+                        <span class="px-3 py-1 bg-white dark:bg-slate-800 border border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-400 rounded-full text-xs font-bold">
+                            ${name}
+                        </span>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+        <button onclick="this.parentElement.remove(); sessionStorage.removeItem('current_study_plan');" class="absolute top-2 right-2 text-orange-300 hover:text-orange-500">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    `;
+
+    // Insere o banner no topo da área de conteúdo
+    flashcardScreen.prepend(banner);
+}
 
 // LÓGICA DE GAMIFICAÇÃO: MODO MISSÃO (TRILHA)
 

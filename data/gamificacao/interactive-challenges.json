@@ -1,0 +1,17 @@
+{
+  "challenges": [
+    {
+      "id": "lab-001",
+      "type": "ordering",
+      "title": "Fluxo de Rede na AWS",
+      "scenario": "Ordene o caminho do tráfego desde a internet até uma instância EC2 numa sub-rede privada.",
+      "items": [
+        { "id": "aws-1", "text": "Internet Gateway" },
+        { "id": "aws-2", "text": "Route 53" },
+        { "id": "aws-3", "text": "Application Load Balancer" },
+        { "id": "aws-4", "text": "Amazon EC2" }
+      ],
+      "correct_order": ["aws-2", "aws-1", "aws-3", "aws-4"]
+    }
+  ]
+}

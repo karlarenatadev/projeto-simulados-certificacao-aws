@@ -1,164 +1,126 @@
-import { glossaryTerms } from './data.js';
+import { glossaryTerms, certificationPaths } from './data.js';
 import { t } from './i18n/useTranslation.js';
 
-// Get current language from localStorage
 function getCurrentLanguage() {
     return localStorage.getItem('aws_sim_lang') || 'pt';
 }
 
-// Movemos o estado específico dos flashcards para cá!
+// ESTADO CENTRALIZADO DOS FLASHCARDS
 let flashcardState = {
     index: 0,
     flipped: false,
     filteredTerms: [],
-    currentFilter: 'all'
+    currentDomainFilter: 'all'
 };
 
-// Recebe a função showScreen do app.js para poder mudar a tela
+// ==========================================
+// INICIALIZAÇÃO
+// ==========================================
 export function startFlashcards(showScreenFn) {
-    // VALIDAÇÃO: Verifica se glossaryTerms existe e é um array válido
-    if (!glossaryTerms || !Array.isArray(glossaryTerms) || glossaryTerms.length === 0) {
-        alert(t('no_terms_available', getCurrentLanguage()));
+    if (!glossaryTerms || glossaryTerms.length === 0) {
+        alert(t('no_terms_available', getCurrentLanguage()) || "Nenhum termo disponível.");
         return;
     }
     
-    flashcardState.index = 0;
-    flashcardState.flipped = false;
-    flashcardState.currentFilter = 'general'; // Inicia com Termos Gerais
-    // Filtra apenas termos gerais (cert === 'all')
-    flashcardState.filteredTerms = glossaryTerms.filter(term => term.cert === 'all');
-    
-    // VALIDAÇÃO: Verifica se showScreenFn é uma função
     if (typeof showScreenFn === 'function') {
         showScreenFn('flashcards');
     }
-    
-    renderCertificationFilter();
-    loadFlashcard();
-}
 
-// Nova função para renderizar filtro de certificação
-function renderCertificationFilter() {
-    const filterContainer = document.getElementById('flashcard-filter');
-    if (!filterContainer) return;
-    
-    // Conta termos por categoria
-    const counts = {
-        all: glossaryTerms.length,
-        general: glossaryTerms.filter(t => t.cert === 'all').length,
-        'clf-c02': glossaryTerms.filter(t => t.cert === 'clf-c02').length,
-        'saa-c03': glossaryTerms.filter(t => t.cert === 'saa-c03').length,
-        'dva-c02': glossaryTerms.filter(t => t.cert === 'dva-c02').length,
-        'aif-c01': glossaryTerms.filter(t => t.cert === 'aif-c01').length
-    };
-    
-    const certifications = [
-        { id: 'all', name: t('all_terms', getCurrentLanguage()), icon: '📚', count: counts.all },
-        { id: 'general', name: t('general_terms', getCurrentLanguage()), icon: '🌐', count: counts.general },
-        { id: 'clf-c02', name: t('cloud_practitioner', getCurrentLanguage()), icon: '☁️', count: counts['clf-c02'] },
-        { id: 'saa-c03', name: t('solutions_architect', getCurrentLanguage()), icon: '🏗️', count: counts['saa-c03'] },
-        { id: 'dva-c02', name: t('developer', getCurrentLanguage()), icon: '💻', count: counts['dva-c02'] },
-        { id: 'aif-c01', name: t('ai_practitioner', getCurrentLanguage()), icon: '🤖', count: counts['aif-c01'] }
-    ];
-    
-    filterContainer.innerHTML = certifications.map(cert => `
-        <button 
-            class="px-3 py-2 rounded-lg transition-all text-sm font-medium ${
-                flashcardState.currentFilter === cert.id 
-                    ? 'bg-aws-orange text-white shadow-md' 
-                    : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-600'
-            }"
-            onclick="window.filterFlashcardsByCert('${cert.id}')"
-            title="${cert.name} (${cert.count} termos)"
-        >
-            <span class="mr-1">${cert.icon}</span>
-            <span class="hidden sm:inline">${cert.name}</span>
-            <span class="inline sm:hidden">${cert.name.split(' ')[0]}</span>
-            <span class="ml-1 text-xs opacity-75">(${cert.count})</span>
-        </button>
-    `).join('');
-}
-
-// Nova função para filtrar flashcards por certificação
-export function filterFlashcardsByCert(certId) {
-    flashcardState.currentFilter = certId;
-    
-    if (certId === 'all') {
-        // Mostra todos os termos
-        flashcardState.filteredTerms = glossaryTerms;
-    } else if (certId === 'general') {
-        // Mostra APENAS termos gerais (aplicáveis a todas certificações)
-        flashcardState.filteredTerms = glossaryTerms.filter(term => term.cert === 'all');
-    } else {
-        // Mostra APENAS termos específicos da certificação (SEM os gerais)
-        flashcardState.filteredTerms = glossaryTerms.filter(term => term.cert === certId);
+    const categorySelect = document.getElementById('flashcard-category');
+    if (categorySelect && !categorySelect.dataset.listenerAdded) {
+        categorySelect.addEventListener('change', filterFlashcards);
+        categorySelect.dataset.listenerAdded = 'true';
     }
+
+    setupFlashcardListeners();
+    filterFlashcards();
+}
+
+// ==========================================
+// MOTOR DE FILTRAGEM (Certificação + Domínio)
+// ==========================================
+export function filterFlashcards() {
+    const certSelect = document.getElementById('certification-select');
+    const categorySelect = document.getElementById('flashcard-category');
     
+    const selectedCert = certSelect ? certSelect.value : 'clf-c02';
+    const selectedDomain = categorySelect ? categorySelect.value : 'all';
+
+    // --- NOVO: Atualiza a Badge visual no topo da tela ---
+    const certBadge = document.getElementById('flashcards-cert-badge');
+    if (certBadge) {
+        certBadge.textContent = selectedCert.toUpperCase();
+    }
+
+    flashcardState.currentDomainFilter = selectedDomain;
+
+    flashcardState.filteredTerms = glossaryTerms.filter(card => {
+        const matchCert = card.cert === 'all' || card.cert === selectedCert;
+        const matchDomain = selectedDomain === 'all' || card.domain === selectedDomain;
+        return matchCert && matchDomain;
+    });
+
+    flashcardState.filteredTerms.sort(() => Math.random() - 0.5);
+
     flashcardState.index = 0;
     flashcardState.flipped = false;
-    
-    renderCertificationFilter();
-    loadFlashcard();
+
+    if (flashcardState.filteredTerms.length === 0) {
+        const errorMsg = getCurrentLanguage() === 'en' 
+            ? "No cards found for this category." 
+            : "Nenhum cartão encontrado para esta categoria.";
+        alert(errorMsg);
+        
+        if (categorySelect) {
+            categorySelect.value = 'all';
+            filterFlashcards(); 
+        }
+        return;
+    }
+
+    renderCurrentFlashcard();
 }
 
-export function loadFlashcard() {
-    // VALIDAÇÃO: Verifica se filteredTerms existe e é válido
-    const terms = flashcardState.filteredTerms || glossaryTerms;
-    
-    if (!terms || !Array.isArray(terms) || terms.length === 0) {
-        alert(t('no_terms_for_cert', getCurrentLanguage()));
-        return;
-    }
-    
-    // VALIDAÇÃO: Verifica se o índice está dentro dos limites
-    if (flashcardState.index < 0 || flashcardState.index >= terms.length) {
-        console.warn('Índice de flashcard inválido. Resetando para 0.');
-        flashcardState.index = 0;
-    }
-    
+// ==========================================
+// RENDERIZAÇÃO DO CARD NA TELA
+// ==========================================
+export function renderCurrentFlashcard() {
+    const terms = flashcardState.filteredTerms;
+    if (terms.length === 0) return;
+
     const card = terms[flashcardState.index];
-    
-    // VALIDAÇÃO: Verifica se o card existe e tem as propriedades necessárias
-    if (!card || !card.term || !card.definition) {
-        console.error('Flashcard inválido no índice:', flashcardState.index);
-        return;
-    }
-    
-    // Get current language
     const currentLang = getCurrentLanguage();
-    
-    // VALIDAÇÃO DOM: Verifica se elementos existem antes de manipular
+
     const termEl = document.getElementById('flashcard-term');
-    const definitionEl = document.getElementById('flashcard-definition');
-    const counterEl = document.getElementById('flashcard-counter');
-    const cardContainer = document.getElementById('flashcard-container');
-    
+    const defEl = document.getElementById('flashcard-definition');
+    const badgeEl = document.getElementById('flashcard-domain-badge');
+
     if (termEl) termEl.textContent = card.term[currentLang];
-    if (definitionEl) definitionEl.textContent = card.definition[currentLang];
-    if (counterEl) counterEl.textContent = `${flashcardState.index + 1} / ${terms.length}`;
-    
-    // Preserva o estado de virado ao recarregar
-    if (cardContainer) {
+    if (defEl) defEl.textContent = card.definition[currentLang];
+
+    if (badgeEl) {
+        const certId = card.cert === 'all' ? (document.getElementById('certification-select')?.value || 'clf-c02') : card.cert;
+        const certInfo = certificationPaths[certId];
+        const domainObj = certInfo?.domains.find(d => d.id === card.domain);
+        
+        badgeEl.textContent = domainObj ? domainObj.name : (currentLang === 'en' ? 'General Term' : 'Termo Geral');
+    }
+
+    const container = document.getElementById('flashcard-container');
+    if (container) {
         if (flashcardState.flipped) {
-            cardContainer.classList.add('flipped');
+            container.classList.add('flipped');
         } else {
-            cardContainer.classList.remove('flipped');
+            container.classList.remove('flipped');
         }
     }
-    
-    // Update click hints with current language
-    const frontHint = document.querySelector('.flashcard-front .text-sm.italic');
-    if (frontHint) frontHint.innerHTML = `<i class="fa-solid fa-hand-pointer mr-2"></i> ${t('click_to_see_definition', currentLang)}`;
-    
-    const backHint = document.querySelector('.flashcard-back .text-sm.italic');
-    if (backHint) backHint.innerHTML = `<i class="fa-solid fa-hand-pointer mr-2"></i> ${t('click_to_see_term', currentLang)}`;
-    
-    const officialDef = document.querySelector('.flashcard-back .text-sm.uppercase');
-    if (officialDef) officialDef.textContent = t('official_definition', currentLang);
-    
-    updateFlashcardButtons();
+
+    updateCounterAndButtons();
 }
 
+// ==========================================
+// NAVEGAÇÃO E INTERAÇÃO
+// ==========================================
 export function flipFlashcard() {
     const cardContainer = document.getElementById('flashcard-container');
     if (cardContainer) {
@@ -167,87 +129,130 @@ export function flipFlashcard() {
     }
 }
 
-// Nova função para recarregar flashcard quando idioma muda
-export function reloadCurrentFlashcard() {
-    updateFlashcardContent();
-}
-
-// Função para atualizar apenas o conteúdo do texto (sem resetar animação)
-function updateFlashcardContent() {
-    const terms = flashcardState.filteredTerms || glossaryTerms;
-    if (!terms || !Array.isArray(terms) || terms.length === 0) return;
-    
-    const card = terms[flashcardState.index];
-    if (!card || !card.term || !card.definition) return;
-    
-    const currentLang = getCurrentLanguage();
-    
-    const termEl = document.getElementById('flashcard-term');
-    const definitionEl = document.getElementById('flashcard-definition');
-    const counterEl = document.getElementById('flashcard-counter');
-    
-    if (termEl) termEl.textContent = card.term[currentLang];
-    if (definitionEl) definitionEl.textContent = card.definition[currentLang];
-    if (counterEl) counterEl.textContent = `${flashcardState.index + 1} / ${terms.length}`;
-    
-    // Update hints
-    const frontHint = document.querySelector('.flashcard-front .text-sm.italic');
-    if (frontHint) frontHint.innerHTML = `<i class="fa-solid fa-hand-pointer mr-2"></i> ${t('click_to_see_definition', currentLang)}`;
-    
-    const backHint = document.querySelector('.flashcard-back .text-sm.italic');
-    if (backHint) backHint.innerHTML = `<i class="fa-solid fa-hand-pointer mr-2"></i> ${t('click_to_see_term', currentLang)}`;
-    
-    const officialDef = document.querySelector('.flashcard-back .text-sm.uppercase');
-    if (officialDef) officialDef.textContent = t('official_definition', currentLang);
-    
-    // Update filter buttons with new language
-    renderCertificationFilter();
-}
-
 export function nextFlashcard() {
-    const terms = flashcardState.filteredTerms || glossaryTerms;
-    
-    // VALIDAÇÃO: Verifica se terms existe
-    if (!terms || !Array.isArray(terms)) {
-        console.warn('Termos não disponíveis em nextFlashcard');
-        return;
-    }
-    
-    if (flashcardState.index < terms.length - 1) {
+    if (flashcardState.index < flashcardState.filteredTerms.length - 1) {
         flashcardState.index++;
-        loadFlashcard();
+        flashcardState.flipped = false;
+        renderCurrentFlashcard();
     }
 }
 
 export function prevFlashcard() {
     if (flashcardState.index > 0) {
         flashcardState.index--;
-        loadFlashcard();
+        flashcardState.flipped = false;
+        renderCurrentFlashcard();
     }
 }
 
-function updateFlashcardButtons() {
-    const terms = flashcardState.filteredTerms || glossaryTerms;
+function updateCounterAndButtons() {
+    const total = flashcardState.filteredTerms.length;
     
-    // VALIDAÇÃO: Verifica se terms existe
-    if (!terms || !Array.isArray(terms)) {
-        console.warn('Termos não disponíveis em updateFlashcardButtons');
-        return;
+    const counterEl = document.getElementById('flashcard-counter');
+    if (counterEl) {
+        counterEl.textContent = `${flashcardState.index + 1} / ${total}`;
     }
-    
-    // VALIDAÇÃO DOM: Verifica se elementos existem
+
     const prevBtn = document.getElementById('btn-prev-flashcard');
     const nextBtn = document.getElementById('btn-next-flashcard');
-    
+
     if (prevBtn) {
-        prevBtn.disabled = flashcardState.index === 0;
-        prevBtn.classList.toggle('opacity-50', flashcardState.index === 0);
-        prevBtn.classList.toggle('cursor-not-allowed', flashcardState.index === 0);
+        const isFirst = flashcardState.index === 0;
+        prevBtn.disabled = isFirst;
+        prevBtn.classList.toggle('opacity-50', isFirst);
+        prevBtn.classList.toggle('cursor-not-allowed', isFirst);
     }
-    
+
     if (nextBtn) {
-        nextBtn.disabled = flashcardState.index === terms.length - 1;
-        nextBtn.classList.toggle('opacity-50', flashcardState.index === terms.length - 1);
-        nextBtn.classList.toggle('cursor-not-allowed', flashcardState.index === terms.length - 1);
+        const isLast = flashcardState.index === total - 1;
+        nextBtn.disabled = isLast;
+        nextBtn.classList.toggle('opacity-50', isLast);
+        nextBtn.classList.toggle('cursor-not-allowed', isLast);
     }
 }
+
+export function reloadCurrentFlashcard() {
+    renderCurrentFlashcard();
+}
+
+export function filterFlashcardsByCert() {
+    // Função fantasma. O app.js tenta importar isso na linha 352 e usar na 678.
+    // Manter isso aqui impede que todo o simulador quebre.
+    console.log("Filtro legado acionado. Agora a filtragem é automatizada pelo dropdown.");
+}
+
+// ==========================================
+// CONEXÃO DOS BOTÕES (EVENT LISTENERS)
+// ==========================================
+function setupFlashcardListeners() {
+    const nextBtn = document.getElementById('btn-next-flashcard');
+    const prevBtn = document.getElementById('btn-prev-flashcard');
+    const homeBtn = document.getElementById('btn-flashcards-home');
+
+    if (nextBtn && !nextBtn.dataset.bound) {
+        nextBtn.addEventListener('click', nextFlashcard);
+        nextBtn.dataset.bound = 'true'; 
+    }
+    
+    if (prevBtn && !prevBtn.dataset.bound) {
+        prevBtn.addEventListener('click', prevFlashcard);
+        prevBtn.dataset.bound = 'true';
+    }
+
+    // 🚨 ATENÇÃO: O bloco de código que ouvia o 'cardContainer' foi removido daqui!
+    // O seu arquivo app.js (na linha 110) já faz isso de forma perfeita, incluindo atalhos de teclado!
+
+    if (homeBtn && !homeBtn.dataset.bound) {
+        homeBtn.addEventListener('click', () => {
+            if (typeof window.goHome === 'function') {
+                window.goHome();
+            } else {
+                document.getElementById('screen-flashcards').classList.add('hidden');
+                const startScreen = document.getElementById('screen-start');
+                if(startScreen) startScreen.classList.remove('hidden');
+            }
+        });
+        homeBtn.dataset.bound = 'true';
+    }
+}
+
+// ==========================================
+// EXPORTAÇÃO PARA ANKI
+// ==========================================
+export function exportToAnki() {
+    const terms = flashcardState.filteredTerms;
+    if (terms.length === 0) {
+        alert("Não há flashcards filtrados para exportar.");
+        return;
+    }
+
+    const currentLang = localStorage.getItem('aws_sim_lang') || 'pt';
+    
+    // Cabeçalho e conteúdo do CSV (Termo;Definição;Tags)
+    // Ponto e vírgula como delimitador para evitar conflitos com vírgulas nas definições
+    let csvContent = "Termo;Definicao;Tags\n";
+
+    terms.forEach(card => {
+        const term = card.term[currentLang].replace(/;/g, ','); // Limpeza de ponto e vírgula
+        const definition = card.definition[currentLang].replace(/;/g, ',');
+        const tags = `AWS,${card.cert},${card.domain.replace(/\s+/g, '_')}`;
+        
+        csvContent += `"${term}";"${definition}";"${tags}"\n`;
+    });
+
+    // Gera o arquivo para download
+    const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Anki_AWS_Deck_${flashcardState.currentDomainFilter}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Expõe globalmente para o botão do HTML
+window.exportToAnki = exportToAnki;

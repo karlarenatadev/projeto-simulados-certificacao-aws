@@ -1,0 +1,58 @@
+[
+  {
+    "id": "diag-001",
+    "domain": "1. Cloud Concepts",
+    "difficulty": "conceptual",
+    "question": "Qual é a principal vantagem da 'Elasticidade' na nuvem AWS?",
+    "options": [
+      "A capacidade de prever os custos mensais com exatidão.",
+      "A capacidade de aumentar e diminuir os recursos de TI automaticamente de acordo com a demanda.",
+      "A capacidade de transferir a responsabilidade de segurança física para a AWS.",
+      "A capacidade de executar código sem provisionar servidores."
+    ],
+    "correct": 1,
+    "explanation": "Elasticidade é o conceito fundamental de escalar recursos horizontalmente (scale in/out) de forma automática conforme a necessidade, pagando apenas pelo que usa."
+  },
+  {
+    "id": "diag-002",
+    "domain": "2. Security and Compliance",
+    "difficulty": "conceptual",
+    "question": "No Modelo de Responsabilidade Compartilhada da AWS, qual das opções abaixo é de responsabilidade EXCLUSIVA do cliente?",
+    "options": [
+      "Manutenção física dos data centers.",
+      "Atualização do firmware dos roteadores de rede.",
+      "Configuração de regras de firewall (Security Groups) e criptografia de dados.",
+      "Garantir a refrigeração e energia das zonas de disponibilidade."
+    ],
+    "correct": 2,
+    "explanation": "A AWS cuida da 'segurança DA nuvem' (hardware, data center). O cliente cuida da 'segurança NA nuvem' (dados, permissões IAM, firewalls)."
+  },
+  {
+    "id": "diag-003",
+    "domain": "3. Cloud Technology and Services",
+    "difficulty": "conceptual",
+    "question": "Se uma empresa precisa armazenar arquivos de backup que serão acessados apenas uma ou duas vezes por ano, qual serviço S3 oferece o menor custo?",
+    "options": [
+      "Amazon S3 Standard",
+      "Amazon S3 Intelligent-Tiering",
+      "Amazon S3 Glacier Deep Archive",
+      "Amazon EBS"
+    ],
+    "correct": 2,
+    "explanation": "O S3 Glacier Deep Archive é a classe de armazenamento de menor custo da AWS, projetada para retenção de dados a longo prazo que raramente são acessados."
+  },
+  {
+    "id": "diag-004",
+    "domain": "4. Billing, Pricing, and Support",
+    "difficulty": "conceptual",
+    "question": "Qual ferramenta da AWS você deve usar para visualizar, entender e gerenciar seus custos e uso da AWS ao longo do tempo?",
+    "options": [
+      "AWS Cost Explorer",
+      "AWS Trusted Advisor",
+      "AWS Organizations",
+      "Amazon Inspector"
+    ],
+    "correct": 0,
+    "explanation": "O AWS Cost Explorer permite visualizar gráficos de uso e custos, além de prever gastos futuros com base no histórico."
+  }
+]

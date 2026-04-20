@@ -217,17 +217,25 @@
                     <div class="flex items-center gap-2"><i class="fa-solid fa-lightbulb aws-text-orange"></i> Feedback real</div>
                 </div>
                 
-                <button id="btn-start-quiz" class="aws-bg-orange hover:bg-orange-500 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all hover:shadow-lg transform hover:-translate-y-1 w-full max-w-md" aria-label="Iniciar simulação">
-                    Iniciar Simulação <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
-                </button>
-                
-                <button id="btn-start-flashcards" class="mt-3 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all hover:shadow-lg transform hover:-translate-y-1 w-full max-w-md" aria-label="Iniciar modo flashcards para revisão rápida de termos AWS">
-                    <i class="fa-solid fa-layer-group mr-2" aria-hidden="true"></i> Modo Flashcards (Revisão Rápida)
-                </button>
+                <div class="flex flex-col gap-3 w-full max-w-md mx-auto mt-6">
+                    
+                    <button id="btn-start-quiz" class="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-black py-4 px-6 rounded-xl shadow-lg shadow-orange-500/30 transition-all duration-200 hover:shadow-orange-500/50 hover:-translate-y-1 flex items-center justify-center w-full border border-orange-400" aria-label="Iniciar simulação">
+                        <i class="fa-solid fa-play mr-2" aria-hidden="true"></i> Iniciar Simulação
+                    </button>
 
-                <button onclick="startJornada()" class="mt-3 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all hover:shadow-lg transform hover:-translate-y-1 w-full max-w-md flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-route"></i> Minha Jornada (Trilha)
-                </button>
+                    <button onclick="startJornada()" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-200 hover:shadow-lg hover:-translate-y-1 flex items-center justify-center w-full">
+                        <i class="fa-solid fa-route mr-2"></i> Minha Jornada (Trilha)
+                    </button>
+
+                    <button id="btn-start-diagnostic" class="bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all duration-200 hover:shadow-lg hover:-translate-y-1 flex items-center justify-center w-full border border-slate-700 dark:border-slate-500">
+                        <i class="fa-solid fa-stethoscope mr-2"></i> Raio-X da Nuvem (Diagnóstico)
+                    </button>
+                    
+                    <button id="btn-start-flashcards" class="bg-white hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold py-3 px-6 rounded-xl shadow-sm border-2 border-slate-200 dark:border-slate-600 transition-all duration-200 hover:shadow-md hover:-translate-y-1 flex items-center justify-center w-full" aria-label="Iniciar modo flashcards">
+                        <i class="fa-solid fa-layer-group text-aws-orange mr-2" aria-hidden="true"></i> Flashcards (Revisão)
+                    </button>
+
+                </div>
                 
                 <div class="w-full max-w-md flex flex-col items-center">
                     <button id="btn-practice-mistakes" class="hidden w-full mt-4 bg-red-100 dark:bg-red-900 hover:bg-red-200 dark:hover:bg-red-800 text-red-700 dark:text-red-100 font-bold py-3 px-8 rounded-lg border-2 border-red-300 dark:border-red-700 transition-all flex items-center justify-center gap-2 shadow-sm">
@@ -386,58 +394,79 @@
                 </div>
             </div>
 
-            <div id="screen-flashcards" class="hidden p-8 md:p-12 flex flex-col items-center justify-center text-center h-full">
-                <h2 class="text-3xl font-bold mb-2 aws-text-dark dark:text-white">
-                    <i class="fa-solid fa-layer-group aws-text-orange mr-2"></i> Modo Flashcards
-                </h2>
-                <p class="text-gray-500 dark:text-gray-400 mb-6">Revise termos essenciais da AWS de forma rápida e eficiente</p>
+            <div id="screen-flashcards" class="hidden p-4 md:p-8 flex flex-col items-center justify-center text-center min-h-[80vh]">
                 
-                <!-- Filtro por Certificação -->
-                <div class="w-full max-w-4xl mb-8">
-                    <p class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3">Filtrar por Certificação:</p>
-                    <div id="flashcard-filter" class="flex flex-wrap gap-2 justify-center">
-                        <!-- Botões de filtro serão inseridos aqui via JavaScript -->
-                    </div>
+                <div class="flex flex-col items-center mb-6 fade-in">
+                    <span id="flashcards-cert-badge" class="bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 border border-orange-300 dark:border-orange-700 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest mb-4 shadow-sm">
+                        CLF-C02 </span>
+
+                    <h2 class="text-3xl font-bold mb-2 aws-text-dark dark:text-white">
+                        <i class="fa-solid fa-layer-group aws-text-orange mr-2"></i> Modo Flashcards
+                    </h2>
+                    <p class="text-gray-500 dark:text-gray-400 text-center">Revise termos essenciais da AWS de forma rápida e eficiente</p>
                 </div>
-                
-                <div class="w-full max-w-2xl mb-6">
-                    <div class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-4">
-                        Cartão <span id="flashcard-counter">1 / 96</span>
+
+                <div class="w-full max-w-2xl mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 animate-fade-in">
+                    
+                    <div class="flex-1 w-full text-left">
+                        <label for="flashcard-category" class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                            <i class="fa-solid fa-filter mr-1"></i> Focar em:
+                        </label>
+                        <select id="flashcard-category" class="w-full bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 text-gray-800 dark:text-white rounded-lg p-2.5 outline-none focus:border-orange-500 transition-colors cursor-pointer">
+                            <option value="all">Todos os Domínios (Misturado)</option>
+                            </select>
+                    </div>
+
+                    <div class="text-sm font-bold text-gray-600 dark:text-gray-300 whitespace-nowrap bg-gray-100 dark:bg-slate-700/50 py-2.5 px-4 rounded-lg border border-gray-200 dark:border-slate-600">
+                        Cartão <span id="flashcard-counter" class="text-aws-orange ml-1 text-lg">1 / 96</span>
                     </div>
                     
-                    <div id="flashcard-container" class="flashcard-container" role="button" tabindex="0" aria-label="Cartão de estudo. Clique para virar e ver a definição">
-                        <div class="flashcard">
-                            <div class="flashcard-front">
-                                <div class="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 font-bold">Termo AWS</div>
-                                <h3 id="flashcard-term" class="text-2xl md:text-3xl font-bold aws-text-dark dark:text-white mb-4">Região AWS</h3>
-                                <div class="text-sm text-gray-400 dark:text-gray-500 italic mt-8">
-                                    <i class="fa-solid fa-hand-pointer mr-2"></i> Clique para ver a definição
+                </div>
+                
+                <div class="w-full max-w-2xl mb-8">
+                        <div id="flashcard-container" class="flashcard-container mx-auto" role="button" tabindex="0" aria-label="Cartão de estudo. Clique para virar e ver a definição">
+                            
+                            <div class="flashcard shadow-lg rounded-2xl">
+                                
+                                <div class="flashcard-front bg-white dark:bg-slate-800 border-2 border-gray-100 dark:border-slate-700 rounded-2xl">
+                                    <div class="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 font-bold" id="flashcard-domain-badge">Termo AWS</div>
+                                    <h3 id="flashcard-term" class="text-2xl md:text-3xl font-bold aws-text-dark dark:text-white mb-4">Região AWS</h3>
+                                    <div class="text-sm text-gray-400 dark:text-gray-500 italic mt-8 animate-pulse">
+                                        <i class="fa-solid fa-hand-pointer mr-2"></i> Clique para ver a definição
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="flashcard-back">
-                                <div class="text-sm uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-4 font-bold">Definição Oficial</div>
-                                <p id="flashcard-definition" class="text-lg text-gray-700 dark:text-gray-200 leading-relaxed">
-                                    Área geográfica que contém múltiplas Zonas de Disponibilidade isoladas...
-                                </p>
-                                <div class="text-sm text-gray-400 dark:text-gray-500 italic mt-8">
-                                    <i class="fa-solid fa-hand-pointer mr-2"></i> Clique para voltar ao termo
+                                
+                                <div class="flashcard-back bg-orange-50 dark:bg-slate-800 border-2 border-orange-200 dark:border-slate-600 rounded-2xl">
+                                    <div class="text-sm uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-4 font-bold">Definição Oficial</div>
+                                    <p id="flashcard-definition" class="text-lg text-gray-800 dark:text-gray-200 leading-relaxed font-medium">
+                                        Área geográfica que contém múltiplas Zonas de Disponibilidade isoladas...
+                                    </p>
+                                    <div class="text-sm text-gray-400 dark:text-gray-500 italic mt-8">
+                                        <i class="fa-solid fa-rotate-left mr-2"></i> Clique para voltar
+                                    </div>
                                 </div>
+                                
                             </div>
                         </div>
                     </div>
-                </div>
                 
-                <div class="flex gap-4 mb-6">
-                    <button id="btn-prev-flashcard" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Cartão anterior">
+                <div class="flex gap-4 mb-8 w-full max-w-2xl justify-center">
+                    
+                    <button id="btn-prev-flashcard" class="flex-1 max-w-[200px] bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-white font-bold py-3 px-6 rounded-xl shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Cartão anterior">
                         <i class="fa-solid fa-arrow-left mr-2"></i> Anterior
                     </button>
-                    <button id="btn-next-flashcard" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Próximo cartão">
+
+                    <button id="btn-next-flashcard" class="flex-1 max-w-[200px] bg-aws-orange hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-xl shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-1" aria-label="Próximo cartão">
                         Próximo <i class="fa-solid fa-arrow-right ml-2"></i>
                     </button>
                 </div>
                 
-                <button id="btn-flashcards-home" class="aws-bg-dark hover:bg-gray-800 text-white font-bold py-3 px-8 rounded-lg shadow-md transition-all">
+                <button id="btn-flashcards-home" class="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white font-bold py-2 px-6 transition-colors underline-offset-4 hover:underline">
                     <i class="fa-solid fa-house mr-2"></i> Voltar ao Início
+                </button>
+
+                <button onclick="exportToAnki()" class="flex items-center gap-2 text-xs font-bold text-orange-600 hover:text-white-800 transition-colors py-2 px-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+                    <i class="fa-solid fa-file-export"></i> Exportar para Anki
                 </button>
             </div>
         </section>
@@ -633,5 +662,6 @@
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 </body>
 </html>
