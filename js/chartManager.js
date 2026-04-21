@@ -5,6 +5,7 @@ import { storageManager } from './storageManager.js';
 // GRÁFICO DE RADAR - TELA DE RESULTADOS
 // ============================================================================
 export async function renderRadarChart(results, currentCertInfo) {
+    
     let canvas = document.getElementById('radarChart');
     
     // Recuperação de segurança do canvas

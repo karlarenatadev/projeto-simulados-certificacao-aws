@@ -7,6 +7,7 @@ import { initializeUI } from './i18n/initUI.js';
 import { renderTrail, unlockNextModule } from './gamificacao/trailManager.js';
 import { renderGuildDashboard } from './gamificacao/leaderboard.js';
 import { renderBadges } from './gamificacao/badges.js';
+import { togglePomodoroWidget, togglePomodoro, resetPomodoro } from './pomodoroManager.js';
 
 const APP_CONFIG = {
     PASSING_SCORE: 70,
@@ -16,7 +17,6 @@ const APP_CONFIG = {
 const engine = new QuizEngine(APP_CONFIG.PASSING_SCORE);
 
 let uiState = {
-    
     currentCertificationInfo: null,
     timerInterval: null,
     timeRemaining: 0,
@@ -32,40 +32,59 @@ let uiState = {
     qTimeRemaining: 45
 };
 
+let pomodoroState = {
+    timer: null,
+    timeLeft: 15 * 60, // Padrão: 15 min (Alinhado à sua Sprint)
+    isActive: false,
+    currentMode: 'work', // 'work', 'shortBreak', 'longBreak'
+    sessionsCompleted: 0
+};
+
 let lastRenderedResult = null;
 // INICIALIZAÇÃO
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // ══════════════════════════════════════════════════════════════
+    // FASE 1: Configurações Base (Sincronizadas)
+    // ══════════════════════════════════════════════════════════════
     initTheme();
     initializeUI(uiState.language);
-
-    // Garante que as atualizações dos cards rodam DEPOIS do initializeUI terminar
-    setTimeout(() => {
-        updateSidebarTexts();
-        updateHistoryDisplay();
-        updateSidebarProgress();
-        renderSprintUI();
-    }, 100);
-
+    
+    // ══════════════════════════════════════════════════════════════
+    // FASE 2: Traduções (Só títulos estáticos, sem destruir conteúdo)
+    // ══════════════════════════════════════════════════════════════
+    updateSidebarTexts();
+    
+    // ══════════════════════════════════════════════════════════════
+    // FASE 3: Injeção de Dados Dinâmicos (ORDEM GARANTIDA)
+    // ══════════════════════════════════════════════════════════════
+    await renderSidebarContent();
+    
+    // ══════════════════════════════════════════════════════════════
+    // FASE 4: Inicializações Secundárias
+    // ══════════════════════════════════════════════════════════════
     renderGamification();
     updateLanguageButtonUI();
     initPWAInstall();
     wireUIActions();
 
-    if (typeof renderGlobalRadarChart === 'function') {
-        renderGlobalRadarChart();
-    }
-
+    // ══════════════════════════════════════════════════════════════
+    // FASE 5: Setup de Certificação
+    // ══════════════════════════════════════════════════════════════
     const certSelect = document.getElementById('certification-select');
-
+    
     if (certSelect && certificationPaths && certificationPaths[certSelect.value]) {
         uiState.currentCertificationInfo = certificationPaths[certSelect.value];
         updateTopicDropdown();
         loadLastScore();
+        updateDifficultyFilters(certSelect.value);
     }
 
+    // ══════════════════════════════════════════════════════════════
+    // LISTENER: Mudança de Certificação
+    // ══════════════════════════════════════════════════════════════
     if (certSelect) {
-        certSelect.addEventListener('change', () => {
+        certSelect.addEventListener('change', async () => {
             if (certificationPaths && certificationPaths[certSelect.value]) {
                 uiState.currentCertificationInfo = certificationPaths[certSelect.value];
                 
@@ -75,21 +94,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadLastScore();
                 updateDifficultyFilters(certSelect.value);
 
-                if (typeof renderGlobalRadarChart === 'function') {
-                    renderGlobalRadarChart();
-                }
-
+                // Atualiza a Sprint para a nova certificação
                 const badge = document.getElementById('sprint-current-cert-badge');
                 if (badge) badge.innerText = certId.toUpperCase();
-                renderSprintUI(); // recarrega a sprint para nova certificação
+                
+                renderSprintUI();
+                
+                // Re-renderiza o gráfico global
+                if (typeof renderGlobalRadarChart === 'function') {
+                    await renderGlobalRadarChart();
+                }
             }
         });
     }
-
-    if (certSelect) {
-        updateDifficultyFilters(certSelect.value);
-    }
 });
+
+
+// RENDERIZAÇÃO ORDENADA E SEQUENCIAL DA SIDEBAR
+async function renderSidebarContent() {
+    try {
+        // BLOCO 1: Progresso do Usuário
+        updateSidebarProgress();
+        
+        // BLOCO 2: Sprint de 14 Dias
+        renderSprintUI();
+        
+        // BLOCO 3: Histórico de Quizzes
+        updateHistoryDisplay();
+        
+        // BLOCO 4: Gráfico Radar Global (aguarda Chart.js)
+        if (typeof Chart !== 'undefined' && typeof renderGlobalRadarChart === 'function') {
+            await renderGlobalRadarChart();
+        }
+        
+        // BLOCO 5: Insight Dinâmico (Depende do histórico)
+        const history = storageManager.getHistory();
+        updateDynamicInsight(Array.isArray(history) ? history : []);
+        
+    } catch (error) {
+        console.error('Erro ao renderizar sidebar:', error);
+    }
+}
 
 function bindClick(id, handler) {
     const element = document.getElementById(id);
@@ -1354,44 +1399,52 @@ function toggleDarkMode() {
 }
 
 function toggleLanguage() {
-    // Troca o estado global e persiste
+    // ══════════════════════════════════════════════════════════════
+    // 1. Troca o idioma global
+    // ══════════════════════════════════════════════════════════════
     uiState.language = uiState.language === 'pt' ? 'en' : 'pt';
     localStorage.setItem('aws_sim_lang', uiState.language);
     
-    // Atualiza componentes visuais imediatos
+    // ══════════════════════════════════════════════════════════════
+    // 2. Atualiza o botão de idioma
+    // ══════════════════════════════════════════════════════════════
     updateLanguageButtonUI();
     
-    // O "Maestro" do i18n (Traduções estáticas)
-    // Chamamos primeiro para que ele traduza o que for padrão
-    initializeUI(uiState.language); 
-
-    // Tratamento de telas específicas (Flashcards)
-    const flashcardsScreen = document.getElementById('screen-flashcards');
-    if (flashcardsScreen && !flashcardsScreen.classList.contains('hidden')) {
-        reloadCurrentFlashcard();
-    }
-
+    // ══════════════════════════════════════════════════════════════
+    // 3. Re-traduz SOMENTE os textos estáticos (sem destruir dados)
+    // ══════════════════════════════════════════════════════════════
+    initializeUI(uiState.language);
+    updateSidebarTexts();
+    
+    // ══════════════════════════════════════════════════════════════
+    // 4. Atualiza componentes dependentes de idioma
+    // ══════════════════════════════════════════════════════════════
     const certSelect = document.getElementById('certification-select');
     if (certSelect) {
         updateDifficultyFilters(certSelect.value);
         updateTopicDropdown();
     }
-
-    //Sincronização Dinâmica
-    // Usamos o setTimeout para garantir que o DOM já foi processado pelo initializeUI
-    setTimeout(() => {
-        updateSidebarTexts(); 
-
-        renderSprintUI();
-        updateHistoryDisplay();
-        updateSidebarProgress();
-        
-        if (typeof updateDynamicInsight === 'function') {
-            updateDynamicInsight();
+    
+    // ══════════════════════════════════════════════════════════════
+    // 5. Re-renderiza dados dinâmicos (mantém estrutura)
+    // ══════════════════════════════════════════════════════════════
+    renderSprintUI();           // Atualiza labels dos dias
+    updateHistoryDisplay();     // Atualiza "Ver Relatório" etc
+    
+    const history = storageManager.getHistory();
+    updateDynamicInsight(Array.isArray(history) ? history : []);
+    
+    // ══════════════════════════════════════════════════════════════
+    // 6. Tela de Flashcards (Se estiver ativa)
+    // ══════════════════════════════════════════════════════════════
+    const flashcardsScreen = document.getElementById('screen-flashcards');
+    if (flashcardsScreen && !flashcardsScreen.classList.contains('hidden')) {
+        if (typeof reloadCurrentFlashcard === 'function') {
+            reloadCurrentFlashcard();
         }
-        
-        console.log(`[i18n] Interface atualizada para: ${uiState.language.toUpperCase()}`);
-    }, 100);
+    }
+    
+    console.log(`[i18n] Interface atualizada para: ${uiState.language.toUpperCase()}`);
 }
 
 function updateLanguageButtonUI() {
@@ -1834,33 +1887,37 @@ function updateSidebarTexts() {
             progressTotal:     'Progresso Total',
             streakLabel:       'Ofensiva:',
             insightTitle:      'Insight de Estudo',
-            historyTitle:      'Histórico',
+            historyTitle:      'Últimas Sessões',
             certStatsTitle:    'Estatísticas da Certificação',
             certStatsEmpty:    'Faça seu primeiro simulado para ver suas estatísticas aqui!',
             statsQuizzes:      'Simulados',
             statsAvg:          'Média',
             statsQuestions:    'Questões',
             journeyStart:      'Comece sua jornada!',
-            journeyMsg:        'Faça seu primeiro simulado para receber insights personalizados.'
+            journeyMsg:        'Faça seu primeiro simulado para receber insights personalizados.',
+            sprintTitle:       'Sprint de Estudos (14 Dias)',
+            sprintSubtitle:    'Sua meta diária de 15 minutos para dominar a nuvem.'
         },
         en: {
             myProgress:        'My Progress',
             progressTotal:     'Total Progress',
             streakLabel:       'Streak:',
             insightTitle:      'Study Insight',
-            historyTitle:      'History',
+            historyTitle:      'Recent Sessions',
             certStatsTitle:    'Certification Statistics',
             certStatsEmpty:    'Complete your first quiz to see your statistics here!',
             statsQuizzes:      'Quizzes',
             statsAvg:          'Average',
             statsQuestions:    'Questions',
             journeyStart:      'Start your journey!',
-            journeyMsg:        'Complete your first quiz to receive personalized insights.'
+            journeyMsg:        'Complete your first quiz to receive personalized insights.',
+            sprintTitle:       'Study Sprint (14 Days)',
+            sprintSubtitle:    'Your daily 15-minute goal to master the cloud.'
         }
     };
 
     const T = texts[lang];
-
+    
     const set = (id, val) => { 
         const el = document.getElementById(id); 
         if (el) el.textContent = val; 
@@ -1871,8 +1928,8 @@ function updateSidebarTexts() {
     set('sidebar-progress-total-label', T.progressTotal);
     set('sidebar-streak-label',         T.streakLabel);
 
-    // 2. Card Insight
-    set('insight-card-title',           T.insightTitle); 
+    // 2. Card Insight (Só atualiza o título do card, não o conteúdo dinâmico)
+    set('insight-card-title',           T.insightTitle);
 
     // 3. Card Histórico
     set('history-card-title',           T.historyTitle);
@@ -1884,10 +1941,10 @@ function updateSidebarTexts() {
     set('stats-label-avg',              T.statsAvg);
     set('stats-label-questions',        T.statsQuestions);
 
-    // Nota: O módulo Sprint é traduzido automaticamente pela renderSprintUI()!
-    // Nota: O botão "Ver Relatório" é traduzido automaticamente pela updateHistoryDisplay()!
+    // 5. Card Sprint (Títulos e labels fixos)
+    set('sprint-module-title',          T.sprintTitle);
+    set('sprint-module-subtitle',       T.sprintSubtitle);
 
-    // Atualiza o insight padrão preservando o ícone
     const insightEl = document.getElementById('dynamic-insight');
     if (insightEl && insightEl.dataset.empty === 'true') {
         insightEl.innerHTML = `
@@ -1902,7 +1959,6 @@ function updateSidebarTexts() {
     }
 }
 
-window.updateSidebarTexts = updateSidebarTexts;
 function updateSidebarProgress() {
     const gamification = JSON.parse(localStorage.getItem('aws_sim_gamification')) || { completedStages: [], unlockedStages: [] };
     const certSelect = document.getElementById('certification-select');
@@ -1981,6 +2037,10 @@ window.clearMistakes = clearMistakes;
 window.showScreen = showScreen;
 window.startJornada = startJornada;
 window.updateSidebarProgress = updateSidebarProgress;
+window.updateSidebarTexts = updateSidebarTexts;
+window.togglePomodoroWidget = togglePomodoroWidget;
+window.togglePomodoro = togglePomodoro;
+window.resetPomodoro = resetPomodoro;
 
 // SISTEMA DE RECOMENDAÇÃO INTELIGENTE
 window.startSmartFlashcards = function(weakDomainsStr) {

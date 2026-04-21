@@ -21,6 +21,14 @@
     <script>
         tailwind.config = {
             darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'aws-dark': '#232f3e',
+                        'aws-orange': '#ff9900',
+                    }
+                }
+            }
         }
     </script>
 
@@ -45,9 +53,6 @@
             </div>
         </div>
         <div class="flex items-center gap-2 md:gap-4 text-sm font-semibold">
-            <button id="install-app" class="hidden md:flex items-center gap-2 px-3 py-1 border border-white/30 rounded-lg hover:bg-white/10 transition-all text-sm">
-                <i class="fa-solid fa-download"></i> Baixar App
-            </button>
             
             <button id="btn-language" class="text-gray-300 hover:text-white transition-colors px-2 py-1 md:px-3 md:py-2 rounded-lg hover:bg-gray-700 flex items-center gap-1 md:gap-2" aria-label="Alternar idioma" title="Alternar idioma">
                 <span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>
@@ -55,6 +60,15 @@
             
             <button id="theme-toggle" class="text-gray-300 hover:text-white transition-colors p-1.5 md:p-2 rounded-full hover:bg-gray-700" aria-label="Alternar modo escuro">
                 <i id="theme-icon" class="fa-solid fa-moon text-base md:text-xl" aria-hidden="true"></i>
+            </button>
+
+            <button id="header-pomodoro-btn" onclick="togglePomodoroWidget()" class="flex items-center gap-2 px-3 py-1 bg-orange-500/10 border border-orange-500/50 rounded-lg hover:bg-orange-500/20 transition-all text-sm text-orange-400 group">
+                <i class="fa-solid fa-stopwatch group-hover:animate-pulse"></i> 
+                <span id="header-pomodoro-timer" class="font-mono">15:00</span>
+            </button>
+
+            <button id="install-app" class="hidden md:flex items-center gap-2 px-3 py-1 border border-white/30 rounded-lg hover:bg-white/10 transition-all text-sm">
+                <i class="fa-solid fa-download"></i> Baixar App
             </button>
             
             <div id="score-container" style="display: none;" class="bg-gray-700 px-2 py-1 md:px-3 rounded-full flex items-center gap-1 md:gap-2">
@@ -471,151 +485,76 @@
             </div>
         </section>
 
-        <aside id="side-info" class="lg:w-1/3 flex flex-col gap-6">
+        <aside id="side-info" class="lg:w-1/3 flex flex-col gap-6 w-full shrink-0">
 
-            <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 fade-in transition-colors">
-                
-                <h3 class="text-lg font-bold border-b border-gray-200 dark:border-slate-600 pb-3 mb-4 aws-text-dark dark:text-white flex items-center">
-                    <i class="fa-solid fa-medal text-yellow-500 mr-2"></i> <span id="sidebar-my-progress-title">O Meu Progresso</span>
+            <div class="flex flex-col gap-3 w-full">
+                <h3 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">
+                    <span id="sidebar-my-progress-title">O Meu Progresso</span>
                 </h3>
-
-                <div class="flex items-center gap-3 mb-5 mt-2">
-                    <div id="sidebar-cert-icon" class="w-10 h-10 rounded-lg bg-aws-orange/10 flex items-center justify-center border border-aws-orange/20">
-                        <i class="fa-solid fa-certificate text-aws-orange"></i>
+                <div id="user-progress-container" class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-gray-200 dark:border-slate-700 w-full shadow-sm">
+                    <div class="flex justify-between items-center mb-2">
+                        <span id="sidebar-progress-total-label" class="text-sm font-bold text-gray-700 dark:text-gray-300">Progresso Total</span>
+                        <span id="sidebar-pct-text" class="text-sm font-bold text-aws-orange">0%</span>
                     </div>
-                    <div>
-                        <p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold" id="sidebar-cert-label">Cloud Practitioner</p>
-                        <h4 class="text-sm font-bold aws-text-dark dark:text-white" id="sidebar-cert-status">Em andamento</h4>
+                    <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2.5 mb-4">
+                        <div id="sidebar-pct-bar" class="bg-aws-orange h-2.5 rounded-full" style="width: 0%"></div>
                     </div>
-                </div>
-
-                <div class="mb-5">
-                    <div class="flex justify-between items-end mb-1">
-                        <span id="sidebar-progress-total-label" class="text-[10px] font-bold text-gray-500 uppercase">Progresso Total</span>
-                        <span class="text-xs font-mono font-bold text-aws-orange" id="sidebar-pct-text">0%</span>
-                    </div>
-                    <div class="w-full bg-gray-100 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
-                        <div id="sidebar-pct-bar" class="bg-aws-orange h-full transition-all duration-1000 ease-out sidebar-progress-bar"></div>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-slate-600">
-                    <div class="flex items-center gap-2">
-                        <i class="fa-solid fa-fire text-orange-500 text-xs"></i>
-                        <span id="sidebar-streak-label" class="text-[11px] font-medium text-gray-500 dark:text-gray-400">Ofensiva:</span>
-                    </div>
-                    <div class="flex gap-1" id="sidebar-streak-dots">
-                        <span class="text-xs font-bold text-aws-dark dark:text-gray-200" id="sidebar-streak-value">1 dia</span>
+                    <div class="flex justify-between items-center text-sm">
+                        <span id="sidebar-streak-label" class="text-gray-600 dark:text-gray-400">Ofensiva:</span>
+                        <span class="font-bold text-orange-600 flex items-center gap-1">
+                            <i class="fa-solid fa-fire"></i> <span id="sidebar-streak-value">0 dias</span>
+                        </span>
                     </div>
                 </div>
             </div>
 
-            <div id="sprint-module" class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-slate-700 transition-colors relative overflow-hidden"> 
-                <div class="absolute top-0 right-0 w-32 h-32 bg-aws-orange opacity-5 rounded-full -mr-10 -mt-10 pointer-events-none"></div>
-                
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
-                    <div class="flex-1">
-                        <div class="text-xl font-bold text-gray-800 dark:text-white flex flex-wrap items-center gap-x-3 gap-y-2">
-                            <span class="flex items-center gap-2 whitespace-nowrap">
-                                <i class="fa-solid fa-route text-aws-orange"></i> 
-                                <span id="sprint-module-title">Sprint de Estudos (14 Dias)</span>
-                            </span>
-                            <span id="sprint-current-cert-badge" class="bg-gray-100 dark:bg-slate-700 text-aws-orange text-[11px] font-black tracking-widest px-2 py-1 rounded border border-gray-200 dark:border-slate-600 shadow-sm leading-none flex items-center">
-                                CLF-C02
-                            </span>
-                        </div>
-                        <p id="sprint-module-subtitle" class="text-sm text-gray-500 dark:text-slate-400 mt-1.5">
-                            Sua meta diária de 15 minutos para dominar a nuvem.
-                        </p>
-                    </div>
-                    
-                    <div class="text-left md:text-right border-t md:border-0 border-gray-100 dark:border-slate-700 w-full md:w-auto pt-3 md:pt-0 shrink-0">
-                        <span id="sprint-progress-label" class="text-xs font-bold uppercase tracking-wider text-gray-400 block mb-1">Progresso</span>
-                        <div class="text-2xl font-black text-aws-orange leading-none" id="sprint-progress-text">0%</div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-7 md:grid-cols-14 gap-2 mb-6" id="sprint-days-grid">
-                </div>
-
-                <div class="flex items-center justify-between bg-gray-50 dark:bg-slate-750 p-4 rounded-xl border border-gray-100 dark:border-slate-600">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-aws-orange border border-orange-200 dark:border-orange-800">
-                            <i class="fa-solid fa-stopwatch text-lg"></i>
-                        </div>
+            <div class="flex flex-col gap-3 w-full">
+                <h3 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">Sprint</h3>
+                <div id="sprint-module" class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-gray-200 dark:border-slate-700 w-full shadow-sm relative">
+                    <div class="flex justify-between items-start mb-4">
                         <div>
-                            <h4 class="font-bold text-gray-800 dark:text-white text-sm" id="sprint-current-day-label">Dia 1: Conceitos Cloud</h4>
-                            <p class="text-xs text-gray-500 dark:text-slate-400">10 Questões • Meta: 80%</p>
+                            <h4 id="sprint-module-title" class="font-bold text-gray-800 dark:text-white text-sm">Sprint de Estudos</h4>
+                            <p id="sprint-module-subtitle" class="text-xs text-gray-500">Sua meta diária</p>
                         </div>
+                        <span id="sprint-current-cert-badge" class="bg-aws-dark text-white text-[10px] font-bold px-2 py-1 rounded">AWS</span>
                     </div>
-
-                    <button id="sprint-start-btn" onclick="startMicroSprint()" class="bg-aws-orange hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-lg transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 text-sm">
-                        Iniciar Sprint (15m)
-                    </button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full flex-grow">
-                
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 flex flex-col h-full transition-colors">
-                    <h3 class="text-lg font-bold border-b border-gray-200 dark:border-slate-600 pb-2 mb-4 aws-text-dark dark:text-white">
-                        <i class="fa-solid fa-bolt text-yellow-500 mr-2" aria-hidden="true"></i> <span id="insight-card-title">Insight de Estudo</span>
-                    </h3>
-                    <div id="dynamic-insight" class="text-sm text-gray-600 dark:text-gray-300 italic leading-relaxed flex-grow" role="status" aria-live="polite">
-                        Comece o simulado para que a IA mapeie seu perfil de conhecimento.
-                    </div>
-                </div>
-                
-                <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 flex flex-col h-full transition-colors">
-                    <div class="flex justify-between items-center border-b border-gray-200 dark:border-slate-600 pb-2 mb-3">
-                        <h3 class="text-lg font-bold aws-text-dark dark:text-white">
-                            <i class="fa-solid fa-list-ul text-yellow-500 mr-2" aria-hidden="true"></i> <span id="history-card-title">Histórico</span>
-                        </h3>
-                        <button id="btn-clear-history" class="text-gray-400 hover:text-red-500 transition-colors p-1" title="Limpar histórico" aria-label="Limpar histórico de simulados">
-                            <i class="fa-solid fa-trash-can text-sm" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div id="history-list" class="text-sm text-gray-500 dark:text-gray-400 italic flex-grow overflow-y-auto custom-scroll" role="status">
-                        Nenhum simulado realizado ainda.
+                    <div id="sprint-days-grid" class="w-full"></div>
+                    <div class="mt-4 pt-3 border-t border-gray-100 dark:border-slate-700 text-center">
+                        <p id="sprint-current-day-label" class="text-sm font-bold text-gray-800 dark:text-gray-200">Dia 1</p>
+                        <button id="sprint-start-btn" onclick="startMicroSprint()" class="mt-2 w-full bg-aws-orange text-white font-bold py-2 rounded-lg text-sm">Iniciar Sprint</button>
                     </div>
                 </div>
             </div>
-            
-            <div id="global-performance-dashboard" class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 transition-colors">
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-chart-pie text-aws-orange"></i> <span id="cert-stats-title">Estatísticas da Certificação</span>
+
+            <div class="flex flex-col gap-3 w-full">
+                <h3 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">
+                    <span id="insight-card-title">Insight de Estudo</span>
                 </h3>
-                
-                <div id="global-chart-empty" class="hidden text-center py-8">
-                    <div class="w-12 h-12 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <i class="fa-solid fa-chart-line text-2xl text-gray-400 dark:text-gray-500"></i>
-                    </div>
-                    <p id="cert-stats-empty-msg" class="text-gray-500 dark:text-gray-400 text-xs">
-                        Faça seu primeiro simulado para ver suas estatísticas aqui!
-                    </p>
+                <div id="study-insight-container" class="bg-orange-50 dark:bg-orange-900/20 p-5 rounded-xl border-l-4 border-l-orange-500 border border-y-orange-200 border-r-orange-200 w-full shadow-sm">
+                    <div id="dynamic-insight" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed break-words"></div>
                 </div>
-                
-                <div id="global-chart-container" class="relative h-[280px] w-full mb-4">
+            </div>
+
+            <div class="flex flex-col gap-3 w-full">
+                <h3 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">
+                    <span id="cert-stats-title">Estatísticas da Certificação</span>
+                </h3>
+                <div id="global-performance-dashboard" class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-gray-200 dark:border-slate-700 w-full shadow-sm min-h-[250px] flex items-center justify-center">
                     <canvas id="globalRadarChart"></canvas>
                 </div>
-                
-                <div id="global-stats-summary" class="pt-4 border-t border-gray-200 dark:border-slate-600 grid grid-cols-3 gap-3 text-center text-xs">
-                    <div>
-                        <div class="text-xl font-bold text-aws-orange" id="total-quizzes">0</div>
-                        <div id="stats-label-quizzes" class="text-gray-600 dark:text-gray-400 text-[10px]">Simulados</div>
-                    </div>
-                    <div>
-                        <div class="text-xl font-bold text-green-600 dark:text-green-400" id="avg-score">0%</div>
-                        <div id="stats-label-avg" class="text-gray-600 dark:text-gray-400 text-[10px]">Média</div>
-                    </div>
-                    <div>
-                        <div class="text-xl font-bold text-blue-600 dark:text-blue-400" id="total-questions">0</div>
-                        <div id="stats-label-questions" class="text-gray-600 dark:text-gray-400 text-[10px]">Questões</div>
-                    </div>
+            </div>
+
+            <div class="flex flex-col gap-3 w-full">
+                <h3 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">
+                    <span id="history-card-title">Últimas Sessões</span>
+                </h3>
+                <div id="history-container" class="bg-white dark:bg-slate-800 p-5 rounded-xl border border-gray-200 dark:border-slate-700 w-full shadow-sm">
+                    <div id="history-list" class="space-y-3 w-full"></div>
                 </div>
             </div>
 
         </aside>
+
     </main>
 
     <footer class="text-center py-6 text-sm text-gray-500 dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition-colors">
@@ -639,6 +578,7 @@
         });
     </script>
     <script src="js/sprintData.js" type="module"></script>
+    <script src="js/pomodoroManager.js" type="module"></script>
     <script src="js/app.js" type="module"></script>
     <script>
         if ('serviceWorker' in navigator) {
@@ -663,5 +603,29 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
+    <div id="pomodoro-widget" class="hidden fixed top-20 right-6 z-50 bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 w-64 animate-fade-in">
+        <div class="flex justify-between items-center mb-4">
+            <h4 class="font-bold text-gray-800 dark:text-white text-sm flex items-center gap-2">
+                <i class="fa-solid fa-stopwatch text-aws-orange"></i> Sessão de Foco
+            </h4>
+            <button onclick="togglePomodoroWidget()" class="text-gray-400 hover:text-red-500 transition-colors" aria-label="Fechar widget Pomodoro" type="button">
+                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+        </div>
+        
+        <div class="text-4xl font-black text-center text-aws-dark dark:text-white mb-6 tracking-wider font-mono" id="pomodoro-display">
+            15:00
+        </div>
+        
+        <div class="flex justify-center gap-4">
+            <button id="btn-pomodoro-toggle" onclick="togglePomodoro()" class="bg-aws-orange hover:bg-orange-600 text-white p-4 rounded-full w-14 h-14 flex items-center justify-center transition-transform hover:scale-105 shadow-md" aria-label="Iniciar Pomodoro" type="button">
+                <i class="fa-solid fa-play text-xl" aria-hidden="true"></i>
+            </button>
+            <button onclick="resetPomodoro()" class="bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-gray-600 dark:text-gray-300 p-4 rounded-full w-14 h-14 flex items-center justify-center transition-colors" aria-label="Reiniciar Pomodoro" type="button">
+                <i class="fa-solid fa-rotate-right font-bold" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
 </body>
 </html>

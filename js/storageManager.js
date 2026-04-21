@@ -289,6 +289,70 @@ export class StorageManager {
   }
 
   /**
+   * Salva uma sessão de foco concluída no log de séries temporais
+   * @param {number} minutes - Quantidade de minutos focados
+   * @param {string} type - Tipo da sessão ('work', 'shortBreak', 'longBreak')
+   */
+  saveFocusSession(minutes, type = 'work') {
+    try {
+      const key = this._getKey('focus_log'); // Gera a chave 'aws_sim_focus_log'
+      const history = this.getFocusHistory();
+      
+      const newEntry = {
+        date: new Date().toISOString().split('T')[0], // Formato 'YYYY-MM-DD'
+        timestamp: new Date().toISOString(),
+        minutes: minutes,
+        type: type
+      };
+
+      history.push(newEntry);
+      localStorage.setItem(key, JSON.stringify(history));
+      return true;
+    } catch (error) {
+      console.error('Erro ao salvar sessão de foco:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Recupera todo o histórico de logs de foco
+   * @returns {Array} Lista de sessões de foco
+   */
+  getFocusHistory() {
+    try {
+      const key = this._getKey('focus_log');
+      const data = localStorage.getItem(key);
+      return data ? JSON.parse(data) : [];
+    } catch (error) {
+      console.error('Erro ao carregar histórico de foco:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Calcula o total de minutos focados (Útil para o seu perfil analítico)
+   * @returns {number} Total de minutos
+   */
+  getTotalFocusMinutes() {
+    const history = this.getFocusHistory();
+    return history
+      .filter(session => session.type === 'work')
+      .reduce((total, session) => total + session.minutes, 0);
+  }
+
+  /**
+   * Limpa apenas o histórico de foco
+   */
+  clearFocusHistory() {
+    try {
+      localStorage.removeItem(this._getKey('focus_log'));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+  
+  /**
    * Limpa todos os dados do simulador
    * @returns {boolean} True se limpou com sucesso, False caso contrário
    * 
