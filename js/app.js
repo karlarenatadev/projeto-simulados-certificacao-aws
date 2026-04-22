@@ -2273,22 +2273,72 @@ function handleMissionFailure(reason) {
 }
 
 // MÓDULO: SPRINT 14 DIAS
-// O mapa do tesouro: O que cai em cada dia do Sprint da certificação atual
-const sprintMap = {
-    1:  { domainIndex: 0,     pt: "Conceitos Cloud - Parte 1",   en: "Cloud Concepts - Part 1" },
-    2:  { domainIndex: 0,     pt: "Conceitos Cloud - Parte 2",   en: "Cloud Concepts - Part 2" },
-    3:  { domainIndex: 0,     pt: "Conceitos Cloud - Revisão",   en: "Cloud Concepts - Review" },
-    4:  { domainIndex: 1,     pt: "Segurança - Parte 1",         en: "Security - Part 1" },
-    5:  { domainIndex: 1,     pt: "Segurança - Parte 2",         en: "Security - Part 2" },
-    6:  { domainIndex: 1,     pt: "Segurança - Revisão",         en: "Security - Review" },
-    7:  { domainIndex: 2,     pt: "Tecnologia - Serviços Core",  en: "Technology - Core Services" },
-    8:  { domainIndex: 2,     pt: "Tecnologia - Redes e BD",     en: "Technology - Networks & DB" },
-    9:  { domainIndex: 2,     pt: "Tecnologia - Arquitetura",    en: "Technology - Architecture" },
-    10: { domainIndex: 3,     pt: "Faturamento - Parte 1",       en: "Billing - Part 1" },
-    11: { domainIndex: 3,     pt: "Faturamento - Parte 2",       en: "Billing - Part 2" },
-    12: { domainIndex: 'all', pt: "Simulado Misto - Fácil",      en: "Mixed Quiz - Easy" },
-    13: { domainIndex: 'all', pt: "Simulado Misto - Difícil",    en: "Mixed Quiz - Hard" },
-    14: { domainIndex: 'final', pt: "O Desafio Final (Boss)",    en: "The Final Challenge (Boss)" }
+// O mapa do tesouro: O que cai em cada dia do Sprint por certificação
+const sprintMaps = {
+    'clf-c02': {
+        1:  { pt: "Conceitos Cloud - Parte 1",   en: "Cloud Concepts - Part 1" },
+        2:  { pt: "Conceitos Cloud - Parte 2",   en: "Cloud Concepts - Part 2" },
+        3:  { pt: "Conceitos Cloud - Revisão",   en: "Cloud Concepts - Review" },
+        4:  { pt: "Segurança - Parte 1",         en: "Security - Part 1" },
+        5:  { pt: "Segurança - Parte 2",         en: "Security - Part 2" },
+        6:  { pt: "Segurança - Revisão",         en: "Security - Review" },
+        7:  { pt: "Tecnologia - Serviços Core",  en: "Technology - Core Services" },
+        8:  { pt: "Tecnologia - Redes e BD",     en: "Technology - Networks & DB" },
+        9:  { pt: "Tecnologia - Arquitetura",    en: "Technology - Architecture" },
+        10: { pt: "Faturamento - Parte 1",       en: "Billing - Part 1" },
+        11: { pt: "Faturamento - Parte 2",       en: "Billing - Part 2" },
+        12: { pt: "Simulado Misto - Fácil",      en: "Mixed Quiz - Easy" },
+        13: { pt: "Simulado Misto - Difícil",    en: "Mixed Quiz - Hard" },
+        14: { pt: "O Desafio Final (Boss)",      en: "The Final Challenge (Boss)" }
+    },
+    'saa-c03': {
+        1:  { pt: "Design Resiliente - I",       en: "Resilient Design - I" },
+        2:  { pt: "Design Resiliente - II",      en: "Resilient Design - II" },
+        3:  { pt: "Alta Performance - I",        en: "High Performance - I" },
+        4:  { pt: "Alta Performance - II",       en: "High Performance - II" },
+        5:  { pt: "Segurança de Aplicações",     en: "Application Security" },
+        6:  { pt: "IAM e Controle de Acesso",    en: "IAM & Access Control" },
+        7:  { pt: "Otimização de Custos - I",    en: "Cost Optimization - I" },
+        8:  { pt: "Otimização de Custos - II",   en: "Cost Optimization - II" },
+        9:  { pt: "Migração e Dados",            en: "Migration & Data" },
+        10: { pt: "Serviços Serverless",         en: "Serverless Services" },
+        11: { pt: "Revisão Geral - Arquitetura", en: "Architecture Review" },
+        12: { pt: "Simulado Misto - Fácil",      en: "Mixed Quiz - Easy" },
+        13: { pt: "Simulado Misto - Difícil",    en: "Mixed Quiz - Hard" },
+        14: { pt: "O Desafio Final (Boss)",      en: "The Final Challenge (Boss)" }
+    },
+    'aif-c01': {
+        1:  { pt: "Fundamentos de IA/ML",        en: "AI/ML Fundamentals" },
+        2:  { pt: "IA Generativa Básica",        en: "GenAI Basics" },
+        3:  { pt: "Modelos de Fundação",         en: "Foundation Models" },
+        4:  { pt: "Ajuste de Modelos (Tuning)",  en: "Model Tuning" },
+        5:  { pt: "Engenharia de Prompts",       en: "Prompt Engineering" },
+        6:  { pt: "IA Responsável e Ética",      en: "Responsible AI & Ethics" },
+        7:  { pt: "Segurança em IA",             en: "AI Security" },
+        8:  { pt: "Governança e Conformidade",   en: "Governance & Compliance" },
+        9:  { pt: "Amazon Bedrock - I",          en: "Amazon Bedrock - I" },
+        10: { pt: "Amazon SageMaker",            en: "Amazon SageMaker" },
+        11: { pt: "Revisão Geral - IA AWS",      en: "AWS AI Review" },
+        12: { pt: "Simulado Misto - Fácil",      en: "Mixed Quiz - Easy" },
+        13: { pt: "Simulado Misto - Difícil",    en: "Mixed Quiz - Hard" },
+        14: { pt: "O Desafio Final (Boss)",      en: "The Final Challenge (Boss)" }
+    },
+    'dva-c02': {
+        1:  { pt: "Desenvolvimento com AWS",     en: "Developing with AWS" },
+        2:  { pt: "Segurança e Autenticação",    en: "Security & Auth" },
+        3:  { pt: "Armazenamento e BDs",         en: "Storage & Databases" },
+        4:  { pt: "DynamoDB Avançado",           en: "Advanced DynamoDB" },
+        5:  { pt: "Integração (SQS/SNS)",        en: "Integration (SQS/SNS)" },
+        6:  { pt: "Serviços Serverless (Lambda)",en: "Serverless (Lambda)" },
+        7:  { pt: "API Gateway e Containers",    en: "API Gateway & Containers" },
+        8:  { pt: "CI/CD no AWS (CodeSuite)",    en: "AWS CI/CD (CodeSuite)" },
+        9:  { pt: "Monitoramento e Logs",        en: "Monitoring & Logging" },
+        10: { pt: "Otimização e Troubleshooting",en: "Troubleshooting" },
+        11: { pt: "Revisão - Dev Associate",     en: "Dev Associate Review" },
+        12: { pt: "Simulado Misto - Fácil",      en: "Mixed Quiz - Easy" },
+        13: { pt: "Simulado Misto - Difícil",    en: "Mixed Quiz - Hard" },
+        14: { pt: "O Desafio Final (Boss)",      en: "The Final Challenge (Boss)" }
+    }
 };
 
 
@@ -2299,6 +2349,9 @@ function renderSprintUI() {
     const lang = uiState.language || 'pt';
     const certSelect = document.getElementById('certification-select');
     const currentCertId = certSelect ? certSelect.value : 'clf-c02';
+    
+    // Pega a trilha da certificação selecionada (ou usa a CLF-C02 como segurança)
+    const currentSprintMap = sprintMaps[currentCertId] || sprintMaps['clf-c02'];
     
     // Atualiza a badge no carregamento inicial
     const badge = document.getElementById('sprint-current-cert-badge');
@@ -2323,7 +2376,6 @@ function renderSprintUI() {
         }
     };
 
-    // Atualiza título e subtítulo do card de Sprint
     const sprintTitleEl = document.getElementById('sprint-module-title');
     const sprintSubtitleEl = document.getElementById('sprint-module-subtitle');
     const sprintProgressLabel = document.getElementById('sprint-progress-label');
@@ -2333,22 +2385,22 @@ function renderSprintUI() {
     if (sprintProgressLabel) sprintProgressLabel.textContent = labels[lang].progress;
     if (sprintStartBtn) sprintStartBtn.textContent = labels[lang].startBtn;
 
+    // Perceba que agora o dia da sprint também é salvo separadamente por certificação!
     let currentSprintDay = parseInt(localStorage.getItem(`aws_sprint_day_${currentCertId}`)) || 1;
     if (currentSprintDay > 14) currentSprintDay = 14;
 
-    // Atualiza a % de progresso
     const progressText = document.getElementById('sprint-progress-text');
     if (progressText) {
         const pct = Math.round(((currentSprintDay - 1) / 14) * 100);
         progressText.textContent = `${pct}%`;
     }
 
-    // Atualiza o texto do botão do dia (Bilíngue)
     const dayLabel = document.getElementById('sprint-current-day-label');
     const metaLabel = dayLabel?.nextElementSibling;
     
-    if (dayLabel && sprintMap[currentSprintDay]) {
-        const dayTitle = sprintMap[currentSprintDay][lang] || sprintMap[currentSprintDay].pt;
+    // Lendo do mapa específico da certificação
+    if (dayLabel && currentSprintMap[currentSprintDay]) {
+        const dayTitle = currentSprintMap[currentSprintDay][lang] || currentSprintMap[currentSprintDay].pt;
         dayLabel.textContent = `${labels[lang].day} ${currentSprintDay}: ${dayTitle}`;
         if (metaLabel) metaLabel.textContent = labels[lang].meta;
     }
@@ -2369,7 +2421,8 @@ function renderSprintUI() {
             dayDiv.innerHTML = '<i class="fa-solid fa-lock text-[10px]"></i>';
         }
 
-        const tooltipTitle = sprintMap[i] ? (sprintMap[i][lang] || sprintMap[i].pt) : `${labels[lang].day} ${i}`;
+        // Tooltip também lê do mapa correto
+        const tooltipTitle = currentSprintMap[i] ? (currentSprintMap[i][lang] || currentSprintMap[i].pt) : `${labels[lang].day} ${i}`;
         dayDiv.title = tooltipTitle;
         
         grid.appendChild(dayDiv);

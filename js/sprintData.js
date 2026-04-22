@@ -1,372 +1,278 @@
 /**
  * BANCO DE DADOS DAS PÍLULAS DE CONHECIMENTO (SPRINT 14 DIAS)
  * Bilíngue: PT-BR / EN-US
- * Uso: getPill(day, lang) → retorna o objeto da pílula no idioma correto
+ * Uso: getPill(day, lang, certId) → retorna o objeto da pílula no idioma correto
  **/
 
 const sprintPillsData = {
-    1: {
-        pt: {
-            title: "Fundamentos: O que é a Nuvem AWS?",
-            readTime: "3 min",
-            topic: "Conceitos Cloud",
-            content: `
-                <div class="space-y-6 text-gray-700 dark:text-gray-300">
-                    <section>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">O Paradigma Tradicional vs. Nuvem</h3>
-                        <p>No modelo tradicional (on-premises), você paga por servidores físicos independentemente de usá-los. Na AWS, você troca <strong>despesas de capital (CapEx)</strong> por <strong>despesas variáveis (OpEx)</strong>.</p>
-                    </section>
-                    
-                    <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange p-4 rounded-r-lg">
-                        <p class="font-bold text-aws-orange text-xs uppercase tracking-widest mb-1">Dica de Prova</p>
-                        <p class="text-sm">Sempre que a questão falar sobre "parar de adivinhar a capacidade", a resposta está ligada à <strong>Elasticidade</strong>.</p>
-                    </div>
-
-                    <section>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Modelos de Serviço (O Triângulo de Ouro)</h3>
-                        <div class="grid grid-cols-1 gap-3">
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">IaaS:</span> Ex: EC2. Maior controle sobre o SO e o hardware virtual.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">PaaS:</span> Ex: Elastic Beanstalk. Foco no código; a AWS gerencia o SO.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">SaaS:</span> Ex: Rekognition. Produto final pronto para consumo via API ou Interface.
-                            </div>
+    // ==========================================
+    // 1. CLOUD PRACTITIONER (CLF-C02)
+    // ==========================================
+    'clf-c02': {
+        1: {
+            pt: {
+                title: "Fundamentos: O que é a Nuvem AWS?",
+                readTime: "3 min",
+                topic: "Conceitos Cloud",
+                content: `
+                    <div class="space-y-6 text-gray-700 dark:text-gray-300">
+                        <section>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">O Paradigma Tradicional vs. Nuvem</h3>
+                            <p>No modelo tradicional (on-premises), você paga por servidores físicos independentemente de usá-los. Na AWS, você troca <strong>despesas de capital (CapEx)</strong> por <strong>despesas variáveis (OpEx)</strong>.</p>
+                        </section>
+                        
+                        <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange p-4 rounded-r-lg">
+                            <p class="font-bold text-aws-orange text-xs uppercase tracking-widest mb-1">Dica de Prova</p>
+                            <p class="text-sm">Sempre que a questão falar sobre "parar de adivinhar capacidade", refere-se à elasticidade da nuvem.</p>
                         </div>
-                    </section>
-                </div>
-            `,
-            keyTakeaway: "A nuvem é baseada em pagamento sob demanda, elasticidade e agilidade nos negócios."
+                    </div>
+                `,
+                keyTakeaway: "Na nuvem, você paga apenas pelo que consome (Pay-as-you-go) e tem elasticidade sob demanda."
+            },
+            en: {
+                title: "Fundamentals: What is the AWS Cloud?",
+                readTime: "3 min",
+                topic: "Cloud Concepts",
+                content: `
+                    <div class="space-y-6 text-gray-700 dark:text-gray-300">
+                        <section>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Traditional vs. Cloud Paradigm</h3>
+                            <p>In the traditional on-premises model, you pay for physical servers regardless of usage. In AWS, you trade <strong>Capital Expenses (CapEx)</strong> for <strong>Variable Expenses (OpEx)</strong>.</p>
+                        </section>
+                    </div>
+                `,
+                keyTakeaway: "In the cloud, you only pay for what you use (Pay-as-you-go) and gain on-demand elasticity."
+            }
         },
-        en: {
-            title: "Fundamentals: What is the AWS Cloud?",
-            readTime: "3 min",
-            topic: "Cloud Concepts",
-            content: `
-                <div class="space-y-6 text-gray-700 dark:text-gray-300">
-                    <section>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Traditional Model vs. Cloud</h3>
-                        <p>In the traditional model (on-premises), you pay for physical servers regardless of whether you use them. With AWS, you trade <strong>capital expenses (CapEx)</strong> for <strong>variable expenses (OpEx)</strong>.</p>
-                    </section>
-                    
-                    <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange p-4 rounded-r-lg">
-                        <p class="font-bold text-aws-orange text-xs uppercase tracking-widest mb-1">Exam Tip</p>
-                        <p class="text-sm">Whenever a question mentions "stop guessing capacity," the answer is related to <strong>Elasticity</strong>.</p>
-                    </div>
+        2: {
+            pt: { title: "Infraestrutura Global", 
+                readTime: "4 min", 
+                topic: "Conceitos Cloud", 
+                content: `
+                    <div class="space-y-4">
+                        <p>A AWS opera em <strong>Regiões</strong> (áreas geográficas) e <strong>Zonas de Disponibilidade (AZs)</strong>. Uma Região tem no mínimo 3 AZs.</p><div class="bg-orange-50 dark:bg-orange-900/20 p-3 rounded"><strong>Dica:</strong> Edge Locations são usadas pelo CloudFront para reduzir latência.</div></div>`, 
+                keyTakeaway: "Regiões fornecem isolamento; AZs fornecem alta disponibilidade." },
 
-                    <section>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Service Models (The Golden Triangle)</h3>
-                        <div class="grid grid-cols-1 gap-3">
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">IaaS:</span> Ex: EC2. Greater control over the OS and virtual hardware.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">PaaS:</span> Ex: Elastic Beanstalk. Focus on code; AWS manages the OS.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">SaaS:</span> Ex: Rekognition. Final product ready to consume via API or Interface.
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            `,
-            keyTakeaway: "The cloud is based on on-demand payment, elasticity, and business agility."
-        }
+            en: { title: "Global Infrastructure", 
+                readTime: "4 min", 
+                topic: "Cloud Concepts", 
+                content: `<p>AWS operates in Regions and Availability Zones (AZs)...</p>`, 
+                keyTakeaway: "Regions for isolation; AZs for high availability." }
+        },
+        3: {
+            pt: { title: "Modelo de Responsabilidade Compartilhada", 
+                readTime: "3 min", 
+                topic: "Segurança", 
+                content: `<p>A AWS é responsável pela segurança <strong>DA</strong> nuvem (hardware, infra), e o cliente é responsável pela segurança <strong>NA</strong> nuvem (dados, SO, firewall).</p>`, 
+                keyTakeaway: "AWS cuida do host; você cuida dos dados." },
+
+            en: { title: "Shared Responsibility Model", 
+                readTime: "3 min", 
+                topic: "Security", 
+                content: `<p>AWS is responsible for security OF the cloud; customer is responsible for security IN the cloud.</p>`, 
+                keyTakeaway: "AWS manages the host; you manage the data." }
+        },
+        // Adicionar aqui os dias 4 ao 14 para a CLF-C02...
     },
 
-    2: {
-        pt: {
-            title: "Os 6 Pilares do Well-Architected Framework",
-            readTime: "4 min",
-            topic: "Conceitos Cloud",
-            content: `
-                <div class="space-y-6 text-gray-700 dark:text-gray-300">
-                    <section>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">Os 6 Pilares</h3>
-                        <div class="grid grid-cols-1 gap-3">
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">1. Excelência Operacional:</span> Executar e monitorar sistemas para entregar valor de negócios.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">2. Segurança:</span> Proteger informações e sistemas.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">3. Confiabilidade:</span> Capacidade de recuperar falhas e atender à demanda.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">4. Eficiência de Performance:</span> Usar recursos computacionais com eficiência.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">5. Otimização de Custos:</span> Evitar gastos desnecessários.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">6. Sustentabilidade:</span> Minimizar impactos ambientais das cargas de trabalho.
-                            </div>
+    // ==========================================
+    // 2. SOLUTIONS ARCHITECT (SAA-C03)
+    // ==========================================
+    'saa-c03': {
+        1: {
+            pt: {
+                title: "Design Resiliente: Alta Disponibilidade",
+                readTime: "4 min",
+                topic: "Resiliência",
+                content: `
+                    <div class="space-y-6 text-gray-700 dark:text-gray-300">
+                        <section>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Multi-AZ vs Multi-Region</h3>
+                            <p>Alta disponibilidade envolve garantir que sua aplicação continue funcionando mesmo que um componente falhe. Usar <strong>Múltiplas Zonas de Disponibilidade (Multi-AZ)</strong> protege contra falhas locais, enquanto <strong>Multi-Region</strong> protege contra falhas geográficas massivas (Disaster Recovery).</p>
+                        </section>
+                        <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange p-4 rounded-r-lg">
+                            <p class="font-bold text-aws-orange text-xs uppercase tracking-widest mb-1">Dica de Prova</p>
+                            <p class="text-sm">Para Amazon RDS, o Multi-AZ é usado para "Alta Disponibilidade", enquanto Read Replicas são para "Escalabilidade de Leitura".</p>
                         </div>
-                    </section>
-                    <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange p-4 rounded-r-lg">
-                        <p class="font-bold text-aws-orange text-xs uppercase tracking-widest mb-1">Dica de Prova</p>
-                        <p class="text-sm">Memorize o acrônimo <strong>OSRECS</strong> (Operacional, Segurança, Reliability, Eficiência, Custo, Sustentabilidade).</p>
                     </div>
-                </div>
-            `,
-            keyTakeaway: "O Well-Architected Framework tem 6 pilares que guiam a construção de sistemas robustos na AWS."
+                `,
+                keyTakeaway: "Desenhe arquiteturas assumindo que tudo pode falhar. Multi-AZ é o padrão de ouro para resiliência de banco de dados na AWS."
+            },
+            en: {
+                title: "Resilient Design: High Availability",
+                readTime: "4 min",
+                topic: "Resilience",
+                content: `
+                    <div class="space-y-6 text-gray-700 dark:text-gray-300">
+                        <section>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Multi-AZ vs Multi-Region</h3>
+                            <p>High availability involves ensuring your application continues to function even if a component fails.</p>
+                        </section>
+                    </div>
+                `,
+                keyTakeaway: "Design architectures assuming everything will fail. Multi-AZ is the gold standard."
+            }
         },
-        en: {
-            title: "The 6 Pillars of the Well-Architected Framework",
-            readTime: "4 min",
-            topic: "Cloud Concepts",
-            content: `
-                <div class="space-y-6 text-gray-700 dark:text-gray-300">
-                    <section>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">The 6 Pillars</h3>
-                        <div class="grid grid-cols-1 gap-3">
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">1. Operational Excellence:</span> Run and monitor systems to deliver business value.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">2. Security:</span> Protect information and systems.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">3. Reliability:</span> Ability to recover from failures and meet demand.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">4. Performance Efficiency:</span> Use computing resources efficiently.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">5. Cost Optimization:</span> Avoid unnecessary spending.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">6. Sustainability:</span> Minimize environmental impact of workloads.
-                            </div>
-                        </div>
-                    </section>
-                    <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange p-4 rounded-r-lg">
-                        <p class="font-bold text-aws-orange text-xs uppercase tracking-widest mb-1">Exam Tip</p>
-                        <p class="text-sm">Memorize the acronym <strong>OSRECS</strong> (Operational, Security, Reliability, Efficiency, Cost, Sustainability).</p>
-                    </div>
-                </div>
-            `,
-            keyTakeaway: "The Well-Architected Framework has 6 pillars that guide building robust systems on AWS."
-        }
+
+        2: {
+            pt: { title: "Infraestrutura Global", 
+                readTime: "4 min", 
+                topic: "Conceitos Cloud", 
+                content: `<div class="space-y-4"><p>A AWS opera em <strong>Regiões</strong> (áreas geográficas) e <strong>Zonas de Disponibilidade (AZs)</strong>. Uma Região tem no mínimo 3 AZs.</p><div class="bg-orange-50 dark:bg-orange-900/20 p-3 rounded"><strong>Dica:</strong> Edge Locations são usadas pelo CloudFront para reduzir latência.</div></div>`, 
+                keyTakeaway: "Regiões fornecem isolamento; AZs fornecem alta disponibilidade." },
+            en: { title: "Global Infrastructure", 
+                readTime: "4 min", 
+                topic: "Cloud Concepts", 
+                content: `<p>AWS operates in Regions and Availability Zones (AZs)...</p>`, 
+                keyTakeaway: "Regions for isolation; AZs for high availability." }
+        },
+
+        3: {
+            
+            pt: { title: "Modelo de Responsabilidade Compartilhada", 
+                readTime: "3 min", 
+                topic: "Segurança", 
+                content: `<p>A AWS é responsável pela segurança <strong>DA</strong> nuvem (hardware, infra), e o cliente é responsável pela segurança <strong>NA</strong> nuvem (dados, SO, firewall).</p>`, 
+                keyTakeaway: "AWS cuida do host; você cuida dos dados." },
+                
+            en: { title: "Shared Responsibility Model", 
+                readTime: "3 min", 
+                topic: "Security", 
+                content: `<p>AWS is responsible for security OF the cloud; customer is responsible for security IN the cloud.</p>`, 
+                keyTakeaway: "AWS manages the host; you manage the data." }
+        },
+        // Adicionar aqui os dias 4 ao 14 para a SAA-C03...
     },
 
-    3: {
-        pt: {
-            title: "Modelo de Responsabilidade Compartilhada",
-            readTime: "3 min",
-            topic: "Conceitos Cloud",
-            content: `
-                <div class="space-y-6 text-gray-700 dark:text-gray-300">
-                    <section>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Quem é responsável pelo quê?</h3>
-                        <p>A AWS é responsável pela segurança <strong>DA</strong> nuvem. Você é responsável pela segurança <strong>NA</strong> nuvem.</p>
-                    </section>
-                    <div class="grid grid-cols-1 gap-3">
-                        <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
-                            <p class="font-bold text-blue-600 dark:text-blue-400 mb-1">AWS é responsável por:</p>
-                            <p class="text-sm">Hardware, datacenters, rede física, hipervisor, serviços gerenciados.</p>
-                        </div>
-                        <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800">
-                            <p class="font-bold text-green-600 dark:text-green-400 mb-1">Você é responsável por:</p>
-                            <p class="text-sm">Dados, sistema operacional (no EC2), configuração de rede, IAM, criptografia.</p>
-                        </div>
+    // ==========================================
+    // 3. AI PRACTITIONER (AIF-C01)
+    // ==========================================
+    'aif-c01': {
+        1: {
+
+            pt: {
+                title: "Fundamentos: Modelos de Fundação (FMs)",
+                readTime: "3 min",
+                topic: "IA Generativa",
+                content: `
+                    <div class="space-y-6 text-gray-700 dark:text-gray-300">
+                        <section>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">O que é o Amazon Bedrock?</h3>
+                            <p>O Amazon Bedrock é um serviço totalmente gerenciado que oferece acesso a FMs (Foundation Models) líderes de mercado por meio de uma única API. Ele não treina modelos do zero, mas permite a personalização com seus próprios dados.</p>
+                        </section>
                     </div>
-                    <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange p-4 rounded-r-lg">
-                        <p class="font-bold text-aws-orange text-xs uppercase tracking-widest mb-1">Dica de Prova</p>
-                        <p class="text-sm">Em serviços gerenciados como S3 e Lambda, sua responsabilidade é <strong>menor</strong>. No EC2 é <strong>maior</strong>.</p>
+                `,
+                keyTakeaway: "O Bedrock é Serverless. Você não provisiona infraestrutura para usar FMs como o Claude, Llama ou Titan."
+            },
+
+            en: {
+                title: "Fundamentals: Foundation Models (FMs)",
+                readTime: "3 min",
+                topic: "GenAI",
+                content: `
+                    <div class="space-y-6 text-gray-700 dark:text-gray-300">
+                        <section>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">What is Amazon Bedrock?</h3>
+                            <p>Amazon Bedrock is a fully managed service that offers access to leading FMs via a single API.</p>
+                        </section>
                     </div>
-                </div>
-            `,
-            keyTakeaway: "AWS cuida da infraestrutura; você cuida dos dados e configurações dentro dos serviços."
+                `,
+                keyTakeaway: "Bedrock is Serverless. You don't provision infrastructure to use FMs."
+            },
+            2: {
+
+            pt: { title: "Ciclo de Vida do ML", 
+                readTime: "4 min", 
+                topic: "IA/ML", 
+                content: `<p>Coleta de dados → Preparação → Treinamento → Avaliação → Implantação.</p>`, 
+                keyTakeaway: "O SageMaker gerencia todo esse ciclo." },
+
+            en: { title: "ML Lifecycle", 
+                readTime: "4 min", 
+                topic: "AI/ML", 
+                content: `<p>Data collection → Prep → Training → Evaluation → Deployment.</p>`, 
+                keyTakeaway: "SageMaker manages this entire cycle." }
         },
-        en: {
-            title: "Shared Responsibility Model",
-            readTime: "3 min",
-            topic: "Cloud Concepts",
-            content: `
-                <div class="space-y-6 text-gray-700 dark:text-gray-300">
-                    <section>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Who is responsible for what?</h3>
-                        <p>AWS is responsible for security <strong>OF</strong> the cloud. You are responsible for security <strong>IN</strong> the cloud.</p>
-                    </section>
-                    <div class="grid grid-cols-1 gap-3">
-                        <div class="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
-                            <p class="font-bold text-blue-600 dark:text-blue-400 mb-1">AWS is responsible for:</p>
-                            <p class="text-sm">Hardware, datacenters, physical network, hypervisor, managed services.</p>
-                        </div>
-                        <div class="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800">
-                            <p class="font-bold text-green-600 dark:text-green-400 mb-1">You are responsible for:</p>
-                            <p class="text-sm">Data, operating system (on EC2), network configuration, IAM, encryption.</p>
-                        </div>
-                    </div>
-                    <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange p-4 rounded-r-lg">
-                        <p class="font-bold text-aws-orange text-xs uppercase tracking-widest mb-1">Exam Tip</p>
-                        <p class="text-sm">For managed services like S3 and Lambda, your responsibility is <strong>lower</strong>. For EC2 it is <strong>higher</strong>.</p>
-                    </div>
-                </div>
-            `,
-            keyTakeaway: "AWS handles the infrastructure; you handle the data and configurations within the services."
         }
+        // Adicionar aqui os dias 3 ao 14 para a AIF-C01...
     },
 
-    4: {
-        pt: {
-            title: "IAM: Identidade e Acesso na AWS",
-            readTime: "4 min",
-            topic: "Segurança",
-            content: `
-                <div class="space-y-6 text-gray-700 dark:text-gray-300">
-                    <section>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">O que é IAM?</h3>
-                        <p>IAM (Identity and Access Management) controla <strong>quem</strong> pode fazer <strong>o quê</strong> na sua conta AWS.</p>
-                    </section>
-                    <div class="grid grid-cols-1 gap-3">
-                        <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                            <span class="font-bold text-aws-orange">Usuários:</span> Identidades individuais com credenciais.
-                        </div>
-                        <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                            <span class="font-bold text-aws-orange">Grupos:</span> Coleções de usuários com permissões em comum.
-                        </div>
-                        <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                            <span class="font-bold text-aws-orange">Roles (Funções):</span> Identidades temporárias para serviços ou usuários externos.
-                        </div>
-                        <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                            <span class="font-bold text-aws-orange">Policies (Políticas):</span> Documentos JSON que definem permissões.
+    // ==========================================
+    // 4. DEVELOPER ASSOCIATE (DVA-C02)
+    // ==========================================
+    'dva-c02': {
+        1: {
+            pt: {
+                title: "Desenvolvimento com AWS Lambda",
+                readTime: "4 min",
+                topic: "Serverless",
+                content: `
+                    <div class="space-y-6 text-gray-700 dark:text-gray-300">
+                        <section>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Execução Stateless</h3>
+                            <p>O AWS Lambda executa código de forma <strong>stateless</strong>. Qualquer dado que precise persistir entre execuções deve ser salvo no Amazon S3, DynamoDB ou EFS.</p>
+                        </section>
+                        <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange p-4 rounded-r-lg">
+                            <p class="font-bold text-aws-orange text-xs uppercase tracking-widest mb-1">Dica de Prova</p>
+                            <p class="text-sm">Tempo máximo de execução de uma função Lambda é de 15 minutos. Se o processo demorar mais, use AWS Step Functions + ECS/Fargate.</p>
                         </div>
                     </div>
-                    <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange p-4 rounded-r-lg">
-                        <p class="font-bold text-aws-orange text-xs uppercase tracking-widest mb-1">Dica de Prova</p>
-                        <p class="text-sm">IAM é <strong>global</strong> (não regional), gratuito e segue o princípio do <strong>menor privilégio</strong>.</p>
+                `,
+                keyTakeaway: "O Lambda é orientado a eventos e cobra apenas pelos milissegundos de computação consumidos."
+            },
+            en: {
+                title: "Developing with AWS Lambda",
+                readTime: "4 min",
+                topic: "Serverless",
+                content: `
+                    <div class="space-y-6 text-gray-700 dark:text-gray-300">
+                        <section>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Stateless Execution</h3>
+                            <p>AWS Lambda executes code in a stateless manner.</p>
+                        </section>
                     </div>
-                </div>
-            `,
-            keyTakeaway: "IAM controla acesso com usuários, grupos, roles e políticas — sempre com menor privilégio."
+                `,
+                keyTakeaway: "Lambda is event-driven and charges only for the compute milliseconds consumed."
+            }
         },
-        en: {
-            title: "IAM: Identity and Access on AWS",
-            readTime: "4 min",
-            topic: "Security",
-            content: `
-                <div class="space-y-6 text-gray-700 dark:text-gray-300">
-                    <section>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">What is IAM?</h3>
-                        <p>IAM (Identity and Access Management) controls <strong>who</strong> can do <strong>what</strong> in your AWS account.</p>
-                    </section>
-                    <div class="grid grid-cols-1 gap-3">
-                        <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                            <span class="font-bold text-aws-orange">Users:</span> Individual identities with credentials.
-                        </div>
-                        <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                            <span class="font-bold text-aws-orange">Groups:</span> Collections of users with shared permissions.
-                        </div>
-                        <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                            <span class="font-bold text-aws-orange">Roles:</span> Temporary identities for services or external users.
-                        </div>
-                        <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                            <span class="font-bold text-aws-orange">Policies:</span> JSON documents that define permissions.
-                        </div>
-                    </div>
-                    <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange p-4 rounded-r-lg">
-                        <p class="font-bold text-aws-orange text-xs uppercase tracking-widest mb-1">Exam Tip</p>
-                        <p class="text-sm">IAM is <strong>global</strong> (not regional), free, and follows the principle of <strong>least privilege</strong>.</p>
-                    </div>
-                </div>
-            `,
-            keyTakeaway: "IAM controls access via users, groups, roles, and policies — always with least privilege."
-        }
-    },
-
-    5: {
-        pt: {
-            title: "Segurança: MFA, KMS e Shield",
-            readTime: "4 min",
-            topic: "Segurança",
-            content: `
-                <div class="space-y-6 text-gray-700 dark:text-gray-300">
-                    <section>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">Serviços de Segurança Essenciais</h3>
-                        <div class="grid grid-cols-1 gap-3">
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">MFA (Multi-Factor Auth):</span> Adiciona segunda camada de verificação ao login. Sempre habilite para o root.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">KMS (Key Management Service):</span> Cria e gerencia chaves de criptografia. Integrado com S3, EBS, RDS.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">Shield:</span> Proteção contra ataques DDoS. Standard (grátis) e Advanced (pago).
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">WAF (Web Application Firewall):</span> Protege apps web de ataques como SQL Injection e XSS.
-                            </div>
-                        </div>
-                    </section>
-                    <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange p-4 rounded-r-lg">
-                        <p class="font-bold text-aws-orange text-xs uppercase tracking-widest mb-1">Dica de Prova</p>
-                        <p class="text-sm">DDoS → Shield. Criptografia de dados → KMS. Proteção de aplicação web → WAF.</p>
-                    </div>
-                </div>
-            `,
-            keyTakeaway: "MFA, KMS, Shield e WAF são as ferramentas base de segurança na AWS — saiba para qual ameaça cada um serve."
+        2: {
+            pt: { 
+                title: "CI/CD: CodePipeline e CodeBuild", 
+                readTime: "5 min", 
+                topic: "DevOps", 
+                content: `<p>CodeBuild compila o código; CodePipeline orquestra as fases de teste e deploy.</p>`, 
+                keyTakeaway: "Automatize tudo para evitar erros manuais." },
+            en: { 
+                title: "CI/CD: CodePipeline and CodeBuild", 
+                readTime: "5 min", 
+                topic: "DevOps", 
+                content: `<p>CodeBuild compiles code; CodePipeline orchestrates test/deploy phases.</p>`, 
+                keyTakeaway: "Automate everything to avoid manual errors." }
         },
-        en: {
-            title: "Security: MFA, KMS and Shield",
-            readTime: "4 min",
-            topic: "Security",
-            content: `
-                <div class="space-y-6 text-gray-700 dark:text-gray-300">
-                    <section>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">Essential Security Services</h3>
-                        <div class="grid grid-cols-1 gap-3">
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">MFA (Multi-Factor Auth):</span> Adds a second verification layer to login. Always enable for root.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">KMS (Key Management Service):</span> Creates and manages encryption keys. Integrated with S3, EBS, RDS.
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">Shield:</span> Protection against DDoS attacks. Standard (free) and Advanced (paid).
-                            </div>
-                            <div class="p-3 bg-gray-50 dark:bg-slate-700/50 rounded-lg border border-gray-100 dark:border-slate-600">
-                                <span class="font-bold text-aws-orange">WAF (Web Application Firewall):</span> Protects web apps from attacks like SQL Injection and XSS.
-                            </div>
-                        </div>
-                    </section>
-                    <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange p-4 rounded-r-lg">
-                        <p class="font-bold text-aws-orange text-xs uppercase tracking-widest mb-1">Exam Tip</p>
-                        <p class="text-sm">DDoS → Shield. Data encryption → KMS. Web app protection → WAF.</p>
-                    </div>
-                </div>
-            `,
-            keyTakeaway: "MFA, KMS, Shield and WAF are the core security tools on AWS — know which threat each one addresses."
-        }
+        // Adicionar aqui os dias 3 ao 14 para a DVA-C02...
     }
-
-    // Os dias 6–14 seguem o mesmo padrão acima.
-    // Adicione aqui conforme o conteúdo for criado.
 };
 
 /**
- * Retorna a pílula do dia no idioma correto.
+ * Retorna a pílula do dia no idioma e certificação corretos.
  * @param {number} day - Dia do sprint (1-14)
  * @param {string} lang - 'pt' ou 'en'
+ * @param {string} certId - ID da certificação (ex: 'clf-c02')
  * @returns {object|null} Objeto com title, readTime, topic, content, keyTakeaway
  */
-function getPill(day, lang) {
-    const entry = sprintPillsData[day];
+function getPill(day, lang, certId = 'clf-c02') {
+    // 1. Procura a certificação no banco de dados (se não existir, falha silenciosamente)
+    const certData = sprintPillsData[certId];
+    if (!certData) return null;
+
+    // 2. Procura o dia específico dentro dessa certificação
+    const entry = certData[day];
     if (!entry) return null;
+
+    // 3. Retorna o conteúdo no idioma solicitado (com fallback para pt se o en não existir)
     const l = (lang === 'en' && entry.en) ? 'en' : 'pt';
     return entry[l];
 }
 
-// Compatibilidade retroativa: expõe o objeto antigo (PT) para código legado
-const sprintPills = {};
-Object.keys(sprintPillsData).forEach(day => {
-    sprintPills[parseInt(day)] = sprintPillsData[day].pt;
-});
-
-window.sprintPills    = sprintPills;
-window.sprintPillsData = sprintPillsData;
-window.getPill         = getPill;
+// Expõe a função globalmente para o app.js a conseguir chamar
+window.getPill = getPill;
