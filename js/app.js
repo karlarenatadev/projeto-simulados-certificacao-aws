@@ -2350,66 +2350,49 @@ function renderSprintUI() {
     const certSelect = document.getElementById('certification-select');
     const currentCertId = certSelect ? certSelect.value : 'clf-c02';
     
-    // Pega a trilha da certificação selecionada (ou usa a CLF-C02 como segurança)
     const currentSprintMap = sprintMaps[currentCertId] || sprintMaps['clf-c02'];
     
-    // Atualiza a badge no carregamento inicial
-    const badge = document.getElementById('sprint-current-cert-badge');
-    if (badge) badge.innerText = currentCertId.toUpperCase();
-    
+    // 1. Chave correta e carregamento do dia
+    const storageKey = `aws_sprint_day_${currentCertId}`;
+    let currentSprintDay = parseInt(localStorage.getItem(storageKey)) || 1;
+    if (currentSprintDay > 14) currentSprintDay = 14;
+
     const labels = {
-        pt: { 
-            day: "Dia", 
-            meta: "10 Questões • Meta: 80%",
-            title: "Sprint de Estudos (14 Dias)",
-            subtitle: "Sua meta diária de 15 minutos para dominar a nuvem.",
-            progress: "Progresso",
-            startBtn: "Iniciar Sprint (15m)"
-        },
-        en: { 
-            day: "Day", 
-            meta: "10 Questions • Goal: 80%",
-            title: "Study Sprint (14 Days)",
-            subtitle: "Your daily 15-minute goal to master the cloud.",
-            progress: "Progress",
-            startBtn: "Start Sprint (15m)"
-        }
+        pt: { day: "Dia", pillLabel: "Pílula de Conhecimento", title: "Sprint de Estudos (14 Dias)", subtitle: "Sua dose diária de AWS em 5 minutos.", progress: "Progresso", startBtn: "Ler Pílula do Dia" },
+        en: { day: "Day", pillLabel: "Knowledge Pill", title: "Study Sprint (14 Days)", subtitle: "Your daily AWS dose in 5 minutes.", progress: "Progress", startBtn: "Read Daily Pill" }
     };
 
+    // 2. ATUALIZAÇÃO DA PORCENTAGEM (O que faltava)
+    const progressText = document.getElementById('sprint-progress-text');
+    if (progressText) {
+        const daysCompleted = currentSprintDay - 1; // Se está no dia 2, completou 1.
+        const pct = Math.round((daysCompleted / 14) * 100);
+        progressText.textContent = `${pct}%`;
+    }
+
+    // Atualização de labels e textos
     const sprintTitleEl = document.getElementById('sprint-module-title');
     const sprintSubtitleEl = document.getElementById('sprint-module-subtitle');
     const sprintProgressLabel = document.getElementById('sprint-progress-label');
     const sprintStartBtn = document.getElementById('sprint-start-btn');
+    
     if (sprintTitleEl) sprintTitleEl.textContent = labels[lang].title;
     if (sprintSubtitleEl) sprintSubtitleEl.textContent = labels[lang].subtitle;
     if (sprintProgressLabel) sprintProgressLabel.textContent = labels[lang].progress;
     if (sprintStartBtn) sprintStartBtn.textContent = labels[lang].startBtn;
 
-    // Perceba que agora o dia da sprint também é salvo separadamente por certificação!
-    let currentSprintDay = parseInt(localStorage.getItem(`aws_sprint_day_${currentCertId}`)) || 1;
-    if (currentSprintDay > 14) currentSprintDay = 14;
-
-    const progressText = document.getElementById('sprint-progress-text');
-    if (progressText) {
-        const pct = Math.round(((currentSprintDay - 1) / 14) * 100);
-        progressText.textContent = `${pct}%`;
-    }
-
     const dayLabel = document.getElementById('sprint-current-day-label');
     const metaLabel = dayLabel?.nextElementSibling;
     
-    // Lendo do mapa específico da certificação
     if (dayLabel && currentSprintMap[currentSprintDay]) {
         const dayTitle = currentSprintMap[currentSprintDay][lang] || currentSprintMap[currentSprintDay].pt;
         dayLabel.textContent = `${labels[lang].day} ${currentSprintDay}: ${dayTitle}`;
-        if (metaLabel) metaLabel.textContent = labels[lang].meta;
+        if (metaLabel) metaLabel.innerHTML = `<i class="fa-solid fa-book-open-reader mr-1 text-aws-orange"></i> ${labels[lang].pillLabel}`;
     }
 
     grid.innerHTML = '';
-
     for (let i = 1; i <= 14; i++) {
         const dayDiv = document.createElement('div');
-        
         if (i < currentSprintDay) {
             dayDiv.className = 'w-full aspect-square rounded-lg flex items-center justify-center text-xs font-bold border bg-green-50 border-green-200 text-green-600 dark:bg-green-900/20 dark:border-green-700 dark:text-green-400';
             dayDiv.innerHTML = '<i class="fa-solid fa-check"></i>';
@@ -2420,11 +2403,8 @@ function renderSprintUI() {
             dayDiv.className = 'w-full aspect-square rounded-lg flex items-center justify-center text-xs font-bold border bg-gray-50 border-gray-100 text-gray-400 dark:bg-slate-700/50 dark:border-slate-600 dark:text-slate-500';
             dayDiv.innerHTML = '<i class="fa-solid fa-lock text-[10px]"></i>';
         }
-
-        // Tooltip também lê do mapa correto
         const tooltipTitle = currentSprintMap[i] ? (currentSprintMap[i][lang] || currentSprintMap[i].pt) : `${labels[lang].day} ${i}`;
         dayDiv.title = tooltipTitle;
-        
         grid.appendChild(dayDiv);
     }
 }
@@ -2433,7 +2413,9 @@ window.startMicroSprint = function() {
     const certSelect = document.getElementById('certification-select');
     const currentCertId = certSelect ? certSelect.value : 'clf-c02';
 
-    let currentSprintDay = parseInt(localStorage.getItem('aws_sprint_day')) || 1;
+    const storageKey = `aws_sprint_day_${currentCertId}`;
+    let currentSprintDay = parseInt(localStorage.getItem(storageKey)) || 1;
+
     const lang = uiState.language || 'pt';
     
     if (currentSprintDay > 14) {
