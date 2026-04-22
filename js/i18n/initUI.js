@@ -183,12 +183,13 @@ export function initializeUI(language) {
     
     updateElement('#dynamic-insight', t('start_quiz_for_ai_mapping', lang));
     
-    const historyTitle = document.querySelectorAll('aside h3')[2];
+    // Atualiza apenas o texto dentro do span, protegendo o ícone do relógio!
+    const historyTitle = document.getElementById('history-card-title');
     if (historyTitle) {
-        historyTitle.innerHTML = `<i class="fa-solid fa-trophy text-yellow-500 mr-2" aria-hidden="true"></i> ${t('history', lang)}`;
+        historyTitle.textContent = t('historyTitle', lang); // Pega 'Últimas Sessões'
     }
     
-    const clearHistoryBtn = document.querySelector('button[onclick="clearHistory()"]');
+    const clearHistoryBtn = document.getElementById('btn-clear-history');
     if (clearHistoryBtn) {
         clearHistoryBtn.setAttribute('title', t('clear_history', lang));
         clearHistoryBtn.setAttribute('aria-label', t('clear_history', lang));
