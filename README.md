@@ -181,7 +181,7 @@ Você pode adicionar novas questões criando um arquivo único. Sem dores de cab
 
 - [x] Expansão do banco para quase 2.000 questões.
 - [x] Integração da nova certificação AIF-C01 (AI Practitioner).
-- [ ] Exportação de flashcards para Anki.
+- [x] Exportação de flashcards para Anki.
 - [ ] Implementação de Testes Adaptativos (CAT - Computerized Adaptive Testing).
 - [ ] Ranking Comunitário anônimo.
 
