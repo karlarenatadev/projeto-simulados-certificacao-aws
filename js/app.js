@@ -44,33 +44,23 @@ let lastRenderedResult = null;
 // INICIALIZAÇÃO
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // ══════════════════════════════════════════════════════════════
     // FASE 1: Configurações Base (Sincronizadas)
-    // ══════════════════════════════════════════════════════════════
     initTheme();
     initializeUI(uiState.language);
     
-    // ══════════════════════════════════════════════════════════════
     // FASE 2: Traduções (Só títulos estáticos, sem destruir conteúdo)
-    // ══════════════════════════════════════════════════════════════
     updateSidebarTexts();
     
-    // ══════════════════════════════════════════════════════════════
     // FASE 3: Injeção de Dados Dinâmicos (ORDEM GARANTIDA)
-    // ══════════════════════════════════════════════════════════════
     await renderSidebarContent();
     
-    // ══════════════════════════════════════════════════════════════
     // FASE 4: Inicializações Secundárias
-    // ══════════════════════════════════════════════════════════════
     renderGamification();
     updateLanguageButtonUI();
     initPWAInstall();
     wireUIActions();
 
-    // ══════════════════════════════════════════════════════════════
     // FASE 5: Setup de Certificação
-    // ══════════════════════════════════════════════════════════════
     const certSelect = document.getElementById('certification-select');
     
     if (certSelect && certificationPaths && certificationPaths[certSelect.value]) {
@@ -80,27 +70,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateDifficultyFilters(certSelect.value);
     }
 
-    // ══════════════════════════════════════════════════════════════
     // LISTENER: Mudança de Certificação
-    // ══════════════════════════════════════════════════════════════
     if (certSelect) {
         certSelect.addEventListener('change', async () => {
             if (certificationPaths && certificationPaths[certSelect.value]) {
                 uiState.currentCertificationInfo = certificationPaths[certSelect.value];
                 
                 const certId = certSelect.value;
+                
+                // 1. Salva a certificação no cache para as outras telas saberem
+                localStorage.setItem('aws_sim_cert', certId);
 
                 updateTopicDropdown();
                 loadLastScore();
-                updateDifficultyFilters(certSelect.value);
+                updateDifficultyFilters(certId);
 
-                // Atualiza a Sprint para a nova certificação
+                // 2. Atualiza a Sprint para a nova certificação
                 const badge = document.getElementById('sprint-current-cert-badge');
                 if (badge) badge.innerText = certId.toUpperCase();
                 
                 renderSprintUI();
-                
-                // Re-renderiza o gráfico global
+
+                // 3. A SINCRONIZAÇÃO
+                updateSidebarProgress(); // Atualiza a caixa "O Meu Progresso" para o nome correto
+                if (typeof renderTrail === 'function') renderTrail(); // Atualiza a Trilha de Gamificação
+                if (typeof renderBadges === 'function') renderBadges(); // Atualiza as Insígnias
+
+                // 4. Re-renderiza o gráfico global
                 if (typeof renderGlobalRadarChart === 'function') {
                     await renderGlobalRadarChart();
                 }

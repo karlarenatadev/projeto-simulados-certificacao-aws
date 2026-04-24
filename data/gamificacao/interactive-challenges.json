@@ -3,15 +3,62 @@
     {
       "id": "lab-001",
       "type": "ordering",
+      "cert_target": "saa-c03",
       "title": "Fluxo de Rede na AWS",
-      "scenario": "Ordene o caminho do tráfego desde a internet até uma instância EC2 numa sub-rede privada.",
+      "scenario": "Ordene o caminho do tráfego web, desde o clique do utilizador até à instância EC2 numa sub-rede privada.",
       "items": [
         { "id": "aws-1", "text": "Internet Gateway" },
-        { "id": "aws-2", "text": "Route 53" },
-        { "id": "aws-3", "text": "Application Load Balancer" },
-        { "id": "aws-4", "text": "Amazon EC2" }
+        { "id": "aws-2", "text": "Amazon Route 53 (DNS)" },
+        { "id": "aws-3", "text": "Application Load Balancer (ALB)" },
+        { "id": "aws-4", "text": "Amazon EC2 (Private Subnet)" }
       ],
-      "correct_order": ["aws-2", "aws-1", "aws-3", "aws-4"]
+      "correct_order": ["aws-2", "aws-1", "aws-3", "aws-4"],
+      "explanation": "O tráfego é primeiro resolvido pelo Route 53, entra na VPC da AWS através do Internet Gateway, é distribuído pelo ALB e finalmente chega de forma segura à instância EC2."
+    },
+    {
+      "id": "lab-002",
+      "type": "ordering",
+      "cert_target": "clf-c02",
+      "title": "Ciclo de Vida do S3 (Cost Optimization)",
+      "scenario": "A sua empresa quer poupar dinheiro. Ordene as classes do Amazon S3 da mais 'quente' (acesso frequente) para a mais 'fria' (arquivamento de longo prazo).",
+      "items": [
+        { "id": "s3-1", "text": "S3 Glacier Deep Archive" },
+        { "id": "s3-2", "text": "S3 Standard-IA (Infrequent Access)" },
+        { "id": "s3-3", "text": "S3 Standard" },
+        { "id": "s3-4", "text": "S3 Glacier Flexible Retrieval" }
+      ],
+      "correct_order": ["s3-3", "s3-2", "s3-4", "s3-1"],
+      "explanation": "Os dados começam no S3 Standard. Após 30 dias sem uso, vão para o Standard-IA. Para auditorias anuais, vão para o Glacier e, para retenção legal de 10 anos, terminam no Glacier Deep Archive."
+    },
+    {
+      "id": "lab-003",
+      "type": "ordering",
+      "cert_target": "dva-c02",
+      "title": "Pipeline CI/CD AWS",
+      "scenario": "Como desenvolvedora, construa a pipeline correta de entrega contínua usando os serviços da família AWS Code*.",
+      "items": [
+        { "id": "cicd-1", "text": "AWS CodeDeploy (Deploy)" },
+        { "id": "cicd-2", "text": "AWS CodeBuild (Build & Test)" },
+        { "id": "cicd-3", "text": "Monitoramento no CloudWatch" },
+        { "id": "cicd-4", "text": "AWS CodeCommit (Source)" }
+      ],
+      "correct_order": ["cicd-4", "cicd-2", "cicd-1", "cicd-3"],
+      "explanation": "O código fonte é guardado no CodeCommit. O CodeBuild compila e testa. O CodeDeploy envia para produção e o CloudWatch monitoriza a aplicação a correr."
+    },
+    {
+      "id": "lab-004",
+      "type": "ordering",
+      "cert_target": "aif-c01",
+      "title": "Pipeline de Machine Learning",
+      "scenario": "Ordene as etapas fundamentais para treinar e disponibilizar um modelo de Inteligência Artificial usando o Amazon SageMaker.",
+      "items": [
+        { "id": "ml-1", "text": "Treinamento do Modelo" },
+        { "id": "ml-2", "text": "Endpoint de Inferência (Deploy)" },
+        { "id": "ml-3", "text": "Coleta e Preparação de Dados" },
+        { "id": "ml-4", "text": "Avaliação e Tuning" }
+      ],
+      "correct_order": ["ml-3", "ml-1", "ml-4", "ml-2"],
+      "explanation": "Sem dados não há IA (Coleta). Depois treinamos o modelo, avaliamos os resultados/ajustamos parâmetros e, por fim, colocamos o modelo em produção (Endpoint)."
     }
   ]
 }

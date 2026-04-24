@@ -41,70 +41,59 @@ const CERT_NAMES = {
 };
 
 export function renderTrail() {
-    const container = document.getElementById('trail-render-area');
-    const certSelect = document.getElementById('certification-select');
+    // 1. Busca o container de forma à prova de falhas (tenta vários IDs/Classes comuns)
+    const container = document.getElementById('gamificacao-trail') 
+                   || document.getElementById('trail-container') 
+                   || document.querySelector('.trail-container');
     
-    if (!container) return;
-
-    const currentLang = localStorage.getItem('aws_sim_lang') || 'pt';
-    
-    // Tratamento rigoroso do ID para não quebrar a busca
-    const currentCertId = certSelect && certSelect.value ? certSelect.value.toLowerCase().trim() : 'clf-c02';
-    const activeTrail = TRAILS_BY_CERT[currentCertId] || TRAILS_BY_CERT['clf-c02'];
-
-    const tituloJornada = document.querySelector('#screen-jornada h2');
-    if (tituloJornada) {
-        const titleText = currentLang === 'en' ? 'Journey' : 'Jornada';
-        // Fallback seguro caso o nome não seja encontrado
-        const certName = CERT_NAMES[currentCertId] || 'Cloud Practitioner'; 
-        tituloJornada.innerHTML = `<i class="fa-solid fa-map-location-dot text-aws-orange mr-2"></i> ${titleText} ${certName}`;
+    if (!container) {
+        console.error("AWS Sim: Container da trilha não encontrado no DOM.");
+        return; // Se não achar onde desenhar, ele para aqui (causa do ecrã branco)
     }
 
-    let gamification = storageManager.getGamification();
-    const firstStageId = activeTrail[0].id;
-    
-    if (!gamification.unlockedStages) {
-        gamification.unlockedStages = [firstStageId];
-        gamification.completedStages = [];
-    } else if (!gamification.unlockedStages.includes(firstStageId) && gamification.unlockedStages.length === 0) {
-        gamification.unlockedStages.push(firstStageId);
+    // 2. Identifica a certificação e idioma atuais
+    const currentLang = localStorage.getItem('aws_sim_lang') || 'pt';
+    const currentCertId = localStorage.getItem('aws_sim_cert') || 'clf-c02';
+    const activeTrail = TRAILS_BY_CERT[currentCertId] || TRAILS_BY_CERT['clf-c02'];
+
+    // 3. Carrega os dados de gamificação de forma segura
+    let gamification = storageManager.getGamification() || {};
+    if (!gamification.completedStages) gamification.completedStages = [];
+    if (!gamification.unlockedStages) gamification.unlockedStages = [];
+
+    // 4. Força o desbloqueio do primeiro módulo da trilha atual
+    if (activeTrail && activeTrail.length > 0) {
+        const firstStageId = activeTrail[0].id;
+        if (!gamification.unlockedStages.includes(firstStageId)) {
+            gamification.unlockedStages.push(firstStageId);
+            
+            // Usa o próprio storageManager para salvar de forma segura
+            if (typeof storageManager.saveGamification === 'function') {
+                storageManager.saveGamification(gamification);
+            } else {
+                // Fallback de segurança se o método não existir
+                localStorage.setItem('aws_sim_gamification', JSON.stringify(gamification));
+            }
+        }
     }
 
     let html = '';
-    
+
+    // 5. Monta o HTML
     activeTrail.forEach((stage, index) => {
         const isCompleted = gamification.completedStages.includes(stage.id);
         const isUnlocked = gamification.unlockedStages.includes(stage.id);
-        const isActive = isUnlocked && !isCompleted;
 
-        let stateClass = 'locked';
-        let iconHtml = `<i class="fa-solid fa-lock"></i>`;
-
-        const isBoss = stage.id.includes('final');
-
-        if (isCompleted) {
-            stateClass = `completed ${isBoss ? 'boss-node' : ''}`;
-            iconHtml = `<i class="fa-solid fa-check"></i>`;
-        } else if (isActive) {
-            stateClass = `active ${isBoss ? 'boss-node' : ''}`;
-            iconHtml = isBoss ? `<i class="fa-solid fa-crown"></i>` : `<i class="fa-solid ${stage.icon}"></i>`;
-        } else if (isBoss) {
-            stateClass += ' boss-node'; // Aplica o estilo mesmo quando travado
-        }
-
-        // Prevenção extra de 'undefined' no título dos nós
-        const stageTitle = (stage.title && stage.title[currentLang]) ? stage.title[currentLang] : 'Módulo AWS';
-
-        let clickAction = '';
-        if (isUnlocked) {
-            // Removemos espaços e caracteres especiais que podem quebrar o clique HTML
-            const safeTitle = stageTitle.replace(/[^a-zA-Z0-9 ]/g, ""); 
-            clickAction = `onclick="startTrailMission('${stage.id}', '${safeTitle}')"`;
-        }
+        const stageTitle = stage.title[currentLang] || stage.title['pt'];
+        const stateClass = isCompleted ? 'completed' : (isUnlocked ? 'active unlock-animation' : 'locked');
+        
+        const bossClass = index === activeTrail.length - 1 ? 'boss-node' : '';
+        const iconHtml = isUnlocked ? `<i class="fa-solid ${stage.icon}"></i>` : '<i class="fa-solid fa-lock text-sm"></i>';
+        const clickAction = isUnlocked ? `onclick="window.startMission('${stage.id}')"` : '';
 
         html += `
-            <div class="trail-node-wrapper ${isUnlocked ? 'unlock-animation' : ''}" style="animation-delay: ${index * 0.1}s">
-                <div class="trail-node ${stateClass}" title="${stageTitle}" ${clickAction}>
+            <div class="trail-node-wrapper">
+                <div class="trail-node ${stateClass} ${bossClass}" title="${stageTitle}" ${clickAction}>
                     ${iconHtml}
                 </div>
                 <div class="trail-node-title">${stageTitle}</div>

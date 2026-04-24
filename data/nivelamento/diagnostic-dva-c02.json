@@ -1,0 +1,58 @@
+[
+  {
+    "id": "diag-dva-001",
+    "domain": "1. Development with AWS Services",
+    "difficulty": "conceptual",
+    "question": "Você está desenvolvendo uma API Serverless. O Amazon API Gateway recebe a requisição HTTP e precisa acionar um código backend sem provisionar servidores. Qual serviço você deve usar como integração (backend)?",
+    "options": [
+      "Amazon EC2",
+      "AWS Elastic Beanstalk",
+      "AWS Lambda",
+      "Amazon ECS"
+    ],
+    "correct": 2,
+    "explanation": "O AWS Lambda é o serviço de computação serverless nativo da AWS. Ele executa o seu código em resposta a eventos (como requisições do API Gateway) sem que precise gerenciar servidores."
+  },
+  {
+    "id": "diag-dva-002",
+    "domain": "2. Security",
+    "difficulty": "scenario",
+    "question": "O seu código precisa se conectar a um banco de dados RDS. Onde é o local MAIS seguro e recomendado pela AWS para armazenar as credenciais (usuário e senha) do banco, permitindo a rotação automática?",
+    "options": [
+      "Em um arquivo de configuração (.env) dentro do repositório Git.",
+      "No código-fonte, mas criptografado em Base64.",
+      "Como variáveis de ambiente no AWS Lambda.",
+      "No AWS Secrets Manager."
+    ],
+    "correct": 3,
+    "explanation": "O AWS Secrets Manager foi criado especificamente para gerenciar, recuperar e rotacionar credenciais de bancos de dados, chaves de API e outros segredos de forma segura."
+  },
+  {
+    "id": "diag-dva-003",
+    "domain": "3. Deployment",
+    "difficulty": "conceptual",
+    "question": "Qual serviço da AWS atua como um repositório de código-fonte baseado em Git, seguro e altamente escalável?",
+    "options": [
+      "AWS CodeBuild",
+      "AWS CodeDeploy",
+      "AWS CodeCommit",
+      "AWS CodePipeline"
+    ],
+    "correct": 2,
+    "explanation": "O AWS CodeCommit é um serviço de controle de versão totalmente gerenciado que hospeda repositórios baseados no Git."
+  },
+  {
+    "id": "diag-dva-004",
+    "domain": "4. Troubleshooting and Optimization",
+    "difficulty": "scenario",
+    "question": "A sua arquitetura usa API Gateway, Lambda e DynamoDB. Os usuários relatam lentidão em algumas chamadas, mas você não sabe em qual dos três serviços ocorre o gargalo. Qual ferramenta ajuda a rastrear a requisição de ponta a ponta?",
+    "options": [
+      "AWS CloudTrail",
+      "AWS X-Ray",
+      "Amazon Inspector",
+      "AWS Trusted Advisor"
+    ],
+    "correct": 1,
+    "explanation": "O AWS X-Ray ajuda desenvolvedores a analisar e depurar aplicações distribuídas, rastreando requisições de ponta a ponta e identificando gargalos de performance."
+  }
+]

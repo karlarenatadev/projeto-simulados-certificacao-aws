@@ -1,0 +1,58 @@
+[
+  {
+    "id": "diag-aif-001",
+    "domain": "1. Fundamentals of AI and ML",
+    "difficulty": "conceptual",
+    "question": "Na terminologia de Machine Learning, qual é a diferença principal entre 'Treinamento' (Training) e 'Inferência' (Inference)?",
+    "options": [
+      "Treinamento é quando o modelo faz previsões em tempo real; Inferência é quando o modelo aprende com os dados históricos.",
+      "Treinamento é o processo do modelo aprender padrões a partir dos dados; Inferência é o uso do modelo treinado para fazer previsões com novos dados.",
+      "Treinamento usa apenas dados não estruturados; Inferência usa apenas dados estruturados.",
+      "Ambos são exatamente o mesmo processo no Amazon SageMaker."
+    ],
+    "correct": 1,
+    "explanation": "Primeiro nós 'treinamos' o modelo dando-lhe um conjunto de dados para que ele aprenda padrões e ajuste os seus pesos. Depois, fazemos o deploy do modelo para 'inferência', que é quando ele gera respostas/previsões para dados que nunca viu antes."
+  },
+  {
+    "id": "diag-aif-002",
+    "domain": "2. Fundamentals of Generative AI",
+    "difficulty": "conceptual",
+    "question": "Qual serviço gerenciado da AWS fornece acesso fácil (via API) aos principais Modelos de Fundação (Foundation Models - FMs) de empresas como Anthropic, Meta, Mistral e da própria Amazon?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon Lex",
+      "Amazon Polly",
+      "AWS DeepRacer"
+    ],
+    "correct": 0,
+    "explanation": "O Amazon Bedrock é o serviço principal da AWS para IA Generativa, permitindo utilizar grandes modelos de linguagem (LLMs) através de uma única API unificada, sem precisar gerir a infraestrutura."
+  },
+  {
+    "id": "diag-aif-003",
+    "domain": "3. Applications of Foundation Models",
+    "difficulty": "scenario",
+    "question": "Uma empresa quer usar um Modelo de Fundação (FM) para responder a perguntas de clientes, mas o FM sofre de 'alucinações' e não conhece os dados internos da empresa. Qual técnica resolve isso fornecendo contexto externo confiável ao prompt antes de enviá-lo ao modelo?",
+    "options": [
+      "Zero-shot prompting",
+      "RAG (Retrieval-Augmented Generation)",
+      "Model Fine-Tuning (Ajuste Fino)",
+      "Dimensionality Reduction"
+    ],
+    "correct": 1,
+    "explanation": "O RAG (Geração Aumentada por Recuperação) busca dados na base de conhecimento da empresa (como uma base vetorial) e os injeta no prompt, reduzindo alucinações e garantindo respostas atualizadas e precisas."
+  },
+  {
+    "id": "diag-aif-004",
+    "domain": "4. Guidelines for Responsible AI",
+    "difficulty": "conceptual",
+    "question": "No contexto da 'IA Responsável', o que significa o conceito de 'Viés' (Bias) em um modelo de Machine Learning?",
+    "options": [
+      "A capacidade do modelo de rodar em diferentes zonas de disponibilidade.",
+      "Um erro de código gerado no ambiente de produção.",
+      "Um preconceito ou favoritismo injusto no modelo, geralmente causado por dados de treinamento desbalanceados ou históricos prejudiciais.",
+      "A métrica que mede a velocidade de inferência do modelo (latência)."
+    ],
+    "correct": 2,
+    "explanation": "Viés (Bias) ocorre quando um modelo de IA toma decisões sistematicamente injustas contra determinados grupos. Mitigar esse viés é um dos pilares fundamentais da IA Responsável ensinada pela AWS."
+  }
+]

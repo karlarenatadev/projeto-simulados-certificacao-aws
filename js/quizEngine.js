@@ -69,12 +69,19 @@ export class QuizEngine {
         this.state.mode = 'diagnostic'; // Isola o estado do simulado real
 
         try {
-            // Busca o arquivo isolado focado em conceitos
             const fileSuffix = language === 'en' ? '-en' : '';
-
-            const response = await fetch(`data/nivelamento/diagnostic-${certId}${fileSuffix}.json`);
+            let filePath = `data/nivelamento/diagnostic-${certId}${fileSuffix}.json`;
             
-            if (!response.ok) throw new Error('Arquivo de diagnóstico não encontrado.');
+            let response = await fetch(filePath);
+            
+            // FALLBACK: Se falhar ao buscar o ficheiro em EN, tenta buscar o padrão (PT)
+            if (!response.ok && language === 'en') {
+                console.warn(`Diagnóstico EN não encontrado para ${certId}. Tentando versão PT...`);
+                filePath = `data/nivelamento/diagnostic-${certId}.json`;
+                response = await fetch(filePath);
+            }
+
+            if (!response.ok) throw new Error(`Arquivo de diagnóstico não encontrado para ${certId}.`);
             
             let data = await response.json();
 
@@ -89,6 +96,7 @@ export class QuizEngine {
             return { success: true, totalQuestions: this.state.questions.length };
 
         } catch (error) {
+            console.error("Erro no QuizEngine (Nivelamento):", error);
             return { success: false, message: error.message };
         }
     }
@@ -115,7 +123,7 @@ export class QuizEngine {
     }
 
     // 3. AVALIAÇÃO
-   submitAnswer(selectedIndex) {
+    submitAnswer(selectedIndex) {
         const q = this.getCurrentQuestion();
         
         let isCorrect;

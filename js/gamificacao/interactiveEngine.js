@@ -110,6 +110,38 @@ class InteractiveEngine {
         }
     }
 
+    checkOrder() {
+        const userOrder = this.sortableInstance.toArray();
+        const feedbackArea = document.getElementById('interactive-feedback');
+        const isCorrect = JSON.stringify(userOrder) === JSON.stringify(this.currentChallenge.correct_order);
+
+        if (isCorrect) {
+            feedbackArea.innerHTML = `<div class="text-green-600 font-bold">✅ Arquitetura validada! +10 XP</div>`;
+            
+            // Notificar o sistema de gamificação
+            this.awardLabProgress();
+            
+            this.sortableInstance.option("disabled", true); 
+        } else {
+            feedbackArea.innerHTML = `<div class="text-red-500 font-bold">❌ Ordem incorreta. Tenta novamente!</div>`;
+        }
+    }
+
+awardLabProgress() {
+    let gamification = storageManager.getGamification();
+    if (!gamification.labsCompleted) gamification.labsCompleted = 0;
+    
+    gamification.labsCompleted++;
+    
+    // Se completou 5 labs, ganha a badge 'lab_master'
+    if (gamification.labsCompleted === 5 && !gamification.badges.includes('lab_master')) {
+        gamification.badges.push('lab_master');
+        // Aqui podias disparar um brinde ou som de conquista
+    }
+    
+    storageManager.saveGamification(gamification);
+}
+
     // Função auxiliar (Utilitário)
     shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {

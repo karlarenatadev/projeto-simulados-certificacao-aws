@@ -1,0 +1,58 @@
+[
+  {
+    "id": "diag-saa-001",
+    "domain": "1. Design Secure Architectures",
+    "difficulty": "scenario",
+    "question": "Uma aplicação web de três camadas (three-tier) precisa ser implantada na AWS. A camada de banco de dados não deve ser acessível diretamente pela internet, mas precisa baixar atualizações de um repositório externo. Qual é a configuração de rede correta?",
+    "options": [
+      "Colocar o banco de dados numa sub-rede pública com um Security Group restritivo.",
+      "Colocar o banco de dados numa sub-rede privada e anexar um Internet Gateway diretamente a ela.",
+      "Colocar o banco de dados numa sub-rede privada e rotear o tráfego de saída através de um NAT Gateway na sub-rede pública.",
+      "Configurar um VPC Peering entre a sub-rede privada e a internet."
+    ],
+    "correct": 2,
+    "explanation": "Sub-redes privadas não têm rota direta para a internet. Para permitir que instâncias nelas baixem atualizações (tráfego de saída), usamos um NAT Gateway (ou NAT Instance) localizado numa sub-rede pública."
+  },
+  {
+    "id": "diag-saa-002",
+    "domain": "2. Design Resilient Architectures",
+    "difficulty": "conceptual",
+    "question": "Sua empresa precisa de um banco de dados relacional que suporte alta disponibilidade (High Availability) e failover automático em caso de falha de hardware. Qual funcionalidade do Amazon RDS você deve habilitar?",
+    "options": [
+      "Read Replicas (Réplicas de Leitura)",
+      "Multi-AZ Deployment",
+      "Automated Backups",
+      "Amazon RDS Proxy"
+    ],
+    "correct": 1,
+    "explanation": "O RDS Multi-AZ provisiona e mantém uma réplica síncrona em uma Zona de Disponibilidade diferente. Em caso de falha, o RDS faz o failover automático para a réplica sem alterar o endpoint."
+  },
+  {
+    "id": "diag-saa-003",
+    "domain": "3. Design High-Performing Architectures",
+    "difficulty": "scenario",
+    "question": "Usuários de todo o mundo estão reclamando de lentidão ao carregar imagens estáticas do seu site, que estão hospedadas em um bucket do S3 na região us-east-1. Qual serviço AWS resolve este problema de latência?",
+    "options": [
+      "AWS Global Accelerator",
+      "Amazon CloudFront",
+      "Amazon ElastiCache",
+      "Elastic Load Balancing (ELB)"
+    ],
+    "correct": 1,
+    "explanation": "O Amazon CloudFront é uma Content Delivery Network (CDN) que faz o cache de conteúdo estático e dinâmico em Edge Locations globais, reduzindo drasticamente a latência para os usuários finais."
+  },
+  {
+    "id": "diag-saa-004",
+    "domain": "4. Design Cost-Optimized Architectures",
+    "difficulty": "conceptual",
+    "question": "Sua equipe precisa processar um lote de imagens todas as madrugadas. O trabalho pode ser interrompido e retomado sem problemas. Qual opção de precificação do Amazon EC2 oferece a MAIOR redução de custos?",
+    "options": [
+      "On-Demand Instances",
+      "Reserved Instances (Instâncias Reservadas)",
+      "Dedicated Hosts",
+      "Spot Instances"
+    ],
+    "correct": 3,
+    "explanation": "As Spot Instances aproveitam a capacidade ociosa do EC2 com descontos de até 90%. São ideais para cargas de trabalho flexíveis, tolerantes a falhas ou que podem ser interrompidas."
+  }
+]
