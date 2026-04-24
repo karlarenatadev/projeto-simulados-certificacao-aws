@@ -1,4 +1,4 @@
-const CACHE_NAME = 'aws-sim-cache-v3'; // Subimos a versão do cache!
+const CACHE_NAME = 'aws-sim-cache-v4'; // Subimos a versão do cache!
 
 // Removemos os .json daqui para não ficarem trancados para sempre
 const urlsToCache = [

@@ -2409,14 +2409,26 @@ function renderSprintUI() {
     }
 }
 
+// 1. DECLARAÇÃO DA FUNÇÃO DO SPRINT
 window.startMicroSprint = function() {
     const certSelect = document.getElementById('certification-select');
     const currentCertId = certSelect ? certSelect.value : 'clf-c02';
 
     const storageKey = `aws_sprint_day_${currentCertId}`;
     let currentSprintDay = parseInt(localStorage.getItem(storageKey)) || 1;
-
     const lang = uiState.language || 'pt';
+
+    // --- BLOQUEIO DE CALENDÁRIO ---
+    const lastCompletedDate = localStorage.getItem(`aws_sprint_last_date_${currentCertId}`);
+    const todayStr = new Date().toDateString();
+
+    if (lastCompletedDate === todayStr) {
+        const msg = lang === 'en'
+            ? "You have already completed today's pill. Rest and come back tomorrow!"
+            : "Você já concluiu a pílula de hoje! Descanse a mente e volte amanhã para a próxima dose.";
+        alert(msg);
+        return;
+    }
     
     if (currentSprintDay > 14) {
         const msg = lang === 'en'
@@ -2496,18 +2508,22 @@ window.startMicroSprint = function() {
     document.body.style.overflow = 'hidden';
 };
 
-// Função para fechar sem salvar (se o usuário desistir)
+// 2. FUNÇÃO PARA FECHAR A PÍLULA SEM SALVAR
 window.closeSprintReader = function() {
     const overlay = document.getElementById('sprint-reader-overlay');
     if (overlay) overlay.remove();
-    document.body.style.overflow = ''; // Devolve o scroll
+    document.body.style.overflow = ''; 
 };
 
+// 3. FUNÇÃO QUE SALVA O DIA E ATUALIZA A TELA
 window.completeSprintDay = function(completedDay) {
     const certSelect = document.getElementById('certification-select');
     const currentCertId = certSelect ? certSelect.value : 'clf-c02';
     
     localStorage.setItem(`aws_sprint_day_${currentCertId}`, completedDay + 1);
+    
+    // --- SALVA A DATA DA CONCLUSÃO ---
+    localStorage.setItem(`aws_sprint_last_date_${currentCertId}`, new Date().toDateString());
     
     closeSprintReader();
     
@@ -2521,4 +2537,3 @@ window.completeSprintDay = function(completedDay) {
         : `🚀 Pílula do Dia ${completedDay} absorvida com sucesso! O próximo conhecimento te espera amanhã.`;
     alert(msg);
 };
-
