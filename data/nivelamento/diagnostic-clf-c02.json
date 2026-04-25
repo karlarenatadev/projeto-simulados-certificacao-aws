@@ -1,7 +1,7 @@
 [
   {
     "id": "diag-001",
-    "domain": "1. Cloud Concepts",
+    "domain": "cloud-concepts",
     "difficulty": "conceptual",
     "question": "Qual é a principal vantagem da 'Elasticidade' na nuvem AWS?",
     "options": [
@@ -15,7 +15,7 @@
   },
   {
     "id": "diag-002",
-    "domain": "2. Security and Compliance",
+    "domain": "security-compliance",
     "difficulty": "conceptual",
     "question": "No Modelo de Responsabilidade Compartilhada da AWS, qual das opções abaixo é de responsabilidade EXCLUSIVA do cliente?",
     "options": [
@@ -29,7 +29,7 @@
   },
   {
     "id": "diag-003",
-    "domain": "3. Cloud Technology and Services",
+    "domain": "cloud-storage",
     "difficulty": "conceptual",
     "question": "Se uma empresa precisa armazenar arquivos de backup que serão acessados apenas uma ou duas vezes por ano, qual serviço S3 oferece o menor custo?",
     "options": [
@@ -43,7 +43,7 @@
   },
   {
     "id": "diag-004",
-    "domain": "4. Billing, Pricing, and Support",
+    "domain": "billing-cost-management",
     "difficulty": "conceptual",
     "question": "Qual ferramenta da AWS você deve usar para visualizar, entender e gerenciar seus custos e uso da AWS ao longo do tempo?",
     "options": [

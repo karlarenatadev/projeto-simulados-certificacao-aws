@@ -122,19 +122,18 @@ def translate_question_obj(question, translator):
     
     return translated
 
-def process_file(cert_id):
+def process_file(input_file, output_file, task_name):
     """
-    Processa um arquivo de certificação específico de forma incremental.
+    Processa um arquivo JSON específico de forma incremental.
     """
     if not TRANSLATOR_AVAILABLE:
         print(f"\n❌ Não é possível traduzir sem a biblioteca 'deep-translator'")
         return False
     
-    input_file = f"data/{cert_id}.json"
-    output_file = f"data/{cert_id}-en.json"
-    
     print(f"\n{'='*70}")
-    print(f"📁 Processando: {cert_id.upper()}")
+    print(f"📁 Processando: {task_name}")
+    print(f"   Origem:  {input_file}")
+    print(f"   Destino: {output_file}")
     print(f"{'='*70}")
     
     try:
@@ -240,14 +239,34 @@ def main():
         arg = sys.argv[1].lower()
         if arg != "all":
             cert_ids = [arg]
+            
+    # Cria a lista de tarefas (arquivos principais e de nivelamento)
+    tasks = []
+    for cert in cert_ids:
+        # Arquivos principais
+        tasks.append({
+            "in_file": f"data/{cert}.json",
+            "out_file": f"data/{cert}-en.json",
+            "name": f"{cert.upper()} (Principal)"
+        })
+        # Arquivos de nivelamento
+        tasks.append({
+            "in_file": f"data/nivelamento/diagnostic-{cert}.json",
+            "out_file": f"data/nivelamento/diagnostic-{cert}-en.json",
+            "name": f"{cert.upper()} (Nivelamento/Diagnóstico)"
+        })
     
     success_count = 0
-    for cert_id in cert_ids:
-        if process_file(cert_id):
-            success_count += 1
+    for task in tasks:
+        # Só processa se o arquivo original existir para evitar erros sujos na tela
+        if os.path.exists(task["in_file"]):
+            if process_file(task["in_file"], task["out_file"], task["name"]):
+                success_count += 1
+        else:
+            print(f"\n⚠️ Pulando {task['name']}: Arquivo de origem não encontrado ({task['in_file']})")
             
     print(f"\n{'='*70}")
-    print(f"✅ CONCLUÍDO: {success_count}/{len(cert_ids)} arquivos atualizados")
+    print(f"✅ CONCLUÍDO: {success_count} arquivos atualizados")
     print(f"{'='*70}\n")
 
 if __name__ == "__main__":

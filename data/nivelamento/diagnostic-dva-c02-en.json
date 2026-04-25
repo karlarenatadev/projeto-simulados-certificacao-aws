@@ -1,0 +1,58 @@
+[
+  {
+    "id": "diag-dva-001",
+    "domain": "development",
+    "difficulty": "conceptual",
+    "question": "You are developing a Serverless API. Amazon API Gateway receives the HTTP request and needs to trigger backend code without provisioning servers. Which service should you use as an integration (backend)?",
+    "options": [
+      "Amazon EC2",
+      "AWS Elastic Beanstalk",
+      "AWS Lambda",
+      "Amazon ECS"
+    ],
+    "correct": 2,
+    "explanation": "AWS Lambda is AWS's native serverless compute service. It runs your code in response to events (such as API Gateway requests) without having to manage servers."
+  },
+  {
+    "id": "diag-dva-002",
+    "domain": "security",
+    "difficulty": "scenario",
+    "question": "Your code needs to connect to an RDS database. Where is the MOST secure and AWS recommended location to store bank credentials (username and password), allowing for automatic rotation?",
+    "options": [
+      "In a configuration file (.env) within the Git repository.",
+      "In source code, but encrypted in Base64.",
+      "Like environment variables in AWS Lambda.",
+      "In AWS Secrets Manager."
+    ],
+    "correct": 3,
+    "explanation": "AWS Secrets Manager is specifically designed to securely manage, retrieve, and rotate database credentials, API keys, and other secrets."
+  },
+  {
+    "id": "diag-dva-003",
+    "domain": "deployment",
+    "difficulty": "conceptual",
+    "question": "Which AWS service acts as a secure, highly scalable Git-based source code repository?",
+    "options": [
+      "AWS CodeBuild",
+      "AWS CodeDeploy",
+      "AWS CodeCommit",
+      "AWS CodePipeline"
+    ],
+    "correct": 2,
+    "explanation": "AWS CodeCommit is a fully managed version control service that hosts Git-based repositories."
+  },
+  {
+    "id": "diag-dva-004",
+    "domain": "troubleshooting-performance",
+    "difficulty": "scenario",
+    "question": "Your architecture uses API Gateway, Lambda, and DynamoDB. Users report slowness in some calls, but you don't know which of the three services is causing the bottleneck. Which tool helps to track the request from end to end?",
+    "options": [
+      "AWS CloudTrail",
+      "AWS X-Ray",
+      "Amazon Inspector",
+      "AWS Trusted Advisor"
+    ],
+    "correct": 1,
+    "explanation": "AWS X-Ray helps developers analyze and debug distributed applications, tracking end-to-end requests and identifying performance bottlenecks."
+  }
+]

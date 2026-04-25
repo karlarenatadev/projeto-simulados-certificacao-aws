@@ -7417,5 +7417,29 @@
     ],
     "correct": 1,
     "explanation": "Event-based autonomous alert orchestration for Savings Plans management uses the Amazon EventBridge[cite: 169] configuration. The system acts by reading the event 'Savings Plans state change alert event', which can be programmed to predict transitions in a single window of 1 or 7 days before the final execution[cite: 170, 171]. This alert can trigger native systemic activations on a topic in Amazon SNS or functions in AWS Lambda[cite: 172]."
+  },
+  {
+    "domain": "seguranca",
+    "subdomain": "controle-de-acesso",
+    "service": "AWS IAM",
+    "difficulty": "medium",
+    "type": "multiple-answer",
+    "tags": [
+      "iam",
+      "segurança",
+      "mfa"
+    ],
+    "question": "Which of the following are security best practices for AWS Identity and Access Management (IAM)? (Choose 2)",
+    "options": [
+      "Share root user access keys with the development team.",
+      "Enable Multi-Factor Authentication (MFA) for privileged users.",
+      "Grant full administrative permissions by default to speed up work.",
+      "Enforce Least Privilege using IAM policies."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "Enabling MFA (option 1) and applying the principle of least privilege (option 3) are essential security practices. You should never share root keys (option 0) or grant full permissions by default (option 2)."
   }
 ]

@@ -1,7 +1,7 @@
 [
   {
     "id": "diag-aif-001",
-    "domain": "1. Fundamentals of AI and ML",
+    "domain": "fundamentals-ai-ml",
     "difficulty": "conceptual",
     "question": "Na terminologia de Machine Learning, qual é a diferença principal entre 'Treinamento' (Training) e 'Inferência' (Inference)?",
     "options": [
@@ -15,7 +15,7 @@
   },
   {
     "id": "diag-aif-002",
-    "domain": "2. Fundamentals of Generative AI",
+    "domain": "fundamentals-genai",
     "difficulty": "conceptual",
     "question": "Qual serviço gerenciado da AWS fornece acesso fácil (via API) aos principais Modelos de Fundação (Foundation Models - FMs) de empresas como Anthropic, Meta, Mistral e da própria Amazon?",
     "options": [
@@ -29,7 +29,7 @@
   },
   {
     "id": "diag-aif-003",
-    "domain": "3. Applications of Foundation Models",
+    "domain": "applications-foundation-models",
     "difficulty": "scenario",
     "question": "Uma empresa quer usar um Modelo de Fundação (FM) para responder a perguntas de clientes, mas o FM sofre de 'alucinações' e não conhece os dados internos da empresa. Qual técnica resolve isso fornecendo contexto externo confiável ao prompt antes de enviá-lo ao modelo?",
     "options": [
@@ -43,7 +43,7 @@
   },
   {
     "id": "diag-aif-004",
-    "domain": "4. Guidelines for Responsible AI",
+    "domain": "guidelines-responsible-ai",
     "difficulty": "conceptual",
     "question": "No contexto da 'IA Responsável', o que significa o conceito de 'Viés' (Bias) em um modelo de Machine Learning?",
     "options": [

@@ -1,7 +1,7 @@
 [
   {
     "id": "diag-dva-001",
-    "domain": "1. Development with AWS Services",
+    "domain": "development",
     "difficulty": "conceptual",
     "question": "Você está desenvolvendo uma API Serverless. O Amazon API Gateway recebe a requisição HTTP e precisa acionar um código backend sem provisionar servidores. Qual serviço você deve usar como integração (backend)?",
     "options": [
@@ -15,7 +15,7 @@
   },
   {
     "id": "diag-dva-002",
-    "domain": "2. Security",
+    "domain": "security",
     "difficulty": "scenario",
     "question": "O seu código precisa se conectar a um banco de dados RDS. Onde é o local MAIS seguro e recomendado pela AWS para armazenar as credenciais (usuário e senha) do banco, permitindo a rotação automática?",
     "options": [
@@ -29,7 +29,7 @@
   },
   {
     "id": "diag-dva-003",
-    "domain": "3. Deployment",
+    "domain": "deployment",
     "difficulty": "conceptual",
     "question": "Qual serviço da AWS atua como um repositório de código-fonte baseado em Git, seguro e altamente escalável?",
     "options": [
@@ -43,7 +43,7 @@
   },
   {
     "id": "diag-dva-004",
-    "domain": "4. Troubleshooting and Optimization",
+    "domain": "troubleshooting-performance",
     "difficulty": "scenario",
     "question": "A sua arquitetura usa API Gateway, Lambda e DynamoDB. Os usuários relatam lentidão em algumas chamadas, mas você não sabe em qual dos três serviços ocorre o gargalo. Qual ferramenta ajuda a rastrear a requisição de ponta a ponta?",
     "options": [

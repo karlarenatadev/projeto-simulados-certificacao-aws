@@ -1,7 +1,7 @@
 [
   {
     "id": "diag-saa-001",
-    "domain": "1. Design Secure Architectures",
+    "domain": "design-secure-architectures",
     "difficulty": "scenario",
     "question": "Uma aplicação web de três camadas (three-tier) precisa ser implantada na AWS. A camada de banco de dados não deve ser acessível diretamente pela internet, mas precisa baixar atualizações de um repositório externo. Qual é a configuração de rede correta?",
     "options": [
@@ -15,7 +15,7 @@
   },
   {
     "id": "diag-saa-002",
-    "domain": "2. Design Resilient Architectures",
+    "domain": "design-resilient-architectures",
     "difficulty": "conceptual",
     "question": "Sua empresa precisa de um banco de dados relacional que suporte alta disponibilidade (High Availability) e failover automático em caso de falha de hardware. Qual funcionalidade do Amazon RDS você deve habilitar?",
     "options": [
@@ -29,7 +29,7 @@
   },
   {
     "id": "diag-saa-003",
-    "domain": "3. Design High-Performing Architectures",
+    "domain": "design-high-performing-architectures",
     "difficulty": "scenario",
     "question": "Usuários de todo o mundo estão reclamando de lentidão ao carregar imagens estáticas do seu site, que estão hospedadas em um bucket do S3 na região us-east-1. Qual serviço AWS resolve este problema de latência?",
     "options": [
@@ -43,7 +43,7 @@
   },
   {
     "id": "diag-saa-004",
-    "domain": "4. Design Cost-Optimized Architectures",
+    "domain": "design-cost-optimized-architectures",
     "difficulty": "conceptual",
     "question": "Sua equipe precisa processar um lote de imagens todas as madrugadas. O trabalho pode ser interrompido e retomado sem problemas. Qual opção de precificação do Amazon EC2 oferece a MAIOR redução de custos?",
     "options": [

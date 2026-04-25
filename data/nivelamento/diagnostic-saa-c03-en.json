@@ -1,0 +1,58 @@
+[
+  {
+    "id": "diag-saa-001",
+    "domain": "design-secure-architectures",
+    "difficulty": "scenario",
+    "question": "A three-tier web application needs to be deployed in AWS. The database layer should not be accessible directly from the internet, but needs to download updates from an external repository. What is the correct network configuration?",
+    "options": [
+      "Place the database in a public subnet with a restrictive Security Group.",
+      "Place the database in a private subnet and attach an Internet Gateway directly to it.",
+      "Place the database on a private subnet and route outgoing traffic through a NAT Gateway on the public subnet.",
+      "Configuse a VPC Peering between the private subnet and the internet."
+    ],
+    "correct": 2,
+    "explanation": "Private subnets have no direct route to the internet. To allow instances in them to download updates (outbound traffic), we use a NAT Gateway (or NAT Instance) located in a public subnet."
+  },
+  {
+    "id": "diag-saa-002",
+    "domain": "design-resilient-architectures",
+    "difficulty": "conceptual",
+    "question": "Your company needs a relational database that supports high availability and automatic failover in the event of hardware failure. Which Amazon RDS functionality should you enable?",
+    "options": [
+      "Read Replicas",
+      "Multi-AZ Deployment",
+      "Automated Backups",
+      "Amazon RDS Proxy"
+    ],
+    "correct": 1,
+    "explanation": "RDS Multi-AZ provisions and maintains a synchronous replica in a different Availability Zone. In case of failure, RDS automatically fails over to the replica without changing the endpoint."
+  },
+  {
+    "id": "diag-saa-003",
+    "domain": "design-high-performing-architectures",
+    "difficulty": "scenario",
+    "question": "Users around the world are complaining about slow loading of static images for your website, which are hosted in an S3 bucket in the us-east-1 region. Which AWS service solves this latency issue?",
+    "options": [
+      "AWS Global Accelerator",
+      "Amazon CloudFront",
+      "Amazon ElastiCache",
+      "Elastic Load Balancing (ELB)"
+    ],
+    "correct": 1,
+    "explanation": "Amazon CloudFront is a Content Delivery Network (CDN) that caches static and dynamic content across global Edge Locations, dramatically reducing latency for end users."
+  },
+  {
+    "id": "diag-saa-004",
+    "domain": "design-cost-optimized-architectures",
+    "difficulty": "conceptual",
+    "question": "Your team needs to process a batch of images every morning. Work can be stopped and resumed without any problems. Which Amazon EC2 pricing option offers the BIGGEST cost savings?",
+    "options": [
+      "On-Demand Instances",
+      "Reserved Instances (Reserved Instances)",
+      "Dedicated Hosts",
+      "Spot Instances"
+    ],
+    "correct": 3,
+    "explanation": "Spot Instances take advantage of idle EC2 capacity at discounts of up to 90%. They are ideal for flexible, fault-tolerant, or interruptible workloads."
+  }
+]

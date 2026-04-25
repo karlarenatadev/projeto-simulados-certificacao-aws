@@ -1,0 +1,58 @@
+[
+  {
+    "id": "diag-aif-001",
+    "domain": "fundamentals-ai-ml",
+    "difficulty": "conceptual",
+    "question": "In Machine Learning terminology, what is the main difference between 'Training' and 'Inference'?",
+    "options": [
+      "Training is when the model makes predictions in real time; Inference is when the model learns from historical data.",
+      "Training is the process of the model learning patterns from data; Inference is the use of the trained model to make predictions with new data.",
+      "Training uses only unstructured data; Inference uses only structured data.",
+      "Both are exactly the same process in Amazon SageMaker."
+    ],
+    "correct": 1,
+    "explanation": "First we 'train' the model by giving it a set of data so that it learns patterns and adjusts its weights. Then, we deploy the model for 'inference', which is when it generates answers/predictions for data it has never seen before."
+  },
+  {
+    "id": "diag-aif-002",
+    "domain": "fundamentals-genai",
+    "difficulty": "conceptual",
+    "question": "Which AWS managed service provides easy access (via API) to key Foundation Models (FMs) from companies like Anthropic, Meta, Mistral, and Amazon itself?",
+    "options": [
+      "Amazon Bedrock",
+      "Amazon Lex",
+      "Amazon Polly",
+      "AWSDeepRacer"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Bedrock is the AWS core service for Generative AI, enabling you to use large language models (LLMs) through a single unified API, without having to manage infrastructure."
+  },
+  {
+    "id": "diag-aif-003",
+    "domain": "applications-foundation-models",
+    "difficulty": "scenario",
+    "question": "A company wants to use a Foundation Model (FM) to answer customer questions, but the FM suffers from 'hallucinations' and does not know the company's internal data. Which technique resolves this by providing reliable external context to the prompt before sending it to the model?",
+    "options": [
+      "Zero-shot prompting",
+      "RAG (Retrieval-Augmented Generation)",
+      "Model Fine-Tuning",
+      "Dimensionality Reduction"
+    ],
+    "correct": 1,
+    "explanation": "RAG (Recovery Augmented Generation) fetches data from the company's knowledge base (as a vector base) and injects it into the prompt, reducing hallucinations and ensuring up-to-date and accurate responses."
+  },
+  {
+    "id": "diag-aif-004",
+    "domain": "guidelines-responsible-ai",
+    "difficulty": "conceptual",
+    "question": "In the context of 'Responsible AI', what does the concept of 'Bias' in a Machine Learning model mean?",
+    "options": [
+      "The model's ability to run in different availability zones.",
+      "A code error generated in the production environment.",
+      "An unfair bias or favoritism in the model, often caused by unbalanced training data or unhealthy history.",
+      "The metric that measures the model inference speed (latency)."
+    ],
+    "correct": 2,
+    "explanation": "Bias occurs when an AI model makes systematically unfair decisions against certain groups. Mitigating this bias is one of the fundamental pillars of Responsible AI taught by AWS."
+  }
+]

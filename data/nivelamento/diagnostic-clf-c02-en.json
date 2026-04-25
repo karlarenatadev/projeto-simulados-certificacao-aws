@@ -1,0 +1,58 @@
+[
+  {
+    "id": "diag-001",
+    "domain": "cloud-concepts",
+    "difficulty": "conceptual",
+    "question": "What is the main advantage of 'Elasticity' in the AWS cloud?",
+    "options": [
+      "The ability to predict monthly costs accurately.",
+      "The ability to automatically scale IT resources up and down according to demand.",
+      "The ability to transfer responsibility for physical security to AWS.",
+      "The ability to run code without provisioning servers."
+    ],
+    "correct": 1,
+    "explanation": "Elasticity is the fundamental concept of automatically scaling resources horizontally (scale in/out) as needed, paying only for what you use."
+  },
+  {
+    "id": "diag-002",
+    "domain": "security-compliance",
+    "difficulty": "conceptual",
+    "question": "In the AWS Shared Responsibility Model, which of the following is the customer's SOLE responsibility?",
+    "options": [
+      "Physical maintenance of data centers.",
+      "Updating the firmware of network routers.",
+      "Configuration of firewall rules (Security Groups) and data encryption.",
+      "Ensure refrigeration and energy in availability zones."
+    ],
+    "correct": 2,
+    "explanation": "AWS takes care of 'cloud security' (hardware, data center). The customer takes care of 'cloud security' (data, IAM permissions, firewalls)."
+  },
+  {
+    "id": "diag-003",
+    "domain": "cloud-storage",
+    "difficulty": "conceptual",
+    "question": "If a company needs to store backup files that will only be accessed once or twice a year, which S3 service offers the lowest cost?",
+    "options": [
+      "Amazon S3 Standard",
+      "Amazon S3 Intelligent-Tiering",
+      "Amazon S3 Glacier Deep Archive",
+      "Amazon EBS"
+    ],
+    "correct": 2,
+    "explanation": "S3 Glacier Deep Archive is AWS's lowest-cost storage class designed for long-term retention of data that is rarely accessed."
+  },
+  {
+    "id": "diag-004",
+    "domain": "billing-cost-management",
+    "difficulty": "conceptual",
+    "question": "Which AWS tool should you use to visualize, understand, and manage your AWS costs and usage over time?",
+    "options": [
+      "AWS Cost Explorer",
+      "AWS Trusted Advisor",
+      "AWS Organizations",
+      "Amazon Inspector"
+    ],
+    "correct": 0,
+    "explanation": "AWS Cost Explorer lets you view graphs of usage and costs, and predict future spending based on history."
+  }
+]
