@@ -5,6 +5,7 @@
 Este diretório contém o pipeline completo de automação para geração e tradução de questões AWS usando IA Generativa (Google Gemini) e APIs de tradução.
 
 **Funcionalidades principais**:
+
 - 🤖 Geração automática de questões com IA
 - 🌐 Tradução PT-BR → EN-US
 - ✅ Validação de schema e semântica
@@ -41,6 +42,7 @@ pip install -r scripts_python/requirements.txt
 ```
 
 **Dependências principais**:
+
 - `google-genai` - API do Google Gemini
 - `pydantic` - Validação de schema
 - `deep-translator` - Tradução automática
@@ -104,6 +106,7 @@ python scripts_python/auto_generate_questions.py all
 ```
 
 **Características**:
+
 - ✅ Analisa distribuição atual automaticamente
 - ✅ Calcula quantas questões faltam por nível
 - ✅ Gera automaticamente para balancear
@@ -112,6 +115,7 @@ python scripts_python/auto_generate_questions.py all
 - ✅ Retry automático em caso de erro
 
 **Exemplo de uso**:
+
 ```bash
 $ python scripts_python/auto_generate_questions.py clf-c02
 
@@ -157,6 +161,7 @@ python scripts_python/quick_generate.py dva-c02 medium 15
 ```
 
 **Características**:
+
 - ⚡ Geração rápida (sem confirmação)
 - ✅ Ideal para testes e ajustes
 - ✅ Controle preciso de quantidade
@@ -174,6 +179,7 @@ questions = fabricar_questoes("clf-c02", "hard", 5)
 ```
 
 **Características**:
+
 - 🤖 Usa Google Gemini 2.5 Flash
 - ✅ Validação automática de português brasileiro
 - ✅ Schema Pydantic para garantir qualidade
@@ -223,11 +229,13 @@ questions = fabricar_questoes("clf-c02", "hard", 5)
 ### ⚡ Performance e Limites
 
 **Geração em Lotes**:
+
 - Lotes de 10 questões por vez
 - Tempo médio: ~30 segundos por lote
 - 60 questões ≈ 3-5 minutos
 
 **Limites da API**:
+
 - Google Gemini Free: 15 requisições/minuto
 - Retry automático até 3 tentativas
 - Aguarda automaticamente se atingir limite
@@ -254,6 +262,7 @@ python scripts_python/translate_with_api.py all
 ```
 
 **Características**:
+
 - ✅ Tradução completa e profissional
 - ✅ Preserva termos técnicos AWS automaticamente
 - ✅ Usa Google Translate (gratuito)
@@ -272,6 +281,7 @@ python scripts_python/translate_aws_questions.py all
 ```
 
 **Características**:
+
 - ✅ Muito rápido (segundos)
 - ⚠️ Tradução parcial (baseada em padrões)
 - ⚠️ Pode deixar partes em português
@@ -288,11 +298,13 @@ python scripts_python/translate_aws_questions.py all
 ### 🔧 Campos Traduzidos vs Preservados
 
 **✅ Campos Traduzidos**:
+
 - `question` - Pergunta principal
 - `options` - Array de opções de resposta
 - `explanation` - Explicação da resposta correta
 
 **🔒 Campos Preservados** (não alterados):
+
 - `domain`, `subdomain`, `service`
 - `difficulty` (`easy`, `medium`, `hard`)
 - `type`, `tags`
@@ -302,6 +314,7 @@ python scripts_python/translate_aws_questions.py all
 ### 🎯 Termos Técnicos Preservados
 
 Termos AWS automaticamente preservados:
+
 - **Serviços**: EC2, S3, RDS, Lambda, VPC, IAM, CloudFront, etc.
 - **Conceitos**: Security Group, S3 Bucket, IAM Role, Auto Scaling, etc.
 - **Tipos**: On-Demand, Reserved Instance, Spot Instance, etc.
@@ -310,6 +323,7 @@ Termos AWS automaticamente preservados:
 ### 📊 Exemplo de Tradução
 
 **Antes (PT-BR)**:
+
 ```json
 {
   "question": "Uma startup de software está lançando seu primeiro produto...",
@@ -319,6 +333,7 @@ Termos AWS automaticamente preservados:
 ```
 
 **Depois (EN-US)**:
+
 ```json
 {
   "question": "A software startup is launching its first product...",
@@ -384,22 +399,26 @@ done
 ## 🐛 Solução de Problemas
 
 ### Erro: "GEMINI_API_KEY não encontrada"
+
 ```bash
 # Criar arquivo .env na raiz
 echo "GEMINI_API_KEY=sua_chave_aqui" > .env
 ```
 
 ### Erro: "RESOURCE_EXHAUSTED" ou "429"
+
 - **Causa**: Limite de quota da API atingido
 - **Solução**: O script aguarda automaticamente 30-60 segundos
 - **Alternativa**: Aguardar alguns minutos e tentar novamente
 
 ### Questões com termos em inglês
+
 - O script valida automaticamente
 - Questões inválidas são rejeitadas
 - Apenas questões em português brasileiro são salvas
 
 ### JSON corrompido
+
 ```bash
 # Validar JSON
 python -m json.tool data/clf-c02.json > /dev/null && echo "✅ JSON válido"
@@ -409,6 +428,7 @@ cp data/backups/clf-c02_backup_pt.json data/clf-c02.json
 ```
 
 ### Tradução muito lenta
+
 - Normal para arquivos grandes (190 questões ≈ 5-10 minutos)
 - O script adiciona delay de 0.1s entre traduções
 - Deixe o processo rodar em background
@@ -463,6 +483,7 @@ cp data/clf-c02.json data/backups/clf-c02_backup_$(date +%Y%m%d_%H%M%S).json
 ## ✅ Checklist de Uso
 
 ### Geração de Questões
+
 - [ ] Configurar `.env` com GEMINI_API_KEY
 - [ ] Instalar dependências (`pip install -r requirements.txt`)
 - [ ] Fazer backup dos arquivos atuais
@@ -472,6 +493,7 @@ cp data/clf-c02.json data/backups/clf-c02_backup_$(date +%Y%m%d_%H%M%S).json
 - [ ] Testar na aplicação
 
 ### Tradução
+
 - [ ] Instalar `deep-translator`
 - [ ] Traduzir com `translate_with_api.py`
 - [ ] Validar JSON traduzido
