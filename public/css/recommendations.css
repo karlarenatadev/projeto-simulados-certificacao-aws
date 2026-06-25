@@ -1,0 +1,159 @@
+/**
+ * Study Now ("O Que Estudar Agora")
+ * Estilos do componente de recomendacao de dominios fracos na sidebar.
+ */
+
+.study-now-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.study-now-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.study-now-item:last-child {
+  border-bottom: none;
+}
+
+.dark .study-now-item {
+  border-bottom-color: #334155;
+}
+
+.study-now-rank {
+  width: 1rem;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #9ca3af;
+}
+
+.study-now-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.dark .study-now-label {
+  color: #d1d5db;
+}
+
+.study-now-badge {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+}
+
+.study-now-badge--high {
+  color: #dc2626;
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.dark .study-now-badge--high {
+  color: #f87171;
+  background-color: rgba(127, 29, 29, 0.2);
+  border-color: rgba(153, 27, 27, 0.3);
+}
+
+.study-now-badge--medium {
+  color: #ea580c;
+  background-color: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.dark .study-now-badge--medium {
+  color: #fb923c;
+  background-color: rgba(124, 45, 18, 0.2);
+  border-color: rgba(154, 52, 18, 0.3);
+}
+
+.study-now-badge--low {
+  color: #ca8a04;
+  background-color: #fefce8;
+  border-color: #fde68a;
+}
+
+.dark .study-now-badge--low {
+  color: #facc15;
+  background-color: rgba(113, 63, 18, 0.2);
+  border-color: rgba(133, 77, 14, 0.3);
+}
+
+.study-now-link {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: #0033ff;
+  text-decoration: none;
+}
+
+.study-now-link:hover {
+  text-decoration: underline;
+}
+
+.study-now-link i {
+  font-size: 0.625rem;
+}
+
+.study-now-btn {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.625rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #0033ff;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.study-now-btn:hover {
+  background-color: #0029cc;
+}
+
+.study-now-empty,
+.study-now-loading {
+  font-size: 0.875rem;
+  font-style: italic;
+  color: #9ca3af;
+}
+
+.study-now-loading {
+  animation: study-now-pulse 1.5s ease-in-out infinite;
+}
+
+.study-now-success {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #16a34a;
+}
+
+.dark .study-now-success {
+  color: #4ade80;
+}
+
+@keyframes study-now-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
