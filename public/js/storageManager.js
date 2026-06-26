@@ -518,7 +518,9 @@ export class StorageManager {
 
     return mistakes
       .filter((mistake) => mistake && mistake.resolved !== true)
-      .sort((a, b) => new Date(b.lastWrongAt || 0) - new Date(a.lastWrongAt || 0));
+      .sort(
+        (a, b) => new Date(b.lastWrongAt || 0) - new Date(a.lastWrongAt || 0),
+      );
   }
 
   hasMistakes(certificationId) {
@@ -634,7 +636,10 @@ export class StorageManager {
       const today = new Date().toISOString().split("T")[0];
 
       const historyQuizCount = this.getCompletedQuizCount();
-      if (historyQuizCount === 0 || gamification.totalQuizzes < historyQuizCount) {
+      if (
+        historyQuizCount === 0 ||
+        gamification.totalQuizzes < historyQuizCount
+      ) {
         gamification.totalQuizzes += 1;
       }
 

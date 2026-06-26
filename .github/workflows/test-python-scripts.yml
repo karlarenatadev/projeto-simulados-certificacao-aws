@@ -2,12 +2,12 @@ name: Test Python Scripts
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
     paths:
       - 'src/python/scripts/**/*.py'
       - 'src/python/scripts/requirements.txt'
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main ]
     paths:
       - 'src/python/scripts/**/*.py'
       - 'src/python/scripts/requirements.txt'

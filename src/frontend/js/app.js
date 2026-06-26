@@ -333,7 +333,10 @@ function wireUIActions() {
   bindClick("btn-flashcards-home", goHome);
   bindClick("btn-clear-history", clearHistory);
   bindClick("btn-start-diagnostic", startDiagnostic);
-  bindClick("btn-start-personalized-diagnostic-quiz", startPersonalizedDiagnosticQuiz);
+  bindClick(
+    "btn-start-personalized-diagnostic-quiz",
+    startPersonalizedDiagnosticQuiz,
+  );
   bindClick("sprint-start-btn", startMicroSprint);
 
   const flashcardContainer = document.getElementById("flashcard-container");
@@ -1999,7 +2002,8 @@ function getQuizDomainIdsForDiagnosticDomains(domainIds, certId) {
 }
 
 function getDiagnosticDomainName(domainId, certId) {
-  const quizDomainId = DIAGNOSTIC_DOMAIN_ALIASES[certId]?.[domainId] || domainId;
+  const quizDomainId =
+    DIAGNOSTIC_DOMAIN_ALIASES[certId]?.[domainId] || domainId;
   const domain = certificationPaths[certId]?.domains?.find(
     (item) => item.id === quizDomainId,
   );
@@ -2416,10 +2420,13 @@ function updateSidebarProgress() {
   }
 
   const certPrefix = currentCertId.split("-")[0];
-  const completedStagesCount = (gamification.completedStages || []).filter((id) =>
-    id.startsWith(certPrefix),
+  const completedStagesCount = (gamification.completedStages || []).filter(
+    (id) => id.startsWith(certPrefix),
   ).length;
-  const historyProgress = storageManager.getProgressFromHistory(currentCertId, 5);
+  const historyProgress = storageManager.getProgressFromHistory(
+    currentCertId,
+    5,
+  );
   const completedCount = Math.max(
     completedStagesCount,
     historyProgress.completedCount,

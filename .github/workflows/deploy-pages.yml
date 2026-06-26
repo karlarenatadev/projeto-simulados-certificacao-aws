@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
 
 jobs:
@@ -28,8 +28,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: 22
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
@@ -37,21 +37,43 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-      - name: Copy .nojekyll to public
-        run: cp .nojekyll public/.nojekyll
-
-      - name: Copy 404.html to public
+      - name: Validate Pages artifact
         run: |
-          if [ ! -f public/404.html ]; then
-            echo "No 404.html, creating one for SPA fallback"
-            echo '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Simulador AWS</title><script>var path = window.location.pathname.replace(/\/projeto-simulados-certificacao-aws\//,""); window.location = "/projeto-simulados-certificacao-aws/?" + encodeURIComponent(path);</script></head><body></body></html>' > public/404.html
-          fi
+          set -euo pipefail
+          test -f public/index.html
+          test -f public/404.html
+          test -f public/.nojekyll
+          test -f public/js/app.js
+          test -f public/css/style.css
+          test -f public/data/clf-c02.json
+          test -f public/manifest.json
+          test -f public/sw.js
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'public'
+          path: public
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Smoke test deployed site
+        env:
+          SITE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+
+          for path in "" "js/app.js" "css/style.css" "manifest.json" "sw.js"; do
+            url="${SITE_URL%/}/${path}"
+            echo "Checking ${url}"
+            curl \
+              --fail \
+              --silent \
+              --show-error \
+              --location \
+              --retry 5 \
+              --retry-delay 3 \
+              --retry-all-errors \
+              "${url}" > /dev/null
+          done
