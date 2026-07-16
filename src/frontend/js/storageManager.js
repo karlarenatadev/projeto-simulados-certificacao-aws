@@ -1,3 +1,6 @@
+import apiService from "../services/api.js";
+import { createDataRepository } from "./dataRepository.js";
+
 /**
  * StorageManager - Gerencia toda a persistência de dados do simulador
  * Encapsula lógica de localStorage para facilitar manutenção e testes
@@ -889,5 +892,8 @@ export class StorageManager {
   }
 }
 
-// Exporta instância singleton para uso no app
-export const storageManager = new StorageManager("aws_sim_");
+// Exporta singleton via DataRepository — abstração única de acesso a dados (Task 4.3 / D2)
+export const storageManager = createDataRepository(
+  new StorageManager("aws_sim_"),
+  apiService,
+);
