@@ -24,6 +24,10 @@ export const userManager = {
       const existingUserId = this.getUserId();
 
       if (existingUserId) {
+        if (existingUserId.startsWith("local_")) {
+          const upgraded = await this.tryUpgradeToBackendUser(existingUserId);
+          if (upgraded) return upgraded;
+        }
         console.log(`✓ Using existing user: ${existingUserId}`);
         return {
           id: existingUserId,
@@ -73,6 +77,37 @@ export const userManager = {
       console.error("Fatal error in user creation:", error);
       throw error;
     }
+  },
+
+  /**
+   * Tenta migrar usuário local para o backend quando a conexão é restaurada.
+   * Chamado automaticamente por getOrCreateUser() quando o ID armazenado começa com "local_".
+   *
+   * @param {string} localUserId - ID local atual (prefixo "local_")
+   * @returns {Promise<object|null>} Usuário do backend ou null se API indisponível
+   */
+  async tryUpgradeToBackendUser(localUserId) {
+    try {
+      const isUp = await apiService.isAvailable();
+      if (!isUp) return null;
+
+      // Deixa o servidor gerar um nome único — o nome local é placeholder genérico
+      const response = await apiService.createUser({});
+
+      if (response.success && response.data && response.data.id) {
+        const newId = response.data.id;
+        const newName = response.data.anonymous_name;
+        localStorage.setItem("aws_sim_user_id", newId);
+        localStorage.setItem("aws_sim_user_name", newName);
+        console.log(
+          `✓ Local user ${localUserId} upgraded to backend user: ${newId}`,
+        );
+        return { id: newId, anonymous_name: newName };
+      }
+    } catch (error) {
+      console.warn("Could not upgrade local user to backend:", error);
+    }
+    return null;
   },
 
   /**
