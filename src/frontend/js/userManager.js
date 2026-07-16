@@ -91,12 +91,12 @@ export const userManager = {
       const isUp = await apiService.isAvailable();
       if (!isUp) return null;
 
-      const name = localStorage.getItem("aws_sim_user_name") || "Anonymous";
-      const response = await apiService.createUser({ anonymous_name: name });
+      // Deixa o servidor gerar um nome único — o nome local é placeholder genérico
+      const response = await apiService.createUser({});
 
       if (response.success && response.data && response.data.id) {
         const newId = response.data.id;
-        const newName = response.data.anonymous_name || name;
+        const newName = response.data.anonymous_name;
         localStorage.setItem("aws_sim_user_id", newId);
         localStorage.setItem("aws_sim_user_name", newName);
         console.log(

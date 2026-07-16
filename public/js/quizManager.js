@@ -142,9 +142,7 @@ export const quizManager = {
             `✓ Answer recorded on backend for Q${options.question_id}`,
           );
         } catch (apiError) {
-          console.warn(
-            `⚠ Failed to record answer on API: ${apiError.message}`,
-          );
+          console.warn(`⚠ Failed to record answer on API: ${apiError.message}`);
           // Local backup preserves the answer; synced flag enables future retry
         }
       }
