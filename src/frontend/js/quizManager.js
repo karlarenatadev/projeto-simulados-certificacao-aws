@@ -116,6 +116,8 @@ export const quizManager = {
         is_correct: options.is_correct || false,
         time_secs: options.time_secs || 0,
         timestamp: new Date().toISOString(),
+        synced: false,
+        syncedAt: null,
       };
 
       // Try to save locally first (always works)
@@ -135,14 +137,13 @@ export const quizManager = {
             is_correct: options.is_correct,
             time_secs: options.time_secs,
           });
+          this._markAnswerSynced(this.currentQuizId, options.question_id);
           console.log(
             `✓ Answer recorded on backend for Q${options.question_id}`,
           );
         } catch (apiError) {
-          console.warn(
-            `⚠ Failed to record answer on API (will retry later): ${apiError.message}`,
-          );
-          // Continue anyway - local backup will handle it
+          console.warn(`⚠ Failed to record answer on API: ${apiError.message}`);
+          // Local backup preserves the answer; synced flag enables future retry
         }
       }
 
@@ -203,6 +204,28 @@ export const quizManager = {
       localStorage.setItem(key, JSON.stringify(existing));
     } catch (error) {
       console.error("Error saving answer locally:", error);
+    }
+  },
+
+  /**
+   * Marca uma resposta como sincronizada no backend.
+   * Busca do final do array (resposta mais recente com o question_id).
+   * @private
+   */
+  _markAnswerSynced(quizId, questionId) {
+    try {
+      const key = `aws_sim_quiz_answers_${quizId}`;
+      const answers = JSON.parse(localStorage.getItem(key) || "[]");
+      for (let i = answers.length - 1; i >= 0; i--) {
+        if (answers[i].question_id === questionId && !answers[i].synced) {
+          answers[i].synced = true;
+          answers[i].syncedAt = new Date().toISOString();
+          break;
+        }
+      }
+      localStorage.setItem(key, JSON.stringify(answers));
+    } catch (e) {
+      // não-crítico — falha no status de sync não afeta o fluxo do quiz
     }
   },
 
