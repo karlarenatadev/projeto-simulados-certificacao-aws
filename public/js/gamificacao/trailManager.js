@@ -141,16 +141,7 @@ export function renderTrail() {
     if (!gamification.unlockedStages.includes(firstStageId)) {
       gamification.unlockedStages.push(firstStageId);
 
-      // Usa o próprio storageManager para salvar de forma segura
-      if (typeof storageManager.saveGamification === "function") {
-        storageManager.saveGamification(gamification);
-      } else {
-        // Fallback de segurança se o método não existir
-        localStorage.setItem(
-          "aws_sim_gamification",
-          JSON.stringify(gamification),
-        );
-      }
+      storageManager.saveGamification(gamification);
     }
   }
 
@@ -212,10 +203,7 @@ export function unlockNextModule(currentLevelId) {
     }
   }
 
-  const storageKey = storageManager._getKey
-    ? storageManager._getKey("gamification")
-    : "aws_sim_gamification";
-  localStorage.setItem(storageKey, JSON.stringify(gamification));
+  storageManager.saveGamification(gamification);
 
   renderTrail();
 }
