@@ -425,6 +425,56 @@ export class QuizEngine {
     };
   }
 
+  /**
+   * Carrega questões diretamente de uma lista pré-montada (ex: revisão de erros).
+   *
+   * @param {object[]} questions - Lista de questões já resolvida
+   * @param {string} certId - ID da certificação (ex: 'clf-c02')
+   * @param {object[]} domainsConfig - Config de domínios da certificação
+   * @param {string} [mode='mistakes-review'] - Modo do quiz
+   * @returns {{ success: boolean, totalQuestions?: number, message?: string }}
+   */
+  loadFromMistakes(questions, certId, domainsConfig, mode = "mistakes-review") {
+    this.resetState();
+    this.state.attemptId = this._generateAttemptId();
+    this.state.certId = certId;
+    this.state.mode = mode;
+
+    if (!questions || questions.length === 0) {
+      return { success: false, message: "no_mistakes" };
+    }
+
+    // Normaliza cada questão do mistakes store para o formato interno do engine.
+    const normalized = questions.map((q) => {
+      const base = this._normalizeQuestion({
+        ...q,
+        // Garante que o campo `correct` do engine é preenchido
+        correct:
+          q.correct !== undefined
+            ? q.correct
+            : q.correctAnswer !== undefined
+              ? q.correctAnswer
+              : 0,
+      });
+
+      if (!base.id && q.questionId) {
+        base.id = q.questionId;
+      }
+      return base;
+    });
+
+    // Embaralha a ordem das questões mas não embaralha as opções —
+    // as opções já estão indexadas corretamente no registro de erro
+    this.state.questions = this._shuffleArray(normalized);
+
+    // Inicializa o placar de domínios
+    domainsConfig.forEach((d) => {
+      this.state.domainScores[d.id] = { total: 0, correct: 0 };
+    });
+
+    return { success: true, totalQuestions: this.state.questions.length };
+  }
+
   // --- FUNÇÕES PRIVADAS DE UTILIDADE ---
   /**
    * Normalizes question from API or JSON to internal format
