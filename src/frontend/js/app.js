@@ -2250,10 +2250,7 @@ async function startMistakesQuiz() {
 
     // Inicia sessão local (sem backend — erros são locais por definição)
     try {
-      const quizResponse = await quizManager.startQuiz(
-        certId,
-        mistakes.length,
-      );
+      const quizResponse = await quizManager.startQuiz(certId, mistakes.length);
       if (!quizResponse.fromAPI) {
         console.log("⚠ Mistakes quiz rodando em modo local (API indisponível)");
       }
@@ -2302,9 +2299,7 @@ async function startMistakesQuiz() {
 
     loadQuestionUI();
   } catch (err) {
-    alert(
-      t("error_starting_quiz", uiState.language, { message: err.message }),
-    );
+    alert(t("error_starting_quiz", uiState.language, { message: err.message }));
     console.error("Erro ao iniciar revisão de erros:", err);
   } finally {
     if (btn) {
