@@ -135,6 +135,8 @@ export const translations = {
     no_terms_for_cert: "Nenhum termo disponível para esta certificação.",
     mistakes_feature_coming:
       "Funcionalidade em desenvolvimento! Em breve você poderá revisar suas questões erradas.",
+    no_mistakes_to_review:
+      "✅ Nenhum erro pendente para revisão nesta certificação. Continue praticando!",
     clear_mistakes_confirm:
       "Tem certeza que deseja limpar o histórico de erros?",
     mistakes_cleared: "Histórico de erros limpo com sucesso!",
@@ -364,6 +366,8 @@ export const translations = {
     no_terms_for_cert: "No terms available for this certification.",
     mistakes_feature_coming:
       "Feature under development! Soon you'll be able to review your wrong questions.",
+    no_mistakes_to_review:
+      "✅ No pending mistakes to review for this certification. Keep practicing!",
     clear_mistakes_confirm:
       "Are you sure you want to clear the mistakes history?",
     mistakes_cleared: "Mistakes history cleared successfully!",

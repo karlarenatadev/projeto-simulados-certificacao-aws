@@ -491,6 +491,12 @@ export class StorageManager {
         selectedAnswerText: this._resolveAnswerText(question, userAnswer),
         correctAnswer,
         correctAnswerText: this._resolveAnswerText(question, correctAnswer),
+        explanation: question.explanation || existing.explanation || "",
+        reference_url:
+          question.reference_url ||
+          question.referenceUrl ||
+          existing.reference_url ||
+          null,
         wrongCount: (existing.wrongCount || 0) + 1,
         firstWrongAt: existing.firstWrongAt || now,
         lastWrongAt: now,

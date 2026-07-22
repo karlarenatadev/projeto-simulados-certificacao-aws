@@ -268,12 +268,15 @@ function syncMistakeRecord(question, result) {
   if (!certId || !question || !result) return;
 
   if (!result.isCorrect) {
-    storageManager.recordMistake(question, uiState.tempSelectedAnswer, {
-      certId,
-      source: getMistakeSource(),
-      attemptId: engine.state?.attemptId,
-      quizId: quizManager.currentQuizId,
-    });
+    // Em revisão de erros, errar novamente não cria novo registro, a questão já está pendente, só permanece.
+    if (uiState.currentMode !== "mistakes-review") {
+      storageManager.recordMistake(question, uiState.tempSelectedAnswer, {
+        certId,
+        source: getMistakeSource(),
+        attemptId: engine.state?.attemptId,
+        quizId: quizManager.currentQuizId,
+      });
+    }
   } else if (
     uiState.currentMode === "review" ||
     uiState.currentMode === "mistakes-review"
@@ -2178,6 +2181,7 @@ function goHome() {
 
   showScreen("start");
   loadLastScore();
+  updateMistakesControls();
 
   if (typeof renderGlobalRadarChart === "function") renderGlobalRadarChart();
 
@@ -2209,18 +2213,101 @@ function cancelQuiz() {
   if (confirm(t("exit_quiz_confirm", uiState.language))) goHome();
 }
 
-function startMistakesQuiz() {
-  // Estado amigável (sem alert bloqueante). A revisão completa de erros
-  // ainda será implementada; por ora exibimos um aviso claro e não
-  // prometemos visualmente uma funcionalidade que ainda não existe.
-  const message = t("mistakes_feature_coming", uiState.language);
-  updateMistakesControls();
-  const notice = document.getElementById("mistakes-feature-notice");
-  if (notice) {
-    notice.textContent = message;
-    notice.classList.remove("hidden");
-  } else {
-    console.info(message);
+async function startMistakesQuiz() {
+  resetFinishState();
+
+  const certId = getActiveCertificationId();
+  const currentCertInfo = certificationPaths[certId];
+
+  if (!certId || !currentCertInfo) {
+    console.warn("startMistakesQuiz: certificação não identificada.");
+    return;
+  }
+
+  const mistakes = storageManager.getMistakes(certId);
+
+  // Estado vazio: nenhum erro pendente
+  if (mistakes.length === 0) {
+    const notice = document.getElementById("mistakes-feature-notice");
+    if (notice) {
+      notice.textContent = t("no_mistakes_to_review", uiState.language);
+      notice.classList.remove("hidden");
+    }
+    updateMistakesControls(certId);
+    return;
+  }
+
+  const btn = document.getElementById("btn-practice-mistakes");
+
+  try {
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>${t("loading", uiState.language)}`;
+    }
+
+    uiState.currentCertificationInfo = currentCertInfo;
+    uiState.currentMode = "mistakes-review";
+
+    // Inicia sessão local (sem backend — erros são locais por definição)
+    try {
+      const quizResponse = await quizManager.startQuiz(certId, mistakes.length);
+      if (!quizResponse.fromAPI) {
+        console.log("⚠ Mistakes quiz rodando em modo local (API indisponível)");
+      }
+    } catch (err) {
+      console.warn("Não foi possível registrar sessão no backend:", err);
+      // Continua — o quiz de revisão de erros funciona 100% local
+    }
+
+    const result = engine.loadFromMistakes(
+      mistakes,
+      certId,
+      currentCertInfo.domains,
+    );
+
+    if (!result.success) {
+      const notice = document.getElementById("mistakes-feature-notice");
+      if (notice) {
+        notice.textContent = t("no_mistakes_to_review", uiState.language);
+        notice.classList.remove("hidden");
+      }
+      return;
+    }
+
+    // Sem timer em revisão de erros
+    uiState.timeRemaining = 0;
+
+    const oldReport = document.getElementById("detailed-report");
+    if (oldReport) oldReport.remove();
+
+    showScreen("quiz");
+
+    const sidebar = document.getElementById("side-info");
+    const mainSection = document.getElementById("main-section");
+
+    if (sidebar) sidebar.classList.add("hidden");
+    if (mainSection) {
+      mainSection.classList.remove("lg:w-2/3");
+      mainSection.classList.add("w-full");
+    }
+
+    const scoreContainer = document.getElementById("score-container");
+    if (scoreContainer) scoreContainer.style.display = "flex";
+
+    const timerContainer = document.getElementById("timer-container");
+    if (timerContainer) timerContainer.classList.add("hidden");
+
+    loadQuestionUI();
+  } catch (err) {
+    alert(t("error_starting_quiz", uiState.language, { message: err.message }));
+    console.error("Erro ao iniciar revisão de erros:", err);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Praticar Questões Erradas (<span id="mistakes-count">0</span>)`;
+      // Atualiza o span recém-recriado com a contagem real
+      updateMistakesControls(certId);
+    }
   }
 }
 
