@@ -875,6 +875,52 @@ export class StorageManager {
   }
 
   /**
+   * Salva questões marcadas para revisão no deck do usuário.
+   */
+  saveReviewDeck(certId, flaggedQuestionsArray) {
+    if (!certId || !Array.isArray(flaggedQuestionsArray) || flaggedQuestionsArray.length === 0) return;
+    
+    const deckKey = this._getKey(`${certId}_review_deck`);
+    let deck = [];
+    try {
+      const stored = localStorage.getItem(deckKey);
+      if (stored) deck = JSON.parse(stored);
+    } catch (e) {
+      console.warn("Erro ao ler review deck:", e);
+    }
+
+    const existingHashes = new Set(deck.map(q => q.question.substring(0, 50)));
+
+    flaggedQuestionsArray.forEach(q => {
+      const hash = q.question.substring(0, 50);
+      if (!existingHashes.has(hash)) {
+        deck.push(q);
+        existingHashes.add(hash);
+      }
+    });
+
+    try {
+      localStorage.setItem(deckKey, JSON.stringify(deck));
+    } catch (e) {
+      console.error("Erro ao salvar review deck:", e);
+    }
+  }
+
+  /**
+   * Retorna as questões salvas no deck de revisão.
+   */
+  getReviewDeck(certId) {
+    if (!certId) return [];
+    try {
+      const stored = localStorage.getItem(this._getKey(`${certId}_review_deck`));
+      return stored ? JSON.parse(stored) : [];
+    } catch (e) {
+      console.warn("Erro ao ler review deck:", e);
+      return [];
+    }
+  }
+
+  /**
    * Importa dados de backup
    * @param {Object} data - Objeto com dados para importar
    * @returns {boolean} True se importou com sucesso, False caso contrário
