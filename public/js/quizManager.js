@@ -224,7 +224,7 @@ export const quizManager = {
         }
       }
       localStorage.setItem(key, JSON.stringify(answers));
-    } catch (e) {
+    } catch {
       // não-crítico — falha no status de sync não afeta o fluxo do quiz
     }
   },

@@ -1,7 +1,7 @@
 [
   {
     "id": "diag-001",
-    "domain": "cloud-concepts",
+    "domain": "Cloud Concepts",
     "difficulty": "conceptual",
     "question": "What is the main advantage of 'Elasticity' in the AWS cloud?",
     "options": [
@@ -11,11 +11,13 @@
       "The ability to run code without provisioning servers."
     ],
     "correct": 1,
-    "explanation": "Elasticity is the fundamental concept of automatically scaling resources horizontally (scale in/out) as needed, paying only for what you use."
+    "explanation": "Elasticity is the fundamental concept of automatically scaling resources horizontally (scale in/out) as needed, paying only for what you use.",
+    "domain_id": "clf-cloud-concepts",
+    "global_domain_id": "compute-tech"
   },
   {
     "id": "diag-002",
-    "domain": "security-compliance",
+    "domain": "Security and Compliance",
     "difficulty": "conceptual",
     "question": "In the AWS Shared Responsibility Model, which of the following is the customer's SOLE responsibility?",
     "options": [
@@ -25,11 +27,13 @@
       "Ensure refrigeration and energy in availability zones."
     ],
     "correct": 2,
-    "explanation": "AWS takes care of 'cloud security' (hardware, data center). The customer takes care of 'cloud security' (data, IAM permissions, firewalls)."
+    "explanation": "AWS takes care of 'cloud security' (hardware, data center). The customer takes care of 'cloud security' (data, IAM permissions, firewalls).",
+    "domain_id": "clf-security-compliance",
+    "global_domain_id": "security"
   },
   {
     "id": "diag-003",
-    "domain": "cloud-storage",
+    "domain": "Cloud Technology and Services",
     "difficulty": "conceptual",
     "question": "If a company needs to store backup files that will only be accessed once or twice a year, which S3 service offers the lowest cost?",
     "options": [
@@ -39,11 +43,13 @@
       "Amazon EBS"
     ],
     "correct": 2,
-    "explanation": "S3 Glacier Deep Archive is AWS's lowest-cost storage class designed for long-term retention of data that is rarely accessed."
+    "explanation": "S3 Glacier Deep Archive is AWS's lowest-cost storage class designed for long-term retention of data that is rarely accessed.",
+    "domain_id": "clf-cloud-technology",
+    "global_domain_id": "compute-tech"
   },
   {
     "id": "diag-004",
-    "domain": "billing-cost-management",
+    "domain": "Billing and Pricing",
     "difficulty": "conceptual",
     "question": "Which AWS tool should you use to visualize, understand, and manage your AWS costs and usage over time?",
     "options": [
@@ -53,6 +59,8 @@
       "Amazon Inspector"
     ],
     "correct": 0,
-    "explanation": "AWS Cost Explorer lets you view graphs of usage and costs, and predict future spending based on history."
+    "explanation": "AWS Cost Explorer lets you view graphs of usage and costs, and predict future spending based on history.",
+    "domain_id": "clf-billing-pricing",
+    "global_domain_id": "billing"
   }
 ]

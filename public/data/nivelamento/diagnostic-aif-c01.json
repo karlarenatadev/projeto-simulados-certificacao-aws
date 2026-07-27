@@ -1,7 +1,7 @@
 [
   {
     "id": "diag-aif-001",
-    "domain": "fundamentals-ai-ml",
+    "domain": "Fundamentals of AI and ML",
     "difficulty": "conceptual",
     "question": "Na terminologia de Machine Learning, qual é a diferença principal entre 'Treinamento' (Training) e 'Inferência' (Inference)?",
     "options": [
@@ -11,11 +11,13 @@
       "Ambos são exatamente o mesmo processo no Amazon SageMaker."
     ],
     "correct": 1,
-    "explanation": "Primeiro nós 'treinamos' o modelo dando-lhe um conjunto de dados para que ele aprenda padrões e ajuste os seus pesos. Depois, fazemos o deploy do modelo para 'inferência', que é quando ele gera respostas/previsões para dados que nunca viu antes."
+    "explanation": "Primeiro nós 'treinamos' o modelo dando-lhe um conjunto de dados para que ele aprenda padrões e ajuste os seus pesos. Depois, fazemos o deploy do modelo para 'inferência', que é quando ele gera respostas/previsões para dados que nunca viu antes.",
+    "domain_id": "aif-ai-ml",
+    "global_domain_id": "ai-ml"
   },
   {
     "id": "diag-aif-002",
-    "domain": "fundamentals-genai",
+    "domain": "Fundamentals of Generative AI",
     "difficulty": "conceptual",
     "question": "Qual serviço gerenciado da AWS fornece acesso fácil (via API) aos principais Modelos de Fundação (Foundation Models - FMs) de empresas como Anthropic, Meta, Mistral e da própria Amazon?",
     "options": [
@@ -25,11 +27,13 @@
       "AWS DeepRacer"
     ],
     "correct": 0,
-    "explanation": "O Amazon Bedrock é o serviço principal da AWS para IA Generativa, permitindo utilizar grandes modelos de linguagem (LLMs) através de uma única API unificada, sem precisar gerir a infraestrutura."
+    "explanation": "O Amazon Bedrock é o serviço principal da AWS para IA Generativa, permitindo utilizar grandes modelos de linguagem (LLMs) através de uma única API unificada, sem precisar gerir a infraestrutura.",
+    "domain_id": "aif-gen-ai",
+    "global_domain_id": "gen-ai"
   },
   {
     "id": "diag-aif-003",
-    "domain": "applications-foundation-models",
+    "domain": "Fundamentals of Generative AI",
     "difficulty": "scenario",
     "question": "Uma empresa quer usar um Modelo de Fundação (FM) para responder a perguntas de clientes, mas o FM sofre de 'alucinações' e não conhece os dados internos da empresa. Qual técnica resolve isso fornecendo contexto externo confiável ao prompt antes de enviá-lo ao modelo?",
     "options": [
@@ -39,11 +43,13 @@
       "Dimensionality Reduction"
     ],
     "correct": 1,
-    "explanation": "O RAG (Geração Aumentada por Recuperação) busca dados na base de conhecimento da empresa (como uma base vetorial) e os injeta no prompt, reduzindo alucinações e garantindo respostas atualizadas e precisas."
+    "explanation": "O RAG (Geração Aumentada por Recuperação) busca dados na base de conhecimento da empresa (como uma base vetorial) e os injeta no prompt, reduzindo alucinações e garantindo respostas atualizadas e precisas.",
+    "domain_id": "aif-gen-ai",
+    "global_domain_id": "gen-ai"
   },
   {
     "id": "diag-aif-004",
-    "domain": "guidelines-responsible-ai",
+    "domain": "Guidelines for Responsible AI",
     "difficulty": "conceptual",
     "question": "No contexto da 'IA Responsável', o que significa o conceito de 'Viés' (Bias) em um modelo de Machine Learning?",
     "options": [
@@ -53,6 +59,8 @@
       "A métrica que mede a velocidade de inferência do modelo (latência)."
     ],
     "correct": 2,
-    "explanation": "Viés (Bias) ocorre quando um modelo de IA toma decisões sistematicamente injustas contra determinados grupos. Mitigar esse viés é um dos pilares fundamentais da IA Responsável ensinada pela AWS."
+    "explanation": "Viés (Bias) ocorre quando um modelo de IA toma decisões sistematicamente injustas contra determinados grupos. Mitigar esse viés é um dos pilares fundamentais da IA Responsável ensinada pela AWS.",
+    "domain_id": "aif-security-compliance",
+    "global_domain_id": "security"
   }
 ]

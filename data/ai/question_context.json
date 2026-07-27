@@ -1,0 +1,52 @@
+[
+  {
+    "id": "saa-c03-000001",
+    "question": "O que é o Amazon Bedrock?",
+    "answer": "Um serviço totalmente gerido que oferece acesso a Foundation Models (FMs) de alto desempenho através de uma única API",
+    "explanation": "O Amazon Bedrock é um serviço totalmente gerido que disponibiliza Foundation Models (FMs) de empresas líderes através de uma API unificada, permitindo construir e escalar aplicações de IA generativa facilmente.",
+    "services": [
+      {
+        "service_id": "amazon-bedrock",
+        "service_name": "Amazon Bedrock",
+        "service_slug": "amazon-bedrock"
+      }
+    ],
+    "tags": [
+      "ajuste-automatico",
+      "genai",
+      "foundation-models"
+    ],
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "easy",
+    "domain_id": "saa-design-performance",
+    "global_domain_id": "performance"
+  },
+  {
+    "id": "clf-c02-000001",
+    "question": "Uma startup de software está lançando seu primeiro produto e espera um crescimento de usuários imprevisível nos primeiros meses. Eles precisam de um modelo de precificação da AWS que lhes permita pagar apenas pelos recursos que consomem. Qual modelo de preços da AWS seria mais adequado para a startup?",
+    "answer": "Instâncias Sob Demanda",
+    "explanation": "As Instâncias Sob Demanda (On-Demand) são ideais para cargas de trabalho imprevisíveis e de curto prazo, pois o cliente paga apenas pela capacidade utilizada por hora ou segundo, sem compromissos.",
+    "services": [
+      {
+        "service_id": "ec2",
+        "service_name": "Amazon EC2",
+        "service_slug": "amazon-ec2"
+      },
+      {
+        "service_id": "aws-billing",
+        "service_name": "AWS Billing",
+        "service_slug": "aws-billing"
+      }
+    ],
+    "tags": [
+      "custos",
+      "pagamento",
+      "economia",
+      "startup"
+    ],
+    "domain": "Billing and Pricing",
+    "difficulty": "medium",
+    "domain_id": "clf-billing-pricing",
+    "global_domain_id": "billing"
+  }
+]

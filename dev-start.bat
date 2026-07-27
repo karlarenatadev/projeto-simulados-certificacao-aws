@@ -98,12 +98,12 @@ timeout /t 4 /nobreak >nul
 
 :: --- Seed de Questoes
 echo   Populando banco de questoes (seed-pglite)...
-start "Seed Questoes - Simulador AWS" cmd /k "color 2E && title Seed Questoes - Simulador AWS && echo. && echo  [SEED] Importando questoes dos arquivos JSON... && echo. && node scripts/seed-pglite.mjs && echo. && echo  [SEED] Concluido! Pode fechar esta janela. && pause"
+start "Seed Questoes - Simulador AWS" cmd /k "color 2E && title Seed Questoes - Simulador AWS && echo. && echo  [SEED] Importando questoes dos arquivos JSON... && echo. && node scripts/seed/seed-pglite.mjs && echo. && echo  [SEED] Concluido! Pode fechar esta janela. && pause"
 timeout /t 2 /nobreak >nul
 
 :: --- Seed de Cases
 echo   Populando banco de cases de arquitetura (seed-cases)...
-start "Seed Cases - Simulador AWS" cmd /k "color 3E && title Seed Cases - Simulador AWS && echo. && echo  [CASES] Importando servicos AWS e cases de arquitetura... && echo. && node scripts/seed-cases.mjs && echo. && echo  [CASES] Concluido! Pode fechar esta janela. && pause"
+start "Seed Cases - Simulador AWS" cmd /k "color 3E && title Seed Cases - Simulador AWS && echo. && echo  [CASES] Importando servicos AWS e cases de arquitetura... && echo. && node scripts/seed/seed-cases.mjs && echo. && echo  [CASES] Concluido! Pode fechar esta janela. && pause"
 timeout /t 5 /nobreak >nul
 
 :: --- Frontend (live-server porta 8080)

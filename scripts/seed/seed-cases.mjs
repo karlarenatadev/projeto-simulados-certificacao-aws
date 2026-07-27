@@ -13,7 +13,7 @@ import {
   executeQuery,
   insertAwsService,
   insertCase,
-} from '../backend/database/db.js';
+} from '../../backend/database/db.js';
 
 // ============================================================================
 // AWS SERVICES CATALOG — CLF-C02 + SAA-C03 essentials

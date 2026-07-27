@@ -1,7 +1,6 @@
 {
-  "domain": "tecnologia",
+  "domain": "Cloud Technology and Services",
   "subdomain": "computacao",
-  "service": "Amazon EC2",
   "difficulty": "medium",
   "type": "multiple-choice",
   "tags": [
@@ -23,5 +22,14 @@
     "name": "Seu Nome",
     "github": "seu-usuario-github",
     "date": "2026-03-24"
-  }
+  },
+  "domain_id": "clf-cloud-technology",
+  "global_domain_id": "compute-tech",
+  "services": [
+    {
+      "service_id": "ec2",
+      "service_name": "Amazon EC2",
+      "service_slug": "amazon-ec2"
+    }
+  ]
 }

@@ -1,0 +1,35 @@
+[
+  {
+    "question_id": "clf-c02-000001",
+    "official_docs": "https://aws.amazon.com/ec2/pricing/",
+    "services": [
+      {
+        "service_id": "ec2",
+        "service_name": "Amazon EC2",
+        "service_slug": "amazon-ec2"
+      }
+    ]
+  },
+  {
+    "question_id": "saa-c03-000005",
+    "official_docs": "https://aws.amazon.com/s3/storage-classes/",
+    "services": [
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ]
+  },
+  {
+    "question_id": "dva-c02-000012",
+    "official_docs": "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html",
+    "services": [
+      {
+        "service_id": "lambda",
+        "service_name": "AWS Lambda",
+        "service_slug": "aws-lambda"
+      }
+    ]
+  }
+]

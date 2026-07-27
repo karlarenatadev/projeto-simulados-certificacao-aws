@@ -1,7 +1,7 @@
 [
   {
     "id": "diag-dva-001",
-    "domain": "development",
+    "domain": "Development with AWS Services",
     "difficulty": "conceptual",
     "question": "Você está desenvolvendo uma API Serverless. O Amazon API Gateway recebe a requisição HTTP e precisa acionar um código backend sem provisionar servidores. Qual serviço você deve usar como integração (backend)?",
     "options": [
@@ -11,11 +11,13 @@
       "Amazon ECS"
     ],
     "correct": 2,
-    "explanation": "O AWS Lambda é o serviço de computação serverless nativo da AWS. Ele executa o seu código em resposta a eventos (como requisições do API Gateway) sem que precise gerenciar servidores."
+    "explanation": "O AWS Lambda é o serviço de computação serverless nativo da AWS. Ele executa o seu código em resposta a eventos (como requisições do API Gateway) sem que precise gerenciar servidores.",
+    "domain_id": "dva-development",
+    "global_domain_id": "compute-tech"
   },
   {
     "id": "diag-dva-002",
-    "domain": "security",
+    "domain": "Security",
     "difficulty": "scenario",
     "question": "O seu código precisa se conectar a um banco de dados RDS. Onde é o local MAIS seguro e recomendado pela AWS para armazenar as credenciais (usuário e senha) do banco, permitindo a rotação automática?",
     "options": [
@@ -25,11 +27,13 @@
       "No AWS Secrets Manager."
     ],
     "correct": 3,
-    "explanation": "O AWS Secrets Manager foi criado especificamente para gerenciar, recuperar e rotacionar credenciais de bancos de dados, chaves de API e outros segredos de forma segura."
+    "explanation": "O AWS Secrets Manager foi criado especificamente para gerenciar, recuperar e rotacionar credenciais de bancos de dados, chaves de API e outros segredos de forma segura.",
+    "domain_id": "dva-security",
+    "global_domain_id": "security"
   },
   {
     "id": "diag-dva-003",
-    "domain": "deployment",
+    "domain": "Deployment",
     "difficulty": "conceptual",
     "question": "Qual serviço da AWS atua como um repositório de código-fonte baseado em Git, seguro e altamente escalável?",
     "options": [
@@ -39,11 +43,13 @@
       "AWS CodePipeline"
     ],
     "correct": 2,
-    "explanation": "O AWS CodeCommit é um serviço de controle de versão totalmente gerenciado que hospeda repositórios baseados no Git."
+    "explanation": "O AWS CodeCommit é um serviço de controle de versão totalmente gerenciado que hospeda repositórios baseados no Git.",
+    "domain_id": "dva-deployment",
+    "global_domain_id": "compute-tech"
   },
   {
     "id": "diag-dva-004",
-    "domain": "troubleshooting-performance",
+    "domain": "Troubleshooting and Optimization",
     "difficulty": "scenario",
     "question": "A sua arquitetura usa API Gateway, Lambda e DynamoDB. Os usuários relatam lentidão em algumas chamadas, mas você não sabe em qual dos três serviços ocorre o gargalo. Qual ferramenta ajuda a rastrear a requisição de ponta a ponta?",
     "options": [
@@ -53,6 +59,8 @@
       "AWS Trusted Advisor"
     ],
     "correct": 1,
-    "explanation": "O AWS X-Ray ajuda desenvolvedores a analisar e depurar aplicações distribuídas, rastreando requisições de ponta a ponta e identificando gargalos de performance."
+    "explanation": "O AWS X-Ray ajuda desenvolvedores a analisar e depurar aplicações distribuídas, rastreando requisições de ponta a ponta e identificando gargalos de performance.",
+    "domain_id": "dva-troubleshooting",
+    "global_domain_id": "performance"
   }
 ]

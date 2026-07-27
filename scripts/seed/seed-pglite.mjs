@@ -8,7 +8,7 @@ import {
   initializeDatabase,
   insertQuestion,
   normalizeCertification,
-} from '../backend/database/db.js';
+} from '../../backend/database/db.js';
 
 const DATA_FILES = [
   { certification: 'CLF-C02', language: 'pt', path: 'data/clf-c02.json' },

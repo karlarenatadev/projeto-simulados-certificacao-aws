@@ -1,5 +1,3 @@
-/* global AbortSignal */
-
 /**
  * caseManager.js — Practice Domain
  * Service layer for fetching cases and AWS services from the API.
