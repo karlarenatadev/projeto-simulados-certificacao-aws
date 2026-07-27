@@ -448,7 +448,6 @@ export class QuizEngine {
     const normalized = questions.map((q) => {
       const base = this._normalizeQuestion({
         ...q,
-        // Garante que o campo `correct` do engine é preenchido
         correct:
           q.correct !== undefined
             ? q.correct
@@ -463,8 +462,7 @@ export class QuizEngine {
       return base;
     });
 
-    // Embaralha a ordem das questões mas não embaralha as opções —
-    // as opções já estão indexadas corretamente no registro de erro
+    // Embaralha a ordem das questões mas não embaralha as opções
     this.state.questions = this._shuffleArray(normalized);
 
     // Inicializa o placar de domínios

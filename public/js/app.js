@@ -268,7 +268,7 @@ function syncMistakeRecord(question, result) {
   if (!certId || !question || !result) return;
 
   if (!result.isCorrect) {
-    // Em revisão de erros, errar novamente não cria novo registro a questão já está pendente, só permanece.
+    // Em revisão de erros, errar novamente não cria novo registro, a questão já está pendente, só permanece.
     if (uiState.currentMode !== "mistakes-review") {
       storageManager.recordMistake(question, uiState.tempSelectedAnswer, {
         certId,
@@ -2250,15 +2250,13 @@ async function startMistakesQuiz() {
 
     // Inicia sessão local (sem backend — erros são locais por definição)
     try {
-      const quizResponse = await quizManager.startQuiz(
-        certId,
-        mistakes.length,
-      );
+      const quizResponse = await quizManager.startQuiz(certId, mistakes.length);
       if (!quizResponse.fromAPI) {
         console.log("⚠ Mistakes quiz rodando em modo local (API indisponível)");
       }
     } catch (err) {
       console.warn("Não foi possível registrar sessão no backend:", err);
+      // Continua — o quiz de revisão de erros funciona 100% local
     }
 
     const result = engine.loadFromMistakes(
@@ -2276,6 +2274,7 @@ async function startMistakesQuiz() {
       return;
     }
 
+    // Sem timer em revisão de erros
     uiState.timeRemaining = 0;
 
     const oldReport = document.getElementById("detailed-report");
@@ -2300,9 +2299,7 @@ async function startMistakesQuiz() {
 
     loadQuestionUI();
   } catch (err) {
-    alert(
-      t("error_starting_quiz", uiState.language, { message: err.message }),
-    );
+    alert(t("error_starting_quiz", uiState.language, { message: err.message }));
     console.error("Erro ao iniciar revisão de erros:", err);
   } finally {
     if (btn) {

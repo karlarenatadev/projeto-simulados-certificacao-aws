@@ -1464,3 +1464,396 @@ select {
   border-color: transparent transparent var(--a3-border-default, #ebebeb)
     transparent;
 }
+/* --- Cores Adicionais (Design System) --- */
+.text-magenta {
+  color: #F53199;
+}
+.bg-magenta {
+  background-color: #F53199;
+}
+.border-magenta {
+  border-color: #F53199;
+}
+.btn-magenta {
+  background: linear-gradient(to right, #F53199, #D91C7B);
+  color: white;
+  transition: all 0.2s ease;
+}
+.btn-magenta:hover {
+  background: linear-gradient(to right, #D91C7B, #B81363);
+  box-shadow: 0 4px 14px 0 rgba(245, 49, 153, 0.39);
+}
+.dark .btn-magenta {
+  background: linear-gradient(to right, #B81363, #8F0F4D);
+}
+.dark .btn-magenta:hover {
+  background: linear-gradient(to right, #8F0F4D, #6B0B3A);
+}
+
+
+/* ============================================================================
+   RECOMMENDATIONS (Study Now)
+   ============================================================================ */
+.study-now-list { display: flex; flex-direction: column; }
+.study-now-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0; border-bottom: 1px solid var(--a3-border-soft); }
+.study-now-item:last-child { border-bottom: none; }
+.study-now-rank { width: 1rem; flex-shrink: 0; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); }
+.study-now-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.875rem; color: var(--text-main); }
+.study-now-badge { flex-shrink: 0; font-size: 0.75rem; font-weight: 700; padding: 0.125rem 0.5rem; border-radius: 9999px; border: 1px solid transparent; }
+.study-now-badge--high { color: var(--a3-danger); background-color: var(--a3-surface-danger); border-color: color-mix(in srgb, var(--a3-danger) 30%, transparent); }
+.study-now-badge--medium { color: var(--a3-warning); background-color: var(--a3-surface-warning); border-color: color-mix(in srgb, var(--a3-warning) 30%, transparent); }
+.study-now-badge--low { color: var(--a3-success); background-color: var(--a3-surface-success); border-color: color-mix(in srgb, var(--a3-success) 30%, transparent); }
+.study-now-link { flex-shrink: 0; display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; color: var(--a3-tech-blue); text-decoration: none; }
+.study-now-link:hover { text-decoration: underline; }
+.study-now-link i { font-size: 0.625rem; }
+.study-now-btn { width: 100%; margin-top: 1rem; padding: 0.625rem; border: none; border-radius: 0.5rem; background-color: var(--a3-tech-blue); color: var(--a3-text-inverse); font-size: 0.875rem; font-weight: 700; cursor: pointer; transition: background-color 0.2s ease; }
+.study-now-btn:hover { background-color: var(--aws-orange-hover); }
+.study-now-empty, .study-now-loading { font-size: 0.875rem; font-style: italic; color: var(--text-muted); }
+.study-now-loading { animation: study-now-pulse 1.5s ease-in-out infinite; }
+.study-now-success { font-size: 0.875rem; font-weight: 500; color: var(--a3-success); }
+@keyframes study-now-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/**
+ * GAMIFICACAO.CSS
+ * Estilos exclusivos para a Jornada AWS (Trilha) e Dashboard da Guilda.
+ * Depende das variáveis globais definidas em style.css.
+ */
+
+/* ============================================================================
+   TRILHA DE APRENDIZADO (ESTILO ZIGUEZAGUE)
+   ============================================================================ */
+
+.trail-container {
+  position: relative;
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem; /* Espaçamento vertical entre os nós */
+  width: 100%;
+  max-width: 400px;
+  min-width: 280px;
+  margin: 0 auto;
+}
+
+/* Linha pontilhada que conecta os módulos */
+.trail-container::before {
+  content: "";
+  position: absolute;
+  top: 2rem;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  border-left: 4px dashed var(--border-theme);
+  z-index: 0;
+}
+
+/* Container individual de cada nó (para alinhar o texto) */
+.trail-node-wrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 120px;
+  min-width: 100px;
+}
+
+/* A mágica do Ziguezague usando CSS puro - com responsividade */
+.trail-node-wrapper:nth-child(odd) {
+  transform: translateX(-30%);
+}
+
+.trail-node-wrapper:nth-child(even) {
+  transform: translateX(30%);
+}
+
+@media (max-width: 640px) {
+  .trail-node-wrapper:nth-child(odd) {
+    transform: translateX(-20%);
+  }
+
+  .trail-node-wrapper:nth-child(even) {
+    transform: translateX(20%);
+  }
+}
+
+@media (max-width: 380px) {
+  .trail-node-wrapper {
+    width: 100px;
+    min-width: 80px;
+  }
+
+  .trail-node-wrapper:nth-child(odd) {
+    transform: translateX(-15%);
+  }
+
+  .trail-node-wrapper:nth-child(even) {
+    transform: translateX(15%);
+  }
+}
+
+/* O botão circular do módulo */
+.trail-node {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 4px solid var(--bg-main);
+  box-shadow: var(--a3-shadow-card);
+  min-width: 60px;
+}
+
+@media (max-width: 640px) {
+  .trail-node {
+    width: 64px;
+    height: 64px;
+    font-size: 1.3rem;
+    border-width: 3px;
+  }
+}
+
+@media (max-width: 380px) {
+  .trail-node {
+    width: 56px;
+    height: 56px;
+    font-size: 1.1rem;
+    border-width: 3px;
+  }
+}
+
+/* ESTADOS DOS NÓS */
+
+/* 1. Bloqueado (Cinza, inativo) */
+.trail-node.locked {
+  background-color: var(--a3-surface-soft);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  border-color: var(--a3-border-default);
+}
+.dark .trail-node.locked {
+  background-color: var(--a3-surface-soft);
+  color: var(--text-muted);
+  border-color: var(--border-theme);
+}
+
+/* 2. Concluído */
+.trail-node.completed {
+  background-color: var(--a3-success);
+  color: var(--a3-text-on-dark);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--a3-success) 24%, transparent);
+}
+
+/* 3. Ativo/Atual (Com efeito de pulso e destaque) */
+.trail-node.active {
+  background-color: var(--a3-accent);
+  color: var(--a3-text-inverse);
+  border-color: color-mix(in srgb, var(--a3-accent) 74%, var(--a3-surface));
+  animation: nodePulse 2s infinite;
+}
+.dark .trail-node.active {
+  background-color: var(--a3-accent);
+  color: var(--a3-text-inverse);
+}
+
+/* Texto abaixo do nó */
+.trail-node-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+@media (max-width: 640px) {
+  .trail-node-title {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .trail-node-title {
+    font-size: 0.65rem;
+  }
+}
+
+/* ============================================================================
+   BADGES & GLASSMORPHISM (Dark Tech Aesthetic)
+   ============================================================================ */
+
+/* Container da Insígnia com efeito de vidro fosco */
+.badge-glass {
+  background: color-mix(in srgb, var(--a3-surface) 86%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--a3-border-default);
+  border-radius: 1rem;
+  box-shadow: var(--a3-shadow-card);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  min-width: 100px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .badge-glass {
+    padding: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .badge-glass {
+    padding: 0.75rem;
+    min-width: 80px;
+  }
+}
+
+.badge-glass:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--a3-shadow-card);
+}
+
+.badge-glass:not(.grayscale):hover {
+  border-color: var(--a3-accent);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--a3-accent) 18%, transparent);
+}
+
+/* Adaptação do Glassmorphism para o Dark Mode */
+.dark .badge-glass {
+  background: color-mix(in srgb, var(--a3-surface-raised) 84%, transparent);
+  border: 1px solid var(--border-theme);
+  box-shadow: var(--a3-shadow-card);
+}
+
+.dark .badge-glass:hover {
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--a3-accent) 22%, transparent);
+  border-color: var(--a3-accent);
+}
+
+/* Ícone da Insígnia */
+.badge-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(
+    0 2px 4px color-mix(in srgb, var(--a3-deep-sea) 18%, transparent)
+  );
+}
+
+@media (max-width: 768px) {
+  .badge-icon {
+    font-size: 2rem;
+    margin-bottom: 0.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .badge-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+  }
+}
+
+/* ============================================================================
+   ANIMAÇÕES ESPECÍFICAS
+   ============================================================================ */
+
+/* Animação suave de pulso para o nó atual da jornada */
+@keyframes nodePulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--a3-accent) 32%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 15px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* Efeito de desbloqueio (quando um nó passa de cinza para ativo) */
+.unlock-animation {
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 
+   O NÓ DO BOSS (A Batalha Final AWS)
+*/
+.trail-node.boss-node {
+  width: 90px;
+  height: 90px;
+  background: var(--a3-primary-dark);
+  border: 4px solid var(--a3-accent);
+  color: var(--a3-text-inverse);
+  font-size: 2rem;
+  box-shadow: 0 0 20px color-mix(in srgb, var(--a3-accent) 24%, transparent);
+  text-shadow: 0 2px 4px color-mix(in srgb, var(--a3-deep-sea) 50%, transparent);
+  z-index: 10;
+}
+
+@media (max-width: 640px) {
+  .trail-node.boss-node {
+    width: 80px;
+    height: 80px;
+    font-size: 1.8rem;
+    border-width: 3px;
+  }
+}
+
+@media (max-width: 380px) {
+  .trail-node.boss-node {
+    width: 72px;
+    height: 72px;
+    font-size: 1.5rem;
+    border-width: 3px;
+  }
+}
+
+.trail-node.boss-node.active {
+  background: var(--a3-primary-dark);
+  animation: bossPulse 2s infinite;
+}
+
+@keyframes bossPulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--a3-accent) 38%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 20px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.dark .trail-node.boss-node {
+  border-color: var(--a3-accent);
+  color: var(--a3-text-inverse);
+}
+

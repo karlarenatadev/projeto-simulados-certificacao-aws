@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Cases de Arquitetura AWS — Estude arquiteturas reais conectando teoria, prática e questões de certificação."
+    />
+    <title>Cases de Arquitetura — Simulador AWS</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'aws-dark': '#001863',
+              'aws-orange': '#0033FF',
+            },
+          },
+        },
+      };
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
+    />
+
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/cases.css" />
+  </head>
+
+  <body class="cases-page" id="cases-page-body">
+
+    <!-- ======================================================
+         HEADER — igual ao index.html
+         ====================================================== -->
+    <header
+      class="aws-bg-dark text-white shadow-md py-3 px-4 md:py-4 md:px-6 flex justify-between items-center sticky top-0 z-50"
+    >
+      <a
+        href="index.html"
+        class="flex items-center gap-2 md:gap-3 cursor-pointer group no-underline text-white"
+        title="Voltar ao início"
+      >
+        <i
+          class="fa-solid fa-cloud text-[#F53199] text-xl md:text-2xl group-hover:scale-110 transition-transform"
+          aria-hidden="true"
+        ></i>
+        <div>
+          <h1
+            class="text-base md:text-xl font-bold leading-tight group-hover:text-aws-orange transition-colors"
+          >
+            Simulador IA
+          </h1>
+          <p class="text-[10px] md:text-xs text-gray-300">Certificações AWS</p>
+        </div>
+      </a>
+      <div class="flex items-center gap-2 md:gap-4 text-sm font-semibold">
+        <button
+          id="btn-language"
+          class="text-gray-300 hover:text-white transition-colors px-2 py-1 md:px-3 md:py-2 rounded-lg hover:bg-gray-700 flex items-center gap-1 md:gap-2"
+          aria-label="Alternar idioma"
+          title="Alternar idioma"
+        >
+          <span class="text-[10px] md:text-xs font-bold"
+            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
+          >
+        </button>
+
+        <button
+          id="theme-toggle"
+          class="text-gray-300 hover:text-white transition-colors p-1.5 md:p-2 rounded-full hover:bg-gray-700"
+          aria-label="Alternar modo escuro"
+        >
+          <i
+            id="theme-icon"
+            class="fa-solid fa-moon text-base md:text-xl"
+            aria-hidden="true"
+          ></i>
+        </button>
+
+        <button
+          id="header-pomodoro-btn"
+          class="flex items-center gap-2 px-3 py-1 bg-orange-500/10 border border-orange-500/50 rounded-lg hover:bg-orange-500/20 transition-all text-sm text-orange-400 group"
+        >
+          <i class="fa-solid fa-stopwatch group-hover:animate-pulse"></i>
+          <span id="header-pomodoro-timer" class="font-mono">15:00</span>
+        </button>
+
+        <button
+          id="install-app"
+          class="hidden md:flex items-center gap-2 px-3 py-1 border border-white/30 rounded-lg hover:bg-white/10 transition-all text-sm"
+        >
+          <i class="fa-solid fa-download"></i> Baixar App
+        </button>
+
+        <div
+          id="score-container"
+          style="display: none"
+          class="bg-gray-700 px-2 py-1 md:px-3 rounded-full flex items-center gap-1 md:gap-2"
+        >
+          <i
+            class="fa-solid fa-bullseye text-green-400 text-xs md:text-base"
+            aria-hidden="true"
+          ></i>
+          <span id="score-display" class="text-xs md:text-sm" aria-live="polite"
+            >0 / 0</span
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- ======================================================
+         HERO
+         ====================================================== -->
+    <section class="cases-hero">
+      <div class="cases-hero-badge">
+        <i class="fa-solid fa-diagram-project"></i>
+        Cases · Arquiteturas na Prática
+      </div>
+      <h1>Aprenda Arquitetura AWS com Casos Reais</h1>
+      <p>
+        Conecte os pontos entre o que você estuda e como as empresas
+        usam a AWS na prática. Cada case traz cenário, diagrama,
+        serviços e questões de fixação.
+      </p>
+
+      <!-- Learning Loop -->
+      <div class="learning-loop" aria-label="Ciclo de aprendizado">
+        <span class="loop-step"><i class="fa-solid fa-circle-xmark"></i> Questão errada</span>
+        <span class="loop-arrow">→</span>
+        <span class="loop-step"><i class="fa-solid fa-lightbulb"></i> Conceito</span>
+        <span class="loop-arrow">→</span>
+        <span class="loop-step"><i class="fa-solid fa-diagram-project"></i> Case</span>
+        <span class="loop-arrow">→</span>
+        <span class="loop-step"><i class="fa-solid fa-network-wired"></i> Arquitetura</span>
+        <span class="loop-arrow">→</span>
+        <span class="loop-step"><i class="fa-solid fa-book"></i> Documentação</span>
+        <span class="loop-arrow">→</span>
+        <span class="loop-step"><i class="fa-solid fa-circle-check"></i> Nova questão</span>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         FILTROS
+         ====================================================== -->
+    <div class="cases-filters" role="search" aria-label="Filtros de cases">
+      <label for="filter-certification">
+        <i class="fa-solid fa-certificate" style="color:var(--a3-tech-blue);"></i>
+        Certificação:
+      </label>
+      <select id="filter-certification" class="cases-filter-select">
+        <option value="">Todas</option>
+        <option value="CLF-C02">CLF-C02 — Cloud Practitioner</option>
+        <option value="SAA-C03">SAA-C03 — Solutions Architect</option>
+        <option value="DVA-C02">DVA-C02 — Developer Associate</option>
+        <option value="AIF-C01">AIF-C01 — AI Practitioner</option>
+      </select>
+
+      <label for="filter-difficulty" style="margin-left:0.5rem;">
+        <i class="fa-solid fa-signal" style="color:var(--a3-tech-blue);"></i>
+        Nível:
+      </label>
+      <select id="filter-difficulty" class="cases-filter-select">
+        <option value="">Todos</option>
+        <option value="beginner">Iniciante</option>
+        <option value="intermediate">Intermediário</option>
+        <option value="advanced">Avançado</option>
+      </select>
+
+      <span id="cases-count-label" class="text-sm text-gray-500 ml-auto" style="font-size:0.8rem;"></span>
+    </div>
+
+    <!-- ======================================================
+         GRID DE CASES
+         ====================================================== -->
+    <main class="cases-container" id="cases-main">
+      <div id="cases-grid" class="cases-grid" role="list" aria-label="Lista de cases de arquitetura">
+        <!-- Skeletons carregando -->
+        <div class="case-card-skeleton" aria-hidden="true">
+          <div class="skeleton-line tall" style="margin-top:1.5rem;"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+        <div class="case-card-skeleton" aria-hidden="true">
+          <div class="skeleton-line tall" style="margin-top:1.5rem;"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+        <div class="case-card-skeleton" aria-hidden="true">
+          <div class="skeleton-line tall" style="margin-top:1.5rem;"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ======================================================
+         SCRIPTS
+         ====================================================== -->
+    <script type="module">
+      import { getCases, getDifficultyInfo, isCompleted } from './js/cases/caseManager.js';
+
+      // ---- Theme ----
+      const themeToggle = document.getElementById('theme-toggle');
+      const themeIcon = document.getElementById('theme-icon');
+      const body = document.getElementById('cases-page-body');
+
+      function applyTheme(dark) {
+        document.documentElement.classList.toggle('dark', dark);
+        body.classList.toggle('dark', dark);
+        themeIcon.className = dark
+          ? 'fa-solid fa-sun text-base md:text-xl'
+          : 'fa-solid fa-moon text-base md:text-xl';
+      }
+
+      const savedDark = localStorage.getItem('theme') === 'dark';
+      applyTheme(savedDark);
+
+      themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.contains('dark');
+        applyTheme(!isDark);
+        localStorage.setItem('theme', !isDark ? 'dark' : 'light');
+      });
+
+      // ---- Render helpers ----
+      function renderCertTags(certifications) {
+        if (!Array.isArray(certifications) || certifications.length === 0) return '';
+        return `<div class="case-cert-tags">
+          ${certifications.map(c => `<span class="cert-tag">${c}</span>`).join('')}
+        </div>`;
+      }
+
+      function renderCard(caseData) {
+        const { label, cls } = getDifficultyInfo(caseData.difficulty);
+        const completed = isCompleted(caseData.id);
+        const servicesCount = Array.isArray(caseData.services) ? caseData.services.length : 0;
+        const scenario = caseData.scenario
+          ? caseData.scenario.split('\n')[0].slice(0, 180)
+          : '';
+
+        return `
+          <a
+            href="./case-view.html?id=${encodeURIComponent(caseData.slug || caseData.id)}"
+            class="case-card"
+            role="listitem"
+            aria-label="Case: ${caseData.title}"
+            id="case-card-${caseData.id}"
+          >
+            <div class="case-card-accent"></div>
+            <div class="case-card-body">
+              <div class="case-card-header">
+                <h2 class="case-card-title">${escapeHtml(caseData.title)}</h2>
+                <span class="difficulty-badge ${cls}">${label}</span>
+              </div>
+              <p class="case-card-scenario">${escapeHtml(scenario)}</p>
+              <div class="case-card-footer">
+                ${renderCertTags(caseData.certifications)}
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                  ${servicesCount > 0
+                    ? `<span class="case-services-count">
+                        <i class="fa-solid fa-cubes-stacked"></i> ${servicesCount} serviços
+                      </span>`
+                    : ''}
+                  ${completed
+                    ? `<span class="case-completed-badge">
+                        <i class="fa-solid fa-circle-check"></i> Concluído
+                      </span>`
+                    : ''}
+                </div>
+              </div>
+            </div>
+          </a>`;
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      // ---- Load & Render ----
+      const grid = document.getElementById('cases-grid');
+      const countLabel = document.getElementById('cases-count-label');
+      let allCases = [];
+
+      async function loadCases(filters = {}) {
+        grid.innerHTML = `
+          <div class="case-card-skeleton" aria-hidden="true">
+            <div class="skeleton-line tall" style="margin-top:1.5rem;"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line short"></div>
+          </div>
+          <div class="case-card-skeleton" aria-hidden="true">
+            <div class="skeleton-line tall" style="margin-top:1.5rem;"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line short"></div>
+          </div>`;
+
+        const cases = await getCases(filters);
+        allCases = cases;
+
+        countLabel.textContent = cases.length === 0
+          ? ''
+          : `${cases.length} case${cases.length !== 1 ? 's' : ''} encontrado${cases.length !== 1 ? 's' : ''}`;
+
+        if (cases.length === 0) {
+          grid.innerHTML = `
+            <div class="cases-empty-state" style="grid-column:1/-1;">
+              <i class="fa-solid fa-box-open" aria-hidden="true"></i>
+              <p>Nenhum case encontrado para os filtros selecionados.</p>
+              <p style="margin-top:0.5rem; font-size:0.8rem;">
+                Certifique-se de que a API está rodando:
+                <code style="background:var(--a3-border); padding:0.1rem 0.35rem; border-radius:4px;">npm run api:start</code>
+              </p>
+            </div>`;
+          return;
+        }
+
+        grid.innerHTML = cases.map(renderCard).join('');
+      }
+
+      // Initial load
+      loadCases();
+
+      // Filters
+      const certSelect = document.getElementById('filter-certification');
+      const diffSelect = document.getElementById('filter-difficulty');
+
+      function applyFilters() {
+        loadCases({
+          certification: certSelect.value || undefined,
+          difficulty: diffSelect.value || undefined,
+        });
+      }
+
+      certSelect.addEventListener('change', applyFilters);
+      diffSelect.addEventListener('change', applyFilters);
+    </script>
+  </body>
+</html>

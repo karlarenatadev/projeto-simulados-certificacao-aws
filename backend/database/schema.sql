@@ -356,3 +356,134 @@ INSERT INTO domains (certification, name, slug, weight_percent) VALUES
     ('AIF-C01', 'Diretrizes de IA Responsável', 'guidelines-responsible-ai', NULL),
     ('AIF-C01', 'Security, Compliance e Governance', 'security-compliance-governance', NULL)
 ON CONFLICT (certification, slug) DO NOTHING;
+
+-- ============================================================================
+-- PRACTICE DOMAIN — Cases / Arquiteturas na Prática
+-- Version: 1.0.0
+-- ============================================================================
+
+-- ============================================================================
+-- ENUM: difficulty_case
+-- Reutiliza difficulty_level se já existir; cria alias semântico via view
+-- ============================================================================
+
+DO $$ BEGIN
+    CREATE TYPE case_difficulty AS ENUM ('beginner', 'intermediate', 'advanced');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+-- ============================================================================
+-- TABELA: aws_services
+-- Catálogo de serviços AWS utilizados nos cases
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS aws_services (
+    id              UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    slug            VARCHAR(80) NOT NULL UNIQUE,      -- ex: 'amazon-s3'
+    name            VARCHAR(120) NOT NULL,             -- ex: 'Amazon S3'
+    category        VARCHAR(80) NOT NULL,              -- ex: 'Storage'
+    short_desc      TEXT        NOT NULL,
+    icon_url        TEXT,                              -- URL do ícone SVG oficial
+    doc_url         TEXT,                              -- Link docs.aws.amazon.com
+    is_active       BOOLEAN     NOT NULL DEFAULT TRUE,
+    created_at      TIMESTAMP   NOT NULL DEFAULT NOW()
+);
+
+COMMENT ON TABLE  aws_services            IS 'Catálogo de serviços AWS para uso nos casos de arquitetura';
+COMMENT ON COLUMN aws_services.slug       IS 'Slug único do serviço (ex: amazon-s3, aws-lambda)';
+COMMENT ON COLUMN aws_services.category   IS 'Categoria do serviço (Compute, Storage, Database, ...)';
+COMMENT ON COLUMN aws_services.icon_url   IS 'URL pública do ícone SVG do serviço';
+COMMENT ON COLUMN aws_services.doc_url    IS 'URL para a documentação oficial AWS';
+
+CREATE INDEX IF NOT EXISTS idx_aws_services_slug     ON aws_services(slug);
+CREATE INDEX IF NOT EXISTS idx_aws_services_category ON aws_services(category);
+CREATE INDEX IF NOT EXISTS idx_aws_services_active   ON aws_services(is_active) WHERE is_active = TRUE;
+
+-- ============================================================================
+-- TABELA: cases
+-- Estudos de caso de arquitetura AWS
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS cases (
+    id                  UUID            PRIMARY KEY DEFAULT gen_random_uuid(),
+    slug                VARCHAR(120)    NOT NULL UNIQUE,
+    title               VARCHAR(200)    NOT NULL,
+    scenario            TEXT            NOT NULL,       -- Contexto do problema
+    objective           TEXT            NOT NULL,       -- O que o aluno deve aprender
+    difficulty          case_difficulty NOT NULL DEFAULT 'intermediate',
+    certifications      TEXT[]          NOT NULL DEFAULT '{}',  -- ex: {CLF-C02, SAA-C03}
+    architecture_graph  JSONB           NOT NULL DEFAULT '{}',  -- {type: 'mermaid', content: '...'}
+    resources           JSONB           NOT NULL DEFAULT '[]',  -- [{type, title, url}]
+    tags                TEXT[]          NOT NULL DEFAULT '{}',
+    is_active           BOOLEAN         NOT NULL DEFAULT TRUE,
+    created_at          TIMESTAMP       NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMP       NOT NULL DEFAULT NOW()
+);
+
+COMMENT ON TABLE  cases                      IS 'Estudos de caso práticos de arquitetura AWS';
+COMMENT ON COLUMN cases.slug                 IS 'Slug único para uso em URL (ex: serverless-api-gateway)';
+COMMENT ON COLUMN cases.scenario             IS 'Descrição do problema / contexto real do case';
+COMMENT ON COLUMN cases.objective            IS 'O que o aluno vai aprender com esse case';
+COMMENT ON COLUMN cases.certifications       IS 'Array de códigos de certificação relevantes';
+COMMENT ON COLUMN cases.architecture_graph   IS 'Grafo da arquitetura. Ex: {type:"mermaid", content:"graph LR..."}';
+COMMENT ON COLUMN cases.resources            IS 'Links externos: [{type:"doc"|"video"|"blog", title, url}]';
+
+CREATE INDEX IF NOT EXISTS idx_cases_slug           ON cases(slug);
+CREATE INDEX IF NOT EXISTS idx_cases_difficulty     ON cases(difficulty);
+CREATE INDEX IF NOT EXISTS idx_cases_active         ON cases(is_active) WHERE is_active = TRUE;
+
+CREATE OR REPLACE TRIGGER trg_cases_updated_at
+    BEFORE UPDATE ON cases
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- ============================================================================
+-- TABELA: case_services
+-- Relacionamento N:N entre cases e aws_services
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS case_services (
+    case_id     UUID    NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+    service_id  UUID    NOT NULL REFERENCES aws_services(id) ON DELETE CASCADE,
+    role_note   TEXT,   -- Papel do serviço no case (ex: 'Armazena os objetos estáticos')
+    PRIMARY KEY (case_id, service_id)
+);
+
+COMMENT ON TABLE  case_services           IS 'Serviços AWS utilizados em cada case';
+COMMENT ON COLUMN case_services.role_note IS 'Descrição curta do papel do serviço neste case';
+
+CREATE INDEX IF NOT EXISTS idx_case_services_case    ON case_services(case_id);
+CREATE INDEX IF NOT EXISTS idx_case_services_service ON case_services(service_id);
+
+-- ============================================================================
+-- TABELA: case_questions
+-- Relacionamento N:N entre cases e questions (questões de fixação)
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS case_questions (
+    case_id     UUID    NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+    question_id UUID    REFERENCES questions(id) ON DELETE SET NULL,
+    sort_order  INTEGER NOT NULL DEFAULT 0,   -- Ordem de exibição
+    PRIMARY KEY (case_id, question_id)
+);
+
+COMMENT ON TABLE  case_questions             IS 'Questões de certificação associadas a cada case';
+COMMENT ON COLUMN case_questions.sort_order  IS 'Ordem de exibição das questões dentro do case';
+
+CREATE INDEX IF NOT EXISTS idx_case_questions_case     ON case_questions(case_id);
+CREATE INDEX IF NOT EXISTS idx_case_questions_question ON case_questions(question_id);
+
+-- ============================================================================
+-- TABELA: case_progress
+-- Progresso do usuário por case
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS case_progress (
+    user_id      UUID        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    case_id      UUID        NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+    completed    BOOLEAN     NOT NULL DEFAULT FALSE,
+    completed_at TIMESTAMP,
+    started_at   TIMESTAMP   NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (user_id, case_id)
+);
+
+COMMENT ON TABLE case_progress IS 'Registro de progresso do usuário em cada case prático';

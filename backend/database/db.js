@@ -1867,5 +1867,261 @@ export default {
   getUserStats,
   getWeakDomains,
   getPendingQuestions,
-  validateQuestion
+  validateQuestion,
+  // Practice Domain
+  getCases,
+  getCaseById,
+  getAwsServices,
+  insertCase,
+  insertAwsService,
+  markCaseCompleted,
 };
+
+// ============================================================================
+// PRACTICE DOMAIN — Repository Functions
+// ============================================================================
+
+/**
+ * Get all active cases with optional filters.
+ * @param {Object} filters
+ * @param {string} [filters.certification] - Filter by certification code (e.g. 'CLF-C02')
+ * @param {string} [filters.difficulty]    - Filter by difficulty ('beginner'|'intermediate'|'advanced')
+ * @param {number} [filters.limit]         - Max results (default: 20)
+ * @param {number} [filters.offset]        - Pagination offset (default: 0)
+ * @returns {Promise<Array>} Array of case objects with services array
+ */
+export async function getCases(filters = {}) {
+  const limit = Math.min(Number.parseInt(filters.limit ?? 20, 10) || 20, 100);
+  const offset = Math.max(Number.parseInt(filters.offset ?? 0, 10) || 0, 0);
+
+  let query = `
+    SELECT
+      c.*,
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id',         s.id,
+            'slug',       s.slug,
+            'name',       s.name,
+            'category',   s.category,
+            'icon_url',   s.icon_url,
+            'doc_url',    s.doc_url,
+            'role_note',  cs.role_note
+          ) ORDER BY s.name
+        ) FILTER (WHERE s.id IS NOT NULL),
+        '[]'
+      ) AS services
+    FROM cases c
+    LEFT JOIN case_services cs ON cs.case_id = c.id
+    LEFT JOIN aws_services s   ON s.id = cs.service_id AND s.is_active = TRUE
+    WHERE c.is_active = TRUE`;
+
+  const params = [];
+  let paramIndex = 1;
+
+  if (filters.certification) {
+    query += ` AND $${paramIndex++} = ANY(c.certifications)`;
+    params.push(filters.certification.toUpperCase());
+  }
+
+  if (filters.difficulty) {
+    query += ` AND c.difficulty = $${paramIndex++}`;
+    params.push(filters.difficulty);
+  }
+
+  query += `
+    GROUP BY c.id
+    ORDER BY c.created_at DESC
+    LIMIT $${paramIndex++} OFFSET $${paramIndex}`;
+  params.push(limit, offset);
+
+  try {
+    return await executeQuery(query, params);
+  } catch (error) {
+    console.error('✗ Error fetching cases:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Get a single case by ID or slug, including its services and related questions.
+ * @param {string} idOrSlug - UUID or slug string
+ * @returns {Promise<Object|null>} Case object with services and questions, or null
+ */
+export async function getCaseById(idOrSlug) {
+  normalizeRequiredString(idOrSlug, 'idOrSlug');
+
+  const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
+  const whereClause = isUUID ? 'c.id = $1' : 'c.slug = $1';
+
+  const caseQuery = `
+    SELECT
+      c.*,
+      COALESCE(
+        json_agg(
+          DISTINCT jsonb_build_object(
+            'id',         s.id,
+            'slug',       s.slug,
+            'name',       s.name,
+            'category',   s.category,
+            'short_desc', s.short_desc,
+            'icon_url',   s.icon_url,
+            'doc_url',    s.doc_url,
+            'role_note',  cs.role_note
+          )
+        ) FILTER (WHERE s.id IS NOT NULL),
+        '[]'
+      ) AS services
+    FROM cases c
+    LEFT JOIN case_services cs ON cs.case_id = c.id
+    LEFT JOIN aws_services s   ON s.id = cs.service_id AND s.is_active = TRUE
+    WHERE c.is_active = TRUE AND ${whereClause}
+    GROUP BY c.id`;
+
+  try {
+    const rows = await executeQuery(caseQuery, [idOrSlug]);
+    if (rows.length === 0) {
+      return null;
+    }
+
+    const caseRow = rows[0];
+
+    // Fetch related questions separately to avoid cross-join complexity
+    const questionQuery = `
+      SELECT q.id, q.certification, q.domain, q.difficulty,
+             q.question_text, q.options, q.correct_answer, q.explanation,
+             q.reference_url, q.tags, cq.sort_order
+      FROM case_questions cq
+      JOIN questions q ON q.id = cq.question_id AND q.is_active = TRUE
+      WHERE cq.case_id = $1
+      ORDER BY cq.sort_order ASC, q.created_at ASC`;
+
+    const questions = await executeQuery(questionQuery, [caseRow.id]);
+    caseRow.questions = questions;
+
+    return caseRow;
+  } catch (error) {
+    console.error('✗ Error fetching case by id/slug:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Get all active AWS services, optionally filtered by category.
+ * @param {Object} [filters]
+ * @param {string} [filters.category] - Filter by category name
+ * @returns {Promise<Array>} Array of aws_service rows
+ */
+export async function getAwsServices(filters = {}) {
+  let query = 'SELECT * FROM aws_services WHERE is_active = TRUE';
+  const params = [];
+
+  if (filters.category) {
+    query += ' AND category = $1';
+    params.push(filters.category);
+  }
+
+  query += ' ORDER BY category ASC, name ASC';
+
+  try {
+    return await executeQuery(query, params);
+  } catch (error) {
+    console.error('✗ Error fetching AWS services:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Insert a new case.
+ * @param {Object} caseData - Case payload
+ * @returns {Promise<Object>} Inserted case row
+ */
+export async function insertCase(caseData) {
+  const {
+    slug,
+    title,
+    scenario,
+    objective,
+    difficulty = 'intermediate',
+    certifications = [],
+    architecture_graph = {},
+    resources = [],
+    tags = [],
+  } = caseData;
+
+  normalizeRequiredString(slug, 'slug');
+  normalizeRequiredString(title, 'title');
+  normalizeRequiredString(scenario, 'scenario');
+  normalizeRequiredString(objective, 'objective');
+
+  const query = `
+    INSERT INTO cases (slug, title, scenario, objective, difficulty, certifications, architecture_graph, resources, tags)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    ON CONFLICT (slug) DO NOTHING
+    RETURNING *`;
+
+  const rows = await executeQuery(query, [
+    slug,
+    title,
+    scenario,
+    objective,
+    difficulty,
+    certifications,
+    JSON.stringify(architecture_graph),
+    JSON.stringify(resources),
+    tags,
+  ]);
+
+  return rows[0] ?? null;
+}
+
+/**
+ * Insert a new AWS service into the catalog.
+ * @param {Object} serviceData - Service payload
+ * @returns {Promise<Object>} Inserted service row
+ */
+export async function insertAwsService(serviceData) {
+  const {
+    slug,
+    name,
+    category,
+    short_desc,
+    icon_url = null,
+    doc_url = null,
+  } = serviceData;
+
+  normalizeRequiredString(slug, 'slug');
+  normalizeRequiredString(name, 'name');
+  normalizeRequiredString(category, 'category');
+  normalizeRequiredString(short_desc, 'short_desc');
+
+  const query = `
+    INSERT INTO aws_services (slug, name, category, short_desc, icon_url, doc_url)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    ON CONFLICT (slug) DO NOTHING
+    RETURNING *`;
+
+  const rows = await executeQuery(query, [slug, name, category, short_desc, icon_url, doc_url]);
+  return rows[0] ?? null;
+}
+
+/**
+ * Mark a case as completed for a given user.
+ * @param {string} userId  - User UUID
+ * @param {string} caseId  - Case UUID
+ * @returns {Promise<Object>} Updated progress row
+ */
+export async function markCaseCompleted(userId, caseId) {
+  normalizeRequiredString(userId, 'userId');
+  normalizeRequiredString(caseId, 'caseId');
+
+  const query = `
+    INSERT INTO case_progress (user_id, case_id, completed, completed_at)
+    VALUES ($1, $2, TRUE, NOW())
+    ON CONFLICT (user_id, case_id)
+    DO UPDATE SET completed = TRUE, completed_at = NOW()
+    RETURNING *`;
+
+  const rows = await executeQuery(query, [userId, caseId]);
+  return rows[0] ?? null;
+}
