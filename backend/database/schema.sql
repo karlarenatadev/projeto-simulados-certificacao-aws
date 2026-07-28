@@ -557,3 +557,28 @@ CREATE TABLE IF NOT EXISTS case_progress (
 );
 
 COMMENT ON TABLE case_progress IS 'Registro de progresso do usuário em cada case prático';
+
+-- ============================================================================
+-- TABELA: study_plans
+-- Plano de Estudos de 14 Dias do Usuário
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS study_plans (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    certification certification_type NOT NULL,
+    plan_data JSONB NOT NULL,
+    current_day INTEGER NOT NULL DEFAULT 1,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+COMMENT ON TABLE study_plans IS 'Plano de Estudos Inteligente gerado para o usuário';
+
+CREATE INDEX IF NOT EXISTS idx_study_plans_user ON study_plans(user_id);
+CREATE INDEX IF NOT EXISTS idx_study_plans_active ON study_plans(is_active) WHERE is_active = TRUE;
+
+CREATE OR REPLACE TRIGGER trg_study_plans_updated_at
+    BEFORE UPDATE ON study_plans
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at();

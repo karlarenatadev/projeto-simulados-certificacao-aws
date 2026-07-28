@@ -1,4 +1,6 @@
 import { storageManager } from "../storageManager.js";
+import apiService from "../../services/api.js";
+import userManager from "../userManager.js";
 
 // 1. DICIONÁRIO DE TRILHAS (4 Certificações com suporte Bilingue)
 export const TRAILS_BY_CERT = {
@@ -180,7 +182,7 @@ export function renderTrail() {
   container.innerHTML = html;
 }
 
-export function unlockNextModule(currentLevelId) {
+export async function unlockNextModule(currentLevelId) {
   let gamification = storageManager.getGamification();
   const certSelect = document.getElementById("certification-select");
   const currentCertId = certSelect ? certSelect.value : "clf-c02";
@@ -204,8 +206,22 @@ export function unlockNextModule(currentLevelId) {
   }
 
   storageManager.saveGamification(gamification);
-
   renderTrail();
+
+  // Sincroniza XP com backend
+  try {
+    const user = await userManager.getOrCreateUser();
+    if (user && user.id && await apiService.isAvailable()) {
+      const response = await apiService.awardGamificationXP(user.id, 50, `completed_${currentLevelId}`);
+      if (response && response.success && response.data) {
+         gamification.xp_points = response.data.xp_points;
+         gamification.badges = response.data.badges;
+         storageManager.saveGamification(gamification);
+      }
+    }
+  } catch (error) {
+    console.warn("Could not sync XP with backend", error);
+  }
 }
 
 window.unlockNextModule = unlockNextModule;

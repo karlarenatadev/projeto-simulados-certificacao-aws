@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprint 14 Dias - Plano de Estudos AWS</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "aws-dark": "#001863",
+              "aws-orange": "#0033FF",
+            },
+          },
+        },
+      };
+    </script>
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen flex flex-col bg-gray-100 dark:bg-slate-900 transition-colors duration-300">
+    <!-- ======================================================
+         HEADER
+         ====================================================== -->
+    <header class="aws-bg-dark text-white shadow-md py-3 px-4 md:py-4 md:px-6 flex justify-between items-center sticky top-0 z-50">
+      <a href="index.html" class="flex items-center gap-2 md:gap-3 cursor-pointer group no-underline text-white" title="Voltar ao início">
+        <i class="fa-solid fa-cloud text-[#F53199] text-xl md:text-2xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
+        <div>
+          <h1 class="text-base md:text-xl font-bold leading-tight group-hover:text-aws-orange transition-colors">Simulador IA</h1>
+          <p class="text-[10px] md:text-xs text-gray-300">Certificações AWS</p>
+        </div>
+      </a>
+      <div class="flex items-center gap-2 md:gap-4 text-sm font-semibold">
+        <button id="btn-language" class="text-gray-300 hover:text-white transition-colors px-2 py-1 md:px-3 md:py-2 rounded-lg hover:bg-gray-700 flex items-center gap-1 md:gap-2" aria-label="Alternar idioma" title="Alternar idioma">
+          <span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>
+        </button>
+
+        <button id="theme-toggle" class="text-gray-300 hover:text-white transition-colors p-1.5 md:p-2 rounded-full hover:bg-gray-700" aria-label="Alternar modo escuro">
+          <i id="theme-icon" class="fa-solid fa-moon text-base md:text-xl" aria-hidden="true"></i>
+        </button>
+
+        <button id="header-pomodoro-btn" class="flex items-center gap-2 px-3 py-1 bg-orange-500/10 border border-orange-500/50 rounded-lg hover:bg-orange-500/20 transition-all text-sm text-orange-400 group">
+          <i class="fa-solid fa-stopwatch group-hover:animate-pulse"></i>
+          <span id="header-pomodoro-timer" class="font-mono">15:00</span>
+        </button>
+
+        <button id="install-app" class="hidden md:flex items-center gap-2 px-3 py-1 border border-white/30 rounded-lg hover:bg-white/10 transition-all text-sm">
+          <i class="fa-solid fa-download"></i> Baixar App
+        </button>
+
+        <div id="score-container" style="display: none" class="bg-gray-700 px-2 py-1 md:px-3 rounded-full flex items-center gap-1 md:gap-2">
+          <i class="fa-solid fa-bullseye text-green-400 text-xs md:text-base" aria-hidden="true"></i>
+          <span id="score-display" class="text-xs md:text-sm" aria-live="polite">0 / 0</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-7xl">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-2">Jornada de 14 Dias</h1>
+            <p class="text-gray-600 dark:text-gray-300 text-lg">Siga o plano diário focado e garanta sua aprovação.</p>
+        </div>
+        
+        <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-8">
+            <select id="certSelect" class="w-full md:w-auto px-4 py-3 bg-white dark:bg-slate-800 text-gray-800 dark:text-white border border-gray-300 dark:border-slate-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-aws-orange transition-all font-medium">
+                <option value="clf-c02">Cloud Practitioner (CLF-C02)</option>
+                <option value="saa-c03">Solutions Architect (SAA-C03)</option>
+                <option value="aif-c01">AI Practitioner (AIF-C01)</option>
+                <option value="dva-c02">Developer (DVA-C02)</option>
+            </select>
+            <button id="btnGenerate" class="w-full md:w-auto px-6 py-3 bg-[#0033FF] hover:bg-[#001863] text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-bolt"></i> Gerar Plano
+            </button>
+        </div>
+        
+        <div class="progress-bar-container">
+            <div id="sprintProgress" class="progress-bar"></div>
+        </div>
+
+        <div class="map-grid" id="sprintMap">
+            <!-- Renderizado via JS -->
+        </div>
+
+        <div id="planDetails">
+            <h2 id="dayTitle">Dia X: Tópico</h2>
+            <ul class="task-list" id="taskList"></ul>
+            <button id="btnCompleteDay" class="btn-complete">Concluir Dia e Ganhar XP!</button>
+        </div>
+    </main>
+
+    <!-- Modals and external scripts -->
+    <script type="module" src="/js/studyPlan.js"></script>
+</body>
+</html>

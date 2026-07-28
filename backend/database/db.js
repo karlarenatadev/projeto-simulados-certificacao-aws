@@ -2191,3 +2191,69 @@ export async function insertCaseEvaluationCriteria(criteriaData) {
   const rows = await executeQuery(query, [case_id, serviceRows[0].id, pillar, score_impact, feedback_msg]);
   return rows[0] ?? null;
 }
+
+// ============================================================================
+// STUDY PLANS & GAMIFICATION AWARDS
+// ============================================================================
+
+/**
+ * Award XP and check badges
+ */
+export async function awardGamificationXP(userId, xpAmount, actionType) {
+  const gamification = await getGamification(userId);
+  if (!gamification) return null;
+
+  const currentXp = Number(gamification.xp_points || 0);
+  const newXp = currentXp + xpAmount;
+  
+  let badges = [...(gamification.badges || [])];
+  if (newXp >= 1000 && !badges.includes('veterano-1k')) badges.push('veterano-1k');
+  
+  return await updateGamification(userId, {
+    xp_points: newXp,
+    badges: badges
+  });
+}
+
+/**
+ * Create a 14-day study plan
+ */
+export async function createStudyPlan(userId, certification, planData) {
+  await executeQuery(
+    `UPDATE study_plans SET is_active = FALSE WHERE user_id = $1 AND certification = $2`,
+    [userId, certification]
+  );
+  
+  const query = `
+    INSERT INTO study_plans (user_id, certification, plan_data, current_day, is_active)
+    VALUES ($1, $2, $3, 1, TRUE)
+    RETURNING *`;
+    
+  const rows = await executeQuery(query, [userId, certification, JSON.stringify(planData)]);
+  return rows[0] ?? null;
+}
+
+/**
+ * Get the user's active study plan
+ */
+export async function getActiveStudyPlan(userId, certification) {
+  const query = `
+    SELECT * FROM study_plans
+    WHERE user_id = $1 AND certification = $2 AND is_active = TRUE
+    ORDER BY created_at DESC LIMIT 1`;
+  const rows = await executeQuery(query, [userId, certification]);
+  return rows[0] ?? null;
+}
+
+/**
+ * Complete a day in the study plan
+ */
+export async function markStudyPlanDayCompleted(planId, day) {
+  const query = `
+    UPDATE study_plans
+    SET current_day = current_day + 1
+    WHERE id = $1 AND current_day = $2
+    RETURNING *`;
+  const rows = await executeQuery(query, [planId, day]);
+  return rows[0] ?? null;
+}

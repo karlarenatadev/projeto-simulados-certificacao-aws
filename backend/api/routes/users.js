@@ -12,6 +12,7 @@ import {
   getUserStats,
   getWeakDomains,
   getGamification,
+  awardGamificationXP,
 } from '../../database/db.js';
 
 const router = Router();
@@ -172,5 +173,34 @@ router.get('/:id/weak-domains', async (req, res, next) => {
 // ============================================================================
 
 // This route is no longer needed here - handled in server.js
+
+// ============================================================================
+// POST /api/users/:id/gamification/award - Award XP
+// ============================================================================
+
+router.post('/:id/gamification/award', async (req, res, next) => {
+  try {
+    const { id: user_id } = req.params;
+    const { action_type, xp_amount } = req.body;
+
+    const user = await getUserById(user_id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: `User with ID ${user_id} not found` });
+    }
+
+    if (!xp_amount || isNaN(xp_amount)) {
+      return res.status(400).json({ success: false, message: 'Invalid xp_amount' });
+    }
+
+    const updatedGamification = await awardGamificationXP(user_id, parseInt(xp_amount), action_type);
+
+    res.status(200).json({
+      success: true,
+      data: updatedGamification,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;

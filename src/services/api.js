@@ -455,6 +455,62 @@ export const apiService = {
     }
   },
 
+  // ========================================================================
+  // GAMIFICATION & STUDY PLANS ENDPOINTS
+  // ========================================================================
+
+  async awardGamificationXP(userId, xpAmount, actionType) {
+    try {
+      if (!userId || !xpAmount) {
+        throw createError('userId and xpAmount are required', 400);
+      }
+      const response = await fetchWithRetry(`/api/users/${userId}/gamification/award`, {
+        method: 'POST',
+        body: JSON.stringify({ action_type: actionType, xp_amount: xpAmount }),
+      });
+      return response;
+    } catch (error) {
+      if (!error.apiDisabled) console.error('Failed to award XP:', error);
+      throw error;
+    }
+  },
+
+  async generateStudyPlan(userId, certification) {
+    try {
+      const response = await fetchWithRetry('/api/study-plans/generate', {
+        method: 'POST',
+        body: JSON.stringify({ user_id: userId, certification }),
+      });
+      return response;
+    } catch (error) {
+      if (!error.apiDisabled) console.error('Failed to generate study plan:', error);
+      throw error;
+    }
+  },
+
+  async getActiveStudyPlan(userId, certification) {
+    try {
+      const response = await fetchWithRetry(`/api/study-plans/${userId}/active/${certification}`);
+      return response;
+    } catch (error) {
+      if (!error.apiDisabled && error.statusCode !== 404) console.error('Failed to get active study plan:', error);
+      throw error;
+    }
+  },
+
+  async completeStudyPlanDay(planId, day) {
+    try {
+      const response = await fetchWithRetry(`/api/study-plans/${planId}/complete-day`, {
+        method: 'POST',
+        body: JSON.stringify({ day }),
+      });
+      return response;
+    } catch (error) {
+      if (!error.apiDisabled) console.error('Failed to complete study plan day:', error);
+      throw error;
+    }
+  },
+
   /**
    * Check if API is available
    * Useful for determining fallback behavior
