@@ -368,8 +368,23 @@ ON CONFLICT (certification, slug) DO NOTHING;
 -- ============================================================================
 
 DO $$ BEGIN
-    CREATE TYPE case_difficulty AS ENUM ('beginner', 'intermediate', 'advanced');
-EXCEPTION WHEN duplicate_object THEN NULL;
+    CREATE TYPE case_difficulty AS ENUM (
+        'beginner', 'intermediate', 'advanced',
+        'level_1_clf', 'level_2_saa', 'level_3_dva', 'level_4_sys',
+        'level_5_sec', 'level_6_data', 'level_7_ai', 'level_8_adv',
+        'investigative'
+    );
+EXCEPTION WHEN duplicate_object THEN
+    -- Fallback to add values if enum already exists
+    ALTER TYPE case_difficulty ADD VALUE IF NOT EXISTS 'level_1_clf';
+    ALTER TYPE case_difficulty ADD VALUE IF NOT EXISTS 'level_2_saa';
+    ALTER TYPE case_difficulty ADD VALUE IF NOT EXISTS 'level_3_dva';
+    ALTER TYPE case_difficulty ADD VALUE IF NOT EXISTS 'level_4_sys';
+    ALTER TYPE case_difficulty ADD VALUE IF NOT EXISTS 'level_5_sec';
+    ALTER TYPE case_difficulty ADD VALUE IF NOT EXISTS 'level_6_data';
+    ALTER TYPE case_difficulty ADD VALUE IF NOT EXISTS 'level_7_ai';
+    ALTER TYPE case_difficulty ADD VALUE IF NOT EXISTS 'level_8_adv';
+    ALTER TYPE case_difficulty ADD VALUE IF NOT EXISTS 'investigative';
 END $$;
 
 -- ============================================================================
@@ -416,6 +431,11 @@ CREATE TABLE IF NOT EXISTS cases (
     resources           JSONB           NOT NULL DEFAULT '[]',  -- [{type, title, url}]
     tags                TEXT[]          NOT NULL DEFAULT '{}',
     is_active           BOOLEAN         NOT NULL DEFAULT TRUE,
+    -- Simulator properties
+    budget_usd          DECIMAL(10,2),                  -- Orçamento fictício mensal (ex: 2000.00)
+    client_persona      JSONB           NOT NULL DEFAULT '{}', -- {name, role, avatar}
+    constraints         TEXT[]          NOT NULL DEFAULT '{}', -- ex: {"zero infra management"}
+    
     created_at          TIMESTAMP       NOT NULL DEFAULT NOW(),
     updated_at          TIMESTAMP       NOT NULL DEFAULT NOW()
 );
@@ -431,6 +451,56 @@ COMMENT ON COLUMN cases.resources            IS 'Links externos: [{type:"doc"|"v
 CREATE INDEX IF NOT EXISTS idx_cases_slug           ON cases(slug);
 CREATE INDEX IF NOT EXISTS idx_cases_difficulty     ON cases(difficulty);
 CREATE INDEX IF NOT EXISTS idx_cases_active         ON cases(is_active) WHERE is_active = TRUE;
+
+CREATE OR REPLACE TRIGGER trg_cases_updated_at
+    BEFORE UPDATE ON cases
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- ============================================================================
+-- TABELA: case_dialogues (Entrevista)
+-- Perguntas e respostas durante a fase de briefing/entrevista
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS case_dialogues (
+    id          UUID    PRIMARY KEY DEFAULT gen_random_uuid(),
+    case_id     UUID    NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+    question    TEXT    NOT NULL,
+    answer      TEXT    NOT NULL,
+    hints       TEXT[]  DEFAULT '{}', -- dicas reveladas por essa resposta
+    sort_order  INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_case_dialogues_case ON case_dialogues(case_id);
+
+-- ============================================================================
+-- TABELA: case_events (Eventos Inesperados)
+-- Reviravoltas ou falhas que ocorrem após o primeiro design
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS case_events (
+    id          UUID    PRIMARY KEY DEFAULT gen_random_uuid(),
+    case_id     UUID    NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+    title       VARCHAR(200) NOT NULL,
+    description TEXT    NOT NULL,
+    impact_type VARCHAR(50), -- ex: 'traffic_spike', 'budget_cut', 'az_failure'
+    trigger_condition JSONB, -- Condições para acionar (opcional, ex: trigger após X min)
+    sort_order  INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_case_events_case ON case_events(case_id);
+
+-- ============================================================================
+-- TABELA: case_evaluation_criteria
+-- Regras de pontuação para o caso usando Well-Architected
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS case_evaluation_criteria (
+    id              UUID    PRIMARY KEY DEFAULT gen_random_uuid(),
+    case_id         UUID    NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+    service_id      UUID    NOT NULL REFERENCES aws_services(id) ON DELETE CASCADE,
+    pillar          VARCHAR(50) NOT NULL, -- ex: 'security', 'reliability', 'cost', 'performance', 'operational'
+    score_impact    INTEGER NOT NULL,     -- ex: +10 (bom), -5 (ruim)
+    feedback_msg    TEXT    NOT NULL      -- ex: "Boa escolha, o S3 reduz os custos de armazenamento."
+);
+CREATE INDEX IF NOT EXISTS idx_case_eval_case ON case_evaluation_criteria(case_id);
 
 CREATE OR REPLACE TRIGGER trg_cases_updated_at
     BEFORE UPDATE ON cases

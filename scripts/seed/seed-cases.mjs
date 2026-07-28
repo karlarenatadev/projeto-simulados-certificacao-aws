@@ -13,6 +13,9 @@ import {
   executeQuery,
   insertAwsService,
   insertCase,
+  insertCaseDialogue,
+  insertCaseEvent,
+  insertCaseEvaluationCriteria,
 } from '../../backend/database/db.js';
 
 // ============================================================================
@@ -216,8 +219,11 @@ const CASES = [
     title: 'API Web Serverless com Lambda + API Gateway + DynamoDB',
     scenario: `Uma startup de fintech precisa construir uma API REST escalável para seu app mobile de pagamentos. O time é pequeno (3 devs) e não quer gerenciar servidores. A API precisa suportar picos de 10.000 requisições/minuto durante campanhas promocionais, mas tem apenas ~200 req/min nos momentos normais.\n\nO CTO exige:\n- Zero gerenciamento de infraestrutura\n- Custo proporcional ao uso (não pagar quando idle)\n- Tempo de resposta < 300ms para 95% das requisições\n- Autenticação segura\n- Capacidade de auditar todas as chamadas`,
     objective: `Entender como construir uma arquitetura serverless end-to-end na AWS, conectando os serviços de API management, compute e database. Compreender os trade-offs de serverless vs. compute tradicional, como IAM protege cada componente, e como CloudWatch monitora a saúde da aplicação.`,
-    difficulty: 'intermediate',
+    difficulty: 'level_1_clf',
     certifications: ['CLF-C02', 'SAA-C03', 'DVA-C02'],
+    budget_usd: 200.00,
+    client_persona: { name: 'João', role: 'CTO Fintech' },
+    constraints: ['Zero gerenciamento de infraestrutura', 'Custo proporcional ao uso'],
     architecture_graph: {
       type: 'mermaid',
       content: `graph LR
@@ -236,25 +242,29 @@ const CASES = [
         type: 'doc',
         title: 'Guia do desenvolvedor Lambda',
         url: 'https://docs.aws.amazon.com/lambda/latest/dg/welcome.html',
-      },
-      {
-        type: 'doc',
-        title: 'API Gateway — Getting Started',
-        url: 'https://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started.html',
-      },
-      {
-        type: 'doc',
-        title: 'DynamoDB — Best Practices',
-        url: 'https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html',
-      },
-      {
-        type: 'blog',
-        title: 'Serverless Land — Patterns',
-        url: 'https://serverlessland.com/patterns',
-      },
+      }
     ],
     tags: ['serverless', 'api', 'dynamodb', 'lambda', 'fintech', 'custo-otimizado'],
     servicesSlugs: ['aws-lambda', 'amazon-api-gateway', 'amazon-dynamodb', 'aws-iam', 'amazon-cloudwatch'],
+    dialogues: [
+      {
+        question: 'Qual é a linguagem de programação que a equipe domina?',
+        answer: 'Nossa equipe programa quase 100% em Node.js e Python.',
+        hints: ['O AWS Lambda suporta nativamente Node.js e Python.']
+      },
+      {
+        question: 'Os dados precisam ter relacionamentos complexos (JOINs)?',
+        answer: 'Não, os acessos são feitos diretamente pelo ID do usuário ou da transação. Relacionamentos complexos não são necessários.',
+        hints: ['DynamoDB é excelente para consultas baseadas em chave-valor.']
+      }
+    ],
+    evaluationCriteria: [
+      { service_slug: 'aws-lambda', pillar: 'performance', score_impact: 20, feedback_msg: 'Excelente! Lambda resolve a computação serverless perfeitamente.' },
+      { service_slug: 'amazon-api-gateway', pillar: 'security', score_impact: 10, feedback_msg: 'API Gateway adiciona uma camada de proteção (Throttling, IAM) na borda.' },
+      { service_slug: 'amazon-dynamodb', pillar: 'performance', score_impact: 20, feedback_msg: 'DynamoDB atende latência de milissegundos sem servidor para gerenciar.' },
+      { service_slug: 'amazon-ec2', pillar: 'operational', score_impact: -30, feedback_msg: 'Você escolheu EC2, violando a restrição de "Zero gerenciamento de infraestrutura".' },
+      { service_slug: 'amazon-rds', pillar: 'cost', score_impact: -15, feedback_msg: 'RDS não era estritamente necessário (não há JOINs) e gera cobrança fixa por hora, violando a regra de pagar pelo uso.' }
+    ]
   },
   {
     slug: 'ha-web-app-3-tier',
@@ -440,6 +450,31 @@ async function seedCases() {
          ON CONFLICT (case_id, service_id) DO NOTHING`,
         [caseRow.id, serviceRows[0].id],
       );
+    }
+
+    // Seed Dialogues
+    if (caseData.dialogues) {
+      for (const d of caseData.dialogues) {
+        await insertCaseDialogue({
+          case_id: caseRow.id,
+          question: d.question,
+          answer: d.answer,
+          hints: d.hints
+        });
+      }
+    }
+
+    // Seed Evaluation Criteria
+    if (caseData.evaluationCriteria) {
+      for (const crit of caseData.evaluationCriteria) {
+        await insertCaseEvaluationCriteria({
+          case_id: caseRow.id,
+          service_slug: crit.service_slug,
+          pillar: crit.pillar,
+          score_impact: crit.score_impact,
+          feedback_msg: crit.feedback_msg
+        });
+      }
     }
 
     inserted++;

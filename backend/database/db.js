@@ -2047,6 +2047,9 @@ export async function insertCase(caseData) {
     architecture_graph = {},
     resources = [],
     tags = [],
+    budget_usd = null,
+    client_persona = {},
+    constraints = [],
   } = caseData;
 
   normalizeRequiredString(slug, 'slug');
@@ -2055,8 +2058,8 @@ export async function insertCase(caseData) {
   normalizeRequiredString(objective, 'objective');
 
   const query = `
-    INSERT INTO cases (slug, title, scenario, objective, difficulty, certifications, architecture_graph, resources, tags)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    INSERT INTO cases (slug, title, scenario, objective, difficulty, certifications, architecture_graph, resources, tags, budget_usd, client_persona, constraints)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
     ON CONFLICT (slug) DO NOTHING
     RETURNING *`;
 
@@ -2070,6 +2073,9 @@ export async function insertCase(caseData) {
     JSON.stringify(architecture_graph),
     JSON.stringify(resources),
     tags,
+    budget_usd,
+    JSON.stringify(client_persona),
+    constraints,
   ]);
 
   return rows[0] ?? null;
@@ -2123,5 +2129,65 @@ export async function markCaseCompleted(userId, caseId) {
     RETURNING *`;
 
   const rows = await executeQuery(query, [userId, caseId]);
+  return rows[0] ?? null;
+}
+/**
+ * Insert a new case dialogue.
+ * @param {Object} dialogueData
+ * @returns {Promise<Object>} Inserted dialogue row
+ */
+export async function insertCaseDialogue(dialogueData) {
+  const { case_id, question, answer, hints = [], sort_order = 0 } = dialogueData;
+  normalizeRequiredString(question, 'question');
+  normalizeRequiredString(answer, 'answer');
+
+  const query = `
+    INSERT INTO case_dialogues (case_id, question, answer, hints, sort_order)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING *`;
+  const rows = await executeQuery(query, [case_id, question, answer, hints, sort_order]);
+  return rows[0] ?? null;
+}
+
+/**
+ * Insert a new case event.
+ * @param {Object} eventData
+ * @returns {Promise<Object>} Inserted event row
+ */
+export async function insertCaseEvent(eventData) {
+  const { case_id, title, description, impact_type, trigger_condition = {}, sort_order = 0 } = eventData;
+  normalizeRequiredString(title, 'title');
+  normalizeRequiredString(description, 'description');
+
+  const query = `
+    INSERT INTO case_events (case_id, title, description, impact_type, trigger_condition, sort_order)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING *`;
+  const rows = await executeQuery(query, [case_id, title, description, impact_type, JSON.stringify(trigger_condition), sort_order]);
+  return rows[0] ?? null;
+}
+
+/**
+ * Insert a new case evaluation criteria.
+ * @param {Object} criteriaData
+ * @returns {Promise<Object>} Inserted criteria row
+ */
+export async function insertCaseEvaluationCriteria(criteriaData) {
+  const { case_id, service_slug, pillar, score_impact, feedback_msg } = criteriaData;
+  normalizeRequiredString(service_slug, 'service_slug');
+  normalizeRequiredString(pillar, 'pillar');
+  normalizeRequiredString(feedback_msg, 'feedback_msg');
+
+  // We need to resolve service_slug to service_id
+  const serviceRows = await executeQuery('SELECT id FROM aws_services WHERE slug = $1', [service_slug]);
+  if (serviceRows.length === 0) {
+    throw new Error(`AWS Service with slug ${service_slug} not found`);
+  }
+
+  const query = `
+    INSERT INTO case_evaluation_criteria (case_id, service_id, pillar, score_impact, feedback_msg)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING *`;
+  const rows = await executeQuery(query, [case_id, serviceRows[0].id, pillar, score_impact, feedback_msg]);
   return rows[0] ?? null;
 }

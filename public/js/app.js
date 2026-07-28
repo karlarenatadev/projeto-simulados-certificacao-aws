@@ -173,8 +173,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         updateSidebarProgress(); // Atualiza a caixa "O Meu Progresso" para o nome correto
         if (typeof renderTrail === "function") renderTrail(); // Atualiza a Trilha de Gamificação
         if (typeof renderBadges === "function") renderBadges(); // Atualiza as Insígnias
-        if (typeof updateSidebarCertBadge === "function") updateSidebarCertBadge(certId); // Atualiza badge da Sidebar
-
 
         // 4. Re-renderiza o gráfico global
         if (typeof renderGlobalRadarChart === "function") {
@@ -264,11 +262,6 @@ function updateMistakesControls(certId = getActiveCertificationId()) {
   if (btnPractice) btnPractice.classList.toggle("hidden", !hasMistakes);
   if (btnClear) btnClear.classList.toggle("hidden", !hasMistakes);
   if (notice && !hasMistakes) notice.classList.add("hidden");
-
-  // Atualiza o badge da sidebar
-  if (typeof updateSidebarMistakesCount === 'function') {
-    updateSidebarMistakesCount(mistakes.length);
-  }
 }
 
 function syncMistakeRecord(question, result) {
@@ -325,7 +318,6 @@ function suppressHover() {
 
 function wireUIActions() {
   bindClick("home-trigger", goHome);
-  bindClick("home-trigger-mobile", goHome);
   bindClick("btn-language", toggleLanguage);
   bindClick("theme-toggle", toggleDarkMode);
   bindClick("btn-start-quiz", startQuiz);
@@ -351,16 +343,6 @@ function wireUIActions() {
     startPersonalizedDiagnosticQuiz,
   );
   bindClick("sprint-start-btn", startMicroSprint);
-
-  // ── Sidebar navigation items ────────────────────────────────────────────
-  bindClick("nav-home",        goHome);
-  bindClick("nav-quiz",        () => { goHome(); });
-  bindClick("nav-journey",     startJornada);
-  bindClick("nav-diagnostic",  startDiagnostic);
-  bindClick("nav-flashcards",  startFlashcards);
-  bindClick("nav-mistakes",    startMistakesQuiz);
-  // ────────────────────────────────────────────────────────────────────────
-
 
   const flashcardContainer = document.getElementById("flashcard-container");
   if (flashcardContainer) {
@@ -508,13 +490,19 @@ async function startQuiz() {
 
     // --- INÍCIO DAS MODIFICAÇÕES DE LAYOUT ---
     showScreen("quiz");
-    if (typeof setSidebarActiveItem === 'function') setSidebarActiveItem('nav-quiz');
 
-    // Score counter
+    const sidebar = document.getElementById("side-info");
+    const mainSection = document.getElementById("main-section");
+
+    if (sidebar) sidebar.classList.add("hidden"); // Esconde a lateral
+    if (mainSection) {
+      mainSection.classList.remove("lg:w-2/3"); // Remove a largura parcial
+      mainSection.classList.add("w-full"); // Faz ocupar a tela cheia
+    }
+
     const scoreContainer = document.getElementById("score-container");
     if (scoreContainer) scoreContainer.style.display = "flex";
     // --- FIM DAS MODIFICAÇÕES DE LAYOUT ---
-
 
     const timerContainer = document.getElementById("timer-container");
     if (filters.mode === "exam") {
@@ -566,10 +554,17 @@ async function startDiagnostic() {
 
     // --- PREPARAÇÃO DO LAYOUT (Semelhante ao startQuiz, mas sem timer) ---
     showScreen("quiz");
-    if (typeof setSidebarActiveItem === 'function') setSidebarActiveItem('nav-diagnostic');
+
+    const sidebar = document.getElementById("side-info");
+    const mainSection = document.getElementById("main-section");
+
+    if (sidebar) sidebar.classList.add("hidden");
+    if (mainSection) {
+      mainSection.classList.remove("lg:w-2/3");
+      mainSection.classList.add("w-full");
+    }
 
     // Esconde timers e corações (Diagnóstico não tem punição de tempo/vida)
-
     const timerContainer = document.getElementById("timer-container");
     if (timerContainer) timerContainer.classList.add("hidden");
 
@@ -654,10 +649,17 @@ async function startPersonalizedDiagnosticQuiz() {
     }
 
     showScreen("quiz");
-    if (typeof setSidebarActiveItem === 'function') setSidebarActiveItem('nav-quiz');
+
+    const sidebar = document.getElementById("side-info");
+    const mainSection = document.getElementById("main-section");
+
+    if (sidebar) sidebar.classList.add("hidden");
+    if (mainSection) {
+      mainSection.classList.remove("lg:w-2/3");
+      mainSection.classList.add("w-full");
+    }
 
     const timerContainer = document.getElementById("timer-container");
-
     if (timerContainer) timerContainer.classList.add("hidden");
 
     const missionHud = document.getElementById("mission-hud");
@@ -2215,18 +2217,25 @@ function goHome() {
   // RESTAURAÇÃO DA INTERFACE
   // ========================================================================
 
+  const sidebar = document.getElementById("side-info");
+  const mainSection = document.getElementById("main-section");
   const scoreContainer = document.getElementById("score-container");
   const missionHud = document.getElementById("mission-hud");
+
+  // Mostra a sidebar novamente
+  if (sidebar) sidebar.classList.remove("hidden");
+
+  // Restaura o layout de 2/3 da tela
+  if (mainSection) {
+    mainSection.classList.add("lg:w-2/3");
+    mainSection.classList.remove("w-full");
+  }
 
   // Esconde o contador de pontos
   if (scoreContainer) scoreContainer.style.display = "none";
 
   // Esconde o HUD de missão
   if (missionHud) missionHud.classList.add("hidden");
-
-  // Atualiza item ativo na sidebar
-  if (typeof setSidebarActiveItem === 'function') setSidebarActiveItem('nav-home');
-
 
   // ========================================================================
   // NAVEGAÇÃO E ATUALIZAÇÃO DE DADOS
@@ -2793,10 +2802,18 @@ window.startMission = async function (stageId) {
 
     // 5.1 Muda para a tela de quiz
     showScreen("quiz");
-    if (typeof setSidebarActiveItem === 'function') setSidebarActiveItem('nav-journey');
+
+    // 5.2 Esconde a sidebar e expande a área principal
+    const sidebar = document.getElementById("side-info");
+    const mainSection = document.getElementById("main-section");
+
+    if (sidebar) sidebar.classList.add("hidden");
+    if (mainSection) {
+      mainSection.classList.remove("lg:w-2/3");
+      mainSection.classList.add("w-full");
+    }
 
     // 5.3 Ativa o HUD de missão (Vidas + Barra de Tempo)
-
     const missionHud = document.getElementById("mission-hud");
     if (missionHud) {
       missionHud.classList.remove("hidden");

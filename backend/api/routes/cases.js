@@ -13,11 +13,18 @@ import {
   getCaseById,
   getAwsServices,
   markCaseCompleted,
+  executeQuery
 } from '../../database/db.js';
+import { SimulatorEngine } from '../services/simulatorEngine.js';
 
 const router = Router();
 
-const VALID_DIFFICULTIES = new Set(['beginner', 'intermediate', 'advanced']);
+const VALID_DIFFICULTIES = new Set([
+  'beginner', 'intermediate', 'advanced',
+  'level_1_clf', 'level_2_saa', 'level_3_dva', 'level_4_sys',
+  'level_5_sec', 'level_6_data', 'level_7_ai', 'level_8_adv',
+  'investigative'
+]);
 const VALID_CERTIFICATIONS = new Set([
   'CLF-C02', 'SAA-C03', 'SAP-C02', 'DVA-C02',
   'SOA-C02', 'DOP-C02', 'ANS-C01', 'DAS-C01',
@@ -122,6 +129,63 @@ router.post('/:id/complete', async (req, res, next) => {
       success: true,
       message: 'Case marked as completed',
       data: progress,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ============================================================================
+// GET /api/cases/:id/dialogues — Get case interview dialogues
+// ============================================================================
+
+router.get('/:id/dialogues', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!id) throw createHttpError(400, 'Case ID is required');
+
+    const rows = await executeQuery('SELECT * FROM case_dialogues WHERE case_id = $1 ORDER BY sort_order ASC', [id]);
+    res.status(200).json({ success: true, data: rows });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ============================================================================
+// GET /api/cases/:id/events — Get case unexpected events
+// ============================================================================
+
+router.get('/:id/events', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!id) throw createHttpError(400, 'Case ID is required');
+
+    const rows = await executeQuery('SELECT * FROM case_events WHERE case_id = $1 ORDER BY sort_order ASC', [id]);
+    res.status(200).json({ success: true, data: rows });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ============================================================================
+// POST /api/cases/:id/evaluate — Evaluate architecture
+// ============================================================================
+
+router.post('/:id/evaluate', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { selected_service_ids } = req.body;
+
+    if (!id) throw createHttpError(400, 'Case ID is required');
+    if (!Array.isArray(selected_service_ids)) {
+      throw createHttpError(400, 'selected_service_ids must be an array of UUIDs');
+    }
+
+    const evaluation = await SimulatorEngine.evaluateArchitecture(id, selected_service_ids);
+
+    res.status(200).json({
+      success: true,
+      data: evaluation
     });
   } catch (error) {
     next(error);
