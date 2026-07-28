@@ -1,0 +1,70 @@
+[
+  {
+    "priority": "High",
+    "domain": "Design High-Performing Architectures",
+    "reason": "Taxa de erro de 75% em questões envolvendo Amazon VPC e de 60% em Amazon CloudFront. Dificuldade em identificar o gargalo de rede e a estratégia correta de cache global.",
+    "suggested_resources": [
+      {
+        "type": "video",
+        "title": "AWS Networking Fundamentals (VPC, Subnets, Route Tables)",
+        "url": "https://aws.amazon.com/training/"
+      },
+      {
+        "type": "documentation",
+        "title": "Amazon CloudFront Caching Strategies",
+        "url": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Expiration.html"
+      }
+    ],
+    "recommended_questions_tags": [
+      "vpc",
+      "cloudfront",
+      "cache",
+      "latency"
+    ],
+    "domain_id": "saa-design-performance",
+    "global_domain_id": "performance"
+  },
+  {
+    "priority": "High",
+    "domain": "Design Cost-Optimized Architectures",
+    "reason": "Dificuldade em escolher entre classes de armazenamento do S3 (Standard vs Infrequent Access) e modelos de precificação de EC2 (Spot vs Reservada) para minimizar custos.",
+    "suggested_resources": [
+      {
+        "type": "documentation",
+        "title": "Amazon S3 Storage Classes",
+        "url": "https://aws.amazon.com/s3/storage-classes/"
+      },
+      {
+        "type": "whitepaper",
+        "title": "AWS Pricing Overview",
+        "url": "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/pricing-and-billing.html"
+      }
+    ],
+    "recommended_questions_tags": [
+      "s3-storage-classes",
+      "ec2-pricing",
+      "cost-explorer"
+    ],
+    "domain_id": "saa-design-cost",
+    "global_domain_id": "billing"
+  },
+  {
+    "priority": "Medium",
+    "domain": "Design High-Performing Architectures",
+    "reason": "Dúvidas pontuais sobre quando usar RDS Multi-AZ (Resiliência) versus Read Replicas (Performance).",
+    "suggested_resources": [
+      {
+        "type": "article",
+        "title": "Amazon RDS High Availability and Read Scalability",
+        "url": "https://aws.amazon.com/rds/features/multi-az/"
+      }
+    ],
+    "recommended_questions_tags": [
+      "rds",
+      "read-replicas",
+      "database-performance"
+    ],
+    "domain_id": "saa-design-performance",
+    "global_domain_id": "performance"
+  }
+]

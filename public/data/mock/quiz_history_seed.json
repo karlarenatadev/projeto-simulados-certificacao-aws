@@ -1,0 +1,257 @@
+[
+  {
+    "quiz_id": "qz-001",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-06-27T10:00:00Z",
+    "total_questions": 65,
+    "score": 36,
+    "percentage": 55.3,
+    "time_spent_secs": 5400,
+    "domain_scores": {
+      "Design de Performance": { "score": 8, "total": 18 },
+      "Design Resiliente": { "score": 12, "total": 18 },
+      "Segurança de Aplicações": { "score": 9, "total": 15 },
+      "Design de Custo": { "score": 7, "total": 14 }
+    },
+    "weak_domains": ["Design de Performance", "Design de Custo"]
+  },
+  {
+    "quiz_id": "qz-002",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-06-29T14:30:00Z",
+    "total_questions": 30,
+    "score": 17,
+    "percentage": 56.6,
+    "time_spent_secs": 2200,
+    "domain_scores": {
+      "Design de Performance": { "score": 3, "total": 8 },
+      "Design Resiliente": { "score": 6, "total": 8 },
+      "Segurança de Aplicações": { "score": 5, "total": 8 },
+      "Design de Custo": { "score": 3, "total": 6 }
+    },
+    "weak_domains": ["Design de Performance", "Design de Custo"]
+  },
+  {
+    "quiz_id": "qz-003",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-07-02T19:15:00Z",
+    "total_questions": 65,
+    "score": 39,
+    "percentage": 60.0,
+    "time_spent_secs": 5100,
+    "domain_scores": {
+      "Design de Performance": { "score": 9, "total": 18 },
+      "Design Resiliente": { "score": 13, "total": 18 },
+      "Segurança de Aplicações": { "score": 10, "total": 15 },
+      "Design de Custo": { "score": 7, "total": 14 }
+    },
+    "weak_domains": ["Design de Performance", "Design de Custo"]
+  },
+  {
+    "quiz_id": "qz-004",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-07-04T08:45:00Z",
+    "total_questions": 20,
+    "score": 12,
+    "percentage": 60.0,
+    "time_spent_secs": 1500,
+    "domain_scores": {
+      "Design de Performance": { "score": 2, "total": 5 },
+      "Design Resiliente": { "score": 4, "total": 5 },
+      "Segurança de Aplicações": { "score": 4, "total": 5 },
+      "Design de Custo": { "score": 2, "total": 5 }
+    },
+    "weak_domains": ["Design de Performance", "Design de Custo"]
+  },
+  {
+    "quiz_id": "qz-005",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-07-07T11:00:00Z",
+    "total_questions": 65,
+    "score": 41,
+    "percentage": 63.0,
+    "time_spent_secs": 4800,
+    "domain_scores": {
+      "Design de Performance": { "score": 10, "total": 18 },
+      "Design Resiliente": { "score": 13, "total": 18 },
+      "Segurança de Aplicações": { "score": 10, "total": 15 },
+      "Design de Custo": { "score": 8, "total": 14 }
+    },
+    "weak_domains": ["Design de Performance", "Design de Custo"]
+  },
+  {
+    "quiz_id": "qz-006",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-07-09T20:20:00Z",
+    "total_questions": 30,
+    "score": 20,
+    "percentage": 66.6,
+    "time_spent_secs": 2100,
+    "domain_scores": {
+      "Design de Performance": { "score": 4, "total": 8 },
+      "Design Resiliente": { "score": 7, "total": 8 },
+      "Segurança de Aplicações": { "score": 6, "total": 8 },
+      "Design de Custo": { "score": 3, "total": 6 }
+    },
+    "weak_domains": ["Design de Performance", "Design de Custo"]
+  },
+  {
+    "quiz_id": "qz-007",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-07-11T09:30:00Z",
+    "total_questions": 65,
+    "score": 45,
+    "percentage": 69.2,
+    "time_spent_secs": 4600,
+    "domain_scores": {
+      "Design de Performance": { "score": 12, "total": 18 },
+      "Design Resiliente": { "score": 14, "total": 18 },
+      "Segurança de Aplicações": { "score": 11, "total": 15 },
+      "Design de Custo": { "score": 8, "total": 14 }
+    },
+    "weak_domains": ["Design de Custo"]
+  },
+  {
+    "quiz_id": "qz-008",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-07-13T15:10:00Z",
+    "total_questions": 20,
+    "score": 14,
+    "percentage": 70.0,
+    "time_spent_secs": 1300,
+    "domain_scores": {
+      "Design de Performance": { "score": 3, "total": 5 },
+      "Design Resiliente": { "score": 4, "total": 5 },
+      "Segurança de Aplicações": { "score": 4, "total": 5 },
+      "Design de Custo": { "score": 3, "total": 5 }
+    },
+    "weak_domains": []
+  },
+  {
+    "quiz_id": "qz-009",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-07-15T18:00:00Z",
+    "total_questions": 65,
+    "score": 48,
+    "percentage": 73.8,
+    "time_spent_secs": 4400,
+    "domain_scores": {
+      "Design de Performance": { "score": 13, "total": 18 },
+      "Design Resiliente": { "score": 15, "total": 18 },
+      "Segurança de Aplicações": { "score": 11, "total": 15 },
+      "Design de Custo": { "score": 9, "total": 14 }
+    },
+    "weak_domains": ["Design de Custo"]
+  },
+  {
+    "quiz_id": "qz-010",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-07-17T12:45:00Z",
+    "total_questions": 30,
+    "score": 23,
+    "percentage": 76.6,
+    "time_spent_secs": 2000,
+    "domain_scores": {
+      "Design de Performance": { "score": 6, "total": 8 },
+      "Design Resiliente": { "score": 7, "total": 8 },
+      "Segurança de Aplicações": { "score": 6, "total": 8 },
+      "Design de Custo": { "score": 4, "total": 6 }
+    },
+    "weak_domains": ["Design de Custo"]
+  },
+  {
+    "quiz_id": "qz-011",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-07-19T21:30:00Z",
+    "total_questions": 65,
+    "score": 51,
+    "percentage": 78.4,
+    "time_spent_secs": 4200,
+    "domain_scores": {
+      "Design de Performance": { "score": 14, "total": 18 },
+      "Design Resiliente": { "score": 16, "total": 18 },
+      "Segurança de Aplicações": { "score": 12, "total": 15 },
+      "Design de Custo": { "score": 9, "total": 14 }
+    },
+    "weak_domains": []
+  },
+  {
+    "quiz_id": "qz-012",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-07-21T10:15:00Z",
+    "total_questions": 20,
+    "score": 16,
+    "percentage": 80.0,
+    "time_spent_secs": 1200,
+    "domain_scores": {
+      "Design de Performance": { "score": 4, "total": 5 },
+      "Design Resiliente": { "score": 5, "total": 5 },
+      "Segurança de Aplicações": { "score": 4, "total": 5 },
+      "Design de Custo": { "score": 3, "total": 5 }
+    },
+    "weak_domains": []
+  },
+  {
+    "quiz_id": "qz-013",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-07-23T14:00:00Z",
+    "total_questions": 65,
+    "score": 53,
+    "percentage": 81.5,
+    "time_spent_secs": 4100,
+    "domain_scores": {
+      "Design de Performance": { "score": 15, "total": 18 },
+      "Design Resiliente": { "score": 16, "total": 18 },
+      "Segurança de Aplicações": { "score": 12, "total": 15 },
+      "Design de Custo": { "score": 10, "total": 14 }
+    },
+    "weak_domains": []
+  },
+  {
+    "quiz_id": "qz-014",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-07-25T17:20:00Z",
+    "total_questions": 30,
+    "score": 25,
+    "percentage": 83.3,
+    "time_spent_secs": 1900,
+    "domain_scores": {
+      "Design de Performance": { "score": 7, "total": 8 },
+      "Design Resiliente": { "score": 8, "total": 8 },
+      "Segurança de Aplicações": { "score": 6, "total": 8 },
+      "Design de Custo": { "score": 4, "total": 6 }
+    },
+    "weak_domains": []
+  },
+  {
+    "quiz_id": "qz-015",
+    "user_id": "usr-demo",
+    "certification": "SAA-C03",
+    "completed_at": "2026-07-27T09:00:00Z",
+    "total_questions": 65,
+    "score": 56,
+    "percentage": 86.1,
+    "time_spent_secs": 3900,
+    "domain_scores": {
+      "Design de Performance": { "score": 15, "total": 18 },
+      "Design Resiliente": { "score": 17, "total": 18 },
+      "Segurança de Aplicações": { "score": 13, "total": 15 },
+      "Design de Custo": { "score": 11, "total": 14 }
+    },
+    "weak_domains": []
+  }
+]

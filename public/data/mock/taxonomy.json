@@ -1,0 +1,67 @@
+{
+  "certifications": [
+    {
+      "id": "clf-c02",
+      "name": "AWS Certified Cloud Practitioner",
+      "level": "Foundational"
+    },
+    {
+      "id": "saa-c03",
+      "name": "AWS Certified Solutions Architect - Associate",
+      "level": "Associate"
+    },
+    {
+      "id": "dva-c02",
+      "name": "AWS Certified Developer - Associate",
+      "level": "Associate"
+    },
+    {
+      "id": "aif-c01",
+      "name": "AWS Certified AI Practitioner",
+      "level": "Foundational"
+    }
+  ],
+  "domains": [
+    {
+      "id": "design-resiliente",
+      "certification_id": "saa-c03",
+      "name": "Design Resilient Architectures",
+      "weight_percentage": 26
+    },
+    {
+      "id": "design-performance",
+      "certification_id": "saa-c03",
+      "name": "Design High-Performing Architectures",
+      "weight_percentage": 24
+    },
+    {
+      "id": "seguranca-aplicacoes",
+      "certification_id": "saa-c03",
+      "name": "Design Secure Applications and Architectures",
+      "weight_percentage": 30
+    },
+    {
+      "id": "design-custo",
+      "certification_id": "saa-c03",
+      "name": "Design Cost-Optimized Architectures",
+      "weight_percentage": 20
+    }
+  ],
+  "difficulties": [
+    {
+      "id": "easy",
+      "name": "Fácil",
+      "weight": 1
+    },
+    {
+      "id": "medium",
+      "name": "Médio",
+      "weight": 2
+    },
+    {
+      "id": "hard",
+      "name": "Difícil",
+      "weight": 3
+    }
+  ]
+}
