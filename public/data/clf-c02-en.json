@@ -56,7 +56,7 @@
     "services": [
       {
         "service_id": "aws-identity-and-access-management-iam",
-        "service_name": "AWS Identity and Access Management (IAM)",
+        "service_name": "AWS Identity And Access Management Iam",
         "service_slug": "aws-identity-and-access-management-iam"
       }
     ]
@@ -86,7 +86,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -118,7 +118,7 @@
     "services": [
       {
         "service_id": "economia-de-capital-capex",
-        "service_name": "Economia de Capital (CapEx)",
+        "service_name": "Economia De Capital Capex",
         "service_slug": "economia-de-capital-capex"
       }
     ]
@@ -179,7 +179,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -272,7 +272,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -304,7 +304,7 @@
     "services": [
       {
         "service_id": "criptografia-no-lado-do-servidor",
-        "service_name": "Criptografia no lado do servidor",
+        "service_name": "Criptografia No Lado Do Servidor",
         "service_slug": "criptografia-no-lado-do-servidor"
       }
     ]
@@ -366,7 +366,7 @@
     "services": [
       {
         "service_id": "aws-identity-and-access-management-iam",
-        "service_name": "AWS Identity and Access Management (IAM)",
+        "service_name": "AWS Identity And Access Management Iam",
         "service_slug": "aws-identity-and-access-management-iam"
       }
     ]
@@ -397,7 +397,7 @@
     "services": [
       {
         "service_id": "amazon-elastic-compute-cloud-ec2",
-        "service_name": "Amazon Elastic Compute Cloud (EC2)",
+        "service_name": "Amazon Elastic Compute Cloud Ec2",
         "service_slug": "amazon-elastic-compute-cloud-ec2"
       }
     ]
@@ -459,7 +459,7 @@
     "services": [
       {
         "service_id": "amazon-simple-storage-service-s3",
-        "service_name": "Amazon Simple Storage Service (S3)",
+        "service_name": "Amazon Simple Storage Service S3",
         "service_slug": "amazon-simple-storage-service-s3"
       }
     ]
@@ -521,7 +521,7 @@
     "services": [
       {
         "service_id": "aws-waf-e-aws-shield",
-        "service_name": "AWS WAF e AWS Shield",
+        "service_name": "AWS Waf E AWS Shield",
         "service_slug": "aws-waf-e-aws-shield"
       }
     ]
@@ -552,7 +552,7 @@
     "services": [
       {
         "service_id": "amazon-relational-database-service-rds",
-        "service_name": "Amazon Relational Database Service (RDS)",
+        "service_name": "Amazon Relational Database Service Rds",
         "service_slug": "amazon-relational-database-service-rds"
       }
     ]
@@ -583,7 +583,7 @@
     "services": [
       {
         "service_id": "inst-ncias-reservadas-reserved-instances",
-        "service_name": "Instâncias Reservadas (Reserved Instances)",
+        "service_name": "Inst Ncias Reservadas Reserved Instances",
         "service_slug": "inst-ncias-reservadas-reserved-instances"
       }
     ]
@@ -614,7 +614,7 @@
     "services": [
       {
         "service_id": "amazon-virtual-private-cloud-vpc",
-        "service_name": "Amazon Virtual Private Cloud (VPC)",
+        "service_name": "Amazon Virtual Private Cloud Vpc",
         "service_slug": "amazon-virtual-private-cloud-vpc"
       }
     ]
@@ -674,7 +674,7 @@
     "services": [
       {
         "service_id": "aws-identity-and-access-management-iam",
-        "service_name": "AWS Identity and Access Management (IAM)",
+        "service_name": "AWS Identity And Access Management Iam",
         "service_slug": "aws-identity-and-access-management-iam"
       }
     ]
@@ -703,7 +703,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -733,7 +733,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -794,7 +794,7 @@
     "services": [
       {
         "service_id": "amazon-virtual-private-cloud-vpc",
-        "service_name": "Amazon Virtual Private Cloud (VPC)",
+        "service_name": "Amazon Virtual Private Cloud Vpc",
         "service_slug": "amazon-virtual-private-cloud-vpc"
       }
     ]
@@ -854,7 +854,7 @@
     "services": [
       {
         "service_id": "regioes-e-zonas-de-disponibilidade",
-        "service_name": "regioes-e-zonas-de-disponibilidade",
+        "service_name": "Regioes E Zonas De Disponibilidade",
         "service_slug": "regioes-e-zonas-de-disponibilidade"
       }
     ]
@@ -914,7 +914,7 @@
     "services": [
       {
         "service_id": "amazon-relational-database-service-rds",
-        "service_name": "Amazon Relational Database Service (RDS)",
+        "service_name": "Amazon Relational Database Service Rds",
         "service_slug": "amazon-relational-database-service-rds"
       }
     ]
@@ -975,7 +975,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -1007,7 +1007,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -1070,7 +1070,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -1134,7 +1134,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "rds",
+        "service_id": "amazon-rds",
         "service_name": "Amazon RDS",
         "service_slug": "amazon-rds"
       }
@@ -1197,7 +1197,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -1230,7 +1230,7 @@
     "services": [
       {
         "service_id": "elastic-load-balancing",
-        "service_name": "Elastic Load Balancing",
+        "service_name": "Elastic Load Balancing (ELB)",
         "service_slug": "elastic-load-balancing"
       }
     ]
@@ -1260,7 +1260,7 @@
     "services": [
       {
         "service_id": "geral",
-        "service_name": "geral",
+        "service_name": "Geral",
         "service_slug": "geral"
       }
     ]
@@ -1349,7 +1349,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -1380,7 +1380,7 @@
     "services": [
       {
         "service_id": "geral",
-        "service_name": "geral",
+        "service_name": "Geral",
         "service_slug": "geral"
       }
     ]
@@ -1439,7 +1439,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "cloudfront",
+        "service_id": "amazon-cloudfront",
         "service_name": "Amazon CloudFront",
         "service_slug": "amazon-cloudfront"
       }
@@ -1469,7 +1469,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -1500,7 +1500,7 @@
     "services": [
       {
         "service_id": "geral",
-        "service_name": "geral",
+        "service_name": "Geral",
         "service_slug": "geral"
       }
     ]
@@ -1529,7 +1529,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "rds",
+        "service_id": "amazon-rds",
         "service_name": "Amazon RDS",
         "service_slug": "amazon-rds"
       }
@@ -1559,7 +1559,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -1651,7 +1651,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -1682,7 +1682,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -1744,7 +1744,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -1775,7 +1775,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "rds",
+        "service_id": "amazon-rds",
         "service_name": "Amazon RDS",
         "service_slug": "amazon-rds"
       }
@@ -1838,7 +1838,7 @@
     "services": [
       {
         "service_id": "pague-pelo-uso",
-        "service_name": "Pague pelo uso",
+        "service_name": "Pague Pelo Uso",
         "service_slug": "pague-pelo-uso"
       }
     ]
@@ -1868,9 +1868,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "aws-cloud",
-        "service_name": "AWS Cloud",
-        "service_slug": "aws-cloud"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -1900,7 +1900,7 @@
     "services": [
       {
         "service_id": "aws-identity-and-access-management-iam",
-        "service_name": "AWS Identity and Access Management (IAM)",
+        "service_name": "AWS Identity And Access Management Iam",
         "service_slug": "aws-identity-and-access-management-iam"
       }
     ]
@@ -1931,7 +1931,7 @@
     "services": [
       {
         "service_id": "calculadora-de-custo-total-de-propriedade-tco-da-aws",
-        "service_name": "Calculadora de Custo Total de Propriedade (TCO) da AWS",
+        "service_name": "Calculadora De Custo Total De Propriedade Tco Da AWS",
         "service_slug": "calculadora-de-custo-total-de-propriedade-tco-da-aws"
       }
     ]
@@ -1961,7 +1961,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -1993,7 +1993,7 @@
     "services": [
       {
         "service_id": "regi-es-e-zonas-de-disponibilidade",
-        "service_name": "Regiões e Zonas de Disponibilidade",
+        "service_name": "Regi Es E Zonas De Disponibilidade",
         "service_slug": "regi-es-e-zonas-de-disponibilidade"
       }
     ]
@@ -2087,7 +2087,7 @@
     "services": [
       {
         "service_id": "amazon-virtual-private-cloud-vpc",
-        "service_name": "Amazon Virtual Private Cloud (VPC)",
+        "service_name": "Amazon Virtual Private Cloud Vpc",
         "service_slug": "amazon-virtual-private-cloud-vpc"
       }
     ]
@@ -2212,7 +2212,7 @@
     "services": [
       {
         "service_id": "aws-key-management-service-kms",
-        "service_name": "AWS Key Management Service (KMS)",
+        "service_name": "AWS Key Management Service Kms",
         "service_slug": "aws-key-management-service-kms"
       }
     ]
@@ -2242,7 +2242,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -2335,7 +2335,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -2428,7 +2428,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -2459,7 +2459,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "cloudfront",
+        "service_id": "amazon-cloudfront",
         "service_name": "Amazon CloudFront",
         "service_slug": "amazon-cloudfront"
       }
@@ -2491,7 +2491,7 @@
     "services": [
       {
         "service_id": "beneficios-da-nuvem",
-        "service_name": "beneficios-da-nuvem",
+        "service_name": "Beneficios Da Nuvem",
         "service_slug": "beneficios-da-nuvem"
       }
     ]
@@ -2521,7 +2521,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -2552,7 +2552,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -2615,7 +2615,7 @@
     "services": [
       {
         "service_id": "amazon-s3-glacier",
-        "service_name": "amazon-s3-glacier",
+        "service_name": "Amazon S3 Glacier",
         "service_slug": "amazon-s3-glacier"
       }
     ]
@@ -2677,7 +2677,7 @@
     "services": [
       {
         "service_id": "modelo-de-responsabilidade-compartilhada",
-        "service_name": "Modelo de Responsabilidade Compartilhada",
+        "service_name": "Modelo De Responsabilidade Compartilhada",
         "service_slug": "modelo-de-responsabilidade-compartilhada"
       }
     ]
@@ -2739,7 +2739,7 @@
     "services": [
       {
         "service_id": "ec2-pricing-models",
-        "service_name": "ec2-pricing-models",
+        "service_name": "Ec2 Pricing Models",
         "service_slug": "ec2-pricing-models"
       }
     ]
@@ -2770,7 +2770,7 @@
     "services": [
       {
         "service_id": "elasticidade-e-agilidade",
-        "service_name": "elasticidade-e-agilidade",
+        "service_name": "Elasticidade E Agilidade",
         "service_slug": "elasticidade-e-agilidade"
       }
     ]
@@ -2800,7 +2800,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -2832,7 +2832,7 @@
     "services": [
       {
         "service_id": "aws-identity-and-access-management-iam",
-        "service_name": "AWS Identity and Access Management (IAM)",
+        "service_name": "AWS Identity And Access Management Iam",
         "service_slug": "aws-identity-and-access-management-iam"
       }
     ]
@@ -2956,7 +2956,7 @@
     "services": [
       {
         "service_id": "inst-ncias-reservadas-reserved-instances",
-        "service_name": "Instâncias Reservadas (Reserved Instances)",
+        "service_name": "Inst Ncias Reservadas Reserved Instances",
         "service_slug": "inst-ncias-reservadas-reserved-instances"
       }
     ]
@@ -2987,7 +2987,7 @@
     "services": [
       {
         "service_id": "criptografia-do-lado-do-servidor-s3-sse-s3",
-        "service_name": "Criptografia do lado do servidor S3 (SSE-S3)",
+        "service_name": "Criptografia Do Lado Do Servidor S3 Sse S3",
         "service_slug": "criptografia-do-lado-do-servidor-s3-sse-s3"
       }
     ]
@@ -3017,7 +3017,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -3080,7 +3080,7 @@
     "services": [
       {
         "service_id": "aws-elastic-load-balancing-elb",
-        "service_name": "AWS Elastic Load Balancing (ELB)",
+        "service_name": "AWS Elastic Load Balancing Elb",
         "service_slug": "aws-elastic-load-balancing-elb"
       }
     ]
@@ -3111,7 +3111,7 @@
     "services": [
       {
         "service_id": "amazon-ec2-auto-scaling-e-elastic-load-balancing",
-        "service_name": "Amazon EC2 Auto Scaling e Elastic Load Balancing",
+        "service_name": "Amazon Ec2 Auto Scaling E Elastic Load Balancing",
         "service_slug": "amazon-ec2-auto-scaling-e-elastic-load-balancing"
       }
     ]
@@ -3173,7 +3173,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -3236,7 +3236,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "rds",
+        "service_id": "amazon-rds",
         "service_name": "Amazon RDS",
         "service_slug": "amazon-rds"
       }
@@ -3300,7 +3300,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -3364,7 +3364,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "cloudfront",
+        "service_id": "amazon-cloudfront",
         "service_name": "Amazon CloudFront",
         "service_slug": "amazon-cloudfront"
       }
@@ -3396,7 +3396,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -3428,7 +3428,7 @@
     "services": [
       {
         "service_id": "amazon-ec2-auto-scaling",
-        "service_name": "Amazon EC2 Auto Scaling",
+        "service_name": "Amazon Ec2 Auto Scaling",
         "service_slug": "amazon-ec2-auto-scaling"
       }
     ]
@@ -3459,7 +3459,7 @@
     "services": [
       {
         "service_id": "aws-identity-and-access-management-iam",
-        "service_name": "AWS Identity and Access Management (IAM)",
+        "service_name": "AWS Identity And Access Management Iam",
         "service_slug": "aws-identity-and-access-management-iam"
       }
     ]
@@ -3491,7 +3491,7 @@
     "services": [
       {
         "service_id": "amazon-simple-storage-service-s3",
-        "service_name": "Amazon Simple Storage Service (S3)",
+        "service_name": "Amazon Simple Storage Service S3",
         "service_slug": "amazon-simple-storage-service-s3"
       }
     ]
@@ -3554,7 +3554,7 @@
     "services": [
       {
         "service_id": "modelo-de-responsabilidade-compartilhada-da-aws",
-        "service_name": "Modelo de Responsabilidade Compartilhada da AWS",
+        "service_name": "Modelo De Responsabilidade Compartilhada Da AWS",
         "service_slug": "modelo-de-responsabilidade-compartilhada-da-aws"
       }
     ]
@@ -3586,7 +3586,7 @@
     "services": [
       {
         "service_id": "amazon-virtual-private-cloud-vpc",
-        "service_name": "Amazon Virtual Private Cloud (VPC)",
+        "service_name": "Amazon Virtual Private Cloud Vpc",
         "service_slug": "amazon-virtual-private-cloud-vpc"
       }
     ]
@@ -3617,7 +3617,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -3714,7 +3714,7 @@
     "services": [
       {
         "service_id": "amazon-relational-database-service-rds",
-        "service_name": "Amazon Relational Database Service (RDS)",
+        "service_name": "Amazon Relational Database Service Rds",
         "service_slug": "amazon-relational-database-service-rds"
       }
     ]
@@ -3773,7 +3773,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -3804,7 +3804,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -3865,7 +3865,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -3959,7 +3959,7 @@
     "services": [
       {
         "service_id": "inst-ncias-reservadas",
-        "service_name": "Instâncias Reservadas",
+        "service_name": "Inst Ncias Reservadas",
         "service_slug": "inst-ncias-reservadas"
       }
     ]
@@ -3989,7 +3989,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "cloudfront",
+        "service_id": "amazon-cloudfront",
         "service_name": "Amazon CloudFront",
         "service_slug": "amazon-cloudfront"
       }
@@ -4021,7 +4021,7 @@
     "services": [
       {
         "service_id": "aws-cloudformation",
-        "service_name": "AWS CloudFormation",
+        "service_name": "AWS Cloudformation",
         "service_slug": "aws-cloudformation"
       }
     ]
@@ -4080,7 +4080,7 @@
     "services": [
       {
         "service_id": "aws-identity-and-access-management-iam",
-        "service_name": "AWS Identity and Access Management (IAM)",
+        "service_name": "AWS Identity And Access Management Iam",
         "service_slug": "aws-identity-and-access-management-iam"
       }
     ]
@@ -4109,7 +4109,7 @@
     "services": [
       {
         "service_id": "amazon-ec2-auto-scaling",
-        "service_name": "Amazon EC2 Auto Scaling",
+        "service_name": "Amazon Ec2 Auto Scaling",
         "service_slug": "amazon-ec2-auto-scaling"
       }
     ]
@@ -4167,7 +4167,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -4257,7 +4257,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "rds",
+        "service_id": "amazon-rds",
         "service_name": "Amazon RDS",
         "service_slug": "amazon-rds"
       }
@@ -4317,7 +4317,7 @@
     "services": [
       {
         "service_id": "amazon-sqs",
-        "service_name": "Amazon SQS",
+        "service_name": "Amazon Sqs",
         "service_slug": "amazon-sqs"
       }
     ]
@@ -4377,7 +4377,7 @@
     "services": [
       {
         "service_id": "inst-ncias-reservadas",
-        "service_name": "Instâncias Reservadas",
+        "service_name": "Inst Ncias Reservadas",
         "service_slug": "inst-ncias-reservadas"
       }
     ]
@@ -4406,7 +4406,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -4436,7 +4436,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "cloudfront",
+        "service_id": "amazon-cloudfront",
         "service_name": "Amazon CloudFront",
         "service_slug": "amazon-cloudfront"
       }
@@ -4467,7 +4467,7 @@
     "services": [
       {
         "service_id": "computa-o-serverless",
-        "service_name": "Computação Serverless",
+        "service_name": "Computa O Serverless",
         "service_slug": "computa-o-serverless"
       }
     ]
@@ -4526,7 +4526,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "rds",
+        "service_id": "amazon-rds",
         "service_name": "Amazon RDS",
         "service_slug": "amazon-rds"
       }
@@ -4616,7 +4616,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -4647,7 +4647,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -4772,7 +4772,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -4803,7 +4803,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -4865,7 +4865,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "cloudfront",
+        "service_id": "amazon-cloudfront",
         "service_name": "Amazon CloudFront",
         "service_slug": "amazon-cloudfront"
       }
@@ -4929,7 +4929,7 @@
     "services": [
       {
         "service_id": "amazon-ec2-spot-instances",
-        "service_name": "Amazon EC2 Spot Instances",
+        "service_name": "Amazon Ec2 Spot Instances",
         "service_slug": "amazon-ec2-spot-instances"
       }
     ]
@@ -4960,7 +4960,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -4992,7 +4992,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -5088,7 +5088,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "rds",
+        "service_id": "amazon-rds",
         "service_name": "Amazon RDS",
         "service_slug": "amazon-rds"
       }
@@ -5184,7 +5184,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -5250,7 +5250,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -5311,7 +5311,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -5342,7 +5342,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -5374,7 +5374,7 @@
     "services": [
       {
         "service_id": "amazon-ec2-auto-scaling",
-        "service_name": "Amazon EC2 Auto Scaling",
+        "service_name": "Amazon Ec2 Auto Scaling",
         "service_slug": "amazon-ec2-auto-scaling"
       }
     ]
@@ -5434,7 +5434,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -5496,7 +5496,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "cloudfront",
+        "service_id": "amazon-cloudfront",
         "service_name": "Amazon CloudFront",
         "service_slug": "amazon-cloudfront"
       }
@@ -5527,7 +5527,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "rds",
+        "service_id": "amazon-rds",
         "service_name": "Amazon RDS",
         "service_slug": "amazon-rds"
       }
@@ -5590,7 +5590,7 @@
     "services": [
       {
         "service_id": "calculadora-de-tco-da-aws",
-        "service_name": "Calculadora de TCO da AWS",
+        "service_name": "Calculadora De Tco Da AWS",
         "service_slug": "calculadora-de-tco-da-aws"
       }
     ]
@@ -5652,7 +5652,7 @@
     "services": [
       {
         "service_id": "aws-identity-and-access-management-iam",
-        "service_name": "AWS Identity and Access Management (IAM)",
+        "service_name": "AWS Identity And Access Management Iam",
         "service_slug": "aws-identity-and-access-management-iam"
       }
     ]
@@ -5682,7 +5682,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "rds",
+        "service_id": "amazon-rds",
         "service_name": "Amazon RDS",
         "service_slug": "amazon-rds"
       }
@@ -5714,7 +5714,7 @@
     "services": [
       {
         "service_id": "elasticidade-e-alta-disponibilidade",
-        "service_name": "Elasticidade e Alta Disponibilidade",
+        "service_name": "Elasticidade E Alta Disponibilidade",
         "service_slug": "elasticidade-e-alta-disponibilidade"
       }
     ]
@@ -5777,7 +5777,7 @@
     "services": [
       {
         "service_id": "amazon-s3-glacier",
-        "service_name": "amazon-s3-glacier",
+        "service_name": "Amazon S3 Glacier",
         "service_slug": "amazon-s3-glacier"
       }
     ]
@@ -5838,7 +5838,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -5871,7 +5871,7 @@
     "services": [
       {
         "service_id": "modelo-de-responsabilidade-compartilhada",
-        "service_name": "Modelo de Responsabilidade Compartilhada",
+        "service_name": "Modelo De Responsabilidade Compartilhada",
         "service_slug": "modelo-de-responsabilidade-compartilhada"
       }
     ]
@@ -6008,7 +6008,7 @@
     "services": [
       {
         "service_id": "aws-shield-e-aws-waf",
-        "service_name": "AWS Shield e AWS WAF",
+        "service_name": "AWS Shield E AWS Waf",
         "service_slug": "aws-shield-e-aws-waf"
       }
     ]
@@ -6656,9 +6656,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "aws",
-        "service_name": "AWS",
-        "service_slug": "aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -6685,9 +6685,9 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "aws",
-        "service_name": "AWS",
-        "service_slug": "aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -6714,9 +6714,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "aws",
-        "service_name": "AWS",
-        "service_slug": "aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -6743,9 +6743,9 @@
     "global_domain_id": "billing",
     "services": [
       {
-        "service_id": "aws",
-        "service_name": "AWS",
-        "service_slug": "aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -6772,9 +6772,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "aws",
-        "service_name": "AWS",
-        "service_slug": "aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -6801,9 +6801,9 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "aws",
-        "service_name": "AWS",
-        "service_slug": "aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -6830,9 +6830,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "aws",
-        "service_name": "AWS",
-        "service_slug": "aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -6859,9 +6859,9 @@
     "global_domain_id": "billing",
     "services": [
       {
-        "service_id": "aws",
-        "service_name": "AWS",
-        "service_slug": "aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -6888,9 +6888,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "aws",
-        "service_name": "AWS",
-        "service_slug": "aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -6917,9 +6917,9 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "aws",
-        "service_name": "AWS",
-        "service_slug": "aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -6946,7 +6946,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -6975,7 +6975,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -7004,7 +7004,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -7062,7 +7062,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -7091,7 +7091,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -7207,7 +7207,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -7236,7 +7236,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -7265,7 +7265,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -7294,7 +7294,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -7352,7 +7352,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -7382,7 +7382,7 @@
     "services": [
       {
         "service_id": "aws-key-management-service-kms",
-        "service_name": "AWS Key Management Service (KMS)",
+        "service_name": "AWS Key Management Service Kms",
         "service_slug": "aws-key-management-service-kms"
       }
     ]
@@ -7410,7 +7410,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -7527,7 +7527,7 @@
     "services": [
       {
         "service_id": "iaas",
-        "service_name": "IaaS",
+        "service_name": "Iaas",
         "service_slug": "iaas"
       }
     ]
@@ -7555,7 +7555,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -7584,9 +7584,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "emr",
-        "service_name": "EMR",
-        "service_slug": "emr"
+        "service_id": "amazon-emr",
+        "service_name": "Amazon Emr",
+        "service_slug": "amazon-emr"
       }
     ]
   },
@@ -7643,7 +7643,7 @@
     "services": [
       {
         "service_id": "paas",
-        "service_name": "PaaS",
+        "service_name": "Paas",
         "service_slug": "paas"
       }
     ]
@@ -7671,9 +7671,9 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "kms",
-        "service_name": "KMS",
-        "service_slug": "kms"
+        "service_id": "aws-kms",
+        "service_name": "AWS KMS",
+        "service_slug": "aws-kms"
       }
     ]
   },
@@ -7700,7 +7700,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -7759,7 +7759,7 @@
     "services": [
       {
         "service_id": "saas",
-        "service_name": "SaaS",
+        "service_name": "Saas",
         "service_slug": "saas"
       }
     ]
@@ -7787,9 +7787,9 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "inspector",
-        "service_name": "Inspector",
-        "service_slug": "inspector"
+        "service_id": "amazon-inspector",
+        "service_name": "Amazon Inspector",
+        "service_slug": "amazon-inspector"
       }
     ]
   },
@@ -7816,7 +7816,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -7845,7 +7845,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -7874,7 +7874,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -7932,7 +7932,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -7962,7 +7962,7 @@
     "services": [
       {
         "service_id": "amazon-iam",
-        "service_name": "Amazon IAM",
+        "service_name": "Amazon Iam",
         "service_slug": "amazon-iam"
       }
     ]
@@ -7991,7 +7991,7 @@
     "services": [
       {
         "service_id": "aws-cloudformation",
-        "service_name": "AWS CloudFormation",
+        "service_name": "AWS Cloudformation",
         "service_slug": "aws-cloudformation"
       }
     ]
@@ -8078,7 +8078,7 @@
     "services": [
       {
         "service_id": "aws-key-management-service-kms",
-        "service_name": "AWS Key Management Service (KMS)",
+        "service_name": "AWS Key Management Service Kms",
         "service_slug": "aws-key-management-service-kms"
       }
     ]
@@ -8194,7 +8194,7 @@
     "services": [
       {
         "service_id": "aws-cloudwatch",
-        "service_name": "AWS CloudWatch",
+        "service_name": "AWS Cloudwatch",
         "service_slug": "aws-cloudwatch"
       }
     ]
@@ -8223,7 +8223,7 @@
     "services": [
       {
         "service_id": "aws-cost-and-usage-report",
-        "service_name": "AWS Cost and Usage Report",
+        "service_name": "AWS Cost And Usage Report",
         "service_slug": "aws-cost-and-usage-report"
       }
     ]
@@ -8251,7 +8251,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -8280,7 +8280,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -8310,7 +8310,7 @@
     "services": [
       {
         "service_id": "amazon-emr",
-        "service_name": "Amazon EMR",
+        "service_name": "Amazon Emr",
         "service_slug": "amazon-emr"
       }
     ]
@@ -8367,7 +8367,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -8542,7 +8542,7 @@
     "services": [
       {
         "service_id": "aws-cloudformation",
-        "service_name": "AWS CloudFormation",
+        "service_name": "AWS Cloudformation",
         "service_slug": "aws-cloudformation"
       }
     ]
@@ -8570,7 +8570,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -8600,7 +8600,7 @@
     "services": [
       {
         "service_id": "amazon-emr",
-        "service_name": "Amazon EMR",
+        "service_name": "Amazon Emr",
         "service_slug": "amazon-emr"
       }
     ]
@@ -8657,7 +8657,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -8687,7 +8687,7 @@
     "services": [
       {
         "service_id": "aws-key-management-service-kms",
-        "service_name": "AWS Key Management Service (KMS)",
+        "service_name": "AWS Key Management Service Kms",
         "service_slug": "aws-key-management-service-kms"
       }
     ]
@@ -8715,7 +8715,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -8774,7 +8774,7 @@
     "services": [
       {
         "service_id": "aws-cloudfront",
-        "service_name": "AWS CloudFront",
+        "service_name": "AWS Cloudfront",
         "service_slug": "aws-cloudfront"
       }
     ]
@@ -8831,7 +8831,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -8860,7 +8860,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -8889,7 +8889,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -9005,7 +9005,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -9122,7 +9122,7 @@
     "services": [
       {
         "service_id": "amazon-cloudformation",
-        "service_name": "Amazon CloudFormation",
+        "service_name": "Amazon Cloudformation",
         "service_slug": "amazon-cloudformation"
       }
     ]
@@ -9180,7 +9180,7 @@
     "services": [
       {
         "service_id": "amazon-emr",
-        "service_name": "Amazon EMR",
+        "service_name": "Amazon Emr",
         "service_slug": "amazon-emr"
       }
     ]
@@ -9267,7 +9267,7 @@
     "services": [
       {
         "service_id": "amazon-key-management-service-kms",
-        "service_name": "Amazon Key Management Service (KMS)",
+        "service_name": "Amazon Key Management Service Kms",
         "service_slug": "amazon-key-management-service-kms"
       }
     ]
@@ -9295,7 +9295,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -9325,7 +9325,7 @@
     "services": [
       {
         "service_id": "aws-cost-and-usage-report",
-        "service_name": "AWS Cost and Usage Report",
+        "service_name": "AWS Cost And Usage Report",
         "service_slug": "aws-cost-and-usage-report"
       }
     ]
@@ -9354,7 +9354,7 @@
     "services": [
       {
         "service_id": "aws-well-architected-framework",
-        "service_name": "AWS Well-Architected Framework",
+        "service_name": "AWS Well Architected Framework",
         "service_slug": "aws-well-architected-framework"
       }
     ]
@@ -9818,7 +9818,7 @@
     "services": [
       {
         "service_id": "aws-cloudformation",
-        "service_name": "AWS CloudFormation",
+        "service_name": "AWS Cloudformation",
         "service_slug": "aws-cloudformation"
       }
     ]
@@ -9944,7 +9944,7 @@
     "services": [
       {
         "service_id": "aws-identity-and-access-management-iam",
-        "service_name": "AWS Identity and Access Management (IAM)",
+        "service_name": "AWS Identity And Access Management Iam",
         "service_slug": "aws-identity-and-access-management-iam"
       }
     ]
@@ -10006,7 +10006,7 @@
     "services": [
       {
         "service_id": "amazon-ec2-e-aws-lambda",
-        "service_name": "Amazon EC2 e AWS Lambda",
+        "service_name": "Amazon Ec2 E AWS Lambda",
         "service_slug": "amazon-ec2-e-aws-lambda"
       }
     ]
@@ -10036,7 +10036,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -10068,7 +10068,7 @@
     "services": [
       {
         "service_id": "security-groups-e-nacls",
-        "service_name": "Security Groups e NACLs",
+        "service_name": "Security Groups E Nacls",
         "service_slug": "security-groups-e-nacls"
       }
     ]
@@ -10131,7 +10131,7 @@
     "services": [
       {
         "service_id": "aws-transit-gateway-e-aws-dms",
-        "service_name": "AWS Transit Gateway e AWS DMS",
+        "service_name": "AWS Transit Gateway E AWS Dms",
         "service_slug": "aws-transit-gateway-e-aws-dms"
       }
     ]
@@ -10162,7 +10162,7 @@
     "services": [
       {
         "service_id": "aws-config-e-amazon-eventbridge",
-        "service_name": "AWS Config e Amazon EventBridge",
+        "service_name": "AWS Config E Amazon Eventbridge",
         "service_slug": "aws-config-e-amazon-eventbridge"
       }
     ]
@@ -10193,7 +10193,7 @@
     "services": [
       {
         "service_id": "amazon-bedrock-e-opensearch-serverless",
-        "service_name": "Amazon Bedrock e OpenSearch Serverless",
+        "service_name": "Amazon Bedrock E Opensearch Serverless",
         "service_slug": "amazon-bedrock-e-opensearch-serverless"
       }
     ]
@@ -10224,7 +10224,7 @@
     "services": [
       {
         "service_id": "aws-direct-connect-e-bgp",
-        "service_name": "AWS Direct Connect e BGP",
+        "service_name": "AWS Direct Connect E Bgp",
         "service_slug": "aws-direct-connect-e-bgp"
       }
     ]
@@ -10255,7 +10255,7 @@
     "services": [
       {
         "service_id": "savings-plans-e-inst-ncias-reservadas",
-        "service_name": "Savings Plans e Instâncias Reservadas",
+        "service_name": "Savings Plans E Inst Ncias Reservadas",
         "service_slug": "savings-plans-e-inst-ncias-reservadas"
       }
     ]
@@ -10287,7 +10287,7 @@
     "services": [
       {
         "service_id": "aws-savings-plans-e-inst-ncias-reservadas",
-        "service_name": "AWS Savings Plans e Instâncias Reservadas",
+        "service_name": "AWS Savings Plans E Inst Ncias Reservadas",
         "service_slug": "aws-savings-plans-e-inst-ncias-reservadas"
       }
     ]
@@ -10349,7 +10349,7 @@
     "services": [
       {
         "service_id": "aws-config-e-eventbridge",
-        "service_name": "AWS Config e EventBridge",
+        "service_name": "AWS Config E Eventbridge",
         "service_slug": "aws-config-e-eventbridge"
       }
     ]
@@ -10380,7 +10380,7 @@
     "services": [
       {
         "service_id": "amazon-bedrock-e-opensearch-serverless",
-        "service_name": "Amazon Bedrock e OpenSearch Serverless",
+        "service_name": "Amazon Bedrock E Opensearch Serverless",
         "service_slug": "amazon-bedrock-e-opensearch-serverless"
       }
     ]
@@ -10411,7 +10411,7 @@
     "services": [
       {
         "service_id": "amazon-eventbridge-e-savings-plans",
-        "service_name": "Amazon EventBridge e Savings Plans",
+        "service_name": "Amazon Eventbridge E Savings Plans",
         "service_slug": "amazon-eventbridge-e-savings-plans"
       }
     ]
@@ -10443,7 +10443,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -10473,9 +10473,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "aws-cloud",
-        "service_name": "AWS Cloud",
-        "service_slug": "aws-cloud"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -10533,7 +10533,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -10563,7 +10563,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -10593,9 +10593,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "aws-cloud",
-        "service_name": "AWS Cloud",
-        "service_slug": "aws-cloud"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -10653,7 +10653,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -10714,9 +10714,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "aws-cloud",
-        "service_name": "AWS Cloud",
-        "service_slug": "aws-cloud"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -10743,9 +10743,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "amazon-web-services-aws",
-        "service_name": "Amazon Web Services (AWS)",
-        "service_slug": "amazon-web-services-aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -10801,7 +10801,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -10859,9 +10859,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "amazon-web-services-aws",
-        "service_name": "Amazon Web Services (AWS)",
-        "service_slug": "amazon-web-services-aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -10889,7 +10889,7 @@
     "services": [
       {
         "service_id": "amazon-key-management-service-kms",
-        "service_name": "Amazon Key Management Service (KMS)",
+        "service_name": "Amazon Key Management Service Kms",
         "service_slug": "amazon-key-management-service-kms"
       }
     ]
@@ -10917,7 +10917,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -10975,9 +10975,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "amazon-web-services-aws",
-        "service_name": "Amazon Web Services (AWS)",
-        "service_slug": "amazon-web-services-aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -11004,7 +11004,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -11033,9 +11033,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "amazon-web-services-aws",
-        "service_name": "Amazon Web Services (AWS)",
-        "service_slug": "amazon-web-services-aws"
+        "service_id": "amazon-web-services",
+        "service_name": "Amazon Web Services",
+        "service_slug": "amazon-web-services"
       }
     ]
   },
@@ -11063,7 +11063,7 @@
     "services": [
       {
         "service_id": "amazon-iam",
-        "service_name": "Amazon IAM",
+        "service_name": "Amazon Iam",
         "service_slug": "amazon-iam"
       }
     ]
@@ -11091,7 +11091,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -11149,7 +11149,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -11179,7 +11179,7 @@
     "services": [
       {
         "service_id": "amazon-key-management-service-kms",
-        "service_name": "Amazon Key Management Service (KMS)",
+        "service_name": "Amazon Key Management Service Kms",
         "service_slug": "amazon-key-management-service-kms"
       }
     ]
@@ -11207,7 +11207,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "rds",
+        "service_id": "amazon-rds",
         "service_name": "Amazon RDS",
         "service_slug": "amazon-rds"
       }
@@ -11266,7 +11266,7 @@
     "services": [
       {
         "service_id": "amazon-cloud-adoption-framework-caf",
-        "service_name": "Amazon Cloud Adoption Framework (CAF)",
+        "service_name": "Amazon Cloud Adoption Framework Caf",
         "service_slug": "amazon-cloud-adoption-framework-caf"
       }
     ]
@@ -11325,7 +11325,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -11356,7 +11356,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -11387,7 +11387,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -11480,7 +11480,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -11573,7 +11573,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -11605,7 +11605,7 @@
     "services": [
       {
         "service_id": "recupera-o-de-desastres",
-        "service_name": "Recuperação de Desastres",
+        "service_name": "Recupera O De Desastres",
         "service_slug": "recupera-o-de-desastres"
       }
     ]
@@ -11637,7 +11637,7 @@
     "services": [
       {
         "service_id": "aws-sso",
-        "service_name": "AWS SSO",
+        "service_name": "AWS Sso",
         "service_slug": "aws-sso"
       }
     ]
@@ -11669,7 +11669,7 @@
     "services": [
       {
         "service_id": "amazon-sqs",
-        "service_name": "Amazon SQS",
+        "service_name": "Amazon Sqs",
         "service_slug": "amazon-sqs"
       }
     ]
@@ -11796,7 +11796,7 @@
     "services": [
       {
         "service_id": "modelo-de-responsabilidade-compartilhada",
-        "service_name": "Modelo de Responsabilidade Compartilhada",
+        "service_name": "Modelo De Responsabilidade Compartilhada",
         "service_slug": "modelo-de-responsabilidade-compartilhada"
       }
     ]
@@ -11824,7 +11824,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -11853,7 +11853,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -11882,7 +11882,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -11940,7 +11940,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -12027,7 +12027,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -12057,7 +12057,7 @@
     "services": [
       {
         "service_id": "amazon-emr",
-        "service_name": "Amazon EMR",
+        "service_name": "Amazon Emr",
         "service_slug": "amazon-emr"
       }
     ]
@@ -12118,7 +12118,7 @@
     "global_domain_id": "billing",
     "services": [
       {
-        "service_id": "ec2",
+        "service_id": "amazon-ec2",
         "service_name": "Amazon EC2",
         "service_slug": "amazon-ec2"
       }
@@ -12150,7 +12150,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }

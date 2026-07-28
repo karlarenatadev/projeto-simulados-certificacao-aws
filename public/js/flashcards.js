@@ -1,5 +1,6 @@
 import { glossaryTerms, certificationPaths } from "./data.js";
 import { t } from "./i18n/useTranslation.js";
+import { storageManager } from "./storageManager.js";
 
 function getCurrentLanguage() {
   return localStorage.getItem("aws_sim_lang") || "pt";
@@ -57,12 +58,28 @@ export function filterFlashcards() {
 
   flashcardState.currentDomainFilter = selectedDomain;
 
-  flashcardState.filteredTerms = glossaryTerms.filter((card) => {
-    const matchCert = card.cert === "all" || card.cert === selectedCert;
-    const matchDomain =
-      selectedDomain === "all" || card.domain === selectedDomain;
-    return matchCert && matchDomain;
-  });
+  if (selectedDomain === "review-deck") {
+    const savedDeck = storageManager.getReviewDeck(selectedCert);
+    flashcardState.filteredTerms = savedDeck.map(q => {
+      const isMulti = Array.isArray(q.correct);
+      const correctText = isMulti 
+          ? q.correct.map(i => q.options[i]).join("<br>• ") 
+          : q.options[q.correct];
+          
+      return {
+        cert: selectedCert,
+        domain: "review-deck",
+        term: q.question,
+        definition: `<strong>Resposta:</strong><br>• ${correctText}<br><br><strong>Explicação:</strong><br>${q.explanation}`
+      };
+    });
+  } else {
+    flashcardState.filteredTerms = glossaryTerms.filter((card) => {
+      const matchCert = card.cert === "all" || card.cert === selectedCert;
+      const matchDomain = selectedDomain === "all" || card.domain === selectedDomain;
+      return matchCert && matchDomain;
+    });
+  }
 
   flashcardState.filteredTerms.sort(() => Math.random() - 0.5);
 

@@ -23,7 +23,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -52,7 +52,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -81,9 +81,9 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "cognito",
-        "service_name": "Cognito",
-        "service_slug": "cognito"
+        "service_id": "amazon-cognito",
+        "service_name": "Amazon Cognito",
+        "service_slug": "amazon-cognito"
       }
     ]
   },
@@ -111,7 +111,7 @@
     "services": [
       {
         "service_id": "x-ray",
-        "service_name": "X-Ray",
+        "service_name": "X Ray",
         "service_slug": "x-ray"
       }
     ]
@@ -140,7 +140,7 @@
     "services": [
       {
         "service_id": "codedeploy",
-        "service_name": "CodeDeploy",
+        "service_name": "Codedeploy",
         "service_slug": "codedeploy"
       }
     ]
@@ -168,9 +168,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "api-gateway",
-        "service_name": "API Gateway",
-        "service_slug": "api-gateway"
+        "service_id": "amazon-api-gateway",
+        "service_name": "Amazon Api Gateway",
+        "service_slug": "amazon-api-gateway"
       }
     ]
   },
@@ -197,7 +197,7 @@
     "global_domain_id": "performance",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -226,7 +226,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -256,7 +256,7 @@
     "services": [
       {
         "service_id": "cloudformation",
-        "service_name": "CloudFormation",
+        "service_name": "Cloudformation",
         "service_slug": "cloudformation"
       }
     ]
@@ -318,7 +318,7 @@
     "services": [
       {
         "service_id": "aws-appconfig",
-        "service_name": "AWS AppConfig",
+        "service_name": "AWS Appconfig",
         "service_slug": "aws-appconfig"
       }
     ]
@@ -409,7 +409,7 @@
     "global_domain_id": "performance",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -440,7 +440,7 @@
     "services": [
       {
         "service_id": "aws-codebuild",
-        "service_name": "AWS CodeBuild",
+        "service_name": "AWS Codebuild",
         "service_slug": "aws-codebuild"
       }
     ]
@@ -469,9 +469,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "api-gateway",
-        "service_name": "API Gateway",
-        "service_slug": "api-gateway"
+        "service_id": "amazon-api-gateway",
+        "service_name": "Amazon Api Gateway",
+        "service_slug": "amazon-api-gateway"
       }
     ]
   },
@@ -529,9 +529,9 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "api-gateway",
-        "service_name": "API Gateway",
-        "service_slug": "api-gateway"
+        "service_id": "amazon-api-gateway",
+        "service_name": "Amazon Api Gateway",
+        "service_slug": "amazon-api-gateway"
       }
     ]
   },
@@ -559,7 +559,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -590,7 +590,7 @@
     "services": [
       {
         "service_id": "amazon-sqs",
-        "service_name": "Amazon SQS",
+        "service_name": "Amazon Sqs",
         "service_slug": "amazon-sqs"
       }
     ]
@@ -649,7 +649,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -680,7 +680,7 @@
     "services": [
       {
         "service_id": "aws-sam",
-        "service_name": "AWS SAM",
+        "service_name": "AWS Sam",
         "service_slug": "aws-sam"
       }
     ]
@@ -739,7 +739,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -800,7 +800,7 @@
     "services": [
       {
         "service_id": "amazon-sns",
-        "service_name": "Amazon SNS",
+        "service_name": "Amazon Sns",
         "service_slug": "amazon-sns"
       }
     ]
@@ -829,7 +829,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -860,7 +860,7 @@
     "services": [
       {
         "service_id": "aws-codecommit",
-        "service_name": "AWS CodeCommit",
+        "service_name": "AWS Codecommit",
         "service_slug": "aws-codecommit"
       }
     ]
@@ -889,9 +889,9 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "api-gateway",
-        "service_name": "API Gateway",
-        "service_slug": "api-gateway"
+        "service_id": "amazon-api-gateway",
+        "service_name": "Amazon Api Gateway",
+        "service_slug": "amazon-api-gateway"
       }
     ]
   },
@@ -949,7 +949,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -979,7 +979,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -1010,7 +1010,7 @@
     "services": [
       {
         "service_id": "aws-sam",
-        "service_name": "AWS SAM",
+        "service_name": "AWS Sam",
         "service_slug": "aws-sam"
       }
     ]
@@ -1069,7 +1069,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -1099,7 +1099,7 @@
     "global_domain_id": "performance",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -1189,7 +1189,7 @@
     "global_domain_id": "performance",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -1220,7 +1220,7 @@
     "services": [
       {
         "service_id": "aws-codepipeline",
-        "service_name": "AWS CodePipeline",
+        "service_name": "AWS Codepipeline",
         "service_slug": "aws-codepipeline"
       }
     ]
@@ -1249,7 +1249,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -1280,7 +1280,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -1312,7 +1312,7 @@
     "services": [
       {
         "service_id": "aws-cloudformation",
-        "service_name": "AWS CloudFormation",
+        "service_name": "AWS Cloudformation",
         "service_slug": "aws-cloudformation"
       }
     ]
@@ -1342,7 +1342,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -1374,7 +1374,7 @@
     "services": [
       {
         "service_id": "amazon-cloudwatch-logs",
-        "service_name": "Amazon CloudWatch Logs",
+        "service_name": "Amazon Cloudwatch Logs",
         "service_slug": "amazon-cloudwatch-logs"
       }
     ]
@@ -1404,7 +1404,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -1436,7 +1436,7 @@
     "services": [
       {
         "service_id": "aws-codepipeline",
-        "service_name": "AWS CodePipeline",
+        "service_name": "AWS Codepipeline",
         "service_slug": "aws-codepipeline"
       }
     ]
@@ -1498,7 +1498,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -1529,7 +1529,7 @@
     "services": [
       {
         "service_id": "amazon-sqs",
-        "service_name": "Amazon SQS",
+        "service_name": "Amazon Sqs",
         "service_slug": "amazon-sqs"
       }
     ]
@@ -1590,7 +1590,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -1622,7 +1622,7 @@
     "services": [
       {
         "service_id": "aws-cloudformation",
-        "service_name": "AWS CloudFormation",
+        "service_name": "AWS Cloudformation",
         "service_slug": "aws-cloudformation"
       }
     ]
@@ -1652,7 +1652,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -1684,7 +1684,7 @@
     "services": [
       {
         "service_id": "amazon-cloudwatch-logs",
-        "service_name": "Amazon CloudWatch Logs",
+        "service_name": "Amazon Cloudwatch Logs",
         "service_slug": "amazon-cloudwatch-logs"
       }
     ]
@@ -1715,7 +1715,7 @@
     "services": [
       {
         "service_id": "amazon-sqs",
-        "service_name": "Amazon SQS",
+        "service_name": "Amazon Sqs",
         "service_slug": "amazon-sqs"
       }
     ]
@@ -1746,7 +1746,7 @@
     "services": [
       {
         "service_id": "aws-codepipeline",
-        "service_name": "AWS CodePipeline",
+        "service_name": "AWS Codepipeline",
         "service_slug": "aws-codepipeline"
       }
     ]
@@ -1808,7 +1808,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -1839,7 +1839,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -1900,7 +1900,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -1931,7 +1931,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -1962,7 +1962,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -1993,7 +1993,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -2025,7 +2025,7 @@
     "services": [
       {
         "service_id": "amazon-sqs",
-        "service_name": "Amazon SQS",
+        "service_name": "Amazon Sqs",
         "service_slug": "amazon-sqs"
       }
     ]
@@ -2087,7 +2087,7 @@
     "services": [
       {
         "service_id": "aws-codedeploy",
-        "service_name": "AWS CodeDeploy",
+        "service_name": "AWS Codedeploy",
         "service_slug": "aws-codedeploy"
       }
     ]
@@ -2149,7 +2149,7 @@
     "services": [
       {
         "service_id": "elastic-load-balancing",
-        "service_name": "Elastic Load Balancing",
+        "service_name": "Elastic Load Balancing (ELB)",
         "service_slug": "elastic-load-balancing"
       }
     ]
@@ -2180,7 +2180,7 @@
     "services": [
       {
         "service_id": "aws-cli",
-        "service_name": "AWS CLI",
+        "service_name": "AWS Cli",
         "service_slug": "aws-cli"
       }
     ]
@@ -2208,7 +2208,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -2237,7 +2237,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -2266,7 +2266,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -2295,7 +2295,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -2325,7 +2325,7 @@
     "services": [
       {
         "service_id": "amazon-sqs",
-        "service_name": "Amazon SQS",
+        "service_name": "Amazon Sqs",
         "service_slug": "amazon-sqs"
       }
     ]
@@ -2384,7 +2384,7 @@
     "services": [
       {
         "service_id": "aws-codepipeline",
-        "service_name": "AWS CodePipeline",
+        "service_name": "AWS Codepipeline",
         "service_slug": "aws-codepipeline"
       }
     ]
@@ -2442,7 +2442,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -2501,7 +2501,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -2533,7 +2533,7 @@
     "services": [
       {
         "service_id": "aws-codepipeline",
-        "service_name": "AWS CodePipeline",
+        "service_name": "AWS Codepipeline",
         "service_slug": "aws-codepipeline"
       }
     ]
@@ -2595,7 +2595,7 @@
     "services": [
       {
         "service_id": "amazon-cloudwatch-logs",
-        "service_name": "Amazon CloudWatch Logs",
+        "service_name": "Amazon Cloudwatch Logs",
         "service_slug": "amazon-cloudwatch-logs"
       }
     ]
@@ -2625,7 +2625,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -2656,7 +2656,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -2687,7 +2687,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -2719,7 +2719,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -2750,7 +2750,7 @@
     "services": [
       {
         "service_id": "amazon-sqs",
-        "service_name": "Amazon SQS",
+        "service_name": "Amazon Sqs",
         "service_slug": "amazon-sqs"
       }
     ]
@@ -2812,7 +2812,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -2843,7 +2843,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -2906,7 +2906,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -2936,7 +2936,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -2969,7 +2969,7 @@
     "services": [
       {
         "service_id": "aws-codepipeline",
-        "service_name": "AWS CodePipeline",
+        "service_name": "AWS Codepipeline",
         "service_slug": "aws-codepipeline"
       }
     ]
@@ -3031,7 +3031,7 @@
     "services": [
       {
         "service_id": "amazon-elastic-container-registry-ecr",
-        "service_name": "Amazon Elastic Container Registry (ECR)",
+        "service_name": "Amazon Elastic Container Registry Ecr",
         "service_slug": "amazon-elastic-container-registry-ecr"
       }
     ]
@@ -3063,7 +3063,7 @@
     "services": [
       {
         "service_id": "amazon-cloudwatch-logs",
-        "service_name": "Amazon CloudWatch Logs",
+        "service_name": "Amazon Cloudwatch Logs",
         "service_slug": "amazon-cloudwatch-logs"
       }
     ]
@@ -3094,7 +3094,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -3125,7 +3125,7 @@
     "services": [
       {
         "service_id": "aws-identity-and-access-management-iam",
-        "service_name": "AWS Identity and Access Management (IAM)",
+        "service_name": "AWS Identity And Access Management Iam",
         "service_slug": "aws-identity-and-access-management-iam"
       }
     ]
@@ -3156,7 +3156,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -3188,7 +3188,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -3251,7 +3251,7 @@
     "services": [
       {
         "service_id": "aws-lambda-e-amazon-api-gateway",
-        "service_name": "AWS Lambda e Amazon API Gateway",
+        "service_name": "AWS Lambda E Amazon Api Gateway",
         "service_slug": "aws-lambda-e-amazon-api-gateway"
       }
     ]
@@ -3315,7 +3315,7 @@
     "services": [
       {
         "service_id": "aws-cloudformation",
-        "service_name": "AWS CloudFormation",
+        "service_name": "AWS Cloudformation",
         "service_slug": "aws-cloudformation"
       }
     ]
@@ -3347,7 +3347,7 @@
     "services": [
       {
         "service_id": "amazon-sqs",
-        "service_name": "Amazon SQS",
+        "service_name": "Amazon Sqs",
         "service_slug": "amazon-sqs"
       }
     ]
@@ -3380,7 +3380,7 @@
     "services": [
       {
         "service_id": "amazon-cloudwatch-logs-e-aws-x-ray",
-        "service_name": "Amazon CloudWatch Logs e AWS X-Ray",
+        "service_name": "Amazon Cloudwatch Logs E AWS X Ray",
         "service_slug": "amazon-cloudwatch-logs-e-aws-x-ray"
       }
     ]
@@ -3477,7 +3477,7 @@
     "services": [
       {
         "service_id": "aws-codepipeline-codebuild-codedeploy",
-        "service_name": "AWS CodePipeline, CodeBuild, CodeDeploy",
+        "service_name": "AWS Codepipeline Codebuild Codedeploy",
         "service_slug": "aws-codepipeline-codebuild-codedeploy"
       }
     ]
@@ -3542,7 +3542,7 @@
     "services": [
       {
         "service_id": "amazon-cloudwatch-alarms",
-        "service_name": "Amazon CloudWatch Alarms",
+        "service_name": "Amazon Cloudwatch Alarms",
         "service_slug": "amazon-cloudwatch-alarms"
       }
     ]
@@ -3571,7 +3571,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -3602,7 +3602,7 @@
     "services": [
       {
         "service_id": "aws-cloudformation",
-        "service_name": "AWS CloudFormation",
+        "service_name": "AWS Cloudformation",
         "service_slug": "aws-cloudformation"
       }
     ]
@@ -3662,7 +3662,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -3722,7 +3722,7 @@
     "services": [
       {
         "service_id": "amazon-ecr",
-        "service_name": "Amazon ECR",
+        "service_name": "Amazon Ecr",
         "service_slug": "amazon-ecr"
       }
     ]
@@ -3842,7 +3842,7 @@
     "services": [
       {
         "service_id": "aws-codepipeline",
-        "service_name": "AWS CodePipeline",
+        "service_name": "AWS Codepipeline",
         "service_slug": "aws-codepipeline"
       }
     ]
@@ -3874,7 +3874,7 @@
     "services": [
       {
         "service_id": "aws-lambda-amazon-api-gateway-amazon-cognito",
-        "service_name": "AWS Lambda, Amazon API Gateway, Amazon Cognito",
+        "service_name": "AWS Lambda Amazon Api Gateway Amazon Cognito",
         "service_slug": "aws-lambda-amazon-api-gateway-amazon-cognito"
       }
     ]
@@ -3905,7 +3905,7 @@
     "services": [
       {
         "service_id": "aws-codepipeline",
-        "service_name": "AWS CodePipeline",
+        "service_name": "AWS Codepipeline",
         "service_slug": "aws-codepipeline"
       }
     ]
@@ -3968,7 +3968,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -4000,7 +4000,7 @@
     "services": [
       {
         "service_id": "amazon-sns",
-        "service_name": "Amazon SNS",
+        "service_name": "Amazon Sns",
         "service_slug": "amazon-sns"
       }
     ]
@@ -4032,7 +4032,7 @@
     "services": [
       {
         "service_id": "aws-codedeploy",
-        "service_name": "AWS CodeDeploy",
+        "service_name": "AWS Codedeploy",
         "service_slug": "aws-codedeploy"
       }
     ]
@@ -4063,7 +4063,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -4128,7 +4128,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -4161,7 +4161,7 @@
     "services": [
       {
         "service_id": "aws-serverless-application-model-sam",
-        "service_name": "AWS Serverless Application Model (SAM)",
+        "service_name": "AWS Serverless Application Model Sam",
         "service_slug": "aws-serverless-application-model-sam"
       }
     ]
@@ -4191,7 +4191,7 @@
     "services": [
       {
         "service_id": "aws-lambda-amazon-api-gateway",
-        "service_name": "AWS Lambda, Amazon API Gateway",
+        "service_name": "AWS Lambda Amazon Api Gateway",
         "service_slug": "aws-lambda-amazon-api-gateway"
       }
     ]
@@ -4251,7 +4251,7 @@
     "services": [
       {
         "service_id": "aws-codedeploy",
-        "service_name": "AWS CodeDeploy",
+        "service_name": "AWS Codedeploy",
         "service_slug": "aws-codedeploy"
       }
     ]
@@ -4281,7 +4281,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -4345,7 +4345,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway-aws-lambda-authorizer",
-        "service_name": "Amazon API Gateway, AWS Lambda Authorizer",
+        "service_name": "Amazon Api Gateway AWS Lambda Authorizer",
         "service_slug": "amazon-api-gateway-aws-lambda-authorizer"
       }
     ]
@@ -4378,7 +4378,7 @@
     "services": [
       {
         "service_id": "aws-codepipeline-aws-codebuild-aws-cloudformation",
-        "service_name": "AWS CodePipeline, AWS CodeBuild, AWS CloudFormation",
+        "service_name": "AWS Codepipeline AWS Codebuild AWS Cloudformation",
         "service_slug": "aws-codepipeline-aws-codebuild-aws-cloudformation"
       }
     ]
@@ -4411,7 +4411,7 @@
     "services": [
       {
         "service_id": "aws-lambda-lambda-layers-provisioned-concurrency",
-        "service_name": "AWS Lambda, Lambda Layers, Provisioned Concurrency",
+        "service_name": "AWS Lambda Lambda Layers Provisioned Concurrency",
         "service_slug": "aws-lambda-lambda-layers-provisioned-concurrency"
       }
     ]
@@ -4444,7 +4444,7 @@
     "services": [
       {
         "service_id": "aws-secrets-manager-aws-systems-manager-parameter-store-iam-roles",
-        "service_name": "AWS Secrets Manager, AWS Systems Manager Parameter Store, IAM Roles",
+        "service_name": "AWS Secrets Manager AWS Systems Manager Parameter Store Iam Roles",
         "service_slug": "aws-secrets-manager-aws-systems-manager-parameter-store-iam-roles"
       }
     ]
@@ -4477,7 +4477,7 @@
     "services": [
       {
         "service_id": "amazon-sqs-amazon-sns-aws-lambda",
-        "service_name": "Amazon SQS, Amazon SNS, AWS Lambda",
+        "service_name": "Amazon Sqs Amazon Sns AWS Lambda",
         "service_slug": "amazon-sqs-amazon-sns-aws-lambda"
       }
     ]
@@ -4511,7 +4511,7 @@
     "services": [
       {
         "service_id": "amazon-cloudwatch-logs-amazon-cloudwatch-container-insights-aws-x-ray",
-        "service_name": "Amazon CloudWatch Logs, Amazon CloudWatch Container Insights, AWS X-Ray",
+        "service_name": "Amazon Cloudwatch Logs Amazon Cloudwatch Container Insights AWS X Ray",
         "service_slug": "amazon-cloudwatch-logs-amazon-cloudwatch-container-insights-aws-x-ray"
       }
     ]
@@ -4543,7 +4543,7 @@
     "services": [
       {
         "service_id": "aws-cloudformation-aws-codecommit-aws-codepipeline",
-        "service_name": "AWS CloudFormation, AWS CodeCommit, AWS CodePipeline",
+        "service_name": "AWS Cloudformation AWS Codecommit AWS Codepipeline",
         "service_slug": "aws-cloudformation-aws-codecommit-aws-codepipeline"
       }
     ]
@@ -4575,7 +4575,7 @@
     "services": [
       {
         "service_id": "aws-elastic-beanstalk-amazon-route-53",
-        "service_name": "AWS Elastic Beanstalk, Amazon Route 53",
+        "service_name": "AWS Elastic Beanstalk Amazon Route 53",
         "service_slug": "aws-elastic-beanstalk-amazon-route-53"
       }
     ]
@@ -4608,7 +4608,7 @@
     "services": [
       {
         "service_id": "amazon-sqs-aws-lambda-amazon-api-gateway",
-        "service_name": "Amazon SQS, AWS Lambda, Amazon API Gateway",
+        "service_name": "Amazon Sqs AWS Lambda Amazon Api Gateway",
         "service_slug": "amazon-sqs-aws-lambda-amazon-api-gateway"
       }
     ]
@@ -4640,7 +4640,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -4672,7 +4672,7 @@
     "services": [
       {
         "service_id": "aws-codedeploy",
-        "service_name": "AWS CodeDeploy",
+        "service_name": "AWS Codedeploy",
         "service_slug": "aws-codedeploy"
       }
     ]
@@ -4736,7 +4736,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -4767,7 +4767,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -4800,7 +4800,7 @@
     "services": [
       {
         "service_id": "amazon-sns",
-        "service_name": "Amazon SNS",
+        "service_name": "Amazon Sns",
         "service_slug": "amazon-sns"
       }
     ]
@@ -4832,7 +4832,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "cloudfront",
+        "service_id": "amazon-cloudfront",
         "service_name": "Amazon CloudFront",
         "service_slug": "amazon-cloudfront"
       }
@@ -4866,7 +4866,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -4931,7 +4931,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -5027,7 +5027,7 @@
     "services": [
       {
         "service_id": "aws-codedeploy",
-        "service_name": "AWS CodeDeploy",
+        "service_name": "AWS Codedeploy",
         "service_slug": "aws-codedeploy"
       }
     ]
@@ -5059,7 +5059,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -5090,7 +5090,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -5156,7 +5156,7 @@
     "services": [
       {
         "service_id": "aws-cloudformation",
-        "service_name": "AWS CloudFormation",
+        "service_name": "AWS Cloudformation",
         "service_slug": "aws-cloudformation"
       }
     ]
@@ -5188,7 +5188,7 @@
     "services": [
       {
         "service_id": "amazon-cloudwatch-logs",
-        "service_name": "Amazon CloudWatch Logs",
+        "service_name": "Amazon Cloudwatch Logs",
         "service_slug": "amazon-cloudwatch-logs"
       }
     ]
@@ -5220,7 +5220,7 @@
     "services": [
       {
         "service_id": "amazon-sqs",
-        "service_name": "Amazon SQS",
+        "service_name": "Amazon Sqs",
         "service_slug": "amazon-sqs"
       }
     ]
@@ -5251,7 +5251,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -5315,7 +5315,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -5347,7 +5347,7 @@
     "services": [
       {
         "service_id": "aws-codedeploy",
-        "service_name": "AWS CodeDeploy",
+        "service_name": "AWS Codedeploy",
         "service_slug": "aws-codedeploy"
       }
     ]
@@ -5380,7 +5380,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -5542,7 +5542,7 @@
     "services": [
       {
         "service_id": "amazon-ecr",
-        "service_name": "Amazon ECR",
+        "service_name": "Amazon Ecr",
         "service_slug": "amazon-ecr"
       }
     ]
@@ -5573,7 +5573,7 @@
     "global_domain_id": "performance",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -5667,7 +5667,7 @@
     "services": [
       {
         "service_id": "aws-codedeploy",
-        "service_name": "AWS CodeDeploy",
+        "service_name": "AWS Codedeploy",
         "service_slug": "aws-codedeploy"
       }
     ]
@@ -5698,7 +5698,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -5729,7 +5729,7 @@
     "services": [
       {
         "service_id": "amazon-eventbridge",
-        "service_name": "Amazon EventBridge",
+        "service_name": "Amazon Eventbridge",
         "service_slug": "amazon-eventbridge"
       }
     ]
@@ -5884,7 +5884,7 @@
     "services": [
       {
         "service_id": "amazon-sqs",
-        "service_name": "Amazon SQS",
+        "service_name": "Amazon Sqs",
         "service_slug": "amazon-sqs"
       }
     ]
@@ -5917,7 +5917,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -5950,7 +5950,7 @@
     "services": [
       {
         "service_id": "amazon-sqs",
-        "service_name": "Amazon SQS",
+        "service_name": "Amazon Sqs",
         "service_slug": "amazon-sqs"
       }
     ]
@@ -5984,7 +5984,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -6016,7 +6016,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -6138,7 +6138,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -6168,7 +6168,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -6196,7 +6196,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -6283,7 +6283,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -6312,7 +6312,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "rds",
+        "service_id": "amazon-rds",
         "service_name": "Amazon RDS",
         "service_slug": "amazon-rds"
       }
@@ -6457,7 +6457,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -6486,7 +6486,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -6574,7 +6574,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -6602,7 +6602,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -6632,7 +6632,7 @@
     "services": [
       {
         "service_id": "aws-key-management-service-kms",
-        "service_name": "AWS Key Management Service (KMS)",
+        "service_name": "AWS Key Management Service Kms",
         "service_slug": "aws-key-management-service-kms"
       }
     ]
@@ -6661,7 +6661,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -6690,7 +6690,7 @@
     "services": [
       {
         "service_id": "amazon-elastic-container-service-ecs",
-        "service_name": "Amazon Elastic Container Service (ECS)",
+        "service_name": "Amazon Elastic Container Service Ecs",
         "service_slug": "amazon-elastic-container-service-ecs"
       }
     ]
@@ -6718,7 +6718,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -6747,7 +6747,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -6776,7 +6776,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -6864,7 +6864,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -6892,7 +6892,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -6951,7 +6951,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -6979,7 +6979,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -7008,7 +7008,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "dynamodb",
+        "service_id": "amazon-dynamodb",
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
@@ -7037,7 +7037,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -7066,7 +7066,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -7154,7 +7154,7 @@
     "services": [
       {
         "service_id": "aws-api-gateway",
-        "service_name": "AWS API Gateway",
+        "service_name": "AWS Api Gateway",
         "service_slug": "aws-api-gateway"
       }
     ]
@@ -7182,7 +7182,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -7211,7 +7211,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -7299,7 +7299,7 @@
     "services": [
       {
         "service_id": "aws-api-gateway",
-        "service_name": "AWS API Gateway",
+        "service_name": "AWS Api Gateway",
         "service_slug": "aws-api-gateway"
       }
     ]
@@ -7327,7 +7327,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -7386,7 +7386,7 @@
     "services": [
       {
         "service_id": "amazon-x-ray",
-        "service_name": "Amazon X-Ray",
+        "service_name": "Amazon X Ray",
         "service_slug": "amazon-x-ray"
       }
     ]
@@ -7415,7 +7415,7 @@
     "services": [
       {
         "service_id": "amazon-sqs",
-        "service_name": "Amazon SQS",
+        "service_name": "Amazon Sqs",
         "service_slug": "amazon-sqs"
       }
     ]
@@ -7472,7 +7472,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -7502,7 +7502,7 @@
     "services": [
       {
         "service_id": "amazon-iam",
-        "service_name": "Amazon IAM",
+        "service_name": "Amazon Iam",
         "service_slug": "amazon-iam"
       }
     ]
@@ -7530,7 +7530,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -7589,7 +7589,7 @@
     "services": [
       {
         "service_id": "aws-api-gateway",
-        "service_name": "AWS API Gateway",
+        "service_name": "AWS Api Gateway",
         "service_slug": "aws-api-gateway"
       }
     ]
@@ -7617,7 +7617,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -7647,7 +7647,7 @@
     "services": [
       {
         "service_id": "aws-key-management-service-kms",
-        "service_name": "AWS Key Management Service (KMS)",
+        "service_name": "AWS Key Management Service Kms",
         "service_slug": "aws-key-management-service-kms"
       }
     ]
@@ -7676,7 +7676,7 @@
     "services": [
       {
         "service_id": "aws-x-ray",
-        "service_name": "AWS X-Ray",
+        "service_name": "AWS X Ray",
         "service_slug": "aws-x-ray"
       }
     ]
@@ -7704,7 +7704,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -7733,7 +7733,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -7763,7 +7763,7 @@
     "services": [
       {
         "service_id": "amazon-iam",
-        "service_name": "Amazon IAM",
+        "service_name": "Amazon Iam",
         "service_slug": "amazon-iam"
       }
     ]
@@ -7878,7 +7878,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -7907,7 +7907,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -7936,7 +7936,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -8082,7 +8082,7 @@
     "services": [
       {
         "service_id": "amazon-key-management-service-kms",
-        "service_name": "Amazon Key Management Service (KMS)",
+        "service_name": "Amazon Key Management Service Kms",
         "service_slug": "amazon-key-management-service-kms"
       }
     ]
@@ -8140,7 +8140,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -8169,7 +8169,7 @@
     "services": [
       {
         "service_id": "amazon-cloudhsm",
-        "service_name": "Amazon CloudHSM",
+        "service_name": "Amazon Cloudhsm",
         "service_slug": "amazon-cloudhsm"
       }
     ]
@@ -8197,7 +8197,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -8226,7 +8226,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -8313,7 +8313,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -8343,7 +8343,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -8371,7 +8371,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -8458,7 +8458,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -8487,7 +8487,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "vpc",
+        "service_id": "amazon-vpc",
         "service_name": "Amazon VPC",
         "service_slug": "amazon-vpc"
       }
@@ -8517,7 +8517,7 @@
     "services": [
       {
         "service_id": "amazon-key-management-service-kms",
-        "service_name": "Amazon Key Management Service (KMS)",
+        "service_name": "Amazon Key Management Service Kms",
         "service_slug": "amazon-key-management-service-kms"
       }
     ]
@@ -8575,7 +8575,7 @@
     "services": [
       {
         "service_id": "amazon-api-gateway",
-        "service_name": "Amazon API Gateway",
+        "service_name": "Amazon Api Gateway",
         "service_slug": "amazon-api-gateway"
       }
     ]
@@ -8603,7 +8603,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -8632,7 +8632,7 @@
     "global_domain_id": "compute-tech",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -8690,7 +8690,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }

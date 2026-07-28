@@ -73,6 +73,7 @@ let uiState = {
   qTimeRemaining: 45,
   isFinishing: false,
   hasFinished: false,
+  flags: [],
 };
 
 let lastRenderedResult = null;
@@ -172,6 +173,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         updateSidebarProgress(); // Atualiza a caixa "O Meu Progresso" para o nome correto
         if (typeof renderTrail === "function") renderTrail(); // Atualiza a Trilha de Gamificação
         if (typeof renderBadges === "function") renderBadges(); // Atualiza as Insígnias
+        if (typeof updateSidebarCertBadge === "function") updateSidebarCertBadge(certId); // Atualiza badge da Sidebar
+
 
         // 4. Re-renderiza o gráfico global
         if (typeof renderGlobalRadarChart === "function") {
@@ -261,6 +264,11 @@ function updateMistakesControls(certId = getActiveCertificationId()) {
   if (btnPractice) btnPractice.classList.toggle("hidden", !hasMistakes);
   if (btnClear) btnClear.classList.toggle("hidden", !hasMistakes);
   if (notice && !hasMistakes) notice.classList.add("hidden");
+
+  // Atualiza o badge da sidebar
+  if (typeof updateSidebarMistakesCount === 'function') {
+    updateSidebarMistakesCount(mistakes.length);
+  }
 }
 
 function syncMistakeRecord(question, result) {
@@ -290,6 +298,7 @@ function syncMistakeRecord(question, result) {
 function resetFinishState() {
   uiState.isFinishing = false;
   uiState.hasFinished = false;
+  uiState.flags = [];
   setFinishButtonLoading(false);
 }
 
@@ -316,6 +325,7 @@ function suppressHover() {
 
 function wireUIActions() {
   bindClick("home-trigger", goHome);
+  bindClick("home-trigger-mobile", goHome);
   bindClick("btn-language", toggleLanguage);
   bindClick("theme-toggle", toggleDarkMode);
   bindClick("btn-start-quiz", startQuiz);
@@ -341,6 +351,16 @@ function wireUIActions() {
     startPersonalizedDiagnosticQuiz,
   );
   bindClick("sprint-start-btn", startMicroSprint);
+
+  // ── Sidebar navigation items ────────────────────────────────────────────
+  bindClick("nav-home",        goHome);
+  bindClick("nav-quiz",        () => { goHome(); });
+  bindClick("nav-journey",     startJornada);
+  bindClick("nav-diagnostic",  startDiagnostic);
+  bindClick("nav-flashcards",  startFlashcards);
+  bindClick("nav-mistakes",    startMistakesQuiz);
+  // ────────────────────────────────────────────────────────────────────────
+
 
   const flashcardContainer = document.getElementById("flashcard-container");
   if (flashcardContainer) {
@@ -488,19 +508,13 @@ async function startQuiz() {
 
     // --- INÍCIO DAS MODIFICAÇÕES DE LAYOUT ---
     showScreen("quiz");
+    if (typeof setSidebarActiveItem === 'function') setSidebarActiveItem('nav-quiz');
 
-    const sidebar = document.getElementById("side-info");
-    const mainSection = document.getElementById("main-section");
-
-    if (sidebar) sidebar.classList.add("hidden"); // Esconde a lateral
-    if (mainSection) {
-      mainSection.classList.remove("lg:w-2/3"); // Remove a largura parcial
-      mainSection.classList.add("w-full"); // Faz ocupar a tela cheia
-    }
-
+    // Score counter
     const scoreContainer = document.getElementById("score-container");
     if (scoreContainer) scoreContainer.style.display = "flex";
     // --- FIM DAS MODIFICAÇÕES DE LAYOUT ---
+
 
     const timerContainer = document.getElementById("timer-container");
     if (filters.mode === "exam") {
@@ -552,17 +566,10 @@ async function startDiagnostic() {
 
     // --- PREPARAÇÃO DO LAYOUT (Semelhante ao startQuiz, mas sem timer) ---
     showScreen("quiz");
-
-    const sidebar = document.getElementById("side-info");
-    const mainSection = document.getElementById("main-section");
-
-    if (sidebar) sidebar.classList.add("hidden");
-    if (mainSection) {
-      mainSection.classList.remove("lg:w-2/3");
-      mainSection.classList.add("w-full");
-    }
+    if (typeof setSidebarActiveItem === 'function') setSidebarActiveItem('nav-diagnostic');
 
     // Esconde timers e corações (Diagnóstico não tem punição de tempo/vida)
+
     const timerContainer = document.getElementById("timer-container");
     if (timerContainer) timerContainer.classList.add("hidden");
 
@@ -647,17 +654,10 @@ async function startPersonalizedDiagnosticQuiz() {
     }
 
     showScreen("quiz");
-
-    const sidebar = document.getElementById("side-info");
-    const mainSection = document.getElementById("main-section");
-
-    if (sidebar) sidebar.classList.add("hidden");
-    if (mainSection) {
-      mainSection.classList.remove("lg:w-2/3");
-      mainSection.classList.add("w-full");
-    }
+    if (typeof setSidebarActiveItem === 'function') setSidebarActiveItem('nav-quiz');
 
     const timerContainer = document.getElementById("timer-container");
+
     if (timerContainer) timerContainer.classList.add("hidden");
 
     const missionHud = document.getElementById("mission-hud");
@@ -855,7 +855,13 @@ function loadQuestionUI() {
   }
 
   const flagBtn = document.getElementById("btn-flag");
-  if (flagBtn) flagBtn.classList.remove("text-orange-500");
+  if (flagBtn) {
+    if (uiState.flags.includes(progress.current - 1)) {
+        flagBtn.classList.add("text-orange-500");
+    } else {
+        flagBtn.classList.remove("text-orange-500");
+    }
+  }
 
   updateScoreDisplayUI();
 }
@@ -1181,7 +1187,17 @@ function finishQuiz() {
 
 function toggleFlag() {
   const flagBtn = document.getElementById("btn-flag");
-  if (flagBtn) flagBtn.classList.toggle("text-orange-500");
+  if (!flagBtn) return;
+  
+  const currentIdx = engine.state.currentIndex;
+  
+  if (uiState.flags.includes(currentIdx)) {
+      uiState.flags = uiState.flags.filter(i => i !== currentIdx);
+      flagBtn.classList.remove("text-orange-500");
+  } else {
+      uiState.flags.push(currentIdx);
+      flagBtn.classList.add("text-orange-500");
+  }
 }
 
 //  TELAS E RELATÓRIOS
@@ -1412,6 +1428,50 @@ function renderDetailedReportUI(results) {
   }
 
   html += `</div></div>`;
+
+  // --- NOVA SEÇÃO: QUESTÕES MARCADAS PARA REVISÃO ---
+  if (uiState.flags && uiState.flags.length > 0) {
+      html += `
+          <div class="flagged-questions-section mb-8">
+              <h3 class="text-xl font-bold text-orange-600 dark:text-orange-400 mb-4 pb-2 border-b border-gray-200 dark:border-slate-700">
+                  <i class="fa-solid fa-flag mr-2"></i> ${t("flag_for_review", uiState.language) || "Marcadas para Revisão"}
+              </h3>
+              <div class="space-y-4">
+      `;
+      
+      uiState.flags.forEach(qIdx => {
+          const q = engine.state.questions[qIdx];
+          if (!q) return;
+          
+          const isMulti = Array.isArray(q.correct);
+          let correctText = isMulti 
+              ? q.correct.map(i => q.options[i]).join("<br>• ") 
+              : q.options[q.correct];
+              
+          html += `
+              <div class="p-4 bg-orange-50 dark:bg-slate-700/50 rounded-lg border border-orange-200 dark:border-slate-600">
+                  <p class="font-semibold text-gray-800 dark:text-gray-200 mb-3">${q.question}</p>
+                  <div class="mb-3">
+                      <strong class="text-gray-800 dark:text-gray-200">${t("correct_answer", uiState.language) || "Resposta Correta"}:</strong>
+                      <span class="text-green-700 dark:text-green-400 block mt-1">
+                          • ${correctText}
+                      </span>
+                  </div>
+                  <div class="pt-3 border-t border-orange-200 dark:border-slate-600 text-sm text-gray-700 dark:text-gray-300">
+                      <strong>${t("why", uiState.language) || "Explicação"}:</strong><br>
+                      ${q.explanation}
+                  </div>
+              </div>
+          `;
+      });
+      
+      html += `</div></div>`;
+      
+      // Salva permanentemente no storage para os flashcards
+      const flaggedQuestionsObjects = uiState.flags.map(idx => engine.state.questions[idx]).filter(Boolean);
+      storageManager.saveReviewDeck(getActiveCertificationId(), flaggedQuestionsObjects);
+  }
+  // --- FIM DA NOVA SEÇÃO ---
 
   html += `
         <div class="report-header pb-4 mb-6 border-b border-gray-300 dark:border-slate-700 print:hidden mt-10">
@@ -2155,25 +2215,18 @@ function goHome() {
   // RESTAURAÇÃO DA INTERFACE
   // ========================================================================
 
-  const sidebar = document.getElementById("side-info");
-  const mainSection = document.getElementById("main-section");
   const scoreContainer = document.getElementById("score-container");
   const missionHud = document.getElementById("mission-hud");
-
-  // Mostra a sidebar novamente
-  if (sidebar) sidebar.classList.remove("hidden");
-
-  // Restaura o layout de 2/3 da tela
-  if (mainSection) {
-    mainSection.classList.add("lg:w-2/3");
-    mainSection.classList.remove("w-full");
-  }
 
   // Esconde o contador de pontos
   if (scoreContainer) scoreContainer.style.display = "none";
 
   // Esconde o HUD de missão
   if (missionHud) missionHud.classList.add("hidden");
+
+  // Atualiza item ativo na sidebar
+  if (typeof setSidebarActiveItem === 'function') setSidebarActiveItem('nav-home');
+
 
   // ========================================================================
   // NAVEGAÇÃO E ATUALIZAÇÃO DE DADOS
@@ -2740,18 +2793,10 @@ window.startMission = async function (stageId) {
 
     // 5.1 Muda para a tela de quiz
     showScreen("quiz");
-
-    // 5.2 Esconde a sidebar e expande a área principal
-    const sidebar = document.getElementById("side-info");
-    const mainSection = document.getElementById("main-section");
-
-    if (sidebar) sidebar.classList.add("hidden");
-    if (mainSection) {
-      mainSection.classList.remove("lg:w-2/3");
-      mainSection.classList.add("w-full");
-    }
+    if (typeof setSidebarActiveItem === 'function') setSidebarActiveItem('nav-journey');
 
     // 5.3 Ativa o HUD de missão (Vidas + Barra de Tempo)
+
     const missionHud = document.getElementById("mission-hud");
     if (missionHud) {
       missionHud.classList.remove("hidden");

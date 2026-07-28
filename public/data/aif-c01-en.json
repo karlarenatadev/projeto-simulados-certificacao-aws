@@ -86,7 +86,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-clarify",
-        "service_name": "Amazon SageMaker Clarify",
+        "service_name": "Amazon Sagemaker Clarify",
         "service_slug": "amazon-sagemaker-clarify"
       }
     ]
@@ -147,7 +147,7 @@
     "services": [
       {
         "service_id": "amazon-codewhisperer",
-        "service_name": "Amazon CodeWhisperer",
+        "service_name": "Amazon Codewhisperer",
         "service_slug": "amazon-codewhisperer"
       }
     ]
@@ -178,7 +178,7 @@
     "services": [
       {
         "service_id": "aws-key-management-service-kms",
-        "service_name": "AWS Key Management Service (KMS)",
+        "service_name": "AWS Key Management Service Kms",
         "service_slug": "aws-key-management-service-kms"
       }
     ]
@@ -519,7 +519,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -640,7 +640,7 @@
     "services": [
       {
         "service_id": "generative-ai",
-        "service_name": "Generative AI",
+        "service_name": "Generative Ai",
         "service_slug": "generative-ai"
       }
     ]
@@ -729,7 +729,7 @@
     "services": [
       {
         "service_id": "generative-ai",
-        "service_name": "Generative AI",
+        "service_name": "Generative Ai",
         "service_slug": "generative-ai"
       }
     ]
@@ -759,7 +759,7 @@
     "services": [
       {
         "service_id": "responsible-ai",
-        "service_name": "Responsible AI",
+        "service_name": "Responsible Ai",
         "service_slug": "responsible-ai"
       }
     ]
@@ -881,7 +881,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-clarify",
-        "service_name": "Amazon SageMaker Clarify",
+        "service_name": "Amazon Sagemaker Clarify",
         "service_slug": "amazon-sagemaker-clarify"
       }
     ]
@@ -942,7 +942,7 @@
     "services": [
       {
         "service_id": "regress-o",
-        "service_name": "Regressão",
+        "service_name": "Regress O",
         "service_slug": "regress-o"
       }
     ]
@@ -973,7 +973,7 @@
     "services": [
       {
         "service_id": "fine-tuning",
-        "service_name": "Fine-tuning",
+        "service_name": "Fine Tuning",
         "service_slug": "fine-tuning"
       }
     ]
@@ -1003,7 +1003,7 @@
     "services": [
       {
         "service_id": "engenharia-de-prompt",
-        "service_name": "Engenharia de Prompt",
+        "service_name": "Engenharia De Prompt",
         "service_slug": "engenharia-de-prompt"
       }
     ]
@@ -1034,7 +1034,7 @@
     "services": [
       {
         "service_id": "aws-iam-aws-cloudtrail",
-        "service_name": "AWS IAM, AWS CloudTrail",
+        "service_name": "AWS Iam AWS Cloudtrail",
         "service_slug": "aws-iam-aws-cloudtrail"
       }
     ]
@@ -1127,7 +1127,7 @@
     "services": [
       {
         "service_id": "fine-tuning-llms",
-        "service_name": "Fine-tuning LLMs",
+        "service_name": "Fine Tuning Llms",
         "service_slug": "fine-tuning-llms"
       }
     ]
@@ -1190,7 +1190,7 @@
     "services": [
       {
         "service_id": "pii-detection",
-        "service_name": "PII Detection",
+        "service_name": "Pii Detection",
         "service_slug": "pii-detection"
       }
     ]
@@ -1221,7 +1221,7 @@
     "services": [
       {
         "service_id": "retrieval-augmented-generation-rag",
-        "service_name": "Retrieval Augmented Generation (RAG)",
+        "service_name": "Retrieval Augmented Generation Rag",
         "service_slug": "retrieval-augmented-generation-rag"
       }
     ]
@@ -1253,7 +1253,7 @@
     "services": [
       {
         "service_id": "agents-for-amazon-bedrock",
-        "service_name": "Agents for Amazon Bedrock",
+        "service_name": "Agents For Amazon Bedrock",
         "service_slug": "agents-for-amazon-bedrock"
       }
     ]
@@ -1285,7 +1285,7 @@
     "services": [
       {
         "service_id": "ai-fairness",
-        "service_name": "AI Fairness",
+        "service_name": "Ai Fairness",
         "service_slug": "ai-fairness"
       }
     ]
@@ -1348,7 +1348,7 @@
     "services": [
       {
         "service_id": "llm-cost-optimization",
-        "service_name": "LLM Cost Optimization",
+        "service_name": "Llm Cost Optimization",
         "service_slug": "llm-cost-optimization"
       }
     ]
@@ -1410,7 +1410,7 @@
     "services": [
       {
         "service_id": "gera-o-aumentada-por-recupera-o-rag",
-        "service_name": "Geração Aumentada por Recuperação (RAG)",
+        "service_name": "Gera O Aumentada Por Recupera O Rag",
         "service_slug": "gera-o-aumentada-por-recupera-o-rag"
       }
     ]
@@ -1441,7 +1441,7 @@
     "services": [
       {
         "service_id": "aws-key-management-service-kms",
-        "service_name": "AWS Key Management Service (KMS)",
+        "service_name": "AWS Key Management Service Kms",
         "service_slug": "aws-key-management-service-kms"
       }
     ]
@@ -1472,7 +1472,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-feature-store",
-        "service_name": "Amazon SageMaker Feature Store",
+        "service_name": "Amazon Sagemaker Feature Store",
         "service_slug": "amazon-sagemaker-feature-store"
       }
     ]
@@ -1503,7 +1503,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-clarify",
-        "service_name": "Amazon SageMaker Clarify",
+        "service_name": "Amazon Sagemaker Clarify",
         "service_slug": "amazon-sagemaker-clarify"
       }
     ]
@@ -1534,7 +1534,7 @@
     "services": [
       {
         "service_id": "agentes-para-amazon-bedrock",
-        "service_name": "Agentes para Amazon Bedrock",
+        "service_name": "Agentes Para Amazon Bedrock",
         "service_slug": "agentes-para-amazon-bedrock"
       }
     ]
@@ -1720,7 +1720,7 @@
     "services": [
       {
         "service_id": "responsible-ai",
-        "service_name": "Responsible AI",
+        "service_name": "Responsible Ai",
         "service_slug": "responsible-ai"
       }
     ]
@@ -1812,7 +1812,7 @@
     "services": [
       {
         "service_id": "responsible-ai",
-        "service_name": "Responsible AI",
+        "service_name": "Responsible Ai",
         "service_slug": "responsible-ai"
       }
     ]
@@ -1939,7 +1939,7 @@
     "services": [
       {
         "service_id": "amazon-bedrock-knowledge-bases",
-        "service_name": "Amazon Bedrock (Knowledge Bases)",
+        "service_name": "Amazon Bedrock Knowledge Bases",
         "service_slug": "amazon-bedrock-knowledge-bases"
       }
     ]
@@ -1970,7 +1970,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-clarify",
-        "service_name": "Amazon SageMaker Clarify",
+        "service_name": "Amazon Sagemaker Clarify",
         "service_slug": "amazon-sagemaker-clarify"
       }
     ]
@@ -2064,7 +2064,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-model-monitor",
-        "service_name": "Amazon SageMaker Model Monitor",
+        "service_name": "Amazon Sagemaker Model Monitor",
         "service_slug": "amazon-sagemaker-model-monitor"
       }
     ]
@@ -2094,7 +2094,7 @@
     "global_domain_id": "ai-ml",
     "services": [
       {
-        "service_id": "lambda",
+        "service_id": "aws-lambda",
         "service_name": "AWS Lambda",
         "service_slug": "aws-lambda"
       }
@@ -2125,7 +2125,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -2156,7 +2156,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-ground-truth",
-        "service_name": "Amazon SageMaker Ground Truth",
+        "service_name": "Amazon Sagemaker Ground Truth",
         "service_slug": "amazon-sagemaker-ground-truth"
       }
     ]
@@ -2218,7 +2218,7 @@
     "services": [
       {
         "service_id": "rag",
-        "service_name": "RAG",
+        "service_name": "Rag",
         "service_slug": "rag"
       }
     ]
@@ -2597,7 +2597,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-clarify",
-        "service_name": "Amazon SageMaker Clarify",
+        "service_name": "Amazon Sagemaker Clarify",
         "service_slug": "amazon-sagemaker-clarify"
       }
     ]
@@ -2661,7 +2661,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -2975,7 +2975,7 @@
     "services": [
       {
         "service_id": "agents-for-amazon-bedrock",
-        "service_name": "Agents for Amazon Bedrock",
+        "service_name": "Agents For Amazon Bedrock",
         "service_slug": "agents-for-amazon-bedrock"
       }
     ]
@@ -3005,7 +3005,7 @@
     "global_domain_id": "ai-ml",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -3038,7 +3038,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-clarify",
-        "service_name": "Amazon SageMaker Clarify",
+        "service_name": "Amazon Sagemaker Clarify",
         "service_slug": "amazon-sagemaker-clarify"
       }
     ]
@@ -3069,7 +3069,7 @@
     "services": [
       {
         "service_id": "foundation-model-fm-capability",
-        "service_name": "Foundation Model (FM) Capability",
+        "service_name": "Foundation Model Fm Capability",
         "service_slug": "foundation-model-fm-capability"
       }
     ]
@@ -3350,7 +3350,7 @@
     "services": [
       {
         "service_id": "aws-iam-e-aws-cloudtrail",
-        "service_name": "AWS IAM e AWS CloudTrail",
+        "service_name": "AWS Iam E AWS Cloudtrail",
         "service_slug": "aws-iam-e-aws-cloudtrail"
       }
     ]
@@ -3412,7 +3412,7 @@
     "services": [
       {
         "service_id": "amazon-lookout-for-metrics",
-        "service_name": "Amazon Lookout for Metrics",
+        "service_name": "Amazon Lookout For Metrics",
         "service_slug": "amazon-lookout-for-metrics"
       }
     ]
@@ -3474,7 +3474,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-clarify",
-        "service_name": "Amazon SageMaker Clarify",
+        "service_name": "Amazon Sagemaker Clarify",
         "service_slug": "amazon-sagemaker-clarify"
       }
     ]
@@ -3598,7 +3598,7 @@
     "services": [
       {
         "service_id": "mlops",
-        "service_name": "MLOps",
+        "service_name": "Mlops",
         "service_slug": "mlops"
       }
     ]
@@ -3661,7 +3661,7 @@
     "services": [
       {
         "service_id": "aws-identity-and-access-management-iam",
-        "service_name": "AWS Identity and Access Management (IAM)",
+        "service_name": "AWS Identity And Access Management Iam",
         "service_slug": "aws-identity-and-access-management-iam"
       }
     ]
@@ -3730,7 +3730,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-clarify",
-        "service_name": "Amazon SageMaker Clarify",
+        "service_name": "Amazon Sagemaker Clarify",
         "service_slug": "amazon-sagemaker-clarify"
       }
     ]
@@ -3799,7 +3799,7 @@
     "services": [
       {
         "service_id": "aws-kms-e-amazon-macie",
-        "service_name": "AWS KMS e Amazon Macie",
+        "service_name": "AWS Kms E Amazon Macie",
         "service_slug": "aws-kms-e-amazon-macie"
       }
     ]
@@ -3978,7 +3978,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -4007,7 +4007,7 @@
     "global_domain_id": "ai-ml",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -4124,7 +4124,7 @@
     "services": [
       {
         "service_id": "aws-cloudwatch",
-        "service_name": "AWS CloudWatch",
+        "service_name": "AWS Cloudwatch",
         "service_slug": "aws-cloudwatch"
       }
     ]
@@ -4211,7 +4211,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-model-monitor",
-        "service_name": "Amazon SageMaker Model Monitor",
+        "service_name": "Amazon Sagemaker Model Monitor",
         "service_slug": "amazon-sagemaker-model-monitor"
       }
     ]
@@ -4240,7 +4240,7 @@
     "services": [
       {
         "service_id": "amazon-codeguru",
-        "service_name": "Amazon CodeGuru",
+        "service_name": "Amazon Codeguru",
         "service_slug": "amazon-codeguru"
       }
     ]
@@ -4268,7 +4268,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -4356,7 +4356,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-autopilot",
-        "service_name": "Amazon SageMaker Autopilot",
+        "service_name": "Amazon Sagemaker Autopilot",
         "service_slug": "amazon-sagemaker-autopilot"
       }
     ]
@@ -4385,7 +4385,7 @@
     "services": [
       {
         "service_id": "amazon-codebuild",
-        "service_name": "Amazon CodeBuild",
+        "service_name": "Amazon Codebuild",
         "service_slug": "amazon-codebuild"
       }
     ]
@@ -4558,7 +4558,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -4848,7 +4848,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -4878,7 +4878,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-autopilot",
-        "service_name": "Amazon SageMaker Autopilot",
+        "service_name": "Amazon Sagemaker Autopilot",
         "service_slug": "amazon-sagemaker-autopilot"
       }
     ]
@@ -4907,7 +4907,7 @@
     "services": [
       {
         "service_id": "amazon-bedrock-barreiras-de-prote-o",
-        "service_name": "Amazon Bedrock Barreiras de Proteção",
+        "service_name": "Amazon Bedrock Barreiras De Prote O",
         "service_slug": "amazon-bedrock-barreiras-de-prote-o"
       }
     ]
@@ -4965,7 +4965,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-model-monitor",
-        "service_name": "Amazon SageMaker Model Monitor",
+        "service_name": "Amazon Sagemaker Model Monitor",
         "service_slug": "amazon-sagemaker-model-monitor"
       }
     ]
@@ -5139,7 +5139,7 @@
     "services": [
       {
         "service_id": "amazon-iam",
-        "service_name": "Amazon IAM",
+        "service_name": "Amazon Iam",
         "service_slug": "amazon-iam"
       }
     ]
@@ -5226,7 +5226,7 @@
     "services": [
       {
         "service_id": "amazon-codeguru",
-        "service_name": "Amazon CodeGuru",
+        "service_name": "Amazon Codeguru",
         "service_slug": "amazon-codeguru"
       }
     ]
@@ -5284,7 +5284,7 @@
     "services": [
       {
         "service_id": "aws-cloudwatch",
-        "service_name": "AWS CloudWatch",
+        "service_name": "AWS Cloudwatch",
         "service_slug": "aws-cloudwatch"
       }
     ]
@@ -5428,7 +5428,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -5690,7 +5690,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-clarify",
-        "service_name": "Amazon SageMaker Clarify",
+        "service_name": "Amazon Sagemaker Clarify",
         "service_slug": "amazon-sagemaker-clarify"
       }
     ]
@@ -5806,7 +5806,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-model-monitor",
-        "service_name": "Amazon SageMaker Model Monitor",
+        "service_name": "Amazon Sagemaker Model Monitor",
         "service_slug": "amazon-sagemaker-model-monitor"
       }
     ]
@@ -5834,7 +5834,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -5864,7 +5864,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-autopilot",
-        "service_name": "Amazon SageMaker Autopilot",
+        "service_name": "Amazon Sagemaker Autopilot",
         "service_slug": "amazon-sagemaker-autopilot"
       }
     ]
@@ -5980,7 +5980,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-jumpstart",
-        "service_name": "Amazon SageMaker JumpStart",
+        "service_name": "Amazon Sagemaker Jumpstart",
         "service_slug": "amazon-sagemaker-jumpstart"
       }
     ]
@@ -6009,7 +6009,7 @@
     "services": [
       {
         "service_id": "amazon-ai-services",
-        "service_name": "Amazon AI Services",
+        "service_name": "Amazon Ai Services",
         "service_slug": "amazon-ai-services"
       }
     ]
@@ -6038,7 +6038,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-model-monitoring",
-        "service_name": "Amazon SageMaker Model Monitoring",
+        "service_name": "Amazon Sagemaker Model Monitoring",
         "service_slug": "amazon-sagemaker-model-monitoring"
       }
     ]
@@ -6067,7 +6067,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-studio",
-        "service_name": "Amazon SageMaker Studio",
+        "service_name": "Amazon Sagemaker Studio",
         "service_slug": "amazon-sagemaker-studio"
       }
     ]
@@ -6125,7 +6125,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-foundation-models",
-        "service_name": "Amazon SageMaker Foundation Models",
+        "service_name": "Amazon Sagemaker Foundation Models",
         "service_slug": "amazon-sagemaker-foundation-models"
       }
     ]
@@ -6154,7 +6154,7 @@
     "services": [
       {
         "service_id": "aws-ai-services",
-        "service_name": "AWS AI Services",
+        "service_name": "AWS Ai Services",
         "service_slug": "aws-ai-services"
       }
     ]
@@ -6416,7 +6416,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-clarify",
-        "service_name": "Amazon SageMaker Clarify",
+        "service_name": "Amazon Sagemaker Clarify",
         "service_slug": "amazon-sagemaker-clarify"
       }
     ]
@@ -6474,7 +6474,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-autopilot",
-        "service_name": "Amazon SageMaker Autopilot",
+        "service_name": "Amazon Sagemaker Autopilot",
         "service_slug": "amazon-sagemaker-autopilot"
       }
     ]
@@ -6503,7 +6503,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-model-monitor",
-        "service_name": "Amazon SageMaker Model Monitor",
+        "service_name": "Amazon Sagemaker Model Monitor",
         "service_slug": "amazon-sagemaker-model-monitor"
       }
     ]
@@ -6560,7 +6560,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -6590,7 +6590,7 @@
     "services": [
       {
         "service_id": "amazon-bedrock-barreiras-de-prote-o",
-        "service_name": "Amazon Bedrock Barreiras de Proteção",
+        "service_name": "Amazon Bedrock Barreiras De Prote O",
         "service_slug": "amazon-bedrock-barreiras-de-prote-o"
       }
     ]
@@ -6706,7 +6706,7 @@
     "services": [
       {
         "service_id": "aws-ai-services",
-        "service_name": "AWS AI Services",
+        "service_name": "AWS Ai Services",
         "service_slug": "aws-ai-services"
       }
     ]
@@ -6734,7 +6734,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -6879,7 +6879,7 @@
     "global_domain_id": "gen-ai",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -6909,7 +6909,7 @@
     "services": [
       {
         "service_id": "aws-ai-services",
-        "service_name": "AWS AI Services",
+        "service_name": "AWS Ai Services",
         "service_slug": "aws-ai-services"
       }
     ]
@@ -6937,7 +6937,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -6996,7 +6996,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-autopilot",
-        "service_name": "Amazon SageMaker Autopilot",
+        "service_name": "Amazon Sagemaker Autopilot",
         "service_slug": "amazon-sagemaker-autopilot"
       }
     ]
@@ -7083,7 +7083,7 @@
     "services": [
       {
         "service_id": "aws-ai-services",
-        "service_name": "AWS AI Services",
+        "service_name": "AWS Ai Services",
         "service_slug": "aws-ai-services"
       }
     ]
@@ -7170,7 +7170,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-jumpstart",
-        "service_name": "Amazon SageMaker JumpStart",
+        "service_name": "Amazon Sagemaker Jumpstart",
         "service_slug": "amazon-sagemaker-jumpstart"
       }
     ]
@@ -7199,7 +7199,7 @@
     "services": [
       {
         "service_id": "aws-ai-services",
-        "service_name": "AWS AI Services",
+        "service_name": "AWS Ai Services",
         "service_slug": "aws-ai-services"
       }
     ]
@@ -7227,7 +7227,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -7576,7 +7576,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-autopilot",
-        "service_name": "Amazon SageMaker Autopilot",
+        "service_name": "Amazon Sagemaker Autopilot",
         "service_slug": "amazon-sagemaker-autopilot"
       }
     ]
@@ -7604,7 +7604,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -7749,7 +7749,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -7953,7 +7953,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-autopilot",
-        "service_name": "Amazon SageMaker Autopilot",
+        "service_name": "Amazon Sagemaker Autopilot",
         "service_slug": "amazon-sagemaker-autopilot"
       }
     ]
@@ -7982,7 +7982,7 @@
     "services": [
       {
         "service_id": "amazon-bedrock-barreiras-de-prote-o",
-        "service_name": "Amazon Bedrock Barreiras de Proteção",
+        "service_name": "Amazon Bedrock Barreiras De Prote O",
         "service_slug": "amazon-bedrock-barreiras-de-prote-o"
       }
     ]
@@ -8011,7 +8011,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-jumpstart",
-        "service_name": "Amazon SageMaker JumpStart",
+        "service_name": "Amazon Sagemaker Jumpstart",
         "service_slug": "amazon-sagemaker-jumpstart"
       }
     ]
@@ -8040,7 +8040,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-model-monitor",
-        "service_name": "Amazon SageMaker Model Monitor",
+        "service_name": "Amazon Sagemaker Model Monitor",
         "service_slug": "amazon-sagemaker-model-monitor"
       }
     ]
@@ -8069,7 +8069,7 @@
     "services": [
       {
         "service_id": "amazon-sagemaker-data-protection",
-        "service_name": "Amazon SageMaker Data Protection",
+        "service_name": "Amazon Sagemaker Data Protection",
         "service_slug": "amazon-sagemaker-data-protection"
       }
     ]
@@ -8157,7 +8157,7 @@
     "services": [
       {
         "service_id": "amazon-bedrock-barreiras-de-prote-o",
-        "service_name": "Amazon Bedrock Barreiras de Proteção",
+        "service_name": "Amazon Bedrock Barreiras De Prote O",
         "service_slug": "amazon-bedrock-barreiras-de-prote-o"
       }
     ]
@@ -8185,7 +8185,7 @@
     "global_domain_id": "gen-ai",
     "services": [
       {
-        "service_id": "s3",
+        "service_id": "amazon-s3",
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
@@ -8215,7 +8215,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -8360,7 +8360,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
@@ -8506,7 +8506,7 @@
     "services": [
       {
         "service_id": "amazon-bedrock-barreiras-de-prote-o",
-        "service_name": "Amazon Bedrock Barreiras de Proteção",
+        "service_name": "Amazon Bedrock Barreiras De Prote O",
         "service_slug": "amazon-bedrock-barreiras-de-prote-o"
       }
     ]
@@ -8650,7 +8650,7 @@
     "global_domain_id": "security",
     "services": [
       {
-        "service_id": "iam",
+        "service_id": "aws-iam",
         "service_name": "AWS IAM",
         "service_slug": "aws-iam"
       }
