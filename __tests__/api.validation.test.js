@@ -85,6 +85,8 @@ jest.unstable_mockModule('../backend/database/db.js', () => ({
   recordAnswer: jest.fn(),
   getAnswersByQuiz: jest.fn(),
   calculateQuizStats: jest.fn(),
+  getAwsServices: jest.fn(),
+  getServiceById: jest.fn(),
   default: {},
 }));
 

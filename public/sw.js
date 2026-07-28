@@ -1,4 +1,10 @@
-const CACHE_NAME = 'aws-sim-cache-v7'; // Invalida caches antigos do deploy.
+/**
+ * Service Worker for the AWS Certification Simulator PWA
+ * Strategy:
+ * - Network First for JSON data (questions) to ensure users always have the latest dataset.
+ * - Cache First for static assets (HTML, CSS, JS) for fast offline load speeds.
+ */
+const CACHE_NAME = 'aws-sim-cache-v7'; // Change this to invalidate old caches on deploy.
 
 // Removemos os .json daqui para não ficarem trancados para sempre
 const urlsToCache = [
@@ -77,7 +83,9 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // LÓGICA MÁGICA: Se for um arquivo JSON de questões, tenta sempre a Rede Primeiro!
+  // --- Network First Strategy for JSON data ---
+  // Ensure that if the dataset updates on the server, the user gets it.
+  // If the network fails (offline), it falls back to the cache.
   if (event.request.url.endsWith('.json') && !event.request.url.includes('manifest.json')) {
       if (!isPublicJsonRequest(event.request.url)) {
           event.respondWith(fetch(event.request));
@@ -115,7 +123,9 @@ self.addEventListener('fetch', event => {
       return;
   }
 
-  // Para o resto do site (HTML, CSS), continua a usar Cache First para ser ultrarrápido
+  // --- Cache First Strategy for Static Assets ---
+  // For HTML, CSS, JS, etc., check cache first to load instantly.
+  // Fallback to network if not in cache.
   event.respondWith(
     caches.match(event.request)
       .then(response => {

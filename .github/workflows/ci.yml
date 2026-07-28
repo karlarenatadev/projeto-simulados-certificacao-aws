@@ -46,8 +46,11 @@ jobs:
       - name: Run lint
         run: npm run lint --if-present
 
-      - name: Run tests
-        run: npm test -- --runInBand
+      - name: Seed Database
+        run: npm run db:seed
+
+      - name: Run tests with coverage
+        run: npm run test:coverage -- --runInBand
 
       - name: Build frontend
         run: npm run build --if-present

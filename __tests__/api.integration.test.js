@@ -52,7 +52,8 @@ describe('Express API integration', () => {
   let question;
 
   beforeAll(async () => {
-    await initializeDatabase({ environment: 'test' });
+    process.env.DB_DATA_DIR = 'memory://integration';
+    await initializeDatabase({ environment: 'test', dataDir: 'memory://integration' });
 
     user = await createUser(`IntegrationUser-${Date.now()}`);
     question = await insertQuestion({
