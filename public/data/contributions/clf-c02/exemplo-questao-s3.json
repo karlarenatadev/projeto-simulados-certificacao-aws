@@ -1,0 +1,36 @@
+{
+  "domain": "Cloud Technology and Services",
+  "subdomain": "armazenamento",
+  "difficulty": "medium",
+  "type": "multiple-choice",
+  "tags": [
+    "s3",
+    "versionamento",
+    "backup",
+    "durabilidade"
+  ],
+  "question": "Uma empresa de e-commerce armazena imagens de produtos no Amazon S3 e precisa proteger esses dados contra exclusões acidentais causadas por erros humanos ou bugs em aplicações. A empresa quer uma solução nativa do S3 que mantenha versões anteriores dos objetos sem precisar implementar backups manuais. Qual recurso do Amazon S3 deve ser habilitado para atender a esse requisito?",
+  "options": [
+    "Versionamento de objetos (Object Versioning)",
+    "Replicação entre regiões (Cross-Region Replication)",
+    "Bloqueio de objetos (Object Lock)",
+    "Políticas de ciclo de vida (Lifecycle Policies)"
+  ],
+  "correct": 0,
+  "explanation": "O Versionamento de objetos do S3 mantém múltiplas versões de um objeto no mesmo bucket, permitindo recuperar versões anteriores em caso de exclusão acidental ou sobrescrita. A Replicação entre regiões é para disaster recovery, o Object Lock é para conformidade regulatória (WORM), e as Lifecycle Policies são para transição automática entre classes de armazenamento.",
+  "reference": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html",
+  "contributor": {
+    "name": "Exemplo da Guilda",
+    "github": "guilda-cloud",
+    "date": "2026-03-24"
+  },
+  "domain_id": "clf-cloud-technology",
+  "global_domain_id": "compute-tech",
+  "services": [
+    {
+      "service_id": "s3",
+      "service_name": "Amazon S3",
+      "service_slug": "amazon-s3"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "domain": "Cloud Technology and Services",
+  "subdomain": "armazenamento",
+  "difficulty": "hard",
+  "type": "multiple-answer",
+  "tags": [
+    "s3",
+    "armazenamento",
+    "seguranca"
+  ],
+  "question": "Uma empresa precisa implementar segurança em seus buckets S3. Quais das seguintes práticas são recomendadas pela AWS? (Escolha 2)",
+  "options": [
+    "Habilitar versionamento de objetos",
+    "Desabilitar todas as políticas de bucket",
+    "Usar criptografia no lado do servidor (SSE)",
+    "Tornar todos os buckets públicos por padrão"
+  ],
+  "correct": [
+    0,
+    2
+  ],
+  "explanation": "O versionamento (opção A) protege contra exclusões acidentais e a criptografia SSE (opção C) protege dados em repouso. Desabilitar políticas e tornar buckets públicos são práticas inseguras.",
+  "reference": "https://docs.aws.amazon.com/s3/",
+  "contributor": {
+    "name": "Seu Nome",
+    "github": "seu-usuario-github",
+    "date": "2026-03-24"
+  },
+  "domain_id": "clf-cloud-technology",
+  "global_domain_id": "compute-tech",
+  "services": [
+    {
+      "service_id": "s3",
+      "service_name": "Amazon S3",
+      "service_slug": "amazon-s3"
+    }
+  ]
+}
