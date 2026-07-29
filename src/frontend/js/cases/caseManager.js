@@ -6,6 +6,15 @@
 
 const API_BASE = 'http://127.0.0.1:3001/api';
 
+let apiStatus = {
+  apiAvailable: true,
+  fallbackUsed: false
+};
+
+export function getApiStatus() {
+  return apiStatus;
+}
+
 // ============================================================================
 // HTTP Helpers
 // ============================================================================
@@ -53,6 +62,31 @@ async function apiPost(path, body) {
 // ============================================================================
 
 /**
+ * Função utilitária para carregar cases do JSON estático (Fallback)
+ */
+async function fetchFallbackCases() {
+  try {
+    const res = await fetch('./data/cases/architecture_cases.json');
+    if (!res.ok) return [];
+    let cases = await res.json();
+    
+    // Normalização (API vs JSON)
+    return cases.map(c => ({
+      ...c,
+      slug: c.id,
+      services: (c.services || []).map(s => ({
+        ...s,
+        slug: s.service_slug || s.slug,
+        name: s.service_name || s.name
+      }))
+    }));
+  } catch (err) {
+    console.warn('[caseManager] Falha ao carregar JSON local:', err);
+    return [];
+  }
+}
+
+/**
  * Fetch list of cases with optional filters.
  * @param {Object} [filters]
  * @param {string} [filters.certification]
@@ -64,10 +98,25 @@ async function apiPost(path, body) {
 export async function getCases(filters = {}) {
   try {
     const response = await apiGet('/cases', filters);
+    apiStatus.apiAvailable = true;
+    apiStatus.fallbackUsed = false;
     return response.data || [];
   } catch (error) {
-    console.warn('[caseManager] API unavailable, using empty fallback:', error.message);
-    return [];
+    console.warn('[caseManager] API unavailable, using fallback:', error.message);
+    apiStatus.apiAvailable = false;
+    apiStatus.fallbackUsed = true;
+    
+    let fallbackCases = await fetchFallbackCases();
+    
+    // Aplica filtros localmente
+    if (filters.certification) {
+      fallbackCases = fallbackCases.filter(c => c.certification === filters.certification);
+    }
+    if (filters.difficulty) {
+      fallbackCases = fallbackCases.filter(c => c.difficulty === filters.difficulty);
+    }
+    
+    return fallbackCases;
   }
 }
 
@@ -79,10 +128,16 @@ export async function getCases(filters = {}) {
 export async function getCaseById(idOrSlug) {
   try {
     const response = await apiGet(`/cases/${encodeURIComponent(idOrSlug)}`);
+    apiStatus.apiAvailable = true;
+    apiStatus.fallbackUsed = false;
     return response.data || null;
   } catch (error) {
-    console.warn('[caseManager] Could not fetch case:', error.message);
-    return null;
+    console.warn('[caseManager] Could not fetch case, using fallback:', error.message);
+    apiStatus.apiAvailable = false;
+    apiStatus.fallbackUsed = true;
+    
+    const fallbackCases = await fetchFallbackCases();
+    return fallbackCases.find(c => c.id === idOrSlug || c.slug === idOrSlug) || null;
   }
 }
 

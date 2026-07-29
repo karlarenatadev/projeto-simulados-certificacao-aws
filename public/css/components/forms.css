@@ -1,0 +1,65 @@
+/* ==========================================================================
+   FORMS CSS — Componentes de Seleção e Input (index.html e modais)
+   ========================================================================== */
+
+.a3-form-group {
+  margin-bottom: 1.25rem;
+}
+
+.a3-radio-card {
+  display: block;
+  flex: 1;
+  cursor: pointer;
+}
+
+/* Esconde o input real */
+.a3-radio-card input[type="radio"] {
+  display: none;
+}
+
+/* O cartão de seleção (visual) */
+.a3-radio-card-content {
+  border: 2px solid var(--a3-border-color, rgba(0,0,0,0.1));
+  border-radius: var(--a3-radius-lg);
+  padding: 0.75rem;
+  text-align: center;
+  transition: all 0.2s ease-in-out;
+  background-color: var(--a3-surface);
+}
+
+.a3-radio-card:hover .a3-radio-card-content {
+  border-color: var(--a3-border-color-hover, rgba(0,0,0,0.3));
+}
+
+/* Estado selecionado */
+.a3-radio-card input[type="radio"]:checked + .a3-radio-card-content {
+  border-color: var(--a3-primary);
+  background-color: color-mix(in srgb, var(--a3-primary) 10%, transparent);
+}
+.a3-radio-card input[type="radio"]:checked + .a3-radio-card-content * {
+  color: var(--a3-primary);
+}
+
+/* Toggles e Selects simples */
+.a3-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.a3-select-card {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--a3-border-color);
+  border-radius: var(--a3-radius-md);
+  background-color: var(--a3-surface);
+  color: var(--a3-text-main);
+  outline: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.a3-select-card:focus {
+  border-color: var(--a3-primary);
+}

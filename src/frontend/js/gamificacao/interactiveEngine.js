@@ -100,7 +100,7 @@ class InteractiveEngine {
 
     if (isCorrect) {
       feedbackArea.innerHTML = `
-                <div style="color: #2e7d32; margin-top: 15px; font-weight: bold;">
+                <div style="color: var(--a3-success); margin-top: 15px; font-weight: bold;">
                     ✅ Arquitetura validada com sucesso!
                     <p style="font-weight: normal; font-size: 0.9em; margin-top: 5px;">
                         ${this.currentChallenge.explanation || ""}
@@ -111,7 +111,7 @@ class InteractiveEngine {
       this.sortableInstance.option("disabled", true);
     } else {
       feedbackArea.innerHTML = `
-                <div style="color: #d32f2f; margin-top: 15px; font-weight: bold;">
+                <div style="color: var(--a3-danger); margin-top: 15px; font-weight: bold;">
                     ❌ Ordem incorreta. Analisa o fluxo do tráfego ou dos dados e tenta reposicionar os serviços.
                 </div>`;
     }

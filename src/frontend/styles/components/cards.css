@@ -1,0 +1,26 @@
+/* ==========================================================================
+   CARDS COMPONENT
+   ========================================================================== */
+
+.a3-card {
+  background-color: var(--a3-surface-raised);
+  border: 1px solid var(--border-theme);
+  border-radius: var(--a3-radius-lg);
+  box-shadow: var(--a3-shadow-card);
+  padding: 1.5rem;
+  transition: all var(--a3-transition-fast) ease-in-out;
+}
+
+.a3-card:hover {
+  box-shadow: var(--a3-shadow-hover);
+}
+
+.a3-card-header {
+  border-bottom: 1px solid var(--border-theme);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.a3-card-body {
+  color: var(--text-main);
+}

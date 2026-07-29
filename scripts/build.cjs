@@ -91,12 +91,54 @@ try {
   // CSS
   // ============================================================
 
-  console.log('🎨 Copiando arquivos CSS...');
+  console.log('🎨 Copiando e Consolidando arquivos CSS...');
 
   copyDirectoryRecursive(
     'src/frontend/styles',
     'public/css'
   );
+
+  // Consolidação de CSS
+  const stylesDir = 'src/frontend/styles';
+  const cssOrder = [
+    'tokens.css',
+    'themes.css',
+    'base.css',
+    'utilities.css'
+  ];
+  
+  let consolidatedCSS = '/* Consolidated CSS */\n\n';
+
+  for (const file of cssOrder) {
+    const filePath = path.join(stylesDir, file);
+    if (fs.existsSync(filePath)) {
+      consolidatedCSS += `/* --- ${file} --- */\n` + fs.readFileSync(filePath, 'utf8') + '\n\n';
+    }
+  }
+
+  const componentsDir = path.join(stylesDir, 'components');
+  if (fs.existsSync(componentsDir)) {
+    const componentsFiles = fs.readdirSync(componentsDir).filter(f => f.endsWith('.css'));
+    for (const file of componentsFiles) {
+      consolidatedCSS += `/* --- components/${file} --- */\n` + fs.readFileSync(path.join(componentsDir, file), 'utf8') + '\n\n';
+    }
+  }
+
+  // Fallback: style.css legacy
+  const legacyStylePath = path.join(stylesDir, 'style.css');
+  if (fs.existsSync(legacyStylePath)) {
+    consolidatedCSS += `/* --- style.css (legacy) --- */\n` + fs.readFileSync(legacyStylePath, 'utf8') + '\n\n';
+  }
+
+  const specificFiles = ['gamificacao.css', 'cases.css', 'responsive.css'];
+  for (const file of specificFiles) {
+    const filePath = path.join(stylesDir, file);
+    if (fs.existsSync(filePath)) {
+      consolidatedCSS += `/* --- ${file} --- */\n` + fs.readFileSync(filePath, 'utf8') + '\n\n';
+    }
+  }
+
+  fs.writeFileSync('public/css/style.css', consolidatedCSS);
 
 
 

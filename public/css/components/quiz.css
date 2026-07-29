@@ -1,0 +1,115 @@
+/* ==========================================================================
+   QUIZ CSS — Elementos do Simulado (app.js UI)
+   ========================================================================== */
+
+.a3-question-card {
+  background-color: var(--a3-surface);
+  border-radius: var(--a3-radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--a3-shadow-md);
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--a3-border-color, rgba(0,0,0,0.1));
+}
+.dark .a3-question-card {
+  border-color: rgba(255,255,255,0.1);
+}
+
+.a3-question-header {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--a3-text-main);
+  margin-bottom: 1rem;
+}
+
+.a3-question-number {
+  font-size: 1rem;
+  color: var(--a3-text-muted);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Opções de Resposta */
+.a3-option {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: var(--a3-surface-soft);
+  border: 2px solid transparent;
+  border-radius: var(--a3-radius-md);
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.a3-option:hover {
+  background-color: var(--a3-surface-hover);
+}
+
+.a3-option-letter {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background-color: var(--a3-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--a3-text-muted);
+  transition: color 0.2s;
+  box-shadow: var(--a3-shadow-sm);
+}
+
+.a3-option:hover .a3-option-letter {
+  color: var(--a3-primary);
+}
+
+/* Estados da Opção */
+.a3-option-selected {
+  border-color: var(--a3-primary);
+  background-color: color-mix(in srgb, var(--a3-primary) 10%, transparent);
+}
+.a3-option-selected .a3-option-letter {
+  background-color: var(--a3-primary);
+  color: var(--a3-text-on-dark);
+}
+
+.a3-option-correct {
+  border-color: var(--a3-success);
+  background-color: color-mix(in srgb, var(--a3-success) 10%, transparent);
+}
+.a3-option-correct .a3-option-letter {
+  background-color: var(--a3-success);
+  color: var(--a3-text-on-dark);
+}
+
+.a3-option-wrong {
+  border-color: var(--a3-danger);
+  background-color: color-mix(in srgb, var(--a3-danger) 10%, transparent);
+}
+.a3-option-wrong .a3-option-letter {
+  background-color: var(--a3-danger);
+  color: var(--a3-text-on-dark);
+}
+
+/* Feedbacks Visuais */
+.a3-feedback {
+  margin-top: 1.25rem;
+  padding: 1.25rem;
+  border-radius: var(--a3-radius-md);
+  font-size: 0.875rem;
+  border-left: 4px solid var(--a3-border-color);
+}
+
+.a3-feedback-success {
+  background-color: color-mix(in srgb, var(--a3-success) 10%, transparent);
+  border-left-color: var(--a3-success);
+  color: var(--a3-text-main);
+}
+
+.a3-feedback-error {
+  background-color: color-mix(in srgb, var(--a3-danger) 10%, transparent);
+  border-left-color: var(--a3-danger);
+  color: var(--a3-text-main);
+}

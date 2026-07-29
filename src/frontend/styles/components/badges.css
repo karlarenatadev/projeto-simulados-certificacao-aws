@@ -1,0 +1,40 @@
+/* ==========================================================================
+   BADGES COMPONENT
+   ========================================================================== */
+
+.a3-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px; /* Pill */
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.a3-badge-primary {
+  background-color: var(--a3-tech-blue);
+  color: var(--a3-text-on-dark);
+}
+
+.a3-badge-success {
+  background-color: var(--a3-success);
+  color: var(--a3-text-on-dark);
+}
+
+.a3-badge-warning {
+  background-color: var(--a3-warning);
+  color: var(--a3-text-on-dark);
+}
+
+.a3-badge-danger {
+  background-color: var(--a3-danger);
+  color: var(--a3-text-on-dark);
+}
+
+.a3-badge-outline {
+  background-color: transparent;
+  border: 1px solid var(--border-theme);
+  color: var(--text-muted);
+}

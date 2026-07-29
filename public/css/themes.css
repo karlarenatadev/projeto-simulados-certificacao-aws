@@ -1,0 +1,28 @@
+/* ==========================================================================
+   THEMES CSS
+   Lógica global de variação de tema (Light/Dark Mode)
+   ========================================================================== */
+
+.dark {
+  /* Modo Escuro */
+  --bg-main: #07113c;
+  --bg-card: #101b4a;
+  --text-main: var(--a3-text-on-dark);
+  --text-strong: var(--a3-text-on-dark);
+  --text-muted: color-mix(in srgb, var(--a3-text-on-dark) 68%, var(--bg-main));
+  --border-theme: color-mix(in srgb, var(--a3-text-on-dark) 16%, var(--bg-main));
+  
+  --a3-surface-raised: var(--bg-card);
+  --a3-surface-soft: #172151;
+  --a3-surface-info: color-mix(in srgb, var(--bg-card) 90%, var(--a3-primary));
+  --a3-surface-accent: color-mix(in srgb, var(--bg-card) 86%, var(--a3-accent));
+  --a3-surface-selected: color-mix(in srgb, var(--bg-card) 84%, var(--a3-primary));
+  --a3-surface-success: color-mix(in srgb, var(--bg-card) 84%, var(--a3-success));
+  --a3-surface-danger: color-mix(in srgb, var(--bg-card) 84%, var(--a3-danger));
+  --a3-surface-warning: color-mix(in srgb, var(--bg-card) 84%, var(--a3-warning));
+  
+  --a3-border-soft: color-mix(in srgb, var(--a3-text-on-dark) 10%, var(--bg-card));
+  
+  --a3-shadow-card: 0 18px 40px color-mix(in srgb, var(--a3-deep-sea) 42%, transparent);
+  --a3-shadow-action: 0 12px 24px color-mix(in srgb, var(--a3-tech-blue) 30%, transparent);
+}

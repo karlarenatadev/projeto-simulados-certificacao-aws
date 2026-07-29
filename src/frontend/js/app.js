@@ -812,7 +812,7 @@ function loadQuestionUI() {
           ? `Validated by specialist: ${q.validated_by}`
           : `Validada por especialista: ${q.validated_by}`;
 
-      badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1" style="color: #35B769;" aria-hidden="true"></i> ${isValidatedText}`;
+      badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1" style="color: var(--a3-success);" aria-hidden="true"></i> ${isValidatedText}`;
       badge.setAttribute("aria-label", tooltipText);
       badge.setAttribute("role", "tooltip");
 
@@ -876,14 +876,13 @@ function renderOptionsUI(question) {
   question.options.forEach((opt, idx) => {
     const card = document.createElement("div");
     card.id = `option-${idx}`;
-    card.className =
-      "option-card group p-4 rounded-xl flex items-center gap-4 cursor-pointer border-2 border-gray-100 dark:border-slate-700 hover:border-orange-300 hover:shadow-md transition-all duration-200 bg-white dark:bg-slate-800";
+    card.className = "a3-option";
 
     card.innerHTML = `
-            <div class="option-letter w-10 h-10 flex-shrink-0 rounded-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center font-bold text-gray-500 group-hover:text-orange-600 transition-colors">
+            <div class="a3-option-letter">
                 ${String.fromCharCode(65 + idx)}
             </div>
-            <div class="option-text flex-grow text-gray-700 dark:text-gray-200 font-medium">
+            <div class="a3-option-text">
                 ${opt}
             </div>
         `;
@@ -895,42 +894,25 @@ function renderOptionsUI(question) {
       if (isAnswered) return;
 
       if (!isMulti) {
-        document.querySelectorAll(".option-card").forEach((c) => {
-          c.classList.remove("selected", "border-orange-500", "bg-orange-50");
-          c.querySelector(".option-letter").classList.remove(
-            "bg-orange-500",
-            "text-white",
-          );
+        document.querySelectorAll(".a3-option").forEach((c) => {
+          c.classList.remove("a3-option-selected");
         });
 
-        card.classList.add("selected", "border-orange-500", "bg-orange-50");
-        card
-          .querySelector(".option-letter")
-          .classList.add("bg-orange-500", "text-white");
+        card.classList.add("a3-option-selected");
 
         uiState.tempSelectedAnswer = idx;
         document.getElementById("btn-submit").disabled = false;
       } else {
-        const isSelected = card.classList.contains("selected");
+        const isSelected = card.classList.contains("a3-option-selected");
 
         if (isSelected) {
-          card.classList.remove(
-            "selected",
-            "border-orange-500",
-            "bg-orange-50",
-          );
-          card
-            .querySelector(".option-letter")
-            .classList.remove("bg-orange-500", "text-white");
+          card.classList.remove("a3-option-selected");
           uiState.tempSelectedAnswer = uiState.tempSelectedAnswer.filter(
             (i) => i !== idx,
           );
         } else {
           if (uiState.tempSelectedAnswer.length < question.correct.length) {
-            card.classList.add("selected", "border-orange-500", "bg-orange-50");
-            card
-              .querySelector(".option-letter")
-              .classList.add("bg-orange-500", "text-white");
+            card.classList.add("a3-option-selected");
             uiState.tempSelectedAnswer.push(idx);
           }
         }
@@ -985,7 +967,7 @@ function submitAnswer() {
   if (btnSubmit) btnSubmit.classList.add("hidden");
 
   document
-    .querySelectorAll(".option-card")
+    .querySelectorAll(".a3-option")
     .forEach((card) => card.classList.add("opacity-70"));
 
   if (!isMulti) {
@@ -1046,13 +1028,13 @@ function submitAnswer() {
           .map((i) => question.options[i])
           .join("<br>• ")
       : question.options[uiState.tempSelectedAnswer];
-    feedbackHTML += `<div class="mb-2"><strong class="text-gray-800 dark:text-gray-200">${t("your_answer", uiState.language)}</strong> <span class="text-red-600 dark:text-red-400"><br>• ${userText}</span></div>`;
+    feedbackHTML += `<div class="a3-feedback a3-feedback-error mb-2"><strong>${t("your_answer", uiState.language)}</strong><br>• ${userText}</div>`;
   }
   let correctText = isMulti
     ? question.correct.map((i) => question.options[i]).join("<br>• ")
     : question.options[result.correctIndex];
-  feedbackHTML += `<div class="mb-3"><strong class="text-gray-800 dark:text-gray-200">${t("correct_answer", uiState.language)}</strong> <span class="text-green-600 dark:text-green-400"><br>• ${correctText}</span></div>`;
-  feedbackHTML += `<div class="pt-3 mt-2 border-t border-blue-200 dark:border-slate-600"><strong class="text-gray-800 dark:text-gray-200">${t("why", uiState.language)}</strong><br>${result.explanation}</div>`;
+  feedbackHTML += `<div class="a3-feedback a3-feedback-success mb-3"><strong>${t("correct_answer", uiState.language)}</strong><br>• ${correctText}</div>`;
+  feedbackHTML += `<div class="a3-feedback mt-2"><strong>${t("why", uiState.language)}</strong><br>${result.explanation}</div>`;
 
   if (textEl) textEl.innerHTML = `${feedbackHTML} ${docLink}`;
   expBox.classList.remove("hidden");
@@ -1073,49 +1055,12 @@ function applyStyleToOptionCard(optionIdx, styleType) {
   const card = document.getElementById(`option-${optionIdx}`);
   if (!card) return;
 
-  const letterEl = card.querySelector(".option-letter");
-  const textEl = card.querySelector(".option-text");
-
-  card.classList.remove(
-    "selected",
-    "border-orange-500",
-    "bg-orange-50",
-    "opacity-70",
-    "border-gray-100",
-    "dark:border-slate-700",
-    "bg-white",
-    "dark:bg-slate-800",
-  );
-  letterEl.classList.remove(
-    "bg-orange-500",
-    "text-white",
-    "bg-gray-100",
-    "dark:bg-slate-700",
-  );
-  textEl.classList.remove("text-gray-700", "dark:text-gray-200");
+  card.classList.remove("a3-option-selected", "opacity-70");
 
   if (styleType === "correct") {
-    card.classList.add(
-      "border-green-600",
-      "bg-green-50",
-      "dark:bg-green-900/30",
-      "opacity-100",
-    );
-    letterEl.classList.add("bg-green-600", "text-white");
-    textEl.classList.add(
-      "text-green-800",
-      "dark:text-green-300",
-      "font-semibold",
-    );
+    card.classList.add("a3-option-correct", "opacity-100");
   } else if (styleType === "incorrect") {
-    card.classList.add(
-      "border-red-600",
-      "bg-red-50",
-      "dark:bg-red-900/30",
-      "opacity-100",
-    );
-    letterEl.classList.add("bg-red-600", "text-white");
-    textEl.classList.add("text-red-800", "dark:text-red-300", "font-semibold");
+    card.classList.add("a3-option-wrong", "opacity-100");
   }
 }
 
@@ -1299,25 +1244,11 @@ function displayReportFromResult(results) {
     "approval-badge mt-3 px-4 py-2 rounded-lg font-bold text-sm";
 
   if (awsScore >= 700) {
-    badge.classList.add(
-      "bg-green-100",
-      "dark:bg-green-900/30",
-      "text-green-700",
-      "dark:text-green-400",
-      "border-2",
-      "border-green-500",
-    );
-    badge.innerHTML = `<i class="fa-solid fa-check-circle mr-2"></i>${t("approved", uiState.language)}`;
+    badge.className = "a3-skill-badge a3-skill-badge-success mt-3";
+    badge.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${t("approved", uiState.language)}`;
   } else {
-    badge.classList.add(
-      "bg-orange-100",
-      "dark:bg-orange-900/30",
-      "text-orange-700",
-      "dark:text-orange-400",
-      "border-2",
-      "border-orange-500",
-    );
-    badge.innerHTML = `<i class="fa-solid fa-exclamation-triangle mr-2"></i>${t("needs_review", uiState.language)}`;
+    badge.className = "a3-skill-badge a3-skill-badge-danger mt-3";
+    badge.innerHTML = `<i class="fa-solid fa-exclamation-triangle"></i> ${t("needs_review", uiState.language)}`;
   }
 
   parentDiv.appendChild(badge);
@@ -1365,7 +1296,7 @@ function renderDetailedReportUI(results) {
     reportDiv = document.createElement("div");
     reportDiv.id = "detailed-report";
     reportDiv.className =
-      "mt-8 mb-8 w-full max-w-3xl mx-auto text-left bg-white dark:bg-slate-800 p-6 md:p-8 rounded-xl shadow-md border border-gray-200 dark:border-slate-700 print-report-container";
+      "a3-result-card mt-8 mb-8 mx-auto w-full max-w-3xl print-report-container";
     resultsScreen.insertBefore(reportDiv, buttonsContainer);
   }
 
@@ -1407,19 +1338,19 @@ function renderDetailedReportUI(results) {
             ? t("meets_competencies", uiState.language)
             : t("needs_improvement", uiState.language);
           const statusColor = meets
-            ? "text-green-700 bg-green-100 dark:bg-green-900/40 dark:text-green-400 border-green-200 dark:border-green-800"
-            : "text-red-700 bg-red-100 dark:bg-red-900/40 dark:text-red-400 border-red-200 dark:border-red-800";
+            ? "a3-skill-badge-success"
+            : "a3-skill-badge-danger";
           const icon = meets ? "fa-check-circle" : "fa-exclamation-triangle";
 
           html += `
-                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-gray-50 dark:bg-slate-700/30 rounded-lg border border-gray-200 dark:border-slate-600 transition-all hover:shadow-sm gap-4">
+                        <div class="a3-domain-summary">
                             <div class="flex-1 min-w-0">
-                                <span class="font-bold text-gray-800 dark:text-gray-200 block text-md whitespace-normal">${domain.name}</span>
-                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1 block">
+                                <span class="font-bold text-main block text-md whitespace-normal">${domain.name}</span>
+                                <span class="text-sm font-medium text-muted mt-1 block">
                                     ${t("domain_score", uiState.language)} ${pct.toFixed(0)}% <span class="opacity-75">(${scoreData.correct} ${t("of", uiState.language)} ${scoreData.total} ${t("correct_out_of", uiState.language)})</span>
                                 </span>
                             </div>
-                            <div class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-bold border ${statusColor} shrink-0 whitespace-nowrap">
+                            <div class="a3-skill-badge ${statusColor}">
                                 <i class="fa-solid ${icon}"></i> ${statusText}
                             </div>
                         </div>
@@ -1451,15 +1382,15 @@ function renderDetailedReportUI(results) {
               : q.options[q.correct];
               
           html += `
-              <div class="p-4 bg-orange-50 dark:bg-slate-700/50 rounded-lg border border-orange-200 dark:border-slate-600">
-                  <p class="font-semibold text-gray-800 dark:text-gray-200 mb-3">${q.question}</p>
+              <div class="a3-feedback a3-feedback-warning mb-4">
+                  <p class="font-semibold text-main mb-3">${q.question}</p>
                   <div class="mb-3">
-                      <strong class="text-gray-800 dark:text-gray-200">${t("correct_answer", uiState.language) || "Resposta Correta"}:</strong>
-                      <span class="text-green-700 dark:text-green-400 block mt-1">
+                      <strong class="text-main">${t("correct_answer", uiState.language) || "Resposta Correta"}:</strong>
+                      <span class="text-success block mt-1">
                           • ${correctText}
                       </span>
                   </div>
-                  <div class="pt-3 border-t border-orange-200 dark:border-slate-600 text-sm text-gray-700 dark:text-gray-300">
+                  <div class="pt-3 border-t border-orange-200 dark:border-slate-600 text-sm text-muted">
                       <strong>${t("why", uiState.language) || "Explicação"}:</strong><br>
                       ${q.explanation}
                   </div>
@@ -1507,7 +1438,7 @@ function renderDetailedReportUI(results) {
             <div class="mb-3">
                 <span class="font-bold text-gray-800 dark:text-white text-lg block mb-2 print-text-black">${index + 1}. ${ans.question}</span>
             </div>
-            <div class="answer-block mb-3 p-4 rounded-lg bg-gray-50 dark:bg-slate-700/30 border border-gray-100 dark:border-slate-600 print-no-bg">
+            <div class="answer-block mb-3 a3-stat-card text-left print-no-bg">
                 <div class="mb-2">
                     <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">${t("your_answer_label", uiState.language)}</span>
                     <span class="${colorClass} font-semibold block leading-snug">${icon} ${isMulti ? "<br>• " : ""}${userText}</span>
@@ -1516,15 +1447,22 @@ function renderDetailedReportUI(results) {
                   !ans.isCorrect
                     ? `
                 <div class="mt-3 pt-3 border-t border-gray-200 dark:border-slate-600 print-border-black">
+            <div class="mb-3 a3-stat-card text-left print-no-bg">
+                <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">${t("your_answer_label", uiState.language)}</span>
+                <span class="${colorClass} font-semibold block leading-snug">${icon} ${isMulti ? "<br>• " : ""}${userText}</span>
+                ${
+                  !ans.isCorrect
+                    ? `
+                <div class="mt-2 pt-2 border-t border-gray-200 dark:border-slate-600">
                     <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">${t("correct_answer_label", uiState.language)}</span>
                     <span class="print-text-green text-green-600 dark:text-green-400 font-semibold block leading-snug">✅ ${isMulti ? "<br>• " : ""}${correctText}</span>
                 </div>`
                     : ""
                 }
             </div>
-            <div class="explanation-print mt-4 p-4 rounded-lg bg-blue-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 border-l-4 border-l-blue-500 text-sm text-gray-800 dark:text-gray-200 print-no-bg">
-                <strong class="text-blue-800 dark:text-blue-300 block mb-2 print-text-black">${t("explanation_label", uiState.language)}</strong>
-                <span class="block leading-relaxed print-text-black">${ans.explanation}</span>
+            <div class="explanation-print mt-4 a3-feedback print-no-bg">
+                <strong class="text-main block mb-2 print-text-black">${t("explanation_label", uiState.language)}</strong>
+                <span class="block leading-relaxed print-text-black text-muted">${ans.explanation}</span>
             </div>
         </div>
         `;
@@ -1558,15 +1496,15 @@ function renderDiagnosticReport(results) {
   const weakDomainsHtml =
     weakDomains.length > 0
       ? `
-        <div class="w-full max-w-4xl mx-auto mb-8 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl p-5 text-left fade-in">
-            <h3 class="font-black text-orange-800 dark:text-orange-300 mb-3 flex items-center gap-2">
+        <div class="a3-feedback a3-feedback-warning max-w-4xl mx-auto mb-8 fade-in text-left">
+            <h3 class="font-black mb-3 flex items-center gap-2">
                 <i class="fa-solid fa-bullseye"></i> ${t("weak_domains_title", uiState.language)}
             </h3>
             <div class="flex flex-wrap gap-2">
                 ${weakDomains
                   .map(
                     (domain) => `
-                    <span class="px-3 py-2 bg-white dark:bg-slate-800 border border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-300 rounded-lg text-sm font-bold">
+                    <span class="a3-skill-badge a3-skill-badge-danger">
                         ${domain.name} - ${domain.percentage.toFixed(0)}%
                     </span>
                 `,
@@ -1576,18 +1514,18 @@ function renderDiagnosticReport(results) {
         </div>
     `
       : `
-        <div class="w-full max-w-4xl mx-auto mb-8 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl p-5 text-center fade-in">
-            <p class="text-sm text-gray-600 dark:text-gray-300">${t("diagnostic_not_enough_data", uiState.language)}</p>
+        <div class="a3-stat-card max-w-4xl mx-auto mb-8 fade-in text-center">
+            <p class="text-sm text-muted">${t("diagnostic_not_enough_data", uiState.language)}</p>
         </div>
     `;
 
   let html = `
         <div class="text-center mb-8 fade-in">
-            <h2 class="text-3xl font-black text-gray-800 dark:text-white mb-2">Seu Raio-X da Nuvem</h2>
-            <p class="text-gray-500 dark:text-gray-400">Analisamos seus conceitos base. Aqui está o seu foco de estudos recomendado.</p>
+            <h2 class="text-3xl font-black text-main mb-2">Seu Raio-X da Nuvem</h2>
+            <p class="text-muted">Analisamos seus conceitos base. Aqui está o seu foco de estudos recomendado.</p>
         </div>
         
-        <div class="w-full max-w-md mx-auto mb-8 bg-white dark:bg-slate-800 p-4 rounded-xl border border-gray-100 dark:border-slate-700 shadow-sm fade-in flex justify-center">
+        <div class="a3-result-card max-w-md mx-auto mb-8 fade-in flex justify-center">
             <canvas id="radarChart" style="max-height: 250px;"></canvas>
         </div>
 
@@ -1603,8 +1541,8 @@ function renderDiagnosticReport(results) {
       const isWeak = pct < 60;
 
       const cardColor = isWeak
-        ? "bg-orange-50 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800"
-        : "bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800";
+        ? "a3-stat-card a3-stat-card-warning"
+        : "a3-stat-card a3-stat-card-success";
       const iconColor = isWeak ? "text-orange-500" : "text-green-500";
       const icon = isWeak ? "fa-book-open" : "fa-check-circle";
       const msg = isWeak
@@ -1612,16 +1550,16 @@ function renderDiagnosticReport(results) {
         : "Conceito consolidado! Ótimo trabalho.";
 
       html += `
-                <div class="${cardColor} border p-6 rounded-xl flex flex-col justify-between transition-all hover:shadow-md">
+                <div class="${cardColor} flex flex-col justify-between transition-all hover:shadow-md h-full">
                     <div>
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-bold text-gray-800 dark:text-gray-200 text-lg">${domain.name}</h3>
+                            <h3 class="font-bold text-main text-lg">${domain.name}</h3>
                             <i class="fa-solid ${icon} ${iconColor} text-2xl"></i>
                         </div>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">${msg}</p>
+                        <p class="text-sm text-muted mb-4">${msg}</p>
                     </div>
-                    <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 mb-1">
-                        <div class="bg-${isWeak ? "orange" : "green"}-500 h-3 rounded-full" style="width: ${pct}%"></div>
+                    <div class="a3-progress">
+                        <div class="a3-progress-bar ${isWeak ? "warning" : "success"}" style="width: ${pct}%"></div>
                     </div>
                     <div class="text-right text-xs font-bold ${iconColor}">${pct.toFixed(0)}% de Acerto</div>
                 </div>
@@ -1633,12 +1571,12 @@ function renderDiagnosticReport(results) {
   html += `
         </div>
         <div class="mt-10 text-center flex justify-center gap-4 fade-in">
-            <button onclick="goHome()" class="bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-gray-800 dark:text-white font-bold py-3 px-8 rounded-xl transition-all">
+            <button onclick="goHome()" class="a3-button-secondary py-3 px-8 text-lg w-auto">
                 Voltar ao Início
             </button>
             ${
               weakDomains.length > 0
-                ? `<button id="btn-start-personalized-diagnostic-quiz" class="bg-aws-orange hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-md">
+                ? `<button id="btn-start-personalized-diagnostic-quiz" class="a3-button-primary py-3 px-8 text-lg w-auto">
                     ${t("practice_weak_domains", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>
                 </button>`
                 : ""
@@ -1702,9 +1640,7 @@ function loadLastScore() {
     banner.classList.remove("hidden");
     banner.classList.add(
       "cursor-pointer",
-      "hover:bg-blue-100",
-      "dark:hover:bg-blue-800",
-      "transition-all",
+      "a3-hover-lift",
     );
     const awsScore = Math.floor((last.percentage / 100) * 900) + 100;
 
@@ -1828,21 +1764,21 @@ function updateHistoryDisplay() {
     const originalIndex = rawHistory.indexOf(item);
 
     html += `
-        <li onclick="showHistoricalReport(${originalIndex})" class="flex justify-between items-center gap-3 p-3 bg-gray-50 dark:bg-slate-700/50 border border-gray-200 dark:border-slate-600 rounded-lg shadow-sm cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-600 transition-all group">
+        <li onclick="showHistoricalReport(${originalIndex})" class="a3-stat-card flex justify-between items-center gap-3 p-3 cursor-pointer a3-hover-lift group text-left">
             <div>
-                <div class="font-bold text-gray-700 dark:text-gray-200 group-hover:text-aws-orange transition-colors">${certName}</div>
-                <div class="text-xs text-gray-500 dark:text-gray-400">${date}</div>
+                <div class="font-bold text-main group-hover:text-primary transition-colors">${certName}</div>
+                <div class="text-xs text-muted">${date}</div>
             </div>
             <div class="flex items-start gap-2">
                 <div class="flex flex-col items-end">
                     <div class="${color} font-bold text-lg flex items-center gap-1">
                         ${awsScore} <i class="fa-solid ${icon}"></i>
                     </div>
-                    <div class="history-view-report text-[10px] text-blue-500 dark:text-blue-400 opacity-80 group-hover:opacity-100 group-hover:underline mt-1 transition-all">
+                    <div class="history-view-report text-[10px] text-primary opacity-80 group-hover:opacity-100 group-hover:underline mt-1 transition-all">
                         <i class="fa-solid fa-eye"></i> ${viewReportLabel}
                     </div>
                 </div>
-                <button type="button" onclick="removeHistoryItem(event, ${originalIndex})" class="history-remove-btn shrink-0 w-8 h-8 rounded-md text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors" title="${removeLabel}" aria-label="${removeLabel}">
+                <button type="button" onclick="removeHistoryItem(event, ${originalIndex})" class="history-remove-btn shrink-0 w-8 h-8 rounded-md text-muted transition-colors" title="${removeLabel}" aria-label="${removeLabel}">
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
             </div>
@@ -2175,7 +2111,7 @@ function updateValidationBadgeLanguage() {
       : `Validada por especialista: ${q.validated_by}`;
 
   // Atualiza o texto visível do badge (mantém o ícone)
-  badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1" style="color: #35B769;" aria-hidden="true"></i> ${isValidatedText}`;
+  badge.innerHTML = `<i class="fa-solid fa-circle-check mr-1" style="color: var(--a3-success);" aria-hidden="true"></i> ${isValidatedText}`;
   badge.setAttribute("aria-label", tooltipText);
   initValidationBadgeTooltip(badge, tooltipText);
 }
@@ -2920,23 +2856,23 @@ function renderStudyPlanBanner() {
   const banner = document.createElement("div");
   banner.id = "study-recommendation-banner";
   banner.className =
-    "mb-6 p-5 bg-orange-50 dark:bg-orange-900/20 border-l-4 border-aws-orange rounded-r-xl shadow-sm animate-fade-in";
+    "a3-feedback a3-feedback-warning animate-fade-in mb-6 relative";
 
   banner.innerHTML = `
         <div class="flex items-start gap-4">
-            <div class="bg-aws-orange text-white p-2 rounded-lg">
-                <i class="fa-solid fa-graduation-cap text-xl"></i>
+            <div class="a3-icon-badge">
+                <i class="fa-solid fa-graduation-cap text-xl text-primary"></i>
             </div>
             <div>
-                <h4 class="font-black text-orange-800 dark:text-orange-300 uppercase text-xs tracking-widest mb-1">Seu Plano de Estudo Personalizado</h4>
-                <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">
+                <h4 class="font-black text-main uppercase text-xs tracking-widest mb-1">Seu Plano de Estudo Personalizado</h4>
+                <p class="text-sm text-muted mb-3">
                     Com base no seu diagnóstico, focamos nestes pontos de atenção:
                 </p>
                 <div class="flex flex-wrap gap-2">
                     ${domainNames
                       .map(
                         (name) => `
-                        <span class="px-3 py-1 bg-white dark:bg-slate-800 border border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-400 rounded-full text-xs font-bold">
+                        <span class="a3-skill-badge a3-skill-badge-danger text-xs">
                             ${name}
                         </span>
                     `,

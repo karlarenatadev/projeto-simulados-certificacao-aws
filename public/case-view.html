@@ -48,12 +48,10 @@
     <!-- ======================================================
          HEADER
          ====================================================== -->
-    <header
-      class="aws-bg-dark text-white shadow-md py-3 px-4 md:py-4 md:px-6 flex justify-between items-center sticky top-0 z-50"
-    >
+    <header class="a3-header">
       <a
         href="index.html"
-        class="flex items-center gap-2 md:gap-3 cursor-pointer group no-underline text-white"
+        class="a3-header-link group"
         title="Voltar ao início"
       >
         <i
@@ -61,18 +59,17 @@
           aria-hidden="true"
         ></i>
         <div>
-          <h1
-            class="text-base md:text-xl font-bold leading-tight group-hover:text-aws-orange transition-colors"
-          >
-            Simulador IA
+          <h1 class="text-base md:text-xl font-bold leading-tight group-hover:text-primary transition-colors">
+            Cloud Academy A3
           </h1>
-          <p class="text-[10px] md:text-xs text-gray-300">Certificações AWS</p>
+          <p class="text-[10px] md:text-xs text-gray-300">Sua jornada para certificações AWS</p>
         </div>
       </a>
-      <div class="flex items-center gap-2 md:gap-4 text-sm font-semibold">
+      <div class="a3-header-actions">
         <button
           id="btn-language"
-          class="text-gray-300 hover:text-white transition-colors px-2 py-1 md:px-3 md:py-2 rounded-lg hover:bg-gray-700 flex items-center gap-1 md:gap-2"
+          class="a3-button-secondary a3-badge"
+          style="background: transparent; color: inherit; border: none; font-size: inherit;"
           aria-label="Alternar idioma"
           title="Alternar idioma"
         >
@@ -83,7 +80,8 @@
 
         <button
           id="theme-toggle"
-          class="text-gray-300 hover:text-white transition-colors p-1.5 md:p-2 rounded-full hover:bg-gray-700"
+          class="a3-button-secondary a3-badge"
+          style="background: transparent; color: inherit; border: none; font-size: inherit;"
           aria-label="Alternar modo escuro"
         >
           <i
@@ -95,7 +93,7 @@
 
         <button
           id="header-pomodoro-btn"
-          class="flex items-center gap-2 px-3 py-1 bg-orange-500/10 border border-orange-500/50 rounded-lg hover:bg-orange-500/20 transition-all text-sm text-orange-400 group"
+          class="a3-badge a3-badge-warning"
         >
           <i class="fa-solid fa-stopwatch group-hover:animate-pulse"></i>
           <span id="header-pomodoro-timer" class="font-mono">15:00</span>
@@ -103,7 +101,8 @@
 
         <button
           id="install-app"
-          class="hidden md:flex items-center gap-2 px-3 py-1 border border-white/30 rounded-lg hover:bg-white/10 transition-all text-sm"
+          class="a3-button-secondary hidden md:flex items-center gap-2"
+          style="background: transparent; color: inherit; font-size: inherit;"
         >
           <i class="fa-solid fa-download"></i> Baixar App
         </button>
@@ -111,7 +110,7 @@
         <div
           id="score-container"
           style="display: none"
-          class="bg-gray-700 px-2 py-1 md:px-3 rounded-full flex items-center gap-1 md:gap-2"
+          class="a3-badge a3-badge-primary"
         >
           <i
             class="fa-solid fa-bullseye text-green-400 text-xs md:text-base"
@@ -252,7 +251,7 @@
       <div style="margin-top:1.5rem; display:flex; justify-content:flex-end; gap:1rem; flex-wrap:wrap; align-items:center;">
         <button
           id="study-arch-btn"
-          class="flex items-center gap-2 px-4 py-2 border-2 rounded-lg text-sm font-semibold transition-all"
+          class="a3-button-secondary"
           style="border-color:var(--a3-tech-blue); color:var(--a3-tech-blue);"
           onclick="switchTab('architecture')"
         >
@@ -284,7 +283,7 @@
             <i class="fa-solid fa-diagram-project" style="color:var(--a3-tech-blue);"></i>
             Diagrama de Arquitetura
           </h3>
-          <span style="font-size:0.72rem; color:var(--a3-text-muted);">
+          <span style="font-size:0.72rem; color:var(--text-muted);">
             <i class="fa-brands fa-github"></i> Renderizado com Mermaid.js
           </span>
         </div>
@@ -298,7 +297,7 @@
           <i class="fa-solid fa-circle-info" style="color:var(--a3-tech-blue);"></i>
           Como Ler Este Diagrama
         </h3>
-        <p id="arch-explanation-text" style="font-size:0.85rem; color:var(--a3-text-muted); line-height:1.65;"></p>
+        <p id="arch-explanation-text" style="font-size:0.85rem; color:var(--text-muted); line-height:1.65;"></p>
       </div>
 
       <div style="margin-top:1.5rem; display:flex; justify-content:flex-end;">
@@ -501,6 +500,7 @@
         getResourceIcon,
         isCompleted,
         markCaseComplete,
+        getApiStatus,
       } from './js/cases/caseManager.js';
       import { renderArchitecture } from './js/cases/architectureRenderer.js';
 
@@ -564,7 +564,7 @@
       function renderServices(services) {
         const grid = document.getElementById('services-grid');
         if (!services || services.length === 0) {
-          grid.innerHTML = '<p style="font-size:0.85rem; color:var(--a3-text-muted);">Nenhum serviço registrado.</p>';
+          grid.innerHTML = '<p style="font-size:0.85rem; color:var(--text-muted);">Nenhum serviço registrado.</p>';
           return;
         }
 
@@ -753,14 +753,28 @@
         }
 
         const caseData = await getCaseById(idOrSlug);
+        const status = getApiStatus();
 
         if (!caseData) {
+          let emptyMessage = 'Case não encontrado.';
+          if (!status.apiAvailable && !status.fallbackUsed) {
+             emptyMessage = 'Serviço indisponível no momento. Tente novamente mais tarde.';
+          }
           document.getElementById('case-header-loading').innerHTML = `
             <p style="color:rgba(255,255,255,0.7); font-size:0.9rem;">
               <i class="fa-solid fa-triangle-exclamation" style="color:var(--a3-warning);"></i>
-              Case não encontrado. <a href="./cases.html" style="color:var(--a3-sky-frost);">Ver todos os cases</a>.
+              ${emptyMessage} <a href="./cases.html" style="color:var(--a3-sky-frost);">Ver todos os cases</a>.
             </p>`;
           return;
+        }
+
+        if (status.fallbackUsed) {
+          const banner = document.createElement('div');
+          banner.style.cssText = 'background:var(--a3-surface-warning); color:var(--text-main); padding:0.75rem; border-radius:8px; margin-bottom:1rem; text-align:center; font-size:0.9rem; border: 1px solid var(--a3-accent); display:flex; align-items:center; justify-content:center; gap:0.5rem;';
+          banner.innerHTML = '<i class="fa-solid fa-wifi-slash" style="color:var(--a3-warning);"></i> Não foi possível conectar ao servidor. Usando modo offline.';
+          
+          const headerContent = document.getElementById('case-header-content');
+          headerContent.parentNode.insertBefore(banner, headerContent);
         }
 
         window._caseData = caseData;

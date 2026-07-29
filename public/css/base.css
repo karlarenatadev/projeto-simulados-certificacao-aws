@@ -1,0 +1,20 @@
+/* ==========================================================================
+   BASE CSS
+   Estilos aplicados diretamente a tags, seleções e tipografia base
+   ========================================================================== */
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--a3-accent) 28%, transparent);
+  color: inherit;
+}

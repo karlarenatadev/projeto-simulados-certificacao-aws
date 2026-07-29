@@ -1,0 +1,33 @@
+/* ==========================================================================
+   BUTTONS COMPONENT
+   ========================================================================== */
+
+.a3-button-primary {
+  background-color: var(--a3-tech-blue);
+  color: var(--a3-text-on-dark);
+  border: none;
+  border-radius: var(--a3-radius-md);
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--a3-transition-fast) ease-in-out;
+}
+
+.a3-button-primary:hover {
+  background-color: var(--aws-orange-hover);
+}
+
+.a3-button-secondary {
+  background-color: var(--a3-surface-soft);
+  color: var(--text-main);
+  border: 1px solid var(--border-theme);
+  border-radius: var(--a3-radius-md);
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--a3-transition-fast) ease-in-out;
+}
+
+.a3-button-secondary:hover {
+  background-color: var(--a3-surface-raised);
+}
