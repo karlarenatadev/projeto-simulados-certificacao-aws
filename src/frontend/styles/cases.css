@@ -26,7 +26,7 @@
 }
 
 .cases-hero::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   background: radial-gradient(
@@ -167,10 +167,7 @@
   border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   display: flex;
   flex-direction: column;
   text-decoration: none;
@@ -180,8 +177,7 @@
 
 .case-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 40px
-    color-mix(in srgb, var(--a3-deep-sea) 12%, transparent);
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--a3-deep-sea) 12%, transparent);
   border-color: color-mix(in srgb, var(--a3-tech-blue) 50%, transparent);
 }
 
@@ -253,8 +249,7 @@
 .difficulty-badge.advanced {
   background: color-mix(in srgb, var(--a3-amethyst-velvet) 12%, transparent);
   color: var(--a3-amethyst-velvet);
-  border: 1px solid
-    color-mix(in srgb, var(--a3-amethyst-velvet) 30%, transparent);
+  border: 1px solid color-mix(in srgb, var(--a3-amethyst-velvet) 30%, transparent);
 }
 
 .case-card-scenario {
@@ -374,7 +369,7 @@
 }
 
 .case-view-header::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   background: radial-gradient(
@@ -434,9 +429,7 @@
   border-bottom: 3px solid transparent;
   background: transparent;
   cursor: pointer;
-  transition:
-    color 0.15s,
-    border-color 0.15s;
+  transition: color 0.15s, border-color 0.15s;
   white-space: nowrap;
 }
 
@@ -532,9 +525,7 @@
   background: var(--bg-card);
   border: 1.5px solid var(--border-theme);
   border-radius: 10px;
-  transition:
-    border-color 0.15s,
-    box-shadow 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .service-chip:hover {
@@ -813,9 +804,7 @@
   border-radius: 10px;
   text-decoration: none;
   color: inherit;
-  transition:
-    border-color 0.15s,
-    box-shadow 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .resource-item:hover {
@@ -892,9 +881,7 @@
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition:
-    background 0.15s,
-    transform 0.15s;
+  transition: background 0.15s, transform 0.15s;
 }
 
 .case-complete-btn:hover {
@@ -967,12 +954,8 @@
 }
 
 @keyframes skeleton-shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 /* Responsive */
@@ -1074,10 +1057,7 @@
   background: var(--bg-card);
   color: var(--text-muted);
   cursor: pointer;
-  transition:
-    border-color 0.15s,
-    color 0.15s,
-    background 0.15s;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
   font-family: inherit;
 }
 
@@ -1219,38 +1199,14 @@
   position: relative;
   overflow: hidden;
   background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 24px,
-      var(--a3-border) 24px,
-      var(--a3-border) 25px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 24px,
-      var(--a3-border) 24px,
-      var(--a3-border) 25px
-    );
+    repeating-linear-gradient(0deg, transparent, transparent 24px, var(--a3-border) 24px, var(--a3-border) 25px),
+    repeating-linear-gradient(90deg, transparent, transparent 24px, var(--a3-border) 24px, var(--a3-border) 25px);
 }
 
 .dark .builder-canvas-wrap {
   background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 24px,
-      var(--a3-surface-soft) 24px,
-      var(--a3-surface-soft) 25px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 24px,
-      var(--a3-surface-soft) 24px,
-      var(--a3-surface-soft) 25px
-    );
+    repeating-linear-gradient(0deg, transparent, transparent 24px, var(--a3-surface-soft) 24px, var(--a3-surface-soft) 25px),
+    repeating-linear-gradient(90deg, transparent, transparent 24px, var(--a3-surface-soft) 24px, var(--a3-surface-soft) 25px);
 }
 
 #drawflow {
@@ -1299,11 +1255,7 @@
 }
 
 .dark .builder-tip-bar {
-  background: color-mix(
-    in srgb,
-    var(--a3-sky-frost) 4%,
-    var(--a3-surface-soft)
-  );
+  background: color-mix(in srgb, var(--a3-sky-frost) 4%, var(--a3-surface-soft));
 }
 
 .builder-tip-bar i {
@@ -1490,15 +1442,9 @@
   gap: 0.4rem;
 }
 
-.builder-result-group--correct .builder-result-group-title {
-  color: var(--a3-success);
-}
-.builder-result-group--missing .builder-result-group-title {
-  color: var(--a3-danger);
-}
-.builder-result-group--extra .builder-result-group-title {
-  color: var(--a3-warning);
-}
+.builder-result-group--correct .builder-result-group-title { color: var(--a3-success); }
+.builder-result-group--missing .builder-result-group-title { color: var(--a3-danger); }
+.builder-result-group--extra   .builder-result-group-title { color: var(--a3-warning); }
 
 .builder-result-item {
   display: flex;
@@ -1609,12 +1555,9 @@
   border-radius: 12px;
   min-width: 130px;
   padding: 0;
-  box-shadow: 0 4px 16px
-    color-mix(in srgb, var(--a3-text-strong) 10%, transparent);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--a3-text-strong) 10%, transparent);
   font-family: inherit;
-  transition:
-    border-color 0.15s,
-    box-shadow 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .drawflow .drawflow-node:hover,

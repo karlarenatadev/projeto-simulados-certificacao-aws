@@ -783,7 +783,7 @@ export class StorageManager {
 
       // Limit history to last 100 sessions to prevent localStorage overflow
       const finalHistory = history.slice(-100);
-
+      
       localStorage.setItem(key, JSON.stringify(finalHistory));
       return true;
     } catch (error) {
@@ -888,21 +888,15 @@ export class StorageManager {
 
     const deck = this.getReviewDeck(certId);
     const qId = generateQuestionId(question, certId);
-
-    const existingIndex = deck.findIndex(
-      (q) =>
-        q.questionId === qId ||
-        (q.question &&
-          question.question &&
-          q.question.substring(0, 50) === question.question.substring(0, 50)),
-    );
-
+    
+    const existingIndex = deck.findIndex(q => (q.questionId === qId) || (q.question && question.question && q.question.substring(0,50) === question.question.substring(0,50)));
+    
     if (existingIndex >= 0) {
       // Atualiza existente, incrementando count
       deck[existingIndex] = {
         ...deck[existingIndex],
         flaggedCount: (deck[existingIndex].flaggedCount || 1) + 1,
-        flaggedAt: new Date().toISOString(),
+        flaggedAt: new Date().toISOString()
       };
     } else {
       // Adiciona nova
@@ -912,11 +906,11 @@ export class StorageManager {
         certId: certId,
         flaggedAt: new Date().toISOString(),
         flaggedCount: 1,
-        reviewStatus: "pending",
+        reviewStatus: 'pending',
         resolvedAt: null,
         // Garante domain e services
         domain: question.domain || question.domainId || "",
-        services: Array.isArray(question.services) ? question.services : [],
+        services: Array.isArray(question.services) ? question.services : []
       });
     }
 
@@ -942,21 +936,16 @@ export class StorageManager {
     } else {
       qId = generateQuestionId(questionIdOrObject, certId);
       if (questionIdOrObject.question) {
-        hashFallback = questionIdOrObject.question.substring(0, 50);
+         hashFallback = questionIdOrObject.question.substring(0, 50);
       }
     }
 
     let deck = this.getReviewDeck(certId);
-
+    
     const initialLength = deck.length;
-    deck = deck.filter((q) => {
+    deck = deck.filter(q => {
       if (q.questionId === qId) return false;
-      if (
-        hashFallback &&
-        q.question &&
-        q.question.substring(0, 50) === hashFallback
-      )
-        return false;
+      if (hashFallback && q.question && q.question.substring(0,50) === hashFallback) return false;
       return true;
     });
 
@@ -975,22 +964,22 @@ export class StorageManager {
    */
   getReviewStats(certId) {
     const deck = this.getReviewDeck(certId);
-
+    
     const stats = {
       total: deck.length,
       pending: 0,
       resolved: 0,
-      domains: {},
+      domains: {}
     };
 
-    deck.forEach((q) => {
-      if (q.reviewStatus === "resolved") {
+    deck.forEach(q => {
+      if (q.reviewStatus === 'resolved') {
         stats.resolved++;
       } else {
         stats.pending++;
       }
-
-      const domain = q.domain || "Uncategorized";
+      
+      const domain = q.domain || 'Uncategorized';
       stats.domains[domain] = (stats.domains[domain] || 0) + 1;
     });
 
@@ -1001,14 +990,9 @@ export class StorageManager {
    * Salva questões marcadas para revisão no deck do usuário (em lote).
    */
   saveReviewDeck(certId, flaggedQuestionsArray) {
-    if (
-      !certId ||
-      !Array.isArray(flaggedQuestionsArray) ||
-      flaggedQuestionsArray.length === 0
-    )
-      return;
-
-    flaggedQuestionsArray.forEach((q) => {
+    if (!certId || !Array.isArray(flaggedQuestionsArray) || flaggedQuestionsArray.length === 0) return;
+    
+    flaggedQuestionsArray.forEach(q => {
       this.addReviewQuestion(certId, q);
     });
   }
@@ -1022,11 +1006,11 @@ export class StorageManager {
       const deckKey = this._getKey(`${certId}_review_deck`);
       const stored = localStorage.getItem(deckKey);
       if (!stored) return [];
-
+      
       let deck = JSON.parse(stored);
       let needsMigration = false;
 
-      deck = deck.map((q) => {
+      deck = deck.map(q => {
         if (!q.questionId) {
           needsMigration = true;
           return {
@@ -1035,10 +1019,10 @@ export class StorageManager {
             certId: certId,
             flaggedAt: new Date().toISOString(),
             flaggedCount: 1,
-            reviewStatus: "pending",
+            reviewStatus: 'pending',
             resolvedAt: null,
             domain: q.domain || q.domainId || "",
-            services: Array.isArray(q.services) ? q.services : [],
+            services: Array.isArray(q.services) ? q.services : []
           };
         }
         return q;

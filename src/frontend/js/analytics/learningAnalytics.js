@@ -12,18 +12,15 @@
  * @module analytics/learningAnalytics
  */
 
-import { DomainAnalyzer } from "./domainAnalyzer.js";
-import { TrendAnalyzer } from "./trendAnalyzer.js";
+import { DomainAnalyzer } from './domainAnalyzer.js';
+import { TrendAnalyzer } from './trendAnalyzer.js';
 
 export class LearningAnalytics {
   /**
    * @param {object} storage - Instância do StorageManager (ou objeto mock com mesma interface)
    */
   constructor(storage) {
-    if (!storage)
-      throw new Error(
-        '[LearningAnalytics] Dependência "storage" é obrigatória.',
-      );
+    if (!storage) throw new Error('[LearningAnalytics] Dependência "storage" é obrigatória.');
     this.storage = storage;
     this.domainAnalyzer = new DomainAnalyzer();
     this.trendAnalyzer = new TrendAnalyzer();
@@ -37,20 +34,19 @@ export class LearningAnalytics {
    * @returns {LearningProfile}
    */
   getLearningProfile(certId) {
-    if (!certId) throw new Error("[LearningAnalytics] certId é obrigatório.");
+    if (!certId) throw new Error('[LearningAnalytics] certId é obrigatório.');
 
     const normalizedCertId = certId.toLowerCase();
 
     // 1. Coleta bruta de dados
     const allHistory = this._safeGet(() => this.storage.getHistory(), []);
     const history = allHistory.filter(
-      (item) => item?.certId?.toLowerCase() === normalizedCertId,
+      (item) => item?.certId?.toLowerCase() === normalizedCertId
     );
 
     const allMistakes = this._safeGet(() => this.storage.getMistakes(), {});
     // getMistakes retorna um store { certId: { questionId: mistakeRecord } }
-    const certMistakesStore =
-      allMistakes[normalizedCertId] || allMistakes[certId] || {};
+    const certMistakesStore = allMistakes[normalizedCertId] || allMistakes[certId] || {};
     const mistakes = Object.values(certMistakesStore);
 
     // 2. Estado vazio — usuário não fez nenhum simulado desta cert ainda
@@ -63,11 +59,9 @@ export class LearningAnalytics {
     const trend = this.trendAnalyzer.analyze(history);
     const overview = this._buildOverview(history, domains, trend);
 
-    const strengths = domains
-      .filter((d) => d.status === "strong")
-      .map((d) => d.name);
+    const strengths = domains.filter((d) => d.status === 'strong').map((d) => d.name);
     const weakAreas = domains
-      .filter((d) => d.status === "needs_review" || d.status === "critical")
+      .filter((d) => d.status === 'needs_review' || d.status === 'critical')
       .map((d) => d.name);
 
     /** @type {LearningProfile} */
@@ -91,16 +85,10 @@ export class LearningAnalytics {
       examsTaken === 0
         ? 0
         : Math.round(
-            history.reduce((sum, item) => sum + (item.percentage || 0), 0) /
-              examsTaken,
+            history.reduce((sum, item) => sum + (item.percentage || 0), 0) / examsTaken
           );
 
-    const readiness = this._calculateReadiness(
-      averageScore,
-      examsTaken,
-      domains,
-      trend,
-    );
+    const readiness = this._calculateReadiness(averageScore, examsTaken, domains, trend);
 
     return { averageScore, examsTaken, trend, readiness };
   }
@@ -118,13 +106,11 @@ export class LearningAnalytics {
     score += volumeBonus;
 
     // Tendência crescente: +5pts
-    if (trend === "positive") score += 5;
-    else if (trend === "negative") score -= 5;
+    if (trend === 'positive') score += 5;
+    else if (trend === 'negative') score -= 5;
 
     // Penalidade por domínios críticos (< 50%): -3 pts por domínio crítico
-    const criticalDomains = domains.filter(
-      (d) => d.status === "critical",
-    ).length;
+    const criticalDomains = domains.filter((d) => d.status === 'critical').length;
     score -= criticalDomains * 3;
 
     return Math.max(0, Math.min(100, Math.round(score)));
@@ -133,12 +119,7 @@ export class LearningAnalytics {
   _buildEmptyProfile(certId) {
     return {
       certification: certId,
-      overview: {
-        averageScore: 0,
-        examsTaken: 0,
-        trend: "neutral",
-        readiness: 0,
-      },
+      overview: { averageScore: 0, examsTaken: 0, trend: 'neutral', readiness: 0 },
       domains: [],
       strengths: [],
       weakAreas: [],

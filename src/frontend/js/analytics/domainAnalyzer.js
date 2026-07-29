@@ -49,7 +49,7 @@ export class DomainAnalyzer {
 
   _mergeMistakes(aggregates, mistakes) {
     mistakes.forEach((mistake) => {
-      const domain = mistake.domain || "Não categorizado";
+      const domain = mistake.domain || 'Não categorizado';
       if (!aggregates[domain]) {
         aggregates[domain] = { total: 0, correct: 0, mistakesCount: 0 };
       }
@@ -83,10 +83,10 @@ export class DomainAnalyzer {
    * @returns {'strong'|'intermediate'|'needs_review'|'critical'}
    */
   _getStatus(score) {
-    if (score >= 80) return "strong";
-    if (score >= 65) return "intermediate";
-    if (score >= 45) return "needs_review";
-    return "critical";
+    if (score >= 80) return 'strong';
+    if (score >= 65) return 'intermediate';
+    if (score >= 45) return 'needs_review';
+    return 'critical';
   }
 
   _getRecommendation(domainName, score, status) {
@@ -96,6 +96,6 @@ export class DomainAnalyzer {
       intermediate: `Você está progredindo em ${domainName}. Pratique com questões de nível difícil para consolidar.`,
       strong: `Você domina ${domainName}. Mantenha revisões esporádicas para não regredir.`,
     };
-    return recs[status] || "";
+    return recs[status] || '';
   }
 }

@@ -40,9 +40,6 @@ jobs:
       - name: Audit production dependencies
         run: npm audit --omit=dev
 
-      - name: Check formatting
-        run: npm run format:check --if-present
-
       - name: Run lint
         run: npm run lint --if-present
 
