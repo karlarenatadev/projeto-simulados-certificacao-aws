@@ -104,7 +104,7 @@ export function createDataRepository(storage, _api = null) {
     getReviewDeck(certId) {
       return storage.getReviewDeck(certId);
     },
-    
+
     addReviewQuestion(certId, question) {
       return storage.addReviewQuestion(certId, question);
     },
@@ -116,7 +116,6 @@ export function createDataRepository(storage, _api = null) {
     getReviewStats(certId) {
       return storage.getReviewStats(certId);
     },
-
 
     // -------------------------------------------------------------------------
     // Gamificação

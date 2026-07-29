@@ -860,9 +860,9 @@ function loadQuestionUI() {
   const flagBtn = document.getElementById("btn-flag");
   if (flagBtn) {
     if (uiState.flags.includes(progress.current - 1)) {
-        flagBtn.classList.add("text-orange-500");
+      flagBtn.classList.add("text-orange-500");
     } else {
-        flagBtn.classList.remove("text-orange-500");
+      flagBtn.classList.remove("text-orange-500");
     }
   }
 
@@ -1136,19 +1136,19 @@ function finishQuiz() {
 function toggleFlag() {
   const flagBtn = document.getElementById("btn-flag");
   if (!flagBtn) return;
-  
+
   const currentIdx = engine.state.currentIndex;
   const question = engine.state.questions[currentIdx];
   const certId = getActiveCertificationId();
-  
+
   if (uiState.flags.includes(currentIdx)) {
-      uiState.flags = uiState.flags.filter(i => i !== currentIdx);
-      flagBtn.classList.remove("text-orange-500");
-      storageManager.removeReviewQuestion(certId, question);
+    uiState.flags = uiState.flags.filter((i) => i !== currentIdx);
+    flagBtn.classList.remove("text-orange-500");
+    storageManager.removeReviewQuestion(certId, question);
   } else {
-      uiState.flags.push(currentIdx);
-      flagBtn.classList.add("text-orange-500");
-      storageManager.addReviewQuestion(certId, question);
+    uiState.flags.push(currentIdx);
+    flagBtn.classList.add("text-orange-500");
+    storageManager.addReviewQuestion(certId, question);
   }
 }
 
@@ -1369,24 +1369,24 @@ function renderDetailedReportUI(results) {
 
   // --- NOVA SEÇÃO: QUESTÕES MARCADAS PARA REVISÃO ---
   if (uiState.flags && uiState.flags.length > 0) {
-      html += `
+    html += `
           <div class="flagged-questions-section mb-8">
               <h3 class="text-xl font-bold text-orange-600 dark:text-orange-400 mb-4 pb-2 border-b border-gray-200 dark:border-slate-700">
                   <i class="fa-solid fa-flag mr-2"></i> ${t("flag_for_review", uiState.language) || "Marcadas para Revisão"}
               </h3>
               <div class="space-y-4">
       `;
-      
-      uiState.flags.forEach(qIdx => {
-          const q = engine.state.questions[qIdx];
-          if (!q) return;
-          
-          const isMulti = Array.isArray(q.correct);
-          let correctText = isMulti 
-              ? q.correct.map(i => q.options[i]).join("<br>• ") 
-              : q.options[q.correct];
-              
-          html += `
+
+    uiState.flags.forEach((qIdx) => {
+      const q = engine.state.questions[qIdx];
+      if (!q) return;
+
+      const isMulti = Array.isArray(q.correct);
+      let correctText = isMulti
+        ? q.correct.map((i) => q.options[i]).join("<br>• ")
+        : q.options[q.correct];
+
+      html += `
               <div class="a3-feedback a3-feedback-warning mb-4">
                   <p class="font-semibold text-main mb-3">${q.question}</p>
                   <div class="mb-3">
@@ -1401,9 +1401,9 @@ function renderDetailedReportUI(results) {
                   </div>
               </div>
           `;
-      });
-      
-      html += `</div></div>`;
+    });
+
+    html += `</div></div>`;
   }
   // --- FIM DA NOVA SEÇÃO ---
 
@@ -1632,10 +1632,7 @@ function loadLastScore() {
 
   if (last && typeof last.percentage === "number") {
     banner.classList.remove("hidden");
-    banner.classList.add(
-      "cursor-pointer",
-      "a3-hover-lift",
-    );
+    banner.classList.add("cursor-pointer", "a3-hover-lift");
     const awsScore = Math.floor((last.percentage / 100) * 900) + 100;
 
     banner.innerHTML = `
@@ -2624,9 +2621,7 @@ window.startMission = async function (stageId) {
   const currentCertInfo = certificationPaths[currentCertId];
 
   if (!currentCertInfo) {
-    logger.error(
-      `[startMission] Certificação ${currentCertId} não encontrada`,
-    );
+    logger.error(`[startMission] Certificação ${currentCertId} não encontrada`);
     alert("Erro ao carregar a certificação. Tente novamente.");
     return;
   }
@@ -2640,9 +2635,7 @@ window.startMission = async function (stageId) {
     currentStage = activeTrail.find((s) => s.id === stageId);
 
     if (!currentStage) {
-      logger.error(
-        `[startMission] Módulo ${stageId} não encontrado na trilha`,
-      );
+      logger.error(`[startMission] Módulo ${stageId} não encontrado na trilha`);
       alert("Erro ao identificar o módulo. Tente novamente.");
       return;
     }

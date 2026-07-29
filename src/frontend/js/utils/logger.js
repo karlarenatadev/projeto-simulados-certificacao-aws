@@ -18,6 +18,6 @@ export const logger = {
   error: (...args) => {
     // We always want to log critical errors
     console.error(...args);
-  }
+  },
 };
 /* eslint-enable no-console */

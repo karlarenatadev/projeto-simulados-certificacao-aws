@@ -15,13 +15,13 @@ export class TrendAnalyzer {
    * @returns {'positive'|'neutral'|'negative'}
    */
   analyze(history) {
-    if (!history || history.length < 2) return 'neutral';
+    if (!history || history.length < 2) return "neutral";
 
     const scores = history
       .map((item) => item.percentage || 0)
       .filter((p) => p > 0);
 
-    if (scores.length < 2) return 'neutral';
+    if (scores.length < 2) return "neutral";
 
     const half = Math.floor(scores.length / 2);
     const firstHalf = scores.slice(0, half);
@@ -30,9 +30,9 @@ export class TrendAnalyzer {
     const avg = (arr) => arr.reduce((s, v) => s + v, 0) / arr.length;
     const diff = avg(secondHalf) - avg(firstHalf);
 
-    if (diff > 3) return 'positive';
-    if (diff < -3) return 'negative';
-    return 'neutral';
+    if (diff > 3) return "positive";
+    if (diff < -3) return "negative";
+    return "neutral";
   }
 
   /**
@@ -44,12 +44,10 @@ export class TrendAnalyzer {
   getEvolutionPoints(history, n = 10) {
     if (!history || history.length === 0) return [];
 
-    return history
-      .slice(-n)
-      .map((item) => ({
-        date: item.date || new Date().toISOString(),
-        score: item.percentage || 0,
-        passed: !!item.passed,
-      }));
+    return history.slice(-n).map((item) => ({
+      date: item.date || new Date().toISOString(),
+      score: item.percentage || 0,
+      passed: !!item.passed,
+    }));
   }
 }

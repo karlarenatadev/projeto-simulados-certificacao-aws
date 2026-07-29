@@ -98,9 +98,13 @@ export class QuizEngine {
   // 1. CARREGAMENTO E FILTRAGEM
   async _sanitizeQuestions(data, certId) {
     try {
-      const manifestRes = await fetch("data/taxonomy/certification-manifest.json");
+      const manifestRes = await fetch(
+        "data/taxonomy/certification-manifest.json",
+      );
       if (!manifestRes.ok) {
-        logger.warn("⚠️ Não foi possível carregar o manifesto. Sanitização ignorada.");
+        logger.warn(
+          "⚠️ Não foi possível carregar o manifesto. Sanitização ignorada.",
+        );
         return data;
       }
       const manifest = await manifestRes.json();
@@ -109,16 +113,18 @@ export class QuizEngine {
         logger.warn(`⚠️ Certificação ${certId} ausente no manifesto.`);
         return data;
       }
-      
-      const sanitized = data.filter(q => {
+
+      const sanitized = data.filter((q) => {
         if (!q.questionId) return false;
         if (q.certId !== certId) return false;
         if (!config.allowedDomains.includes(q.domain)) return false;
-        if (q.validation?.status !== 'validated') return false;
+        if (q.validation?.status !== "validated") return false;
         return true;
       });
 
-      logger.info(`🛡️ Sanitização: ${sanitized.length}/${data.length} questões aprovadas.`);
+      logger.info(
+        `🛡️ Sanitização: ${sanitized.length}/${data.length} questões aprovadas.`,
+      );
       return sanitized;
     } catch (e) {
       logger.error("Erro na sanitização:", e);
@@ -157,7 +163,9 @@ export class QuizEngine {
       // Fallback to JSON if API fails
       if (!data || data.length === 0) {
         const fileSuffix = language === "en" ? "-en" : "";
-        const response = await fetch(`data/questions/${certId}${fileSuffix}.json`);
+        const response = await fetch(
+          `data/questions/${certId}${fileSuffix}.json`,
+        );
         if (!response.ok)
           throw new Error("Arquivo de questões não encontrado.");
 
@@ -237,7 +245,9 @@ export class QuizEngine {
 
       if (!data || data.length === 0) {
         const fileSuffix = language === "en" ? "-en" : "";
-        let response = await fetch(`data/questions/${certId}${fileSuffix}.json`);
+        let response = await fetch(
+          `data/questions/${certId}${fileSuffix}.json`,
+        );
 
         if (!response.ok && language === "en") {
           response = await fetch(`data/questions/${certId}.json`);
