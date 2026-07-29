@@ -1,12 +1,7 @@
-<!doctype html>
-<html lang="pt">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Detalhes do Case de Arquitetura AWS — Cenário, Diagrama, Serviços e Questões de Fixação."
-    />
+<!DOCTYPE html><html lang="pt"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Detalhes do Case de Arquitetura AWS — Cenário, Diagrama, Serviços e Questões de Fixação.">
     <title id="page-title">Case de Arquitetura — Simulador AWS</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -24,23 +19,14 @@
       };
     </script>
 
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E">
 
-    <link rel="stylesheet" href="./css/style.css" />
-    <link rel="stylesheet" href="./css/cases.css" />
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/cases.css">
 
     <!-- Drawflow — node editor for Architecture Builder -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/drawflow@0.0.60/dist/drawflow.min.css"
-    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/drawflow@0.0.60/dist/drawflow.min.css">
   </head>
 
   <body class="case-view-page" id="case-view-body">
@@ -49,15 +35,8 @@
          HEADER
          ====================================================== -->
     <header class="a3-header">
-      <a
-        href="index.html"
-        class="a3-header-link group"
-        title="Voltar ao início"
-      >
-        <i
-          class="fa-solid fa-cloud text-[#F53199] text-xl md:text-2xl group-hover:scale-110 transition-transform"
-          aria-hidden="true"
-        ></i>
+      <a href="index.html" class="a3-header-link group" title="Voltar ao início">
+        <i class="fa-solid fa-cloud text-[#F53199] text-xl md:text-2xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
         <div>
           <h1 class="text-base md:text-xl font-bold leading-tight group-hover:text-primary transition-colors">
             Cloud Academy A3
@@ -66,59 +45,26 @@
         </div>
       </a>
       <div class="a3-header-actions">
-        <button
-          id="btn-language"
-          class="a3-button-secondary a3-badge"
-          style="background: transparent; color: inherit; border: none; font-size: inherit;"
-          aria-label="Alternar idioma"
-          title="Alternar idioma"
-        >
-          <span class="text-[10px] md:text-xs font-bold"
-            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
-          >
+        <button id="btn-language" class="a3-btn a3-btn-secondary" style="background: transparent; color: inherit; border: none; font-size: inherit;" aria-label="Alternar idioma" title="Alternar idioma">
+          <span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>
         </button>
 
-        <button
-          id="theme-toggle"
-          class="a3-button-secondary a3-badge"
-          style="background: transparent; color: inherit; border: none; font-size: inherit;"
-          aria-label="Alternar modo escuro"
-        >
-          <i
-            id="theme-icon"
-            class="fa-solid fa-moon text-base md:text-xl"
-            aria-hidden="true"
-          ></i>
+        <button id="theme-toggle" class="a3-btn a3-btn-secondary" style="background: transparent; color: inherit; border: none; font-size: inherit;" aria-label="Alternar modo escuro">
+          <i id="theme-icon" class="fa-solid fa-moon text-base md:text-xl" aria-hidden="true"></i>
         </button>
 
-        <button
-          id="header-pomodoro-btn"
-          class="a3-badge a3-badge-warning"
-        >
+        <button id="header-pomodoro-btn" class="a3-btn a3-btn-secondary">
           <i class="fa-solid fa-stopwatch group-hover:animate-pulse"></i>
           <span id="header-pomodoro-timer" class="font-mono">15:00</span>
         </button>
 
-        <button
-          id="install-app"
-          class="a3-button-secondary hidden md:flex items-center gap-2"
-          style="background: transparent; color: inherit; font-size: inherit;"
-        >
+        <button id="install-app" class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2" style="background: transparent; color: inherit; font-size: inherit;">
           <i class="fa-solid fa-download"></i> Baixar App
         </button>
 
-        <div
-          id="score-container"
-          style="display: none"
-          class="a3-badge a3-badge-primary"
-        >
-          <i
-            class="fa-solid fa-bullseye text-green-400 text-xs md:text-base"
-            aria-hidden="true"
-          ></i>
-          <span id="score-display" class="text-xs md:text-sm" aria-live="polite"
-            >0 / 0</span
-          >
+        <div id="score-container" style="display: none" class="a3-badge a3-badge-primary">
+          <i class="fa-solid fa-bullseye text-green-400 text-xs md:text-base" aria-hidden="true"></i>
+          <span id="score-display" class="text-xs md:text-sm" aria-live="polite">0 / 0</span>
         </div>
       </div>
     </header>
@@ -154,59 +100,24 @@
          TABS
          ====================================================== -->
     <div class="case-tabs" role="tablist" aria-label="Seções do case">
-      <button
-        class="case-tab-btn active"
-        data-tab="scenario"
-        role="tab"
-        aria-selected="true"
-        aria-controls="tab-scenario"
-        id="tab-btn-scenario"
-      >
+      <button class="a3-btn a3-btn-secondary" data-tab="scenario" role="tab" aria-selected="true" aria-controls="tab-scenario" id="tab-btn-scenario">
         <i class="fa-solid fa-book-open" aria-hidden="true"></i>
         Cenário
       </button>
-      <button
-        class="case-tab-btn"
-        data-tab="architecture"
-        role="tab"
-        aria-selected="false"
-        aria-controls="tab-architecture"
-        id="tab-btn-architecture"
-      >
+      <button class="a3-btn a3-btn-secondary" data-tab="architecture" role="tab" aria-selected="false" aria-controls="tab-architecture" id="tab-btn-architecture">
         <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
         Arquitetura
       </button>
-      <button
-        class="case-tab-btn"
-        data-tab="questions"
-        role="tab"
-        aria-selected="false"
-        aria-controls="tab-questions"
-        id="tab-btn-questions"
-      >
+      <button class="a3-btn a3-btn-secondary" data-tab="questions" role="tab" aria-selected="false" aria-controls="tab-questions" id="tab-btn-questions">
         <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
         Questões
         <span id="questions-badge" style="display:none; background:var(--a3-tech-blue); color:#fff; font-size:0.65rem; font-weight:800; padding:0.1rem 0.45rem; border-radius:999px; margin-left:0.25rem;"></span>
       </button>
-      <button
-        class="case-tab-btn"
-        data-tab="resources"
-        role="tab"
-        aria-selected="false"
-        aria-controls="tab-resources"
-        id="tab-btn-resources"
-      >
+      <button class="a3-btn a3-btn-secondary" data-tab="resources" role="tab" aria-selected="false" aria-controls="tab-resources" id="tab-btn-resources">
         <i class="fa-solid fa-link" aria-hidden="true"></i>
         Recursos
       </button>
-      <button
-        class="case-tab-btn"
-        data-tab="builder"
-        role="tab"
-        aria-selected="false"
-        aria-controls="tab-builder"
-        id="tab-btn-builder"
-      >
+      <button class="a3-btn a3-btn-secondary" data-tab="builder" role="tab" aria-selected="false" aria-controls="tab-builder" id="tab-btn-builder">
         <i class="fa-solid fa-pencil-ruler" aria-hidden="true"></i>
         Montar Arquitetura
       </button>
@@ -216,12 +127,7 @@
     <!-- ======================================================
          TAB: CENÁRIO
          ====================================================== -->
-    <section
-      id="tab-scenario"
-      class="case-tab-content active"
-      role="tabpanel"
-      aria-labelledby="tab-btn-scenario"
-    >
+    <section id="tab-scenario" class="case-tab-content active" role="tabpanel" aria-labelledby="tab-btn-scenario">
       <div class="case-scenario-box">
         <h2>
           <i class="fa-solid fa-business-time" style="color:var(--a3-tech-blue);"></i>
@@ -249,19 +155,11 @@
 
       <!-- Complete Button -->
       <div style="margin-top:1.5rem; display:flex; justify-content:flex-end; gap:1rem; flex-wrap:wrap; align-items:center;">
-        <button
-          id="study-arch-btn"
-          class="a3-button-secondary"
-          style="border-color:var(--a3-tech-blue); color:var(--a3-tech-blue);"
-          onclick="switchTab('architecture')"
-        >
+        <button id="study-arch-btn" class="a3-btn a3-btn-secondary" style="border-color:var(--a3-tech-blue); color:var(--a3-tech-blue);" onclick="switchTab('architecture')">
           <i class="fa-solid fa-diagram-project"></i>
           Ver Arquitetura
         </button>
-        <button
-          id="complete-btn"
-          class="case-complete-btn"
-        >
+        <button id="complete-btn" class="a3-btn a3-btn-secondary">
           <i class="fa-solid fa-circle-check"></i>
           Marcar como Concluído
         </button>
@@ -271,12 +169,7 @@
     <!-- ======================================================
          TAB: ARQUITETURA
          ====================================================== -->
-    <section
-      id="tab-architecture"
-      class="case-tab-content"
-      role="tabpanel"
-      aria-labelledby="tab-btn-architecture"
-    >
+    <section id="tab-architecture" class="case-tab-content" role="tabpanel" aria-labelledby="tab-btn-architecture">
       <div class="architecture-container">
         <div class="architecture-toolbar">
           <h3>
@@ -301,11 +194,7 @@
       </div>
 
       <div style="margin-top:1.5rem; display:flex; justify-content:flex-end;">
-        <button
-          class="case-complete-btn"
-          onclick="switchTab('questions')"
-          style="background:var(--a3-amethyst-velvet);"
-        >
+        <button class="a3-btn a3-btn-secondary" onclick="switchTab('questions')" style="background:var(--a3-amethyst-velvet);">
           <i class="fa-solid fa-circle-question"></i>
           Praticar com Questões
         </button>
@@ -315,12 +204,7 @@
     <!-- ======================================================
          TAB: QUESTÕES
          ====================================================== -->
-    <section
-      id="tab-questions"
-      class="case-tab-content"
-      role="tabpanel"
-      aria-labelledby="tab-btn-questions"
-    >
+    <section id="tab-questions" class="case-tab-content" role="tabpanel" aria-labelledby="tab-btn-questions">
       <p class="case-questions-intro">
         <i class="fa-solid fa-circle-info" style="color:var(--a3-sky-frost);"></i>
         Estas questões cobram os conceitos desta arquitetura nos exames de certificação.
@@ -344,12 +228,7 @@
     <!-- ======================================================
          TAB: RECURSOS
          ====================================================== -->
-    <section
-      id="tab-resources"
-      class="case-tab-content"
-      role="tabpanel"
-      aria-labelledby="tab-btn-resources"
-    >
+    <section id="tab-resources" class="case-tab-content" role="tabpanel" aria-labelledby="tab-btn-resources">
       <div id="resources-list" class="resources-list"></div>
       <div id="resources-empty" style="display:none;" class="cases-empty-state">
         <i class="fa-solid fa-link" aria-hidden="true"></i>
@@ -360,12 +239,7 @@
     <!-- ======================================================
          TAB: MONTAR ARQUITETURA (Builder — 3 fases)
          ====================================================== -->
-    <section
-      id="tab-builder"
-      class="case-tab-content builder-tab-panel"
-      role="tabpanel"
-      aria-labelledby="tab-btn-builder"
-    >
+    <section id="tab-builder" class="case-tab-content builder-tab-panel" role="tabpanel" aria-labelledby="tab-btn-builder">
       <div id="builder-root" class="builder-root">
 
         <!-- Phase Banner — Fase 1: Desafio -->
@@ -389,29 +263,17 @@
 
           <div class="builder-divider" aria-hidden="true"></div>
 
-          <button
-            id="builder-btn-verify"
-            class="builder-toolbar-btn builder-toolbar-btn--primary"
-            title="Verificar minha arquitetura"
-          >
+          <button id="builder-btn-verify" class="a3-btn a3-btn-secondary" title="Verificar minha arquitetura">
             <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
             Verificar
           </button>
 
-          <button
-            id="builder-btn-clear"
-            class="builder-toolbar-btn builder-toolbar-btn--danger"
-            title="Limpar canvas"
-          >
+          <button id="builder-btn-clear" class="a3-btn a3-btn-secondary" title="Limpar canvas">
             <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
             Limpar
           </button>
 
-          <button
-            id="builder-btn-export"
-            class="builder-toolbar-btn"
-            title="Exportar JSON da arquitetura"
-          >
+          <button id="builder-btn-export" class="a3-btn a3-btn-secondary" title="Exportar JSON da arquitetura">
             <i class="fa-solid fa-download" aria-hidden="true"></i>
             Exportar
           </button>
@@ -456,11 +318,11 @@
           <div id="builder-result-lists" class="builder-result-lists"></div>
 
           <div class="builder-result-actions">
-            <button id="builder-btn-gabarito" class="builder-action-btn builder-action-btn--primary">
+            <button id="builder-btn-gabarito" class="a3-btn a3-btn-secondary">
               <i class="fa-solid fa-eye" aria-hidden="true"></i>
               Ver arquitetura oficial
             </button>
-            <button id="builder-btn-retry" class="builder-action-btn builder-action-btn--outline">
+            <button id="builder-btn-retry" class="a3-btn a3-btn-secondary">
               <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
               Tentar novamente
             </button>
@@ -1169,5 +1031,6 @@
       // Build palette immediately
       buildPalette();
     </script>
-  </body>
-</html>
+  
+
+</body></html>

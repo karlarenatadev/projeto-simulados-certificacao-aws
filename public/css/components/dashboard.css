@@ -7,12 +7,12 @@
   border-radius: var(--a3-radius-xl);
   padding: 2rem;
   box-shadow: var(--a3-shadow-lg);
-  border: 1px solid var(--a3-border-color, rgba(0,0,0,0.1));
+  border: 1px solid var(--border-theme);
   text-align: center;
   margin-bottom: 2rem;
 }
 .dark .a3-result-card {
-  border-color: rgba(255,255,255,0.1);
+  border-color: var(--border-theme);
 }
 
 .a3-progress {
@@ -39,21 +39,21 @@
 
 .a3-stat-card {
   background-color: var(--a3-surface-soft);
-  border: 1px solid var(--a3-border-color, rgba(0,0,0,0.1));
+  border: 1px solid var(--border-theme);
   border-radius: var(--a3-radius-lg);
   padding: 1.5rem;
   text-align: center;
 }
 .dark .a3-stat-card {
-  border-color: rgba(255,255,255,0.05);
+  border-color: var(--border-theme);
 }
 
 .a3-stat-card-success {
-  background-color: var(--a3-success-soft, rgba(16, 185, 129, 0.05));
+  background-color: var(--a3-surface-success);
   border-color: var(--a3-success);
 }
 .a3-stat-card-warning {
-  background-color: var(--a3-warning-soft, rgba(245, 158, 11, 0.05));
+  background-color: var(--a3-surface-warning);
   border-color: var(--a3-warning);
 }
 
@@ -70,12 +70,12 @@
   color: var(--a3-text-main);
 }
 .a3-skill-badge-success {
-  background-color: var(--a3-success-soft, rgba(16, 185, 129, 0.1));
+  background-color: var(--a3-surface-success);
   border-color: var(--a3-success);
   color: var(--a3-success);
 }
 .a3-skill-badge-danger {
-  background-color: var(--a3-danger-soft, rgba(239, 68, 68, 0.1));
+  background-color: var(--a3-surface-danger);
   border-color: var(--a3-danger);
   color: var(--a3-danger);
 }

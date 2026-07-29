@@ -70,6 +70,35 @@
   --text-strong: var(--a3-text-strong);
   --text-muted: var(--a3-text-muted);
   --border-theme: var(--a3-border-default);
+
+  /* Spacing Scale */
+  --space-4: 0.25rem;
+  --space-8: 0.5rem;
+  --space-12: 0.75rem;
+  --space-16: 1rem;
+  --space-24: 1.5rem;
+  --space-32: 2rem;
+  --space-48: 3rem;
+  --space-64: 4rem;
+
+  /* Typography */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  
+  --font-family-base: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  /* Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
 }
 
 
@@ -354,109 +383,233 @@ background-color: var(--a3-surface-warning) !important;
 
 /* --- components/badges.css --- */
 /* ==========================================================================
-   BADGES COMPONENT
-   ========================================================================== */
+BADGES CSS
+Design System Badges
+========================================================================== */
 
 .a3-badge {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px; /* Pill */
-  font-size: 0.75rem;
-  font-weight: 700;
+  gap: 0.25rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem; /* 12px */
+  font-weight: 600;
+  line-height: 1.2;
   white-space: nowrap;
+  border: 1px solid transparent;
+  background-color: var(--a3-surface-soft);
+  color: var(--text-strong);
 }
 
+.a3-badge i,
+.a3-badge svg {
+  font-size: 0.85em;
+}
+
+/* Variantes */
 .a3-badge-primary {
-  background-color: var(--a3-tech-blue);
-  color: var(--a3-text-on-dark);
+  background-color: var(--a3-surface-info);
+  color: var(--a3-tech-blue);
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 20%, transparent);
 }
 
 .a3-badge-success {
-  background-color: var(--a3-success);
-  color: var(--a3-text-on-dark);
+  background-color: var(--a3-surface-success);
+  color: var(--a3-success);
+  border-color: color-mix(in srgb, var(--a3-success) 20%, transparent);
 }
 
 .a3-badge-warning {
-  background-color: var(--a3-warning);
-  color: var(--a3-text-on-dark);
+  background-color: var(--a3-surface-warning);
+  color: var(--a3-warning);
+  border-color: color-mix(in srgb, var(--a3-warning) 20%, transparent);
 }
 
 .a3-badge-danger {
-  background-color: var(--a3-danger);
-  color: var(--a3-text-on-dark);
+  background-color: var(--a3-surface-danger);
+  color: var(--a3-danger);
+  border-color: color-mix(in srgb, var(--a3-danger) 20%, transparent);
 }
 
-.a3-badge-outline {
-  background-color: transparent;
-  border: 1px solid var(--border-theme);
-  color: var(--text-muted);
+/* Tamanhos */
+.a3-badge-lg {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.875rem;
 }
 
 
 /* --- components/buttons.css --- */
 /* ==========================================================================
-   BUTTONS COMPONENT
-   ========================================================================== */
+BUTTONS CSS
+Design System Buttons
+========================================================================== */
 
-.a3-button-primary {
+.a3-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-16);
+  font-family: var(--font-family-base);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+/* Tamanhos */
+.a3-btn-lg {
+  padding: var(--space-12) var(--space-24);
+  font-size: var(--text-base);
+  border-radius: var(--radius-lg);
+}
+
+.a3-btn-sm {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-xs);
+}
+
+/* Variantes */
+.a3-btn-primary {
   background-color: var(--a3-tech-blue);
-  color: var(--a3-text-on-dark);
-  border: none;
-  border-radius: var(--a3-radius-md);
-  padding: 0.5rem 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color var(--a3-transition-fast) ease-in-out;
+  color: var(--a3-text-inverse);
 }
 
-.a3-button-primary:hover {
+.a3-btn-primary:hover:not(:disabled) {
   background-color: var(--aws-orange-hover);
+  box-shadow: var(--a3-shadow-action);
 }
 
-.a3-button-secondary {
+.a3-btn-secondary {
   background-color: var(--a3-surface-soft);
-  color: var(--text-main);
-  border: 1px solid var(--border-theme);
-  border-radius: var(--a3-radius-md);
-  padding: 0.5rem 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color var(--a3-transition-fast) ease-in-out;
+  color: var(--text-strong);
+  border-color: var(--border-theme);
 }
 
-.a3-button-secondary:hover {
-  background-color: var(--a3-surface-raised);
+.a3-btn-secondary:hover:not(:disabled) {
+  background-color: var(--border-theme);
+}
+
+.a3-btn-outline {
+  background-color: transparent;
+  color: var(--a3-tech-blue);
+  border-color: var(--a3-tech-blue);
+}
+
+.a3-btn-outline:hover:not(:disabled) {
+  background-color: var(--a3-surface-info);
+}
+
+.a3-btn-danger {
+  background-color: var(--a3-danger);
+  color: var(--a3-text-inverse);
+}
+
+.a3-btn-danger:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+/* Estados unificados */
+.a3-btn:disabled,
+.a3-btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.a3-btn:focus-visible {
+  outline: 2px solid var(--a3-tech-blue);
+  outline-offset: 2px;
+}
+
+/* Ícones nos botões */
+.a3-btn i,
+.a3-btn svg {
+  font-size: 1em;
 }
 
 
 /* --- components/cards.css --- */
 /* ==========================================================================
-   CARDS COMPONENT
-   ========================================================================== */
+CARDS CSS
+Design System Cards
+========================================================================== */
 
 .a3-card {
-  background-color: var(--a3-surface-raised);
+  background-color: var(--bg-card);
   border: 1px solid var(--border-theme);
-  border-radius: var(--a3-radius-lg);
+  border-radius: var(--radius-lg);
   box-shadow: var(--a3-shadow-card);
-  padding: 1.5rem;
-  transition: all var(--a3-transition-fast) ease-in-out;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.a3-card:hover {
-  box-shadow: var(--a3-shadow-hover);
+.a3-card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--a3-shadow-action);
+  border-color: var(--a3-tech-blue);
+  cursor: pointer;
 }
 
 .a3-card-header {
+  padding: var(--space-16) var(--space-16) var(--space-12);
   border-bottom: 1px solid var(--border-theme);
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.a3-card-header h3,
+.a3-card-header h4 {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-strong);
 }
 
 .a3-card-body {
+  padding: var(--space-16);
+  flex-grow: 1;
   color: var(--text-main);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.a3-card-footer {
+  padding: var(--space-12) var(--space-16);
+  background-color: var(--a3-surface-soft);
+  border-top: 1px solid var(--border-theme);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+/* Grelhas Comuns para Cards */
+.a3-grid {
+  display: grid;
+  gap: var(--space-16);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .a3-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .a3-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-24);
+  }
 }
 
 
@@ -470,12 +623,12 @@ background-color: var(--a3-surface-warning) !important;
   border-radius: var(--a3-radius-xl);
   padding: 2rem;
   box-shadow: var(--a3-shadow-lg);
-  border: 1px solid var(--a3-border-color, rgba(0,0,0,0.1));
+  border: 1px solid var(--border-theme);
   text-align: center;
   margin-bottom: 2rem;
 }
 .dark .a3-result-card {
-  border-color: rgba(255,255,255,0.1);
+  border-color: var(--border-theme);
 }
 
 .a3-progress {
@@ -502,21 +655,21 @@ background-color: var(--a3-surface-warning) !important;
 
 .a3-stat-card {
   background-color: var(--a3-surface-soft);
-  border: 1px solid var(--a3-border-color, rgba(0,0,0,0.1));
+  border: 1px solid var(--border-theme);
   border-radius: var(--a3-radius-lg);
   padding: 1.5rem;
   text-align: center;
 }
 .dark .a3-stat-card {
-  border-color: rgba(255,255,255,0.05);
+  border-color: var(--border-theme);
 }
 
 .a3-stat-card-success {
-  background-color: var(--a3-success-soft, rgba(16, 185, 129, 0.05));
+  background-color: var(--a3-surface-success);
   border-color: var(--a3-success);
 }
 .a3-stat-card-warning {
-  background-color: var(--a3-warning-soft, rgba(245, 158, 11, 0.05));
+  background-color: var(--a3-surface-warning);
   border-color: var(--a3-warning);
 }
 
@@ -533,12 +686,12 @@ background-color: var(--a3-surface-warning) !important;
   color: var(--a3-text-main);
 }
 .a3-skill-badge-success {
-  background-color: var(--a3-success-soft, rgba(16, 185, 129, 0.1));
+  background-color: var(--a3-surface-success);
   border-color: var(--a3-success);
   color: var(--a3-success);
 }
 .a3-skill-badge-danger {
-  background-color: var(--a3-danger-soft, rgba(239, 68, 68, 0.1));
+  background-color: var(--a3-surface-danger);
   border-color: var(--a3-danger);
   color: var(--a3-danger);
 }
@@ -564,118 +717,222 @@ background-color: var(--a3-surface-warning) !important;
 
 /* --- components/forms.css --- */
 /* ==========================================================================
-   FORMS CSS — Componentes de Seleção e Input (index.html e modais)
-   ========================================================================== */
+FORMS CSS
+Design System Inputs & Forms
+========================================================================== */
 
-.a3-form-group {
-  margin-bottom: 1.25rem;
-}
-
-.a3-radio-card {
+.a3-input,
+.a3-select,
+.a3-textarea {
   display: block;
-  flex: 1;
-  cursor: pointer;
-}
-
-/* Esconde o input real */
-.a3-radio-card input[type="radio"] {
-  display: none;
-}
-
-/* O cartão de seleção (visual) */
-.a3-radio-card-content {
-  border: 2px solid var(--a3-border-color, rgba(0,0,0,0.1));
-  border-radius: var(--a3-radius-lg);
-  padding: 0.75rem;
-  text-align: center;
-  transition: all 0.2s ease-in-out;
-  background-color: var(--a3-surface);
-}
-
-.a3-radio-card:hover .a3-radio-card-content {
-  border-color: var(--a3-border-color-hover, rgba(0,0,0,0.3));
-}
-
-/* Estado selecionado */
-.a3-radio-card input[type="radio"]:checked + .a3-radio-card-content {
-  border-color: var(--a3-primary);
-  background-color: color-mix(in srgb, var(--a3-primary) 10%, transparent);
-}
-.a3-radio-card input[type="radio"]:checked + .a3-radio-card-content * {
-  color: var(--a3-primary);
-}
-
-/* Toggles e Selects simples */
-.a3-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-}
-
-.a3-select-card {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border: 2px solid var(--a3-border-color);
-  border-radius: var(--a3-radius-md);
-  background-color: var(--a3-surface);
-  color: var(--a3-text-main);
-  outline: none;
-  transition: all 0.2s;
+  padding: var(--space-8) var(--space-12);
+  font-family: var(--font-family-base);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--text-main);
+  background-color: var(--a3-surface-soft);
+  background-clip: padding-box;
+  border: 1px solid var(--border-theme);
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.a3-input:focus,
+.a3-select:focus,
+.a3-textarea:focus {
+  color: var(--text-strong);
+  background-color: var(--bg-card);
+  border-color: var(--a3-tech-blue);
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--a3-tech-blue) 25%, transparent);
+}
+
+.a3-input::placeholder,
+.a3-textarea::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+.a3-input:disabled,
+.a3-select:disabled,
+.a3-textarea:disabled {
+  background-color: var(--bg-main);
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Checkboxes and Radios */
+.a3-checkbox,
+.a3-radio {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.15em;
+  vertical-align: top;
+  background-color: var(--a3-surface-soft);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  border: 1px solid var(--border-theme);
+  appearance: none;
   cursor: pointer;
 }
 
-.a3-select-card:focus {
-  border-color: var(--a3-primary);
+.a3-checkbox {
+  border-radius: 0.25rem;
+}
+
+.a3-radio {
+  border-radius: 50%;
+}
+
+.a3-checkbox:checked,
+.a3-radio:checked {
+  background-color: var(--a3-tech-blue);
+  border-color: var(--a3-tech-blue);
+}
+
+.a3-checkbox:checked {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+}
+
+.a3-radio:checked {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e");
 }
 
 
 /* --- components/layout.css --- */
+/* ==========================================================================
+LAYOUT CSS
+Design System Grid, Container and Core Structures
+========================================================================== */
+
+/* Container Responsivo */
+.a3-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-16);
+  padding-right: var(--space-16);
+  max-width: 1366px; /* Limite do grid estabelecido no Figma / Design System */
+}
+
+@media (min-width: 768px) {
+  .a3-container {
+    padding-left: var(--space-24);
+    padding-right: var(--space-24);
+  }
+}
+
+@media (min-width: 1024px) {
+  .a3-container {
+    padding-left: var(--space-32);
+    padding-right: var(--space-32);
+  }
+}
+
+/* Base Header */
 .a3-header {
-  background-color: var(--a3-surface-dark);
+  background-color: var(--a3-deep-sea);
   color: var(--a3-text-on-dark);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  padding: 0.75rem 1rem;
+  box-shadow: var(--a3-shadow-card);
+  padding: var(--space-12) var(--space-16);
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 50;
+  transition: background-color 0.3s ease;
 }
 
 @media (min-width: 768px) {
   .a3-header {
-    padding: 1rem 1.5rem;
+    padding: var(--space-16) var(--space-24);
   }
 }
 
 .a3-header-link {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-8);
   cursor: pointer;
   text-decoration: none;
   color: var(--a3-text-on-dark);
 }
 
+.a3-header-link h1 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  margin: 0;
+}
+
 @media (min-width: 768px) {
   .a3-header-link {
-    gap: 0.75rem;
+    gap: var(--space-12);
+  }
+  .a3-header-link h1 {
+    font-size: var(--text-xl);
   }
 }
 
 .a3-header-actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
+  gap: var(--space-8);
+  font-size: var(--text-sm);
   font-weight: 600;
 }
 
 @media (min-width: 768px) {
   .a3-header-actions {
-    gap: 1rem;
+    gap: var(--space-16);
+  }
+}
+
+/* Hero Section */
+.a3-hero {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  margin-bottom: var(--space-24);
+  text-align: center;
+  box-shadow: var(--a3-shadow-card);
+  border: 1px solid var(--border-theme);
+}
+
+@media (min-width: 768px) {
+  .a3-hero {
+    padding: var(--space-48) var(--space-32);
+    margin-bottom: var(--space-32);
+  }
+}
+
+.a3-hero-title {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--text-strong);
+  margin-bottom: var(--space-12);
+}
+
+@media (min-width: 768px) {
+  .a3-hero-title {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--space-16);
+  }
+}
+
+.a3-hero-subtitle {
+  font-size: var(--text-base);
+  color: var(--text-muted);
+  max-width: 800px;
+  margin: 0 auto var(--space-24);
+}
+
+@media (min-width: 768px) {
+  .a3-hero-subtitle {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-32);
   }
 }
 
@@ -691,10 +948,10 @@ background-color: var(--a3-surface-warning) !important;
   padding: 1.5rem;
   box-shadow: var(--a3-shadow-md);
   margin-bottom: 1.5rem;
-  border: 1px solid var(--a3-border-color, rgba(0,0,0,0.1));
+  border: 1px solid var(--border-theme);
 }
 .dark .a3-question-card {
-  border-color: rgba(255,255,255,0.1);
+  border-color: var(--border-theme);
 }
 
 .a3-question-header {
@@ -905,7 +1162,7 @@ textarea {
   background-color: color-mix(
     in srgb,
     var(--a3-surface-soft) 86%,
-    #000000
+    var(--a3-text-strong)
   ) !important;
 }
 
@@ -1758,7 +2015,7 @@ select {
   border: 1px solid rgba(53, 183, 105, 0.2);
   padding: 0.375rem 1rem;
   border-radius: 9999px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--a3-text-strong) 5%, transparent);
   cursor: help;
   transition: all 0.2s ease;
 }
@@ -1773,7 +2030,7 @@ select {
   z-index: 9999;
   width: 220px;
   max-width: calc(100vw - 24px);
-  background-color: var(--a3-text-on-light, #00083d);
+  background-color: var(--a3-text-on-light, var(--a3-text-strong));
   color: #fff;
   text-align: center;
   border-radius: 6px;
@@ -1784,8 +2041,8 @@ select {
   letter-spacing: normal;
   line-height: 1.4;
   box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    0 4px 6px -1px color-mix(in srgb, var(--a3-text-strong) 10%, transparent),
+    0 2px 4px -1px color-mix(in srgb, var(--a3-text-strong) 6%, transparent);
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
@@ -1811,43 +2068,43 @@ select {
 
 .validation-tooltip.arrow-down::after {
   top: 100%;
-  border-color: var(--a3-text-on-light, #00083d) transparent transparent
+  border-color: var(--a3-text-on-light, var(--a3-text-strong)) transparent transparent
     transparent;
 }
 
 .validation-tooltip.arrow-up::after {
   bottom: 100%;
-  border-color: transparent transparent var(--a3-text-on-light, #00083d)
+  border-color: transparent transparent var(--a3-text-on-light, var(--a3-text-strong))
     transparent;
 }
 
 /* Dark mode */
 .dark .validation-tooltip {
-  background-color: var(--a3-border-default, #ebebeb);
-  color: var(--a3-text-on-light, #00083d);
+  background-color: var(--a3-border-default, var(--a3-border-default));
+  color: var(--a3-text-on-light, var(--a3-text-strong));
 }
 
 .dark .validation-tooltip.arrow-down::after {
-  border-color: var(--a3-border-default, #ebebeb) transparent transparent
+  border-color: var(--a3-border-default, var(--a3-border-default)) transparent transparent
     transparent;
 }
 
 .dark .validation-tooltip.arrow-up::after {
-  border-color: transparent transparent var(--a3-border-default, #ebebeb)
+  border-color: transparent transparent var(--a3-border-default, var(--a3-border-default))
     transparent;
 }
 /* --- Cores Adicionais (Design System) --- */
 .text-magenta {
-  color: #F53199;
+  color: var(--a3-accent);
 }
 .bg-magenta {
-  background-color: #F53199;
+  background-color: var(--a3-accent);
 }
 .border-magenta {
-  border-color: #F53199;
+  border-color: var(--a3-accent);
 }
 .btn-magenta {
-  background: linear-gradient(to right, #F53199, #D91C7B);
+  background: linear-gradient(to right, var(--a3-accent), #D91C7B);
   color: white;
   transition: all 0.2s ease;
 }
@@ -2296,7 +2553,7 @@ select {
 }
 
 .cases-hero p {
-  color: rgba(255, 255, 255, 0.7);
+  color: color-mix(in srgb, var(--a3-text-inverse) 70%, transparent);
   font-size: 1rem;
   max-width: 560px;
   margin: 0 auto 2rem;
@@ -2317,9 +2574,9 @@ select {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.85);
+  background: color-mix(in srgb, var(--a3-text-inverse) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--a3-text-inverse) 12%, transparent);
+  color: color-mix(in srgb, var(--a3-text-inverse) 85%, transparent);
   font-size: 0.7rem;
   font-weight: 600;
   padding: 0.3rem 0.7rem;
@@ -2332,7 +2589,7 @@ select {
 }
 
 .loop-arrow {
-  color: rgba(255, 255, 255, 0.3);
+  color: color-mix(in srgb, var(--a3-text-inverse) 30%, transparent);
   font-size: 0.65rem;
 }
 
@@ -2529,9 +2786,9 @@ select {
 }
 
 .dark .cert-tag {
-  background: rgba(255, 255, 255, 0.07);
+  background: color-mix(in srgb, var(--a3-text-inverse) 7%, transparent);
   color: var(--text-muted);
-  border-color: rgba(255, 255, 255, 0.12);
+  border-color: color-mix(in srgb, var(--a3-text-inverse) 12%, transparent);
 }
 
 .case-services-count {
@@ -3789,7 +4046,7 @@ select {
   border-radius: 12px;
   min-width: 130px;
   padding: 0;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--a3-text-strong) 10%, transparent);
   font-family: inherit;
   transition: border-color 0.15s, box-shadow 0.15s;
 }

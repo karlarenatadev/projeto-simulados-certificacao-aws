@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
-<head>
+<!DOCTYPE html><html lang="pt-BR" data-theme="dark"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Arquitetura AWS</title>
     <link rel="stylesheet" href="/css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
     <style>
         .room-container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
         
@@ -84,7 +82,7 @@
             <h2>Briefing do Cliente</h2>
             <div id="briefingContent" class="email-card">Carregando...</div>
             <div class="nav-buttons">
-                <button class="btn btn-primary" onclick="window.engine.nextStage()">Iniciar Entrevista</button>
+                <button class="a3-btn a3-btn-secondary" onclick="window.engine.nextStage()">Iniciar Entrevista</button>
             </div>
         </div>
         
@@ -100,8 +98,8 @@
                 </div>
             </div>
             <div class="nav-buttons">
-                <button class="btn btn-secondary" onclick="window.engine.prevStage()">Voltar</button>
-                <button class="btn btn-primary" onclick="window.engine.nextStage()">Ir para Design</button>
+                <button class="a3-btn a3-btn-secondary" onclick="window.engine.prevStage()">Voltar</button>
+                <button class="a3-btn a3-btn-secondary" onclick="window.engine.nextStage()">Ir para Design</button>
             </div>
         </div>
         
@@ -112,8 +110,8 @@
                 <!-- Loaded via JS -->
             </div>
             <div class="nav-buttons">
-                <button class="btn btn-secondary" onclick="window.engine.prevStage()">Voltar</button>
-                <button class="btn btn-primary" onclick="window.engine.submitDesign()">Entregar Solução</button>
+                <button class="a3-btn a3-btn-secondary" onclick="window.engine.prevStage()">Voltar</button>
+                <button class="a3-btn a3-btn-secondary" onclick="window.engine.submitDesign()">Entregar Solução</button>
             </div>
         </div>
         
@@ -121,7 +119,7 @@
             <h2>Avaliação (Well-Architected)</h2>
             <div id="evaluationContent">Carregando avaliação...</div>
             <div class="nav-buttons">
-                <button class="btn btn-primary" onclick="window.location.href='/simulator-hub.html'">Voltar ao Hub</button>
+                <button class="a3-btn a3-btn-secondary" onclick="window.location.href='/simulator-hub.html'">Voltar ao Hub</button>
             </div>
         </div>
     </div>
@@ -144,5 +142,6 @@
             window.engine.init();
         });
     </script>
-</body>
-</html>
+
+
+</body></html>

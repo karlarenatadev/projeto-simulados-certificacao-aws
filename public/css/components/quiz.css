@@ -8,10 +8,10 @@
   padding: 1.5rem;
   box-shadow: var(--a3-shadow-md);
   margin-bottom: 1.5rem;
-  border: 1px solid var(--a3-border-color, rgba(0,0,0,0.1));
+  border: 1px solid var(--border-theme);
 }
 .dark .a3-question-card {
-  border-color: rgba(255,255,255,0.1);
+  border-color: var(--border-theme);
 }
 
 .a3-question-header {

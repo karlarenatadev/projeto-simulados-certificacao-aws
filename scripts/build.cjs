@@ -197,48 +197,8 @@ try {
 
 
   // ============================================================
-  // VALIDATION
+  // VALIDATION - Removed
   // ============================================================
-
-  console.log('📝 Copiando VALIDATION...');
-
-
-  if (fs.existsSync('validation/valid.html')) {
-
-
-    copyFile(
-      'validation/valid.html',
-      'public/validation/valid.html'
-    );
-
-
-    if (fs.existsSync('validation/css')) {
-
-      copyDirectoryRecursive(
-        'validation/css',
-        'public/validation/css'
-      );
-
-    }
-
-
-    if (fs.existsSync('validation/js')) {
-
-      copyDirectoryRecursive(
-        'validation/js',
-        'public/validation/js'
-      );
-
-    }
-
-
-  } else {
-
-    console.warn(
-      '⚠️ validation não encontrado'
-    );
-
-  }
 
 
 

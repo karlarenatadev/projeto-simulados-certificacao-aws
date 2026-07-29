@@ -51,6 +51,7 @@
     "@eslint/js": "^10.0.1",
     "@tailwindcss/cli": "^4.2.2",
     "babel-jest": "^30.3.0",
+    "cheerio": "^1.2.0",
     "concurrently": "^10.0.4",
     "cross-env": "^10.1.0",
     "eslint": "^10.4.0",

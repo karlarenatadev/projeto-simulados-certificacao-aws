@@ -1,8 +1,6 @@
-<!doctype html>
-<html lang="pt">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!DOCTYPE html><html lang="pt"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recursos de Estudo - Simulador IA AWS</title>
 
     <!-- Tailwind -->
@@ -22,29 +20,17 @@
     </script>
 
     <!-- FontAwesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="stylesheet" href="./css/style.css" />
-    <meta name="theme-color" content="#001863" />
+    <link rel="stylesheet" href="./css/style.css">
+    <meta name="theme-color" content="#001863">
   </head>
 
-  <body class="min-h-screen flex flex-col bg-gray-100 dark:bg-slate-900 transition-colors duration-300">
+  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300">
     <!-- Header -->
-    <header
-      class="aws-bg-dark text-white shadow-md py-3 px-4 md:py-4 md:px-6 flex justify-between items-center sticky top-0 z-50"
-    >
-      <a
-        href="index.html"
-        class="flex items-center gap-2 md:gap-3 cursor-pointer group no-underline text-white"
-        title="Voltar ao início"
-      >
-        <i
-          class="fa-solid fa-cloud text-[#F53199] text-xl md:text-2xl group-hover:scale-110 transition-transform"
-          aria-hidden="true"
-        ></i>
+    <header class="a3-header">
+      <a href="index.html" class="flex items-center gap-2 md:gap-3 cursor-pointer group no-underline text-white" title="Voltar ao início">
+        <i class="fa-solid fa-cloud text-[#F53199] text-xl md:text-2xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
         <div>
           <h1 class="text-base md:text-xl font-bold leading-tight group-hover:text-primary transition-colors">
             Cloud Academy A3
@@ -52,64 +38,34 @@
           <p class="text-[10px] md:text-xs text-gray-300">Sua jornada para certificações AWS</p>
         </div>
       </a>
-      <div class="flex items-center gap-2 md:gap-4 text-sm font-semibold">
-        <button
-          id="btn-language"
-          class="text-gray-300 hover:text-white transition-colors px-2 py-1 md:px-3 md:py-2 rounded-lg hover:bg-gray-700 flex items-center gap-1 md:gap-2"
-          aria-label="Alternar idioma"
-          title="Alternar idioma"
-        >
-          <span class="text-[10px] md:text-xs font-bold"
-            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
-          >
+      <div class="a3-header-actions">
+        <button id="btn-language" class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2" aria-label="Alternar idioma" title="Alternar idioma">
+          <span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>
         </button>
 
-        <button
-          id="theme-toggle"
-          class="text-gray-300 hover:text-white transition-colors p-1.5 md:p-2 rounded-full hover:bg-gray-700"
-          aria-label="Alternar modo escuro"
-        >
-          <i
-            id="theme-icon"
-            class="fa-solid fa-moon text-base md:text-xl"
-            aria-hidden="true"
-          ></i>
+        <button id="theme-toggle" class="a3-btn a3-btn-secondary" aria-label="Alternar modo escuro">
+          <i id="theme-icon" class="fa-solid fa-moon text-base md:text-xl" aria-hidden="true"></i>
         </button>
 
-        <button
-          id="header-pomodoro-btn"
-          class="flex items-center gap-2 px-3 py-1 bg-orange-500/10 border border-orange-500/50 rounded-lg hover:bg-orange-500/20 transition-all text-sm text-orange-400 group"
-        >
+        <button id="header-pomodoro-btn" class="a3-btn a3-btn-secondary flex items-center gap-2 group">
           <i class="fa-solid fa-stopwatch group-hover:animate-pulse"></i>
           <span id="header-pomodoro-timer" class="font-mono">15:00</span>
         </button>
 
-        <button
-          id="install-app"
-          class="hidden md:flex items-center gap-2 px-3 py-1 border border-white/30 rounded-lg hover:bg-white/10 transition-all text-sm"
-        >
+        <button id="install-app" class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2">
           <i class="fa-solid fa-download"></i> Baixar App
         </button>
 
-        <div
-          id="score-container"
-          style="display: none"
-          class="bg-gray-700 px-2 py-1 md:px-3 rounded-full flex items-center gap-1 md:gap-2"
-        >
-          <i
-            class="fa-solid fa-bullseye text-green-400 text-xs md:text-base"
-            aria-hidden="true"
-          ></i>
-          <span id="score-display" class="text-xs md:text-sm" aria-live="polite"
-            >0 / 0</span
-          >
+        <div id="score-container" style="display: none" class="bg-gray-700 px-2 py-1 md:px-3 rounded-full flex items-center gap-1 md:gap-2">
+          <i class="fa-solid fa-bullseye text-green-400 text-xs md:text-base" aria-hidden="true"></i>
+          <span id="score-display" class="text-xs md:text-sm" aria-live="polite">0 / 0</span>
         </div>
       </div>
     </header>
 
     <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl">
       <div class="mb-8">
-        <h2 class="text-3xl font-bold text-slate-800 dark:text-white mb-2">
+        <h2 class="text-3xl font-bold text-slate-800 mb-2">
           <i class="fa-solid fa-book-open-reader text-[#0033FF] mr-2"></i> Materiais de Estudo Recomendados
         </h2>
         <p class="text-slate-600 dark:text-slate-400">
@@ -120,8 +76,8 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
         <!-- Treinamento Oficial e Skill Builder -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
+        <div class="a3-card shadow-md hover:shadow-lg">
+          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
             <i class="fa-solid fa-graduation-cap text-[#0033FF] mr-2"></i> Treinamento Oficial
           </h3>
           <ul class="space-y-3 text-sm">
@@ -140,8 +96,8 @@
         </div>
 
         <!-- Certificações AWS -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
+        <div class="a3-card shadow-md hover:shadow-lg">
+          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
             <i class="fa-solid fa-award text-yellow-500 mr-2"></i> Certificações
           </h3>
           <ul class="space-y-3 text-sm">
@@ -154,8 +110,8 @@
         </div>
 
         <!-- Arquitetura e Boas Práticas -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
+        <div class="a3-card shadow-md hover:shadow-lg">
+          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
             <i class="fa-solid fa-sitemap text-teal-500 mr-2"></i> Arquitetura
           </h3>
           <ul class="space-y-3 text-sm">
@@ -169,8 +125,8 @@
         </div>
 
         <!-- Canais do YouTube -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
+        <div class="a3-card shadow-md hover:shadow-lg">
+          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
             <i class="fa-brands fa-youtube text-red-500 mr-2"></i> Canais YouTube
           </h3>
           <ul class="space-y-3 text-sm">
@@ -183,8 +139,8 @@
         </div>
 
         <!-- Comunidade e Plataformas Externas -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
+        <div class="a3-card shadow-md hover:shadow-lg">
+          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
             <i class="fa-solid fa-users text-purple-500 mr-2"></i> Comunidade e Testes
           </h3>
           <ul class="space-y-3 text-sm">
@@ -200,8 +156,8 @@
         </div>
 
         <!-- Blogs -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 hover:shadow-lg transition-shadow">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
+        <div class="a3-card shadow-md hover:shadow-lg">
+          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
             <i class="fa-solid fa-rss text-orange-500 mr-2"></i> AWS Blogs
           </h3>
           <ul class="space-y-3 text-sm">
@@ -213,8 +169,8 @@
         </div>
 
         <!-- Documentação Core -->
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-slate-700 col-span-1 md:col-span-2 lg:col-span-3 hover:shadow-lg transition-shadow">
-          <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
+        <div class="a3-card shadow-md hover:shadow-lg">
+          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
             <i class="fa-solid fa-file-lines text-indigo-500 mr-2"></i> Referências da Documentação
           </h3>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 text-sm">
@@ -228,7 +184,7 @@
             <a href="https://docs.aws.amazon.com/cloudwatch/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-chart-line w-4 text-gray-400"></i> CloudWatch</a>
             <a href="https://docs.aws.amazon.com/cloudfront/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-globe w-4 text-gray-400"></i> CloudFront</a>
             <a href="https://docs.aws.amazon.com/route53/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-compass w-4 text-gray-400"></i> Route 53</a>
-            <a href="https://docs.aws.amazon.com/sqs/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-envelope w-4 text-gray-400"></i> SQS & SNS</a>
+            <a href="https://docs.aws.amazon.com/sqs/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-envelope w-4 text-gray-400"></i> SQS &amp; SNS</a>
             <a href="https://docs.aws.amazon.com/eventbridge/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-code-branch w-4 text-gray-400"></i> EventBridge</a>
             <a href="https://docs.aws.amazon.com/step-functions/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-diagram-next w-4 text-gray-400"></i> Step Functions</a>
             <a href="https://aws.amazon.com/bedrock/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-brain w-4 text-gray-400"></i> Bedrock (IA)</a>
@@ -243,5 +199,6 @@
 
       </div>
     </main>
-  </body>
-</html>
+  
+
+</body></html>
