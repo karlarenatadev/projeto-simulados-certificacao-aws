@@ -1,3 +1,4 @@
+import { logger } from "../utils/logger.js";
 import apiService from "../../services/api.js";
 import { storageManager } from "../storageManager.js";
 
@@ -70,10 +71,10 @@ export async function renderGuildDashboard() {
         userId: entry.id || entry.user_id,
       }));
       fromAPI = true;
-      console.log(`✓ Loaded ${rankData.length} entries from leaderboard API`);
+      logger.info(`✓ Loaded ${rankData.length} entries from leaderboard API`);
     }
   } catch (error) {
-    console.warn(
+    logger.warn(
       "Failed to load leaderboard from API, using local fallback:",
       error,
     );

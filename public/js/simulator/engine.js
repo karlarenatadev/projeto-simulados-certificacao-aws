@@ -1,3 +1,4 @@
+import { logger } from "../utils/logger.js";
 export class SimulatorEngineClient {
     constructor(level, caseId) {
         this.level = level;
@@ -18,7 +19,7 @@ export class SimulatorEngineClient {
             this.renderInterviewOptions();
             this.renderDesignBuilder();
         } catch (err) {
-            console.error('Failed to init simulator', err);
+            logger.error('Failed to init simulator', err);
             alert('Erro ao carregar simulação: ' + err.message);
         }
     }

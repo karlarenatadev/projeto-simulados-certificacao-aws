@@ -1,3 +1,4 @@
+import { logger } from "./utils/logger.js";
 import { glossaryTerms, certificationPaths } from "./data.js";
 import { t } from "./i18n/useTranslation.js";
 import { storageManager } from "./storageManager.js";
@@ -207,7 +208,7 @@ export function reloadCurrentFlashcard() {
 export function filterFlashcardsByCert() {
   // Função fantasma. O app.js tenta importar isso na linha 352 e usar na 678.
   // Manter isso aqui impede que todo o simulador quebre.
-  console.log(
+  logger.info(
     "Filtro legado acionado. Agora a filtragem é automatizada pelo dropdown.",
   );
 }

@@ -1,3 +1,4 @@
+import { logger } from "./utils/logger.js";
 /**
  * js/quizEngine.js
  * Motor de lógica pura do Simulado.
@@ -99,13 +100,13 @@ export class QuizEngine {
     try {
       const manifestRes = await fetch("data/certification-manifest.json");
       if (!manifestRes.ok) {
-        console.warn("⚠️ Não foi possível carregar o manifesto. Sanitização ignorada.");
+        logger.warn("⚠️ Não foi possível carregar o manifesto. Sanitização ignorada.");
         return data;
       }
       const manifest = await manifestRes.json();
       const config = manifest[certId];
       if (!config) {
-        console.warn(`⚠️ Certificação ${certId} ausente no manifesto.`);
+        logger.warn(`⚠️ Certificação ${certId} ausente no manifesto.`);
         return data;
       }
       
@@ -117,10 +118,10 @@ export class QuizEngine {
         return true;
       });
 
-      console.log(`🛡️ Sanitização: ${sanitized.length}/${data.length} questões aprovadas.`);
+      logger.info(`🛡️ Sanitização: ${sanitized.length}/${data.length} questões aprovadas.`);
       return sanitized;
     } catch (e) {
-      console.error("Erro na sanitização:", e);
+      logger.error("Erro na sanitização:", e);
       return data;
     }
   }
@@ -146,10 +147,10 @@ export class QuizEngine {
 
         if (response.success && response.data && response.data.length > 0) {
           data = response.data;
-          console.log(`✓ Loaded ${data.length} questions from API`);
+          logger.info(`✓ Loaded ${data.length} questions from API`);
         }
       } catch (apiError) {
-        console.warn("API request failed, falling back to JSON:", apiError);
+        logger.warn("API request failed, falling back to JSON:", apiError);
         // Continue to fallback
       }
 
@@ -161,7 +162,7 @@ export class QuizEngine {
           throw new Error("Arquivo de questões não encontrado.");
 
         data = await response.json();
-        console.log(`✓ Loaded ${data.length} questions from JSON file`);
+        logger.info(`✓ Loaded ${data.length} questions from JSON file`);
       }
 
       // Apply filters only if from JSON (API already filters)
@@ -223,12 +224,12 @@ export class QuizEngine {
 
         if (response.success && response.data && response.data.length > 0) {
           data = response.data;
-          console.log(
+          logger.info(
             `✓ Loaded ${data.length} questions from API for personalized quiz`,
           );
         }
       } catch (apiError) {
-        console.warn(
+        logger.warn(
           "API request failed for personalized quiz, falling back to JSON:",
           apiError,
         );
@@ -246,7 +247,7 @@ export class QuizEngine {
           throw new Error("Arquivo de questões não encontrado.");
 
         data = await response.json();
-        console.log(
+        logger.info(
           `✓ Loaded ${data.length} questions from JSON for personalized quiz`,
         );
       }
@@ -299,10 +300,10 @@ export class QuizEngine {
 
         if (response.success && response.data && response.data.length > 0) {
           data = response.data;
-          console.log(`✓ Loaded ${data.length} diagnostic questions from API`);
+          logger.info(`✓ Loaded ${data.length} diagnostic questions from API`);
         }
       } catch (apiError) {
-        console.warn(
+        logger.warn(
           "API request failed for diagnostic, falling back to JSON:",
           apiError,
         );
@@ -317,7 +318,7 @@ export class QuizEngine {
 
         // FALLBACK: Se falhar ao buscar o ficheiro em EN, tenta buscar o padrão (PT)
         if (!response.ok && language === "en") {
-          console.warn(
+          logger.warn(
             `Diagnóstico EN não encontrado para ${certId}. Tentando versão PT...`,
           );
           filePath = `data/nivelamento/diagnostic-${certId}.json`;
@@ -330,7 +331,7 @@ export class QuizEngine {
           );
 
         data = await response.json();
-        console.log(
+        logger.info(
           `✓ Loaded ${data.length} diagnostic questions from JSON file`,
         );
       }
@@ -350,7 +351,7 @@ export class QuizEngine {
 
       return { success: true, totalQuestions: this.state.questions.length };
     } catch (error) {
-      console.error("Erro no QuizEngine (Nivelamento):", error);
+      logger.error("Erro no QuizEngine (Nivelamento):", error);
       return { success: false, message: error.message };
     }
   }

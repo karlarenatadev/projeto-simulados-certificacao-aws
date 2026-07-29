@@ -1,3 +1,4 @@
+import { logger } from "./utils/logger.js";
 import { identifyWeakDomains, QuizEngine } from "./quizEngine.js";
 import { certificationPaths } from "./data.js";
 import { initStudyNow, refreshStudyNow } from "./recommendations/studyNow.js";
@@ -85,9 +86,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const user = await userManager.getOrCreateUser();
     await quizManager.initialize(user.id);
-    console.log(`✓ Initialized with user: ${user.id}`);
+    logger.info(`✓ Initialized with user: ${user.id}`);
   } catch (error) {
-    console.error("Failed to initialize user:", error);
+    logger.error("Failed to initialize user:", error);
     // Continue anyway - app can still work in offline mode
   }
 
@@ -207,7 +208,7 @@ async function renderSidebarContent() {
     const history = storageManager.getHistory();
     updateDynamicInsight(Array.isArray(history) ? history : []);
   } catch (error) {
-    console.error("Erro ao renderizar sidebar:", error);
+    logger.error("Erro ao renderizar sidebar:", error);
   }
 }
 
@@ -443,10 +444,10 @@ async function startQuiz() {
           parseInt(quantityInput),
         );
         if (!quizResponse.fromAPI) {
-          console.log("⚠ Quiz started in local mode (API unavailable)");
+          logger.info("⚠ Quiz started in local mode (API unavailable)");
         }
       } catch (error) {
-        console.warn("Could not start quiz on backend:", error);
+        logger.warn("Could not start quiz on backend:", error);
         // Continue anyway - frontend will work in local mode
       }
     }
@@ -515,7 +516,7 @@ async function startQuiz() {
     loadQuestionUI();
   } catch (err) {
     alert(t("error_starting_quiz", uiState.language, { message: err.message }));
-    console.error("Erro ao iniciar quiz:", err);
+    logger.error("Erro ao iniciar quiz:", err);
   } finally {
     btn.disabled = false;
     btn.innerHTML = `${t("start_simulation", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>`;
@@ -576,7 +577,7 @@ async function startDiagnostic() {
 
     loadQuestionUI();
   } catch (err) {
-    console.error("Erro ao iniciar diagnóstico:", err);
+    logger.error("Erro ao iniciar diagnóstico:", err);
   } finally {
     if (btn) {
       btn.disabled = false;
@@ -670,7 +671,7 @@ async function startPersonalizedDiagnosticQuiz() {
 
     loadQuestionUI();
   } catch (err) {
-    console.error("Erro ao iniciar simulado personalizado:", err);
+    logger.error("Erro ao iniciar simulado personalizado:", err);
     alert(
       t("personalized_quiz_unavailable", uiState.language, {
         message: err.message,
@@ -941,7 +942,7 @@ function submitAnswer() {
         time_secs: 0, // Could be enhanced with actual timer
       })
       .catch((error) => {
-        console.warn("Failed to record answer:", error);
+        logger.warn("Failed to record answer:", error);
         // UI continues anyway
       });
   }
@@ -1171,7 +1172,7 @@ function showResultsScreen() {
   const results = engine.getFinalResults();
 
   if (!results) {
-    console.error("Erro ao obter resultados finais do quiz");
+    logger.error("Erro ao obter resultados finais do quiz");
     alert("Erro ao exibir resultados. Tente novamente.");
     return;
   }
@@ -1198,7 +1199,7 @@ function showResultsScreen() {
     } else if (attempts < 10) {
       setTimeout(() => tryRenderChart(attempts + 1), 100);
     } else {
-      console.warn("Canvas radarChart não ficou disponível a tempo.");
+      logger.warn("Canvas radarChart não ficou disponível a tempo.");
     }
   };
 
@@ -1207,7 +1208,7 @@ function showResultsScreen() {
 
 function displayReportFromResult(results) {
   if (!results || typeof results.percentage !== "number") {
-    console.error("Dados de resultado inválidos em displayReportFromResult");
+    logger.error("Dados de resultado inválidos em displayReportFromResult");
     alert("Erro ao exibir relatório. Dados corrompidos.");
     return;
   }
@@ -1282,13 +1283,13 @@ function displayReportFromResult(results) {
 
 function renderDetailedReportUI(results) {
   if (!results || !results.answers || !Array.isArray(results.answers)) {
-    console.error("Dados de resultado inválidos em renderDetailedReportUI");
+    logger.error("Dados de resultado inválidos em renderDetailedReportUI");
     return;
   }
 
   const resultsScreen = document.getElementById("screen-results");
   if (!resultsScreen) {
-    console.error("Tela de resultados não encontrada");
+    logger.error("Tela de resultados não encontrada");
     return;
   }
 
@@ -1443,13 +1444,6 @@ function renderDetailedReportUI(results) {
                     <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">${t("your_answer_label", uiState.language)}</span>
                     <span class="${colorClass} font-semibold block leading-snug">${icon} ${isMulti ? "<br>• " : ""}${userText}</span>
                 </div>
-                ${
-                  !ans.isCorrect
-                    ? `
-                <div class="mt-3 pt-3 border-t border-gray-200 dark:border-slate-600 print-border-black">
-            <div class="mb-3 a3-stat-card text-left print-no-bg">
-                <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">${t("your_answer_label", uiState.language)}</span>
-                <span class="${colorClass} font-semibold block leading-snug">${icon} ${isMulti ? "<br>• " : ""}${userText}</span>
                 ${
                   !ans.isCorrect
                     ? `
@@ -1611,7 +1605,7 @@ function saveQuizResult() {
 
   // Confirm backend sync if quiz was started via API
   if (quizManager && quizManager.currentQuizId) {
-    console.log(
+    logger.info(
       `✓ Quiz ${quizManager.currentQuizId} completed and synced to backend`,
     );
   }
@@ -1619,7 +1613,7 @@ function saveQuizResult() {
   if (saved) {
     updateGamification(results.percentage);
   } else {
-    console.warn("Resultado duplicado ignorado no histÃ³rico.");
+    logger.warn("Resultado duplicado ignorado no histÃ³rico.");
   }
 
   return saved;
@@ -1978,7 +1972,7 @@ async function updateDifficultyFilters(certId) {
       if (allOption) allOption.checked = true;
     }
   } catch (error) {
-    console.error("Erro ao atualizar filtros de dificuldade:", error);
+    logger.error("Erro ao atualizar filtros de dificuldade:", error);
   }
 }
 
@@ -2085,7 +2079,7 @@ function toggleLanguage() {
   // ══════════════════════════════════════════════════════════════
   updateValidationBadgeLanguage();
 
-  console.log(
+  logger.info(
     `[i18n] Interface atualizada para: ${uiState.language.toUpperCase()}`,
   );
 }
@@ -2218,7 +2212,7 @@ async function startMistakesQuiz() {
   const currentCertInfo = certificationPaths[certId];
 
   if (!certId || !currentCertInfo) {
-    console.warn("startMistakesQuiz: certificação não identificada.");
+    logger.warn("startMistakesQuiz: certificação não identificada.");
     return;
   }
 
@@ -2250,10 +2244,10 @@ async function startMistakesQuiz() {
     try {
       const quizResponse = await quizManager.startQuiz(certId, mistakes.length);
       if (!quizResponse.fromAPI) {
-        console.log("⚠ Mistakes quiz rodando em modo local (API indisponível)");
+        logger.info("⚠ Mistakes quiz rodando em modo local (API indisponível)");
       }
     } catch (err) {
-      console.warn("Não foi possível registrar sessão no backend:", err);
+      logger.warn("Não foi possível registrar sessão no backend:", err);
       // Continua — o quiz de revisão de erros funciona 100% local
     }
 
@@ -2298,7 +2292,7 @@ async function startMistakesQuiz() {
     loadQuestionUI();
   } catch (err) {
     alert(t("error_starting_quiz", uiState.language, { message: err.message }));
-    console.error("Erro ao iniciar revisão de erros:", err);
+    logger.error("Erro ao iniciar revisão de erros:", err);
   } finally {
     if (btn) {
       btn.disabled = false;
@@ -2630,7 +2624,7 @@ window.startMission = async function (stageId) {
   const currentCertInfo = certificationPaths[currentCertId];
 
   if (!currentCertInfo) {
-    console.error(
+    logger.error(
       `[startMission] Certificação ${currentCertId} não encontrada`,
     );
     alert("Erro ao carregar a certificação. Tente novamente.");
@@ -2646,14 +2640,14 @@ window.startMission = async function (stageId) {
     currentStage = activeTrail.find((s) => s.id === stageId);
 
     if (!currentStage) {
-      console.error(
+      logger.error(
         `[startMission] Módulo ${stageId} não encontrado na trilha`,
       );
       alert("Erro ao identificar o módulo. Tente novamente.");
       return;
     }
   } catch (err) {
-    console.error("[startMission] Erro ao importar trailManager:", err);
+    logger.error("[startMission] Erro ao importar trailManager:", err);
     alert("Erro ao carregar o sistema de trilhas. Tente novamente.");
     return;
   }
@@ -2781,7 +2775,7 @@ window.startMission = async function (stageId) {
     uiState.currentMode = originalMode;
     uiState.currentMissionStageId = null;
 
-    console.error("[startMission] Erro ao iniciar missão:", err);
+    logger.error("[startMission] Erro ao iniciar missão:", err);
     alert(t("error_starting_quiz", uiState.language, { message: err.message }));
   }
 };
@@ -2980,7 +2974,7 @@ window.startTrailMission = async function (stageId, stageTitle) {
 
     loadQuestionUI();
   } catch (err) {
-    console.error("Erro na missão:", err);
+    logger.error("Erro na missão:", err);
     alert("Erro ao carregar a missão. Tente novamente.");
     goHome();
   }

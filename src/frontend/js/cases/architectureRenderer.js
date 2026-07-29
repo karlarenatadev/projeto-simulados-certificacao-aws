@@ -1,3 +1,4 @@
+import { logger } from "../utils/logger.js";
 /**
  * architectureRenderer.js — Practice Domain
  * Handles rendering Mermaid.js diagrams from the case's architecture_graph field.
@@ -54,7 +55,7 @@ async function loadMermaid() {
 
       return mermaidInstance;
     } catch (error) {
-      console.error('[architectureRenderer] Failed to load Mermaid.js:', error);
+      logger.error('[architectureRenderer] Failed to load Mermaid.js:', error);
       throw error;
     } finally {
       loadPromise = null;
@@ -126,7 +127,7 @@ export async function renderArchitecture(container, architectureGraph) {
       svgEl.style.height = 'auto';
     }
   } catch (error) {
-    console.error('[architectureRenderer] Render error:', error);
+    logger.error('[architectureRenderer] Render error:', error);
     container.innerHTML = `
       <div style="text-align:center; padding: 2rem;">
         <i class="fa-solid fa-triangle-exclamation" style="font-size:1.75rem; color:var(--a3-warning); display:block; margin-bottom:0.75rem;"></i>

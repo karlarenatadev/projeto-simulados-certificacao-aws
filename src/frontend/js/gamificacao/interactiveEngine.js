@@ -1,3 +1,4 @@
+import { logger } from "../utils/logger.js";
 /**
  * Motor de Interação e Gamificação AWS
  * Responsável por carregar, renderizar e validar desafios de arrastar e soltar (Ordering).
@@ -32,10 +33,10 @@ class InteractiveEngine {
       if (this.currentChallenge) {
         this.render();
       } else {
-        console.error("Desafio arquitetural não encontrado.");
+        logger.error("Desafio arquitetural não encontrado.");
       }
     } catch (error) {
-      console.error("Erro na camada de dados:", error);
+      logger.error("Erro na camada de dados:", error);
     }
   }
 
@@ -43,7 +44,7 @@ class InteractiveEngine {
   render() {
     const container = document.getElementById(this.containerId);
     if (!container) {
-      console.error(`Container #${this.containerId} não existe no DOM.`);
+      logger.error(`Container #${this.containerId} não existe no DOM.`);
       return;
     }
 

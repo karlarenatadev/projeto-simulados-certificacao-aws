@@ -1,3 +1,4 @@
+import { logger } from "../utils/logger.js";
 import { storageManager } from "../storageManager.js";
 
 // 1. DICIONÁRIO DE TRILHAS (4 Certificações com suporte Bilingue)
@@ -120,7 +121,7 @@ export function renderTrail() {
     document.querySelector(".trail-container");
 
   if (!container) {
-    console.error("AWS Sim: Container da trilha não encontrado no DOM.");
+    logger.error("AWS Sim: Container da trilha não encontrado no DOM.");
     return; // Se não achar onde desenhar, ele para aqui (causa do ecrã branco)
   }
 

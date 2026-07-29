@@ -1,10 +1,11 @@
+import { logger } from "../utils/logger.js";
 /**
  * caseManager.js — Practice Domain
  * Service layer for fetching cases and AWS services from the API.
  * Falls back to static data when the API is unavailable (offline mode).
  */
 
-const API_BASE = 'http://127.0.0.1:3001/api';
+import apiService from "../../../services/api.js";
 
 let apiStatus = {
   apiAvailable: true,
@@ -13,48 +14,6 @@ let apiStatus = {
 
 export function getApiStatus() {
   return apiStatus;
-}
-
-// ============================================================================
-// HTTP Helpers
-// ============================================================================
-
-async function apiGet(path, params = {}) {
-  const url = new URL(`${API_BASE}${path}`);
-  Object.entries(params).forEach(([key, val]) => {
-    if (val !== undefined && val !== null && val !== '') {
-      url.searchParams.set(key, val);
-    }
-  });
-
-  const response = await fetch(url.toString(), {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    signal: AbortSignal.timeout(8000),
-  });
-
-  if (!response.ok) {
-    const body = await response.json().catch(() => ({}));
-    throw new Error(body.error || `API error ${response.status}`);
-  }
-
-  return response.json();
-}
-
-async function apiPost(path, body) {
-  const response = await fetch(`${API_BASE}${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(8000),
-  });
-
-  if (!response.ok) {
-    const resBody = await response.json().catch(() => ({}));
-    throw new Error(resBody.error || `API error ${response.status}`);
-  }
-
-  return response.json();
 }
 
 // ============================================================================
@@ -81,7 +40,7 @@ async function fetchFallbackCases() {
       }))
     }));
   } catch (err) {
-    console.warn('[caseManager] Falha ao carregar JSON local:', err);
+    logger.warn('[caseManager] Falha ao carregar JSON local:', err);
     return [];
   }
 }
@@ -97,12 +56,12 @@ async function fetchFallbackCases() {
  */
 export async function getCases(filters = {}) {
   try {
-    const response = await apiGet('/cases', filters);
+    const response = await apiService.getCases(filters);
     apiStatus.apiAvailable = true;
     apiStatus.fallbackUsed = false;
     return response.data || [];
   } catch (error) {
-    console.warn('[caseManager] API unavailable, using fallback:', error.message);
+    logger.warn('[caseManager] API unavailable, using fallback:', error.message);
     apiStatus.apiAvailable = false;
     apiStatus.fallbackUsed = true;
     
@@ -110,7 +69,10 @@ export async function getCases(filters = {}) {
     
     // Aplica filtros localmente
     if (filters.certification) {
-      fallbackCases = fallbackCases.filter(c => c.certification === filters.certification);
+      const filterCert = filters.certification.toLowerCase();
+      fallbackCases = fallbackCases.filter(c => 
+        (c.certification || '').toLowerCase() === filterCert
+      );
     }
     if (filters.difficulty) {
       fallbackCases = fallbackCases.filter(c => c.difficulty === filters.difficulty);
@@ -127,12 +89,12 @@ export async function getCases(filters = {}) {
  */
 export async function getCaseById(idOrSlug) {
   try {
-    const response = await apiGet(`/cases/${encodeURIComponent(idOrSlug)}`);
+    const response = await apiService.getCaseById(idOrSlug);
     apiStatus.apiAvailable = true;
     apiStatus.fallbackUsed = false;
     return response.data || null;
   } catch (error) {
-    console.warn('[caseManager] Could not fetch case, using fallback:', error.message);
+    logger.warn('[caseManager] Could not fetch case, using fallback:', error.message);
     apiStatus.apiAvailable = false;
     apiStatus.fallbackUsed = true;
     
@@ -149,14 +111,14 @@ export async function getCaseById(idOrSlug) {
  */
 export async function markCaseComplete(caseId, userId) {
   try {
-    await apiPost(`/cases/${encodeURIComponent(caseId)}/complete`, { user_id: userId });
+    await apiService.markCaseComplete(caseId, userId);
     // Persist completion locally so the UI works even without a re-fetch
     const completed = getLocalCompletedCases();
     completed.add(caseId);
     saveLocalCompletedCases(completed);
     return true;
   } catch (error) {
-    console.warn('[caseManager] Could not mark case as complete:', error.message);
+    logger.warn('[caseManager] Could not mark case as complete:', error.message);
     return false;
   }
 }
@@ -168,10 +130,10 @@ export async function markCaseComplete(caseId, userId) {
  */
 export async function getAwsServices(category) {
   try {
-    const response = await apiGet('/services', category ? { category } : {});
+    const response = await apiService.getAwsServices(category);
     return response.data || [];
   } catch (error) {
-    console.warn('[caseManager] Could not fetch services:', error.message);
+    logger.warn('[caseManager] Could not fetch services:', error.message);
     return [];
   }
 }

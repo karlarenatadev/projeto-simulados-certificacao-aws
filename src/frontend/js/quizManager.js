@@ -1,3 +1,4 @@
+import { logger } from "./utils/logger.js";
 /**
  * Quiz Manager
  * Handles communication between frontend quiz engine and backend API
@@ -30,12 +31,12 @@ export const quizManager = {
     try {
       this.isAPIAvailable = await apiService.isAvailable();
       if (this.isAPIAvailable) {
-        console.log("✓ API is available");
+        logger.info("✓ API is available");
       } else {
-        console.warn("⚠ API is unavailable, will use local fallback");
+        logger.warn("⚠ API is unavailable, will use local fallback");
       }
     } catch (error) {
-      console.warn("⚠ Could not check API availability:", error);
+      logger.warn("⚠ Could not check API availability:", error);
       this.isAPIAvailable = false;
     }
 
@@ -61,7 +62,7 @@ export const quizManager = {
 
           if (response.success && response.data) {
             this.currentQuizId = response.data.quiz_id;
-            console.log(`✓ Quiz started on backend: ${this.currentQuizId}`);
+            logger.info(`✓ Quiz started on backend: ${this.currentQuizId}`);
 
             return {
               quizId: response.data.quiz_id,
@@ -71,7 +72,7 @@ export const quizManager = {
             };
           }
         } catch (apiError) {
-          console.warn(
+          logger.warn(
             "Failed to start quiz on API, using local mode:",
             apiError,
           );
@@ -81,7 +82,7 @@ export const quizManager = {
       // Local fallback mode (quiz will be stored locally only)
       const localQuizId = this._generateLocalQuizId();
       this.currentQuizId = localQuizId;
-      console.log(`✓ Quiz started in local mode: ${localQuizId}`);
+      logger.info(`✓ Quiz started in local mode: ${localQuizId}`);
 
       return {
         quizId: localQuizId,
@@ -90,7 +91,7 @@ export const quizManager = {
         fromAPI: false,
       };
     } catch (error) {
-      console.error("Fatal error starting quiz:", error);
+      logger.error("Fatal error starting quiz:", error);
       throw error;
     }
   },
@@ -138,18 +139,18 @@ export const quizManager = {
             time_secs: options.time_secs,
           });
           this._markAnswerSynced(this.currentQuizId, options.question_id);
-          console.log(
+          logger.info(
             `✓ Answer recorded on backend for Q${options.question_id}`,
           );
         } catch (apiError) {
-          console.warn(`⚠ Failed to record answer on API: ${apiError.message}`);
+          logger.warn(`⚠ Failed to record answer on API: ${apiError.message}`);
           // Local backup preserves the answer; synced flag enables future retry
         }
       }
 
       return true;
     } catch (error) {
-      console.error("Error recording answer:", error);
+      logger.error("Error recording answer:", error);
       return false;
     }
   },
@@ -170,24 +171,24 @@ export const quizManager = {
           const response = await apiService.getQuizResults(this.currentQuizId);
 
           if (response.success && response.data) {
-            console.log(`✓ Retrieved quiz results from API`);
+            logger.info(`✓ Retrieved quiz results from API`);
             return response.data;
           }
         } catch (apiError) {
-          console.warn("Failed to get results from API:", apiError);
+          logger.warn("Failed to get results from API:", apiError);
         }
       }
 
       // Fallback to local results
       const localResults = this._getLocalResults();
       if (localResults) {
-        console.log(`✓ Using locally calculated results`);
+        logger.info(`✓ Using locally calculated results`);
         return localResults;
       }
 
       return null;
     } catch (error) {
-      console.error("Error getting quiz results:", error);
+      logger.error("Error getting quiz results:", error);
       return null;
     }
   },
@@ -203,7 +204,7 @@ export const quizManager = {
       existing.push(record);
       localStorage.setItem(key, JSON.stringify(existing));
     } catch (error) {
-      console.error("Error saving answer locally:", error);
+      logger.error("Error saving answer locally:", error);
     }
   },
 
@@ -256,7 +257,7 @@ export const quizManager = {
         ),
       };
     } catch (error) {
-      console.error("Error getting local results:", error);
+      logger.error("Error getting local results:", error);
       return null;
     }
   },

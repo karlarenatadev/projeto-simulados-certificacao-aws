@@ -1,3 +1,4 @@
+import { logger } from "../js/utils/logger.js";
 /**
  * API Service Layer
  * Centralized HTTP client for all backend API calls
@@ -9,6 +10,8 @@
  * @module api
  * @author AWS Exam Simulator Team
  */
+
+/* global window, fetch, AbortController, setTimeout, clearTimeout, URLSearchParams, AbortSignal */
 
 /**
  * Base configuration for the API service
@@ -197,7 +200,7 @@ export const apiService = {
       const response = await fetchWithRetry('/api/health');
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) console.error('Health check failed:', error);
+      if (!error || !error.apiDisabled) logger.error('Health check failed:', error);
       throw error;
     }
   },
@@ -234,7 +237,7 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/questions?${params}`);
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) console.error('Failed to load questions:', error);
+      if (!error || !error.apiDisabled) logger.error('Failed to load questions:', error);
       throw error;
     }
   },
@@ -251,7 +254,7 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/questions/${questionId}`);
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) console.error('Failed to get question:', error);
+      if (!error || !error.apiDisabled) logger.error('Failed to get question:', error);
       throw error;
     }
   },
@@ -282,7 +285,7 @@ export const apiService = {
 
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) console.error('Failed to create user:', error);
+      if (!error || !error.apiDisabled) logger.error('Failed to create user:', error);
       throw error;
     }
   },
@@ -299,7 +302,7 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/users/${userId}/stats`);
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) console.error('Failed to get user stats:', error);
+      if (!error || !error.apiDisabled) logger.error('Failed to get user stats:', error);
       throw error;
     }
   },
@@ -318,7 +321,7 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/users/${userId}/weak-domains?threshold=${threshold}`);
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) console.error('Failed to get weak domains:', error);
+      if (!error || !error.apiDisabled) logger.error('Failed to get weak domains:', error);
       throw error;
     }
   },
@@ -357,7 +360,7 @@ export const apiService = {
 
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) console.error('Failed to start quiz:', error);
+      if (!error || !error.apiDisabled) logger.error('Failed to start quiz:', error);
       throw error;
     }
   },
@@ -395,7 +398,7 @@ export const apiService = {
 
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) console.error('Failed to record answer:', error);
+      if (!error || !error.apiDisabled) logger.error('Failed to record answer:', error);
       throw error;
     }
   },
@@ -412,7 +415,7 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/quiz/${quizId}/results`);
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) console.error('Failed to get quiz results:', error);
+      if (!error || !error.apiDisabled) logger.error('Failed to get quiz results:', error);
       throw error;
     }
   },
@@ -429,7 +432,66 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/quiz/${quizId}`);
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) console.error('Failed to get quiz:', error);
+      if (!error || !error.apiDisabled) logger.error('Failed to get quiz:', error);
+      throw error;
+    }
+  },
+
+  // ========================================================================
+  // CASES & SERVICES ENDPOINTS
+  // ========================================================================
+
+  async getCases(filters = {}) {
+    try {
+      const params = new URLSearchParams();
+      if (filters.certification) params.append('certification', filters.certification);
+      if (filters.difficulty) params.append('difficulty', filters.difficulty);
+      if (filters.limit) params.append('limit', filters.limit);
+      if (filters.offset) params.append('offset', filters.offset);
+
+      const qs = params.toString() ? `?${params.toString()}` : '';
+      return await fetchWithRetry(`/api/cases${qs}`);
+    } catch (error) {
+      if (!error || !error.apiDisabled) logger.error('Failed to get cases:', error);
+      throw error;
+    }
+  },
+
+  async getCaseById(idOrSlug) {
+    try {
+      return await fetchWithRetry(`/api/cases/${encodeURIComponent(idOrSlug)}`);
+    } catch (error) {
+      if (!error || !error.apiDisabled) logger.error('Failed to get case:', error);
+      throw error;
+    }
+  },
+
+  async markCaseComplete(caseId, userId) {
+    try {
+      const url = `${API_CONFIG.BASE_URL}/api/cases/${encodeURIComponent(caseId)}/complete`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId }),
+        signal: AbortSignal.timeout(8000)
+      });
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || `API error ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      logger.error('Failed to mark case complete:', error);
+      throw error;
+    }
+  },
+
+  async getAwsServices(category) {
+    try {
+      const qs = category ? `?category=${encodeURIComponent(category)}` : '';
+      return await fetchWithRetry(`/api/services${qs}`);
+    } catch (error) {
+      if (!error || !error.apiDisabled) logger.error('Failed to get services:', error);
       throw error;
     }
   },
@@ -450,7 +512,7 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/leaderboard?limit=${limit}`);
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) console.error('Failed to get leaderboard:', error);
+      if (!error || !error.apiDisabled) logger.error('Failed to get leaderboard:', error);
       throw error;
     }
   },
