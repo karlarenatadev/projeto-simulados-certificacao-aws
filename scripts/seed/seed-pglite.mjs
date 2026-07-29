@@ -11,14 +11,14 @@ import {
 } from '../../backend/database/db.js';
 
 const DATA_FILES = [
-  { certification: 'CLF-C02', language: 'pt', path: 'data/clf-c02.json' },
-  { certification: 'CLF-C02', language: 'en', path: 'data/clf-c02-en.json' },
-  { certification: 'SAA-C03', language: 'pt', path: 'data/saa-c03.json' },
-  { certification: 'SAA-C03', language: 'en', path: 'data/saa-c03-en.json' },
-  { certification: 'DVA-C02', language: 'pt', path: 'data/dva-c02.json' },
-  { certification: 'DVA-C02', language: 'en', path: 'data/dva-c02-en.json' },
-  { certification: 'AIF-C01', language: 'pt', path: 'data/aif-c01.json' },
-  { certification: 'AIF-C01', language: 'en', path: 'data/aif-c01-en.json' },
+  { certification: 'CLF-C02', language: 'pt', path: 'data/questions/clf-c02.json' },
+  { certification: 'CLF-C02', language: 'en', path: 'data/questions/clf-c02-en.json' },
+  { certification: 'SAA-C03', language: 'pt', path: 'data/questions/saa-c03.json' },
+  { certification: 'SAA-C03', language: 'en', path: 'data/questions/saa-c03-en.json' },
+  { certification: 'DVA-C02', language: 'pt', path: 'data/questions/dva-c02.json' },
+  { certification: 'DVA-C02', language: 'en', path: 'data/questions/dva-c02-en.json' },
+  { certification: 'AIF-C01', language: 'pt', path: 'data/questions/aif-c01.json' },
+  { certification: 'AIF-C01', language: 'en', path: 'data/questions/aif-c01-en.json' },
 ];
 
 function parseArgs(argv) {
