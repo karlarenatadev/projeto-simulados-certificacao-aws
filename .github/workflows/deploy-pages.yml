@@ -45,7 +45,7 @@ jobs:
           test -f public/.nojekyll
           test -f public/js/app.js
           test -f public/css/style.css
-          test -f public/data/clf-c02.json
+          test -f public/data/questions/clf-c02.json
           test -f public/manifest.json
           test -f public/sw.js
 
