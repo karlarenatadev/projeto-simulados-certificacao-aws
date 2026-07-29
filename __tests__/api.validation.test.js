@@ -87,6 +87,16 @@ jest.unstable_mockModule('../backend/database/db.js', () => ({
   calculateQuizStats: jest.fn(),
   getAwsServices: jest.fn(),
   getServiceById: jest.fn(),
+  executeQuery: jest.fn(),
+  executeSql: jest.fn(),
+  getCases: jest.fn(),
+  getCaseById: jest.fn(),
+  insertCase: jest.fn(),
+  insertAwsService: jest.fn(),
+  markCaseCompleted: jest.fn(),
+  insertCaseDialogue: jest.fn(),
+  insertCaseEvent: jest.fn(),
+  insertCaseEvaluationCriteria: jest.fn(),
   default: {},
 }));
 
