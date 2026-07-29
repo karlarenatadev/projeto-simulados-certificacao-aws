@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
-const DATA_DIR = path.resolve('./data');
-const MANIFEST_PATH = path.resolve('./data/certification-manifest.json');
+const DATA_DIR = path.resolve('./data/questions');
+const MANIFEST_PATH = path.resolve('./data/taxonomy/certification-manifest.json');
 
 const manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
 const files = fs.readdirSync(DATA_DIR).filter(f => f.endsWith('.json') && f !== 'certification-manifest.json' && !f.includes('aws_services_catalog') && !f.includes('question_references'));

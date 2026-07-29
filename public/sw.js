@@ -21,14 +21,14 @@ const urlsToCache = [
 ];
 
 const publicJsonPaths = [
-  'data/clf-c02.json',
-  'data/clf-c02-en.json',
-  'data/saa-c03.json',
-  'data/saa-c03-en.json',
-  'data/aif-c01.json',
-  'data/aif-c01-en.json',
-  'data/dva-c02.json',
-  'data/dva-c02-en.json',
+  'data/questions/clf-c02.json',
+  'data/questions/clf-c02-en.json',
+  'data/questions/saa-c03.json',
+  'data/questions/saa-c03-en.json',
+  'data/questions/aif-c01.json',
+  'data/questions/aif-c01-en.json',
+  'data/questions/dva-c02.json',
+  'data/questions/dva-c02-en.json',
   'data/nivelamento/diagnostic-clf-c02.json',
   'data/nivelamento/diagnostic-clf-c02-en.json',
   'data/nivelamento/diagnostic-saa-c03.json',

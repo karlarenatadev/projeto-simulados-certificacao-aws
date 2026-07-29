@@ -1930,7 +1930,7 @@ async function updateDifficultyFilters(certId) {
 
   try {
     const fileSuffix = uiState.language === "en" ? "-en" : "";
-    const response = await fetch(`data/${certId}${fileSuffix}.json`);
+    const response = await fetch(`data/questions/${certId}${fileSuffix}.json`);
     if (!response.ok) return;
 
     const questions = await response.json();

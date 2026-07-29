@@ -98,7 +98,7 @@ export class QuizEngine {
   // 1. CARREGAMENTO E FILTRAGEM
   async _sanitizeQuestions(data, certId) {
     try {
-      const manifestRes = await fetch("data/certification-manifest.json");
+      const manifestRes = await fetch("data/taxonomy/certification-manifest.json");
       if (!manifestRes.ok) {
         logger.warn("⚠️ Não foi possível carregar o manifesto. Sanitização ignorada.");
         return data;
@@ -157,7 +157,7 @@ export class QuizEngine {
       // Fallback to JSON if API fails
       if (!data || data.length === 0) {
         const fileSuffix = language === "en" ? "-en" : "";
-        const response = await fetch(`data/${certId}${fileSuffix}.json`);
+        const response = await fetch(`data/questions/${certId}${fileSuffix}.json`);
         if (!response.ok)
           throw new Error("Arquivo de questões não encontrado.");
 
@@ -237,10 +237,10 @@ export class QuizEngine {
 
       if (!data || data.length === 0) {
         const fileSuffix = language === "en" ? "-en" : "";
-        let response = await fetch(`data/${certId}${fileSuffix}.json`);
+        let response = await fetch(`data/questions/${certId}${fileSuffix}.json`);
 
         if (!response.ok && language === "en") {
-          response = await fetch(`data/${certId}.json`);
+          response = await fetch(`data/questions/${certId}.json`);
         }
 
         if (!response.ok)

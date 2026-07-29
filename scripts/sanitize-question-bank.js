@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 
-const DATA_DIR = path.resolve('./data');
+const DATA_DIR = path.resolve('./data/questions');
 const SANITIZED_DIR = path.resolve('./data_sanitized');
-const MANIFEST_PATH = path.resolve('./data/certification-manifest.json');
+const MANIFEST_PATH = path.resolve('./data/taxonomy/certification-manifest.json');
 const AUDIT_REPORT = path.resolve('./docs/question-bank-audit.md');
 const SANITIZE_REPORT = path.resolve('./docs/question-bank-sanitization-report.md');
 
