@@ -197,7 +197,7 @@ export const apiService = {
       const response = await fetchWithRetry('/api/health');
       return response;
     } catch (error) {
-      if (!error.apiDisabled) console.error('Health check failed:', error);
+      if (!error || !error.apiDisabled) console.error('Health check failed:', error);
       throw error;
     }
   },
@@ -234,7 +234,7 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/questions?${params}`);
       return response;
     } catch (error) {
-      if (!error.apiDisabled) console.error('Failed to load questions:', error);
+      if (!error || !error.apiDisabled) console.error('Failed to load questions:', error);
       throw error;
     }
   },
@@ -251,7 +251,7 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/questions/${questionId}`);
       return response;
     } catch (error) {
-      if (!error.apiDisabled) console.error('Failed to get question:', error);
+      if (!error || !error.apiDisabled) console.error('Failed to get question:', error);
       throw error;
     }
   },
@@ -282,7 +282,7 @@ export const apiService = {
 
       return response;
     } catch (error) {
-      if (!error.apiDisabled) console.error('Failed to create user:', error);
+      if (!error || !error.apiDisabled) console.error('Failed to create user:', error);
       throw error;
     }
   },
@@ -299,7 +299,7 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/users/${userId}/stats`);
       return response;
     } catch (error) {
-      if (!error.apiDisabled) console.error('Failed to get user stats:', error);
+      if (!error || !error.apiDisabled) console.error('Failed to get user stats:', error);
       throw error;
     }
   },
@@ -318,7 +318,7 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/users/${userId}/weak-domains?threshold=${threshold}`);
       return response;
     } catch (error) {
-      if (!error.apiDisabled) console.error('Failed to get weak domains:', error);
+      if (!error || !error.apiDisabled) console.error('Failed to get weak domains:', error);
       throw error;
     }
   },
@@ -357,7 +357,7 @@ export const apiService = {
 
       return response;
     } catch (error) {
-      if (!error.apiDisabled) console.error('Failed to start quiz:', error);
+      if (!error || !error.apiDisabled) console.error('Failed to start quiz:', error);
       throw error;
     }
   },
@@ -395,7 +395,7 @@ export const apiService = {
 
       return response;
     } catch (error) {
-      if (!error.apiDisabled) console.error('Failed to record answer:', error);
+      if (!error || !error.apiDisabled) console.error('Failed to record answer:', error);
       throw error;
     }
   },
@@ -412,7 +412,7 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/quiz/${quizId}/results`);
       return response;
     } catch (error) {
-      if (!error.apiDisabled) console.error('Failed to get quiz results:', error);
+      if (!error || !error.apiDisabled) console.error('Failed to get quiz results:', error);
       throw error;
     }
   },
@@ -429,7 +429,7 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/quiz/${quizId}`);
       return response;
     } catch (error) {
-      if (!error.apiDisabled) console.error('Failed to get quiz:', error);
+      if (!error || !error.apiDisabled) console.error('Failed to get quiz:', error);
       throw error;
     }
   },
@@ -450,7 +450,7 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/leaderboard?limit=${limit}`);
       return response;
     } catch (error) {
-      if (!error.apiDisabled) console.error('Failed to get leaderboard:', error);
+      if (!error || !error.apiDisabled) console.error('Failed to get leaderboard:', error);
       throw error;
     }
   },

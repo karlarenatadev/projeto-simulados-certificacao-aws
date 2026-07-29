@@ -1137,13 +1137,17 @@ function toggleFlag() {
   if (!flagBtn) return;
   
   const currentIdx = engine.state.currentIndex;
+  const question = engine.state.questions[currentIdx];
+  const certId = getActiveCertificationId();
   
   if (uiState.flags.includes(currentIdx)) {
       uiState.flags = uiState.flags.filter(i => i !== currentIdx);
       flagBtn.classList.remove("text-orange-500");
+      storageManager.removeReviewQuestion(certId, question);
   } else {
       uiState.flags.push(currentIdx);
       flagBtn.classList.add("text-orange-500");
+      storageManager.addReviewQuestion(certId, question);
   }
 }
 
@@ -1399,10 +1403,6 @@ function renderDetailedReportUI(results) {
       });
       
       html += `</div></div>`;
-      
-      // Salva permanentemente no storage para os flashcards
-      const flaggedQuestionsObjects = uiState.flags.map(idx => engine.state.questions[idx]).filter(Boolean);
-      storageManager.saveReviewDeck(getActiveCertificationId(), flaggedQuestionsObjects);
   }
   // --- FIM DA NOVA SEÇÃO ---
 

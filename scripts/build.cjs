@@ -72,7 +72,10 @@ console.log('🔨 Building...');
 
 
 try {
-
+  console.log('🛡️ Validando Banco de Questões...');
+  const { execSync } = require('child_process');
+  execSync('node scripts/validate-question-bank.js', { stdio: 'inherit' });
+  console.log('✅ Validação concluída.\n');
 
   // ============================================================
   // JAVASCRIPT

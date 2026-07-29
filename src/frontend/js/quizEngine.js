@@ -95,6 +95,36 @@ export class QuizEngine {
   }
 
   // 1. CARREGAMENTO E FILTRAGEM
+  async _sanitizeQuestions(data, certId) {
+    try {
+      const manifestRes = await fetch("data/certification-manifest.json");
+      if (!manifestRes.ok) {
+        console.warn("⚠️ Não foi possível carregar o manifesto. Sanitização ignorada.");
+        return data;
+      }
+      const manifest = await manifestRes.json();
+      const config = manifest[certId];
+      if (!config) {
+        console.warn(`⚠️ Certificação ${certId} ausente no manifesto.`);
+        return data;
+      }
+      
+      const sanitized = data.filter(q => {
+        if (!q.questionId) return false;
+        if (q.certId !== certId) return false;
+        if (!config.allowedDomains.includes(q.domain)) return false;
+        if (q.validation?.status !== 'validated') return false;
+        return true;
+      });
+
+      console.log(`🛡️ Sanitização: ${sanitized.length}/${data.length} questões aprovadas.`);
+      return sanitized;
+    } catch (e) {
+      console.error("Erro na sanitização:", e);
+      return data;
+    }
+  }
+
   async loadQuestions(certId, domainsConfig, filters, language = "pt") {
     this.resetState();
     this.state.attemptId = this._generateAttemptId();
@@ -144,6 +174,11 @@ export class QuizEngine {
 
       if (data.length === 0)
         throw new Error("Nenhuma questão encontrada com esses filtros.");
+
+      // Aplica a sanitização do manifesto (Blindagem)
+      data = await this._sanitizeQuestions(data, certId);
+      if (data.length === 0)
+        throw new Error("Nenhuma questão válida restou após a sanitização.");
 
       // Normalize question structure to match internal format
       // API may return different field names, so we map them
@@ -215,6 +250,8 @@ export class QuizEngine {
           `✓ Loaded ${data.length} questions from JSON for personalized quiz`,
         );
       }
+
+      data = await this._sanitizeQuestions(data, certId);
 
       data = data.map((q) => this._normalizeQuestion(q));
 
