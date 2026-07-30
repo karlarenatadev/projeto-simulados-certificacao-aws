@@ -1,4 +1,4 @@
-import { logger } from "../frontend/js/utils/logger.js";
+import { logger } from "../js/utils/logger.js";
 /**
  * API Service Layer
  * Centralized HTTP client for all backend API calls

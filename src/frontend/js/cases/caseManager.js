@@ -5,7 +5,7 @@ import { logger } from "../utils/logger.js";
  * Falls back to static data when the API is unavailable (offline mode).
  */
 
-import apiService from "../../../services/api.js";
+import apiService from "../../services/api.js";
 
 let apiStatus = {
   apiAvailable: true,
