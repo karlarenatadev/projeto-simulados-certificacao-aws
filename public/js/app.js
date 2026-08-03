@@ -250,14 +250,12 @@ function getMistakeSource() {
 }
 
 function updateMistakesControls(certId = getActiveCertificationId()) {
-  const countEl = document.getElementById("mistakes-count");
   const btnPractice = document.getElementById("btn-practice-mistakes");
   const btnClear = document.getElementById("btn-clear-mistakes");
   const notice = document.getElementById("mistakes-feature-notice");
   const mistakes = storageManager.getMistakes(certId);
   const hasMistakes = mistakes.length > 0;
 
-  if (countEl) countEl.textContent = String(mistakes.length);
   if (btnPractice) btnPractice.classList.toggle("hidden", !hasMistakes);
   if (btnClear) btnClear.classList.toggle("hidden", !hasMistakes);
   if (notice && !hasMistakes) notice.classList.add("hidden");
@@ -268,7 +266,7 @@ function syncMistakeRecord(question, result) {
   if (!certId || !question || !result) return;
 
   if (!result.isCorrect) {
-    // Em revisão de erros, errar novamente não cria novo registro a questão já está pendente, só permanece.
+    // Em revisão de erros, errar novamente não cria novo registro, a questão já está pendente, só permanece.
     if (uiState.currentMode !== "mistakes-review") {
       storageManager.recordMistake(question, uiState.tempSelectedAnswer, {
         certId,
@@ -2250,21 +2248,37 @@ async function startMistakesQuiz() {
 
     // Inicia sessão local (sem backend — erros são locais por definição)
     try {
-      const quizResponse = await quizManager.startQuiz(
-        certId,
-        mistakes.length,
-      );
+      const quizResponse = await quizManager.startQuiz(certId, mistakes.length);
       if (!quizResponse.fromAPI) {
         console.log("⚠ Mistakes quiz rodando em modo local (API indisponível)");
       }
     } catch (err) {
       console.warn("Não foi possível registrar sessão no backend:", err);
+      // Continua — o quiz de revisão de erros funciona 100% local
     }
 
-    const result = engine.loadFromMistakes(
+    // Carrega o banco completo de questões para selecionar por domínio
+    let allQuestions = [];
+    try {
+      const fileSuffix = uiState.language === "en" ? "-en" : "";
+      let response = await fetch(`data/${certId}${fileSuffix}.json`);
+      if (!response.ok && uiState.language === "en") {
+        response = await fetch(`data/${certId}.json`);
+      }
+      if (response.ok) {
+        allQuestions = await response.json();
+        console.log(`✓ Banco de questões carregado: ${allQuestions.length} questões para seleção por domínio`);
+      }
+    } catch (err) {
+      console.warn("Não foi possível carregar banco de questões, usando questões exatas:", err);
+    }
+
+    const result = engine.loadMistakesByDomain(
       mistakes,
       certId,
       currentCertInfo.domains,
+      allQuestions,
+      3, // questões por domínio errado
     );
 
     if (!result.success) {
@@ -2276,6 +2290,7 @@ async function startMistakesQuiz() {
       return;
     }
 
+    // Sem timer em revisão de erros
     uiState.timeRemaining = 0;
 
     const oldReport = document.getElementById("detailed-report");
@@ -2300,14 +2315,12 @@ async function startMistakesQuiz() {
 
     loadQuestionUI();
   } catch (err) {
-    alert(
-      t("error_starting_quiz", uiState.language, { message: err.message }),
-    );
+    alert(t("error_starting_quiz", uiState.language, { message: err.message }));
     console.error("Erro ao iniciar revisão de erros:", err);
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Praticar Questões Erradas (<span id="mistakes-count">0</span>)`;
+      btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Praticar Erros`;
       // Atualiza o span recém-recriado com a contagem real
       updateMistakesControls(certId);
     }

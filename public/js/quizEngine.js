@@ -448,7 +448,6 @@ export class QuizEngine {
     const normalized = questions.map((q) => {
       const base = this._normalizeQuestion({
         ...q,
-        // Garante que o campo `correct` do engine é preenchido
         correct:
           q.correct !== undefined
             ? q.correct
@@ -463,9 +462,109 @@ export class QuizEngine {
       return base;
     });
 
-    // Embaralha a ordem das questões mas não embaralha as opções —
-    // as opções já estão indexadas corretamente no registro de erro
+    // Embaralha a ordem das questões mas não embaralha as opções
     this.state.questions = this._shuffleArray(normalized);
+
+    // Inicializa o placar de domínios
+    domainsConfig.forEach((d) => {
+      this.state.domainScores[d.id] = { total: 0, correct: 0 };
+    });
+
+    return { success: true, totalQuestions: this.state.questions.length };
+  }
+
+  /**
+   * Carrega questões para revisão de erros baseado nos domínios que o usuário
+   * errou, selecionando questões aleatórias do banco — não as questões exatas
+   * que foram erradas. Isso evita que o usuário decore respostas específicas.
+   *
+   * Para cada domínio errado, seleciona até `questionsPerDomain` questões do
+   * banco, priorizando questões que o usuário nunca viu (não estão no histórico
+   * de erros). Se não houver suficientes questões novas, usa questões do domínio
+   * que foram erradas antes.
+   *
+   * @param {object[]} mistakes - Registros de erros do storageManager.getMistakes()
+   * @param {string} certId - ID da certificação (ex: 'clf-c02')
+   * @param {object[]} domainsConfig - Config de domínios da certificação
+   * @param {object[]} allQuestions - Banco completo de questões da certificação
+   * @param {number} [questionsPerDomain=3] - Questões por domínio errado
+   * @param {string} [mode='mistakes-review'] - Modo do quiz
+   * @returns {{ success: boolean, totalQuestions?: number, message?: string }}
+   */
+  loadMistakesByDomain(
+    mistakes,
+    certId,
+    domainsConfig,
+    allQuestions,
+    questionsPerDomain = 3,
+    mode = "mistakes-review",
+  ) {
+    this.resetState();
+    this.state.attemptId = this._generateAttemptId();
+    this.state.certId = certId;
+    this.state.mode = mode;
+
+    if (!mistakes || mistakes.length === 0) {
+      return { success: false, message: "no_mistakes" };
+    }
+
+    if (!allQuestions || allQuestions.length === 0) {
+      // Fallback para o método original se não houver banco de questões
+      return this.loadFromMistakes(mistakes, certId, domainsConfig, mode);
+    }
+
+    // Coleta os domínios únicos errados, preservando a ordem mais recente
+    const domainsErrados = [
+      ...new Set(
+        mistakes
+          .filter((m) => m.domain)
+          .map((m) => m.domain),
+      ),
+    ];
+
+    if (domainsErrados.length === 0) {
+      return this.loadFromMistakes(mistakes, certId, domainsConfig, mode);
+    }
+
+    // IDs das questões que o usuário já errou (para priorizar questões novas)
+    const idsJaErrados = new Set(mistakes.map((m) => m.questionId).filter(Boolean));
+
+    const questoesSelecionadas = [];
+
+    for (const domain of domainsErrados) {
+      // Todas as questões do banco neste domínio
+      const questoesDoDominio = allQuestions.filter(
+        (q) => (q.domain || q.domainId) === domain,
+      );
+
+      if (questoesDoDominio.length === 0) continue;
+
+      // Separa em novas (nunca erradas) e conhecidas (já erradas antes)
+      const novas = questoesDoDominio.filter(
+        (q) => !idsJaErrados.has(q.id) && !idsJaErrados.has(q.question_id),
+      );
+      const conhecidas = questoesDoDominio.filter(
+        (q) => idsJaErrados.has(q.id) || idsJaErrados.has(q.question_id),
+      );
+
+      // Embaralha ambos os grupos e une: novas primeiro, conhecidas como fallback
+      const pool = [
+        ...this._shuffleArray(novas),
+        ...this._shuffleArray(conhecidas),
+      ];
+
+      // Pega até questionsPerDomain questões deste domínio
+      questoesSelecionadas.push(...pool.slice(0, questionsPerDomain));
+    }
+
+    if (questoesSelecionadas.length === 0) {
+      return this.loadFromMistakes(mistakes, certId, domainsConfig, mode);
+    }
+
+    // Normaliza e embaralha as opções de cada questão selecionada
+    this.state.questions = this._shuffleArray(
+      questoesSelecionadas.map((q) => this._shuffleOptions(this._normalizeQuestion(q))),
+    );
 
     // Inicializa o placar de domínios
     domainsConfig.forEach((d) => {
