@@ -27,8 +27,11 @@ describe('sprintManager', () => {
 
     test('completeSprintDay salva progresso no localStorage', () => {
         completeSprintDay(3, 'clf-c02', 'pt', () => {});
-        expect(localStorage.getItem('aws_sprint_day_clf-c02')).toBe('4');
-        expect(localStorage.getItem('aws_sprint_last_date_clf-c02')).toBe(new Date().toDateString());
+        const savedStr = localStorage.getItem('aws_sim_sprint_state_clf-c02');
+        expect(savedStr).not.toBeNull();
+        const saved = JSON.parse(savedStr);
+        expect(saved.completedStages).toContain("3");
+        expect(saved.lastCompletedDate).toBe(new Date().toDateString());
     });
 
     test('closeSprintReader remove overlay do DOM', () => {

@@ -77,11 +77,11 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
       expect(global.fetch).not.toHaveBeenCalled();
 
       const saved = JSON.parse(
-        localStorage.getItem("aws_sim_quiz_answers_local_quiz_xyz") || "[]",
+        localStorage.getItem("aws_sim_ans_local_quiz_xyz_q1") || "null"
       );
-      expect(saved).toHaveLength(1);
-      expect(saved[0].synced).toBe(false);
-      expect(saved[0].question_id).toBe("q1");
+      expect(saved).not.toBeNull();
+      expect(saved.synced).toBe(false);
+      expect(saved.question_id).toBe("q1");
     });
 
     test("quizManager.getQuizResults() calcula resultado de localStorage quando offline", async () => {
@@ -93,10 +93,9 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
         { question_id: "q2", is_correct: true, time_secs: 8, synced: false },
         { question_id: "q3", is_correct: false, time_secs: 12, synced: false },
       ];
-      localStorage.setItem(
-        "aws_sim_quiz_answers_local_quiz_xyz",
-        JSON.stringify(answers),
-      );
+      for (const a of answers) {
+          localStorage.setItem(`aws_sim_ans_local_quiz_xyz_${a.question_id}`, JSON.stringify(a));
+      }
 
       const results = await quizManager.getQuizResults();
 
@@ -166,10 +165,10 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
       });
 
       const saved = JSON.parse(
-        localStorage.getItem("aws_sim_quiz_answers_backend-quiz-abc") || "[]",
+        localStorage.getItem("aws_sim_ans_backend-quiz-abc_q1") || "{}"
       );
-      expect(saved[0].synced).toBe(true);
-      expect(saved[0].syncedAt).not.toBeNull();
+      expect(saved.synced).toBe(true);
+      expect(saved.syncedAt).not.toBeUndefined();
     });
 
     test("quizManager.recordAnswer() mantém synced: false quando API falha", async () => {
@@ -186,10 +185,10 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
       });
 
       const saved = JSON.parse(
-        localStorage.getItem("aws_sim_quiz_answers_backend-quiz-abc") || "[]",
+        localStorage.getItem("aws_sim_ans_backend-quiz-abc_q1") || "{}"
       );
-      expect(saved[0].synced).toBe(false);
-      expect(saved[0].syncedAt).toBeNull();
+      expect(saved.synced).toBeFalsy();
+      expect(saved.syncedAt).toBeNull();
     });
   });
 });

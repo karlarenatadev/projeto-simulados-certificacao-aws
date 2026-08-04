@@ -1,6 +1,8 @@
 /**
  * sprintManager.js - Gerencia o Sprint de Estudos de 14 dias
  */
+import { storageManager } from "../storageManager.js";
+import { NotificationService } from "../services/notificationService.js";
 
 export const SPRINT_MAPS = {
   "clf-c02": {
@@ -79,8 +81,9 @@ export function renderSprintUI(lang, certId) {
   if (!grid) return;
 
   const currentSprintMap = SPRINT_MAPS[certId] || SPRINT_MAPS["clf-c02"];
-  const storageKey = `aws_sprint_day_${certId}`;
-  let currentSprintDay = parseInt(localStorage.getItem(storageKey)) || 1;
+  
+  const sprintState = storageManager.getSprintState(certId);
+  let currentSprintDay = sprintState.completedStages.length + 1;
   if (currentSprintDay > 14) currentSprintDay = 14;
 
   const labels = {
@@ -161,14 +164,12 @@ export function renderSprintUI(lang, certId) {
  * @param {Function} getPillFn - Função que retorna os dados da pílula
  */
 export function startMicroSprint(lang, certId, getPillFn) {
-  const storageKey = `aws_sprint_day_${certId}`;
-  let currentSprintDay = parseInt(localStorage.getItem(storageKey)) || 1;
+  const sprintState = storageManager.getSprintState(certId);
+  let currentSprintDay = sprintState.completedStages.length + 1;
 
-  const lastCompletedDate = localStorage.getItem(
-    `aws_sprint_last_date_${certId}`,
-  );
+  const lastCompletedDate = sprintState.lastCompletedDate;
   if (lastCompletedDate === new Date().toDateString()) {
-    alert(
+    NotificationService.info(
       lang === "en"
         ? "You have already completed today's pill. Rest and come back tomorrow!"
         : "Você já concluiu a pílula de hoje! Descanse a mente e volte amanhã para a próxima dose.",
@@ -177,7 +178,7 @@ export function startMicroSprint(lang, certId, getPillFn) {
   }
 
   if (currentSprintDay > 14) {
-    alert(
+    NotificationService.success(
       lang === "en"
         ? "Congratulations! You have completed all 14 Sprint days."
         : "Parabéns! Você já dominou os 14 dias de Sprint.",
@@ -187,7 +188,7 @@ export function startMicroSprint(lang, certId, getPillFn) {
 
   const pillData = getPillFn(currentSprintDay, lang, certId);
   if (!pillData) {
-    alert(
+    NotificationService.info(
       lang === "en"
         ? "Today's knowledge pill is being prepared by AI. Come back tomorrow!"
         : "A pílula de conhecimento de hoje está sendo preparada pela IA. Volte amanhã!",
@@ -252,14 +253,17 @@ export function closeSprintReader() {
 }
 
 export function completeSprintDay(completedDay, certId, lang, onComplete) {
-  localStorage.setItem(`aws_sprint_day_${certId}`, completedDay + 1);
-  localStorage.setItem(
-    `aws_sprint_last_date_${certId}`,
-    new Date().toDateString(),
-  );
+  const sprintState = storageManager.getSprintState(certId);
+  if (!sprintState.completedStages.includes(completedDay.toString())) {
+      sprintState.completedStages.push(completedDay.toString());
+  }
+  sprintState.lastCompletedDate = new Date().toDateString();
+  sprintState.streakDays += 1;
+  storageManager.saveSprintState(certId, sprintState);
+
   closeSprintReader();
   if (onComplete) onComplete();
-  alert(
+  NotificationService.success(
     lang === "en"
       ? `🚀 Day ${completedDay} pill absorbed! The next knowledge awaits you tomorrow.`
       : `🚀 Pílula do Dia ${completedDay} absorvida com sucesso! O próximo conhecimento te espera amanhã.`,

@@ -245,6 +245,146 @@ export class StorageManager {
   }
 
   /**
+   * Salva o estado atual de um Caso Prático em andamento
+   */
+  saveActiveCase(caseState) {
+    try {
+      if (!caseState || !caseState.caseId) return false;
+      const key = this._getKey(`active_case_${caseState.caseId}`);
+      localStorage.setItem(key, JSON.stringify({
+        ...caseState,
+        _lastSavedAt: Date.now()
+      }));
+      return true;
+    } catch (error) {
+      logger.error("Erro ao salvar caso ativo:", error);
+      return false;
+    }
+  }
+
+  loadActiveCase(caseId) {
+    try {
+      if (!caseId) return null;
+      const key = this._getKey(`active_case_${caseId}`);
+      const data = localStorage.getItem(key);
+      if (!data) return null;
+      return JSON.parse(data);
+    } catch (error) {
+      logger.error("Erro ao recuperar caso ativo:", error);
+      return null;
+    }
+  }
+
+  clearActiveCase(caseId) {
+    try {
+      if (!caseId) return false;
+      localStorage.removeItem(this._getKey(`active_case_${caseId}`));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * @param {string} certId 
+   * @returns {import('./types.js').SprintState}
+   */
+  getSprintState(certId) {
+    try {
+      const key = this._getKey(`sprint_state_${certId}`);
+      const data = localStorage.getItem(key);
+      if (data) return JSON.parse(data);
+    } catch (error) {
+      logger.error("Erro ao carregar SprintState:", error);
+    }
+    return {
+      userId: this.getUserId ? this.getUserId() : 'local',
+      activePathId: certId,
+      completedStages: [],
+      unlockedStages: ['1'],
+      currentGoalId: '1',
+      streakDays: 0
+    };
+  }
+
+  /**
+   * @param {string} certId 
+   * @param {import('./types.js').SprintState} state
+   */
+  saveSprintState(certId, state) {
+    try {
+      const key = this._getKey(`sprint_state_${certId}`);
+      localStorage.setItem(key, JSON.stringify(state));
+      return true;
+    } catch (error) {
+      logger.error("Erro ao salvar SprintState:", error);
+      return false;
+    }
+  }
+
+  /**
+   * Salva o estado da sessão atual em andamento (Auto-Save granular)
+   * @param {Object} sessionState - Estado da sessão (certId, modo, tempo restante, respostas dadas, etc.)
+   * @returns {boolean} True se salvou com sucesso
+   */
+  saveActiveSession(sessionState) {
+    try {
+      if (!sessionState || !sessionState.certId) return false;
+      const key = this._getKey(`active_session_${sessionState.certId}`);
+      localStorage.setItem(key, JSON.stringify({
+        ...sessionState,
+        _lastSavedAt: Date.now()
+      }));
+      return true;
+    } catch (error) {
+      logger.error("Erro ao salvar a sessão ativa:", error);
+      return false;
+    }
+  }
+
+  /**
+   * Recupera o estado da sessão em andamento
+   * @param {string} certId - ID da certificação
+   * @returns {Object|null} O estado da sessão salva, ou null se não houver ou estiver expirado
+   */
+  loadActiveSession(certId) {
+    try {
+      if (!certId) return null;
+      const key = this._getKey(`active_session_${certId}`);
+      const data = localStorage.getItem(key);
+      if (!data) return null;
+      
+      const parsed = JSON.parse(data);
+      // Opcional: ignorar sessões com mais de X dias sem atividade (ex: 2 dias = 172800000ms)
+      const MAX_SESSION_AGE_MS = 2 * 24 * 60 * 60 * 1000; 
+      if (parsed._lastSavedAt && (Date.now() - parsed._lastSavedAt > MAX_SESSION_AGE_MS)) {
+        this.clearActiveSession(certId);
+        return null;
+      }
+      return parsed;
+    } catch (error) {
+      logger.error("Erro ao recuperar sessão ativa:", error);
+      return null;
+    }
+  }
+
+  /**
+   * Limpa a sessão ativa quando a prova é finalizada ou cancelada
+   * @param {string} certId - ID da certificação
+   */
+  clearActiveSession(certId) {
+    try {
+      if (!certId) return false;
+      const key = this._getKey(`active_session_${certId}`);
+      localStorage.removeItem(key);
+      return true;
+    } catch (error) {
+      logger.error("Erro ao limpar sessão ativa:", error);
+      return false;
+    }
+  }
+
+  /**
    * Salva resultado do quiz (último resultado + histórico)
    * @param {Object} result - Objeto com certId, score, total, percentage, passed, domainScores, weakDomains, answers
    * @param {string} result.certId - ID da certificação (ex: 'aif-c01')

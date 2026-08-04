@@ -194,39 +194,34 @@ export const quizManager = {
   },
 
   /**
-   * Save answer to local storage
+   * Save answer to local storage atomically
    * @private
    */
   _saveAnswerLocally(record) {
     try {
-      const key = `aws_sim_quiz_answers_${this.currentQuizId}`;
-      const existing = JSON.parse(localStorage.getItem(key) || "[]");
-      existing.push(record);
-      localStorage.setItem(key, JSON.stringify(existing));
+      const key = `aws_sim_ans_${this.currentQuizId}_${record.question_id}`;
+      localStorage.setItem(key, JSON.stringify(record));
     } catch (error) {
       logger.error("Error saving answer locally:", error);
     }
   },
 
   /**
-   * Marca uma resposta como sincronizada no backend.
-   * Busca do final do array (resposta mais recente com o question_id).
+   * Marca uma resposta como sincronizada no backend (Atomic)
    * @private
    */
   _markAnswerSynced(quizId, questionId) {
     try {
-      const key = `aws_sim_quiz_answers_${quizId}`;
-      const answers = JSON.parse(localStorage.getItem(key) || "[]");
-      for (let i = answers.length - 1; i >= 0; i--) {
-        if (answers[i].question_id === questionId && !answers[i].synced) {
-          answers[i].synced = true;
-          answers[i].syncedAt = new Date().toISOString();
-          break;
-        }
+      const key = `aws_sim_ans_${quizId}_${questionId}`;
+      const data = localStorage.getItem(key);
+      if (data) {
+        const parsed = JSON.parse(data);
+        parsed.synced = true;
+        parsed.syncedAt = new Date().toISOString();
+        localStorage.setItem(key, JSON.stringify(parsed));
       }
-      localStorage.setItem(key, JSON.stringify(answers));
-    } catch {
-      // não-crítico — falha no status de sync não afeta o fluxo do quiz
+    } catch (error) {
+      // não-crítico
     }
   },
 
@@ -236,8 +231,17 @@ export const quizManager = {
    */
   _getLocalResults() {
     try {
-      const key = `aws_sim_quiz_answers_${this.currentQuizId}`;
-      const answers = JSON.parse(localStorage.getItem(key) || "[]");
+      const prefix = `aws_sim_ans_${this.currentQuizId}_`;
+      const answers = [];
+      
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith(prefix)) {
+           try {
+             answers.push(JSON.parse(localStorage.getItem(key)));
+           } catch(e) {}
+        }
+      }
 
       if (answers.length === 0) return null;
 

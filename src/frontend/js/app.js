@@ -1,6 +1,11 @@
-import { logger } from "./utils/logger.js";
+import { logger, dispatchBusinessEvent, recordMetric } from "./utils/logger.js";
+
 import { identifyWeakDomains, QuizEngine } from "./quizEngine.js";
 import { certificationPaths } from "./data.js";
+import { ModalService } from "./services/modalService.js";
+import { NotificationService } from "./services/notificationService.js";
+import { initUIRenderer } from "./uiRenderer.js";
+import { ShowcaseService } from "./services/showcaseService.js";
 import { initStudyNow, refreshStudyNow } from "./recommendations/studyNow.js";
 import { storageManager } from "./storageManager.js";
 import { userManager } from "./userManager.js";
@@ -82,6 +87,24 @@ let lastDiagnosticRecommendation = null;
 // INICIALIZAÇÃO
 
 document.addEventListener("DOMContentLoaded", async () => {
+  initUIRenderer();
+
+  // FASE SHOWCASE: Interceptador de URL para demonstrações
+  const urlParams = new URLSearchParams(window.location.search);
+  const showcaseMode = urlParams.get('mode');
+  if (showcaseMode === 'showcase') {
+    const persona = urlParams.get('persona') || 'advanced';
+    const cert = urlParams.get('cert') || 'clf-c02';
+    // O offline/theme parameter poderiam ser salvos no uiState
+    if (urlParams.get('offline') === 'true') {
+      window.sessionStorage.setItem('force_offline', 'true');
+    }
+    await ShowcaseService.initDemo(persona, cert);
+    
+    // Limpa a URL para não poluir
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
   // FASE 0: User Initialization (Before everything else)
   try {
     const user = await userManager.getOrCreateUser();
@@ -150,6 +173,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadLastScore();
     updateDifficultyFilters(certSelect.value);
     updateMistakesControls(certSelect.value);
+    checkActiveSession(certSelect.value);
   }
 
   // LISTENER: Mudança de Certificação
@@ -167,6 +191,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         loadLastScore();
         updateDifficultyFilters(certId);
         updateMistakesControls(certId);
+        checkActiveSession(certId);
 
         // 2. Atualiza a Sprint para a nova certificação
         const badge = document.getElementById("sprint-current-cert-badge");
@@ -400,6 +425,21 @@ function wireUIActions() {
 
 // MOTOR DO QUIZ E TIMER
 
+function checkActiveSession(certId) {
+  const btn = document.getElementById("btn-start-quiz");
+  if (!btn) return;
+  const activeSession = storageManager.loadActiveSession(certId);
+  if (activeSession) {
+    btn.innerHTML = `${t("resume_simulation", uiState.language) || "Retomar Simulado"} <i class="fa-solid fa-play ml-2"></i>`;
+    btn.classList.add("bg-orange-500");
+    btn.classList.remove("bg-aws-orange");
+  } else {
+    btn.innerHTML = `${t("start_simulation", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>`;
+    btn.classList.add("bg-aws-orange");
+    btn.classList.remove("bg-orange-500");
+  }
+}
+
 async function startWeakestDomainQuiz(domainId, certId) {
   if (!domainId) return;
 
@@ -440,18 +480,50 @@ async function startQuiz() {
   const modeInput =
     document.querySelector('input[name="quiz-mode"]:checked')?.value || "exam";
   const topicSelect = document.getElementById("topic-filter")?.value || "";
-  const btn = document.getElementById("btn-start-quiz");
-
   if (!certSelect) return;
 
+  const btn = document.getElementById("btn-start-quiz");
+  let hideLoading = null;
+
   try {
-    btn.disabled = true;
-    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>${t("loading", uiState.language)}`;
+    if (btn) btn.disabled = true;
+    hideLoading = ModalService.showLoading(t("loading", uiState.language) || "Carregando simulado...");
 
     const certId = certSelect.value;
     const currentCertInfo = certificationPaths[certId];
     uiState.currentCertificationInfo = currentCertInfo;
-    uiState.currentMode = modeInput;
+
+    // Verificar Resume de Sessão
+    const activeSession = storageManager.loadActiveSession(certId);
+    let isResuming = false;
+    
+    const resumeAgreed = await ModalService.confirm({ 
+      title: "Sessão Ativa Encontrada",
+      message: t("resume_session_prompt", uiState.language) || "Você possui um simulado em andamento. Deseja retomá-lo de onde parou?",
+      confirmText: "Retomar",
+      cancelText: "Descartar"
+    });
+    
+    if (activeSession && resumeAgreed) {
+      isResuming = true;
+      engine.state.certId = activeSession.certId;
+      engine.state.mode = activeSession.mode || "exam";
+      engine.state.questions = activeSession.questions;
+      engine.state.answers = activeSession.answers;
+      engine.state.currentIndex = activeSession.currentIndex;
+      engine.state.score = activeSession.score;
+      engine.state.domainScores = activeSession.domainScores || {};
+      
+      uiState.currentMode = activeSession.mode || "exam";
+      uiState.timeRemaining = activeSession.timeRemaining;
+      uiState.flags = activeSession.flags || [];
+      logger.info(`Resuming session for ${certId}`);
+    } else {
+      if (activeSession) {
+        storageManager.clearActiveSession(certId);
+      }
+      uiState.currentMode = modeInput;
+    }
 
     // START QUIZ ON BACKEND
     const userId = userManager.getUserId();
@@ -470,39 +542,43 @@ async function startQuiz() {
       }
     }
 
-    const filters = {
-      quantity: parseInt(quantityInput),
-      difficulty: difficultyInput,
-      topic: topicSelect,
-      mode: modeInput,
-    };
+    if (!isResuming) {
+      dispatchBusinessEvent("QuizStarted", { certId, mode: modeInput, quantity: quantityInput });
+      const filters = {
+        quantity: parseInt(quantityInput),
+        difficulty: difficultyInput,
+        topic: topicSelect,
+        mode: modeInput,
+      };
 
-    const result = await engine.loadQuestions(
-      certId,
-      currentCertInfo.domains,
-      filters,
-      uiState.language,
-    );
-
-    if (!result.success) {
-      alert(
-        t("error_loading_questions", uiState.language, {
-          message: result.message,
-        }),
+      const result = await engine.loadQuestions(
+        certId,
+        currentCertInfo.domains,
+        filters,
+        uiState.language,
       );
-      return;
-    }
 
-    let tempoPorQuestao = 90;
-    if (certId === "saa-c03" || certId === "dva-c02") {
-      tempoPorQuestao = 120;
-    } else if (certId === "clf-c02") {
-      tempoPorQuestao = 83;
-    } else if (certId === "aif-c01") {
-      tempoPorQuestao = 110;
-    }
+      if (!result.success) {
+        alert(
+          t("error_loading_questions", uiState.language, {
+            message: result.message,
+          }),
+        );
+        return;
+      }
 
-    uiState.timeRemaining = result.totalQuestions * tempoPorQuestao;
+      let tempoPorQuestao = 90;
+      if (certId === "saa-c03" || certId === "dva-c02") {
+        tempoPorQuestao = 120;
+      } else if (certId === "clf-c02") {
+        tempoPorQuestao = 83;
+      } else if (certId === "aif-c01") {
+        tempoPorQuestao = 110;
+      }
+
+      uiState.timeRemaining = result.totalQuestions * tempoPorQuestao;
+      uiState.flags = []; // Reseta flags de revisão
+    }
 
     const oldReport = document.getElementById("detailed-report");
     if (oldReport) oldReport.remove();
@@ -524,7 +600,7 @@ async function startQuiz() {
     // --- FIM DAS MODIFICAÇÕES DE LAYOUT ---
 
     const timerContainer = document.getElementById("timer-container");
-    if (filters.mode === "exam") {
+    if (uiState.currentMode === "exam") {
       if (timerContainer) timerContainer.classList.remove("hidden");
       startTimer();
     } else {
@@ -532,12 +608,17 @@ async function startQuiz() {
     }
 
     loadQuestionUI();
+    saveCurrentSession();
   } catch (err) {
-    alert(t("error_starting_quiz", uiState.language, { message: err.message }));
+    if (hideLoading) hideLoading();
+    NotificationService.error(t("error_starting_quiz", uiState.language, { message: err.message }));
     logger.error("Erro ao iniciar quiz:", err);
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = `${t("start_simulation", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>`;
+    if (hideLoading) hideLoading();
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `${t("start_simulation", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>`;
+    }
   }
 }
 
@@ -549,10 +630,10 @@ async function startDiagnostic() {
   if (!certSelect) return;
 
   const btn = document.getElementById("btn-start-diagnostic");
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>${t("loading", uiState.language)}`;
-  }
+  let hideLoading = null;
+  
+  if (btn) btn.disabled = true;
+  hideLoading = ModalService.showLoading(t("loading", uiState.language) || "Carregando diagnóstico...");
 
   try {
     const certId = certSelect.value;
@@ -594,12 +675,16 @@ async function startDiagnostic() {
     if (scoreContainer) scoreContainer.style.display = "flex";
 
     loadQuestionUI();
+    saveCurrentSession();
   } catch (err) {
+    if (hideLoading) hideLoading();
+    NotificationService.error(t("error_starting_quiz", uiState.language, { message: err.message }));
     logger.error("Erro ao iniciar diagnóstico:", err);
   } finally {
+    if (hideLoading) hideLoading();
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = `Fazer Diagnóstico <i class="fa-solid fa-stethoscope ml-2"></i>`;
+      btn.innerHTML = `<i class="fa-solid fa-stethoscope mr-2"></i>${t("start_diagnostic", uiState.language)}`;
     }
   }
 }
@@ -948,6 +1033,13 @@ function submitAnswer() {
   const question = engine.getCurrentQuestion();
   const isMulti = Array.isArray(question.correct);
   const result = engine.submitAnswer(uiState.tempSelectedAnswer);
+  
+  dispatchBusinessEvent("AnswerSubmitted", { 
+    questionId: question.id, 
+    isCorrect: result.isCorrect, 
+    domain: question.domain 
+  });
+  
   syncMistakeRecord(question, result);
 
   // Record answer to backend asynchronously (don't block UI)
@@ -1068,6 +1160,7 @@ function submitAnswer() {
   }
 
   updateScoreDisplayUI();
+  saveCurrentSession();
 }
 
 function applyStyleToOptionCard(optionIdx, styleType) {
@@ -1083,9 +1176,25 @@ function applyStyleToOptionCard(optionIdx, styleType) {
   }
 }
 
+function saveCurrentSession() {
+  if (!engine.state.certId) return;
+  storageManager.saveActiveSession({
+    certId: engine.state.certId,
+    mode: engine.state.mode,
+    questions: engine.state.questions,
+    answers: engine.state.answers,
+    currentIndex: engine.state.currentIndex,
+    score: engine.state.score,
+    domainScores: engine.state.domainScores,
+    timeRemaining: uiState.timeRemaining,
+    flags: uiState.flags
+  });
+}
+
 function nextQuestion() {
   if (engine.nextQuestion()) {
     loadQuestionUI();
+    saveCurrentSession();
   }
 
   if (uiState.currentMode === "mission") {
@@ -1103,6 +1212,8 @@ function finishQuiz() {
 
   if (uiState.timerInterval) clearInterval(uiState.timerInterval);
   if (uiState.qTimerInterval) clearInterval(uiState.qTimerInterval);
+
+  storageManager.clearActiveSession(engine.state.certId);
 
   saveQuizResult();
   updateHistoryDisplay();
@@ -1940,7 +2051,7 @@ function updateHistoryDisplay() {
   updateDynamicInsight(history);
 }
 
-function removeHistoryItem(event, index) {
+async function removeHistoryItem(event, index) {
   if (event) {
     event.preventDefault();
     event.stopPropagation();
@@ -1951,7 +2062,7 @@ function removeHistoryItem(event, index) {
       ? "Remove this session from history?"
       : "Remover esta sessão do histórico?";
 
-  if (!confirm(confirmMessage)) return;
+  if (!(await ModalService.confirm({ message: confirmMessage }))) return;
 
   const removed = storageManager.removeHistoryItem(index);
   if (!removed) return;
@@ -1968,8 +2079,11 @@ function removeHistoryItem(event, index) {
   refreshStudyNow();
 }
 
-function clearHistory() {
-  if (confirm(t("clear_history_confirm", uiState.language))) {
+async function clearHistory() {
+  const history = storageManager.getHistory();
+  if (history.length === 0) return;
+
+  if (await ModalService.confirm({ message: t("clear_history_confirm", uiState.language) })) {
     storageManager.clearHistory();
     updateHistoryDisplay();
 
@@ -2432,8 +2546,10 @@ function retakeQuiz() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function cancelQuiz() {
-  if (confirm(t("exit_quiz_confirm", uiState.language))) goHome();
+async function cancelQuiz() {
+  if (await ModalService.confirm({ message: t("exit_quiz_confirm", uiState.language) })) {
+    goHome();
+  }
 }
 
 async function startMistakesQuiz() {
@@ -2552,8 +2668,8 @@ async function startMistakesQuiz() {
   }
 }
 
-function clearMistakes() {
-  if (confirm(t("clear_mistakes_confirm", uiState.language))) {
+async function clearMistakes() {
+  if (await ModalService.confirm({ message: t("clear_mistakes_confirm", uiState.language) })) {
     storageManager.clearMistakes(getActiveCertificationId());
     updateMistakesControls();
     alert(t("mistakes_cleared", uiState.language));

@@ -1,4 +1,7 @@
 import { logger } from "../utils/logger.js";
+import { storageManager } from "../storageManager.js";
+import { NotificationService } from "../services/notificationService.js";
+import { ModalService } from "../services/modalService.js";
 export class SimulatorEngineClient {
     constructor(level, caseId) {
         this.level = level;
@@ -15,12 +18,28 @@ export class SimulatorEngineClient {
             await this.loadCaseData();
             await this.loadDialogues();
             await this.loadServices();
+            
+            const activeCase = storageManager.loadActiveCase(this.caseId);
+            if (activeCase) {
+                const resumeAgreed = await ModalService.confirm({ message: "Você tem um caso prático em andamento. Deseja retomar?" });
+                if (resumeAgreed) {
+                    this.currentStage = activeCase.currentStage || 1;
+                    this.selectedServices = new Set(activeCase.selectedServices || []);
+                    if (activeCase.evaluation) {
+                        this.renderEvaluation(activeCase.evaluation);
+                    }
+                } else {
+                    storageManager.clearActiveCase(this.caseId);
+                }
+            }
+            
             this.renderBriefing();
             this.renderInterviewOptions();
             this.renderDesignBuilder();
+            this.updateStepper(); // Garante o restore visual do stepper
         } catch (err) {
             logger.error('Failed to init simulator', err);
-            alert('Erro ao carregar simulação: ' + err.message);
+            NotificationService.error('Erro ao carregar simulação: ' + err.message);
         }
     }
 
@@ -156,6 +175,7 @@ export class SimulatorEngineClient {
                         this.selectedServices.add(s.id);
                         card.classList.add('selected');
                     }
+                    this.saveState();
                 };
                 
                 card.innerHTML = `
@@ -174,22 +194,28 @@ export class SimulatorEngineClient {
 
     async submitDesign() {
         if (this.selectedServices.size === 0) {
-            alert('Selecione pelo menos um serviço para a sua arquitetura.');
+            NotificationService.error('Selecione pelo menos um serviço para a sua arquitetura.');
             return;
         }
 
-        const res = await fetch(`/api/cases/${this.caseId}/evaluate`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ selected_service_ids: Array.from(this.selectedServices) })
-        });
-        
-        const data = await res.json();
-        if (data.success) {
-            this.renderEvaluation(data.data);
-            this.nextStage();
-        } else {
-            alert('Erro ao avaliar: ' + data.message);
+        try {
+            const res = await fetch(`/api/cases/${this.caseId}/evaluate`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ selected_service_ids: Array.from(this.selectedServices) })
+            });
+            
+            const data = await res.json();
+            if (data.success) {
+                this.renderEvaluation(data.data);
+                this.saveState(data.data);
+                this.nextStage();
+            } else {
+                NotificationService.error('Erro ao avaliar: ' + data.message);
+            }
+        } catch (err) {
+            logger.error('Failed to submit architecture', err);
+            NotificationService.error('Erro na comunicação com o backend de avaliação.');
         }
     }
 
@@ -250,10 +276,20 @@ export class SimulatorEngineClient {
         });
     }
 
+    saveState(evaluation = null) {
+        storageManager.saveActiveCase({
+            caseId: this.caseId,
+            currentStage: this.currentStage,
+            selectedServices: Array.from(this.selectedServices),
+            evaluation: evaluation
+        });
+    }
+
     nextStage() {
         if (this.currentStage < 4) {
             this.currentStage++;
             this.updateStepper();
+            this.saveState();
         }
     }
 
@@ -261,6 +297,7 @@ export class SimulatorEngineClient {
         if (this.currentStage > 1) {
             this.currentStage--;
             this.updateStepper();
+            this.saveState();
         }
     }
 }

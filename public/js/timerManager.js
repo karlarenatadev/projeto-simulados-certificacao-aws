@@ -1,5 +1,6 @@
 /**
  * timerManager.js - Gerencia timers do exame e das missões
+ * Refatorado para usar contagem absoluta (Date.now) e evitar desincronia em abas inativas.
  */
 
 /**
@@ -10,19 +11,34 @@
 export function startExamTimer(uiState, onTimeUp) {
   if (uiState.timerInterval) clearInterval(uiState.timerInterval);
 
+  if (!uiState._timerMeta) {
+    uiState._timerMeta = {};
+  }
+  
+  // Define o fim exato com base no tempo restante atual
+  uiState._timerMeta.examEndTime = Date.now() + (uiState.timeRemaining * 1000);
+
   updateExamTimerDisplay(uiState);
 
   uiState.timerInterval = setInterval(() => {
-    if (uiState.isPaused) return;
+    if (uiState.isPaused) {
+      // Quando pausado, o endTime precisa avançar para compensar o tempo parado
+      uiState._timerMeta.examEndTime += 1000;
+      return;
+    }
 
-    uiState.timeRemaining--;
+    const now = Date.now();
+    const remainingMs = uiState._timerMeta.examEndTime - now;
+    uiState.timeRemaining = Math.max(0, Math.ceil(remainingMs / 1000));
+
     updateExamTimerDisplay(uiState);
 
     if (uiState.timeRemaining <= 0) {
       clearInterval(uiState.timerInterval);
+      uiState.timeRemaining = 0;
       onTimeUp();
     }
-  }, 1000);
+  }, 1000); // Executa a cada segundo, mas corrige o valor matematicamente
 }
 
 /**
@@ -53,8 +69,13 @@ export function startMissionQuestionTimer(uiState, onTimeUp) {
 
   clearInterval(uiState.qTimerInterval);
 
+  if (!uiState._timerMeta) {
+    uiState._timerMeta = {};
+  }
+
   const MISSION_TIME = 90;
   uiState.qTimeRemaining = MISSION_TIME;
+  uiState._timerMeta.qEndTime = Date.now() + (MISSION_TIME * 1000);
 
   const timeBar = document.getElementById("mission-time-bar");
   const timeText = document.getElementById("mission-time-text");
@@ -65,7 +86,14 @@ export function startMissionQuestionTimer(uiState, onTimeUp) {
   }
 
   uiState.qTimerInterval = setInterval(() => {
-    uiState.qTimeRemaining--;
+    if (uiState.isPaused) {
+       uiState._timerMeta.qEndTime += 1000;
+       return;
+    }
+
+    const now = Date.now();
+    const remainingMs = uiState._timerMeta.qEndTime - now;
+    uiState.qTimeRemaining = Math.max(0, Math.ceil(remainingMs / 1000));
 
     const pct = (uiState.qTimeRemaining / MISSION_TIME) * 100;
 
@@ -89,6 +117,7 @@ export function startMissionQuestionTimer(uiState, onTimeUp) {
 
     if (uiState.qTimeRemaining <= 0) {
       clearInterval(uiState.qTimerInterval);
+      uiState.qTimeRemaining = 0;
       onTimeUp();
     }
   }, 1000);
