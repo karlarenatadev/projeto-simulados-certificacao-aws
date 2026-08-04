@@ -24,7 +24,7 @@ jobs:
       
       - name: Check for main file edits
         id: check-files
-        uses: tj-actions/changed-files@v44
+        uses: tj-actions/changed-files@v47
         with:
           files: |
             data/clf-c02.json
