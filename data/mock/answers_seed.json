@@ -1,0 +1,162 @@
+[
+  {
+    "quiz_id": "qz-014",
+    "question_id": "q-101",
+    "user_answer": [
+      2
+    ],
+    "is_correct": true,
+    "time_secs": 45,
+    "domain": "Design Resilient Architectures",
+    "answered_at": "2026-07-25T17:05:00Z",
+    "domain_id": "saa-design-resilient",
+    "global_domain_id": "resilience",
+    "services": [
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ]
+  },
+  {
+    "quiz_id": "qz-014",
+    "question_id": "q-102",
+    "user_answer": [
+      0
+    ],
+    "is_correct": false,
+    "time_secs": 120,
+    "domain": "Design High-Performing Architectures",
+    "answered_at": "2026-07-25T17:07:00Z",
+    "domain_id": "saa-design-performance",
+    "global_domain_id": "performance",
+    "services": [
+      {
+        "service_id": "vpc",
+        "service_name": "Amazon VPC",
+        "service_slug": "amazon-vpc"
+      }
+    ]
+  },
+  {
+    "quiz_id": "qz-014",
+    "question_id": "q-103",
+    "user_answer": [
+      1
+    ],
+    "is_correct": true,
+    "time_secs": 30,
+    "domain": "Design Secure Architectures",
+    "answered_at": "2026-07-25T17:07:30Z",
+    "domain_id": "saa-design-secure",
+    "global_domain_id": "security",
+    "services": [
+      {
+        "service_id": "iam",
+        "service_name": "AWS IAM",
+        "service_slug": "aws-iam"
+      }
+    ]
+  },
+  {
+    "quiz_id": "qz-014",
+    "question_id": "q-104",
+    "user_answer": [
+      3
+    ],
+    "is_correct": false,
+    "time_secs": 90,
+    "domain": "Design Cost-Optimized Architectures",
+    "answered_at": "2026-07-25T17:09:00Z",
+    "domain_id": "saa-design-cost",
+    "global_domain_id": "billing",
+    "services": [
+      {
+        "service_id": "rds",
+        "service_name": "Amazon RDS",
+        "service_slug": "amazon-rds"
+      }
+    ]
+  },
+  {
+    "quiz_id": "qz-015",
+    "question_id": "q-201",
+    "user_answer": [
+      0
+    ],
+    "is_correct": true,
+    "time_secs": 25,
+    "domain": "Design Resilient Architectures",
+    "answered_at": "2026-07-27T08:15:00Z",
+    "domain_id": "saa-design-resilient",
+    "global_domain_id": "resilience",
+    "services": [
+      {
+        "service_id": "auto-scaling",
+        "service_name": "Auto Scaling",
+        "service_slug": "auto-scaling"
+      }
+    ]
+  },
+  {
+    "quiz_id": "qz-015",
+    "question_id": "q-202",
+    "user_answer": [
+      1
+    ],
+    "is_correct": false,
+    "time_secs": 110,
+    "domain": "Design High-Performing Architectures",
+    "answered_at": "2026-07-27T08:17:00Z",
+    "domain_id": "saa-design-performance",
+    "global_domain_id": "performance",
+    "services": [
+      {
+        "service_id": "cloudfront",
+        "service_name": "Amazon CloudFront",
+        "service_slug": "amazon-cloudfront"
+      }
+    ]
+  },
+  {
+    "quiz_id": "qz-015",
+    "question_id": "q-203",
+    "user_answer": [
+      2
+    ],
+    "is_correct": true,
+    "time_secs": 40,
+    "domain": "Design Secure Architectures",
+    "answered_at": "2026-07-27T08:18:00Z",
+    "domain_id": "saa-design-secure",
+    "global_domain_id": "security",
+    "services": [
+      {
+        "service_id": "aws-kms",
+        "service_name": "AWS KMS",
+        "service_slug": "aws-kms"
+      }
+    ]
+  },
+  {
+    "quiz_id": "qz-015",
+    "question_id": "q-204",
+    "user_answer": [
+      1
+    ],
+    "is_correct": false,
+    "time_secs": 85,
+    "domain": "Design Cost-Optimized Architectures",
+    "answered_at": "2026-07-27T08:19:30Z",
+    "domain_id": "saa-design-cost",
+    "global_domain_id": "billing",
+    "services": [
+      {
+        "service_id": "aws-cost-explorer",
+        "service_name": "AWS Cost Explorer",
+        "service_slug": "aws-cost-explorer"
+      }
+    ]
+  }
+]

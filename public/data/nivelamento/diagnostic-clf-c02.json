@@ -1,7 +1,7 @@
 [
   {
     "id": "diag-001",
-    "domain": "cloud-concepts",
+    "domain": "Cloud Concepts",
     "difficulty": "conceptual",
     "question": "Qual é a principal vantagem da 'Elasticidade' na nuvem AWS?",
     "options": [
@@ -11,11 +11,13 @@
       "A capacidade de executar código sem provisionar servidores."
     ],
     "correct": 1,
-    "explanation": "Elasticidade é o conceito fundamental de escalar recursos horizontalmente (scale in/out) de forma automática conforme a necessidade, pagando apenas pelo que usa."
+    "explanation": "Elasticidade é o conceito fundamental de escalar recursos horizontalmente (scale in/out) de forma automática conforme a necessidade, pagando apenas pelo que usa.",
+    "domain_id": "clf-cloud-concepts",
+    "global_domain_id": "compute-tech"
   },
   {
     "id": "diag-002",
-    "domain": "security-compliance",
+    "domain": "Security and Compliance",
     "difficulty": "conceptual",
     "question": "No Modelo de Responsabilidade Compartilhada da AWS, qual das opções abaixo é de responsabilidade EXCLUSIVA do cliente?",
     "options": [
@@ -25,11 +27,13 @@
       "Garantir a refrigeração e energia das zonas de disponibilidade."
     ],
     "correct": 2,
-    "explanation": "A AWS cuida da 'segurança DA nuvem' (hardware, data center). O cliente cuida da 'segurança NA nuvem' (dados, permissões IAM, firewalls)."
+    "explanation": "A AWS cuida da 'segurança DA nuvem' (hardware, data center). O cliente cuida da 'segurança NA nuvem' (dados, permissões IAM, firewalls).",
+    "domain_id": "clf-security-compliance",
+    "global_domain_id": "security"
   },
   {
     "id": "diag-003",
-    "domain": "cloud-storage",
+    "domain": "Cloud Technology and Services",
     "difficulty": "conceptual",
     "question": "Se uma empresa precisa armazenar arquivos de backup que serão acessados apenas uma ou duas vezes por ano, qual serviço S3 oferece o menor custo?",
     "options": [
@@ -39,11 +43,13 @@
       "Amazon EBS"
     ],
     "correct": 2,
-    "explanation": "O S3 Glacier Deep Archive é a classe de armazenamento de menor custo da AWS, projetada para retenção de dados a longo prazo que raramente são acessados."
+    "explanation": "O S3 Glacier Deep Archive é a classe de armazenamento de menor custo da AWS, projetada para retenção de dados a longo prazo que raramente são acessados.",
+    "domain_id": "clf-cloud-technology",
+    "global_domain_id": "compute-tech"
   },
   {
     "id": "diag-004",
-    "domain": "billing-cost-management",
+    "domain": "Billing and Pricing",
     "difficulty": "conceptual",
     "question": "Qual ferramenta da AWS você deve usar para visualizar, entender e gerenciar seus custos e uso da AWS ao longo do tempo?",
     "options": [
@@ -53,6 +59,8 @@
       "Amazon Inspector"
     ],
     "correct": 0,
-    "explanation": "O AWS Cost Explorer permite visualizar gráficos de uso e custos, além de prever gastos futuros com base no histórico."
+    "explanation": "O AWS Cost Explorer permite visualizar gráficos de uso e custos, além de prever gastos futuros com base no histórico.",
+    "domain_id": "clf-billing-pricing",
+    "global_domain_id": "billing"
   }
 ]

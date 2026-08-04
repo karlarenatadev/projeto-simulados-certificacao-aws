@@ -1,0 +1,76 @@
+/* ==========================================================================
+CARDS CSS
+Design System Cards
+========================================================================== */
+
+.a3-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-theme);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--a3-shadow-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.a3-card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--a3-shadow-action);
+  border-color: var(--a3-tech-blue);
+  cursor: pointer;
+}
+
+.a3-card-header {
+  padding: var(--space-16) var(--space-16) var(--space-12);
+  border-bottom: 1px solid var(--border-theme);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.a3-card-header h3,
+.a3-card-header h4 {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.a3-card-body {
+  padding: var(--space-16);
+  flex-grow: 1;
+  color: var(--text-main);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.a3-card-footer {
+  padding: var(--space-12) var(--space-16);
+  background-color: var(--a3-surface-soft);
+  border-top: 1px solid var(--border-theme);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+/* Grelhas Comuns para Cards */
+.a3-grid {
+  display: grid;
+  gap: var(--space-16);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .a3-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .a3-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-24);
+  }
+}

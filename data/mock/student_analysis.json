@@ -1,0 +1,79 @@
+{
+  "student_id": "usr-demo",
+  "certification": "SAA-C03",
+  "analysis_date": "2026-07-27T10:00:00Z",
+  "overall_evolution": {
+    "trend": "upward",
+    "starting_percentage": 55.3,
+    "current_percentage": 86.1,
+    "growth_rate": "+30.8%"
+  },
+  "best_domains": [
+    {
+      "domain": "Design Resilient Architectures",
+      "average_score": 92.5,
+      "status": "mastered",
+      "domain_id": "saa-design-resilient",
+      "global_domain_id": "resilience"
+    },
+    {
+      "domain": "Design Secure Architectures",
+      "average_score": 85,
+      "status": "strong",
+      "domain_id": "saa-design-secure",
+      "global_domain_id": "security"
+    }
+  ],
+  "weak_domains": [
+    {
+      "domain": "Design High-Performing Architectures",
+      "average_score": 62,
+      "status": "needs_improvement",
+      "domain_id": "saa-design-performance",
+      "global_domain_id": "performance"
+    },
+    {
+      "domain": "Design Cost-Optimized Architectures",
+      "average_score": 68.5,
+      "status": "needs_improvement",
+      "domain_id": "saa-design-cost",
+      "global_domain_id": "billing"
+    }
+  ],
+  "difficult_services": [
+    {
+      "error_rate": 75,
+      "associated_domain": "Design de Performance",
+      "services": [
+        {
+          "service_id": "vpc",
+          "service_name": "Amazon VPC",
+          "service_slug": "amazon-vpc"
+        }
+      ]
+    },
+    {
+      "error_rate": 60,
+      "associated_domain": "Design de Performance",
+      "services": [
+        {
+          "service_id": "cloudfront",
+          "service_name": "Amazon CloudFront",
+          "service_slug": "amazon-cloudfront"
+        }
+      ]
+    },
+    {
+      "error_rate": 80,
+      "associated_domain": "Design de Custo",
+      "services": [
+        {
+          "service_id": "aws-cost-explorer",
+          "service_name": "AWS Cost Explorer",
+          "service_slug": "aws-cost-explorer"
+        }
+      ]
+    }
+  ],
+  "diagnostic_insight": "O aluno demonstra excelente capacidade em desenhar arquiteturas tolerantes a falhas e seguras (S3, IAM, Auto Scaling). No entanto, o tempo de resposta em questões de Rede (VPC, CloudFront) é alto e a taxa de erro indica confusão em roteamento e cache. Além disso, há dificuldade em escolher a opção mais econômica quando múltiplas arquiteturas são válidas."
+}

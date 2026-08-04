@@ -1,3 +1,4 @@
+import { logger } from "./utils/logger.js";
 /**
  * js/quizEngine.js
  * Motor de lógica pura do Simulado.
@@ -95,6 +96,36 @@ export class QuizEngine {
   }
 
   // 1. CARREGAMENTO E FILTRAGEM
+  async _sanitizeQuestions(data, certId) {
+    try {
+      const manifestRes = await fetch("data/taxonomy/certification-manifest.json");
+      if (!manifestRes.ok) {
+        logger.warn("⚠️ Não foi possível carregar o manifesto. Sanitização ignorada.");
+        return data;
+      }
+      const manifest = await manifestRes.json();
+      const config = manifest[certId];
+      if (!config) {
+        logger.warn(`⚠️ Certificação ${certId} ausente no manifesto.`);
+        return data;
+      }
+      
+      const sanitized = data.filter(q => {
+        if (!q.questionId) return false;
+        if (q.certId !== certId) return false;
+        if (!config.allowedDomains.includes(q.domain)) return false;
+        if (q.validation?.status !== 'validated') return false;
+        return true;
+      });
+
+      logger.info(`🛡️ Sanitização: ${sanitized.length}/${data.length} questões aprovadas.`);
+      return sanitized;
+    } catch (e) {
+      logger.error("Erro na sanitização:", e);
+      return data;
+    }
+  }
+
   async loadQuestions(certId, domainsConfig, filters, language = "pt") {
     this.resetState();
     this.state.attemptId = this._generateAttemptId();
@@ -116,22 +147,22 @@ export class QuizEngine {
 
         if (response.success && response.data && response.data.length > 0) {
           data = response.data;
-          console.log(`✓ Loaded ${data.length} questions from API`);
+          logger.info(`✓ Loaded ${data.length} questions from API`);
         }
       } catch (apiError) {
-        console.warn("API request failed, falling back to JSON:", apiError);
+        logger.warn("API request failed, falling back to JSON:", apiError);
         // Continue to fallback
       }
 
       // Fallback to JSON if API fails
       if (!data || data.length === 0) {
         const fileSuffix = language === "en" ? "-en" : "";
-        const response = await fetch(`data/${certId}${fileSuffix}.json`);
+        const response = await fetch(`data/questions/${certId}${fileSuffix}.json`);
         if (!response.ok)
           throw new Error("Arquivo de questões não encontrado.");
 
         data = await response.json();
-        console.log(`✓ Loaded ${data.length} questions from JSON file`);
+        logger.info(`✓ Loaded ${data.length} questions from JSON file`);
       }
 
       // Apply filters only if from JSON (API already filters)
@@ -144,6 +175,11 @@ export class QuizEngine {
 
       if (data.length === 0)
         throw new Error("Nenhuma questão encontrada com esses filtros.");
+
+      // Aplica a sanitização do manifesto (Blindagem)
+      data = await this._sanitizeQuestions(data, certId);
+      if (data.length === 0)
+        throw new Error("Nenhuma questão válida restou após a sanitização.");
 
       // Normalize question structure to match internal format
       // API may return different field names, so we map them
@@ -188,12 +224,12 @@ export class QuizEngine {
 
         if (response.success && response.data && response.data.length > 0) {
           data = response.data;
-          console.log(
+          logger.info(
             `✓ Loaded ${data.length} questions from API for personalized quiz`,
           );
         }
       } catch (apiError) {
-        console.warn(
+        logger.warn(
           "API request failed for personalized quiz, falling back to JSON:",
           apiError,
         );
@@ -201,20 +237,22 @@ export class QuizEngine {
 
       if (!data || data.length === 0) {
         const fileSuffix = language === "en" ? "-en" : "";
-        let response = await fetch(`data/${certId}${fileSuffix}.json`);
+        let response = await fetch(`data/questions/${certId}${fileSuffix}.json`);
 
         if (!response.ok && language === "en") {
-          response = await fetch(`data/${certId}.json`);
+          response = await fetch(`data/questions/${certId}.json`);
         }
 
         if (!response.ok)
           throw new Error("Arquivo de questões não encontrado.");
 
         data = await response.json();
-        console.log(
+        logger.info(
           `✓ Loaded ${data.length} questions from JSON for personalized quiz`,
         );
       }
+
+      data = await this._sanitizeQuestions(data, certId);
 
       data = data.map((q) => this._normalizeQuestion(q));
 
@@ -262,10 +300,10 @@ export class QuizEngine {
 
         if (response.success && response.data && response.data.length > 0) {
           data = response.data;
-          console.log(`✓ Loaded ${data.length} diagnostic questions from API`);
+          logger.info(`✓ Loaded ${data.length} diagnostic questions from API`);
         }
       } catch (apiError) {
-        console.warn(
+        logger.warn(
           "API request failed for diagnostic, falling back to JSON:",
           apiError,
         );
@@ -280,7 +318,7 @@ export class QuizEngine {
 
         // FALLBACK: Se falhar ao buscar o ficheiro em EN, tenta buscar o padrão (PT)
         if (!response.ok && language === "en") {
-          console.warn(
+          logger.warn(
             `Diagnóstico EN não encontrado para ${certId}. Tentando versão PT...`,
           );
           filePath = `data/nivelamento/diagnostic-${certId}.json`;
@@ -293,7 +331,7 @@ export class QuizEngine {
           );
 
         data = await response.json();
-        console.log(
+        logger.info(
           `✓ Loaded ${data.length} diagnostic questions from JSON file`,
         );
       }
@@ -313,7 +351,7 @@ export class QuizEngine {
 
       return { success: true, totalQuestions: this.state.questions.length };
     } catch (error) {
-      console.error("Erro no QuizEngine (Nivelamento):", error);
+      logger.error("Erro no QuizEngine (Nivelamento):", error);
       return { success: false, message: error.message };
     }
   }

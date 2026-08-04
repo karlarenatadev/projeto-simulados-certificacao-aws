@@ -1,0 +1,382 @@
+[
+  {
+    "id": "case-001",
+    "title": "Marketplace Global",
+    "scenario": "Sua empresa está expandindo um marketplace B2C para 4 continentes. O tráfego de leitura no catálogo de produtos é massivo e os usuários esperam tempos de resposta inferiores a 50ms, independentemente de onde estejam.",
+    "challenge": "Como desenhar a camada de banco de dados e distribuição de conteúdo para garantir performance global de leitura sem comprometer a consistência de compras no carrinho?",
+    "requirements": [
+      "Latência < 50ms para leituras do catálogo",
+      "Alta disponibilidade",
+      "Consistência forte no momento do checkout"
+    ],
+    "proposed_architecture": "Utilizar Amazon DynamoDB Global Tables para o catálogo e carrinho de compras com leitura local. Para conteúdo estático (imagens, scripts), utilizar Amazon S3 distribuído via Amazon CloudFront.",
+    "certification": "SAA-C03",
+    "questions": [
+      {
+        "question": "Se o DynamoDB em us-east-1 falhar, o que acontece com os usuários em sa-east-1 (Brasil)?",
+        "options": [
+          "O site cai totalmente até us-east-1 voltar.",
+          "O tráfego é roteado pelo Route 53 para a réplica local da Global Table sem impacto.",
+          "Eles perdem todos os itens do carrinho que não foram salvos no S3."
+        ],
+        "correct": 1
+      }
+    ],
+    "services": [
+      {
+        "service_id": "dynamodb",
+        "service_name": "Amazon DynamoDB",
+        "service_slug": "amazon-dynamodb"
+      },
+      {
+        "service_id": "cloudfront",
+        "service_name": "Amazon CloudFront",
+        "service_slug": "amazon-cloudfront"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ]
+  },
+  {
+    "id": "case-002",
+    "title": "Fintech de Pagamentos",
+    "scenario": "Um aplicativo de pagamentos via PIX/Transferência processa transações críticas 24/7. Não é permitida nenhuma perda de dados e as transações devem seguir o padrão ACID rígido.",
+    "challenge": "Escolher a solução de banco de dados e de desacoplamento de mensagens que suporte picos de Black Friday sem perder nenhuma ordem de pagamento.",
+    "requirements": [
+      "RPO = 0 (Nenhuma perda de dados permitida)",
+      "Transações ACID",
+      "Desacoplamento de microsserviços"
+    ],
+    "proposed_architecture": "Usar Amazon Aurora PostgreSQL (Multi-AZ) para armazenamento transacional. Usar Amazon SQS (Fila FIFO) e Amazon SNS para roteamento de eventos sem duplicação.",
+    "certification": "SAA-C03",
+    "questions": [
+      {
+        "question": "Por que utilizar SQS FIFO em vez de SQS Standard neste cenário?",
+        "options": [
+          "Porque é mais barato.",
+          "Porque garante a ordem exata da transação e entrega exatamente uma vez (exactly-once), vital para pagamentos.",
+          "Porque o FIFO tem limite de taxa (throughput) ilimitado."
+        ],
+        "correct": 1
+      }
+    ],
+    "services": [
+      {
+        "service_id": "amazon-aurora",
+        "service_name": "Amazon Aurora",
+        "service_slug": "amazon-aurora"
+      },
+      {
+        "service_id": "amazon-sqs",
+        "service_name": "Amazon SQS",
+        "service_slug": "amazon-sqs"
+      },
+      {
+        "service_id": "amazon-sns",
+        "service_name": "Amazon SNS",
+        "service_slug": "amazon-sns"
+      }
+    ]
+  },
+  {
+    "id": "case-003",
+    "title": "Plataforma de Streaming",
+    "scenario": "O serviço de streaming de vídeo lança episódios inéditos às sextas-feiras. Às 20h, o acesso ao banco de dados relacional de usuários dispara 10.000%, derrubando a API de login.",
+    "challenge": "Proteger o banco de dados principal de consultas repetitivas de perfil e tokens de sessão durante os picos absurdos de login simultâneo.",
+    "requirements": [
+      "Escalar a leitura imensamente sem trocar o RDS atual",
+      "Manter estado da sessão do usuário",
+      "Baixíssima latência"
+    ],
+    "proposed_architecture": "Implementar o Amazon ElastiCache (Redis) na frente do RDS para cache de perfis, e usar tokens JWT armazenados e invalidados no Redis. Além disso, escalar instâncias EC2 com Application Load Balancer.",
+    "certification": "DVA-C02",
+    "questions": [
+      {
+        "question": "Qual a melhor estratégia para garantir que o Cache esteja quente (com dados) durante o pico das 20h?",
+        "options": [
+          "Cache-Aside (Lazy Loading)",
+          "Write-Through (ou pré-aquecimento do cache antes das 20h)",
+          "Deletar o cache às 19h59"
+        ],
+        "correct": 1
+      }
+    ],
+    "services": [
+      {
+        "service_id": "amazon-elasticache",
+        "service_name": "Amazon ElastiCache",
+        "service_slug": "amazon-elasticache"
+      },
+      {
+        "service_id": "rds",
+        "service_name": "Amazon RDS",
+        "service_slug": "amazon-rds"
+      },
+      {
+        "service_id": "elastic-load-balancing",
+        "service_name": "Elastic Load Balancing",
+        "service_slug": "elastic-load-balancing"
+      }
+    ]
+  },
+  {
+    "id": "case-004",
+    "title": "Sistema Hospitalar",
+    "scenario": "O hospital precisa armazenar exames de imagem (Ressonância/Raio-X). Os exames recentes são acessados com frequência, mas após 6 meses são raramente abertos. A legislação exige guarda por 10 anos.",
+    "challenge": "Como desenhar um armazenamento que não falhe (durabilidade) e cuide automaticamente de reduzir os custos astronômicos de guardar terabytes por uma década?",
+    "requirements": [
+      "Retenção obrigatória (compliance)",
+      "Baixo custo a longo prazo",
+      "Zero código manual para mover arquivos"
+    ],
+    "proposed_architecture": "Amazon S3 Standard para exames novos. Configurar uma S3 Lifecycle Rule que transiciona arquivos com mais de 180 dias para S3 Glacier Flexible Retrieval e, após 1 ano, para S3 Glacier Deep Archive com Object Lock (WORM).",
+    "certification": "SAA-C03",
+    "questions": [
+      {
+        "question": "Qual funcionalidade impede que um administrador mal-intencionado apague exames antes de 10 anos?",
+        "options": [
+          "S3 Versioning",
+          "S3 Object Lock em Compliance Mode",
+          "IAM Policies DenyDelete"
+        ],
+        "correct": 1
+      }
+    ],
+    "services": [
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "amazon-s3-glacier",
+        "service_name": "amazon-s3-glacier",
+        "service_slug": "amazon-s3-glacier"
+      }
+    ]
+  },
+  {
+    "id": "case-005",
+    "title": "IoT Industrial",
+    "scenario": "Fábricas com milhares de sensores enviam métricas de temperatura a cada segundo. Os dados precisam ser ingeridos, processados em tempo real para detectar superaquecimento, e salvos para relatórios diários.",
+    "challenge": "Arquitetar a ingestão de fluxo massivo (streaming) de dados sem perder mensagens e detectar anomalias instantaneamente.",
+    "requirements": [
+      "Streaming de dados em larga escala",
+      "Processamento em tempo real (Real-time analytics)",
+      "Armazenamento de baixo custo para Big Data"
+    ],
+    "proposed_architecture": "Amazon Kinesis Data Streams para ingerir os dados. Kinesis Data Analytics para detectar anomalias. Kinesis Data Firehose para entregar os dados ao Amazon S3 (Data Lake) de forma agrupada.",
+    "certification": "SAA-C03",
+    "questions": [
+      {
+        "question": "Como rodar consultas SQL diretamente sobre os dados frios armazenados no S3 sem precisar carregar em um banco?",
+        "options": [
+          "Usando o Amazon Athena",
+          "Usando o Amazon Redshift",
+          "Instalando MySQL no EC2 e apontando pro S3"
+        ],
+        "correct": 0
+      }
+    ],
+    "services": [
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ]
+  },
+  {
+    "id": "case-006",
+    "title": "SaaS Multi Tenant",
+    "scenario": "Um software de RH atende várias empresas (tenants). O isolamento de rede entre clientes premium é exigido. Todos usam o mesmo frontend, mas bancos de dados separados.",
+    "challenge": "Construir uma arquitetura escalável (serverless) e segura que direcione dinamicamente a requisição para o banco correto de cada empresa sem acoplamento de código.",
+    "requirements": [
+      "Isolamento lógico",
+      "Arquitetura baseada em eventos",
+      "Computação Serverless"
+    ],
+    "proposed_architecture": "Amazon API Gateway roteando para funções AWS Lambda baseadas em metadados do Cognito. Cada Tenant possui sua própria tabela no DynamoDB (ou schema no RDS) gerenciada via IAM Policies.",
+    "certification": "SAA-C03",
+    "questions": [
+      {
+        "question": "Por que o AWS Lambda é ideal para este cenário Multi-Tenant com tráfego imprevisível de dezenas de empresas?",
+        "options": [
+          "Pois ele roda sempre ligado na mesma porta.",
+          "Porque escala automaticamente e cobra por 1ms de execução de forma isolada (microVM).",
+          "Porque requer instâncias dedicadas de alto custo."
+        ],
+        "correct": 1
+      }
+    ],
+    "services": [
+      {
+        "service_id": "lambda",
+        "service_name": "AWS Lambda",
+        "service_slug": "aws-lambda"
+      },
+      {
+        "service_id": "dynamodb",
+        "service_name": "Amazon DynamoDB",
+        "service_slug": "amazon-dynamodb"
+      }
+    ]
+  },
+  {
+    "id": "case-007",
+    "title": "Análise de Sentimentos em Call Center",
+    "scenario": "A empresa tem milhares de horas de áudio de ligações. Eles querem automatizar a auditoria para saber se os clientes estão saindo felizes ou nervosos das ligações.",
+    "challenge": "Combinar serviços de inteligência artificial para transcrever o áudio e entender a emoção sem contratar cientistas de dados.",
+    "requirements": [
+      "Zero código de Machine Learning (Serviços gerenciados)",
+      "Conversão de áudio para texto",
+      "Classificação de sentimento"
+    ],
+    "proposed_architecture": "Armazenar MP3 no Amazon S3. Disparar uma AWS Lambda que chama o Amazon Transcribe (Speech-to-text). Passar o texto gerado para o Amazon Comprehend para análise de sentimento.",
+    "certification": "AIF-C01",
+    "questions": [
+      {
+        "question": "Qual serviço entende que o cliente disse 'Eu odeio essa cobrança!' e classifica como Sentimento Negativo?",
+        "options": [
+          "Amazon Rekognition",
+          "Amazon Comprehend",
+          "Amazon Transcribe"
+        ],
+        "correct": 1
+      }
+    ],
+    "services": [
+      {
+        "service_id": "amazon-transcribe",
+        "service_name": "Amazon Transcribe",
+        "service_slug": "amazon-transcribe"
+      },
+      {
+        "service_id": "amazon-comprehend",
+        "service_name": "Amazon Comprehend",
+        "service_slug": "amazon-comprehend"
+      },
+      {
+        "service_id": "lambda",
+        "service_name": "AWS Lambda",
+        "service_slug": "aws-lambda"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ]
+  },
+  {
+    "id": "case-008",
+    "title": "Migração Híbrida de Banco de Dados",
+    "scenario": "Um data center físico legado possui 10 TB de dados no Oracle. A empresa quer mover tudo para a AWS em um fim de semana, com tempo de inatividade próximo a zero.",
+    "challenge": "Sincronizar continuamente o Oracle on-premises com a AWS, mudando a engine para Aurora PostgreSQL sem derrubar a aplicação durante a cópia inicial de meses.",
+    "requirements": [
+      "Zero-downtime migration",
+      "Conversão de schema (Oracle -> Postgres)",
+      "Rede segura dedicada"
+    ],
+    "proposed_architecture": "AWS Direct Connect para comunicação privada. AWS Schema Conversion Tool (SCT) para o schema. AWS Database Migration Service (DMS) para replicação contínua (CDC). Corte no final de semana mudando o DNS.",
+    "certification": "SAA-C03",
+    "questions": [
+      {
+        "question": "O que o AWS DMS faz após a carga completa (Full Load) estar terminada no meio da semana?",
+        "options": [
+          "Ele desliga.",
+          "Inicia o Change Data Capture (CDC) para manter os dois bancos sincronizados até o dia da virada.",
+          "Ele apaga o banco Oracle."
+        ],
+        "correct": 1
+      }
+    ],
+    "services": [
+      {
+        "service_id": "amazon-aurora",
+        "service_name": "Amazon Aurora",
+        "service_slug": "amazon-aurora"
+      },
+      {
+        "service_id": "aws-direct-connect",
+        "service_name": "AWS Direct Connect",
+        "service_slug": "aws-direct-connect"
+      }
+    ]
+  },
+  {
+    "id": "case-009",
+    "title": "Hospedagem de Blog Estático (Serverless)",
+    "scenario": "Um blog de notícias foi atacado por DDoS (negação de serviço) e derrubado. O backend era WordPress no EC2. A empresa reescreveu usando React (estático) e Markdown.",
+    "challenge": "Hospedar os arquivos de forma que resistam a qualquer ataque DDoS no mundo e que custem quase zero centavos por mês.",
+    "requirements": [
+      "Proteção anti-DDoS na borda global",
+      "Sem gerenciamento de instâncias",
+      "Certificado SSL Gratuito"
+    ],
+    "proposed_architecture": "Hospedar no Amazon S3. Distribuir globalmente via Amazon CloudFront (CDN) que bloqueia ataques volumetricos junto com o AWS Shield. SSL via AWS Certificate Manager (ACM).",
+    "certification": "CLF-C02",
+    "questions": [
+      {
+        "question": "Como garantir que ninguém consiga acessar a URL do S3 diretamente, burlando o CDN e gerando custos?",
+        "options": [
+          "Configurar Origin Access Control (OAC) no CloudFront para que apenas ele acesse o bucket.",
+          "Desligar a internet do S3.",
+          "Usar IAM User Credentials no navegador."
+        ],
+        "correct": 0
+      }
+    ],
+    "services": [
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "cloudfront",
+        "service_name": "Amazon CloudFront",
+        "service_slug": "amazon-cloudfront"
+      },
+      {
+        "service_id": "aws-shield",
+        "service_name": "AWS Shield",
+        "service_slug": "aws-shield"
+      }
+    ]
+  },
+  {
+    "id": "case-010",
+    "title": "Governança em Multi-Contas (Landing Zone)",
+    "scenario": "A empresa cresceu de 1 para 30 contas da AWS (Dev, Prod, Security, Finance...). Está um caos gerenciar permissões, faturas e auditoria de quem criou recursos caros.",
+    "challenge": "Centralizar a gestão, o faturamento, aplicar políticas de bloqueio de segurança e auditar todas as ações de API sem atrapalhar a agilidade dos times.",
+    "requirements": [
+      "Faturamento Consolidado",
+      "Políticas restritivas gerais (Guardrails)",
+      "Log de API centralizado"
+    ],
+    "proposed_architecture": "AWS Organizations para agrupar as contas. Aplicar Service Control Policies (SCPs) para impedir a criação de serviços caros. AWS CloudTrail para logs, enviados para um S3 centralizado na conta de Segurança.",
+    "certification": "SAA-C03",
+    "questions": [
+      {
+        "question": "Se um IAM Adminstrator em uma conta de DEV tiver permissão para usar EC2, mas houver um SCP no topo da Organização proibindo o uso de EC2, qual permissão vence?",
+        "options": [
+          "A do IAM Administrator (Allow explícito local).",
+          "A SCP (Deny explícito global), bloqueando o uso.",
+          "Entra em conflito e derruba a conta."
+        ],
+        "correct": 1
+      }
+    ],
+    "services": [
+      {
+        "service_id": "aws-cloudtrail",
+        "service_name": "AWS CloudTrail",
+        "service_slug": "aws-cloudtrail"
+      }
+    ]
+  }
+]

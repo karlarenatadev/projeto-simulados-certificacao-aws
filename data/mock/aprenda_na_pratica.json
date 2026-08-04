@@ -1,0 +1,69 @@
+[
+  {
+    "id": "ap-001",
+    "title": "Hospedando um Site Estático com Alta Disponibilidade",
+    "certification_id": "saa-c03",
+    "domain_id": "design-resiliente",
+    "difficulty_id": "medium",
+    "aws_services": ["Amazon S3", "Amazon CloudFront", "Amazon Route 53"],
+    "scenario": "Sua empresa precisa lançar uma nova landing page para um evento global. O site é puramente estático (HTML/CSS/JS). A expectativa é de milhares de acessos simultâneos em várias partes do mundo. Você precisa garantir baixa latência global e baixo custo de hospedagem.",
+    "architecture_steps": [
+      {
+        "step": 1,
+        "action": "Criar um bucket no Amazon S3",
+        "description": "Crie um bucket S3, ative a funcionalidade de 'Static website hosting' e faça o upload dos seus arquivos HTML/CSS."
+      },
+      {
+        "step": 2,
+        "action": "Configurar o Amazon CloudFront",
+        "description": "Crie uma distribuição CloudFront apontando para o endpoint do site estático do S3 como origem. Isso garantirá cache do site nas Edge Locations globais da AWS."
+      },
+      {
+        "step": 3,
+        "action": "Atualizar permissões do S3 (OAC)",
+        "description": "Restrinja o acesso ao bucket S3 apenas para o CloudFront utilizando Origin Access Control (OAC), bloqueando o acesso público direto ao S3."
+      },
+      {
+        "step": 4,
+        "action": "Configurar o Amazon Route 53",
+        "description": "Crie um registro A (Alias) no Route 53 apontando o seu domínio customizado (ex: meuevento.com) para a distribuição do CloudFront gerada."
+      }
+    ],
+    "key_benefits": [
+      "Escalabilidade automática para milhões de acessos sem gerenciar servidores.",
+      "Custo baixíssimo por ser uma arquitetura *Serverless*.",
+      "Baixa latência para usuários em qualquer continente devido à CDN."
+    ]
+  },
+  {
+    "id": "ap-002",
+    "title": "Desacoplando Microsserviços com Filas",
+    "certification_id": "saa-c03",
+    "domain_id": "design-performance",
+    "difficulty_id": "hard",
+    "aws_services": ["Amazon SQS", "AWS Lambda", "Amazon API Gateway"],
+    "scenario": "Um e-commerce está perdendo pedidos durante a Black Friday porque o banco de dados principal não aguenta a quantidade de requisições de compra síncronas.",
+    "architecture_steps": [
+      {
+        "step": 1,
+        "action": "Configurar API Gateway",
+        "description": "Receber a requisição de compra via Amazon API Gateway."
+      },
+      {
+        "step": 2,
+        "action": "Integração Direta com SQS",
+        "description": "Configurar o API Gateway para enviar a mensagem do pedido diretamente para uma fila do Amazon SQS, respondendo imediatamente '202 Accepted' para o cliente."
+      },
+      {
+        "step": 3,
+        "action": "Processamento com AWS Lambda",
+        "description": "Configurar uma função AWS Lambda como consumidor da fila SQS. A Lambda processará os pedidos no seu próprio ritmo e gravará no banco de dados."
+      }
+    ],
+    "key_benefits": [
+      "Evita perda de dados durante picos (os pedidos ficam seguros na fila).",
+      "Protege o banco de dados de sobrecarga.",
+      "Melhora o tempo de resposta da API para o cliente final."
+    ]
+  }
+]

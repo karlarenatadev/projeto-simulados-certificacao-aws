@@ -1,0 +1,133 @@
+/* ==========================================================================
+LAYOUT CSS
+Design System Grid, Container and Core Structures
+========================================================================== */
+
+/* Container Responsivo */
+.a3-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-16);
+  padding-right: var(--space-16);
+  max-width: 1366px; /* Limite do grid estabelecido no Figma / Design System */
+}
+
+@media (min-width: 768px) {
+  .a3-container {
+    padding-left: var(--space-24);
+    padding-right: var(--space-24);
+  }
+}
+
+@media (min-width: 1024px) {
+  .a3-container {
+    padding-left: var(--space-32);
+    padding-right: var(--space-32);
+  }
+}
+
+/* Base Header */
+.a3-header {
+  background-color: var(--a3-deep-sea);
+  color: var(--a3-text-on-dark);
+  box-shadow: var(--a3-shadow-card);
+  padding: var(--space-12) var(--space-16);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: background-color 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .a3-header {
+    padding: var(--space-16) var(--space-24);
+  }
+}
+
+.a3-header-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--a3-text-on-dark);
+}
+
+.a3-header-link h1 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .a3-header-link {
+    gap: var(--space-12);
+  }
+  .a3-header-link h1 {
+    font-size: var(--text-xl);
+  }
+}
+
+.a3-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .a3-header-actions {
+    gap: var(--space-16);
+  }
+}
+
+/* Hero Section */
+.a3-hero {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  margin-bottom: var(--space-24);
+  text-align: center;
+  box-shadow: var(--a3-shadow-card);
+  border: 1px solid var(--border-theme);
+}
+
+@media (min-width: 768px) {
+  .a3-hero {
+    padding: var(--space-48) var(--space-32);
+    margin-bottom: var(--space-32);
+  }
+}
+
+.a3-hero-title {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--text-strong);
+  margin-bottom: var(--space-12);
+}
+
+@media (min-width: 768px) {
+  .a3-hero-title {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--space-16);
+  }
+}
+
+.a3-hero-subtitle {
+  font-size: var(--text-base);
+  color: var(--text-muted);
+  max-width: 800px;
+  margin: 0 auto var(--space-24);
+}
+
+@media (min-width: 768px) {
+  .a3-hero-subtitle {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-32);
+  }
+}

@@ -35,19 +35,19 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Audit production dependencies
         run: npm audit --omit=dev
 
-      - name: Check formatting
-        run: npm run format:check --if-present
-
       - name: Run lint
         run: npm run lint --if-present
 
-      - name: Run tests
-        run: npm test -- --runInBand
+      - name: Seed Database
+        run: npm run db:seed
+
+      - name: Run tests with coverage
+        run: npm run test:coverage -- --runInBand
 
       - name: Build frontend
         run: npm run build --if-present

@@ -173,7 +173,7 @@ describe('apiService response normalization', () => {
     expect(engine.state.questions).toHaveLength(1);
     expect(global.fetch).toHaveBeenNthCalledWith(
       2,
-      'data/clf-c02.json',
+      'data/questions/clf-c02.json',
     );
   });
 });

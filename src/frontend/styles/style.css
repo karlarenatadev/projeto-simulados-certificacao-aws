@@ -7,436 +7,7 @@
    1. FONTES
    -------------------------------------------------------------------------- */
 
-/* --------------------------------------------------------------------------
-   2. VARIÁVEIS (THEMING)
-   -------------------------------------------------------------------------- */
-:root {
-  /* A3Data Brand Tokens */
-  --a3-bg: #f5f5f5;
-  --a3-surface: #ffffff;
-  --a3-surface-alt: #f8fafc;
-  --a3-primary-dark: #001863;
-  --a3-primary: #0033ff;
-  --a3-accent: #f53199;
-  --a3-text: #111111;
-  --a3-text-strong: #00083d;
-  --a3-text-inverse: #f5f7ff;
-  --a3-border: #ebebeb;
-  --a3-deep-sea: #001863;
-  --a3-tech-blue: #0033ff;
-  --a3-pink-nic: #f53199;
-  --a3-summer-time: var(--a3-accent);
-  --a3-amethyst-velvet: #7b4aaf;
-  --a3-sky-frost: #39d0ff;
-  --a3-background-light: var(--a3-bg);
-  --a3-text-on-light: var(--a3-text-strong);
-  --a3-text-on-dark: var(--a3-text-inverse);
-  --a3-border-default: var(--a3-border);
-  --a3-success: #35b769;
-  --a3-danger: #f91c1c;
-  --a3-warning: #ff822e;
-
-  /* Product UI Tokens */
-  --a3-surface-raised: var(--a3-surface);
-  --a3-surface-soft: var(--a3-surface-alt);
-  --a3-surface-info: color-mix(
-    in srgb,
-    var(--a3-primary) 5%,
-    var(--a3-surface)
-  );
-  --a3-surface-accent: color-mix(
-    in srgb,
-    var(--a3-accent) 8%,
-    var(--a3-surface)
-  );
-  --a3-surface-selected: color-mix(
-    in srgb,
-    var(--a3-primary) 7%,
-    var(--a3-surface)
-  );
-  --a3-surface-success: color-mix(
-    in srgb,
-    var(--a3-success) 12%,
-    var(--a3-surface)
-  );
-  --a3-surface-danger: color-mix(
-    in srgb,
-    var(--a3-danger) 10%,
-    var(--a3-surface)
-  );
-  --a3-surface-warning: color-mix(
-    in srgb,
-    var(--a3-warning) 12%,
-    var(--a3-surface)
-  );
-  --a3-text-muted: color-mix(
-    in srgb,
-    var(--a3-text-strong) 58%,
-    var(--a3-surface)
-  );
-  --a3-border-soft: color-mix(
-    in srgb,
-    var(--a3-border-default) 70%,
-    var(--a3-surface)
-  );
-  --a3-shadow-card: 0 14px 32px
-    color-mix(in srgb, var(--a3-deep-sea) 10%, transparent);
-  --a3-shadow-action: 0 12px 24px
-    color-mix(in srgb, var(--a3-tech-blue) 18%, transparent);
-
-  /* Legacy aliases kept for existing HTML/JS class names. */
-  --aws-dark: var(--a3-deep-sea);
-  --aws-orange: var(--a3-tech-blue);
-  --aws-orange-hover: color-mix(
-    in srgb,
-    var(--a3-tech-blue) 84%,
-    var(--a3-deep-sea)
-  );
-  --aws-light-gray: var(--a3-background-light);
-  --aws-border: var(--a3-border-default);
-  --success-green: var(--a3-success);
-  --error-red: var(--a3-danger);
-  --info-blue: var(--a3-sky-frost);
-
-  /* Modo Claro (Default) */
-  --bg-main: var(--a3-background-light);
-  --bg-card: var(--a3-surface);
-  --text-main: var(--a3-text);
-  --text-strong: var(--a3-text-strong);
-  --text-muted: var(--a3-text-muted);
-  --border-theme: var(--a3-border-default);
-}
-
-.dark {
-  /* Modo Escuro */
-  --bg-main: #07113c;
-  --bg-card: #101b4a;
-  --text-main: var(--a3-text-on-dark);
-  --text-strong: var(--a3-text-on-dark);
-  --text-muted: color-mix(in srgb, var(--a3-text-on-dark) 68%, var(--bg-main));
-  --border-theme: color-mix(
-    in srgb,
-    var(--a3-text-on-dark) 16%,
-    var(--bg-main)
-  );
-  --a3-surface-raised: var(--bg-card);
-  --a3-surface-soft: #172151;
-  --a3-surface-info: color-mix(in srgb, var(--bg-card) 90%, var(--a3-primary));
-  --a3-surface-accent: color-mix(in srgb, var(--bg-card) 86%, var(--a3-accent));
-  --a3-surface-selected: color-mix(
-    in srgb,
-    var(--bg-card) 84%,
-    var(--a3-primary)
-  );
-  --a3-surface-success: color-mix(
-    in srgb,
-    var(--bg-card) 84%,
-    var(--a3-success)
-  );
-  --a3-surface-danger: color-mix(in srgb, var(--bg-card) 84%, var(--a3-danger));
-  --a3-surface-warning: color-mix(
-    in srgb,
-    var(--bg-card) 84%,
-    var(--a3-warning)
-  );
-  --a3-border-soft: color-mix(
-    in srgb,
-    var(--a3-text-on-dark) 10%,
-    var(--bg-card)
-  );
-  --a3-shadow-card: 0 18px 40px
-    color-mix(in srgb, var(--a3-deep-sea) 42%, transparent);
-  --a3-shadow-action: 0 12px 24px
-    color-mix(in srgb, var(--a3-tech-blue) 30%, transparent);
-}
-
-/* --------------------------------------------------------------------------
-   3. ESTILOS BASE
-   -------------------------------------------------------------------------- */
-body {
-  font-family:
-    "Segoe UI",
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
-  background-color: var(--bg-main);
-  color: var(--text-main);
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  overflow-x: hidden;
-}
-
-::selection {
-  background-color: color-mix(in srgb, var(--a3-accent) 28%, transparent);
-  color: inherit;
-}
-
-/* --------------------------------------------------------------------------
-   4. UTILITÁRIOS AWS GERAIS
-   -------------------------------------------------------------------------- */
-.aws-bg-dark {
-  background-color: var(--aws-dark) !important;
-}
-.aws-text-dark {
-  color: var(--text-strong) !important;
-}
-.dark .aws-text-dark {
-  color: var(--text-main) !important;
-}
-
-.aws-bg-orange {
-  background-color: var(--aws-orange) !important;
-}
-.aws-text-orange {
-  color: var(--aws-orange) !important;
-}
-.aws-bg-orange:hover {
-  background-color: var(--aws-orange-hover) !important;
-}
-
-/* --------------------------------------------------------------------------
-   4.1. ALIASES VISUAIS A3 PARA UTILITÁRIOS EXISTENTES
-   -------------------------------------------------------------------------- */
-.bg-white,
-.dark .dark\:bg-slate-800 {
-  background-color: var(--a3-surface-raised) !important;
-}
-.bg-gray-50,
-.bg-gray-100,
-.bg-gray-100\/10,
-.bg-slate-200,
-.dark .dark\:bg-slate-700,
-.dark .dark\:bg-slate-700\/50,
-.dark .dark\:bg-slate-750 {
-  background-color: var(--a3-surface-soft) !important;
-}
-.bg-gray-200,
-.dark .dark\:bg-slate-900,
-.bg-slate-900\/95 {
-  background-color: var(--bg-main) !important;
-}
-.bg-gray-700,
-.bg-slate-700,
-.bg-slate-800,
-.bg-slate-900,
-.aws-bg-dark,
-.bg-aws-dark {
-  background-color: var(--a3-deep-sea) !important;
-}
-.bg-orange-50,
-.bg-orange-500\/10,
-.bg-indigo-500\/10,
-.bg-purple-500\/10,
-.bg-yellow-50,
-.bg-yellow-500\/10,
-.dark .dark\:bg-orange-900\/20,
-.dark .dark\:bg-orange-900\/40,
-.dark .dark\:bg-orange-900\/30 {
-  background-color: var(--a3-surface-accent) !important;
-}
-.bg-blue-50,
-.bg-blue-500\/10,
-.dark .dark\:bg-blue-900,
-.dark .dark\:bg-blue-900\/30 {
-  background-color: var(--a3-surface-info) !important;
-}
-.bg-orange-100,
-.bg-orange-100\/50 {
-  background-color: var(--a3-surface-accent) !important;
-}
-.bg-amber-50,
-.bg-amber-100,
-.bg-yellow-100 {
-  background-color: var(--a3-surface-warning) !important;
-}
-.bg-orange-500,
-.bg-orange-600,
-.bg-blue-600,
-.bg-blue-700,
-.bg-aws-orange {
-  background-color: var(--a3-tech-blue) !important;
-}
-.bg-green-50,
-.dark .dark\:bg-green-900\/20,
-.dark .dark\:bg-green-900\/30 {
-  background-color: var(--a3-surface-success) !important;
-}
-.bg-green-600 {
-  background-color: var(--a3-success) !important;
-}
-.bg-red-50,
-.bg-red-100,
-.bg-red-200,
-.dark .dark\:bg-red-900,
-.dark .dark\:bg-red-800,
-.dark .dark\:bg-red-900\/30 {
-  background-color: var(--a3-surface-danger) !important;
-}
-.hover\:bg-orange-500:hover,
-.hover\:bg-orange-500\/20:hover,
-.hover\:bg-orange-600:hover,
-.hover\:bg-blue-700:hover,
-.hover\:bg-gray-800:hover,
-.hover\:bg-slate-900:hover,
-.dark .dark\:hover\:bg-slate-600:hover {
-  background-color: var(--aws-orange-hover) !important;
-}
-.hover\:bg-gray-50:hover,
-.hover\:bg-gray-100:hover,
-.hover\:bg-gray-200:hover,
-.hover\:bg-slate-300:hover,
-.hover\:bg-red-200:hover,
-.dark .dark\:hover\:bg-red-800:hover,
-.dark .dark\:hover\:bg-slate-700:hover {
-  background-color: var(--a3-surface-soft) !important;
-}
-.text-gray-300,
-.text-gray-400,
-.text-gray-500,
-.text-gray-600,
-.text-slate-500,
-.text-slate-400,
-.dark .dark\:text-slate-500,
-.dark .dark\:text-gray-300,
-.dark .dark\:text-gray-400,
-.dark .dark\:text-slate-400 {
-  color: var(--text-muted) !important;
-}
-.text-gray-700,
-.text-gray-800,
-.text-gray-900,
-.text-slate-700,
-.text-slate-800,
-.text-slate-200,
-.dark .dark\:text-slate-200,
-.text-aws-dark,
-.aws-text-dark,
-.dark .dark\:text-white {
-  color: var(--text-main) !important;
-}
-.text-white {
-  color: var(--a3-text-on-dark) !important;
-}
-.bg-white .text-white,
-.bg-gray-50 .text-white,
-.bg-gray-100 .text-white,
-.bg-blue-50 .text-white,
-.bg-orange-50 .text-white {
-  color: var(--a3-text-on-dark) !important;
-}
-.text-orange-300,
-.text-orange-400,
-.text-orange-500,
-.text-orange-600,
-.text-orange-700,
-.text-orange-800,
-.text-yellow-500,
-.text-yellow-400,
-.text-purple-500,
-.text-purple-400,
-.text-indigo-400,
-.text-indigo-500 {
-  color: var(--a3-accent) !important;
-}
-.text-blue-500,
-.text-blue-400,
-.text-blue-600,
-.text-blue-800,
-.text-blue-900,
-.dark .dark\:text-blue-100,
-.dark .dark\:text-blue-300,
-.text-aws-orange,
-.aws-text-orange {
-  color: var(--a3-tech-blue) !important;
-}
-.text-green-400,
-.text-green-500,
-.text-green-600,
-.text-green-700,
-.dark .dark\:text-green-400 {
-  color: var(--a3-success) !important;
-}
-.text-red-400,
-.text-red-500,
-.text-red-600,
-.text-red-700,
-.dark .dark\:text-red-100,
-.dark .dark\:text-red-400 {
-  color: var(--a3-danger) !important;
-}
-.border-gray-100,
-.border-gray-200,
-.border-gray-300,
-.border-slate-500,
-.border-slate-600,
-.border-slate-700,
-.dark .dark\:border-slate-500,
-.dark .dark\:border-slate-600,
-.dark .dark\:border-slate-700 {
-  border-color: var(--border-theme) !important;
-}
-.border-orange-200,
-.border-orange-300,
-.border-orange-400,
-.border-orange-500,
-.border-orange-600,
-.border-orange-700,
-.border-orange-800,
-.border-orange-500\/50,
-.border-yellow-500,
-.dark .dark\:border-orange-800\/50,
-.dark .dark\:border-orange-500\/30 {
-  border-color: var(--a3-accent) !important;
-}
-.border-blue-200,
-.border-blue-500,
-.border-blue-700,
-.border-aws-orange {
-  border-color: var(--a3-tech-blue) !important;
-}
-.border-green-200,
-.border-green-500,
-.border-green-700,
-.dark .dark\:border-green-700 {
-  border-color: var(--a3-success) !important;
-}
-.border-red-300,
-.border-red-500,
-.border-red-700,
-.dark .dark\:border-red-700 {
-  border-color: var(--a3-danger) !important;
-}
-.shadow-md,
-.shadow-lg,
-.shadow-xl,
-.shadow-2xl,
-.shadow-sm {
-  box-shadow: var(--a3-shadow-card) !important;
-}
-.shadow-orange-500\/30,
-.hover\:shadow-orange-500\/50:hover {
-  box-shadow: var(--a3-shadow-action) !important;
-}
-.bg-gradient-to-r {
-  background-image: none !important;
-  background-color: var(--a3-tech-blue) !important;
-}
-.focus\:border-orange-500:focus,
-.focus\:ring-aws-orange:focus,
-.focus\:ring-orange-200:focus,
-.focus-visible\:ring-orange-500:focus-visible {
-  border-color: var(--a3-tech-blue) !important;
-  --tw-ring-color: color-mix(
-    in srgb,
-    var(--a3-tech-blue) 24%,
-    transparent
-  ) !important;
-}
+/* Blocos migrados para tokens, themes, base e utilities */
 
 header {
   background-color: var(--a3-primary-dark) !important;
@@ -533,7 +104,7 @@ textarea {
   background-color: color-mix(
     in srgb,
     var(--a3-surface-soft) 86%,
-    #000000
+    var(--a3-text-strong)
   ) !important;
 }
 
@@ -1386,7 +957,7 @@ select {
   border: 1px solid rgba(53, 183, 105, 0.2);
   padding: 0.375rem 1rem;
   border-radius: 9999px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--a3-text-strong) 5%, transparent);
   cursor: help;
   transition: all 0.2s ease;
 }
@@ -1401,7 +972,7 @@ select {
   z-index: 9999;
   width: 220px;
   max-width: calc(100vw - 24px);
-  background-color: var(--a3-text-on-light, #00083d);
+  background-color: var(--a3-text-on-light, var(--a3-text-strong));
   color: #fff;
   text-align: center;
   border-radius: 6px;
@@ -1412,8 +983,8 @@ select {
   letter-spacing: normal;
   line-height: 1.4;
   box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    0 4px 6px -1px color-mix(in srgb, var(--a3-text-strong) 10%, transparent),
+    0 2px 4px -1px color-mix(in srgb, var(--a3-text-strong) 6%, transparent);
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
@@ -1439,28 +1010,421 @@ select {
 
 .validation-tooltip.arrow-down::after {
   top: 100%;
-  border-color: var(--a3-text-on-light, #00083d) transparent transparent
+  border-color: var(--a3-text-on-light, var(--a3-text-strong)) transparent transparent
     transparent;
 }
 
 .validation-tooltip.arrow-up::after {
   bottom: 100%;
-  border-color: transparent transparent var(--a3-text-on-light, #00083d)
+  border-color: transparent transparent var(--a3-text-on-light, var(--a3-text-strong))
     transparent;
 }
 
 /* Dark mode */
 .dark .validation-tooltip {
-  background-color: var(--a3-border-default, #ebebeb);
-  color: var(--a3-text-on-light, #00083d);
+  background-color: var(--a3-border-default, var(--a3-border-default));
+  color: var(--a3-text-on-light, var(--a3-text-strong));
 }
 
 .dark .validation-tooltip.arrow-down::after {
-  border-color: var(--a3-border-default, #ebebeb) transparent transparent
+  border-color: var(--a3-border-default, var(--a3-border-default)) transparent transparent
     transparent;
 }
 
 .dark .validation-tooltip.arrow-up::after {
-  border-color: transparent transparent var(--a3-border-default, #ebebeb)
+  border-color: transparent transparent var(--a3-border-default, var(--a3-border-default))
     transparent;
 }
+/* --- Cores Adicionais (Design System) --- */
+.text-magenta {
+  color: var(--a3-accent);
+}
+.bg-magenta {
+  background-color: var(--a3-accent);
+}
+.border-magenta {
+  border-color: var(--a3-accent);
+}
+.btn-magenta {
+  background: linear-gradient(to right, var(--a3-accent), #D91C7B);
+  color: white;
+  transition: all 0.2s ease;
+}
+.btn-magenta:hover {
+  background: linear-gradient(to right, #D91C7B, #B81363);
+  box-shadow: 0 4px 14px 0 rgba(245, 49, 153, 0.39);
+}
+.dark .btn-magenta {
+  background: linear-gradient(to right, #B81363, #8F0F4D);
+}
+.dark .btn-magenta:hover {
+  background: linear-gradient(to right, #8F0F4D, #6B0B3A);
+}
+
+
+/* ============================================================================
+   RECOMMENDATIONS (Study Now)
+   ============================================================================ */
+.study-now-list { display: flex; flex-direction: column; }
+.study-now-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0; border-bottom: 1px solid var(--a3-border-soft); }
+.study-now-item:last-child { border-bottom: none; }
+.study-now-rank { width: 1rem; flex-shrink: 0; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); }
+.study-now-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.875rem; color: var(--text-main); }
+.study-now-badge { flex-shrink: 0; font-size: 0.75rem; font-weight: 700; padding: 0.125rem 0.5rem; border-radius: 9999px; border: 1px solid transparent; }
+.study-now-badge--high { color: var(--a3-danger); background-color: var(--a3-surface-danger); border-color: color-mix(in srgb, var(--a3-danger) 30%, transparent); }
+.study-now-badge--medium { color: var(--a3-warning); background-color: var(--a3-surface-warning); border-color: color-mix(in srgb, var(--a3-warning) 30%, transparent); }
+.study-now-badge--low { color: var(--a3-success); background-color: var(--a3-surface-success); border-color: color-mix(in srgb, var(--a3-success) 30%, transparent); }
+.study-now-link { flex-shrink: 0; display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; color: var(--a3-tech-blue); text-decoration: none; }
+.study-now-link:hover { text-decoration: underline; }
+.study-now-link i { font-size: 0.625rem; }
+.study-now-btn { width: 100%; margin-top: 1rem; padding: 0.625rem; border: none; border-radius: 0.5rem; background-color: var(--a3-tech-blue); color: var(--a3-text-inverse); font-size: 0.875rem; font-weight: 700; cursor: pointer; transition: background-color 0.2s ease; }
+.study-now-btn:hover { background-color: var(--aws-orange-hover); }
+.study-now-empty, .study-now-loading { font-size: 0.875rem; font-style: italic; color: var(--text-muted); }
+.study-now-loading { animation: study-now-pulse 1.5s ease-in-out infinite; }
+.study-now-success { font-size: 0.875rem; font-weight: 500; color: var(--a3-success); }
+@keyframes study-now-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/**
+ * GAMIFICACAO.CSS
+ * Estilos exclusivos para a Jornada AWS (Trilha) e Dashboard da Guilda.
+ * Depende das variáveis globais definidas em style.css.
+ */
+
+/* ============================================================================
+   TRILHA DE APRENDIZADO (ESTILO ZIGUEZAGUE)
+   ============================================================================ */
+
+.trail-container {
+  position: relative;
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem; /* Espaçamento vertical entre os nós */
+  width: 100%;
+  max-width: 400px;
+  min-width: 280px;
+  margin: 0 auto;
+}
+
+/* Linha pontilhada que conecta os módulos */
+.trail-container::before {
+  content: "";
+  position: absolute;
+  top: 2rem;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  border-left: 4px dashed var(--border-theme);
+  z-index: 0;
+}
+
+/* Container individual de cada nó (para alinhar o texto) */
+.trail-node-wrapper {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 120px;
+  min-width: 100px;
+}
+
+/* A mágica do Ziguezague usando CSS puro - com responsividade */
+.trail-node-wrapper:nth-child(odd) {
+  transform: translateX(-30%);
+}
+
+.trail-node-wrapper:nth-child(even) {
+  transform: translateX(30%);
+}
+
+@media (max-width: 640px) {
+  .trail-node-wrapper:nth-child(odd) {
+    transform: translateX(-20%);
+  }
+
+  .trail-node-wrapper:nth-child(even) {
+    transform: translateX(20%);
+  }
+}
+
+@media (max-width: 380px) {
+  .trail-node-wrapper {
+    width: 100px;
+    min-width: 80px;
+  }
+
+  .trail-node-wrapper:nth-child(odd) {
+    transform: translateX(-15%);
+  }
+
+  .trail-node-wrapper:nth-child(even) {
+    transform: translateX(15%);
+  }
+}
+
+/* O botão circular do módulo */
+.trail-node {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 4px solid var(--bg-main);
+  box-shadow: var(--a3-shadow-card);
+  min-width: 60px;
+}
+
+@media (max-width: 640px) {
+  .trail-node {
+    width: 64px;
+    height: 64px;
+    font-size: 1.3rem;
+    border-width: 3px;
+  }
+}
+
+@media (max-width: 380px) {
+  .trail-node {
+    width: 56px;
+    height: 56px;
+    font-size: 1.1rem;
+    border-width: 3px;
+  }
+}
+
+/* ESTADOS DOS NÓS */
+
+/* 1. Bloqueado (Cinza, inativo) */
+.trail-node.locked {
+  background-color: var(--a3-surface-soft);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  border-color: var(--a3-border-default);
+}
+.dark .trail-node.locked {
+  background-color: var(--a3-surface-soft);
+  color: var(--text-muted);
+  border-color: var(--border-theme);
+}
+
+/* 2. Concluído */
+.trail-node.completed {
+  background-color: var(--a3-success);
+  color: var(--a3-text-on-dark);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--a3-success) 24%, transparent);
+}
+
+/* 3. Ativo/Atual (Com efeito de pulso e destaque) */
+.trail-node.active {
+  background-color: var(--a3-accent);
+  color: var(--a3-text-inverse);
+  border-color: color-mix(in srgb, var(--a3-accent) 74%, var(--a3-surface));
+  animation: nodePulse 2s infinite;
+}
+.dark .trail-node.active {
+  background-color: var(--a3-accent);
+  color: var(--a3-text-inverse);
+}
+
+/* Texto abaixo do nó */
+.trail-node-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+
+@media (max-width: 640px) {
+  .trail-node-title {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .trail-node-title {
+    font-size: 0.65rem;
+  }
+}
+
+/* ============================================================================
+   BADGES & GLASSMORPHISM (Dark Tech Aesthetic)
+   ============================================================================ */
+
+/* Container da Insígnia com efeito de vidro fosco */
+.badge-glass {
+  background: color-mix(in srgb, var(--a3-surface) 86%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--a3-border-default);
+  border-radius: 1rem;
+  box-shadow: var(--a3-shadow-card);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  min-width: 100px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .badge-glass {
+    padding: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .badge-glass {
+    padding: 0.75rem;
+    min-width: 80px;
+  }
+}
+
+.badge-glass:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--a3-shadow-card);
+}
+
+.badge-glass:not(.grayscale):hover {
+  border-color: var(--a3-accent);
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--a3-accent) 18%, transparent);
+}
+
+/* Adaptação do Glassmorphism para o Dark Mode */
+.dark .badge-glass {
+  background: color-mix(in srgb, var(--a3-surface-raised) 84%, transparent);
+  border: 1px solid var(--border-theme);
+  box-shadow: var(--a3-shadow-card);
+}
+
+.dark .badge-glass:hover {
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--a3-accent) 22%, transparent);
+  border-color: var(--a3-accent);
+}
+
+/* Ícone da Insígnia */
+.badge-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(
+    0 2px 4px color-mix(in srgb, var(--a3-deep-sea) 18%, transparent)
+  );
+}
+
+@media (max-width: 768px) {
+  .badge-icon {
+    font-size: 2rem;
+    margin-bottom: 0.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .badge-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+  }
+}
+
+/* ============================================================================
+   ANIMAÇÕES ESPECÍFICAS
+   ============================================================================ */
+
+/* Animação suave de pulso para o nó atual da jornada */
+@keyframes nodePulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--a3-accent) 32%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 15px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* Efeito de desbloqueio (quando um nó passa de cinza para ativo) */
+.unlock-animation {
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 
+   O NÓ DO BOSS (A Batalha Final AWS)
+*/
+.trail-node.boss-node {
+  width: 90px;
+  height: 90px;
+  background: var(--a3-primary-dark);
+  border: 4px solid var(--a3-accent);
+  color: var(--a3-text-inverse);
+  font-size: 2rem;
+  box-shadow: 0 0 20px color-mix(in srgb, var(--a3-accent) 24%, transparent);
+  text-shadow: 0 2px 4px color-mix(in srgb, var(--a3-deep-sea) 50%, transparent);
+  z-index: 10;
+}
+
+@media (max-width: 640px) {
+  .trail-node.boss-node {
+    width: 80px;
+    height: 80px;
+    font-size: 1.8rem;
+    border-width: 3px;
+  }
+}
+
+@media (max-width: 380px) {
+  .trail-node.boss-node {
+    width: 72px;
+    height: 72px;
+    font-size: 1.5rem;
+    border-width: 3px;
+  }
+}
+
+.trail-node.boss-node.active {
+  background: var(--a3-primary-dark);
+  animation: bossPulse 2s infinite;
+}
+
+@keyframes bossPulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--a3-accent) 38%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 20px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.dark .trail-node.boss-node {
+  border-color: var(--a3-accent);
+  color: var(--a3-text-inverse);
+}
+

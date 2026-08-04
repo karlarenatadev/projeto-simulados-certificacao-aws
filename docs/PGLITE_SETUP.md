@@ -11,7 +11,7 @@ backend/database/db.js          camada publica de acesso ao banco
 backend/database/schema.sql     schema principal
 backend/database/normalizers.js normalizadores compartilhados
 backend/database/db.test.js     testes da camada de banco
-scripts/seed-pglite.mjs         seed dos JSONs principais
+scripts/seed/seed-pglite.mjs         seed dos JSONs principais
 ```
 
 ## Variaveis

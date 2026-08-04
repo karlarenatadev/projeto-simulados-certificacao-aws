@@ -1,5 +1,7 @@
+import { logger } from "./utils/logger.js";
 import apiService from "../services/api.js";
 import { createDataRepository } from "./dataRepository.js";
+import { generateQuestionId } from "./utils/questionIdentity.js";
 
 /**
  * StorageManager - Gerencia toda a persistência de dados do simulador
@@ -227,7 +229,7 @@ export class StorageManager {
         ? parsed
         : {};
     } catch (error) {
-      console.error("Erro ao carregar erros registrados:", error);
+      logger.error("Erro ao carregar erros registrados:", error);
       return {};
     }
   }
@@ -237,7 +239,7 @@ export class StorageManager {
       localStorage.setItem(this._getKey("mistakes"), JSON.stringify(store));
       return true;
     } catch (error) {
-      console.error("Erro ao salvar erros registrados:", error);
+      logger.error("Erro ao salvar erros registrados:", error);
       return false;
     }
   }
@@ -302,7 +304,7 @@ export class StorageManager {
 
       return true;
     } catch (error) {
-      console.error("Erro ao salvar resultado do quiz:", error);
+      logger.error("Erro ao salvar resultado do quiz:", error);
       return false;
     }
   }
@@ -330,7 +332,7 @@ export class StorageManager {
         passed: result.passed,
       };
     } catch (error) {
-      console.error("Erro ao carregar último score:", error);
+      logger.error("Erro ao carregar último score:", error);
       return null;
     }
   }
@@ -353,7 +355,7 @@ export class StorageManager {
 
       return JSON.parse(data);
     } catch (error) {
-      console.error("Erro ao carregar último resultado:", error);
+      logger.error("Erro ao carregar último resultado:", error);
       return null;
     }
   }
@@ -377,7 +379,7 @@ export class StorageManager {
 
       // VALIDAÇÃO CRÍTICA: Garante que sempre retorna um Array válido
       if (!Array.isArray(parsed)) {
-        console.warn(
+        logger.warn(
           "Histórico corrompido detectado (não é array). Limpando cache...",
         );
         this.clearHistory();
@@ -386,7 +388,7 @@ export class StorageManager {
 
       return parsed;
     } catch (error) {
-      console.error(
+      logger.error(
         "Erro ao carregar histórico (JSON inválido). Limpando cache...",
         error,
       );
@@ -407,7 +409,7 @@ export class StorageManager {
       localStorage.setItem(historyKey, JSON.stringify(history));
       return true;
     } catch (error) {
-      console.error("Erro ao salvar histórico:", error);
+      logger.error("Erro ao salvar histórico:", error);
       return false;
     }
   }
@@ -422,7 +424,7 @@ export class StorageManager {
       localStorage.removeItem(historyKey);
       return true;
     } catch (error) {
-      console.error("Erro ao limpar histórico:", error);
+      logger.error("Erro ao limpar histórico:", error);
       return false;
     }
   }
@@ -449,7 +451,7 @@ export class StorageManager {
 
       return removed || null;
     } catch (error) {
-      console.error("Erro ao remover item do histórico:", error);
+      logger.error("Erro ao remover item do histórico:", error);
       return null;
     }
   }
@@ -512,7 +514,7 @@ export class StorageManager {
 
       return this._saveMistakesStore(store) ? record : null;
     } catch (error) {
-      console.error("Erro ao registrar questao errada:", error);
+      logger.error("Erro ao registrar questao errada:", error);
       return null;
     }
   }
@@ -558,7 +560,7 @@ export class StorageManager {
 
       return this._saveMistakesStore(store);
     } catch (error) {
-      console.error("Erro ao remover erro registrado:", error);
+      logger.error("Erro ao remover erro registrado:", error);
       return false;
     }
   }
@@ -577,7 +579,7 @@ export class StorageManager {
 
       return this._saveMistakesStore(store);
     } catch (error) {
-      console.error("Erro ao limpar erros registrados:", error);
+      logger.error("Erro ao limpar erros registrados:", error);
       return false;
     }
   }
@@ -625,7 +627,7 @@ export class StorageManager {
         labsCompleted: parsed.labsCompleted || 0,
       });
     } catch (error) {
-      console.error("Erro ao carregar gamificação:", error);
+      logger.error("Erro ao carregar gamificação:", error);
       return this._mergeGamificationWithHistory(fallback);
     }
   }
@@ -690,7 +692,7 @@ export class StorageManager {
 
       return gamification;
     } catch (error) {
-      console.error("Erro ao atualizar gamificação:", error);
+      logger.error("Erro ao atualizar gamificação:", error);
       return null;
     }
   }
@@ -722,7 +724,7 @@ export class StorageManager {
       localStorage.setItem(key, JSON.stringify(gamification));
       return true;
     } catch (error) {
-      console.error("Erro ao salvar gamificação:", error);
+      logger.error("Erro ao salvar gamificação:", error);
       return false;
     }
   }
@@ -755,7 +757,7 @@ export class StorageManager {
       this.saveGamification(gamification);
       return gamification;
     } catch (error) {
-      console.error("Erro ao recalcular gamificação pelo histórico:", error);
+      logger.error("Erro ao recalcular gamificação pelo histórico:", error);
       return null;
     }
   }
@@ -778,10 +780,14 @@ export class StorageManager {
       };
 
       history.push(newEntry);
-      localStorage.setItem(key, JSON.stringify(history));
+
+      // Limit history to last 100 sessions to prevent localStorage overflow
+      const finalHistory = history.slice(-100);
+      
+      localStorage.setItem(key, JSON.stringify(finalHistory));
       return true;
     } catch (error) {
-      console.error("Erro ao salvar sessão de foco:", error);
+      logger.error("Erro ao salvar sessão de foco:", error);
       return false;
     }
   }
@@ -796,7 +802,7 @@ export class StorageManager {
       const data = localStorage.getItem(key);
       return data ? JSON.parse(data) : [];
     } catch (error) {
-      console.error("Erro ao carregar histórico de foco:", error);
+      logger.error("Erro ao carregar histórico de foco:", error);
       return [];
     }
   }
@@ -842,7 +848,7 @@ export class StorageManager {
       });
       return true;
     } catch (error) {
-      console.error("Erro ao limpar todos os dados:", error);
+      logger.error("Erro ao limpar todos os dados:", error);
       return false;
     }
   }
@@ -869,8 +875,167 @@ export class StorageManager {
 
       return data;
     } catch (error) {
-      console.error("Erro ao exportar dados:", error);
+      logger.error("Erro ao exportar dados:", error);
       return {};
+    }
+  }
+
+  /**
+   * Adiciona ou atualiza uma questão individual no deck de revisão (persistência imediata).
+   */
+  addReviewQuestion(certId, question) {
+    if (!certId || !question) return;
+
+    const deck = this.getReviewDeck(certId);
+    const qId = generateQuestionId(question, certId);
+    
+    const existingIndex = deck.findIndex(q => (q.questionId === qId) || (q.question && question.question && q.question.substring(0,50) === question.question.substring(0,50)));
+    
+    if (existingIndex >= 0) {
+      // Atualiza existente, incrementando count
+      deck[existingIndex] = {
+        ...deck[existingIndex],
+        flaggedCount: (deck[existingIndex].flaggedCount || 1) + 1,
+        flaggedAt: new Date().toISOString()
+      };
+    } else {
+      // Adiciona nova
+      deck.push({
+        ...question,
+        questionId: qId,
+        certId: certId,
+        flaggedAt: new Date().toISOString(),
+        flaggedCount: 1,
+        reviewStatus: 'pending',
+        resolvedAt: null,
+        // Garante domain e services
+        domain: question.domain || question.domainId || "",
+        services: Array.isArray(question.services) ? question.services : []
+      });
+    }
+
+    const deckKey = this._getKey(`${certId}_review_deck`);
+    try {
+      localStorage.setItem(deckKey, JSON.stringify(deck));
+    } catch (e) {
+      logger.error("Erro ao salvar review question:", e);
+    }
+  }
+
+  /**
+   * Remove uma questão específica do deck de revisão usando seu questionId.
+   */
+  removeReviewQuestion(certId, questionIdOrObject) {
+    if (!certId || !questionIdOrObject) return;
+
+    let qId;
+    let hashFallback = null;
+
+    if (typeof questionIdOrObject === "string") {
+      qId = questionIdOrObject;
+    } else {
+      qId = generateQuestionId(questionIdOrObject, certId);
+      if (questionIdOrObject.question) {
+         hashFallback = questionIdOrObject.question.substring(0, 50);
+      }
+    }
+
+    let deck = this.getReviewDeck(certId);
+    
+    const initialLength = deck.length;
+    deck = deck.filter(q => {
+      if (q.questionId === qId) return false;
+      if (hashFallback && q.question && q.question.substring(0,50) === hashFallback) return false;
+      return true;
+    });
+
+    if (deck.length !== initialLength) {
+      const deckKey = this._getKey(`${certId}_review_deck`);
+      try {
+        localStorage.setItem(deckKey, JSON.stringify(deck));
+      } catch (e) {
+        logger.error("Erro ao remover review question:", e);
+      }
+    }
+  }
+
+  /**
+   * Obtém estatísticas estruturadas do deck de revisão (para Study Hub).
+   */
+  getReviewStats(certId) {
+    const deck = this.getReviewDeck(certId);
+    
+    const stats = {
+      total: deck.length,
+      pending: 0,
+      resolved: 0,
+      domains: {}
+    };
+
+    deck.forEach(q => {
+      if (q.reviewStatus === 'resolved') {
+        stats.resolved++;
+      } else {
+        stats.pending++;
+      }
+      
+      const domain = q.domain || 'Uncategorized';
+      stats.domains[domain] = (stats.domains[domain] || 0) + 1;
+    });
+
+    return stats;
+  }
+
+  /**
+   * Salva questões marcadas para revisão no deck do usuário (em lote).
+   */
+  saveReviewDeck(certId, flaggedQuestionsArray) {
+    if (!certId || !Array.isArray(flaggedQuestionsArray) || flaggedQuestionsArray.length === 0) return;
+    
+    flaggedQuestionsArray.forEach(q => {
+      this.addReviewQuestion(certId, q);
+    });
+  }
+
+  /**
+   * Retorna as questões salvas no deck de revisão, realizando lazy migration.
+   */
+  getReviewDeck(certId) {
+    if (!certId) return [];
+    try {
+      const deckKey = this._getKey(`${certId}_review_deck`);
+      const stored = localStorage.getItem(deckKey);
+      if (!stored) return [];
+      
+      let deck = JSON.parse(stored);
+      let needsMigration = false;
+
+      deck = deck.map(q => {
+        if (!q.questionId) {
+          needsMigration = true;
+          return {
+            ...q,
+            questionId: generateQuestionId(q, certId),
+            certId: certId,
+            flaggedAt: new Date().toISOString(),
+            flaggedCount: 1,
+            reviewStatus: 'pending',
+            resolvedAt: null,
+            domain: q.domain || q.domainId || "",
+            services: Array.isArray(q.services) ? q.services : []
+          };
+        }
+        return q;
+      });
+
+      if (needsMigration) {
+        localStorage.setItem(deckKey, JSON.stringify(deck));
+      }
+
+      return deck;
+    } catch (e) {
+      logger.warn("Erro ao ler review deck:", e);
+      return [];
     }
   }
 
@@ -892,7 +1057,7 @@ export class StorageManager {
       });
       return true;
     } catch (error) {
-      console.error("Erro ao importar dados:", error);
+      logger.error("Erro ao importar dados:", error);
       return false;
     }
   }

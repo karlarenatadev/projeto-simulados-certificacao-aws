@@ -18,11 +18,7 @@
  * @param {object|null} api - Instância de apiService (opcional)
  * @returns {object} Interface única de acesso a dados
  */
-export function createDataRepository(storage, api = null) {
-  function isApiEnabled() {
-    return api !== null && typeof api.isAvailable === "function";
-  }
-
+export function createDataRepository(storage, _api = null) {
   return {
     // -------------------------------------------------------------------------
     // Progresso e histórico
@@ -96,6 +92,31 @@ export function createDataRepository(storage, api = null) {
     clearMistakes(certificationId) {
       return storage.clearMistakes(certificationId);
     },
+
+    // -------------------------------------------------------------------------
+    // Review Deck (questões marcadas para revisão / flashcards)
+    // -------------------------------------------------------------------------
+
+    saveReviewDeck(certId, flaggedQuestionsArray) {
+      return storage.saveReviewDeck(certId, flaggedQuestionsArray);
+    },
+
+    getReviewDeck(certId) {
+      return storage.getReviewDeck(certId);
+    },
+    
+    addReviewQuestion(certId, question) {
+      return storage.addReviewQuestion(certId, question);
+    },
+
+    removeReviewQuestion(certId, questionId) {
+      return storage.removeReviewQuestion(certId, questionId);
+    },
+
+    getReviewStats(certId) {
+      return storage.getReviewStats(certId);
+    },
+
 
     // -------------------------------------------------------------------------
     // Gamificação

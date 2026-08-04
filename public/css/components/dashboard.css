@@ -1,0 +1,99 @@
+/* ==========================================================================
+   DASHBOARD CSS — Resultados, Relatórios e Progresso (app.js UI)
+   ========================================================================== */
+
+.a3-result-card {
+  background-color: var(--a3-surface);
+  border-radius: var(--a3-radius-xl);
+  padding: 2rem;
+  box-shadow: var(--a3-shadow-lg);
+  border: 1px solid var(--border-theme);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.dark .a3-result-card {
+  border-color: var(--border-theme);
+}
+
+.a3-progress {
+  width: 100%;
+  background-color: var(--a3-surface-soft);
+  border-radius: 999px;
+  height: 0.75rem;
+  overflow: hidden;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.a3-progress-bar {
+  height: 100%;
+  background-color: var(--a3-primary);
+  border-radius: 999px;
+  transition: width 0.5s ease-in-out;
+}
+
+/* Para cores diferentes na barra (sucesso, alerta, erro) */
+.a3-progress-bar.success { background-color: var(--a3-success); }
+.a3-progress-bar.warning { background-color: var(--a3-warning); }
+.a3-progress-bar.danger { background-color: var(--a3-danger); }
+
+.a3-stat-card {
+  background-color: var(--a3-surface-soft);
+  border: 1px solid var(--border-theme);
+  border-radius: var(--a3-radius-lg);
+  padding: 1.5rem;
+  text-align: center;
+}
+.dark .a3-stat-card {
+  border-color: var(--border-theme);
+}
+
+.a3-stat-card-success {
+  background-color: var(--a3-surface-success);
+  border-color: var(--a3-success);
+}
+.a3-stat-card-warning {
+  background-color: var(--a3-surface-warning);
+  border-color: var(--a3-warning);
+}
+
+.a3-skill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  background-color: var(--a3-surface);
+  border: 1px solid var(--a3-border-color);
+  border-radius: var(--a3-radius-md);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--a3-text-main);
+}
+.a3-skill-badge-success {
+  background-color: var(--a3-surface-success);
+  border-color: var(--a3-success);
+  color: var(--a3-success);
+}
+.a3-skill-badge-danger {
+  background-color: var(--a3-surface-danger);
+  border-color: var(--a3-danger);
+  color: var(--a3-danger);
+}
+
+.a3-domain-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: var(--a3-surface-soft);
+  border: 1px solid var(--a3-border-color);
+  border-radius: var(--a3-radius-lg);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+@media (min-width: 640px) {
+  .a3-domain-summary {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

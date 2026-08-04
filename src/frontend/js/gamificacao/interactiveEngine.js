@@ -1,3 +1,4 @@
+import { logger } from "../utils/logger.js";
 /**
  * Motor de Interação e Gamificação AWS
  * Responsável por carregar, renderizar e validar desafios de arrastar e soltar (Ordering).
@@ -32,10 +33,10 @@ class InteractiveEngine {
       if (this.currentChallenge) {
         this.render();
       } else {
-        console.error("Desafio arquitetural não encontrado.");
+        logger.error("Desafio arquitetural não encontrado.");
       }
     } catch (error) {
-      console.error("Erro na camada de dados:", error);
+      logger.error("Erro na camada de dados:", error);
     }
   }
 
@@ -43,7 +44,7 @@ class InteractiveEngine {
   render() {
     const container = document.getElementById(this.containerId);
     if (!container) {
-      console.error(`Container #${this.containerId} não existe no DOM.`);
+      logger.error(`Container #${this.containerId} não existe no DOM.`);
       return;
     }
 
@@ -100,7 +101,7 @@ class InteractiveEngine {
 
     if (isCorrect) {
       feedbackArea.innerHTML = `
-                <div style="color: #2e7d32; margin-top: 15px; font-weight: bold;">
+                <div style="color: var(--a3-success); margin-top: 15px; font-weight: bold;">
                     ✅ Arquitetura validada com sucesso!
                     <p style="font-weight: normal; font-size: 0.9em; margin-top: 5px;">
                         ${this.currentChallenge.explanation || ""}
@@ -111,7 +112,7 @@ class InteractiveEngine {
       this.sortableInstance.option("disabled", true);
     } else {
       feedbackArea.innerHTML = `
-                <div style="color: #d32f2f; margin-top: 15px; font-weight: bold;">
+                <div style="color: var(--a3-danger); margin-top: 15px; font-weight: bold;">
                     ❌ Ordem incorreta. Analisa o fluxo do tráfego ou dos dados e tenta reposicionar os serviços.
                 </div>`;
     }

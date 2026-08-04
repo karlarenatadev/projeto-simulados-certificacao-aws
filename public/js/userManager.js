@@ -1,3 +1,4 @@
+import { logger } from "./utils/logger.js";
 /**
  * User Manager
  * Handles anonymous user creation and persistence
@@ -28,7 +29,7 @@ export const userManager = {
           const upgraded = await this.tryUpgradeToBackendUser(existingUserId);
           if (upgraded) return upgraded;
         }
-        console.log(`✓ Using existing user: ${existingUserId}`);
+        logger.info(`✓ Using existing user: ${existingUserId}`);
         return {
           id: existingUserId,
           anonymous_name:
@@ -48,7 +49,7 @@ export const userManager = {
           localStorage.setItem("aws_sim_user_id", userId);
           localStorage.setItem("aws_sim_user_name", userName);
 
-          console.log(`✓ Created new user via API: ${userId} (${userName})`);
+          logger.info(`✓ Created new user via API: ${userId} (${userName})`);
 
           return {
             id: userId,
@@ -56,7 +57,7 @@ export const userManager = {
           };
         }
       } catch (apiError) {
-        console.warn(
+        logger.warn(
           "Failed to create user via API, using local fallback:",
           apiError,
         );
@@ -67,14 +68,14 @@ export const userManager = {
       localStorage.setItem("aws_sim_user_id", fallbackUserId);
       localStorage.setItem("aws_sim_user_name", "AnonymousLocal");
 
-      console.log(`✓ Using local fallback user: ${fallbackUserId}`);
+      logger.info(`✓ Using local fallback user: ${fallbackUserId}`);
 
       return {
         id: fallbackUserId,
         anonymous_name: "AnonymousLocal",
       };
     } catch (error) {
-      console.error("Fatal error in user creation:", error);
+      logger.error("Fatal error in user creation:", error);
       throw error;
     }
   },
@@ -99,13 +100,13 @@ export const userManager = {
         const newName = response.data.anonymous_name;
         localStorage.setItem("aws_sim_user_id", newId);
         localStorage.setItem("aws_sim_user_name", newName);
-        console.log(
+        logger.info(
           `✓ Local user ${localUserId} upgraded to backend user: ${newId}`,
         );
         return { id: newId, anonymous_name: newName };
       }
     } catch (error) {
-      console.warn("Could not upgrade local user to backend:", error);
+      logger.warn("Could not upgrade local user to backend:", error);
     }
     return null;
   },

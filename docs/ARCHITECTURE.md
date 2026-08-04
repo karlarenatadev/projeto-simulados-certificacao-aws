@@ -137,7 +137,7 @@ O backend FastAPI em `validation/backend/` ainda existe, mas nao e o caminho ofi
 
 ## Seed
 
-`scripts/seed-pglite.mjs` importa JSONs principais PT/EN para PGlite:
+`scripts/seed/seed-pglite.mjs` importa JSONs principais PT/EN para PGlite:
 
 ```bash
 npm run db:seed

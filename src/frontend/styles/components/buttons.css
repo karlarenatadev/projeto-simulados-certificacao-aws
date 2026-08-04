@@ -1,0 +1,92 @@
+/* ==========================================================================
+BUTTONS CSS
+Design System Buttons
+========================================================================== */
+
+.a3-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  padding: var(--space-8) var(--space-16);
+  font-family: var(--font-family-base);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+/* Tamanhos */
+.a3-btn-lg {
+  padding: var(--space-12) var(--space-24);
+  font-size: var(--text-base);
+  border-radius: var(--radius-lg);
+}
+
+.a3-btn-sm {
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-xs);
+}
+
+/* Variantes */
+.a3-btn-primary {
+  background-color: var(--a3-tech-blue);
+  color: var(--a3-text-inverse);
+}
+
+.a3-btn-primary:hover:not(:disabled) {
+  background-color: var(--aws-orange-hover);
+  box-shadow: var(--a3-shadow-action);
+}
+
+.a3-btn-secondary {
+  background-color: var(--a3-surface-soft);
+  color: var(--text-strong);
+  border-color: var(--border-theme);
+}
+
+.a3-btn-secondary:hover:not(:disabled) {
+  background-color: var(--border-theme);
+}
+
+.a3-btn-outline {
+  background-color: transparent;
+  color: var(--a3-tech-blue);
+  border-color: var(--a3-tech-blue);
+}
+
+.a3-btn-outline:hover:not(:disabled) {
+  background-color: var(--a3-surface-info);
+}
+
+.a3-btn-danger {
+  background-color: var(--a3-danger);
+  color: var(--a3-text-inverse);
+}
+
+.a3-btn-danger:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+/* Estados unificados */
+.a3-btn:disabled,
+.a3-btn.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.a3-btn:focus-visible {
+  outline: 2px solid var(--a3-tech-blue);
+  outline-offset: 2px;
+}
+
+/* Ícones nos botões */
+.a3-btn i,
+.a3-btn svg {
+  font-size: 1em;
+}

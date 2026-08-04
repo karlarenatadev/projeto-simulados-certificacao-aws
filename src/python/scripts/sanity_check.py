@@ -8,19 +8,36 @@ from pydantic import ValidationError
 # Carrega .env antes de importar generator para uso local.
 load_dotenv()
 
-from generator import AWSQuestion
-
+from pydantic import BaseModel, ValidationError, Field
+from typing import List, Optional
 
 BASE_DIR = Path(__file__).resolve().parents[3]
-PASTA_DATA = BASE_DIR / "data"
+PASTA_DATA = BASE_DIR / "data" / "questions"
 
+class SanitizedAWSQuestion(BaseModel):
+    questionId: str
+    certId: str
+    examCode: str
+    version: str
+    domain: str
+    difficulty: str
+    services: Optional[List[dict]] = None
+    tags: Optional[List[str]] = None
+    question: str
+    options: List[str]
+    correct: int | List[int]
+    explanation: str
+    reference_url: Optional[str] = None
+    validation: Optional[dict] = None
 
 def filter_valid_schema(raw_questions: list) -> list:
     """Filtra questoes cruas da IA e mantem apenas as que respeitam o schema."""
     valid_questions = []
     for item in raw_questions:
         try:
-            q_validada = AWSQuestion(**item).model_dump()
+            if not isinstance(item, dict) or "question" not in item or "options" not in item:
+                continue
+            q_validada = SanitizedAWSQuestion(**item).model_dump()
             valid_questions.append(q_validada)
         except ValidationError as e:
             print(
@@ -29,12 +46,10 @@ def filter_valid_schema(raw_questions: list) -> list:
             )
     return valid_questions
 
-
 def validar_banco_existente():
-    """Auditoria manual dos JSONs salvos na pasta data/ da raiz do projeto."""
+    """Auditoria manual dos JSONs salvos na pasta data/questions/ da raiz do projeto."""
     if not PASTA_DATA.exists():
         print(f"Erro: pasta de dados obrigatoria nao encontrada: {PASTA_DATA}")
-        print("Verifique se o checkout do repositorio contem a pasta data/ na raiz.")
         return False
 
     if not PASTA_DATA.is_dir():
@@ -53,8 +68,12 @@ def validar_banco_existente():
 
         erros = 0
         for item in dados:
+            if not isinstance(item, dict) or "question" not in item or "options" not in item:
+                print(f"  Erro no ID {item.get('questionId', 'N/A')}: Estrutura invalida")
+                erros += 1
+                continue
             try:
-                AWSQuestion(**item)
+                SanitizedAWSQuestion(**item)
             except Exception as e:
                 print(f"  Erro no ID {item.get('id', 'N/A')}: {e}")
                 erros += 1

@@ -1,0 +1,55 @@
+/* ==========================================================================
+BADGES CSS
+Design System Badges
+========================================================================== */
+
+.a3-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem; /* 12px */
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  background-color: var(--a3-surface-soft);
+  color: var(--text-strong);
+}
+
+.a3-badge i,
+.a3-badge svg {
+  font-size: 0.85em;
+}
+
+/* Variantes */
+.a3-badge-primary {
+  background-color: var(--a3-surface-info);
+  color: var(--a3-tech-blue);
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 20%, transparent);
+}
+
+.a3-badge-success {
+  background-color: var(--a3-surface-success);
+  color: var(--a3-success);
+  border-color: color-mix(in srgb, var(--a3-success) 20%, transparent);
+}
+
+.a3-badge-warning {
+  background-color: var(--a3-surface-warning);
+  color: var(--a3-warning);
+  border-color: color-mix(in srgb, var(--a3-warning) 20%, transparent);
+}
+
+.a3-badge-danger {
+  background-color: var(--a3-surface-danger);
+  color: var(--a3-danger);
+  border-color: color-mix(in srgb, var(--a3-danger) 20%, transparent);
+}
+
+/* Tamanhos */
+.a3-badge-lg {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.875rem;
+}

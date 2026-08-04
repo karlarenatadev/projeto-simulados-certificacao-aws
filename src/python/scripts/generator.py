@@ -48,12 +48,21 @@ def get_groq_client():
     return _groq_client
 
 # 2. CONFIGURAÇÃO DE EXAMES E DOMÍNIOS
-EXAMES_CONFIG = {
-    "clf-c02": ["conceitos-cloud", "seguranca", "tecnologia", "faturamento"],
-    "saa-c03": ["design-resiliente", "design-performance", "seguranca-aplicacoes", "design-custo"],
-    "aif-c01": ["fundamentals-ai-ml", "fundamentals-genai", "applications-foundation-models", "guidelines-responsible-ai", "security-compliance-governance"],
-    "dva-c02": ["desenvolvimento-servicos", "implementacao", "seguranca-app", "resolucao-problemas"]
-}
+MANIFEST_PATH = str(Path(BASE_DIR) / "data" / "taxonomy" / "certification-manifest.json")
+EXAMES_CONFIG = {}
+try:
+    with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
+        manifest_data = json.load(f)
+        for cert, data in manifest_data.items():
+            EXAMES_CONFIG[cert] = data.get("allowedDomains", [])
+except Exception as e:
+    print(f"⚠️ Erro ao carregar manifest de certificações: {e}")
+    EXAMES_CONFIG = {
+        "clf-c02": ["Cloud Concepts", "Security and Compliance", "Cloud Technology and Services", "Billing and Pricing"],
+        "saa-c03": ["Design Secure Architectures", "Design Resilient Architectures", "Design High-Performing Architectures", "Design Cost-Optimized Architectures"],
+        "aif-c01": ["Fundamentals of AI and ML", "Fundamentals of Generative AI", "Applications of Foundation Models", "Guidelines for Responsible AI", "Security, Compliance, and Governance for AI Solutions"],
+        "dva-c02": ["Development with AWS Services", "Security", "Deployment", "Troubleshooting and Optimization"]
+    }
 
 # 2.1 VALIDAÇÃO DE PORTUGUÊS BRASILEIRO
 TERMOS_PROIBIDOS_PT = [
@@ -124,11 +133,11 @@ class AWSQuestion(BaseModel):
     @field_validator('domain')
     @classmethod
     def validar_dominio(cls, v):
-        todos_validos = [d for lista in EXAMES_CONFIG.values() for d in lista]
+        todos_validos = [d.lower().strip() for lista in EXAMES_CONFIG.values() for d in lista]
         v_norm = v.lower().strip()
         if v_norm not in todos_validos:
             raise ValueError(f"Domínio '{v}' não reconhecido pelo sistema.")
-        return v_norm
+        return v
 
 # 4. MOTOR DE GERAÇÃO RESILIENTE (Com Fallback para Groq)
 def fabricar_questoes(exame_id, nivel, qtd=3, retries=0):

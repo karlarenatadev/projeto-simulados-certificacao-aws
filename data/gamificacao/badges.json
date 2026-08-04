@@ -1,0 +1,58 @@
+[
+  {
+    "id": "first-quiz",
+    "nome": "Primeiro Simulado",
+    "descricao": "Você deu o primeiro passo na sua jornada de certificação.",
+    "regra_desbloqueio": "Concluir o primeiro simulado com qualquer nota.",
+    "recompensa_xp": 100,
+    "icone": "mdi-flag-checkered"
+  },
+  {
+    "id": "streak-7",
+    "nome": "Sequência de Estudos",
+    "descricao": "Manteve o foco por uma semana inteira.",
+    "regra_desbloqueio": "Estudar por 7 dias consecutivos.",
+    "recompensa_xp": 300,
+    "icone": "mdi-fire"
+  },
+  {
+    "id": "streak-30",
+    "nome": "30 dias estudando",
+    "descricao": "Disciplina impecável! Um mês inteiro de estudos diários.",
+    "regra_desbloqueio": "Estudar por 30 dias consecutivos.",
+    "recompensa_xp": 1500,
+    "icone": "mdi-calendar-star"
+  },
+  {
+    "id": "master-clf",
+    "nome": "Mestre do Cloud Practitioner",
+    "descricao": "Você dominou os fundamentos da nuvem AWS.",
+    "regra_desbloqueio": "Acertar mais de 90% no simulado oficial CLF-C02.",
+    "recompensa_xp": 1000,
+    "icone": "mdi-cloud-check"
+  },
+  {
+    "id": "architect-aws",
+    "nome": "Arquiteto AWS",
+    "descricao": "Provou ser capaz de desenhar arquiteturas resilientes e escaláveis.",
+    "regra_desbloqueio": "Acertar mais de 85% no simulado SAA-C03.",
+    "recompensa_xp": 1200,
+    "icone": "mdi-home-analytics"
+  },
+  {
+    "id": "specialist-security",
+    "nome": "Especialista Security",
+    "descricao": "A segurança da nuvem está em boas mãos.",
+    "regra_desbloqueio": "Acertar 100% nas questões do domínio de Segurança.",
+    "recompensa_xp": 800,
+    "icone": "mdi-shield-check"
+  },
+  {
+    "id": "perfect-score",
+    "nome": "Desafio Perfeito",
+    "descricao": "Gabaritou um exame completo sem nenhum erro.",
+    "regra_desbloqueio": "Alcançar 100% de acerto em um simulado com mais de 50 questões.",
+    "recompensa_xp": 2500,
+    "icone": "mdi-trophy-award"
+  }
+]
