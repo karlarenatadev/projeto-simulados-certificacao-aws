@@ -36,7 +36,7 @@ export const translations = {
     // Buttons
     start_simulation: "Iniciar Simulação",
     flashcards_mode: "Modo Flashcards (Revisão Rápida)",
-    practice_mistakes: "Praticar Questões Erradas",
+    practice_mistakes: "Praticar Erros",
     clear_mistakes_history: "Limpar histórico de erros",
 
     // Quiz Screen
@@ -269,7 +269,7 @@ export const translations = {
     // Buttons
     start_simulation: "Start Simulation",
     flashcards_mode: "Flashcards Mode (Quick Review)",
-    practice_mistakes: "Practice Wrong Questions",
+    practice_mistakes: "Practice Mistakes",
     clear_mistakes_history: "Clear mistakes history",
 
     // Quiz Screen

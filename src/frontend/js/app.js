@@ -252,14 +252,12 @@ function getMistakeSource() {
 }
 
 function updateMistakesControls(certId = getActiveCertificationId()) {
-  const countEl = document.getElementById("mistakes-count");
   const btnPractice = document.getElementById("btn-practice-mistakes");
   const btnClear = document.getElementById("btn-clear-mistakes");
   const notice = document.getElementById("mistakes-feature-notice");
   const mistakes = storageManager.getMistakes(certId);
   const hasMistakes = mistakes.length > 0;
 
-  if (countEl) countEl.textContent = String(mistakes.length);
   if (btnPractice) btnPractice.classList.toggle("hidden", !hasMistakes);
   if (btnClear) btnClear.classList.toggle("hidden", !hasMistakes);
   if (notice && !hasMistakes) notice.classList.add("hidden");
@@ -2251,10 +2249,28 @@ async function startMistakesQuiz() {
       // Continua — o quiz de revisão de erros funciona 100% local
     }
 
-    const result = engine.loadFromMistakes(
+    // Carrega o banco completo de questões para selecionar por domínio
+    let allQuestions = [];
+    try {
+      const fileSuffix = uiState.language === "en" ? "-en" : "";
+      let response = await fetch(`data/${certId}${fileSuffix}.json`);
+      if (!response.ok && uiState.language === "en") {
+        response = await fetch(`data/${certId}.json`);
+      }
+      if (response.ok) {
+        allQuestions = await response.json();
+        console.log(`✓ Banco de questões carregado: ${allQuestions.length} questões para seleção por domínio`);
+      }
+    } catch (err) {
+      console.warn("Não foi possível carregar banco de questões, usando questões exatas:", err);
+    }
+
+    const result = engine.loadMistakesByDomain(
       mistakes,
       certId,
       currentCertInfo.domains,
+      allQuestions,
+      3, // questões por domínio errado
     );
 
     if (!result.success) {
@@ -2296,7 +2312,7 @@ async function startMistakesQuiz() {
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Praticar Questões Erradas (<span id="mistakes-count">0</span>)`;
+      btn.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Praticar Erros`;
       // Atualiza o span recém-recriado com a contagem real
       updateMistakesControls(certId);
     }

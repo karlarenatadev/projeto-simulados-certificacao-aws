@@ -100,7 +100,7 @@ export function initializeUI(language) {
 
   updateElementHTML(
     "#btn-practice-mistakes",
-    `<i class="fa-solid fa-triangle-exclamation"></i> ${t("practice_mistakes", lang)} (<span id="mistakes-count">0</span>)`,
+    `<i class="fa-solid fa-triangle-exclamation"></i> ${t("practice_mistakes", lang)}`,
   );
   updateElement("#btn-clear-mistakes", t("clear_mistakes_history", lang));
 
