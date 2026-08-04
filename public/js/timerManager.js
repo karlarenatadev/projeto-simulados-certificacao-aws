@@ -14,9 +14,9 @@ export function startExamTimer(uiState, onTimeUp) {
   if (!uiState._timerMeta) {
     uiState._timerMeta = {};
   }
-  
+
   // Define o fim exato com base no tempo restante atual
-  uiState._timerMeta.examEndTime = Date.now() + (uiState.timeRemaining * 1000);
+  uiState._timerMeta.examEndTime = Date.now() + uiState.timeRemaining * 1000;
 
   updateExamTimerDisplay(uiState);
 
@@ -75,7 +75,7 @@ export function startMissionQuestionTimer(uiState, onTimeUp) {
 
   const MISSION_TIME = 90;
   uiState.qTimeRemaining = MISSION_TIME;
-  uiState._timerMeta.qEndTime = Date.now() + (MISSION_TIME * 1000);
+  uiState._timerMeta.qEndTime = Date.now() + MISSION_TIME * 1000;
 
   const timeBar = document.getElementById("mission-time-bar");
   const timeText = document.getElementById("mission-time-text");
@@ -87,8 +87,8 @@ export function startMissionQuestionTimer(uiState, onTimeUp) {
 
   uiState.qTimerInterval = setInterval(() => {
     if (uiState.isPaused) {
-       uiState._timerMeta.qEndTime += 1000;
-       return;
+      uiState._timerMeta.qEndTime += 1000;
+      return;
     }
 
     const now = Date.now();

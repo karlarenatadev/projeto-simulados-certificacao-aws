@@ -1,9 +1,9 @@
 /**
  * core/domain/identity/models.js
- * 
+ *
  * Contratos e Modelos do Domínio de Identidade
- * NOTA: Esta modelagem reflete o negócio de um LMS de Certificações, onde a identidade 
- * transcende o mero "controle de acesso". Aqui modelamos a jornada do usuário, seus 
+ * NOTA: Esta modelagem reflete o negócio de um LMS de Certificações, onde a identidade
+ * transcende o mero "controle de acesso". Aqui modelamos a jornada do usuário, seus
  * vínculos educacionais e sua autoridade como especialista em diferentes certificações.
  */
 
@@ -32,7 +32,7 @@
  * Representa a atuação explícita do usuário dentro do LMS.
  * Um mesmo usuário pode atuar como 'certification_specialist' na AWS CLF-C02
  * e ao mesmo tempo estar matriculado como 'student' na SAP-C02.
- * 
+ *
  * @property {string} id
  * @property {string} certificationId - ID da certificação alvo
  * @property {string} role - O papel exercido neste contexto ('student', 'certification_specialist', 'admin')
@@ -45,9 +45,9 @@
  * @typedef {Object} Enrollment
  * Representa o histórico e o progresso acadêmico independente de um usuário
  * estudando para uma certificação.
- * 
+ *
  * @property {string} id - UUID da matrícula
- * @property {string} userId - UUID do usuário 
+ * @property {string} userId - UUID do usuário
  * @property {string} certificationId - UUID da certificação
  * @property {number} enrolledAt - Timestamp da matrícula
  * @property {string} status - 'active', 'completed', 'paused'

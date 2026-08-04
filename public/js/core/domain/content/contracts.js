@@ -1,6 +1,6 @@
 /**
  * core/domain/content/contracts.js
- * 
+ *
  * Contratos e Interfaces do Domínio de Conteúdo
  */
 
@@ -12,7 +12,7 @@ export class IQuestionBankService {
   /**
    * Obtém questões baseadas em filtros complexos.
    * Suporta paginação para bancos gigantes.
-   * @param {Object} filters 
+   * @param {Object} filters
    * @param {string} filters.certificationId
    * @param {string} [filters.domainId]
    * @param {string} [filters.difficulty]
@@ -21,14 +21,18 @@ export class IQuestionBankService {
    * @param {number} [filters.offset]
    * @returns {Promise<Question[]>}
    */
-  async getQuestions(filters) { throw new Error('Not implemented'); }
+  async getQuestions(filters) {
+    throw new Error("Not implemented");
+  }
 
   /**
    * Obtém uma questão específica pelo ID (útil para links diretos e deep-linking).
-   * @param {string} questionId 
+   * @param {string} questionId
    * @returns {Promise<Question|null>}
    */
-  async getQuestionById(questionId) { throw new Error('Not implemented'); }
+  async getQuestionById(questionId) {
+    throw new Error("Not implemented");
+  }
 }
 
 /**
@@ -38,17 +42,21 @@ export class IQuestionBankService {
 export class ITaxonomyService {
   /**
    * Retorna os metadados de uma certificação específica.
-   * @param {string} certId 
+   * @param {string} certId
    * @returns {Promise<Certification>}
    */
-  async getCertificationTree(certId) { throw new Error('Not implemented'); }
+  async getCertificationTree(certId) {
+    throw new Error("Not implemented");
+  }
 
   /**
    * Resolve e retorna competências associadas a uma certificação.
-   * @param {string} certId 
+   * @param {string} certId
    * @returns {Promise<Competency[]>}
    */
-  async getCompetencies(certId) { throw new Error('Not implemented'); }
+  async getCompetencies(certId) {
+    throw new Error("Not implemented");
+  }
 }
 
 /**
@@ -58,22 +66,28 @@ export class ITaxonomyService {
 export class IContentDeliveryService {
   /**
    * Obtém o plano de um Sprint.
-   * @param {string} sprintId 
+   * @param {string} sprintId
    * @returns {Promise<Sprint>}
    */
-  async getSprint(sprintId) { throw new Error('Not implemented'); }
+  async getSprint(sprintId) {
+    throw new Error("Not implemented");
+  }
 
   /**
    * Obtém um Caso de Estudo Prático.
-   * @param {string} caseId 
+   * @param {string} caseId
    * @returns {Promise<Case>}
    */
-  async getCase(caseId) { throw new Error('Not implemented'); }
+  async getCase(caseId) {
+    throw new Error("Not implemented");
+  }
 
   /**
    * Obtém uma Trilha Estruturada de Aprendizagem.
-   * @param {string} trailId 
+   * @param {string} trailId
    * @returns {Promise<Trail>}
    */
-  async getTrail(trailId) { throw new Error('Not implemented'); }
+  async getTrail(trailId) {
+    throw new Error("Not implemented");
+  }
 }

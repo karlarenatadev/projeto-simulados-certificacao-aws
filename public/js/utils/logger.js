@@ -17,12 +17,12 @@ const telemetryQueue = {
     // Em produção, isso faria POST batch para um /api/telemetry
     const snapshot = {
       events: [...this.events],
-      metrics: [...this.metrics]
+      metrics: [...this.metrics],
     };
     this.events = [];
     this.metrics = [];
     if (IS_DEV) console.log("[Telemetry Flush]", snapshot);
-  }
+  },
 };
 
 /**
@@ -37,7 +37,7 @@ export const logger = {
   },
   error: (...args) => {
     console.error("[ERROR]", ...args);
-  }
+  },
 };
 
 /**
@@ -46,10 +46,10 @@ export const logger = {
  */
 export const dispatchBusinessEvent = (eventName, payload = {}) => {
   const event = {
-    type: 'BUSINESS_EVENT',
+    type: "BUSINESS_EVENT",
     name: eventName,
     payload,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
   telemetryQueue.events.push(event);
   logger.info(`[Business Event] ${eventName}`, payload);
@@ -61,11 +61,11 @@ export const dispatchBusinessEvent = (eventName, payload = {}) => {
  */
 export const recordMetric = (metricName, value, tags = {}) => {
   const metric = {
-    type: 'METRIC',
+    type: "METRIC",
     name: metricName,
     value,
     tags,
-    timestamp: Date.now()
+    timestamp: Date.now(),
   };
   telemetryQueue.metrics.push(metric);
   logger.info(`[Metric] ${metricName}: ${value}`, tags);

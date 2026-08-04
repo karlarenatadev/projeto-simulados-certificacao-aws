@@ -1,6 +1,6 @@
 /**
  * core/domain/ai/models.js
- * 
+ *
  * Contratos e Modelos do Domínio de Inteligência Artificial
  */
 

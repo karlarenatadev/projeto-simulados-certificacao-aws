@@ -91,16 +91,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // FASE SHOWCASE: Interceptador de URL para demonstrações
   const urlParams = new URLSearchParams(window.location.search);
-  const showcaseMode = urlParams.get('mode');
-  if (showcaseMode === 'showcase') {
-    const persona = urlParams.get('persona') || 'advanced';
-    const cert = urlParams.get('cert') || 'clf-c02';
+  const showcaseMode = urlParams.get("mode");
+  if (showcaseMode === "showcase") {
+    const persona = urlParams.get("persona") || "advanced";
+    const cert = urlParams.get("cert") || "clf-c02";
     // O offline/theme parameter poderiam ser salvos no uiState
-    if (urlParams.get('offline') === 'true') {
-      window.sessionStorage.setItem('force_offline', 'true');
+    if (urlParams.get("offline") === "true") {
+      window.sessionStorage.setItem("force_offline", "true");
     }
     await ShowcaseService.initDemo(persona, cert);
-    
+
     // Limpa a URL para não poluir
     window.history.replaceState({}, document.title, window.location.pathname);
   }
@@ -487,7 +487,9 @@ async function startQuiz() {
 
   try {
     if (btn) btn.disabled = true;
-    hideLoading = ModalService.showLoading(t("loading", uiState.language) || "Carregando simulado...");
+    hideLoading = ModalService.showLoading(
+      t("loading", uiState.language) || "Carregando simulado...",
+    );
 
     const certId = certSelect.value;
     const currentCertInfo = certificationPaths[certId];
@@ -496,14 +498,16 @@ async function startQuiz() {
     // Verificar Resume de Sessão
     const activeSession = storageManager.loadActiveSession(certId);
     let isResuming = false;
-    
-    const resumeAgreed = await ModalService.confirm({ 
+
+    const resumeAgreed = await ModalService.confirm({
       title: "Sessão Ativa Encontrada",
-      message: t("resume_session_prompt", uiState.language) || "Você possui um simulado em andamento. Deseja retomá-lo de onde parou?",
+      message:
+        t("resume_session_prompt", uiState.language) ||
+        "Você possui um simulado em andamento. Deseja retomá-lo de onde parou?",
       confirmText: "Retomar",
-      cancelText: "Descartar"
+      cancelText: "Descartar",
     });
-    
+
     if (activeSession && resumeAgreed) {
       isResuming = true;
       engine.state.certId = activeSession.certId;
@@ -513,7 +517,7 @@ async function startQuiz() {
       engine.state.currentIndex = activeSession.currentIndex;
       engine.state.score = activeSession.score;
       engine.state.domainScores = activeSession.domainScores || {};
-      
+
       uiState.currentMode = activeSession.mode || "exam";
       uiState.timeRemaining = activeSession.timeRemaining;
       uiState.flags = activeSession.flags || [];
@@ -543,7 +547,11 @@ async function startQuiz() {
     }
 
     if (!isResuming) {
-      dispatchBusinessEvent("QuizStarted", { certId, mode: modeInput, quantity: quantityInput });
+      dispatchBusinessEvent("QuizStarted", {
+        certId,
+        mode: modeInput,
+        quantity: quantityInput,
+      });
       const filters = {
         quantity: parseInt(quantityInput),
         difficulty: difficultyInput,
@@ -611,7 +619,9 @@ async function startQuiz() {
     saveCurrentSession();
   } catch (err) {
     if (hideLoading) hideLoading();
-    NotificationService.error(t("error_starting_quiz", uiState.language, { message: err.message }));
+    NotificationService.error(
+      t("error_starting_quiz", uiState.language, { message: err.message }),
+    );
     logger.error("Erro ao iniciar quiz:", err);
   } finally {
     if (hideLoading) hideLoading();
@@ -631,9 +641,11 @@ async function startDiagnostic() {
 
   const btn = document.getElementById("btn-start-diagnostic");
   let hideLoading = null;
-  
+
   if (btn) btn.disabled = true;
-  hideLoading = ModalService.showLoading(t("loading", uiState.language) || "Carregando diagnóstico...");
+  hideLoading = ModalService.showLoading(
+    t("loading", uiState.language) || "Carregando diagnóstico...",
+  );
 
   try {
     const certId = certSelect.value;
@@ -678,7 +690,9 @@ async function startDiagnostic() {
     saveCurrentSession();
   } catch (err) {
     if (hideLoading) hideLoading();
-    NotificationService.error(t("error_starting_quiz", uiState.language, { message: err.message }));
+    NotificationService.error(
+      t("error_starting_quiz", uiState.language, { message: err.message }),
+    );
     logger.error("Erro ao iniciar diagnóstico:", err);
   } finally {
     if (hideLoading) hideLoading();
@@ -1033,13 +1047,13 @@ function submitAnswer() {
   const question = engine.getCurrentQuestion();
   const isMulti = Array.isArray(question.correct);
   const result = engine.submitAnswer(uiState.tempSelectedAnswer);
-  
-  dispatchBusinessEvent("AnswerSubmitted", { 
-    questionId: question.id, 
-    isCorrect: result.isCorrect, 
-    domain: question.domain 
+
+  dispatchBusinessEvent("AnswerSubmitted", {
+    questionId: question.id,
+    isCorrect: result.isCorrect,
+    domain: question.domain,
   });
-  
+
   syncMistakeRecord(question, result);
 
   // Record answer to backend asynchronously (don't block UI)
@@ -1187,7 +1201,7 @@ function saveCurrentSession() {
     score: engine.state.score,
     domainScores: engine.state.domainScores,
     timeRemaining: uiState.timeRemaining,
-    flags: uiState.flags
+    flags: uiState.flags,
   });
 }
 
@@ -1645,13 +1659,21 @@ function renderDetailedReportUI(results) {
               <div class="space-y-4">
       `;
 
+<<<<<<< HEAD
     uiState.flags.forEach(qIdx => {
+=======
+    uiState.flags.forEach((qIdx) => {
+>>>>>>> f062799 (Refactor code for improved readability and consistency across multiple files)
       const q = engine.state.questions[qIdx];
       if (!q) return;
 
       const isMulti = Array.isArray(q.correct);
       let correctText = isMulti
+<<<<<<< HEAD
         ? q.correct.map(i => q.options[i]).join("<br>• ")
+=======
+        ? q.correct.map((i) => q.options[i]).join("<br>• ")
+>>>>>>> f062799 (Refactor code for improved readability and consistency across multiple files)
         : q.options[q.correct];
 
       html += `
@@ -1898,10 +1920,7 @@ function loadLastScore() {
 
   if (last && typeof last.percentage === "number") {
     banner.classList.remove("hidden");
-    banner.classList.add(
-      "cursor-pointer",
-      "a3-hover-lift",
-    );
+    banner.classList.add("cursor-pointer", "a3-hover-lift");
     const awsScore = Math.floor((last.percentage / 100) * 900) + 100;
 
     banner.innerHTML = `
@@ -2083,7 +2102,11 @@ async function clearHistory() {
   const history = storageManager.getHistory();
   if (history.length === 0) return;
 
-  if (await ModalService.confirm({ message: t("clear_history_confirm", uiState.language) })) {
+  if (
+    await ModalService.confirm({
+      message: t("clear_history_confirm", uiState.language),
+    })
+  ) {
     storageManager.clearHistory();
     updateHistoryDisplay();
 
@@ -2547,7 +2570,11 @@ function retakeQuiz() {
 }
 
 async function cancelQuiz() {
-  if (await ModalService.confirm({ message: t("exit_quiz_confirm", uiState.language) })) {
+  if (
+    await ModalService.confirm({
+      message: t("exit_quiz_confirm", uiState.language),
+    })
+  ) {
     goHome();
   }
 }
@@ -2608,10 +2635,12 @@ async function startMistakesQuiz() {
       }
       if (response.ok) {
         allQuestions = await response.json();
-        console.log(`✓ Banco de questões carregado: ${allQuestions.length} questões para seleção por domínio`);
       }
     } catch (err) {
-      console.warn("Não foi possível carregar banco de questões, usando questões exatas:", err);
+      console.warn(
+        "Não foi possível carregar banco de questões, usando questões exatas:",
+        err,
+      );
     }
 
     const result = engine.loadMistakesByDomain(
@@ -2669,7 +2698,11 @@ async function startMistakesQuiz() {
 }
 
 async function clearMistakes() {
-  if (await ModalService.confirm({ message: t("clear_mistakes_confirm", uiState.language) })) {
+  if (
+    await ModalService.confirm({
+      message: t("clear_mistakes_confirm", uiState.language),
+    })
+  ) {
     storageManager.clearMistakes(getActiveCertificationId());
     updateMistakesControls();
     alert(t("mistakes_cleared", uiState.language));
@@ -2989,9 +3022,7 @@ window.startMission = async function (stageId) {
   const currentCertInfo = certificationPaths[currentCertId];
 
   if (!currentCertInfo) {
-    logger.error(
-      `[startMission] Certificação ${currentCertId} não encontrada`,
-    );
+    logger.error(`[startMission] Certificação ${currentCertId} não encontrada`);
     alert("Erro ao carregar a certificação. Tente novamente.");
     return;
   }
@@ -3005,9 +3036,7 @@ window.startMission = async function (stageId) {
     currentStage = activeTrail.find((s) => s.id === stageId);
 
     if (!currentStage) {
-      logger.error(
-        `[startMission] Módulo ${stageId} não encontrado na trilha`,
-      );
+      logger.error(`[startMission] Módulo ${stageId} não encontrado na trilha`);
       alert("Erro ao identificar o módulo. Tente novamente.");
       return;
     }

@@ -81,7 +81,7 @@ export function renderSprintUI(lang, certId) {
   if (!grid) return;
 
   const currentSprintMap = SPRINT_MAPS[certId] || SPRINT_MAPS["clf-c02"];
-  
+
   const sprintState = storageManager.getSprintState(certId);
   let currentSprintDay = sprintState.completedStages.length + 1;
   if (currentSprintDay > 14) currentSprintDay = 14;
@@ -255,7 +255,7 @@ export function closeSprintReader() {
 export function completeSprintDay(completedDay, certId, lang, onComplete) {
   const sprintState = storageManager.getSprintState(certId);
   if (!sprintState.completedStages.includes(completedDay.toString())) {
-      sprintState.completedStages.push(completedDay.toString());
+    sprintState.completedStages.push(completedDay.toString());
   }
   sprintState.lastCompletedDate = new Date().toDateString();
   sprintState.streakDays += 1;

@@ -233,13 +233,13 @@ export const quizManager = {
     try {
       const prefix = `aws_sim_ans_${this.currentQuizId}_`;
       const answers = [];
-      
+
       for (let i = 0; i < localStorage.length; i++) {
         const key = localStorage.key(i);
         if (key && key.startsWith(prefix)) {
-           try {
-             answers.push(JSON.parse(localStorage.getItem(key)));
-           } catch(e) {}
+          try {
+            answers.push(JSON.parse(localStorage.getItem(key)));
+          } catch (e) {}
         }
       }
 

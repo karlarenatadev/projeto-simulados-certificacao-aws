@@ -9,7 +9,7 @@ import apiService from "../../services/api.js";
 
 let apiStatus = {
   apiAvailable: true,
-  fallbackUsed: false
+  fallbackUsed: false,
 };
 
 export function getApiStatus() {
@@ -25,22 +25,22 @@ export function getApiStatus() {
  */
 async function fetchFallbackCases() {
   try {
-    const res = await fetch('./data/cases/architecture_cases.json');
+    const res = await fetch("./data/cases/architecture_cases.json");
     if (!res.ok) return [];
     let cases = await res.json();
-    
+
     // Normalização (API vs JSON)
-    return cases.map(c => ({
+    return cases.map((c) => ({
       ...c,
       slug: c.id,
-      services: (c.services || []).map(s => ({
+      services: (c.services || []).map((s) => ({
         ...s,
         slug: s.service_slug || s.slug,
-        name: s.service_name || s.name
-      }))
+        name: s.service_name || s.name,
+      })),
     }));
   } catch (err) {
-    logger.warn('[caseManager] Falha ao carregar JSON local:', err);
+    logger.warn("[caseManager] Falha ao carregar JSON local:", err);
     return [];
   }
 }
@@ -61,23 +61,28 @@ export async function getCases(filters = {}) {
     apiStatus.fallbackUsed = false;
     return response.data || [];
   } catch (error) {
-    logger.warn('[caseManager] API unavailable, using fallback:', error.message);
+    logger.warn(
+      "[caseManager] API unavailable, using fallback:",
+      error.message,
+    );
     apiStatus.apiAvailable = false;
     apiStatus.fallbackUsed = true;
-    
+
     let fallbackCases = await fetchFallbackCases();
-    
+
     // Aplica filtros localmente
     if (filters.certification) {
       const filterCert = filters.certification.toLowerCase();
-      fallbackCases = fallbackCases.filter(c => 
-        (c.certification || '').toLowerCase() === filterCert
+      fallbackCases = fallbackCases.filter(
+        (c) => (c.certification || "").toLowerCase() === filterCert,
       );
     }
     if (filters.difficulty) {
-      fallbackCases = fallbackCases.filter(c => c.difficulty === filters.difficulty);
+      fallbackCases = fallbackCases.filter(
+        (c) => c.difficulty === filters.difficulty,
+      );
     }
-    
+
     return fallbackCases;
   }
 }
@@ -94,12 +99,18 @@ export async function getCaseById(idOrSlug) {
     apiStatus.fallbackUsed = false;
     return response.data || null;
   } catch (error) {
-    logger.warn('[caseManager] Could not fetch case, using fallback:', error.message);
+    logger.warn(
+      "[caseManager] Could not fetch case, using fallback:",
+      error.message,
+    );
     apiStatus.apiAvailable = false;
     apiStatus.fallbackUsed = true;
-    
+
     const fallbackCases = await fetchFallbackCases();
-    return fallbackCases.find(c => c.id === idOrSlug || c.slug === idOrSlug) || null;
+    return (
+      fallbackCases.find((c) => c.id === idOrSlug || c.slug === idOrSlug) ||
+      null
+    );
   }
 }
 
@@ -118,7 +129,10 @@ export async function markCaseComplete(caseId, userId) {
     saveLocalCompletedCases(completed);
     return true;
   } catch (error) {
-    logger.warn('[caseManager] Could not mark case as complete:', error.message);
+    logger.warn(
+      "[caseManager] Could not mark case as complete:",
+      error.message,
+    );
     return false;
   }
 }
@@ -133,7 +147,7 @@ export async function getAwsServices(category) {
     const response = await apiService.getAwsServices(category);
     return response.data || [];
   } catch (error) {
-    logger.warn('[caseManager] Could not fetch services:', error.message);
+    logger.warn("[caseManager] Could not fetch services:", error.message);
     return [];
   }
 }
@@ -142,12 +156,12 @@ export async function getAwsServices(category) {
 // Local storage — completed cases
 // ============================================================================
 
-const COMPLETED_KEY = 'cases:completed';
+const COMPLETED_KEY = "cases:completed";
 
 export function getLocalCompletedCases() {
   try {
     const raw = localStorage.getItem(COMPLETED_KEY);
-    return new Set(JSON.parse(raw || '[]'));
+    return new Set(JSON.parse(raw || "[]"));
   } catch {
     return new Set();
   }
@@ -170,21 +184,23 @@ export function isCompleted(caseId) {
 // ============================================================================
 
 const DIFFICULTY_LABELS = {
-  beginner: { label: 'Iniciante', cls: 'beginner' },
-  intermediate: { label: 'Intermediário', cls: 'intermediate' },
-  advanced: { label: 'Avançado', cls: 'advanced' },
+  beginner: { label: "Iniciante", cls: "beginner" },
+  intermediate: { label: "Intermediário", cls: "intermediate" },
+  advanced: { label: "Avançado", cls: "advanced" },
 };
 
 export function getDifficultyInfo(difficulty) {
-  return DIFFICULTY_LABELS[difficulty] || { label: difficulty, cls: 'intermediate' };
+  return (
+    DIFFICULTY_LABELS[difficulty] || { label: difficulty, cls: "intermediate" }
+  );
 }
 
 const RESOURCE_ICONS = {
-  doc: 'fa-book',
-  video: 'fa-play-circle',
-  blog: 'fa-newspaper',
+  doc: "fa-book",
+  video: "fa-play-circle",
+  blog: "fa-newspaper",
 };
 
 export function getResourceIcon(type) {
-  return RESOURCE_ICONS[type] || 'fa-link';
+  return RESOURCE_ICONS[type] || "fa-link";
 }

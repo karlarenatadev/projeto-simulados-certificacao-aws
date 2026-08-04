@@ -158,6 +158,23 @@ try {
       'public/services'
     );
 
+    // O import do logger em src/services/api.js usa o caminho relativo correto
+    // para o código-fonte (../frontend/js/utils/logger.js), mas após o build
+    // o artefato fica em public/services/api.js onde o logger está em
+    // public/js/utils/logger.js. Corrige o import no artefato gerado.
+    const builtApiPath = path.join('public', 'services', 'api.js');
+    if (fs.existsSync(builtApiPath)) {
+      const content = fs.readFileSync(builtApiPath, 'utf8');
+      const fixed = content.replace(
+        '../frontend/js/utils/logger.js',
+        '../js/utils/logger.js'
+      );
+      if (fixed !== content) {
+        fs.writeFileSync(builtApiPath, fixed);
+        console.log('  ✅ Corrigido import do logger em public/services/api.js');
+      }
+    }
+
   }
 
 

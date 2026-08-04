@@ -1,6 +1,6 @@
 {
-  "name": "Simulador IA AWS",
-  "short_name": "Simulador AWS",
+  "name": "Cloud Academy A3 - AWS",
+  "short_name": "Sua jornada para certificações AWS",
   "description": "Prepare-se para as certificações AWS de forma offline",
   "start_url": "./index.html",
   "display": "standalone",

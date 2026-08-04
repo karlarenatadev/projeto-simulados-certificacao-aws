@@ -8,7 +8,7 @@
 export const ModalService = {
   /**
    * Pede uma confirmação (Sim/Não) ao usuário
-   * @param {Object} options 
+   * @param {Object} options
    * @param {string} options.title
    * @param {string} options.message
    * @param {string} [options.confirmText="Confirmar"]
@@ -17,12 +17,12 @@ export const ModalService = {
    */
   confirm(options) {
     return new Promise((resolve) => {
-      const event = new CustomEvent('app:modal', {
+      const event = new CustomEvent("app:modal", {
         detail: {
-          type: 'confirm',
+          type: "confirm",
           payload: options,
-          onResult: (result) => resolve(result === true)
-        }
+          onResult: (result) => resolve(result === true),
+        },
       });
       window.dispatchEvent(event);
     });
@@ -30,7 +30,7 @@ export const ModalService = {
 
   /**
    * Pede uma entrada de texto ao usuário
-   * @param {Object} options 
+   * @param {Object} options
    * @param {string} options.title
    * @param {string} options.message
    * @param {string} [options.defaultValue=""]
@@ -38,12 +38,12 @@ export const ModalService = {
    */
   prompt(options) {
     return new Promise((resolve) => {
-      const event = new CustomEvent('app:modal', {
+      const event = new CustomEvent("app:modal", {
         detail: {
-          type: 'prompt',
+          type: "prompt",
           payload: options,
-          onResult: (result) => resolve(result) // result é string ou null se cancelar
-        }
+          onResult: (result) => resolve(result), // result é string ou null se cancelar
+        },
       });
       window.dispatchEvent(event);
     });
@@ -51,21 +51,23 @@ export const ModalService = {
 
   /**
    * Exibe um modal de carregamento que bloqueia a tela
-   * @param {string} message 
+   * @param {string} message
    * @returns {Function} Função para fechar o loading
    */
   showLoading(message = "Carregando...") {
     const id = Date.now().toString();
-    const event = new CustomEvent('app:modal', {
+    const event = new CustomEvent("app:modal", {
       detail: {
-        type: 'loading',
-        payload: { id, message }
-      }
+        type: "loading",
+        payload: { id, message },
+      },
     });
     window.dispatchEvent(event);
 
     return () => {
-      window.dispatchEvent(new CustomEvent('app:modal:close', { detail: { id } }));
+      window.dispatchEvent(
+        new CustomEvent("app:modal:close", { detail: { id } }),
+      );
     };
-  }
+  },
 };

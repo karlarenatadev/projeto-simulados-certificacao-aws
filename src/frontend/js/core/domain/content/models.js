@@ -1,6 +1,6 @@
 /**
  * core/domain/content/models.js
- * 
+ *
  * Contratos e Modelos do Domínio de Conteúdo (Maior ativo da plataforma)
  */
 

@@ -29,12 +29,13 @@ export function createDataRepository(storage, _api = null) {
     try {
       return await apiFn();
     } catch (e) {
-      console.warn("[DataRepository] API call failed, falling back to local:", e.message);
+      console.warn(
+        "[DataRepository] API call failed, falling back to local:",
+        e.message,
+      );
       return null;
     }
   }
-  
-  console.log("DataRepository methods:", Object.keys(storage));
 
   return {
     // -------------------------------------------------------------------------
@@ -51,7 +52,7 @@ export function createDataRepository(storage, _api = null) {
 
     async saveQuizResult(result) {
       const saved = storage.saveQuizResult(result);
-      
+
       // Sincroniza com API silenciosamente (fallback p/ local já garantido na linha acima)
       await _safeApiCall(() => _api.syncQuizResult(result));
 
@@ -117,7 +118,7 @@ export function createDataRepository(storage, _api = null) {
     getReviewDeck(certId) {
       return storage.getReviewDeck(certId);
     },
-    
+
     addReviewQuestion(certId, question) {
       return storage.addReviewQuestion(certId, question);
     },
@@ -129,7 +130,6 @@ export function createDataRepository(storage, _api = null) {
     getReviewStats(certId) {
       return storage.getReviewStats(certId);
     },
-
 
     // -------------------------------------------------------------------------
     // Gamificação
@@ -159,7 +159,39 @@ export function createDataRepository(storage, _api = null) {
     // -------------------------------------------------------------------------
     // Gamificação (Sprints, Badges, etc)
     // -------------------------------------------------------------------------
-    
+    // Casos práticos (sessão ativa)
+    // -------------------------------------------------------------------------
+
+    saveActiveCase(caseState) {
+      return storage.saveActiveCase(caseState);
+    },
+
+    loadActiveCase(caseId) {
+      return storage.loadActiveCase(caseId);
+    },
+
+    clearActiveCase(caseId) {
+      return storage.clearActiveCase(caseId);
+    },
+
+    // -------------------------------------------------------------------------
+    // Sessões de simulado (retomada)
+    // -------------------------------------------------------------------------
+
+    saveActiveSession(sessionState) {
+      return storage.saveActiveSession(sessionState);
+    },
+
+    loadActiveSession(certId) {
+      return storage.loadActiveSession(certId);
+    },
+
+    clearActiveSession(certId) {
+      return storage.clearActiveSession(certId);
+    },
+
+    // -------------------------------------------------------------------------
+
     getSprintState(certId) {
       return storage.getSprintState(certId);
     },
@@ -212,7 +244,7 @@ export function createDataRepository(storage, _api = null) {
     // -------------------------------------------------------------------------
     // Validação de Domínio (Bloco B)
     // -------------------------------------------------------------------------
-    
+
     /**
      * Valida um lote de questões contra o Modelo de Domínio `Question`
      * @param {Array} questions - Lote de questões a ser validado
@@ -220,24 +252,35 @@ export function createDataRepository(storage, _api = null) {
      */
     validateQuestions(questions) {
       if (!Array.isArray(questions)) return [];
-      
-      return questions.filter(q => {
+
+      return questions.filter((q) => {
         // Validação das propriedades obrigatórias segundo o modelo
         const hasId = q.id !== undefined && q.id !== null;
-        const hasText = typeof q.question === 'string' && q.question.trim().length > 0;
+        const hasText =
+          typeof q.question === "string" && q.question.trim().length > 0;
         const hasOptions = Array.isArray(q.options) && q.options.length > 1;
-        
+
         // Verifica correctAnswers (suporta índice numérico ou array de números)
-        const hasCorrectAnswers = 
-          (typeof q.correct === 'number' && q.correct >= 0 && q.correct < q.options.length) ||
-          (Array.isArray(q.correct) && q.correct.length > 0 && q.correct.every(idx => typeof idx === 'number' && idx >= 0 && idx < q.options.length));
+        const hasCorrectAnswers =
+          (typeof q.correct === "number" &&
+            q.correct >= 0 &&
+            q.correct < q.options.length) ||
+          (Array.isArray(q.correct) &&
+            q.correct.length > 0 &&
+            q.correct.every(
+              (idx) =>
+                typeof idx === "number" && idx >= 0 && idx < q.options.length,
+            ));
 
         if (!hasId || !hasText || !hasOptions || !hasCorrectAnswers) {
-          console.warn("[DataRepository] Questão inválida ou corrompida descartada:", q);
+          console.warn(
+            "[DataRepository] Questão inválida ou corrompida descartada:",
+            q,
+          );
           return false;
         }
         return true;
       });
-    }
+    },
   };
 }
