@@ -110,6 +110,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   initStudyNow({ startFilteredQuiz: startWeakestDomainQuiz });
   refreshStudyNow();
 
+  // Inicializa a sidebar esquerda
+  updateSidebarActiveItem("start");
+  initLeftSidebarToggle();
+
   // FASE 5: Setup de Certificação
   const certSelect = document.getElementById("certification-select");
 
@@ -263,6 +267,9 @@ function updateMistakesControls(certId = getActiveCertificationId()) {
   if (btnPractice) btnPractice.classList.toggle("hidden", !hasMistakes);
   if (btnClear) btnClear.classList.toggle("hidden", !hasMistakes);
   if (notice && !hasMistakes) notice.classList.add("hidden");
+
+  // Sincroniza badge na sidebar esquerda
+  syncSidebarMistakesBadge(certId);
 }
 
 function syncMistakeRecord(question, result) {
@@ -344,6 +351,18 @@ function wireUIActions() {
     startPersonalizedDiagnosticQuiz,
   );
   bindClick("sprint-start-btn", startMicroSprint);
+
+  // ── SIDEBAR ESQUERDA ──────────────────────────────────────────────────────
+  bindClick("sidebar-btn-quiz", startQuiz);
+  bindClick("sidebar-btn-journey", startJornada);
+  bindClick("sidebar-btn-diagnostic", startDiagnostic);
+  bindClick("sidebar-btn-flashcards", startFlashcards);
+  bindClick("sidebar-btn-mistakes", startMistakesQuiz);
+  bindClick("cloud-sidebar-toggle", (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    toggleLeftSidebar();
+  });
+  // ─────────────────────────────────────────────────────────────────────────
 
   const flashcardContainer = document.getElementById("flashcard-container");
   if (flashcardContainer) {
@@ -860,9 +879,9 @@ function loadQuestionUI() {
   const flagBtn = document.getElementById("btn-flag");
   if (flagBtn) {
     if (uiState.flags.includes(progress.current - 1)) {
-        flagBtn.classList.add("text-orange-500");
+      flagBtn.classList.add("text-orange-500");
     } else {
-        flagBtn.classList.remove("text-orange-500");
+      flagBtn.classList.remove("text-orange-500");
     }
   }
 
@@ -1026,8 +1045,8 @@ function submitAnswer() {
   if (!result.isCorrect) {
     let userText = isMulti
       ? uiState.tempSelectedAnswer
-          .map((i) => question.options[i])
-          .join("<br>• ")
+        .map((i) => question.options[i])
+        .join("<br>• ")
       : question.options[uiState.tempSelectedAnswer];
     feedbackHTML += `<div class="a3-feedback a3-feedback-error mb-2"><strong>${t("your_answer", uiState.language)}</strong><br>• ${userText}</div>`;
   }
@@ -1136,19 +1155,19 @@ function finishQuiz() {
 function toggleFlag() {
   const flagBtn = document.getElementById("btn-flag");
   if (!flagBtn) return;
-  
+
   const currentIdx = engine.state.currentIndex;
   const question = engine.state.questions[currentIdx];
   const certId = getActiveCertificationId();
-  
+
   if (uiState.flags.includes(currentIdx)) {
-      uiState.flags = uiState.flags.filter(i => i !== currentIdx);
-      flagBtn.classList.remove("text-orange-500");
-      storageManager.removeReviewQuestion(certId, question);
+    uiState.flags = uiState.flags.filter(i => i !== currentIdx);
+    flagBtn.classList.remove("text-orange-500");
+    storageManager.removeReviewQuestion(certId, question);
   } else {
-      uiState.flags.push(currentIdx);
-      flagBtn.classList.add("text-orange-500");
-      storageManager.addReviewQuestion(certId, question);
+    uiState.flags.push(currentIdx);
+    flagBtn.classList.add("text-orange-500");
+    storageManager.addReviewQuestion(certId, question);
   }
 }
 
@@ -1165,6 +1184,7 @@ function showScreen(screenName) {
     target.classList.remove("hidden");
     target.classList.add("flex", "flex-col", "fade-in");
   }
+  updateSidebarActiveItem(screenName);
 }
 
 // showResultsScreen com polling para garantir que o canvas está visível
@@ -1369,24 +1389,24 @@ function renderDetailedReportUI(results) {
 
   // --- NOVA SEÇÃO: QUESTÕES MARCADAS PARA REVISÃO ---
   if (uiState.flags && uiState.flags.length > 0) {
-      html += `
+    html += `
           <div class="flagged-questions-section mb-8">
               <h3 class="text-xl font-bold text-orange-600 dark:text-orange-400 mb-4 pb-2 border-b border-gray-200 dark:border-slate-700">
                   <i class="fa-solid fa-flag mr-2"></i> ${t("flag_for_review", uiState.language) || "Marcadas para Revisão"}
               </h3>
               <div class="space-y-4">
       `;
-      
-      uiState.flags.forEach(qIdx => {
-          const q = engine.state.questions[qIdx];
-          if (!q) return;
-          
-          const isMulti = Array.isArray(q.correct);
-          let correctText = isMulti 
-              ? q.correct.map(i => q.options[i]).join("<br>• ") 
-              : q.options[q.correct];
-              
-          html += `
+
+    uiState.flags.forEach(qIdx => {
+      const q = engine.state.questions[qIdx];
+      if (!q) return;
+
+      const isMulti = Array.isArray(q.correct);
+      let correctText = isMulti
+        ? q.correct.map(i => q.options[i]).join("<br>• ")
+        : q.options[q.correct];
+
+      html += `
               <div class="a3-feedback a3-feedback-warning mb-4">
                   <p class="font-semibold text-main mb-3">${q.question}</p>
                   <div class="mb-3">
@@ -1401,9 +1421,9 @@ function renderDetailedReportUI(results) {
                   </div>
               </div>
           `;
-      });
-      
-      html += `</div></div>`;
+    });
+
+    html += `</div></div>`;
   }
   // --- FIM DA NOVA SEÇÃO ---
 
@@ -1444,15 +1464,14 @@ function renderDetailedReportUI(results) {
                     <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">${t("your_answer_label", uiState.language)}</span>
                     <span class="${colorClass} font-semibold block leading-snug">${icon} ${isMulti ? "<br>• " : ""}${userText}</span>
                 </div>
-                ${
-                  !ans.isCorrect
-                    ? `
+                ${!ans.isCorrect
+        ? `
                 <div class="mt-2 pt-2 border-t border-gray-200 dark:border-slate-600">
                     <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">${t("correct_answer_label", uiState.language)}</span>
                     <span class="print-text-green text-green-600 dark:text-green-400 font-semibold block leading-snug">✅ ${isMulti ? "<br>• " : ""}${correctText}</span>
                 </div>`
-                    : ""
-                }
+        : ""
+      }
             </div>
             <div class="explanation-print mt-4 a3-feedback print-no-bg">
                 <strong class="text-main block mb-2 print-text-black">${t("explanation_label", uiState.language)}</strong>
@@ -1480,11 +1499,11 @@ function renderDiagnosticReport(results) {
   lastDiagnosticRecommendation =
     weakDomains.length > 0
       ? {
-          certificationId: results.certId,
-          weakDomains,
-          generatedAt: new Date().toISOString(),
-          source: "diagnostic",
-        }
+        certificationId: results.certId,
+        weakDomains,
+        generatedAt: new Date().toISOString(),
+        source: "diagnostic",
+      }
       : null;
 
   const weakDomainsHtml =
@@ -1496,14 +1515,14 @@ function renderDiagnosticReport(results) {
             </h3>
             <div class="flex flex-wrap gap-2">
                 ${weakDomains
-                  .map(
-                    (domain) => `
+        .map(
+          (domain) => `
                     <span class="a3-skill-badge a3-skill-badge-danger">
                         ${domain.name} - ${domain.percentage.toFixed(0)}%
                     </span>
                 `,
-                  )
-                  .join("")}
+        )
+        .join("")}
             </div>
         </div>
     `
@@ -1568,13 +1587,12 @@ function renderDiagnosticReport(results) {
             <button onclick="goHome()" class="a3-button-secondary py-3 px-8 text-lg w-auto">
                 Voltar ao Início
             </button>
-            ${
-              weakDomains.length > 0
-                ? `<button id="btn-start-personalized-diagnostic-quiz" class="a3-button-primary py-3 px-8 text-lg w-auto">
+            ${weakDomains.length > 0
+      ? `<button id="btn-start-personalized-diagnostic-quiz" class="a3-button-primary py-3 px-8 text-lg w-auto">
                     ${t("practice_weak_domains", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>
                 </button>`
-                : ""
-            }
+      : ""
+    }
         </div>
     `;
 
@@ -1888,6 +1906,81 @@ function updateGamification(pct) {
   storageManager.updateGamification(pct);
   renderGamification();
 }
+
+// ── SIDEBAR ESQUERDA: UTILITÁRIOS ────────────────────────────────────────────
+
+/**
+ * Marca o item ativo na sidebar conforme a tela exibida.
+ * @param {string} screenName - 'start' | 'quiz' | 'results' | 'flashcards' | 'jornada'
+ */
+function updateSidebarActiveItem(screenName) {
+  const map = {
+    start: "sidebar-btn-quiz",
+    quiz: "sidebar-btn-quiz",
+    results: "sidebar-btn-quiz",
+    flashcards: "sidebar-btn-flashcards",
+    jornada: "sidebar-btn-journey",
+  };
+
+  document.querySelectorAll(".left-sidebar-item").forEach((el) => {
+    el.classList.remove("is-active");
+  });
+
+  const activeId = map[screenName];
+  if (activeId) {
+    const el = document.getElementById(activeId);
+    if (el) el.classList.add("is-active");
+  }
+}
+
+
+
+/** Sincroniza o badge de erros na sidebar com o contador principal */
+function syncSidebarMistakesBadge(certId) {
+  const mistakes = storageManager.getMistakes(certId || getActiveCertificationId());
+  const count = mistakes.length;
+  const sidebarBtn = document.getElementById("sidebar-btn-mistakes");
+  const badge = document.getElementById("sidebar-mistakes-count");
+  if (sidebarBtn) sidebarBtn.classList.toggle("hidden", count === 0);
+  if (badge) badge.textContent = String(count);
+}
+
+/** Alterna a visibilidade da sidebar esquerda (mostrar / esconder) */
+function toggleLeftSidebar() {
+  const body = document.body;
+  const isClosed = body.classList.toggle("sidebar-closed");
+  localStorage.setItem("aws_sidebar_closed", isClosed ? "true" : "false");
+
+  const cloudBtn = document.getElementById("cloud-sidebar-toggle");
+  if (cloudBtn) {
+    cloudBtn.setAttribute("aria-expanded", String(!isClosed));
+    cloudBtn.title = isClosed ? "Mostrar menu lateral" : "Esconder menu lateral";
+  }
+}
+
+/** Inicializa o estado persistido e evento de toggle da sidebar */
+function initLeftSidebarToggle() {
+  const savedClosed = localStorage.getItem("aws_sidebar_closed") === "true";
+  if (savedClosed) {
+    document.body.classList.add("sidebar-closed");
+  }
+
+  const cloudBtn = document.getElementById("cloud-sidebar-toggle");
+  if (cloudBtn) {
+    cloudBtn.setAttribute("aria-expanded", String(!savedClosed));
+    cloudBtn.title = savedClosed ? "Mostrar menu lateral" : "Esconder menu lateral";
+  }
+
+  const cloudIcon = document.getElementById("cloud-logo-icon");
+  if (cloudIcon) {
+    cloudIcon.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleLeftSidebar();
+    });
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 // UTILITÁRIOS GERAIS
 function updateScoreDisplayUI() {
@@ -2613,7 +2706,7 @@ window.startMission = async function (stageId) {
   ) {
     alert(
       t("mission_locked", uiState.language) ||
-        "Este módulo ainda está bloqueado. Complete os anteriores primeiro!",
+      "Este módulo ainda está bloqueado. Complete os anteriores primeiro!",
     );
     return;
   }
@@ -2864,14 +2957,14 @@ function renderStudyPlanBanner() {
                 </p>
                 <div class="flex flex-wrap gap-2">
                     ${domainNames
-                      .map(
-                        (name) => `
+      .map(
+        (name) => `
                         <span class="a3-skill-badge a3-skill-badge-danger text-xs">
                             ${name}
                         </span>
                     `,
-                      )
-                      .join("")}
+      )
+      .join("")}
                 </div>
             </div>
         </div>
