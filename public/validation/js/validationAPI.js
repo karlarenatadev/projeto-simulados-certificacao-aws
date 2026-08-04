@@ -175,25 +175,39 @@ window.ValidationAPI = {
         return false;
     },
 
-    async fetchPendingQuestions() {
+    /**
+     * Login corporativo via email @a3data.
+     * POST /api/auth/login
+     */
+    async login(email) {
+        return fetchJSON('/api/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({ email })
+        });
+    },
+
+    async fetchPendingQuestions(userId) {
         try {
-            const response = await fetchJSON('/api/questions/pending');
+            const headers = userId ? { 'X-User-Id': userId } : {};
+            const response = await fetchJSON('/api/questions/pending', { headers });
             return normalizePendingResponse(response);
         } catch (error) {
             throw new Error(`Nao foi possivel carregar questoes pendentes: ${error.message}`);
         }
     },
 
-    async validateQuestion(id, payload) {
-        return this.submitValidation(id, payload);
+    async validateQuestion(id, payload, userId) {
+        return this.submitValidation(id, payload, userId);
     },
 
-    async submitValidation(id, payload) {
+    async submitValidation(id, payload, userId) {
         try {
+            const headers = userId ? { 'X-User-Id': userId } : {};
             const normalizedPayload = normalizeValidationPayload(payload);
             return await fetchJSON(`/api/questions/${encodeURIComponent(id)}/validate`, {
                 method: 'POST',
-                body: JSON.stringify(normalizedPayload)
+                body: JSON.stringify(normalizedPayload),
+                headers
             });
         } catch (error) {
             throw new Error(`Nao foi possivel enviar a validacao: ${error.message}`);

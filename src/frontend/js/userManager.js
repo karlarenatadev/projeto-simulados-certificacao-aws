@@ -1,151 +1,156 @@
 import { logger } from "./utils/logger.js";
 /**
  * User Manager
- * Handles anonymous user creation and persistence
+ * Gerencia identidade corporativa via POST /api/auth/login.
+ * Remove criação de usuário anônimo.
  *
  * @module userManager
  */
 
 import apiService from "../services/api.js";
 
-/**
- * User Manager Object
- * Provides methods for user account management
- */
 export const userManager = {
   /**
-   * Get or create current user
-   * Returns existing user if available, creates new anonymous user if not
+   * Retorna o usuário salvo no localStorage ou null se não estiver autenticado.
+   * Não cria mais usuário anônimo automaticamente.
    *
-   * @returns {Promise<object>} { id, anonymous_name }
+   * @returns {{ id, email, nickname, role } | null}
    */
-  async getOrCreateUser() {
-    try {
-      // Check if user exists in local storage
-      const existingUserId = this.getUserId();
+  getStoredUser() {
+    const userId = localStorage.getItem("aws_sim_user_id");
+    if (!userId) return null;
 
-      if (existingUserId) {
-        if (existingUserId.startsWith("local_")) {
-          const upgraded = await this.tryUpgradeToBackendUser(existingUserId);
-          if (upgraded) return upgraded;
-        }
-        logger.info(`✓ Using existing user: ${existingUserId}`);
-        return {
-          id: existingUserId,
-          anonymous_name:
-            localStorage.getItem("aws_sim_user_name") || "Anonymous",
-        };
-      }
-
-      // Try to create user via API
-      try {
-        const response = await apiService.createUser({});
-
-        if (response.success && response.data && response.data.id) {
-          const userId = response.data.id;
-          const userName = response.data.anonymous_name || "Anonymous";
-
-          // Store in local storage
-          localStorage.setItem("aws_sim_user_id", userId);
-          localStorage.setItem("aws_sim_user_name", userName);
-
-          logger.info(`✓ Created new user via API: ${userId} (${userName})`);
-
-          return {
-            id: userId,
-            anonymous_name: userName,
-          };
-        }
-      } catch (apiError) {
-        logger.warn(
-          "Failed to create user via API, using local fallback:",
-          apiError,
-        );
-      }
-
-      // Fallback: Generate local user ID if API fails
-      const fallbackUserId = this._generateLocalUserId();
-      localStorage.setItem("aws_sim_user_id", fallbackUserId);
-      localStorage.setItem("aws_sim_user_name", "AnonymousLocal");
-
-      logger.info(`✓ Using local fallback user: ${fallbackUserId}`);
-
-      return {
-        id: fallbackUserId,
-        anonymous_name: "AnonymousLocal",
-      };
-    } catch (error) {
-      logger.error("Fatal error in user creation:", error);
-      throw error;
-    }
+    return {
+      id: userId,
+      email: localStorage.getItem("aws_sim_user_email") || "",
+      nickname: localStorage.getItem("aws_sim_user_nickname") || "",
+      role: localStorage.getItem("aws_sim_user_role") || "STUDENT",
+    };
   },
 
   /**
-   * Tenta migrar usuário local para o backend quando a conexão é restaurada.
-   * Chamado automaticamente por getOrCreateUser() quando o ID armazenado começa com "local_".
+   * Mantido para compatibilidade com quizManager e testes existentes.
+   * Retorna o user_id armazenado.
    *
-   * @param {string} localUserId - ID local atual (prefixo "local_")
-   * @returns {Promise<object|null>} Usuário do backend ou null se API indisponível
-   */
-  async tryUpgradeToBackendUser(localUserId) {
-    try {
-      const isUp = await apiService.isAvailable();
-      if (!isUp) return null;
-
-      // Deixa o servidor gerar um nome único — o nome local é placeholder genérico
-      const response = await apiService.createUser({});
-
-      if (response.success && response.data && response.data.id) {
-        const newId = response.data.id;
-        const newName = response.data.anonymous_name;
-        localStorage.setItem("aws_sim_user_id", newId);
-        localStorage.setItem("aws_sim_user_name", newName);
-        logger.info(
-          `✓ Local user ${localUserId} upgraded to backend user: ${newId}`,
-        );
-        return { id: newId, anonymous_name: newName };
-      }
-    } catch (error) {
-      logger.warn("Could not upgrade local user to backend:", error);
-    }
-    return null;
-  },
-
-  /**
-   * Get current user ID from storage
-   *
-   * @returns {string|null} User ID or null if not found
+   * @returns {string|null}
    */
   getUserId() {
     return localStorage.getItem("aws_sim_user_id");
   },
 
   /**
-   * Get current user name from storage
+   * Retorna o nickname do usuário para exibição pública.
+   * Nunca expõe email ou nome completo.
    *
-   * @returns {string} User name or 'Anonymous'
+   * @returns {string}
    */
   getUserName() {
-    return localStorage.getItem("aws_sim_user_name") || "Anonymous";
+    return (
+      localStorage.getItem("aws_sim_user_nickname") ||
+      localStorage.getItem("aws_sim_user_name") ||
+      "Usuário"
+    );
   },
 
   /**
-   * Clear user session
+   * Login corporativo: envia email @a3data para POST /api/auth/login.
+   * Se o usuário não existe no banco, é criado automaticamente como STUDENT.
+   * Persiste id, email, nickname e role no localStorage.
+   *
+   * @param {string} email - Email @a3data
+   * @param {{ full_name?: string, nickname?: string }} [profile]
+   * @returns {Promise<{ id, email, nickname, role, created }>}
+   */
+  async login(email, profile = {}) {
+    try {
+      const response = await apiService.loginUser({ email, ...profile });
+
+      if (response.success && response.data && response.data.id) {
+        const user = response.data;
+        this._persistUser(user);
+        logger.info(`✓ Login realizado: ${user.email} (${user.role})`);
+        return user;
+      }
+
+      throw new Error(response.message || "Falha no login corporativo.");
+    } catch (error) {
+      logger.error("Erro no login:", error);
+      throw error;
+    }
+  },
+
+  /**
+   * Verifica se o usuário está autenticado (tem id no localStorage).
+   * @returns {boolean}
+   */
+  isAuthenticated() {
+    return Boolean(localStorage.getItem("aws_sim_user_id"));
+  },
+
+  /**
+   * Limpa a sessão do usuário.
    */
   clearUser() {
     localStorage.removeItem("aws_sim_user_id");
+    localStorage.removeItem("aws_sim_user_email");
+    localStorage.removeItem("aws_sim_user_nickname");
+    localStorage.removeItem("aws_sim_user_role");
+    // Compatibilidade com chaves legadas
     localStorage.removeItem("aws_sim_user_name");
+    localStorage.removeItem("aws_sim_username");
   },
 
   /**
-   * Generate a unique local user ID (fallback if API unavailable)
-   * @private
-   * @returns {string} Unique user ID
+   * Tenta restaurar a sessão do backend a partir do id salvo no localStorage.
+   * Usado ao iniciar o app para verificar se o usuário ainda é válido.
+   *
+   * @returns {Promise<{ id, email, nickname, role } | null>}
    */
-  _generateLocalUserId() {
-    const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substring(2, 9);
-    return `local_${timestamp}_${random}`;
+  async getOrCreateUser() {
+    const stored = this.getStoredUser();
+
+    if (stored && stored.id) {
+      // Tenta verificar se o usuário ainda existe no backend
+      try {
+        const isUp = await apiService.isAvailable();
+        if (isUp) {
+          const response = await apiService.getMe(stored.id);
+          if (response.success && response.data) {
+            this._persistUser(response.data);
+            return response.data;
+          }
+          // Se retornou erro do backend, limpa sessão inválida
+          this.clearUser();
+          return null;
+        }
+      } catch (_e) {
+        // API indisponível — retorna o dado salvo localmente sem verificar
+        logger.warn("API indisponível — usando dados de sessão locais.");
+      }
+      return stored;
+    }
+
+    return null;
+  },
+
+  // ---------------------------------------------------------------------------
+  // Privado
+  // ---------------------------------------------------------------------------
+
+  _persistUser(user) {
+    localStorage.setItem("aws_sim_user_id", user.id);
+    localStorage.setItem("aws_sim_user_email", user.email || "");
+    localStorage.setItem("aws_sim_user_nickname", user.nickname || "");
+    localStorage.setItem("aws_sim_user_role", user.role || "STUDENT");
+    // Mantém chave legada para compatibilidade com quizManager e leaderboard
+    localStorage.setItem(
+      "aws_sim_user_name",
+      user.nickname || user.email?.split("@")[0] || "",
+    );
+    localStorage.setItem(
+      "aws_sim_username",
+      user.nickname || user.email?.split("@")[0] || "",
+    );
   },
 };
 

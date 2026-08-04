@@ -16,6 +16,7 @@ import { initializeDatabase, closeDatabase } from '../database/db.js';
 import questionsRoutes from './routes/questions.js';
 import quizzesRoutes from './routes/quizzes.js';
 import usersRoutes from './routes/users.js';
+import authRoutes from './routes/auth.js';
 import casesRoutes, { servicesRouter } from './routes/cases.js';
 
 const app = express();
@@ -64,6 +65,7 @@ app.get('/api/health', (_req, res) => {
 app.use('/api/questions', questionsRoutes);
 app.use('/api/quiz', quizzesRoutes);
 app.use('/api/quizzes', quizzesRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/cases', casesRoutes);
 app.use('/api/services', servicesRouter);

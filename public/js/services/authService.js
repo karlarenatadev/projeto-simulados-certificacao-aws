@@ -1,83 +1,107 @@
 /**
  * authService.js
- * Serviço fundamental de Autenticação e Autorização (Fundação para o React).
- * Abstrai a identidade do usuário atual e o controle de permissões.
+ * Serviço de autenticação e autorização — identidade corporativa A3Data.
  *
- * Atualmente implementa uma simulação (Mock) de usuário, até que o JWT backend
- * seja integrado na próxima fase.
+ * Usa POST /api/auth/login para autenticar via email @a3data.
+ * Remove o mock de usuário fixo e o fluxo anônimo.
  *
  * @module services/authService
  */
 
 import { logger } from "../utils/logger.js";
+import { userManager } from "../userManager.js";
 
-/**
- * Usuário mockado (padrão)
- * @type {import('../types.js').User}
- */
-let currentUser = {
-  id: "usr_mock_123",
-  name: "Guest Student",
-  email: "guest@example.com",
-  role: "student",
-  permissions: ["start_quiz", "view_dashboard"],
-  createdAt: Date.now(),
-  isShowcase: false,
-};
+/** @type {{ id, email, nickname, role, full_name } | null} */
+let currentUser = null;
 
 export const AuthService = {
   /**
-   * Retorna o usuário logado atual.
-   * @returns {import('../types.js').User | null}
+   * Retorna o usuário logado atual ou null.
+   * @returns {{ id, email, nickname, role } | null}
    */
   getCurrentUser() {
+    if (currentUser) return currentUser;
+    // Tenta restaurar da sessão persistida
+    const stored = userManager.getStoredUser();
+    if (stored) {
+      currentUser = stored;
+    }
     return currentUser;
   },
 
   /**
-   * Valida se o usuário logado possui a permissão especificada.
-   * @param {import('../types.js').Permission} permissionName
+   * Verifica se o usuário está autenticado.
    * @returns {boolean}
    */
-  hasPermission(permissionName) {
-    if (!currentUser) return false;
-    if (currentUser.role === "admin") return true;
-    return currentUser.permissions.includes(permissionName);
+  isAuthenticated() {
+    return Boolean(this.getCurrentUser());
   },
 
   /**
-   * Login (Simulado para fins de estrutura)
-   * @param {string} email
-   * @param {string} password
-   * @returns {Promise<import('../types.js').User>}
+   * Verifica se o usuário possui a permissão/role informada.
+   * @param {string} roleOrPermission
+   * @returns {boolean}
    */
-  async login(email, _password) {
-    logger.info("[AuthService] Simulate Login for", email);
-    // TODO: Implemenar payload JWT e fetch para /api/auth/login
-    currentUser = {
-      id: "usr_real_456",
-      name: email.split("@")[0],
-      email: email,
-      role: "student",
-      permissions: ["start_quiz", "view_dashboard"],
-      createdAt: Date.now(),
-      isShowcase: false,
-    };
-    return currentUser;
+  hasPermission(roleOrPermission) {
+    const user = this.getCurrentUser();
+    if (!user) return false;
+    const role = String(user.role || "").toUpperCase();
+    if (role === "ADMIN") return true;
+    const check = String(roleOrPermission || "").toUpperCase();
+    return role === check;
   },
 
   /**
-   * Logout (Limpa a sessão atual)
+   * Verifica se o usuário pode validar questões (VALIDATOR ou ADMIN).
+   * @returns {boolean}
+   */
+  canValidate() {
+    const user = this.getCurrentUser();
+    if (!user) return false;
+    const role = String(user.role || "").toUpperCase();
+    return role === "VALIDATOR" || role === "ADMIN";
+  },
+
+  /**
+   * Login corporativo via email @a3data.
+   * Chama POST /api/auth/login e persiste a sessão localmente.
+   *
+   * @param {string} email - Email @a3data
+   * @param {Object} [profile] - { full_name?, nickname? }
+   * @returns {Promise<{ id, email, nickname, role }>}
+   */
+  async login(email, profile = {}) {
+    const user = await userManager.login(email, profile);
+    currentUser = user;
+    logger.info(`[AuthService] Login: ${user.email} (${user.role})`);
+    return user;
+  },
+
+  /**
+   * Logout — limpa a sessão local.
    */
   async logout() {
-    logger.info("[AuthService] Logging out");
+    logger.info("[AuthService] Logout:", currentUser?.email);
     currentUser = null;
-    // TODO: Limpar JWT cookies / localStorage
+    userManager.clearUser();
   },
 
   /**
-   * Força a injeção de uma identidade de Showcase Mode (usado pelo ShowcaseService)
-   * @param {import('../types.js').User} showcaseUser
+   * Restaura sessão a partir do localStorage (chamado no boot do app).
+   * @returns {Promise<{ id, email, nickname, role } | null>}
+   */
+  async restoreSession() {
+    const user = await userManager.getOrCreateUser();
+    if (user) {
+      currentUser = user;
+      logger.info(`[AuthService] Sessão restaurada: ${user.email || user.id}`);
+    }
+    return user;
+  },
+
+  /**
+   * Injeção de usuário para modo showcase/demo — não chama a API.
+   * @param {{ id, email, nickname, role }} showcaseUser
    */
   setMockUser(showcaseUser) {
     currentUser = showcaseUser;

@@ -13,13 +13,16 @@
 
     <main class="validation-container">
         <section class="validator-section card">
-            <h2>Identificacao do Validador</h2>
-            <div class="input-group">
-                <input type="text" id="validator-name" placeholder="Digite seu nome completo..." />
-                <button id="btn-save-validator" class="btn-primary">Salvar</button>
+            <h2>Identificação do Validador</h2>
+            <p id="validator-status" class="status-text">Status: Aguardando autenticação...</p>
+            <div id="login-section">
+                <p class="mock-notice">Acesso restrito a usuários com role VALIDATOR ou ADMIN.</p>
+                <div class="input-group">
+                    <input type="email" id="login-email" placeholder="seu.nome@a3data.com.br" autocomplete="email" />
+                    <button id="btn-login" class="btn-primary">Entrar</button>
+                </div>
+                <p id="login-error" class="status-text hidden" style="color:#ef4444;"></p>
             </div>
-            <p id="validator-status" class="status-text">Status: Aguardando identificacao...</p>
-            <p class="mock-notice">Modo demo/mock local ativo: aprovacoes e reprovacoes nao sao persistidas no banco.</p>
         </section>
 
         <div id="screen-message" class="screen-message hidden" role="status" aria-live="polite"></div>

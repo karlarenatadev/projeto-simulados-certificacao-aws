@@ -77,6 +77,8 @@ jest.unstable_mockModule('../backend/database/db.js', () => ({
   getLeaderboard: jest.fn(async () => []),
   createUser: jest.fn(),
   getUserById: jest.fn(),
+  getUserByEmail: jest.fn(),
+  upsertUserByEmail: jest.fn(),
   getUserStats: jest.fn(),
   getWeakDomains: jest.fn(),
   getGamification: jest.fn(),

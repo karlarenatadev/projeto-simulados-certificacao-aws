@@ -863,6 +863,7 @@ function normalizeUserId(userId) {
   return normalizeRequiredString(userId, 'userId');
 }
 
+/** Mantido para testes legados e seed — aceita string simples como anonymous_name */
 function normalizeAnonymousName(anonymousName) {
   return normalizeMaxLength(
     normalizeRequiredString(anonymousName, 'anonymousName'),
@@ -871,16 +872,54 @@ function normalizeAnonymousName(anonymousName) {
   );
 }
 
+function normalizeEmail(email) {
+  const normalized = normalizeRequiredString(email, 'email');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)) {
+    throw new Error('email must be a valid email address');
+  }
+  return normalized.toLowerCase().trim();
+}
+
+function normalizeRole(role) {
+  const valid = new Set(['STUDENT', 'VALIDATOR', 'ADMIN']);
+  const normalized = String(role || 'STUDENT').toUpperCase().trim();
+  if (!valid.has(normalized)) {
+    throw new Error(`role must be one of: ${[...valid].join(', ')}`);
+  }
+  return normalized;
+}
+
 function normalizeUserUpdate(data) {
   if (!isPlainObject(data)) {
     throw new Error('data must be an object');
   }
 
   const updates = {};
-  const anonymousName = data.anonymous_name ?? data.anonymousName;
 
+  // Campos legados — mantidos para compatibilidade com testes existentes
+  const anonymousName = data.anonymous_name ?? data.anonymousName;
   if (anonymousName !== undefined) {
     updates.anonymous_name = normalizeAnonymousName(anonymousName);
+  }
+
+  // Novos campos de identidade corporativa
+  if (data.email !== undefined) {
+    updates.email = normalizeEmail(data.email);
+  }
+  if (data.full_name !== undefined) {
+    updates.full_name = String(data.full_name).trim().slice(0, 150) || null;
+  }
+  if (data.nickname !== undefined) {
+    updates.nickname = String(data.nickname).trim().slice(0, 60) || null;
+  }
+  if (data.role !== undefined) {
+    updates.role = normalizeRole(data.role);
+  }
+  if (data.is_active !== undefined) {
+    updates.is_active = Boolean(data.is_active);
+  }
+  if (data.last_login !== undefined) {
+    updates.last_login = data.last_login;
   }
 
   if (Object.keys(updates).length === 0) {
@@ -891,19 +930,102 @@ function normalizeUserUpdate(data) {
 }
 
 /**
- * Create a new anonymous user
- * @param {string} anonymousName - Unique anonymous name for the user
+ * Create a new user.
+ *
+ * Suporta dois modos:
+ *   1. Legado (testes): createUser(anonymousName: string)
+ *   2. Corporativo: createUser({ email, full_name, nickname, role })
+ *
+ * @param {string|Object} dataOrName
  * @returns {Promise<Object|null>} Created user object
  */
-export async function createUser(anonymousName) {
-  const normalizedName = normalizeAnonymousName(anonymousName);
-  const query = 'INSERT INTO users (anonymous_name) VALUES ($1) RETURNING *';
-
+export async function createUser(dataOrName) {
   try {
-    const result = await executeQuery(query, [normalizedName]);
+    // Modo legado — string simples como anonymous_name
+    if (typeof dataOrName === 'string') {
+      const normalizedName = normalizeAnonymousName(dataOrName);
+      const query = 'INSERT INTO users (anonymous_name) VALUES ($1) RETURNING *';
+      const result = await executeQuery(query, [normalizedName]);
+      return result.length > 0 ? result[0] : null;
+    }
+
+    // Modo corporativo — objeto com email obrigatório
+    const data = dataOrName || {};
+    const email = normalizeEmail(data.email ?? '');
+    const nickname = data.nickname ? String(data.nickname).trim().slice(0, 60) : null;
+    const full_name = data.full_name ? String(data.full_name).trim().slice(0, 150) : null;
+    const role = normalizeRole(data.role ?? 'STUDENT');
+
+    const query = `
+      INSERT INTO users (email, full_name, nickname, role)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *
+    `;
+    const result = await executeQuery(query, [email, full_name, nickname, role]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
     console.error('✗ Error creating user:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Upsert por email corporativo — cria STUDENT se não existir, retorna o existente se já houver.
+ * Atualiza last_login e, opcionalmente, full_name/nickname na primeira passagem.
+ *
+ * @param {string} email
+ * @param {Object} [profile] - { full_name, nickname }
+ * @returns {Promise<{user: Object, created: boolean}>}
+ */
+export async function upsertUserByEmail(email, profile = {}) {
+  const normalizedEmail = normalizeEmail(email);
+
+  try {
+    // Tenta localizar usuário existente
+    const existing = await executeQuery(
+      'SELECT * FROM users WHERE email = $1 LIMIT 1',
+      [normalizedEmail],
+    );
+
+    if (existing.length > 0) {
+      // Atualiza last_login (e opcionalmente nome/nickname se ainda não preenchidos)
+      const updateFields = ['last_login = NOW()'];
+      const params = [];
+
+      if (profile.full_name && !existing[0].full_name) {
+        params.push(String(profile.full_name).trim().slice(0, 150));
+        updateFields.push(`full_name = $${params.length}`);
+      }
+      if (profile.nickname && !existing[0].nickname) {
+        params.push(String(profile.nickname).trim().slice(0, 60));
+        updateFields.push(`nickname = $${params.length}`);
+      }
+
+      params.push(normalizedEmail);
+      const updated = await executeQuery(
+        `UPDATE users SET ${updateFields.join(', ')} WHERE email = $${params.length} RETURNING *`,
+        params,
+      );
+      return { user: updated[0] ?? existing[0], created: false };
+    }
+
+    // Cria novo usuário como STUDENT
+    const nickname = profile.nickname
+      ? String(profile.nickname).trim().slice(0, 60)
+      : normalizedEmail.split('@')[0];
+    const full_name = profile.full_name
+      ? String(profile.full_name).trim().slice(0, 150)
+      : null;
+
+    const inserted = await executeQuery(
+      `INSERT INTO users (email, full_name, nickname, role, last_login)
+       VALUES ($1, $2, $3, 'STUDENT', NOW())
+       RETURNING *`,
+      [normalizedEmail, full_name, nickname],
+    );
+    return { user: inserted[0], created: true };
+  } catch (error) {
+    console.error('✗ Error upserting user by email:', error.message);
     throw error;
   }
 }
@@ -927,9 +1049,27 @@ export async function getUserById(userId) {
 }
 
 /**
- * Get user by anonymous name
- * @param {string} anonymousName - Anonymous name of the user
- * @returns {Promise<Object|null>} User object or null
+ * Get user by email (corporativo)
+ * @param {string} email
+ * @returns {Promise<Object|null>}
+ */
+export async function getUserByEmail(email) {
+  const normalizedEmail = normalizeEmail(email);
+  const query = 'SELECT * FROM users WHERE email = $1 LIMIT 1';
+
+  try {
+    const result = await executeQuery(query, [normalizedEmail]);
+    return result.length > 0 ? result[0] : null;
+  } catch (error) {
+    console.error('✗ Error fetching user by email:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Get user by anonymous name (legado — mantido para compatibilidade)
+ * @param {string} anonymousName
+ * @returns {Promise<Object|null>}
  */
 export async function getUserByName(anonymousName) {
   const normalizedName = normalizeAnonymousName(anonymousName);
@@ -945,10 +1085,10 @@ export async function getUserByName(anonymousName) {
 }
 
 /**
- * Update an anonymous user
+ * Update a user — suporta todos os campos (legados e novos)
  * @param {string} userId - UUID of the user
  * @param {Object} data - Fields to update
- * @returns {Promise<Object|null>} Updated user object or null if not found
+ * @returns {Promise<Object|null>} Updated user or null if not found
  */
 export async function updateUser(userId, data) {
   const normalizedUserId = normalizeUserId(userId);
@@ -1531,7 +1671,7 @@ export async function getLeaderboard(limit = 100) {
   const query = `
     SELECT *
     FROM leaderboard
-    ORDER BY xp_points DESC, anonymous_name ASC
+    ORDER BY xp_points DESC, display_name ASC
     LIMIT $1
   `;
 
@@ -1577,7 +1717,10 @@ export async function getUserStats(userId) {
     ]);
     const stats = statsResult[0] || {
       user_id: user.id,
+      display_name: user.nickname ?? user.anonymous_name ?? 'Usuário',
+      nickname: user.nickname,
       anonymous_name: user.anonymous_name,
+      role: user.role,
       total_quizzes: 0,
       avg_score: 0,
       best_score: 0,
@@ -1849,7 +1992,9 @@ export default {
   // Users
   createUser,
   getUserById,
+  getUserByEmail,
   getUserByName,
+  upsertUserByEmail,
   updateUser,
   // Gamification
   getGamification,

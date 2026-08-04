@@ -34,13 +34,14 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
   // ─────────────────────────────────────────────────────────────────────────────
 
   describe("Critério 1 — app funciona sem backend", () => {
-    test("userManager cria usuário local quando API está indisponível", async () => {
+    test("userManager retorna null quando não há sessão e API está indisponível", async () => {
       global.fetch.mockRejectedValue(new Error("Network error"));
 
       const user = await userManager.getOrCreateUser();
 
-      expect(user.id).toMatch(/^local_/);
-      expect(localStorage.getItem("aws_sim_user_id")).toMatch(/^local_/);
+      // Novo comportamento: sem sessão salva + API indisponível = null (não cria anônimo)
+      expect(user).toBeNull();
+      expect(localStorage.getItem("aws_sim_user_id")).toBeNull();
     });
 
     test("quizManager.initialize() seta isAPIAvailable = false quando API cai", async () => {
@@ -111,27 +112,26 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
   // ─────────────────────────────────────────────────────────────────────────────
 
   describe("Critério 2 — sincronização quando backend volta", () => {
-    test("userManager substitui local_* por ID do backend quando API fica disponível", async () => {
-      localStorage.setItem("aws_sim_user_id", "local_abc123");
-      localStorage.setItem("aws_sim_user_name", "AnonymousLocal");
-
+    test("userManager.login() autentica e persiste sessão quando API disponível", async () => {
       global.fetch
-        .mockResolvedValueOnce(
-          jsonResponse({ success: true, message: "API is healthy" }),
-        ) // isAvailable → GET /api/health
         .mockResolvedValueOnce(
           jsonResponse({
             success: true,
-            data: { id: "backend-uuid-1", anonymous_name: "CloudNinja#42" },
+            data: {
+              id: "backend-uuid-1",
+              email: "usuario@a3data.com.br",
+              nickname: "UsuarioA3",
+              role: "STUDENT",
+            },
           }),
-        ); // createUser → POST /api/users
+        ); // POST /api/auth/login
 
-      const user = await userManager.getOrCreateUser();
+      const user = await userManager.login("usuario@a3data.com.br");
 
       expect(user.id).toBe("backend-uuid-1");
-      expect(user.anonymous_name).toBe("CloudNinja#42");
+      expect(user.nickname).toBe("UsuarioA3");
       expect(localStorage.getItem("aws_sim_user_id")).toBe("backend-uuid-1");
-      expect(localStorage.getItem("aws_sim_user_name")).toBe("CloudNinja#42");
+      expect(localStorage.getItem("aws_sim_user_nickname")).toBe("UsuarioA3");
     });
 
     test("userManager mantém local_* quando API continua indisponível", async () => {

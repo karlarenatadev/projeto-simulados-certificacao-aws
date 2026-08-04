@@ -264,12 +264,57 @@ export const apiService = {
   // ========================================================================
 
   /**
-   * Create anonymous user
+   * Login corporativo — POST /api/auth/login
+   * Cria usuário como STUDENT se não existir, retorna existente se já houver.
+   *
+   * @param {object} options
+   * @param {string} options.email - Email @a3data
+   * @param {string} [options.full_name]
+   * @param {string} [options.nickname]
+   * @returns {Promise<object>} { success, data: { id, email, nickname, role, ... }, created }
+   */
+  async loginUser(options = {}) {
+    try {
+      const response = await fetchWithRetry('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: options.email,
+          full_name: options.full_name || undefined,
+          nickname: options.nickname || undefined,
+        }),
+      });
+      return response;
+    } catch (error) {
+      if (!error || !error.apiDisabled) logger.error('Login failed:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Retorna o perfil do usuário autenticado — GET /api/auth/me
+   * Envia o user_id via header X-User-Id.
+   *
+   * @param {string} userId - UUID do usuário
+   * @returns {Promise<object>} { success, data: { id, email, nickname, role, ... } }
+   */
+  async getMe(userId) {
+    try {
+      const response = await fetchWithRetry('/api/auth/me', {
+        headers: { 'X-User-Id': userId },
+      });
+      return response;
+    } catch (error) {
+      if (!error || !error.apiDisabled) logger.error('getMe failed:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Create anonymous user (mantido para compatibilidade com testes legados)
    * POST /api/users
-   * 
-   * @param {object} options - User data
-   * @param {string} [options.anonymous_name] - User display name (auto-generated if not provided)
-   * 
+   *
+   * @param {object} options
+   * @param {string} [options.anonymous_name]
    * @returns {Promise<object>} { success, data: { id, anonymous_name, created_at } }
    */
   async createUser(options = {}) {
