@@ -38,45 +38,46 @@ const SIDEBAR_ITEMS = [
     label: "Hub",
     icon: "fa-solid fa-house",
     action: "showLearningHub",
+    href: "./index.html",
     roles: ["*"],
     primary: true,
     title: "Learning Hub — Painel Principal",
   },
   {
     id: "sidebar-btn-quiz",
-    label: "Simulação",
+    label: "Simulados",
     icon: "fa-solid fa-play",
-    action: "showQuizConfig",
+    href: "./simulados.html",
     roles: ["*"],
     i18n: "sidebar_start",
-    title: "Iniciar Simulação",
+    title: "Simulados",
   },
   {
     id: "sidebar-btn-journey",
     label: "Jornada",
     icon: "fa-solid fa-route",
-    action: "startJornada",
+    href: "./jornada.html",
     roles: ["*"],
     i18n: "sidebar_journey",
-    title: "Minha Jornada (Trilha)",
+    title: "Minha Jornada",
   },
   {
     id: "sidebar-btn-diagnostic",
     label: "Raio-X",
     icon: "fa-solid fa-stethoscope",
-    action: "startDiagnostic",
+    href: "./diagnostico.html",
     roles: ["*"],
     i18n: "sidebar_diagnostic",
-    title: "Raio-X da Nuvem (Diagnóstico)",
+    title: "Raio-X da Nuvem",
   },
   {
     id: "sidebar-btn-flashcards",
     label: "Flashcards",
     icon: "fa-solid fa-layer-group",
-    action: "startFlashcards",
+    href: "./flashcards.html",
     roles: ["*"],
     i18n: "sidebar_flashcards",
-    title: "Flashcards (Revisão)",
+    title: "Flashcards",
   },
   {
     id: "sidebar-btn-cases",
@@ -691,6 +692,26 @@ export async function initShell(user) {
 
   renderUserMenu(resolvedUser);
   buildSidebar(resolvedUser);
+
+  // Marcar item ativo baseado na URL atual
+  const currentPath = window.location.pathname;
+  const pathToId = {
+    "/simulados.html": "sidebar-btn-quiz",
+    "/jornada.html": "sidebar-btn-journey",
+    "/flashcards.html": "sidebar-btn-flashcards",
+    "/diagnostico.html": "sidebar-btn-diagnostic",
+    "/cases.html": "sidebar-btn-cases",
+    "/resources.html": "sidebar-btn-resources",
+    "/profile.html": "sidebar-btn-profile",
+    "/settings.html": "sidebar-btn-settings",
+  };
+  const activeId = Object.entries(pathToId).find(([path]) =>
+    currentPath.endsWith(path),
+  )?.[1];
+  if (activeId) {
+    const activeEl = document.getElementById(activeId);
+    if (activeEl) activeEl.classList.add("is-active");
+  }
 }
 
 async function _tryRestoreSession() {
