@@ -510,15 +510,12 @@ function wireUIActions() {
   bindClick("sprint-start-btn", startMicroSprint);
 
   // ── SIDEBAR ESQUERDA ──────────────────────────────────────────────────────
-  bindClick("sidebar-btn-hub", showLearningHub);
-  bindClick("sidebar-btn-quiz", showQuizConfig);
-  bindClick("sidebar-btn-journey", startJornada);
-  bindClick("sidebar-btn-diagnostic", startDiagnostic);
-  bindClick("sidebar-btn-flashcards", startFlashcards);
-  bindClick("sidebar-btn-mistakes", startMistakesQuiz);
+  // Os itens da sidebar com 'action' já têm listeners registrados pelo shell.js
+  // via _createSidebarItem(). As funções estão expostas em window.* abaixo para
+  // que o shell.js possa chamá-las corretamente via window[item.action].
+  // NÃO duplicar os bindClick aqui para evitar chamadas duplas.
   // Nota: o toggle da sidebar (cloud-sidebar-toggle) é gerenciado por
   // initLeftSidebarToggleShell() em shell.js, que usa a chave "sidebar_closed".
-  // Não duplicar o listener aqui.
   // ─────────────────────────────────────────────────────────────────────────
 
   const flashcardContainer = document.getElementById("flashcard-container");
@@ -3125,6 +3122,11 @@ window.updateSidebarTexts = updateSidebarTexts;
 window.togglePomodoroWidget = togglePomodoroWidget;
 window.togglePomodoro = togglePomodoro;
 window.resetPomodoro = resetPomodoro;
+// Funções da sidebar: necessárias para que shell.js possa chamar window[action]
+// sem redirecionar para index.html quando já estamos no SPA.
+window.showLearningHub = showLearningHub;
+window.startJornada = startJornada;
+window.startDiagnostic = startDiagnostic;
 
 // ============================================================================
 // SISTEMA DE MISSÕES DA JORNADA (GAMIFICAÇÃO) - VERSÃO ISOLADA

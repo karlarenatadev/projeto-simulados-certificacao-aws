@@ -405,7 +405,16 @@ async function seedServices() {
   let skipped = 0;
 
   for (const service of AWS_SERVICES) {
+    console.log(`\nIniciando: ${service.slug}`);
+
+    console.time(service.slug);
+
     const result = await insertAwsService(service);
+
+    console.timeEnd(service.slug);
+
+    console.log(`Finalizado: ${service.slug}`);
+
     if (result) {
       inserted++;
     } else {

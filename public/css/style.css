@@ -57,6 +57,8 @@
   --aws-dark: var(--a3-deep-sea);
   --aws-orange: var(--a3-tech-blue);
   --aws-orange-hover: color-mix(in srgb, var(--a3-tech-blue) 84%, var(--a3-deep-sea));
+  /* Alias prefixado a3- para uso no cases.css e componentes novos */
+  --a3-aws-orange-hover: color-mix(in srgb, var(--a3-tech-blue) 84%, var(--a3-deep-sea));
   --aws-light-gray: var(--a3-background-light);
   --aws-border: var(--a3-border-default);
   --success-green: var(--a3-success);
@@ -148,6 +150,62 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+}
+
+/* ── Links de conteúdo ─────────────────────────────────────────────────────
+   Aplica estados padrão apenas em contextos de prosa/conteúdo.
+   Links em componentes (sidebar, header, botões) sobrescrevem estes estilos.
+   ───────────────────────────────────────────────────────────────────────── */
+
+a {
+  color: var(--a3-tech-blue);
+  text-decoration: none;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+
+a:hover {
+  color: var(--aws-orange-hover, var(--a3-tech-blue));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--a3-tech-blue);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm, 2px);
+  text-decoration: none;
+}
+
+a:active {
+  opacity: 0.75;
+}
+
+a:visited {
+  color: var(--a3-amethyst-velvet, #7b4aaf);
+}
+
+/* Contextos onde links NÃO devem ter texto sublinhado por padrão
+   (navegação, header, sidebar, botões) */
+header a,
+nav a,
+.left-sidebar-item,
+.a3-btn,
+.a3-header-link,
+.case-breadcrumb a,
+.case-tab-btn,
+.case-card {
+  text-decoration: none;
+}
+
+header a:hover,
+nav a:hover,
+.a3-header-link:hover {
+  text-decoration: none;
+}
+
+.case-breadcrumb a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 ::selection {
@@ -1690,6 +1748,17 @@ body.sidebar-closed #left-sidebar,
   body.sidebar-closed .main-content-container {
     padding-left: var(--space-16);
   }
+
+  /* Elementos fora do main-content-container que também precisam de deslocamento */
+  body.has-left-sidebar:not(.sidebar-closed) .cases-hero,
+  body.has-left-sidebar:not(.sidebar-closed) .cases-filters {
+    padding-left: calc(1.5rem + var(--sidebar-width));
+  }
+
+  body.sidebar-closed .cases-hero,
+  body.sidebar-closed .cases-filters {
+    padding-left: 1.5rem;
+  }
 }
 
 /* ── Área de navegação ─────────────────────────────────────────────────── */
@@ -1884,7 +1953,7 @@ body.sidebar-closed #left-sidebar,
 }
 
 /* Ícone inverte quando a sidebar está recolhida */
-body.sidebar-collapsed .sidebar-collapse-btn .sidebar-collapse-icon {
+body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
   transform: rotate(180deg);
 }
 
@@ -4935,6 +5004,8 @@ textarea {
   text-align: center;
   position: relative;
   overflow: hidden;
+  /* Transição do padding-left gerenciada pelo sidebar.css */
+  transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cases-hero::before {
@@ -5023,6 +5094,8 @@ textarea {
   border-bottom: 1px solid var(--border-theme);
   flex-wrap: wrap;
   align-items: center;
+  /* Transição do padding-left gerenciada pelo sidebar.css */
+  transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .cases-filters {
@@ -5212,6 +5285,25 @@ textarea {
     color-mix(in srgb, var(--a3-amethyst-velvet) 30%, transparent);
 }
 
+/* Dark mode: badges com contraste reforçado */
+.dark .difficulty-badge.beginner {
+  background: color-mix(in srgb, var(--a3-success) 18%, transparent);
+  color: #5ce08a;
+  border-color: color-mix(in srgb, var(--a3-success) 40%, transparent);
+}
+
+.dark .difficulty-badge.intermediate {
+  background: color-mix(in srgb, var(--a3-sky-frost) 14%, transparent);
+  color: var(--a3-sky-frost);
+  border-color: color-mix(in srgb, var(--a3-sky-frost) 40%, transparent);
+}
+
+.dark .difficulty-badge.advanced {
+  background: color-mix(in srgb, var(--a3-amethyst-velvet) 20%, transparent);
+  color: #b98de8;
+  border-color: color-mix(in srgb, var(--a3-amethyst-velvet) 45%, transparent);
+}
+
 .case-card-scenario {
   font-size: 0.85rem;
   color: var(--text-muted);
@@ -5255,9 +5347,9 @@ textarea {
 }
 
 .dark .cert-tag {
-  background: color-mix(in srgb, var(--a3-text-inverse) 7%, transparent);
-  color: var(--text-muted);
-  border-color: color-mix(in srgb, var(--a3-text-inverse) 12%, transparent);
+  background: color-mix(in srgb, var(--a3-sky-frost) 12%, transparent);
+  color: var(--a3-sky-frost);
+  border-color: color-mix(in srgb, var(--a3-sky-frost) 30%, transparent);
 }
 
 .case-services-count {
@@ -5877,11 +5969,19 @@ textarea {
 .cases-empty-state i {
   font-size: 3rem;
   margin-bottom: 1rem;
-  opacity: 0.4;
+  opacity: 0.35;
+  display: block;
+  color: var(--a3-tech-blue);
 }
 
 .cases-empty-state p {
   font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.dark .cases-empty-state i {
+  color: var(--a3-sky-frost);
+  opacity: 0.4;
 }
 
 /* Loading skeleton */
@@ -5902,14 +6002,25 @@ textarea {
   background: linear-gradient(
     90deg,
     var(--border-theme) 25%,
-    var(--a3-surface-alt) 50%,
+    color-mix(in srgb, var(--a3-surface-alt) 80%, var(--border-theme)) 50%,
     var(--border-theme) 75%
   );
   background-size: 200% 100%;
-  animation: skeleton-shimmer 1.4s infinite;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
   border-radius: 6px;
   height: 14px;
   margin: 1rem 1.5rem;
+}
+
+.dark .skeleton-line {
+  background: linear-gradient(
+    90deg,
+    var(--border-theme) 25%,
+    color-mix(in srgb, var(--a3-surface-soft) 60%, var(--a3-tech-blue)) 50%,
+    var(--border-theme) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
 }
 
 .skeleton-line.tall {
@@ -6696,12 +6807,43 @@ textarea {
 /* Botão com cor amethyst-velvet (ex: "Praticar com Questões") */
 .btn-amethyst {
   background: var(--a3-amethyst-velvet) !important;
+  color: var(--a3-text-inverse) !important;
+  border-color: var(--a3-amethyst-velvet) !important;
+}
+
+.btn-amethyst:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--a3-amethyst-velvet) 85%, var(--a3-deep-sea)) !important;
+  border-color: color-mix(in srgb, var(--a3-amethyst-velvet) 85%, var(--a3-deep-sea)) !important;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--a3-amethyst-velvet) 30%, transparent);
+  transform: translateY(-1px);
 }
 
 /* Botão outline com cor tech-blue (ex: "Ver Arquitetura") */
 .btn-outline-primary {
+  background: transparent !important;
   border-color: var(--a3-tech-blue) !important;
   color: var(--a3-tech-blue) !important;
+}
+
+.btn-outline-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--a3-tech-blue) 8%, transparent) !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--a3-tech-blue) 20%, transparent);
+}
+
+/* Estado "Concluído" do botão #complete-btn (usa .a3-btn + .completed via JS) */
+.a3-btn.completed,
+#complete-btn.completed {
+  background: var(--a3-success) !important;
+  border-color: var(--a3-success) !important;
+  color: var(--a3-text-inverse) !important;
+  cursor: default;
+}
+
+.a3-btn.completed:hover,
+#complete-btn.completed:hover {
+  background: var(--a3-success) !important;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Badge de contagem nas abas (ex: contagem de questões) */
@@ -6709,11 +6851,20 @@ textarea {
   display: none; /* controlado por JS via badge.style.display = 'inline' */
   background: var(--a3-tech-blue);
   color: #fff;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 800;
-  padding: 0.1rem 0.45rem;
+  font-family: var(--font-family-base, system-ui, sans-serif);
+  line-height: 1;
+  padding: 0.2rem 0.5rem;
   border-radius: 999px;
-  margin-left: 0.25rem;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+
+.dark .case-tab-badge {
+  background: var(--a3-sky-frost);
+  color: var(--a3-deep-sea);
 }
 
 /* Estado de carregamento centralizado no header do case */

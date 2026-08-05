@@ -81,9 +81,15 @@ export async function getCases(filters = {}) {
     // Aplica filtros localmente
     if (filters.certification) {
       const filterCert = filters.certification.toLowerCase();
-      fallbackCases = fallbackCases.filter(
-        (c) => (c.certification || "").toLowerCase() === filterCert,
-      );
+      fallbackCases = fallbackCases.filter((c) => {
+        // Suporta tanto campo singular quanto array de certifications
+        if (Array.isArray(c.certifications)) {
+          return c.certifications.some(
+            (cert) => cert.toLowerCase() === filterCert,
+          );
+        }
+        return (c.certification || "").toLowerCase() === filterCert;
+      });
     }
     if (filters.difficulty) {
       fallbackCases = fallbackCases.filter(

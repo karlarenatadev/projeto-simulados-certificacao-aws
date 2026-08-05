@@ -76,6 +76,17 @@ body.sidebar-closed #left-sidebar,
   body.sidebar-closed .main-content-container {
     padding-left: var(--space-16);
   }
+
+  /* Elementos fora do main-content-container que também precisam de deslocamento */
+  body.has-left-sidebar:not(.sidebar-closed) .cases-hero,
+  body.has-left-sidebar:not(.sidebar-closed) .cases-filters {
+    padding-left: calc(1.5rem + var(--sidebar-width));
+  }
+
+  body.sidebar-closed .cases-hero,
+  body.sidebar-closed .cases-filters {
+    padding-left: 1.5rem;
+  }
 }
 
 /* ── Área de navegação ─────────────────────────────────────────────────── */
@@ -270,7 +281,7 @@ body.sidebar-closed #left-sidebar,
 }
 
 /* Ícone inverte quando a sidebar está recolhida */
-body.sidebar-collapsed .sidebar-collapse-btn .sidebar-collapse-icon {
+body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
   transform: rotate(180deg);
 }
 

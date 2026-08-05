@@ -159,7 +159,7 @@
          ====================================================== -->
     <div class="case-tabs" role="tablist" aria-label="Seções do case">
       <button
-        class="a3-btn a3-btn-secondary"
+        class="a3-btn a3-btn-secondary case-tab-btn"
         data-tab="scenario"
         role="tab"
         aria-selected="true"
@@ -170,7 +170,7 @@
         Cenário
       </button>
       <button
-        class="a3-btn a3-btn-secondary"
+        class="a3-btn a3-btn-secondary case-tab-btn"
         data-tab="architecture"
         role="tab"
         aria-selected="false"
@@ -181,7 +181,7 @@
         Arquitetura
       </button>
       <button
-        class="a3-btn a3-btn-secondary"
+        class="a3-btn a3-btn-secondary case-tab-btn"
         data-tab="questions"
         role="tab"
         aria-selected="false"
@@ -193,7 +193,7 @@
         <span id="questions-badge" class="case-tab-badge"></span>
       </button>
       <button
-        class="a3-btn a3-btn-secondary"
+        class="a3-btn a3-btn-secondary case-tab-btn"
         data-tab="resources"
         role="tab"
         aria-selected="false"
@@ -204,7 +204,7 @@
         Recursos
       </button>
       <button
-        class="a3-btn a3-btn-secondary"
+        class="a3-btn a3-btn-secondary case-tab-btn"
         data-tab="builder"
         role="tab"
         aria-selected="false"
@@ -550,14 +550,116 @@
           : "fa-solid fa-moon text-base md:text-xl";
       }
 
-      const savedDark = localStorage.getItem("theme") === "dark";
+      const savedDark = localStorage.getItem("aws_sim_theme") === "dark";
       applyTheme(savedDark);
 
       themeToggle.addEventListener("click", () => {
         const isDark = document.documentElement.classList.contains("dark");
         applyTheme(!isDark);
-        localStorage.setItem("theme", !isDark ? "dark" : "light");
+        localStorage.setItem("aws_sim_theme", !isDark ? "dark" : "light");
       });
+
+      // ---- Idioma ----
+      const langBtn = document.getElementById("btn-language");
+      if (langBtn) {
+        const lang = localStorage.getItem("aws_sim_lang") || "pt";
+        langBtn.innerHTML =
+          lang === "pt"
+            ? '<span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>'
+            : '<span class="text-[10px] md:text-xs font-bold">🇺🇸 <span class="hidden sm:inline">EN-US</span></span>';
+        langBtn.addEventListener("click", () => {
+          const cur = localStorage.getItem("aws_sim_lang") || "pt";
+          localStorage.setItem("aws_sim_lang", cur === "pt" ? "en" : "pt");
+          window.location.reload();
+        });
+      }
+
+      // ---- Pomodoro standalone (sem dependência do app.js) ----
+      (function () {
+        const DURATIONS = [15, 30, 60]; // minutos disponíveis
+        const DURATION_KEY = "cv_pomodoro_duration";
+        const timerDisplay = document.getElementById("header-pomodoro-timer");
+        const pomodoroBtn = document.getElementById("header-pomodoro-btn");
+        if (!pomodoroBtn || !timerDisplay) return;
+
+        let duration = parseInt(localStorage.getItem(DURATION_KEY) || "15", 10);
+        let seconds = duration * 60;
+        let intervalId = null;
+        let running = false;
+
+        function formatTime(s) {
+          const m = Math.floor(s / 60).toString().padStart(2, "0");
+          const sec = (s % 60).toString().padStart(2, "0");
+          return `${m}:${sec}`;
+        }
+
+        function updateDisplay() {
+          timerDisplay.textContent = formatTime(seconds);
+        }
+
+        function stopTimer() {
+          clearInterval(intervalId);
+          intervalId = null;
+          running = false;
+          pomodoroBtn.title = "Iniciar Pomodoro";
+          pomodoroBtn.querySelector("i").className = "fa-solid fa-stopwatch";
+        }
+
+        function startTimer() {
+          running = true;
+          pomodoroBtn.querySelector("i").className = "fa-solid fa-stopwatch fa-beat";
+          pomodoroBtn.title = "Pausar Pomodoro — clique para pausar ou segurar para resetar";
+          intervalId = setInterval(() => {
+            seconds--;
+            updateDisplay();
+            if (seconds <= 0) {
+              stopTimer();
+              seconds = 0;
+              updateDisplay();
+              // Notificação quando termina
+              if (Notification && Notification.permission === "granted") {
+                new Notification("⏱ Pomodoro concluído!", {
+                  body: "Hora de uma pausa. Ótimo trabalho!",
+                  icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⏱%3C/text%3E%3C/svg%3E",
+                });
+              }
+            }
+          }, 1000);
+        }
+
+        updateDisplay();
+
+        // Click: toggle start/pause; long-press: reset + cycle duration
+        let pressTimer = null;
+        pomodoroBtn.addEventListener("mousedown", () => {
+          pressTimer = setTimeout(() => {
+            pressTimer = null;
+            stopTimer();
+            const idx = (DURATIONS.indexOf(duration) + 1) % DURATIONS.length;
+            duration = DURATIONS[idx];
+            localStorage.setItem(DURATION_KEY, String(duration));
+            seconds = duration * 60;
+            updateDisplay();
+          }, 700);
+        });
+        pomodoroBtn.addEventListener("mouseup", () => {
+          if (!pressTimer) return; // long-press foi acionado
+          clearTimeout(pressTimer);
+          pressTimer = null;
+          if (running) { stopTimer(); } else { startTimer(); }
+        });
+        pomodoroBtn.addEventListener("mouseleave", () => {
+          clearTimeout(pressTimer);
+          pressTimer = null;
+        });
+
+        // Solicitar permissão de notificação na primeira interação
+        pomodoroBtn.addEventListener("click", () => {
+          if (Notification && Notification.permission === "default") {
+            Notification.requestPermission();
+          }
+        }, { once: true });
+      })();
 
       // ---- Tabs ----
       window.switchTab = function (tabId) {
@@ -679,6 +781,46 @@
           .join("");
       }
 
+      /**
+       * Normaliza uma questão para o schema esperado pelo renderer.
+       * Suporta dois schemas:
+       *  - Novo: { question_text, options:[{id,text}], correct_answer:[ids], explanation }
+       *  - Antigo (legado): { question, options:[strings], correct: number (índice) }
+       */
+      function normalizeQuestion(q) {
+        // Schema novo já está correto
+        if (q.question_text && Array.isArray(q.correct_answer)) return q;
+
+        // Normalizar schema antigo
+        const letters = "ABCDEFGHIJ";
+        const rawOptions = Array.isArray(q.options) ? q.options : [];
+        const normalizedOptions = rawOptions.map((opt, i) => ({
+          id: letters[i] || String(i),
+          text: typeof opt === "string" ? opt : (opt.text || String(opt)),
+        }));
+
+        // correct pode ser número (índice) ou string
+        let correctIds;
+        if (typeof q.correct === "number") {
+          const letter = letters[q.correct] || String(q.correct);
+          correctIds = [letter];
+        } else if (typeof q.correct === "string") {
+          correctIds = [q.correct];
+        } else if (Array.isArray(q.correct_answer)) {
+          correctIds = q.correct_answer;
+        } else {
+          correctIds = [];
+        }
+
+        return {
+          question_text: q.question_text || q.question || "",
+          options: normalizedOptions,
+          correct_answer: correctIds,
+          explanation: q.explanation || q.rationale || "",
+          reference_url: q.reference_url || null,
+        };
+      }
+
       function renderQuestions(questions) {
         const list = document.getElementById("questions-list");
         const empty = document.getElementById("questions-empty");
@@ -693,11 +835,13 @@
         badge.style.display = "inline";
 
         list.innerHTML = questions
-          .map((q, idx) => {
+          .map((rawQ, idx) => {
+            const q = normalizeQuestion(rawQ);
             const options = Array.isArray(q.options) ? q.options : [];
             const correctIds = Array.isArray(q.correct_answer)
               ? q.correct_answer
               : [q.correct_answer];
+            const letters = "ABCDEFGHIJ";
 
             return `
             <div class="case-question-item" id="cq-${idx}">
@@ -710,7 +854,6 @@
                   .map((opt, oi) => {
                     const id = typeof opt === "object" ? opt.id : String(oi);
                     const text = typeof opt === "object" ? opt.text : opt;
-                    const letters = "ABCDEFGHIJ";
                     return `
                     <li
                       class="case-question-option"
@@ -721,7 +864,7 @@
                       tabindex="0"
                       onclick="selectOption(this)"
                       onkeydown="if(event.key==='Enter'||event.key===' ')selectOption(this)"
-                      aria-label="Opção ${letters[oi]}: ${escapeHtml(text)}"
+                      aria-label="Opção ${letters[oi] || id}: ${escapeHtml(text)}"
                     >
                       <span class="option-letter">${letters[oi] || id}</span>
                       <span class="option-text">${escapeHtml(text)}</span>
@@ -781,7 +924,18 @@
       completeBtn.addEventListener("click", async () => {
         if (!currentCaseId) return;
 
-        const userId = localStorage.getItem("userId") || "anonymous";
+        // Lê o usuário pelo mesmo schema usado pelo userManager (chave: cloudacademy_user)
+        let userId = "anonymous";
+        try {
+          const stored = localStorage.getItem("cloudacademy_user");
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            userId = parsed.id || parsed.userId || parsed.email || "anonymous";
+          }
+        } catch {
+          userId = "anonymous";
+        }
+
         completeBtn.disabled = true;
         completeBtn.innerHTML =
           '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
@@ -1376,22 +1530,29 @@
       document
         .getElementById("builder-btn-gabarito")
         .addEventListener("click", () => {
-          document.getElementById("builder-gabarito").classList.add("visible");
+          const gabaritoPanel = document.getElementById("builder-gabarito");
+          gabaritoPanel.classList.add("visible");
 
-          // Render mermaid if not rendered yet
+          // Renderiza o diagrama oficial no painel de gabarito se ainda não renderizou
           if (window._caseData && window._caseData.architecture_graph) {
             const container = document.getElementById(
               "builder-gabarito-diagram",
             );
-            if (container.innerHTML === "") {
-              // Import renderArchitecture dynamically to avoid circular ref or use the global one if it's exposed.
-              // We will trigger a click on the architecture tab to ensure it's rendered, or manually render.
-              // The best way in this context is to just switch to the architecture tab for the full view,
-              // or render it here. For simplicity, let's switch to the 'architecture' tab where it's already implemented.
-              window.switchTab("architecture");
-              hideResult();
+            if (!container.dataset.rendered) {
+              container.dataset.rendered = "true";
+              // Importa renderArchitecture dinamicamente para usar dentro deste bloco
+              import("./js/cases/architectureRenderer.js").then(
+                ({ renderArchitecture }) => {
+                  renderArchitecture(
+                    container,
+                    window._caseData.architecture_graph,
+                  );
+                },
+              );
             }
           }
+
+          gabaritoPanel.scrollIntoView({ behavior: "smooth" });
         });
 
       // ----------------------------------------------------------------

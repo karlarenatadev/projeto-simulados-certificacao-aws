@@ -54,6 +54,8 @@
   --aws-dark: var(--a3-deep-sea);
   --aws-orange: var(--a3-tech-blue);
   --aws-orange-hover: color-mix(in srgb, var(--a3-tech-blue) 84%, var(--a3-deep-sea));
+  /* Alias prefixado a3- para uso no cases.css e componentes novos */
+  --a3-aws-orange-hover: color-mix(in srgb, var(--a3-tech-blue) 84%, var(--a3-deep-sea));
   --aws-light-gray: var(--a3-background-light);
   --aws-border: var(--a3-border-default);
   --success-green: var(--a3-success);
