@@ -9,6 +9,7 @@ import { ShowcaseService } from "./services/showcaseService.js";
 import { initStudyNow, refreshStudyNow } from "./recommendations/studyNow.js";
 import { storageManager } from "./storageManager.js";
 import { userManager } from "./userManager.js";
+import { AuthService } from "./services/authService.js";
 import { quizManager } from "./quizManager.js";
 import { renderRadarChart, renderGlobalRadarChart } from "./chartManager.js";
 import { t } from "./i18n/useTranslation.js";
@@ -84,6 +85,101 @@ let uiState = {
 
 let lastRenderedResult = null;
 let lastDiagnosticRecommendation = null;
+
+// ---------------------------------------------------------------------------
+// LOGIN UI — exibe o overlay de login e retorna uma Promise que resolve com
+// o usuário autenticado. Rejeitada se o usuário fechar sem autenticar.
+// ---------------------------------------------------------------------------
+
+/**
+ * Exibe o overlay #login-overlay e aguarda o usuário autenticar com sucesso.
+ *
+ * @returns {Promise<{ id, email, nickname, role }>}
+ */
+function showLoginUI() {
+  return new Promise((resolve, reject) => {
+    const overlay = document.getElementById("login-overlay");
+    const form = document.getElementById("login-form");
+    const emailInput = document.getElementById("login-email-input");
+    const submitBtn = document.getElementById("login-submit-btn");
+    const btnText = document.getElementById("login-btn-text");
+    const spinner = document.getElementById("login-btn-spinner");
+    const errorMsg = document.getElementById("login-error-msg");
+
+    if (!overlay || !form) {
+      reject(new Error("Login overlay não encontrado no DOM."));
+      return;
+    }
+
+    // Torna o overlay visível
+    overlay.classList.remove("hidden");
+    emailInput?.focus();
+
+    function showError(msg) {
+      if (!errorMsg) return;
+      errorMsg.textContent = msg;
+      errorMsg.classList.remove("hidden");
+    }
+
+    function clearError() {
+      if (!errorMsg) return;
+      errorMsg.textContent = "";
+      errorMsg.classList.add("hidden");
+    }
+
+    function setLoading(loading) {
+      if (!submitBtn) return;
+      submitBtn.disabled = loading;
+      if (btnText) btnText.textContent = loading ? "Autenticando..." : "Entrar";
+      if (spinner) spinner.classList.toggle("hidden", !loading);
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      clearError();
+
+      const email = emailInput?.value?.trim() || "";
+
+      if (!email) {
+        showError("Informe seu email corporativo.");
+        return;
+      }
+
+      const emailLower = email.toLowerCase();
+      const isA3data =
+        emailLower.endsWith("@a3data.com.br") ||
+        emailLower.endsWith("@a3data.com");
+
+      if (!isA3data) {
+        showError("Acesso restrito a emails @a3data.com.br.");
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const user = await AuthService.login(email);
+
+        // Oculta overlay após autenticação bem-sucedida
+        overlay.classList.add("hidden");
+        form.removeEventListener("submit", handleSubmit);
+
+        resolve(user);
+      } catch (error) {
+        const msg =
+          error?.message?.includes("403") || error?.message?.includes("403")
+            ? "Email não autorizado. Use seu email @a3data.com.br."
+            : error?.message || "Erro ao autenticar. Tente novamente.";
+        showError(msg);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    form.addEventListener("submit", handleSubmit);
+  });
+}
+
 // INICIALIZAÇÃO
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -105,14 +201,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.history.replaceState({}, document.title, window.location.pathname);
   }
 
-  // FASE 0: User Initialization (Before everything else)
+  // FASE 0: Autenticação — bloqueia o boot até ter sessão válida
   try {
-    const user = await userManager.getOrCreateUser();
+    let user = await AuthService.restoreSession();
+
+    if (!user) {
+      // Exibe overlay de login e aguarda autenticação
+      user = await showLoginUI();
+    }
+
+    // Sessão garantida a partir daqui
     await quizManager.initialize(user.id);
-    logger.info(`✓ Initialized with user: ${user.id}`);
+    logger.info(`✓ Sessão ativa: ${user.email || user.id} (${user.role})`);
   } catch (error) {
-    logger.error("Failed to initialize user:", error);
-    // Continue anyway - app can still work in offline mode
+    logger.error("Falha crítica na autenticação:", error);
+    // Exibe overlay de login como fallback de segurança
+    try {
+      const user = await showLoginUI();
+      await quizManager.initialize(user.id);
+    } catch (_e) {
+      logger.error("Impossível inicializar sem autenticação.");
+      return; // Aborta o boot — não há como continuar
+    }
   }
 
   // FASE 1: Configurações Base (Sincronizadas)

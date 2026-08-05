@@ -130,11 +130,14 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
 
       expect(user.id).toBe("backend-uuid-1");
       expect(user.nickname).toBe("UsuarioA3");
-      expect(localStorage.getItem("aws_sim_user_id")).toBe("backend-uuid-1");
-      expect(localStorage.getItem("aws_sim_user_nickname")).toBe("UsuarioA3");
+      // Verifica nova chave unificada cloudacademy_user
+      const session = JSON.parse(localStorage.getItem("cloudacademy_user") || "null");
+      expect(session?.id).toBe("backend-uuid-1");
+      expect(session?.nickname).toBe("UsuarioA3");
     });
 
-    test("userManager mantém local_* quando API continua indisponível", async () => {
+    test("userManager migra chaves legadas e retorna sessão quando API indisponível", async () => {
+      // Simula localStorage com chaves legadas (usuário vindo de versão anterior)
       localStorage.setItem("aws_sim_user_id", "local_abc123");
       localStorage.setItem("aws_sim_user_name", "AnonymousLocal");
 
@@ -143,7 +146,11 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
       const user = await userManager.getOrCreateUser();
 
       expect(user.id).toBe("local_abc123");
-      expect(localStorage.getItem("aws_sim_user_id")).toBe("local_abc123");
+      // Após migração automática, cloudacademy_user deve conter o id
+      const session = JSON.parse(localStorage.getItem("cloudacademy_user") || "null");
+      expect(session?.id).toBe("local_abc123");
+      // Chaves legadas devem ter sido removidas
+      expect(localStorage.getItem("aws_sim_user_id")).toBeNull();
     });
 
     test("quizManager.recordAnswer() marca synced: true após envio bem-sucedido à API", async () => {

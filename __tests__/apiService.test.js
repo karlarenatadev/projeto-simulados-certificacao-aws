@@ -83,7 +83,8 @@ describe('apiService response normalization', () => {
     expect(apiResponse.data.id).toBe('user-1');
     expect(user.id).toBe('user-1');
     expect(user.nickname).toBe('UsuarioA3');
-    expect(localStorage.getItem('aws_sim_user_id')).toBe('user-1');
+    const session = JSON.parse(localStorage.getItem('cloudacademy_user') || 'null');
+    expect(session?.id).toBe('user-1');
   });
 
   test('preserves a direct list response', async () => {

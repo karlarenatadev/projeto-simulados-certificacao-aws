@@ -16,13 +16,19 @@ export async function renderGuildDashboard() {
         </li>
     `;
 
-  // Identidade do usuário atual — usa nickname corporativo, nunca gera nome aleatório
-  const myUserId = localStorage.getItem("aws_sim_user_id");
-  const myNickname =
-    localStorage.getItem("aws_sim_user_nickname") ||
-    localStorage.getItem("aws_sim_username") ||
-    localStorage.getItem("aws_sim_user_name") ||
-    null;
+  // Identidade do usuário atual — lê da chave unificada cloudacademy_user
+  let myUserId = null;
+  let myNickname = null;
+  try {
+    const sessionRaw = localStorage.getItem("cloudacademy_user");
+    if (sessionRaw) {
+      const session = JSON.parse(sessionRaw);
+      myUserId = session.id || null;
+      myNickname = session.nickname || session.email?.split("@")[0] || null;
+    }
+  } catch {
+    // Sessão corrompida — ignora
+  }
 
   const gamificationData = storageManager.getGamification();
   const myBestScore = gamificationData?.bestScore || 0;

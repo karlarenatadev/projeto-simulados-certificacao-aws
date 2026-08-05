@@ -1,9 +1,8 @@
 /**
- * authService.js
- * Serviço de autenticação e autorização — identidade corporativa A3Data.
+ * authService.js — CloudAcademy A3
  *
- * Usa POST /api/auth/login para autenticar via email @a3data.
- * Remove o mock de usuário fixo e o fluxo anônimo.
+ * Camada de autenticação e autorização.
+ * Delega persistência para userManager (que usa cloudacademy_user no localStorage).
  *
  * @module services/authService
  */
@@ -15,31 +14,32 @@ import { userManager } from "../userManager.js";
 let currentUser = null;
 
 export const AuthService = {
+  // ---------------------------------------------------------------------------
+  // Leitura de estado
+  // ---------------------------------------------------------------------------
+
   /**
-   * Retorna o usuário logado atual ou null.
-   * @returns {{ id, email, nickname, role } | null}
+   * Retorna o usuário autenticado ou null.
+   * Tenta restaurar da sessão local se a memória estiver vazia.
+   * @returns {{ id, email, nickname, role, full_name } | null}
    */
   getCurrentUser() {
     if (currentUser) return currentUser;
-    // Tenta restaurar da sessão persistida
     const stored = userManager.getStoredUser();
-    if (stored) {
-      currentUser = stored;
-    }
+    if (stored) currentUser = stored;
     return currentUser;
   },
 
-  /**
-   * Verifica se o usuário está autenticado.
-   * @returns {boolean}
-   */
+  /** @returns {boolean} */
   isAuthenticated() {
     return Boolean(this.getCurrentUser());
   },
 
   /**
-   * Verifica se o usuário possui a permissão/role informada.
-   * @param {string} roleOrPermission
+   * Verifica se o usuário possui o role informado.
+   * ADMIN sempre tem acesso a tudo.
+   *
+   * @param {'STUDENT'|'VALIDATOR'|'ADMIN'} roleOrPermission
    * @returns {boolean}
    */
   hasPermission(roleOrPermission) {
@@ -47,8 +47,7 @@ export const AuthService = {
     if (!user) return false;
     const role = String(user.role || "").toUpperCase();
     if (role === "ADMIN") return true;
-    const check = String(roleOrPermission || "").toUpperCase();
-    return role === check;
+    return role === String(roleOrPermission || "").toUpperCase();
   },
 
   /**
@@ -62,12 +61,36 @@ export const AuthService = {
     return role === "VALIDATOR" || role === "ADMIN";
   },
 
+  // ---------------------------------------------------------------------------
+  // Ciclo de vida da sessão
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Restaura a sessão a partir da chave cloudacademy_user no localStorage.
+   * Valida com o backend quando disponível.
+   * Chamado no boot do app (DOMContentLoaded), antes de exibir qualquer UI.
+   *
+   * @returns {Promise<{ id, email, nickname, role } | null>}
+   */
+  async restoreSession() {
+    const user = await userManager.getOrCreateUser();
+    if (user) {
+      currentUser = user;
+      logger.info(
+        `[AuthService] Sessão restaurada: ${user.email || user.id} (${user.role})`,
+      );
+    } else {
+      currentUser = null;
+    }
+    return user;
+  },
+
   /**
    * Login corporativo via email @a3data.
-   * Chama POST /api/auth/login e persiste a sessão localmente.
+   * Persiste sessão em cloudacademy_user.
    *
-   * @param {string} email - Email @a3data
-   * @param {Object} [profile] - { full_name?, nickname? }
+   * @param {string} email
+   * @param {{ full_name?: string, nickname?: string }} [profile]
    * @returns {Promise<{ id, email, nickname, role }>}
    */
   async login(email, profile = {}) {
@@ -78,7 +101,7 @@ export const AuthService = {
   },
 
   /**
-   * Logout — limpa a sessão local.
+   * Logout — limpa currentUser e cloudacademy_user no localStorage.
    */
   async logout() {
     logger.info("[AuthService] Logout:", currentUser?.email);
@@ -87,20 +110,7 @@ export const AuthService = {
   },
 
   /**
-   * Restaura sessão a partir do localStorage (chamado no boot do app).
-   * @returns {Promise<{ id, email, nickname, role } | null>}
-   */
-  async restoreSession() {
-    const user = await userManager.getOrCreateUser();
-    if (user) {
-      currentUser = user;
-      logger.info(`[AuthService] Sessão restaurada: ${user.email || user.id}`);
-    }
-    return user;
-  },
-
-  /**
-   * Injeção de usuário para modo showcase/demo — não chama a API.
+   * Injeção de usuário para modo showcase/demo.
    * @param {{ id, email, nickname, role }} showcaseUser
    */
   setMockUser(showcaseUser) {

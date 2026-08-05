@@ -16,13 +16,19 @@ export async function renderGuildDashboard() {
         </li>
     `;
 
-  // Identidade do usuário atual — usa nickname corporativo, nunca gera nome aleatório
-  const myUserId = localStorage.getItem("aws_sim_user_id");
-  const myNickname =
-    localStorage.getItem("aws_sim_user_nickname") ||
-    localStorage.getItem("aws_sim_username") ||
-    localStorage.getItem("aws_sim_user_name") ||
-    null;
+  // Identidade do usuário atual — lê da chave unificada cloudacademy_user
+  let myUserId = null;
+  let myNickname = null;
+  try {
+    const sessionRaw = localStorage.getItem("cloudacademy_user");
+    if (sessionRaw) {
+      const session = JSON.parse(sessionRaw);
+      myUserId = session.id || null;
+      myNickname = session.nickname || session.email?.split("@")[0] || null;
+    }
+  } catch {
+    // Sessão corrompida — ignora
+  }
 
   const gamificationData = storageManager.getGamification();
   const myBestScore = gamificationData?.bestScore || 0;
@@ -36,12 +42,18 @@ export async function renderGuildDashboard() {
     if (response.success && response.data && response.data.length > 0) {
       rankData = response.data.map((entry) => ({
         // API retorna display_name (nickname com fallback para anonymous_name legado)
-        name: entry.display_name || entry.nickname || entry.anonymous_name || "Usuário",
+        name:
+          entry.display_name ||
+          entry.nickname ||
+          entry.anonymous_name ||
+          "Usuário",
         score: Math.round((entry.best_score || 0) * 100) / 100,
         userId: entry.user_id || entry.id || null,
       }));
       fromAPI = true;
-      logger.info(`✓ Leaderboard carregado da API: ${rankData.length} entradas`);
+      logger.info(
+        `✓ Leaderboard carregado da API: ${rankData.length} entradas`,
+      );
     }
   } catch (error) {
     logger.warn("Falha ao carregar leaderboard da API:", error);

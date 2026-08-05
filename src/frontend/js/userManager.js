@@ -1,75 +1,123 @@
 import { logger } from "./utils/logger.js";
 /**
- * User Manager
+ * User Manager — CloudAcademy A3
+ *
  * Gerencia identidade corporativa via POST /api/auth/login.
- * Remove criação de usuário anônimo.
+ *
+ * Persistência unificada em uma única chave:
+ *   localStorage["cloudacademy_user"] = JSON { id, email, nickname, role, full_name }
+ *
+ * Migração automática: lê chaves legadas (aws_sim_user_*) na primeira execução
+ * e as converte para o formato novo, removendo as antigas.
  *
  * @module userManager
  */
 
 import apiService from "../services/api.js";
 
+/** @type {string} Chave única de sessão no localStorage */
+const SESSION_KEY = "cloudacademy_user";
+
+/** Chaves legadas a remover após migração */
+const LEGACY_KEYS = [
+  "aws_sim_user_id",
+  "aws_sim_user_email",
+  "aws_sim_user_nickname",
+  "aws_sim_user_role",
+  "aws_sim_user_name",
+  "aws_sim_username",
+];
+
 export const userManager = {
+  // ---------------------------------------------------------------------------
+  // Leitura / escrita da sessão
+  // ---------------------------------------------------------------------------
+
   /**
-   * Retorna o usuário salvo no localStorage ou null se não estiver autenticado.
-   * Não cria mais usuário anônimo automaticamente.
+   * Retorna o usuário salvo na sessão ou null.
+   * Faz migração automática das chaves legadas na primeira chamada.
    *
-   * @returns {{ id, email, nickname, role } | null}
+   * @returns {{ id, email, nickname, role, full_name } | null}
    */
   getStoredUser() {
-    const userId = localStorage.getItem("aws_sim_user_id");
-    if (!userId) return null;
+    // Tenta ler o novo formato
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && parsed.id) return parsed;
+      }
+    } catch {
+      // JSON corrompido — limpa e tenta migração
+      localStorage.removeItem(SESSION_KEY);
+    }
 
-    return {
-      id: userId,
-      email: localStorage.getItem("aws_sim_user_email") || "",
-      nickname: localStorage.getItem("aws_sim_user_nickname") || "",
-      role: localStorage.getItem("aws_sim_user_role") || "STUDENT",
-    };
+    // Migração automática: converte chaves legadas → cloudacademy_user
+    const legacyId = localStorage.getItem("aws_sim_user_id");
+    if (legacyId) {
+      const migrated = {
+        id: legacyId,
+        email: localStorage.getItem("aws_sim_user_email") || "",
+        nickname:
+          localStorage.getItem("aws_sim_user_nickname") ||
+          localStorage.getItem("aws_sim_username") ||
+          localStorage.getItem("aws_sim_user_name") ||
+          "",
+        role: localStorage.getItem("aws_sim_user_role") || "STUDENT",
+        full_name: "",
+      };
+      this._persist(migrated);
+      return migrated;
+    }
+
+    return null;
   },
 
   /**
-   * Mantido para compatibilidade com quizManager e testes existentes.
-   * Retorna o user_id armazenado.
-   *
+   * Retorna o user_id da sessão ativa.
    * @returns {string|null}
    */
   getUserId() {
-    return localStorage.getItem("aws_sim_user_id");
+    return this.getStoredUser()?.id ?? null;
   },
 
   /**
-   * Retorna o nickname do usuário para exibição pública.
-   * Nunca expõe email ou nome completo.
-   *
+   * Retorna o nickname público do usuário.
    * @returns {string}
    */
   getUserName() {
-    return (
-      localStorage.getItem("aws_sim_user_nickname") ||
-      localStorage.getItem("aws_sim_user_name") ||
-      "Usuário"
-    );
+    return this.getStoredUser()?.nickname || "Usuário";
   },
 
   /**
-   * Login corporativo: envia email @a3data para POST /api/auth/login.
-   * Se o usuário não existe no banco, é criado automaticamente como STUDENT.
-   * Persiste id, email, nickname e role no localStorage.
+   * Verifica se existe uma sessão válida.
+   * @returns {boolean}
+   */
+  isAuthenticated() {
+    return Boolean(this.getUserId());
+  },
+
+  // ---------------------------------------------------------------------------
+  // Autenticação
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Login corporativo via email @a3data.
+   * Chama POST /api/auth/login. Se o usuário não existe no banco, é criado como STUDENT.
+   * Persiste sessão em cloudacademy_user.
    *
-   * @param {string} email - Email @a3data
+   * @param {string} email
    * @param {{ full_name?: string, nickname?: string }} [profile]
-   * @returns {Promise<{ id, email, nickname, role, created }>}
+   * @returns {Promise<{ id, email, nickname, role, full_name }>}
    */
   async login(email, profile = {}) {
     try {
       const response = await apiService.loginUser({ email, ...profile });
 
       if (response.success && response.data && response.data.id) {
-        const user = response.data;
-        this._persistUser(user);
-        logger.info(`✓ Login realizado: ${user.email} (${user.role})`);
-        return user;
+        this._persist(response.data);
+        logger.info(`✓ Login: ${response.data.email} (${response.data.role})`);
+        return response.data;
       }
 
       throw new Error(response.message || "Falha no login corporativo.");
@@ -80,77 +128,64 @@ export const userManager = {
   },
 
   /**
-   * Verifica se o usuário está autenticado (tem id no localStorage).
-   * @returns {boolean}
-   */
-  isAuthenticated() {
-    return Boolean(localStorage.getItem("aws_sim_user_id"));
-  },
-
-  /**
-   * Limpa a sessão do usuário.
-   */
-  clearUser() {
-    localStorage.removeItem("aws_sim_user_id");
-    localStorage.removeItem("aws_sim_user_email");
-    localStorage.removeItem("aws_sim_user_nickname");
-    localStorage.removeItem("aws_sim_user_role");
-    // Compatibilidade com chaves legadas
-    localStorage.removeItem("aws_sim_user_name");
-    localStorage.removeItem("aws_sim_username");
-  },
-
-  /**
-   * Tenta restaurar a sessão do backend a partir do id salvo no localStorage.
-   * Usado ao iniciar o app para verificar se o usuário ainda é válido.
+   * Tenta restaurar sessão existente, validando com o backend quando disponível.
+   * Retorna o usuário se a sessão for válida, null caso contrário.
+   *
+   * Não cria usuário anônimo — retorna null e cabe ao caller exibir o login.
    *
    * @returns {Promise<{ id, email, nickname, role } | null>}
    */
   async getOrCreateUser() {
     const stored = this.getStoredUser();
 
-    if (stored && stored.id) {
-      // Tenta verificar se o usuário ainda existe no backend
-      try {
-        const isUp = await apiService.isAvailable();
-        if (isUp) {
-          const response = await apiService.getMe(stored.id);
-          if (response.success && response.data) {
-            this._persistUser(response.data);
-            return response.data;
-          }
-          // Se retornou erro do backend, limpa sessão inválida
-          this.clearUser();
-          return null;
+    if (!stored) return null;
+
+    // Valida com o backend quando disponível
+    try {
+      const isUp = await apiService.isAvailable();
+      if (isUp) {
+        const response = await apiService.getMe(stored.id);
+        if (response.success && response.data) {
+          this._persist(response.data);
+          return response.data;
         }
-      } catch (_e) {
-        // API indisponível — retorna o dado salvo localmente sem verificar
-        logger.warn("API indisponível — usando dados de sessão locais.");
+        // Sessão inválida no backend — limpa localmente
+        this.clearUser();
+        return null;
       }
-      return stored;
+    } catch (_e) {
+      logger.warn("API indisponível — usando sessão local.");
     }
 
-    return null;
+    // API indisponível — aceita a sessão local
+    return stored;
+  },
+
+  /**
+   * Limpa a sessão do usuário — remove cloudacademy_user e todas as chaves legadas.
+   */
+  clearUser() {
+    localStorage.removeItem(SESSION_KEY);
+    LEGACY_KEYS.forEach((key) => localStorage.removeItem(key));
   },
 
   // ---------------------------------------------------------------------------
   // Privado
   // ---------------------------------------------------------------------------
 
-  _persistUser(user) {
-    localStorage.setItem("aws_sim_user_id", user.id);
-    localStorage.setItem("aws_sim_user_email", user.email || "");
-    localStorage.setItem("aws_sim_user_nickname", user.nickname || "");
-    localStorage.setItem("aws_sim_user_role", user.role || "STUDENT");
-    // Mantém chave legada para compatibilidade com quizManager e leaderboard
-    localStorage.setItem(
-      "aws_sim_user_name",
-      user.nickname || user.email?.split("@")[0] || "",
-    );
-    localStorage.setItem(
-      "aws_sim_username",
-      user.nickname || user.email?.split("@")[0] || "",
-    );
+  /** Persiste o usuário em cloudacademy_user e remove chaves legadas. */
+  _persist(user) {
+    const session = {
+      id: user.id,
+      email: user.email || "",
+      nickname: user.nickname || user.email?.split("@")[0] || "",
+      role: user.role || "STUDENT",
+      full_name: user.full_name || "",
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+
+    // Remove chaves legadas após migração bem-sucedida
+    LEGACY_KEYS.forEach((key) => localStorage.removeItem(key));
   },
 };
 
