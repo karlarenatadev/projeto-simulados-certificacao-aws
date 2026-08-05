@@ -3207,6 +3207,17 @@ body.sidebar-closed #left-sidebar,
 #screen-hub::-webkit-scrollbar-thumb { background: var(--a3-tech-blue); border-radius: 99px; }
 
 
+/* ── Quiz info bar (timer + flag + questão) ─────────────────────────────── */
+.quiz-info-bar {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-theme);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--a3-shadow-card);
+  padding: 0.5rem 1rem;
+  flex-direction: row !important; /* garante linha mesmo com herança */
+}
+
+
 /* --- cases.css --- */
 /* ==========================================================================
    CASES CSS — Practice Domain / Arquiteturas na Prática

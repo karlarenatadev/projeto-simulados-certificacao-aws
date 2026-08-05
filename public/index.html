@@ -354,7 +354,7 @@
           seu desempenho em tempo real.
         </p>
 
-        <div class="a3-card w-full max-w-md mb-6">
+        <div class="a3-card w-full max-w-lg mb-6 p-6">
           <h3 class="text-lg font-bold text-strong mb-4 flex items-center gap-2">
             <i class="fa-solid fa-certificate text-a3-primary" aria-hidden="true"></i>
             Selecione sua Certificação
@@ -377,7 +377,7 @@
           </select>
         </div>
 
-        <div class="a3-card w-full max-w-md mb-6">
+        <div class="a3-card w-full max-w-lg mb-6 p-6">
           <h3 class="text-lg font-bold text-strong mb-4 flex items-center gap-2">
             <i class="fa-solid fa-sliders text-a3-primary" aria-hidden="true"></i>
             Filtros e Configurações
@@ -523,10 +523,10 @@
         </div>
 
         <div id="last-score-banner"
-          class="hidden bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg px-6 py-3 mb-6 text-sm text-blue-800 dark:text-blue-100 font-semibold w-full max-w-md"
+          class="hidden bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg px-6 py-3 mb-6 text-sm text-blue-800 dark:text-blue-100 font-semibold w-full max-w-lg"
           role="status"></div>
 
-        <div class="a3-card gap-4 mb-8 w-full max-w-md">
+        <div class="a3-card gap-4 mb-8 w-full max-w-lg p-6">
           <div class="flex items-center gap-2">
             <i class="fa-solid fa-check text-green-500"></i> Banco atualizado
           </div>
@@ -543,7 +543,7 @@
           </div>
         </div>
 
-        <div class="flex flex-col gap-3 w-full max-w-md mx-auto mt-6">
+        <div class="flex flex-col gap-3 w-full max-w-lg mx-auto mt-6">
           <button id="btn-start-quiz"
             class="a3-btn a3-btn-primary a3-btn-lg shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 flex items-center justify-center w-full"
             aria-label="Iniciar simulação">
@@ -584,7 +584,7 @@
           </a>
         </div>
 
-        <div class="w-full max-w-md flex flex-col items-center">
+        <div class="w-full max-w-lg flex flex-col items-center">
           <button id="btn-practice-mistakes"
             class="a3-btn a3-btn-danger hidden w-full mt-4 flex items-center justify-center gap-2 shadow-sm">
             <i class="fa-solid fa-triangle-exclamation"></i> Praticar Questões
@@ -637,23 +637,23 @@
             Categoria
           </span>
 
-          <div class="a3-card flex items-center gap-4 shadow-sm">
+          <div class="quiz-info-bar flex flex-nowrap items-center gap-4 shadow-sm shrink-0">
             <div id="timer-container"
-              class="hidden flex items-center gap-2 font-bold text-orange-600 dark:text-orange-400">
+              class="hidden flex items-center gap-2 font-bold text-orange-600 dark:text-orange-400 whitespace-nowrap">
               <i class="fa-solid fa-clock" aria-hidden="true"></i>
               <span id="timer-text">00:00</span>
             </div>
 
             <div class="w-px h-5 bg-gray-300"></div>
 
-            <button id="btn-flag" class="a3-btn a3-btn-outline" aria-label="Marcar questão para revisão"
+            <button id="btn-flag" class="a3-btn a3-btn-outline shrink-0" aria-label="Marcar questão para revisão"
               title="Marcar para revisão">
               <i class="fa-solid fa-flag text-lg" aria-hidden="true"></i>
             </button>
 
             <div class="w-px h-5 bg-gray-300"></div>
 
-            <span class="text-sm font-semibold text-muted dark:text-gray-400">
+            <span class="text-sm font-semibold text-muted dark:text-gray-400 whitespace-nowrap">
               Questão
               <span id="current-q-num" class="text-aws-dark text-base mx-1">1</span>
               de <span id="total-q-num" class="ml-1">10</span>
