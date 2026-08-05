@@ -191,6 +191,12 @@
   padding: 2rem 1.5rem;
 }
 
+@media (max-width: 640px) {
+  .cases-container {
+    padding: 1rem var(--space-12);
+  }
+}
+
 .cases-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));

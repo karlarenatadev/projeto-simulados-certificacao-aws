@@ -219,3 +219,30 @@
   font-style: italic;
   margin: 0;
 }
+
+/* ── Responsividade mobile ─────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .profile-main {
+    padding: var(--space-16) var(--space-12);
+    gap: var(--space-16);
+  }
+
+  /* Avatar + info empilham verticalmente em mobile */
+  .profile-header-card {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--space-24) var(--space-16);
+    gap: var(--space-16);
+  }
+
+  /* Certs e badges: 1 coluna em mobile */
+  .profile-certs-list,
+  .profile-badges-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-badges-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

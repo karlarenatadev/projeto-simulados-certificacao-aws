@@ -339,13 +339,83 @@ body.sidebar-collapsed .sidebar-collapse-btn .sidebar-collapse-icon {
 
 /* ── Responsividade ────────────────────────────────────────────────────── */
 
+/* Mobile (≤640px): sidebar como drawer deslizante — NÃO usa display:none */
 @media (max-width: 640px) {
   body.has-left-sidebar {
     padding-left: 0;
   }
 
   #left-sidebar {
+    /* Drawer: 200px de largura, oculto por padrão via transform */
+    width: 200px;
+    transform: translateX(-100%);
+    opacity: 1; /* mantém opaco — a transform controla visibilidade */
+    box-shadow: none;
+    z-index: 200; /* acima do overlay */
+  }
+
+  /* Itens expandidos no drawer mobile — exibe ícone + label lado a lado */
+  .left-sidebar-item {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--space-12);
+    padding: var(--space-12) var(--space-16);
+    min-height: 48px;
+  }
+
+  .left-sidebar-item-label {
+    font-size: var(--text-xs);
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 1;
+    white-space: nowrap;
+  }
+
+  .left-sidebar-item-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  /* Botão de colapso fica oculto no drawer mobile */
+  .sidebar-collapse-btn {
     display: none;
+  }
+
+  /* Tooltip desabilitado no mobile (já há labels visíveis) */
+  .left-sidebar-item::before,
+  .sidebar-collapse-btn::before {
+    display: none;
+  }
+
+  /* Drawer ABERTO: sidebar desliza para dentro */
+  body.sidebar-open #left-sidebar {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px color-mix(in srgb, var(--a3-deep-sea) 50%, transparent);
+  }
+
+  /* Overlay escuro quando drawer está aberto */
+  body.sidebar-open::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-color: color-mix(in srgb, #000 50%, transparent);
+    z-index: 199; /* abaixo da sidebar, acima do conteúdo */
+    animation: fadeIn 0.25s ease forwards;
+  }
+
+  /* Conteúdo principal NÃO se desloca no mobile — sidebar fica por cima */
+  body.has-left-sidebar:not(.sidebar-closed) #main-content-wrapper,
+  body.has-left-sidebar:not(.sidebar-closed) .main-content-container,
+  body.sidebar-open #main-content-wrapper,
+  body.sidebar-open .main-content-container {
+    padding-left: 0;
+  }
+
+  /* Estado sidebar-closed no mobile: garantir que não esteja aberta */
+  body.sidebar-closed #left-sidebar {
+    transform: translateX(-100%);
+    opacity: 1;
+    pointer-events: none;
   }
 }
 

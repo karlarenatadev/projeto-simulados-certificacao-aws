@@ -755,6 +755,42 @@ Design System Grid, Container and Core Structures
   }
 }
 
+/* ── main-content-container — área principal das páginas secundárias ─────── */
+
+.main-content-container {
+  min-height: calc(100vh - var(--header-height, 68px));
+  overflow-x: hidden;
+}
+
+/* Padding mobile para páginas secundárias com sidebar */
+@media (max-width: 640px) {
+  .main-content-container {
+    padding-left: var(--space-16) !important;
+    padding-right: var(--space-16) !important;
+  }
+
+  /* Tabelas e elementos com scroll horizontal controlado */
+  .a3-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  /* Evita que imagens e iframes causem overflow */
+  img,
+  iframe,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Headers das páginas secundárias: fonte menor em mobile */
+  h2.text-2xl,
+  h2.text-3xl {
+    font-size: var(--text-xl) !important;
+  }
+}
+
 
 /* --- components/buttons.css --- */
 /* ==========================================================================
@@ -1917,13 +1953,83 @@ body.sidebar-collapsed .sidebar-collapse-btn .sidebar-collapse-icon {
 
 /* ── Responsividade ────────────────────────────────────────────────────── */
 
+/* Mobile (≤640px): sidebar como drawer deslizante — NÃO usa display:none */
 @media (max-width: 640px) {
   body.has-left-sidebar {
     padding-left: 0;
   }
 
   #left-sidebar {
+    /* Drawer: 200px de largura, oculto por padrão via transform */
+    width: 200px;
+    transform: translateX(-100%);
+    opacity: 1; /* mantém opaco — a transform controla visibilidade */
+    box-shadow: none;
+    z-index: 200; /* acima do overlay */
+  }
+
+  /* Itens expandidos no drawer mobile — exibe ícone + label lado a lado */
+  .left-sidebar-item {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--space-12);
+    padding: var(--space-12) var(--space-16);
+    min-height: 48px;
+  }
+
+  .left-sidebar-item-label {
+    font-size: var(--text-xs);
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 1;
+    white-space: nowrap;
+  }
+
+  .left-sidebar-item-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  /* Botão de colapso fica oculto no drawer mobile */
+  .sidebar-collapse-btn {
     display: none;
+  }
+
+  /* Tooltip desabilitado no mobile (já há labels visíveis) */
+  .left-sidebar-item::before,
+  .sidebar-collapse-btn::before {
+    display: none;
+  }
+
+  /* Drawer ABERTO: sidebar desliza para dentro */
+  body.sidebar-open #left-sidebar {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px color-mix(in srgb, var(--a3-deep-sea) 50%, transparent);
+  }
+
+  /* Overlay escuro quando drawer está aberto */
+  body.sidebar-open::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-color: color-mix(in srgb, #000 50%, transparent);
+    z-index: 199; /* abaixo da sidebar, acima do conteúdo */
+    animation: fadeIn 0.25s ease forwards;
+  }
+
+  /* Conteúdo principal NÃO se desloca no mobile — sidebar fica por cima */
+  body.has-left-sidebar:not(.sidebar-closed) #main-content-wrapper,
+  body.has-left-sidebar:not(.sidebar-closed) .main-content-container,
+  body.sidebar-open #main-content-wrapper,
+  body.sidebar-open .main-content-container {
+    padding-left: 0;
+  }
+
+  /* Estado sidebar-closed no mobile: garantir que não esteja aberta */
+  body.sidebar-closed #left-sidebar {
+    transform: translateX(-100%);
+    opacity: 1;
+    pointer-events: none;
   }
 }
 
@@ -2400,6 +2506,33 @@ body.sidebar-collapsed .sidebar-collapse-btn .sidebar-collapse-icon {
   color: var(--text-muted);
   font-style: italic;
   margin: 0;
+}
+
+/* ── Responsividade mobile ─────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .profile-main {
+    padding: var(--space-16) var(--space-12);
+    gap: var(--space-16);
+  }
+
+  /* Avatar + info empilham verticalmente em mobile */
+  .profile-header-card {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--space-24) var(--space-16);
+    gap: var(--space-16);
+  }
+
+  /* Certs e badges: 1 coluna em mobile */
+  .profile-certs-list,
+  .profile-badges-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-badges-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 
@@ -4970,6 +5103,12 @@ textarea {
   padding: 2rem 1.5rem;
 }
 
+@media (max-width: 640px) {
+  .cases-container {
+    padding: 1rem var(--space-12);
+  }
+}
+
 .cases-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -5675,35 +5814,6 @@ textarea {
   font-weight: 600;
   color: var(--text-strong);
   margin-bottom: 0.15rem;
-}
-
-.resource-simple-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-8);
-  color: var(--a3-tech-blue);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.resource-simple-link i {
-  color: var(--text-muted);
-  font-size: 0.9em;
-}
-
-.dark .resource-simple-link {
-  color: var(--a3-sky-frost);
-}
-
-.resource-simple-link:hover {
-  text-decoration: underline;
-  color: var(--aws-orange-hover);
-}
-
-.dark .resource-simple-link:hover {
-  color: var(--a3-text-inverse);
 }
 
 .dark .resource-title {

@@ -484,8 +484,25 @@ function _createSidebarItem(item) {
 
   if (item.action) {
     el.addEventListener("click", () => {
+      // Detecta se estamos no SPA (index.html) ou em página secundária.
+      // Em páginas secundárias (cases.html, resources.html, etc.) as funções
+      // do app.js não existem no window — redireciona para o Hub em vez de
+      // tentar chamá-las silenciosamente.
+      const path = window.location.pathname;
+      const isOnSPA =
+        path.endsWith("/") ||
+        path.endsWith("index.html") ||
+        path === "" ||
+        // GitHub Pages serve o SPA na raiz do repositório
+        /\/projeto-simulados-certificacao-aws\/?$/.test(path);
+
       const fn = window[item.action];
-      if (typeof fn === "function") fn();
+      if (isOnSPA && typeof fn === "function") {
+        fn();
+      } else {
+        // Em página secundária: volta para o Hub (index.html)
+        window.location.href = "./index.html";
+      }
     });
   }
 
@@ -566,21 +583,88 @@ export function initLeftSidebarToggleShell() {
     _syncSidebarToggleState(false);
   }
 
+  /**
+   * Retorna true se a viewport atual é mobile (≤640px).
+   * Usado para alternar entre o comportamento desktop (sidebar-closed)
+   * e o behavior mobile (drawer via sidebar-open).
+   */
+  function _isMobile() {
+    return window.matchMedia("(max-width: 640px)").matches;
+  }
+
+  /**
+   * Abre o drawer mobile: adiciona sidebar-open ao body.
+   * No mobile, o estado NÃO é persistido — o drawer fecha ao navegar.
+   */
+  function _openMobileDrawer() {
+    document.body.classList.add("sidebar-open");
+    const headerBtn = document.getElementById("cloud-sidebar-toggle");
+    if (headerBtn) {
+      headerBtn.setAttribute("aria-expanded", "true");
+      headerBtn.title = "Fechar menu lateral";
+    }
+  }
+
+  /**
+   * Fecha o drawer mobile: remove sidebar-open do body.
+   */
+  function _closeMobileDrawer() {
+    document.body.classList.remove("sidebar-open");
+    const headerBtn = document.getElementById("cloud-sidebar-toggle");
+    if (headerBtn) {
+      headerBtn.setAttribute("aria-expanded", "false");
+      headerBtn.title = "Abrir menu lateral";
+    }
+  }
+
   // Botão no header (cloud-sidebar-toggle)
   const headerBtn = document.getElementById("cloud-sidebar-toggle");
   if (headerBtn) {
     headerBtn.addEventListener("click", () => {
-      const nowClosed = document.body.classList.toggle("sidebar-closed");
-      localStorage.setItem("sidebar_closed", String(nowClosed));
-      _syncSidebarToggleState(nowClosed);
+      if (_isMobile()) {
+        // Mobile: toggle do drawer
+        const isOpen = document.body.classList.contains("sidebar-open");
+        if (isOpen) {
+          _closeMobileDrawer();
+        } else {
+          _openMobileDrawer();
+        }
+      } else {
+        // Desktop: comportamento original (sidebar-closed + persistência)
+        const nowClosed = document.body.classList.toggle("sidebar-closed");
+        localStorage.setItem("sidebar_closed", String(nowClosed));
+        _syncSidebarToggleState(nowClosed);
+      }
     });
   }
+
+  // Fechar drawer mobile ao clicar no overlay (::after do body)
+  // O overlay é o body.sidebar-open::after — detectamos clique fora da sidebar
+  document.addEventListener("click", (e) => {
+    if (!_isMobile()) return;
+    if (!document.body.classList.contains("sidebar-open")) return;
+    const sidebar = document.getElementById("left-sidebar");
+    const headerToggle = document.getElementById("cloud-sidebar-toggle");
+    // Se clicou fora da sidebar e fora do botão toggle, fecha o drawer
+    if (
+      sidebar &&
+      !sidebar.contains(e.target) &&
+      headerToggle &&
+      !headerToggle.contains(e.target)
+    ) {
+      _closeMobileDrawer();
+    }
+  });
 
   // Botão no rodapé da sidebar (sidebar-collapse-btn)
   // Nota: buildSidebar() cria este botão dinamicamente — bindamos aqui via delegation
   document.addEventListener("click", (e) => {
     const btn = e.target.closest("#sidebar-collapse-btn");
     if (!btn) return;
+    if (_isMobile()) {
+      _closeMobileDrawer();
+      return;
+    }
     const nowClosed = document.body.classList.toggle("sidebar-closed");
     localStorage.setItem("sidebar_closed", String(nowClosed));
     _syncSidebarToggleState(nowClosed);
