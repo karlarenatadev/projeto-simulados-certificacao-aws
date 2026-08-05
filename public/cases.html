@@ -45,7 +45,7 @@
       <div class="flex items-center gap-2 md:gap-3">
         <button
           id="cloud-sidebar-toggle"
-          class="p-2 rounded-xl text-[#F53199] hover:bg-white/10 active:scale-95 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#F53199]/50 flex items-center justify-center group/cloud"
+          class="btn-sidebar-toggle flex items-center justify-center group/cloud"
           title="Esconder menu lateral"
           aria-label="Alternar menu lateral"
           aria-expanded="true"
@@ -335,7 +335,7 @@
               "Serviço indisponível no momento. Tente novamente mais tarde.";
           }
           grid.innerHTML = `
-            <div class="cases-empty-state" style="grid-column:1/-1;">
+            <div class="cases-empty-state col-span-full">
               <i class="fa-solid fa-box-open" aria-hidden="true"></i>
               <p>${escapeHtml(emptyMessage)}</p>
             </div>`;

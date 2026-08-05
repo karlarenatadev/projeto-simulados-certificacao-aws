@@ -29,10 +29,18 @@ async function fetchFallbackCases() {
     if (!res.ok) return [];
     let cases = await res.json();
 
-    // Normalização (API vs JSON)
+    // Normalização defensiva: garante compatibilidade entre schema do JSON
+    // e o schema esperado pelo frontend (API pode ter campos diferentes do JSON local)
     return cases.map((c) => ({
       ...c,
-      slug: c.id,
+      // slug: usa id como fallback se slug ausente
+      slug: c.slug || c.id,
+      // certifications: array esperado pelo renderCard; converte string singular se necessário
+      certifications:
+        c.certifications || (c.certification ? [c.certification] : []),
+      // difficulty: campo obrigatório para badge e filtros
+      difficulty: c.difficulty || "intermediate",
+      // services: normaliza campos do JSON (service_slug/service_name → slug/name)
       services: (c.services || []).map((s) => ({
         ...s,
         slug: s.service_slug || s.slug,

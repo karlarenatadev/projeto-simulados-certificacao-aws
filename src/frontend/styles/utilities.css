@@ -66,7 +66,12 @@ ALIASES VISUAIS A3 PARA UTILITÁRIOS EXISTENTES
 .bg-orange-100\/50 {
   background-color: var(--a3-surface-accent) !important;
 }
-background-color: var(--a3-surface-warning) !important;
+.bg-yellow-100,
+.bg-yellow-500\/10,
+.dark .dark\:bg-yellow-900\/20,
+.dark .dark\:bg-yellow-900\/30 {
+  background-color: var(--a3-surface-warning) !important;
+}
 .bg-blue-600,
 .bg-aws-orange {
   background-color: var(--a3-tech-blue) !important;
@@ -220,4 +225,51 @@ background-color: var(--a3-surface-warning) !important;
 .focus\:ring-orange-200:focus, {
   border-color: var(--a3-tech-blue) !important;
   --tw-ring-color: color-mix(in srgb, var(--a3-tech-blue) 24%, transparent) !important;
+}
+
+/* Cor sky-frost — utilitário global */
+.text-sky-frost {
+  color: var(--a3-sky-frost) !important;
+}
+
+/* ── Sidebar toggle button — cloud icon ────────────────────────────────── */
+/* Substitui as classes Tailwind com hex hardcoded (#F53199) nos HTMLs */
+.btn-sidebar-toggle {
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  color: var(--a3-accent);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-sidebar-toggle:hover {
+  background-color: color-mix(in srgb, #fff 10%, transparent);
+}
+
+.btn-sidebar-toggle:active {
+  transform: scale(0.95);
+}
+
+.btn-sidebar-toggle:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--a3-accent) 50%, transparent);
+  outline-offset: 2px;
+}
+
+/* Classe de texto para cor primária tech-blue (sem !important, composável) */
+.text-primary {
+  color: var(--a3-tech-blue);
+}
+
+/* Alias para a cor de acento (pink) — substitui hardcoded #F53199 */
+.text-accent-pink {
+  color: var(--a3-accent) !important;
+}
+.bg-accent-pink {
+  background-color: var(--a3-accent) !important;
 }

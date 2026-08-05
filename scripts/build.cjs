@@ -119,21 +119,52 @@ try {
     }
   }
 
+  // Componentes em ordem explícita para garantir cascade correto:
+  // animations → layout → buttons → forms → cards → badges → quiz →
+  // dashboard → sidebar → shell → profile → settings → gamification → (demais)
   const componentsDir = path.join(stylesDir, 'components');
   if (fs.existsSync(componentsDir)) {
-    const componentsFiles = fs.readdirSync(componentsDir).filter(f => f.endsWith('.css'));
-    for (const file of componentsFiles) {
-      consolidatedCSS += `/* --- components/${file} --- */\n` + fs.readFileSync(path.join(componentsDir, file), 'utf8') + '\n\n';
+    const explicitOrder = [
+      'animations.css',
+      'layout.css',
+      'buttons.css',
+      'forms.css',
+      'cards.css',
+      'badges.css',
+      'quiz.css',
+      'dashboard.css',
+      'sidebar.css',
+      'shell.css',
+      'profile.css',
+      'settings.css',
+      'gamification.css',
+      'simulator.css',
+    ];
+    // Adiciona primeiro os arquivos na ordem explícita
+    for (const file of explicitOrder) {
+      const filePath = path.join(componentsDir, file);
+      if (fs.existsSync(filePath)) {
+        consolidatedCSS += `/* --- components/${file} --- */\n` + fs.readFileSync(filePath, 'utf8') + '\n\n';
+      }
+    }
+    // Depois adiciona qualquer outro componente não listado (à prova de futuro)
+    const allComponents = fs.readdirSync(componentsDir).filter(f => f.endsWith('.css'));
+    for (const file of allComponents) {
+      if (!explicitOrder.includes(file)) {
+        consolidatedCSS += `/* --- components/${file} --- */\n` + fs.readFileSync(path.join(componentsDir, file), 'utf8') + '\n\n';
+      }
     }
   }
 
-  // Fallback: style.css legacy
+  // style.css residual — overrides globais, responsividade, a11y, print
+  // Deve vir APÓS os componentes para que overrides globais possam tomar precedência
   const legacyStylePath = path.join(stylesDir, 'style.css');
   if (fs.existsSync(legacyStylePath)) {
-    consolidatedCSS += `/* --- style.css (legacy) --- */\n` + fs.readFileSync(legacyStylePath, 'utf8') + '\n\n';
+    consolidatedCSS += `/* --- style.css (global overrides) --- */\n` + fs.readFileSync(legacyStylePath, 'utf8') + '\n\n';
   }
 
-  const specificFiles = ['gamificacao.css', 'cases.css', 'responsive.css'];
+  // cases.css — estilos específicos da tela de cases (após global)
+  const specificFiles = ['cases.css'];
   for (const file of specificFiles) {
     const filePath = path.join(stylesDir, file);
     if (fs.existsSync(filePath)) {

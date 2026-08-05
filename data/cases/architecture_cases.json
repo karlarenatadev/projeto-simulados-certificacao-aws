@@ -38,6 +38,11 @@
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
+    ],
+    "slug": "case-001",
+    "difficulty": "advanced",
+    "certifications": [
+      "SAA-C03"
     ]
   },
   {
@@ -79,6 +84,11 @@
         "service_name": "Amazon SNS",
         "service_slug": "amazon-sns"
       }
+    ],
+    "slug": "case-002",
+    "difficulty": "advanced",
+    "certifications": [
+      "SAA-C03"
     ]
   },
   {
@@ -120,6 +130,11 @@
         "service_name": "Elastic Load Balancing",
         "service_slug": "elastic-load-balancing"
       }
+    ],
+    "slug": "case-003",
+    "difficulty": "intermediate",
+    "certifications": [
+      "DVA-C02"
     ]
   },
   {
@@ -156,6 +171,11 @@
         "service_name": "amazon-s3-glacier",
         "service_slug": "amazon-s3-glacier"
       }
+    ],
+    "slug": "case-004",
+    "difficulty": "advanced",
+    "certifications": [
+      "SAA-C03"
     ]
   },
   {
@@ -187,6 +207,11 @@
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
+    ],
+    "slug": "case-005",
+    "difficulty": "advanced",
+    "certifications": [
+      "SAA-C03"
     ]
   },
   {
@@ -223,6 +248,11 @@
         "service_name": "Amazon DynamoDB",
         "service_slug": "amazon-dynamodb"
       }
+    ],
+    "slug": "case-006",
+    "difficulty": "intermediate",
+    "certifications": [
+      "SAA-C03"
     ]
   },
   {
@@ -269,6 +299,11 @@
         "service_name": "Amazon S3",
         "service_slug": "amazon-s3"
       }
+    ],
+    "slug": "case-007",
+    "difficulty": "intermediate",
+    "certifications": [
+      "AIF-C01"
     ]
   },
   {
@@ -305,6 +340,11 @@
         "service_name": "AWS Direct Connect",
         "service_slug": "aws-direct-connect"
       }
+    ],
+    "slug": "case-008",
+    "difficulty": "intermediate",
+    "certifications": [
+      "SAA-C03"
     ]
   },
   {
@@ -346,6 +386,11 @@
         "service_name": "AWS Shield",
         "service_slug": "aws-shield"
       }
+    ],
+    "slug": "case-009",
+    "difficulty": "beginner",
+    "certifications": [
+      "CLF-C02"
     ]
   },
   {
@@ -377,6 +422,11 @@
         "service_name": "AWS CloudTrail",
         "service_slug": "aws-cloudtrail"
       }
+    ],
+    "slug": "case-010",
+    "difficulty": "advanced",
+    "certifications": [
+      "SAA-C03"
     ]
   }
 ]

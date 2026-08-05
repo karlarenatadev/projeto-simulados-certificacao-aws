@@ -1,84 +1,212 @@
 /* ==========================================================================
-   QUIZ CSS — Elementos do Simulado (app.js UI)
+   QUIZ CSS
+   Todos os elementos do simulado: option-card, option-letter, estados de
+   resposta, feedback e progress bar. Usa exclusivamente tokens de tokens.css.
    ========================================================================== */
 
+/* ── Card da questão ───────────────────────────────────────────────────── */
+
 .a3-question-card {
-  background-color: var(--a3-surface);
-  border-radius: var(--a3-radius-lg);
-  padding: 1.5rem;
-  box-shadow: var(--a3-shadow-md);
-  margin-bottom: 1.5rem;
+  background-color: var(--a3-surface-raised);
+  border-radius: var(--radius-lg);
+  padding: var(--space-24);
+  box-shadow: var(--a3-shadow-card);
+  margin-bottom: var(--space-24);
   border: 1px solid var(--border-theme);
 }
+
 .dark .a3-question-card {
   border-color: var(--border-theme);
 }
 
 .a3-question-header {
-  font-size: 1.25rem;
+  font-size: var(--text-xl);
   font-weight: 800;
-  color: var(--a3-text-main);
-  margin-bottom: 1rem;
+  color: var(--text-strong);
+  margin-bottom: var(--space-16);
 }
 
 .a3-question-number {
-  font-size: 1rem;
-  color: var(--a3-text-muted);
+  font-size: var(--text-base);
+  color: var(--text-muted);
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-8);
   display: block;
 }
 
-/* Opções de Resposta */
+/* ── Option Card (sistema legado app.js — .option-card) ────────────────── */
+
+.option-card {
+  transition: all 0.2s ease;
+  border: 2px solid var(--border-theme);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  background-color: var(--a3-surface-raised);
+  color: var(--text-main);
+}
+
+.option-card:focus {
+  outline: 2px solid var(--a3-tech-blue);
+  outline-offset: 2px;
+}
+
+.option-card.disabled {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* Hover */
+.option-card:hover:not(.disabled) {
+  border-color: var(--a3-tech-blue);
+  background-color: var(--a3-surface-selected);
+  transform: translateX(5px);
+}
+
+/* Estado: selecionado */
+.option-card.selected {
+  border-color: var(--a3-tech-blue);
+  background-color: var(--a3-surface-selected);
+  box-shadow: var(--a3-shadow-action);
+}
+
+/* Estado: correto */
+.option-card.correct {
+  border-color: var(--a3-success);
+  background-color: var(--a3-surface-success);
+  color: var(--text-main);
+}
+
+/* Estado: incorreto */
+.option-card.incorrect {
+  border-color: var(--a3-danger);
+  background-color: var(--a3-surface-danger);
+  color: var(--text-main);
+}
+
+/* Dark Mode overrides */
+.dark .option-card:hover:not(.disabled) {
+  background-color: var(--a3-surface-selected) !important;
+  border-color: var(--a3-tech-blue) !important;
+}
+
+.dark .option-card.selected {
+  background-color: var(--a3-surface-selected) !important;
+  border-color: var(--a3-tech-blue) !important;
+  box-shadow: var(--a3-shadow-action);
+}
+
+.dark .option-card.correct {
+  background-color: var(--a3-surface-success) !important;
+  color: var(--a3-text-on-dark) !important;
+}
+
+.dark .option-card.incorrect {
+  background-color: var(--a3-surface-danger) !important;
+  color: var(--a3-text-on-dark) !important;
+}
+
+/* ── Option Letter (A, B, C, D) ────────────────────────────────────────── */
+
+.option-letter {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--a3-surface-soft);
+  font-weight: bold;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .option-letter {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .option-letter {
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+  }
+}
+
+.option-card.selected .option-letter {
+  background: var(--a3-tech-blue);
+  color: var(--a3-text-on-dark);
+}
+
+.option-card.correct .option-letter {
+  background: var(--a3-success);
+  color: var(--a3-text-on-dark);
+}
+
+.option-card.incorrect .option-letter {
+  background: var(--a3-danger);
+  color: var(--a3-text-on-dark);
+}
+
+/* ── Option — sistema de design (a3-option) ────────────────────────────── */
+
 .a3-option {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
+  gap: var(--space-16);
+  padding: var(--space-16);
   background-color: var(--a3-surface-soft);
-  border: 2px solid transparent;
-  border-radius: var(--a3-radius-md);
-  margin-bottom: 0.75rem;
+  border: 2px solid var(--border-theme);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-12);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
+
 .a3-option:hover {
-  background-color: var(--a3-surface-hover);
+  border-color: var(--a3-tech-blue);
+  background-color: var(--a3-surface-selected);
 }
 
 .a3-option-letter {
   width: 2.5rem;
   height: 2.5rem;
   flex-shrink: 0;
-  border-radius: 999px;
-  background-color: var(--a3-surface);
+  border-radius: 50%;
+  background-color: var(--a3-surface-raised);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  color: var(--a3-text-muted);
-  transition: color 0.2s;
-  box-shadow: var(--a3-shadow-sm);
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  box-shadow: var(--a3-shadow-card);
 }
 
 .a3-option:hover .a3-option-letter {
-  color: var(--a3-primary);
+  color: var(--a3-tech-blue);
 }
 
-/* Estados da Opção */
+/* Estados do a3-option */
 .a3-option-selected {
-  border-color: var(--a3-primary);
-  background-color: color-mix(in srgb, var(--a3-primary) 10%, transparent);
+  border-color: var(--a3-tech-blue);
+  background-color: var(--a3-surface-selected);
 }
+
 .a3-option-selected .a3-option-letter {
-  background-color: var(--a3-primary);
+  background-color: var(--a3-tech-blue);
   color: var(--a3-text-on-dark);
 }
 
 .a3-option-correct {
   border-color: var(--a3-success);
-  background-color: color-mix(in srgb, var(--a3-success) 10%, transparent);
+  background-color: var(--a3-surface-success);
 }
+
 .a3-option-correct .a3-option-letter {
   background-color: var(--a3-success);
   color: var(--a3-text-on-dark);
@@ -86,30 +214,68 @@
 
 .a3-option-wrong {
   border-color: var(--a3-danger);
-  background-color: color-mix(in srgb, var(--a3-danger) 10%, transparent);
+  background-color: var(--a3-surface-danger);
 }
+
 .a3-option-wrong .a3-option-letter {
   background-color: var(--a3-danger);
   color: var(--a3-text-on-dark);
 }
 
-/* Feedbacks Visuais */
+/* ── Feedback de resposta ──────────────────────────────────────────────── */
+
 .a3-feedback {
-  margin-top: 1.25rem;
-  padding: 1.25rem;
-  border-radius: var(--a3-radius-md);
-  font-size: 0.875rem;
-  border-left: 4px solid var(--a3-border-color);
+  margin-top: var(--space-24);
+  padding: var(--space-16);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  border-left: 4px solid var(--border-theme);
+  line-height: 1.6;
 }
 
 .a3-feedback-success {
-  background-color: color-mix(in srgb, var(--a3-success) 10%, transparent);
+  background-color: var(--a3-surface-success);
   border-left-color: var(--a3-success);
-  color: var(--a3-text-main);
+  color: var(--text-main);
 }
 
 .a3-feedback-error {
-  background-color: color-mix(in srgb, var(--a3-danger) 10%, transparent);
+  background-color: var(--a3-surface-danger);
   border-left-color: var(--a3-danger);
-  color: var(--a3-text-main);
+  color: var(--text-main);
+}
+
+/* ── Timer e estado de aviso ───────────────────────────────────────────── */
+
+#timer-display {
+  transition: background-color 0.3s ease;
+}
+
+#timer-display.warning {
+  background-color: var(--a3-danger) !important;
+  animation: pulse 1s infinite;
+}
+
+/* ── Barra de progresso do quiz ────────────────────────────────────────── */
+
+.quiz-progress-bar {
+  height: 4px;
+  background-color: var(--border-theme);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.quiz-progress-fill {
+  height: 100%;
+  background-color: var(--a3-tech-blue);
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+/* ── Acessibilidade: alto contraste ────────────────────────────────────── */
+
+@media (prefers-contrast: high) {
+  .option-card {
+    border-width: 3px;
+  }
 }

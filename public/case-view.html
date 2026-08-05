@@ -54,7 +54,7 @@
         title="Voltar ao início"
       >
         <i
-          class="fa-solid fa-cloud text-[#F53199] text-xl md:text-2xl group-hover:scale-110 transition-transform"
+          class="fa-solid fa-cloud text-accent-pink text-xl md:text-2xl group-hover:scale-110 transition-transform"
           aria-hidden="true"
         ></i>
         <div>
@@ -71,13 +71,7 @@
       <div class="a3-header-actions">
         <button
           id="btn-language"
-          class="a3-btn a3-btn-secondary"
-          style="
-            background: transparent;
-            color: inherit;
-            border: none;
-            font-size: inherit;
-          "
+          class="a3-btn a3-btn-secondary a3-btn-ghost"
           aria-label="Alternar idioma"
           title="Alternar idioma"
         >
@@ -88,13 +82,7 @@
 
         <button
           id="theme-toggle"
-          class="a3-btn a3-btn-secondary"
-          style="
-            background: transparent;
-            color: inherit;
-            border: none;
-            font-size: inherit;
-          "
+          class="a3-btn a3-btn-secondary a3-btn-ghost"
           aria-label="Alternar modo escuro"
         >
           <i
@@ -111,8 +99,7 @@
 
         <button
           id="install-app"
-          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
-          style="background: transparent; color: inherit; font-size: inherit"
+          class="a3-btn a3-btn-secondary a3-btn-ghost hidden md:flex items-center gap-2"
         >
           <i class="fa-solid fa-download"></i> Baixar App
         </button>
@@ -138,9 +125,9 @@
          ====================================================== -->
     <nav class="case-breadcrumb" aria-label="Navegação">
       <a href="./index.html"><i class="fa-solid fa-house"></i> Início</a>
-      <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem"></i>
+      <i class="fa-solid fa-chevron-right icon-xs"></i>
       <a href="./cases.html">Cases</a>
-      <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem"></i>
+      <i class="fa-solid fa-chevron-right icon-xs"></i>
       <span id="breadcrumb-title" aria-current="page">Carregando...</span>
     </nav>
 
@@ -153,10 +140,10 @@
       aria-labelledby="case-main-title"
     >
       <div class="case-view-header-inner">
-        <div id="case-header-loading" style="text-align: center; padding: 1rem">
+        <div id="case-header-loading" class="cv-loading-state">
           <i
-            class="fa-solid fa-spinner fa-spin"
-            style="font-size: 1.5rem; color: rgba(255, 255, 255, 0.5)"
+            class="fa-solid fa-spinner fa-spin cv-loading-spinner"
+            aria-hidden="true"
           ></i>
         </div>
 
@@ -203,19 +190,7 @@
       >
         <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
         Questões
-        <span
-          id="questions-badge"
-          style="
-            display: none;
-            background: var(--a3-tech-blue);
-            color: #fff;
-            font-size: 0.65rem;
-            font-weight: 800;
-            padding: 0.1rem 0.45rem;
-            border-radius: 999px;
-            margin-left: 0.25rem;
-          "
-        ></span>
+        <span id="questions-badge" class="case-tab-badge"></span>
       </button>
       <button
         class="a3-btn a3-btn-secondary"
@@ -252,10 +227,7 @@
     >
       <div class="case-scenario-box">
         <h2>
-          <i
-            class="fa-solid fa-business-time"
-            style="color: var(--a3-tech-blue)"
-          ></i>
+          <i class="fa-solid fa-business-time text-aws-orange"></i>
           Contexto do Problema
         </h2>
         <p id="scenario-text">Carregando...</p>
@@ -263,10 +235,7 @@
 
       <div class="case-scenario-box">
         <h3>
-          <i
-            class="fa-solid fa-bullseye"
-            style="color: var(--a3-tech-blue)"
-          ></i>
+          <i class="fa-solid fa-bullseye text-aws-orange"></i>
           Objetivo de Aprendizado
         </h3>
         <p id="objective-text"></p>
@@ -275,30 +244,17 @@
       <!-- Services Summary -->
       <div class="case-scenario-box">
         <h3>
-          <i
-            class="fa-solid fa-cubes-stacked"
-            style="color: var(--a3-tech-blue)"
-          ></i>
+          <i class="fa-solid fa-cubes-stacked text-aws-orange"></i>
           Serviços AWS Envolvidos
         </h3>
         <div id="services-grid" class="services-grid"></div>
       </div>
 
       <!-- Complete Button -->
-      <div
-        style="
-          margin-top: 1.5rem;
-          display: flex;
-          justify-content: flex-end;
-          gap: 1rem;
-          flex-wrap: wrap;
-          align-items: center;
-        "
-      >
+      <div class="mt-6 flex justify-end gap-4 flex-wrap items-center">
         <button
           id="study-arch-btn"
-          class="a3-btn a3-btn-secondary"
-          style="border-color: var(--a3-tech-blue); color: var(--a3-tech-blue)"
+          class="a3-btn a3-btn-secondary btn-outline-primary"
           onclick="switchTab('architecture')"
         >
           <i class="fa-solid fa-diagram-project"></i>
@@ -323,13 +279,10 @@
       <div class="architecture-container">
         <div class="architecture-toolbar">
           <h3>
-            <i
-              class="fa-solid fa-diagram-project"
-              style="color: var(--a3-tech-blue)"
-            ></i>
+            <i class="fa-solid fa-diagram-project text-aws-orange"></i>
             Diagrama de Arquitetura
           </h3>
-          <span style="font-size: 0.72rem; color: var(--text-muted)">
+          <span class="text-hint">
             <i class="fa-brands fa-github"></i> Renderizado com Mermaid.js
           </span>
         </div>
@@ -338,29 +291,18 @@
         </div>
       </div>
 
-      <div class="case-scenario-box" style="margin-top: 1.5rem">
+      <div class="case-scenario-box mt-6">
         <h3>
-          <i
-            class="fa-solid fa-circle-info"
-            style="color: var(--a3-tech-blue)"
-          ></i>
+          <i class="fa-solid fa-circle-info text-aws-orange"></i>
           Como Ler Este Diagrama
         </h3>
-        <p
-          id="arch-explanation-text"
-          style="
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            line-height: 1.65;
-          "
-        ></p>
+        <p id="arch-explanation-text" class="text-body-sm"></p>
       </div>
 
-      <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end">
+      <div class="mt-6 flex justify-end">
         <button
-          class="a3-btn a3-btn-secondary"
+          class="a3-btn a3-btn-secondary btn-amethyst"
           onclick="switchTab('questions')"
-          style="background: var(--a3-amethyst-velvet)"
         >
           <i class="fa-solid fa-circle-question"></i>
           Praticar com Questões
@@ -378,10 +320,7 @@
       aria-labelledby="tab-btn-questions"
     >
       <p class="case-questions-intro">
-        <i
-          class="fa-solid fa-circle-info"
-          style="color: var(--a3-sky-frost)"
-        ></i>
+        <i class="fa-solid fa-circle-info text-sky-frost"></i>
         Estas questões cobram os conceitos desta arquitetura nos exames de
         certificação. Tente responder antes de revelar a explicação.
       </p>
@@ -391,14 +330,10 @@
       <div id="questions-empty" style="display: none" class="cases-empty-state">
         <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
         <p>Nenhuma questão associada a este case ainda.</p>
-        <p style="margin-top: 0.5rem; font-size: 0.8rem">
+        <p class="cv-empty-hint">
           Use o simulador de questões para praticar tópicos relacionados.
         </p>
-        <a
-          href="./index.html"
-          class="case-complete-btn"
-          style="display: inline-flex; margin-top: 1rem; text-decoration: none"
-        >
+        <a href="./index.html" class="case-complete-btn cv-simulator-link">
           <i class="fa-solid fa-brain"></i> Ir para o Simulador
         </a>
       </div>

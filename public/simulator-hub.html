@@ -1,89 +1,15 @@
 <!doctype html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AWS Simulator Hub</title>
+    <title>AWS Simulator Hub — Cloud Academy A3</title>
+    <!-- CSS consolidado do design system (inclui simulator.css via build) -->
     <link rel="stylesheet" href="/css/style.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <style>
-      .hub-container {
-        max-width: 1200px;
-        margin: 40px auto;
-        padding: 0 20px;
-      }
-      .hub-header {
-        text-align: center;
-        margin-bottom: 40px;
-      }
-      .hub-header h1 {
-        font-size: 2.5rem;
-        color: var(--primary-color);
-        margin-bottom: 10px;
-      }
-      .hub-header p {
-        color: var(--text-secondary);
-        font-size: 1.1rem;
-      }
-
-      .levels-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
-      }
-
-      .level-card {
-        background: var(--surface-color);
-        border-radius: 12px;
-        padding: 24px;
-        border: 1px solid var(--border-color);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-        text-decoration: none;
-        color: inherit;
-        display: flex;
-        flex-direction: column;
-      }
-      .level-card:hover {
-        transform: translateY(-5px);
-        border-color: var(--primary-color);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-      }
-      .level-badge {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: var(--bg-color);
-        padding: 5px 10px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: var(--primary-color);
-      }
-      .level-card h3 {
-        font-size: 1.4rem;
-        margin: 10px 0;
-      }
-      .level-card p {
-        color: var(--text-secondary);
-        flex-grow: 1;
-        font-size: 0.95rem;
-        line-height: 1.5;
-        margin-bottom: 20px;
-      }
-      .start-btn {
-        background: var(--primary-color);
-        color: white;
-        padding: 10px;
-        border-radius: 6px;
-        text-align: center;
-        font-weight: 600;
-      }
-    </style>
   </head>
   <body>
     <div class="hub-container">

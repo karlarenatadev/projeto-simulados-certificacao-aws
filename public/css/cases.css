@@ -1738,3 +1738,87 @@
     padding: 0.3rem 0.6rem;
   }
 }
+
+/* ==========================================================================
+   CASE VIEW — Classes utilitárias extraídas de inline styles
+   Adicionadas para eliminar inline styles do case-view.html
+   ========================================================================== */
+
+/* Botão ghost: transparente, sem borda, herda cor e tamanho de fonte */
+.a3-btn-ghost {
+  background: transparent !important;
+  color: inherit !important;
+  border: none !important;
+  font-size: inherit !important;
+}
+
+/* Chevrons e ícones minúsculos (ex: separadores do breadcrumb) */
+.icon-xs {
+  font-size: 0.6rem;
+}
+
+/* Texto auxiliar / dica: menor, cor muted */
+.text-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Cor sky-frost para ícones e textos informativos */
+.text-sky-frost {
+  color: var(--a3-sky-frost) !important;
+}
+
+/* Parágrafo de corpo reduzido (ex: explicação de arquitetura) */
+.text-body-sm {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+/* Botão com cor amethyst-velvet (ex: "Praticar com Questões") */
+.btn-amethyst {
+  background: var(--a3-amethyst-velvet) !important;
+}
+
+/* Botão outline com cor tech-blue (ex: "Ver Arquitetura") */
+.btn-outline-primary {
+  border-color: var(--a3-tech-blue) !important;
+  color: var(--a3-tech-blue) !important;
+}
+
+/* Badge de contagem nas abas (ex: contagem de questões) */
+.case-tab-badge {
+  display: none; /* controlado por JS via badge.style.display = 'inline' */
+  background: var(--a3-tech-blue);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  margin-left: 0.25rem;
+}
+
+/* Estado de carregamento centralizado no header do case */
+.cv-loading-state {
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Spinner dentro do loading state */
+.cv-loading-spinner {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Parágrafo secundário no empty state (hint de ação) */
+.cv-empty-hint {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+
+/* Link de ação dentro do empty state */
+.cv-simulator-link {
+  display: inline-flex;
+  margin-top: 1rem;
+  text-decoration: none;
+}
