@@ -1,7 +1,26 @@
 /* ==========================================================================
-   STYLE CSS - Simulador AWS
+   STYLE CSS - Cloud Academy A3
    Arquitetura Baseada em Clean Code e Agrupamento por Componentes
    ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   BOOT OVERLAY — Tela de loading inicial (app-boot-overlay)
+   Exibida enquanto o App Shell inicializa. Oculta após autenticação.
+   -------------------------------------------------------------------------- */
+
+#app-boot-overlay {
+  background-color: var(--a3-primary-dark);
+  transition: opacity 0.3s ease;
+}
+
+/* --------------------------------------------------------------------------
+   SCREEN TRANSITIONS — Transição fluida entre telas (fade-in reutilizado)
+   -------------------------------------------------------------------------- */
+
+/* Garante que cada screen oculta não afeta layout */
+[id^="screen-"].hidden {
+  display: none !important;
+}
 
 /* --------------------------------------------------------------------------
    1. FONTES

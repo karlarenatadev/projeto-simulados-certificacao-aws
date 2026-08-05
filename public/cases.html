@@ -221,29 +221,8 @@
         getApiStatus,
       } from "./js/cases/caseManager.js";
 
-      // ---- Theme ----
-      const themeToggle = document.getElementById("theme-toggle");
-      const themeIcon = document.getElementById("theme-icon");
-      const body = document.getElementById("cases-page-body");
-
-      function applyTheme(dark) {
-        document.documentElement.classList.toggle("dark", dark);
-        body.classList.toggle("dark", dark);
-        themeIcon.className = dark
-          ? "fa-solid fa-sun text-base md:text-xl"
-          : "fa-solid fa-moon text-base md:text-xl";
-      }
-
-      const savedDark = localStorage.getItem("theme") === "dark";
-      applyTheme(savedDark);
-
-      themeToggle.addEventListener("click", () => {
-        const isDark = document.documentElement.classList.contains("dark");
-        applyTheme(!isDark);
-        localStorage.setItem("theme", !isDark ? "dark" : "light");
-      });
-
       // ---- Render helpers ----
+      // Nota: tema gerenciado pelo shell.js via aws_sim_theme (Design System)
       function renderCertTags(certifications) {
         if (!Array.isArray(certifications) || certifications.length === 0)
           return "";
@@ -343,10 +322,9 @@
         if (status.fallbackUsed) {
           const banner = document.createElement("div");
           banner.id = "offline-banner";
-          banner.style.cssText =
-            "background:var(--a3-surface-warning); color:var(--text-main); padding:0.75rem; border-radius:8px; margin-bottom:1rem; text-align:center; font-size:0.9rem; border: 1px solid var(--a3-accent); display:flex; align-items:center; justify-content:center; gap:0.5rem;";
+          banner.className = "cases-offline-banner";
           banner.innerHTML =
-            '<i class="fa-solid fa-wifi-slash" style="color:var(--a3-warning);"></i> Não foi possível conectar ao servidor. Usando modo offline.';
+            '<i class="fa-solid fa-wifi-slash cases-offline-banner-icon" aria-hidden="true"></i> Não foi possível conectar ao servidor. Usando modo offline.';
           grid.parentNode.insertBefore(banner, grid);
         }
 

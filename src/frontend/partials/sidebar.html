@@ -1,0 +1,53 @@
+<!--
+  sidebar.html — Fragmento canônico da Sidebar do Cloud Academy A3
+
+  Este arquivo define a estrutura HTML da sidebar de navegação.
+  Ele é injetado dinamicamente pelo shell.js via fetch em qualquer página
+  que inclua <nav id="left-sidebar"> vazio.
+
+  NÃO usar como página standalone — é um fragmento de template.
+
+  Geração dinâmica:
+    buildSidebar(user) em shell.js reconstrói o .left-sidebar-nav
+    com os itens corretos para o role do usuário autenticado.
+
+  Estrutura:
+    .left-sidebar-nav       → itens principais (gerados por JS)
+    .left-sidebar-footer    → Perfil, Config, botão Recolher (gerado por JS)
+
+  Referência de IDs esperados pelo app.js:
+    sidebar-btn-hub         → showLearningHub()
+    sidebar-btn-quiz        → showQuizConfig() → screen-start
+    sidebar-btn-journey     → startJornada()
+    sidebar-btn-diagnostic  → startDiagnostic()
+    sidebar-btn-flashcards  → startFlashcards()
+    sidebar-btn-cases       → ./cases.html
+    sidebar-btn-resources   → ./resources.html
+    sidebar-btn-mistakes    → startMistakesQuiz() [oculto por padrão]
+    sidebar-btn-validation  → ./validation/valid.html [VALIDATOR/ADMIN]
+    sidebar-btn-profile     → ./profile.html [footer]
+    sidebar-btn-settings    → ./settings.html [footer]
+    sidebar-collapse-btn    → toggle sidebar-closed [footer]
+-->
+<nav id="left-sidebar" aria-label="Menu principal" role="navigation">
+  <!--
+    .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
+    no momento do boot. O botão abaixo é apenas um fallback visual
+    para Progressive Enhancement (evita flash de sidebar vazia).
+  -->
+  <div class="left-sidebar-nav">
+    <button
+      id="sidebar-btn-hub"
+      class="left-sidebar-item left-sidebar-item-primary"
+      aria-label="Learning Hub — Painel Principal"
+      title="Learning Hub — Painel Principal"
+    >
+      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <span class="left-sidebar-item-label">Hub</span>
+    </button>
+  </div>
+  <!--
+    .left-sidebar-footer é gerado dinamicamente por buildSidebar(user).
+    Contém: divisor, Perfil, Config, divisor, botão Recolher.
+  -->
+</nav>

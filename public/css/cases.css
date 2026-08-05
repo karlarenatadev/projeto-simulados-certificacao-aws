@@ -142,6 +142,26 @@
   margin-left: auto;
 }
 
+/* Banner de modo offline */
+.cases-offline-banner {
+  background: var(--a3-surface-warning);
+  color: var(--text-main);
+  padding: var(--space-12);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-16);
+  text-align: center;
+  font-size: var(--text-sm);
+  border: 1px solid var(--a3-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+.cases-offline-banner-icon {
+  color: var(--a3-warning);
+}
+
 .cases-filter-select {
   padding: 0.45rem 0.9rem;
   border: 1.5px solid var(--border-theme);

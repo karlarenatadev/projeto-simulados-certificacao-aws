@@ -46,7 +46,7 @@ const SIDEBAR_ITEMS = [
     id: "sidebar-btn-quiz",
     label: "Simulação",
     icon: "fa-solid fa-play",
-    action: "startQuiz",
+    action: "showQuizConfig",
     roles: ["*"],
     i18n: "sidebar_start",
     title: "Iniciar Simulação",
@@ -453,11 +453,7 @@ export function buildSidebar(user) {
       <i class="fa-solid fa-angles-left sidebar-collapse-icon" aria-hidden="true"></i>
       <span class="sidebar-collapse-label">Recolher</span>
     `;
-    collapseBtn.addEventListener("click", () => {
-      const isClosed = document.body.classList.toggle("sidebar-closed");
-      localStorage.setItem("sidebar_closed", String(isClosed));
-      _syncSidebarToggleState(isClosed);
-    });
+    // Nota: o handler de click é gerenciado por event delegation em initLeftSidebarToggleShell
     footer.appendChild(collapseBtn);
 
     sidebar.appendChild(footer);
@@ -556,32 +552,39 @@ function _syncSidebarToggleState(isClosed) {
 }
 
 export function initLeftSidebarToggleShell() {
-  // Restaura estado salvo antes de vincular eventos
+  // Padrão: sidebar ABERTA. Só fecha se o usuário explicitamente escolheu fechar.
+  // 'null' = primeira visita = aberta. 'true' = usuário fechou. 'false' = usuário abriu.
   const saved = localStorage.getItem("sidebar_closed");
-  if (saved === "true") {
+  const isClosed = saved === "true";
+
+  if (isClosed) {
     document.body.classList.add("sidebar-closed");
     _syncSidebarToggleState(true);
+  } else {
+    // Garante que a classe não está presente por algum estado residual
+    document.body.classList.remove("sidebar-closed");
+    _syncSidebarToggleState(false);
   }
 
   // Botão no header (cloud-sidebar-toggle)
   const headerBtn = document.getElementById("cloud-sidebar-toggle");
   if (headerBtn) {
     headerBtn.addEventListener("click", () => {
-      const isClosed = document.body.classList.toggle("sidebar-closed");
-      localStorage.setItem("sidebar_closed", String(isClosed));
-      _syncSidebarToggleState(isClosed);
+      const nowClosed = document.body.classList.toggle("sidebar-closed");
+      localStorage.setItem("sidebar_closed", String(nowClosed));
+      _syncSidebarToggleState(nowClosed);
     });
   }
 
   // Botão no rodapé da sidebar (sidebar-collapse-btn)
-  const collapseBtn = document.getElementById("sidebar-collapse-btn");
-  if (collapseBtn) {
-    collapseBtn.addEventListener("click", () => {
-      const isClosed = document.body.classList.toggle("sidebar-closed");
-      localStorage.setItem("sidebar_closed", String(isClosed));
-      _syncSidebarToggleState(isClosed);
-    });
-  }
+  // Nota: buildSidebar() cria este botão dinamicamente — bindamos aqui via delegation
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("#sidebar-collapse-btn");
+    if (!btn) return;
+    const nowClosed = document.body.classList.toggle("sidebar-closed");
+    localStorage.setItem("sidebar_closed", String(nowClosed));
+    _syncSidebarToggleState(nowClosed);
+  });
 }
 
 // ─── INICIALIZAÇÃO PRINCIPAL DO SHELL ─────────────────────────────────────────

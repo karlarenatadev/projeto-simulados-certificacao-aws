@@ -2161,9 +2161,28 @@ body.sidebar-collapsed .sidebar-collapse-btn .sidebar-collapse-icon {
 
 /* --- style.css (legacy) --- */
 /* ==========================================================================
-   STYLE CSS - Simulador AWS
+   STYLE CSS - Cloud Academy A3
    Arquitetura Baseada em Clean Code e Agrupamento por Componentes
    ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   BOOT OVERLAY — Tela de loading inicial (app-boot-overlay)
+   Exibida enquanto o App Shell inicializa. Oculta após autenticação.
+   -------------------------------------------------------------------------- */
+
+#app-boot-overlay {
+  background-color: var(--a3-primary-dark);
+  transition: opacity 0.3s ease;
+}
+
+/* --------------------------------------------------------------------------
+   SCREEN TRANSITIONS — Transição fluida entre telas (fade-in reutilizado)
+   -------------------------------------------------------------------------- */
+
+/* Garante que cada screen oculta não afeta layout */
+[id^="screen-"].hidden {
+  display: none !important;
+}
 
 /* --------------------------------------------------------------------------
    1. FONTES
@@ -4424,6 +4443,26 @@ select {
   font-size: var(--text-xs);
   color: var(--text-muted);
   margin-left: auto;
+}
+
+/* Banner de modo offline */
+.cases-offline-banner {
+  background: var(--a3-surface-warning);
+  color: var(--text-main);
+  padding: var(--space-12);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-16);
+  text-align: center;
+  font-size: var(--text-sm);
+  border: 1px solid var(--a3-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+.cases-offline-banner-icon {
+  color: var(--a3-warning);
 }
 
 .cases-filter-select {

@@ -262,6 +262,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   // FASE 6: Learning Hub é a Home — exibe como tela inicial
   showLearningHub();
 
+  // Remove o boot overlay — a aplicação está pronta
+  const bootOverlay = document.getElementById("app-boot-overlay");
+  if (bootOverlay) {
+    bootOverlay.style.transition = "opacity 0.3s ease";
+    bootOverlay.style.opacity = "0";
+    setTimeout(() => bootOverlay.remove(), 320);
+  }
+
   // FASE 5: Setup de Certificação
   const certSelect = document.getElementById("certification-select");
 
@@ -502,7 +510,7 @@ function wireUIActions() {
 
   // ── SIDEBAR ESQUERDA ──────────────────────────────────────────────────────
   bindClick("sidebar-btn-hub", showLearningHub);
-  bindClick("sidebar-btn-quiz", startQuiz);
+  bindClick("sidebar-btn-quiz", showQuizConfig);
   bindClick("sidebar-btn-journey", startJornada);
   bindClick("sidebar-btn-diagnostic", startDiagnostic);
   bindClick("sidebar-btn-flashcards", startFlashcards);
@@ -1426,11 +1434,16 @@ function showScreen(screenName) {
   const screens = ["hub", "start", "quiz", "results", "flashcards", "jornada"];
   screens.forEach((s) => {
     const el = document.getElementById(`screen-${s}`);
-    if (el) el.classList.add("hidden");
+    if (el) {
+      el.classList.add("hidden");
+      el.classList.remove("fade-in"); // reset para próxima transição
+    }
   });
   const target = document.getElementById(`screen-${screenName}`);
   if (target) {
     target.classList.remove("hidden");
+    // Force reflow para garantir que a animação reinicia
+    void target.offsetWidth;
     target.classList.add("flex", "flex-col", "fade-in");
   }
 
@@ -1610,6 +1623,15 @@ function renderLearningHubData() {
 
 /** Navega para a tela de configuração do simulado (screen-start) */
 function showLearningHubQuickStart() {
+  showScreen("start");
+}
+
+/**
+ * Navega para a tela de configuração do simulado sem iniciar o quiz.
+ * Usado pela sidebar (sidebar-btn-quiz) para que o usuário configure
+ * certificação, dificuldade e quantidade antes de iniciar.
+ */
+function showQuizConfig() {
   showScreen("start");
 }
 
@@ -3113,6 +3135,7 @@ function updateSidebarProgress() {
 // EXPOSIÇÃO GLOBAL
 
 window.startQuiz = startQuiz;
+window.showQuizConfig = showQuizConfig;
 window.submitAnswer = submitAnswer;
 window.nextQuestion = nextQuestion;
 window.finishQuiz = finishQuiz;

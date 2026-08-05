@@ -7,7 +7,7 @@
       name="description"
       content="Simulador de Certificações AWS com Motor IA - Prepare-se para os exames AWS com questões realistas e análise inteligente de desempenho"
     />
-    <title>Simulador IA - Certificações AWS</title>
+    <title>Cloud Academy A3 — Certificações AWS</title>
 
     <!-- Google tag (gtag.js) -->
     <script
@@ -60,6 +60,40 @@
   <body
     class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
   >
+    <!-- ================================================================
+         BOOT OVERLAY — Exibido durante a inicialização do App Shell.
+         Ocultado por app.js após autenticação e renderização inicial.
+         Evita layout shift e flash de conteúdo não hidratado.
+         ================================================================ -->
+    <div
+      id="app-boot-overlay"
+      class="fixed inset-0 z-[9998] flex items-center justify-center bg-[#001863]"
+      aria-hidden="true"
+    >
+      <div class="flex flex-col items-center gap-4">
+        <i class="fa-solid fa-cloud text-[#F53199] text-5xl animate-pulse"></i>
+        <p
+          class="text-white text-sm font-semibold tracking-widest uppercase opacity-70"
+        >
+          Cloud Academy A3
+        </p>
+        <div class="flex gap-1.5 mt-2">
+          <span
+            class="w-2 h-2 rounded-full bg-[#F53199] animate-bounce"
+            style="animation-delay: 0ms"
+          ></span>
+          <span
+            class="w-2 h-2 rounded-full bg-[#F53199] animate-bounce"
+            style="animation-delay: 150ms"
+          ></span>
+          <span
+            class="w-2 h-2 rounded-full bg-[#F53199] animate-bounce"
+            style="animation-delay: 300ms"
+          ></span>
+        </div>
+      </div>
+    </div>
+    <!-- ================================================================ -->
     <!-- ===== LOGIN OVERLAY ===== -->
     <!-- Exibido quando não há sessão válida. Ocultado por app.js após autenticação. -->
     <div
