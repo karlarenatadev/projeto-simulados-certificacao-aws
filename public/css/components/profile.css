@@ -1,0 +1,221 @@
+/* ==========================================================================
+   PROFILE CSS
+   Página de perfil do usuário — public/profile.html
+   Utiliza exclusivamente tokens do Design System (tokens.css).
+   ========================================================================== */
+
+/* ── Layout principal ──────────────────────────────────────────────────── */
+
+.profile-main {
+  padding: var(--space-24) var(--space-16);
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+/* ── Cabeçalho do perfil ───────────────────────────────────────────────── */
+
+.profile-header-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-24);
+  padding: var(--space-32);
+}
+
+.profile-avatar-wrap {
+  flex-shrink: 0;
+}
+
+.profile-avatar-xl {
+  width: 5rem;
+  height: 5rem;
+  font-size: var(--text-3xl);
+  background: linear-gradient(135deg, var(--a3-accent), var(--a3-tech-blue));
+  color: var(--a3-text-inverse);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--a3-accent) 40%, transparent);
+}
+
+.profile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.profile-name {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--text-strong);
+  margin: 0;
+}
+
+.profile-email {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── Seção ─────────────────────────────────────────────────────────────── */
+
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.profile-section-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin: 0;
+}
+
+/* ── Grade de estatísticas ─────────────────────────────────────────────── */
+
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-12);
+}
+
+@media (min-width: 600px) {
+  .profile-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.profile-stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-16);
+  text-align: center;
+}
+
+.profile-stat-icon {
+  font-size: var(--text-2xl);
+}
+
+.profile-stat-icon-quiz {
+  color: var(--a3-tech-blue);
+}
+
+.profile-stat-icon-best {
+  color: var(--a3-warning);
+}
+
+.profile-stat-icon-streak {
+  color: var(--a3-accent);
+}
+
+.profile-stat-icon-xp {
+  color: #f5a623;
+}
+
+.profile-stat-value {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--text-strong);
+  margin: 0;
+}
+
+.profile-stat-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+/* ── Lista de certificações ────────────────────────────────────────────── */
+
+.profile-certs-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.profile-cert-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  padding: var(--space-12) var(--space-16);
+}
+
+.profile-cert-icon {
+  font-size: var(--text-xl);
+  color: var(--a3-tech-blue);
+  width: 1.5rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.profile-cert-info {
+  flex: 1;
+}
+
+.profile-cert-name {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-strong);
+  margin: 0;
+}
+
+.profile-cert-meta {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── Grade de conquistas ───────────────────────────────────────────────── */
+
+.profile-badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--space-12);
+}
+
+.profile-badge-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-16);
+  text-align: center;
+}
+
+.profile-badge-icon {
+  font-size: var(--text-2xl);
+  color: #f5a623;
+}
+
+.profile-badge-name {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 0;
+  text-align: center;
+}
+
+/* ── Estado vazio ──────────────────────────────────────────────────────── */
+
+.profile-empty-hint {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 0;
+}

@@ -125,6 +125,23 @@
   white-space: nowrap;
 }
 
+/* Ícone de filtro com cor primária */
+.cases-filter-icon {
+  color: var(--a3-tech-blue);
+}
+
+/* Label de filtro com espaço esquerdo */
+.cases-filter-label-gap {
+  margin-left: var(--space-8);
+}
+
+/* Contador de resultados */
+.cases-count-text {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
 .cases-filter-select {
   padding: 0.45rem 0.9rem;
   border: 1.5px solid var(--border-theme);
@@ -959,6 +976,7 @@
 
 .skeleton-line.tall {
   height: 20px;
+  margin-top: 1.5rem;
   margin-bottom: 0.5rem;
 }
 

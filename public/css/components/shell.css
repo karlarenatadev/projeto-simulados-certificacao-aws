@@ -1,0 +1,242 @@
+/* ==========================================================================
+   SHELL CSS
+   App Shell — UserMenu, UserDropdown e componentes de identidade do usuário
+   Utiliza exclusivamente tokens do Design System (tokens.css).
+   ========================================================================== */
+
+/* ── UserMenu (botão no header) ─────────────────────────────────────────── */
+
+.a3-user-menu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  color: var(--a3-text-inverse);
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.a3-user-menu:hover {
+  background-color: color-mix(in srgb, var(--a3-text-inverse) 10%, transparent);
+}
+
+.a3-user-menu:focus-visible {
+  outline: 2px solid var(--a3-accent);
+  outline-offset: 2px;
+}
+
+/* ── Avatar ─────────────────────────────────────────────────────────────── */
+
+.a3-avatar {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--a3-accent), var(--a3-tech-blue));
+  color: var(--a3-text-inverse);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0;
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--a3-accent) 40%, transparent);
+}
+
+.a3-avatar-lg {
+  width: 2.75rem;
+  height: 2.75rem;
+  font-size: var(--text-base);
+}
+
+/* ── Informações do usuário (nome + role) ──────────────────────────────── */
+
+.a3-user-info {
+  display: none;
+  flex-direction: column;
+  line-height: 1.3;
+  max-width: 120px;
+}
+
+@media (min-width: 768px) {
+  .a3-user-info {
+    display: flex;
+  }
+}
+
+.a3-user-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--a3-text-inverse);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.a3-user-role {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 1px var(--space-4);
+  border-radius: var(--radius-sm);
+  width: fit-content;
+}
+
+.a3-role-student {
+  background-color: color-mix(in srgb, var(--a3-tech-blue) 20%, transparent);
+  color: var(--a3-sky-frost);
+}
+
+.a3-role-validator {
+  background-color: color-mix(in srgb, var(--a3-success) 20%, transparent);
+  color: var(--a3-success);
+}
+
+.a3-role-admin {
+  background-color: color-mix(in srgb, var(--a3-accent) 25%, transparent);
+  color: var(--a3-accent);
+}
+
+.a3-user-chevron {
+  font-size: var(--text-xs);
+  opacity: 0.7;
+  transition: transform 0.2s ease;
+}
+
+.a3-user-menu[aria-expanded="true"] .a3-user-chevron {
+  transform: rotate(180deg);
+}
+
+/* ── Dropdown ───────────────────────────────────────────────────────────── */
+
+.a3-user-dropdown {
+  position: absolute;
+  top: calc(100% + var(--space-8));
+  right: 0;
+  min-width: 220px;
+  background-color: var(--a3-surface);
+  border: 1px solid var(--a3-border-default);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--a3-shadow-card);
+  z-index: 200;
+  padding: var(--space-8) 0;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.97);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.a3-user-dropdown.is-open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.dark .a3-user-dropdown {
+  background-color: #0d1a3a;
+  border-color: color-mix(in srgb, var(--a3-text-inverse) 10%, transparent);
+}
+
+/* Header do dropdown */
+.a3-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-12) var(--space-16);
+}
+
+.a3-dropdown-name {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-strong);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.a3-dropdown-email {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+/* Divider */
+.a3-dropdown-divider {
+  height: 1px;
+  background-color: var(--a3-border-soft);
+  margin: var(--space-4) 0;
+}
+
+/* Item do dropdown */
+.a3-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  width: 100%;
+  padding: var(--space-8) var(--space-16);
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.a3-dropdown-item:hover {
+  background-color: var(--a3-surface-soft);
+}
+
+.a3-dropdown-item i {
+  width: 1rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  flex-shrink: 0;
+}
+
+.dark .a3-dropdown-item {
+  color: var(--a3-text-inverse);
+}
+
+.dark .a3-dropdown-item:hover {
+  background-color: color-mix(in srgb, var(--a3-text-inverse) 8%, transparent);
+}
+
+/* Item de perigo (Logout) */
+.a3-dropdown-item-danger {
+  color: var(--a3-danger);
+}
+
+.a3-dropdown-item-danger i {
+  color: var(--a3-danger);
+}
+
+.a3-dropdown-item-danger:hover {
+  background-color: var(--a3-surface-danger);
+}
+
+.dark .a3-dropdown-item-danger {
+  color: var(--a3-danger);
+}
+
+.dark .a3-dropdown-item-danger:hover {
+  background-color: color-mix(in srgb, var(--a3-danger) 12%, transparent);
+}
+
+/* ── Wrapper do UserMenu no header ─────────────────────────────────────── */
+
+#user-menu-container {
+  position: relative;
+}

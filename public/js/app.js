@@ -18,6 +18,12 @@ import { renderTrail } from "./gamificacao/trailManager.js";
 import { renderGuildDashboard } from "./gamificacao/leaderboard.js";
 import { renderBadges } from "./gamificacao/badges.js";
 import {
+  renderUserMenu,
+  buildSidebar,
+  initThemeShell,
+  initLeftSidebarToggleShell,
+} from "./shell.js";
+import {
   togglePomodoroWidget,
   togglePomodoro,
   resetPomodoro,
@@ -202,6 +208,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // FASE 0: Autenticação — bloqueia o boot até ter sessão válida
+  let authenticatedUser = null;
   try {
     let user = await AuthService.restoreSession();
 
@@ -211,6 +218,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Sessão garantida a partir daqui
+    authenticatedUser = user;
     await quizManager.initialize(user.id);
     logger.info(`✓ Sessão ativa: ${user.email || user.id} (${user.role})`);
   } catch (error) {
@@ -218,6 +226,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Exibe overlay de login como fallback de segurança
     try {
       const user = await showLoginUI();
+      authenticatedUser = user;
       await quizManager.initialize(user.id);
     } catch (_e) {
       logger.error("Impossível inicializar sem autenticação.");
@@ -226,8 +235,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // FASE 1: Configurações Base (Sincronizadas)
-  initTheme();
+  initThemeShell();
   initializeUI(uiState.language);
+
+  // FASE 1.5: App Shell — UserMenu e Sidebar dinâmica por role
+  renderUserMenu(authenticatedUser);
+  buildSidebar(authenticatedUser);
 
   // FASE 2: Traduções (Só títulos estáticos, sem destruir conteúdo)
   updateSidebarTexts();
@@ -243,9 +256,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   initStudyNow({ startFilteredQuiz: startWeakestDomainQuiz });
   refreshStudyNow();
 
-  // Inicializa a sidebar esquerda
-  updateSidebarActiveItem("start");
-  initLeftSidebarToggle();
+  // Inicializa a sidebar esquerda (toggle via shell.js)
+  initLeftSidebarToggleShell();
+
+  // FASE 6: Learning Hub é a Home — exibe como tela inicial
+  showLearningHub();
 
   // FASE 5: Setup de Certificação
   const certSelect = document.getElementById("certification-select");
@@ -1260,8 +1275,8 @@ function submitAnswer() {
   if (!result.isCorrect) {
     let userText = isMulti
       ? uiState.tempSelectedAnswer
-        .map((i) => question.options[i])
-        .join("<br>• ")
+          .map((i) => question.options[i])
+          .join("<br>• ")
       : question.options[uiState.tempSelectedAnswer];
     feedbackHTML += `<div class="a3-feedback a3-feedback-error mb-2"><strong>${t("your_answer", uiState.language)}</strong><br>• ${userText}</div>`;
   }
@@ -1395,7 +1410,7 @@ function toggleFlag() {
   const certId = getActiveCertificationId();
 
   if (uiState.flags.includes(currentIdx)) {
-    uiState.flags = uiState.flags.filter(i => i !== currentIdx);
+    uiState.flags = uiState.flags.filter((i) => i !== currentIdx);
     flagBtn.classList.remove("text-orange-500");
     storageManager.removeReviewQuestion(certId, question);
   } else {
@@ -1461,6 +1476,41 @@ function renderLearningHubData() {
   const certId = getActiveCertificationId() || "clf-c02";
   const mistakes = storageManager.getMistakes(certId);
 
+  // ── Empty state para primeiro acesso ──
+  const metricsCard = document.querySelector(".lh-metrics-card");
+  const emptyStateId = "lh-empty-state";
+  const existingEmpty = document.getElementById(emptyStateId);
+
+  if (safeHistory.length === 0) {
+    // Injeta empty state acima do metrics card se ainda não existe
+    if (metricsCard && !existingEmpty) {
+      const emptyEl = document.createElement("div");
+      emptyEl.id = emptyStateId;
+      emptyEl.className = "lh-empty-state";
+      emptyEl.innerHTML = `
+        <div class="lh-empty-icon" aria-hidden="true">
+          <i class="fa-solid fa-rocket"></i>
+        </div>
+        <p class="lh-empty-title">Bem-vindo à Cloud Academy A3!</p>
+        <p class="lh-empty-desc">
+          Você ainda não realizou nenhum simulado. Comece agora e acompanhe
+          sua evolução para as certificações AWS.
+        </p>
+        <button class="a3-btn a3-btn-primary lh-empty-cta" onclick="showLearningHubQuickStart()">
+          <i class="fa-solid fa-play"></i>
+          Iniciar primeiro simulado
+        </button>
+      `;
+      metricsCard.parentNode.insertBefore(emptyEl, metricsCard);
+    }
+    // Esconde o metrics card quando não há dados
+    if (metricsCard) metricsCard.classList.add("hidden");
+  } else {
+    // Remove o empty state se já foi realizado algum simulado
+    if (existingEmpty) existingEmpty.remove();
+    if (metricsCard) metricsCard.classList.remove("hidden");
+  }
+
   // ── Melhor nota ──
   const bestEl = document.getElementById("hub-best-score");
   const bestHintEl = document.getElementById("hub-best-score-hint");
@@ -1481,7 +1531,9 @@ function renderLearningHubData() {
   const avgHintEl = document.getElementById("hub-avg-score-hint");
   if (avgEl) {
     if (safeHistory.length > 0) {
-      const avg = safeHistory.reduce((s, h) => s + (h.percentage || 0), 0) / safeHistory.length;
+      const avg =
+        safeHistory.reduce((s, h) => s + (h.percentage || 0), 0) /
+        safeHistory.length;
       const awsAvg = Math.floor((avg / 100) * 900) + 100;
       avgEl.textContent = String(awsAvg);
       if (avgHintEl) avgHintEl.textContent = `${avg.toFixed(0)}% média`;
@@ -1516,7 +1568,9 @@ function renderLearningHubData() {
       const last = safeHistory[safeHistory.length - 1];
       const awsScore = Math.floor(((last.percentage || 0) / 100) * 900) + 100;
       const passed = awsScore >= 700;
-      const dateStr = last.date ? new Date(last.date).toLocaleDateString("pt-BR") : "—";
+      const dateStr = last.date
+        ? new Date(last.date).toLocaleDateString("pt-BR")
+        : "—";
       const certNames = {
         "clf-c02": "Cloud Practitioner",
         "saa-c03": "Solutions Architect",
@@ -1545,9 +1599,11 @@ function renderLearningHubData() {
   if (insightEl) {
     if (safeHistory.length > 0) {
       const insight = computeSmartInsight(safeHistory);
-      insightEl.textContent = insight || "Continue praticando para obter insights personalizados.";
+      insightEl.textContent =
+        insight || "Continue praticando para obter insights personalizados.";
     } else {
-      insightEl.textContent = "Realize seu primeiro simulado para receber análises personalizadas de IA sobre seus pontos fortes e áreas de melhoria.";
+      insightEl.textContent =
+        "Realize seu primeiro simulado para receber análises personalizadas de IA sobre seus pontos fortes e áreas de melhoria.";
     }
   }
 }
@@ -1769,21 +1825,13 @@ function renderDetailedReportUI(results) {
               <div class="space-y-4">
       `;
 
-<<<<<<< HEAD
-    uiState.flags.forEach(qIdx => {
-=======
     uiState.flags.forEach((qIdx) => {
->>>>>>> f062799 (Refactor code for improved readability and consistency across multiple files)
       const q = engine.state.questions[qIdx];
       if (!q) return;
 
       const isMulti = Array.isArray(q.correct);
       let correctText = isMulti
-<<<<<<< HEAD
-        ? q.correct.map(i => q.options[i]).join("<br>• ")
-=======
         ? q.correct.map((i) => q.options[i]).join("<br>• ")
->>>>>>> f062799 (Refactor code for improved readability and consistency across multiple files)
         : q.options[q.correct];
 
       html += `
@@ -1844,14 +1892,15 @@ function renderDetailedReportUI(results) {
                     <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">${t("your_answer_label", uiState.language)}</span>
                     <span class="${colorClass} font-semibold block leading-snug">${icon} ${isMulti ? "<br>• " : ""}${userText}</span>
                 </div>
-                ${!ans.isCorrect
-        ? `
+                ${
+                  !ans.isCorrect
+                    ? `
                 <div class="mt-2 pt-2 border-t border-gray-200 dark:border-slate-600">
                     <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">${t("correct_answer_label", uiState.language)}</span>
                     <span class="print-text-green text-green-600 dark:text-green-400 font-semibold block leading-snug">✅ ${isMulti ? "<br>• " : ""}${correctText}</span>
                 </div>`
-        : ""
-      }
+                    : ""
+                }
             </div>
             <div class="explanation-print mt-4 a3-feedback print-no-bg">
                 <strong class="text-main block mb-2 print-text-black">${t("explanation_label", uiState.language)}</strong>
@@ -1879,11 +1928,11 @@ function renderDiagnosticReport(results) {
   lastDiagnosticRecommendation =
     weakDomains.length > 0
       ? {
-        certificationId: results.certId,
-        weakDomains,
-        generatedAt: new Date().toISOString(),
-        source: "diagnostic",
-      }
+          certificationId: results.certId,
+          weakDomains,
+          generatedAt: new Date().toISOString(),
+          source: "diagnostic",
+        }
       : null;
 
   const weakDomainsHtml =
@@ -1895,14 +1944,14 @@ function renderDiagnosticReport(results) {
             </h3>
             <div class="flex flex-wrap gap-2">
                 ${weakDomains
-        .map(
-          (domain) => `
+                  .map(
+                    (domain) => `
                     <span class="a3-skill-badge a3-skill-badge-danger">
                         ${domain.name} - ${domain.percentage.toFixed(0)}%
                     </span>
                 `,
-        )
-        .join("")}
+                  )
+                  .join("")}
             </div>
         </div>
     `
@@ -1967,12 +2016,13 @@ function renderDiagnosticReport(results) {
             <button onclick="goHome()" class="a3-button-secondary py-3 px-8 text-lg w-auto">
                 Voltar ao Início
             </button>
-            ${weakDomains.length > 0
-      ? `<button id="btn-start-personalized-diagnostic-quiz" class="a3-button-primary py-3 px-8 text-lg w-auto">
+            ${
+              weakDomains.length > 0
+                ? `<button id="btn-start-personalized-diagnostic-quiz" class="a3-button-primary py-3 px-8 text-lg w-auto">
                     ${t("practice_weak_domains", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>
                 </button>`
-      : ""
-    }
+                : ""
+            }
         </div>
     `;
 
@@ -2318,11 +2368,11 @@ function updateSidebarActiveItem(screenName) {
   }
 }
 
-
-
 /** Sincroniza o badge de erros na sidebar com o contador principal */
 function syncSidebarMistakesBadge(certId) {
-  const mistakes = storageManager.getMistakes(certId || getActiveCertificationId());
+  const mistakes = storageManager.getMistakes(
+    certId || getActiveCertificationId(),
+  );
   const count = mistakes.length;
   const sidebarBtn = document.getElementById("sidebar-btn-mistakes");
   const badge = document.getElementById("sidebar-mistakes-count");
@@ -2339,7 +2389,9 @@ function toggleLeftSidebar() {
   const cloudBtn = document.getElementById("cloud-sidebar-toggle");
   if (cloudBtn) {
     cloudBtn.setAttribute("aria-expanded", String(!isClosed));
-    cloudBtn.title = isClosed ? "Mostrar menu lateral" : "Esconder menu lateral";
+    cloudBtn.title = isClosed
+      ? "Mostrar menu lateral"
+      : "Esconder menu lateral";
   }
 }
 
@@ -2353,7 +2405,9 @@ function initLeftSidebarToggle() {
   const cloudBtn = document.getElementById("cloud-sidebar-toggle");
   if (cloudBtn) {
     cloudBtn.setAttribute("aria-expanded", String(!savedClosed));
-    cloudBtn.title = savedClosed ? "Mostrar menu lateral" : "Esconder menu lateral";
+    cloudBtn.title = savedClosed
+      ? "Mostrar menu lateral"
+      : "Esconder menu lateral";
   }
 
   const cloudIcon = document.getElementById("cloud-logo-icon");
@@ -3121,7 +3175,7 @@ window.startMission = async function (stageId) {
   ) {
     alert(
       t("mission_locked", uiState.language) ||
-      "Este módulo ainda está bloqueado. Complete os anteriores primeiro!",
+        "Este módulo ainda está bloqueado. Complete os anteriores primeiro!",
     );
     return;
   }
@@ -3368,14 +3422,14 @@ function renderStudyPlanBanner() {
                 </p>
                 <div class="flex flex-wrap gap-2">
                     ${domainNames
-      .map(
-        (name) => `
+                      .map(
+                        (name) => `
                         <span class="a3-skill-badge a3-skill-badge-danger text-xs">
                             ${name}
                         </span>
                     `,
-      )
-      .join("")}
+                      )
+                      .join("")}
                 </div>
             </div>
         </div>

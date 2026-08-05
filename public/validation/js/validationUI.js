@@ -50,25 +50,29 @@ class ValidationUI {
   }
 
   async init() {
-    // Tenta restaurar sessão do localStorage
+    // Tenta restaurar sessão do AuthService central (mesmas chaves do app principal)
+    // O AuthService persiste: aws_sim_user_id, aws_sim_user_role, aws_sim_user_nickname
     const userId = localStorage.getItem("aws_sim_user_id");
     const role = localStorage.getItem("aws_sim_user_role");
     const nickname = localStorage.getItem("aws_sim_user_nickname") || localStorage.getItem("aws_sim_user_name");
+    const email = localStorage.getItem("aws_sim_user_email") || "";
 
     if (userId && (role === "VALIDATOR" || role === "ADMIN")) {
-      this.currentUser = { id: userId, role, nickname: nickname || "Validador" };
+      // Sessão central válida com permissão de validação
+      this.currentUser = { id: userId, role, nickname: nickname || email.split("@")[0] || "Validador" };
       this.showAuthenticatedState();
       this.loadQuestions();
     } else if (userId) {
-      // Usuário autenticado mas sem role de validação
+      // Sessão central válida, mas sem permissão
       this.showMessage(
         `Acesso negado. Sua role (${role || "STUDENT"}) não permite validação de questões.`,
         "error",
       );
+      // Mantém formulário de login visível para eventual troca de conta
       if (this.elements.loginSection)
         this.elements.loginSection.classList.remove("hidden");
     } else {
-      // Sem sessão — exibe formulário de login
+      // Sem sessão central — exibe formulário de login do painel
       if (this.elements.loginSection)
         this.elements.loginSection.classList.remove("hidden");
       if (this.elements.questionsList)

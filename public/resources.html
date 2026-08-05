@@ -32,30 +32,35 @@
   </head>
 
   <body
-    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300"
+    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
   >
-    <!-- Header -->
+    <!-- Header — App Shell padronizado -->
     <header class="a3-header">
-      <a
-        href="index.html"
-        class="flex items-center gap-2 md:gap-3 cursor-pointer group no-underline text-white"
-        title="Voltar ao início"
-      >
-        <i
-          class="fa-solid fa-cloud text-[#F53199] text-xl md:text-2xl group-hover:scale-110 transition-transform"
-          aria-hidden="true"
-        ></i>
-        <div>
-          <h1
-            class="text-base md:text-xl font-bold leading-tight group-hover:text-primary transition-colors"
-          >
-            Cloud Academy A3
-          </h1>
-          <p class="text-[10px] md:text-xs text-gray-300">
-            Sua jornada para certificações AWS
-          </p>
-        </div>
-      </a>
+      <div class="flex items-center gap-2 md:gap-3">
+        <button
+          id="cloud-sidebar-toggle"
+          class="p-2 rounded-xl text-[#F53199] hover:bg-white/10 active:scale-95 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#F53199]/50 flex items-center justify-center group/cloud"
+          title="Esconder menu lateral"
+          aria-label="Alternar menu lateral"
+          aria-expanded="true"
+        >
+          <i
+            id="cloud-logo-icon"
+            class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
+            aria-hidden="true"
+          ></i>
+        </button>
+        <a href="index.html" class="a3-header-link" title="Voltar ao início">
+          <div>
+            <h1 class="text-base md:text-xl font-bold leading-tight">
+              Cloud Academy A3
+            </h1>
+            <p class="text-[10px] md:text-xs text-gray-300">
+              Sua jornada para certificações AWS
+            </p>
+          </div>
+        </a>
+      </div>
       <div class="a3-header-actions">
         <button
           id="btn-language"
@@ -67,7 +72,6 @@
             >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
           >
         </button>
-
         <button
           id="theme-toggle"
           class="a3-btn a3-btn-secondary"
@@ -79,39 +83,29 @@
             aria-hidden="true"
           ></i>
         </button>
-
-        <button
-          id="header-pomodoro-btn"
-          class="a3-btn a3-btn-secondary flex items-center gap-2 group"
-        >
-          <i class="fa-solid fa-stopwatch group-hover:animate-pulse"></i>
-          <span id="header-pomodoro-timer" class="font-mono">15:00</span>
-        </button>
-
         <button
           id="install-app"
           class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
         >
           <i class="fa-solid fa-download"></i> Baixar App
         </button>
-
-        <div
-          id="score-container"
-          style="display: none"
-          class="bg-gray-700 px-2 py-1 md:px-3 rounded-full flex items-center gap-1 md:gap-2"
-        >
-          <i
-            class="fa-solid fa-bullseye text-green-400 text-xs md:text-base"
-            aria-hidden="true"
-          ></i>
-          <span id="score-display" class="text-xs md:text-sm" aria-live="polite"
-            >0 / 0</span
-          >
-        </div>
+        <!-- User Menu — populado pelo shell.js -->
+        <div id="user-menu-container"></div>
       </div>
     </header>
 
-    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl">
+    <!-- ===== SIDEBAR ESQUERDA — gerada dinamicamente pelo shell.js ===== -->
+    <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
+      <div class="left-sidebar-nav">
+        <!-- Populado por buildSidebar() no shell.js -->
+      </div>
+    </nav>
+    <!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
+
+    <main
+      class="flex-grow container mx-auto px-4 py-8 max-w-6xl main-content-container"
+      id="resources-main"
+    >
       <div class="mb-8">
         <h2 class="text-3xl font-bold text-slate-800 mb-2">
           <i class="fa-solid fa-book-open-reader text-[#0033FF] mr-2"></i>
@@ -688,5 +682,33 @@
         </div>
       </div>
     </main>
+
+    <!-- App Shell: tema, idioma, UserMenu e Sidebar -->
+    <script type="module">
+      import { initShell } from "./js/shell.js";
+      document.addEventListener("DOMContentLoaded", () => initShell(null));
+    </script>
+
+    <!-- Listeners de tema e idioma via shell -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeBtn = document.getElementById("theme-toggle");
+        const langBtn = document.getElementById("btn-language");
+        if (themeBtn)
+          themeBtn.addEventListener(
+            "click",
+            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
+          );
+        if (langBtn)
+          langBtn.addEventListener("click", () => {
+            const lang = localStorage.getItem("aws_sim_lang") || "pt";
+            const next = lang === "pt" ? "en" : "pt";
+            localStorage.setItem("aws_sim_lang", next);
+            if (window.syncLanguageButtonShell)
+              window.syncLanguageButtonShell();
+            window.location.reload();
+          });
+      });
+    </script>
   </body>
 </html>
