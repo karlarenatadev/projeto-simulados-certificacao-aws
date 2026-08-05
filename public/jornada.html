@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Minha Jornada — Trilha gamificada de certificações AWS." />
+    <title>Minha Jornada — Cloud Academy A3</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "aws-dark": "#001863",
+              "aws-orange": "#0033FF",
+            },
+          },
+        },
+      };
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#001863" />
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
+
+    <!-- HEADER -->
+    <header class="a3-header">
+      <div class="flex items-center gap-2 md:gap-3">
+        <button
+          id="cloud-sidebar-toggle"
+          class="btn-sidebar-toggle flex items-center justify-center group/cloud"
+          title="Esconder menu lateral"
+          aria-label="Alternar menu lateral"
+          aria-expanded="true"
+        >
+          <i id="cloud-logo-icon" class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform" aria-hidden="true"></i>
+        </button>
+        <a href="index.html" class="a3-header-link" title="Voltar ao início">
+          <div>
+            <h1 class="text-base md:text-xl font-bold leading-tight">Cloud Academy A3</h1>
+            <p class="text-[10px] md:text-xs text-gray-300">Sua jornada para certificações AWS</p>
+          </div>
+        </a>
+      </div>
+      <div class="a3-header-actions">
+        <button id="btn-language" class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2" aria-label="Alternar idioma" title="Alternar idioma">
+          <span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>
+        </button>
+        <button id="theme-toggle" class="a3-btn a3-btn-secondary" aria-label="Alternar modo escuro">
+          <i id="theme-icon" class="fa-solid fa-moon text-base md:text-xl" aria-hidden="true"></i>
+        </button>
+        <button id="install-app" class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2">
+          <i class="fa-solid fa-download"></i> Baixar App
+        </button>
+        <div id="user-menu-container"></div>
+      </div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
+      <div class="left-sidebar-nav"></div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 a3-container py-6 main-content-container">
+        <div
+          id="screen-jornada"
+          class="hidden p-8 md:p-12 flex flex-col items-center h-full overflow-y-auto custom-scroll fade-in"
+        >
+          <div class="w-full max-w-2xl text-center mb-10">
+            <h2 class="text-3xl font-bold text-strong mb-2">
+              <i class="fa-solid fa-map-location-dot text-aws-orange mr-2"></i>
+              Jornada AWS
+            </h2>
+            <p class="text-muted dark:text-gray-400">
+              Complete os módulos para desbloquear novas certificações e ganhar
+              insígnias.
+            </p>
+          </div>
+
+          <div
+            class="trail-container w-full mb-16"
+            id="trail-render-area"
+          ></div>
+
+          <div class="w-full max-w-4xl mb-12">
+            <h3
+              class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2"
+            >
+              <i class="fa-solid fa-medal text-yellow-500"></i> Suas Conquistas
+            </h3>
+            <div
+              id="gamificacao-badges-grid"
+              class="grid grid-cols-2 md:grid-cols-4 gap-4"
+            ></div>
+          </div>
+
+        </div>
+
+    </main>
+
+    <!-- SCRIPTS -->
+    <script src="./js/sprintData.js"></script>
+    <script type="module" src="./js/app.js"></script>
+
+    <!-- App Shell: authGuard + initShell -->
+    <script type="module">
+      import { initShell } from "./js/shell.js";
+      import { AuthService } from "./js/services/authService.js";
+      document.addEventListener('DOMContentLoaded', async () => {
+        const user = await AuthService.restoreSession();
+        if (!user) {
+          window.location.replace('./index.html');
+          return;
+        }
+        initShell(user);
+      });
+    </script>
+
+    <!-- Listeners de tema e idioma via shell -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeBtn = document.getElementById("theme-toggle");
+        const langBtn = document.getElementById("btn-language");
+        if (themeBtn)
+          themeBtn.addEventListener("click", () => window.toggleDarkModeShell && window.toggleDarkModeShell());
+        if (langBtn)
+          langBtn.addEventListener("click", () => {
+            const lang = localStorage.getItem("aws_sim_lang") || "pt";
+            const next = lang === "pt" ? "en" : "pt";
+            localStorage.setItem("aws_sim_lang", next);
+            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
+            window.location.reload();
+          });
+      });
+    </script>
+
+  </body>
+</html>
