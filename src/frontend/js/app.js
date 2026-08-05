@@ -110,6 +110,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   initStudyNow({ startFilteredQuiz: startWeakestDomainQuiz });
   refreshStudyNow();
 
+  // Inicializa a sidebar esquerda
+  updateSidebarActiveItem("start");
+  initLeftSidebarToggle();
+
   // FASE 5: Setup de Certificação
   const certSelect = document.getElementById("certification-select");
 
@@ -261,6 +265,9 @@ function updateMistakesControls(certId = getActiveCertificationId()) {
   if (btnPractice) btnPractice.classList.toggle("hidden", !hasMistakes);
   if (btnClear) btnClear.classList.toggle("hidden", !hasMistakes);
   if (notice && !hasMistakes) notice.classList.add("hidden");
+
+  // Sincroniza badge na sidebar esquerda
+  syncSidebarMistakesBadge(certId);
 }
 
 function syncMistakeRecord(question, result) {
@@ -342,6 +349,19 @@ function wireUIActions() {
     startPersonalizedDiagnosticQuiz,
   );
   bindClick("sprint-start-btn", startMicroSprint);
+
+  // ── SIDEBAR ESQUERDA ──────────────────────────────────────────────────────
+  bindClick("sidebar-btn-hub", showLearningHub);
+  bindClick("sidebar-btn-quiz", startQuiz);
+  bindClick("sidebar-btn-journey", startJornada);
+  bindClick("sidebar-btn-diagnostic", startDiagnostic);
+  bindClick("sidebar-btn-flashcards", startFlashcards);
+  bindClick("sidebar-btn-mistakes", startMistakesQuiz);
+  bindClick("cloud-sidebar-toggle", (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    toggleLeftSidebar();
+  });
+  // ─────────────────────────────────────────────────────────────────────────
 
   const flashcardContainer = document.getElementById("flashcard-container");
   if (flashcardContainer) {
@@ -858,9 +878,9 @@ function loadQuestionUI() {
   const flagBtn = document.getElementById("btn-flag");
   if (flagBtn) {
     if (uiState.flags.includes(progress.current - 1)) {
-        flagBtn.classList.add("text-orange-500");
+      flagBtn.classList.add("text-orange-500");
     } else {
-        flagBtn.classList.remove("text-orange-500");
+      flagBtn.classList.remove("text-orange-500");
     }
   }
 
@@ -1024,8 +1044,8 @@ function submitAnswer() {
   if (!result.isCorrect) {
     let userText = isMulti
       ? uiState.tempSelectedAnswer
-          .map((i) => question.options[i])
-          .join("<br>• ")
+        .map((i) => question.options[i])
+        .join("<br>• ")
       : question.options[uiState.tempSelectedAnswer];
     feedbackHTML += `<div class="a3-feedback a3-feedback-error mb-2"><strong>${t("your_answer", uiState.language)}</strong><br>• ${userText}</div>`;
   }
@@ -1134,26 +1154,26 @@ function finishQuiz() {
 function toggleFlag() {
   const flagBtn = document.getElementById("btn-flag");
   if (!flagBtn) return;
-  
+
   const currentIdx = engine.state.currentIndex;
   const question = engine.state.questions[currentIdx];
   const certId = getActiveCertificationId();
-  
+
   if (uiState.flags.includes(currentIdx)) {
-      uiState.flags = uiState.flags.filter(i => i !== currentIdx);
-      flagBtn.classList.remove("text-orange-500");
-      storageManager.removeReviewQuestion(certId, question);
+    uiState.flags = uiState.flags.filter(i => i !== currentIdx);
+    flagBtn.classList.remove("text-orange-500");
+    storageManager.removeReviewQuestion(certId, question);
   } else {
-      uiState.flags.push(currentIdx);
-      flagBtn.classList.add("text-orange-500");
-      storageManager.addReviewQuestion(certId, question);
+    uiState.flags.push(currentIdx);
+    flagBtn.classList.add("text-orange-500");
+    storageManager.addReviewQuestion(certId, question);
   }
 }
 
 //  TELAS E RELATÓRIOS
 
 function showScreen(screenName) {
-  const screens = ["start", "quiz", "results", "flashcards", "jornada"];
+  const screens = ["hub", "start", "quiz", "results", "flashcards", "jornada"];
   screens.forEach((s) => {
     const el = document.getElementById(`screen-${s}`);
     if (el) el.classList.add("hidden");
@@ -1163,7 +1183,146 @@ function showScreen(screenName) {
     target.classList.remove("hidden");
     target.classList.add("flex", "flex-col", "fade-in");
   }
+
+  // Restaura sidebar direita e layout ao sair do hub (exceto quiz que gerencia o próprio layout)
+  if (screenName !== "hub" && screenName !== "quiz") {
+    const sideInfo = document.getElementById("side-info");
+    const mainSection = document.getElementById("main-section");
+    if (sideInfo) sideInfo.classList.remove("hidden");
+    if (mainSection) {
+      mainSection.classList.add("lg:w-2/3");
+      mainSection.classList.remove("w-full");
+    }
+  }
+
+  updateSidebarActiveItem(screenName);
 }
+
+// ── LEARNING HUB ───────────────────────────────────────────────────────────
+
+function showLearningHub() {
+  // Esconde a sidebar direita — o hub ocupa toda a área principal
+  const sidebar = document.getElementById("side-info");
+  const mainSection = document.getElementById("main-section");
+  const scoreContainer = document.getElementById("score-container");
+  const missionHud = document.getElementById("mission-hud");
+
+  if (sidebar) sidebar.classList.add("hidden");
+  if (mainSection) {
+    mainSection.classList.remove("lg:w-2/3");
+    mainSection.classList.add("w-full");
+  }
+  if (scoreContainer) scoreContainer.style.display = "none";
+  if (missionHud) missionHud?.classList.add("hidden");
+
+  showScreen("hub");
+  renderLearningHubData();
+}
+
+function renderLearningHubData() {
+  const history = storageManager.getHistory();
+  const safeHistory = Array.isArray(history) ? history : [];
+  const gamification = storageManager.getGamification();
+  const certId = getActiveCertificationId() || "clf-c02";
+  const mistakes = storageManager.getMistakes(certId);
+
+  // ── Melhor nota ──
+  const bestEl = document.getElementById("hub-best-score");
+  const bestHintEl = document.getElementById("hub-best-score-hint");
+  if (bestEl) {
+    if (safeHistory.length > 0) {
+      const best = Math.max(...safeHistory.map((h) => h.percentage || 0));
+      const awsScale = Math.floor((best / 100) * 900) + 100;
+      bestEl.textContent = String(awsScale);
+      if (bestHintEl) bestHintEl.textContent = `${best.toFixed(0)}% de acerto`;
+    } else {
+      bestEl.textContent = "—";
+      if (bestHintEl) bestHintEl.textContent = "sem histórico";
+    }
+  }
+
+  // ── Média geral ──
+  const avgEl = document.getElementById("hub-avg-score");
+  const avgHintEl = document.getElementById("hub-avg-score-hint");
+  if (avgEl) {
+    if (safeHistory.length > 0) {
+      const avg = safeHistory.reduce((s, h) => s + (h.percentage || 0), 0) / safeHistory.length;
+      const awsAvg = Math.floor((avg / 100) * 900) + 100;
+      avgEl.textContent = String(awsAvg);
+      if (avgHintEl) avgHintEl.textContent = `${avg.toFixed(0)}% média`;
+    } else {
+      avgEl.textContent = "—";
+      if (avgHintEl) avgHintEl.textContent = "sem histórico";
+    }
+  }
+
+  // ── Sequência ──
+  const streakEl = document.getElementById("hub-streak");
+  if (streakEl) {
+    streakEl.textContent = String(gamification?.currentStreak || 0);
+  }
+
+  // ── Erros pendentes ──
+  const mistakesEl = document.getElementById("hub-mistakes-count");
+  if (mistakesEl) mistakesEl.textContent = String(mistakes.length);
+
+  // ── Botão revisar erros ── desabilita se não houver erros
+  const quickMistakes = document.getElementById("hub-quick-mistakes");
+  if (quickMistakes) {
+    quickMistakes.disabled = mistakes.length === 0;
+    quickMistakes.style.opacity = mistakes.length === 0 ? "0.45" : "1";
+    quickMistakes.onclick = mistakes.length > 0 ? startMistakesQuiz : null;
+  }
+
+  // ── Último simulado ──
+  const lastQuizEl = document.getElementById("hub-last-quiz");
+  if (lastQuizEl) {
+    if (safeHistory.length > 0) {
+      const last = safeHistory[safeHistory.length - 1];
+      const awsScore = Math.floor(((last.percentage || 0) / 100) * 900) + 100;
+      const passed = awsScore >= 700;
+      const dateStr = last.date ? new Date(last.date).toLocaleDateString("pt-BR") : "—";
+      const certNames = {
+        "clf-c02": "Cloud Practitioner",
+        "saa-c03": "Solutions Architect",
+        "aif-c01": "AI Practitioner",
+        "dva-c02": "Developer Associate",
+      };
+      const certLabel = certNames[last.certId] || last.certId || "—";
+      lastQuizEl.innerHTML = `
+        <div class="lh-last-quiz-entry">
+          <div>
+            <p class="lh-last-quiz-label">Último simulado · ${certLabel}</p>
+            <p class="lh-last-quiz-date">${dateStr}</p>
+          </div>
+          <div style="text-align:right">
+            <p class="lh-last-quiz-score ${passed ? "pass" : "fail"}">${awsScore}</p>
+            <p class="lh-last-quiz-hint" style="font-size:0.68rem;color:var(--text-muted);margin:0">${passed ? "✓ Aprovado" : "✗ Reprovado"}</p>
+          </div>
+        </div>`;
+    } else {
+      lastQuizEl.innerHTML = `<p class="lh-last-quiz-empty">Nenhum simulado realizado ainda. Que tal começar agora?</p>`;
+    }
+  }
+
+  // ── Insight IA ──
+  const insightEl = document.getElementById("hub-insight-text");
+  if (insightEl) {
+    if (safeHistory.length > 0) {
+      const insight = computeSmartInsight(safeHistory);
+      insightEl.textContent = insight || "Continue praticando para obter insights personalizados.";
+    } else {
+      insightEl.textContent = "Realize seu primeiro simulado para receber análises personalizadas de IA sobre seus pontos fortes e áreas de melhoria.";
+    }
+  }
+}
+
+/** Navega para a tela de configuração do simulado (screen-start) */
+function showLearningHubQuickStart() {
+  showScreen("start");
+}
+
+// ── FIM LEARNING HUB ────────────────────────────────────────────────────────
 
 // showResultsScreen com polling para garantir que o canvas está visível
 function showResultsScreen() {
@@ -1367,24 +1526,24 @@ function renderDetailedReportUI(results) {
 
   // --- NOVA SEÇÃO: QUESTÕES MARCADAS PARA REVISÃO ---
   if (uiState.flags && uiState.flags.length > 0) {
-      html += `
+    html += `
           <div class="flagged-questions-section mb-8">
               <h3 class="text-xl font-bold text-orange-600 dark:text-orange-400 mb-4 pb-2 border-b border-gray-200 dark:border-slate-700">
                   <i class="fa-solid fa-flag mr-2"></i> ${t("flag_for_review", uiState.language) || "Marcadas para Revisão"}
               </h3>
               <div class="space-y-4">
       `;
-      
-      uiState.flags.forEach(qIdx => {
-          const q = engine.state.questions[qIdx];
-          if (!q) return;
-          
-          const isMulti = Array.isArray(q.correct);
-          let correctText = isMulti 
-              ? q.correct.map(i => q.options[i]).join("<br>• ") 
-              : q.options[q.correct];
-              
-          html += `
+
+    uiState.flags.forEach(qIdx => {
+      const q = engine.state.questions[qIdx];
+      if (!q) return;
+
+      const isMulti = Array.isArray(q.correct);
+      let correctText = isMulti
+        ? q.correct.map(i => q.options[i]).join("<br>• ")
+        : q.options[q.correct];
+
+      html += `
               <div class="a3-feedback a3-feedback-warning mb-4">
                   <p class="font-semibold text-main mb-3">${q.question}</p>
                   <div class="mb-3">
@@ -1399,9 +1558,9 @@ function renderDetailedReportUI(results) {
                   </div>
               </div>
           `;
-      });
-      
-      html += `</div></div>`;
+    });
+
+    html += `</div></div>`;
   }
   // --- FIM DA NOVA SEÇÃO ---
 
@@ -1442,15 +1601,14 @@ function renderDetailedReportUI(results) {
                     <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">${t("your_answer_label", uiState.language)}</span>
                     <span class="${colorClass} font-semibold block leading-snug">${icon} ${isMulti ? "<br>• " : ""}${userText}</span>
                 </div>
-                ${
-                  !ans.isCorrect
-                    ? `
+                ${!ans.isCorrect
+        ? `
                 <div class="mt-2 pt-2 border-t border-gray-200 dark:border-slate-600">
                     <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">${t("correct_answer_label", uiState.language)}</span>
                     <span class="print-text-green text-green-600 dark:text-green-400 font-semibold block leading-snug">✅ ${isMulti ? "<br>• " : ""}${correctText}</span>
                 </div>`
-                    : ""
-                }
+        : ""
+      }
             </div>
             <div class="explanation-print mt-4 a3-feedback print-no-bg">
                 <strong class="text-main block mb-2 print-text-black">${t("explanation_label", uiState.language)}</strong>
@@ -1478,11 +1636,11 @@ function renderDiagnosticReport(results) {
   lastDiagnosticRecommendation =
     weakDomains.length > 0
       ? {
-          certificationId: results.certId,
-          weakDomains,
-          generatedAt: new Date().toISOString(),
-          source: "diagnostic",
-        }
+        certificationId: results.certId,
+        weakDomains,
+        generatedAt: new Date().toISOString(),
+        source: "diagnostic",
+      }
       : null;
 
   const weakDomainsHtml =
@@ -1494,14 +1652,14 @@ function renderDiagnosticReport(results) {
             </h3>
             <div class="flex flex-wrap gap-2">
                 ${weakDomains
-                  .map(
-                    (domain) => `
+        .map(
+          (domain) => `
                     <span class="a3-skill-badge a3-skill-badge-danger">
                         ${domain.name} - ${domain.percentage.toFixed(0)}%
                     </span>
                 `,
-                  )
-                  .join("")}
+        )
+        .join("")}
             </div>
         </div>
     `
@@ -1566,13 +1724,12 @@ function renderDiagnosticReport(results) {
             <button onclick="goHome()" class="a3-button-secondary py-3 px-8 text-lg w-auto">
                 Voltar ao Início
             </button>
-            ${
-              weakDomains.length > 0
-                ? `<button id="btn-start-personalized-diagnostic-quiz" class="a3-button-primary py-3 px-8 text-lg w-auto">
+            ${weakDomains.length > 0
+      ? `<button id="btn-start-personalized-diagnostic-quiz" class="a3-button-primary py-3 px-8 text-lg w-auto">
                     ${t("practice_weak_domains", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>
                 </button>`
-                : ""
-            }
+      : ""
+    }
         </div>
     `;
 
@@ -1886,6 +2043,82 @@ function updateGamification(pct) {
   storageManager.updateGamification(pct);
   renderGamification();
 }
+
+// ── SIDEBAR ESQUERDA: UTILITÁRIOS ────────────────────────────────────────────
+
+/**
+ * Marca o item ativo na sidebar conforme a tela exibida.
+ * @param {string} screenName - 'start' | 'quiz' | 'results' | 'flashcards' | 'jornada'
+ */
+function updateSidebarActiveItem(screenName) {
+  const map = {
+    hub: "sidebar-btn-hub",
+    start: "sidebar-btn-quiz",
+    quiz: "sidebar-btn-quiz",
+    results: "sidebar-btn-quiz",
+    flashcards: "sidebar-btn-flashcards",
+    jornada: "sidebar-btn-journey",
+  };
+
+  document.querySelectorAll(".left-sidebar-item").forEach((el) => {
+    el.classList.remove("is-active");
+  });
+
+  const activeId = map[screenName];
+  if (activeId) {
+    const el = document.getElementById(activeId);
+    if (el) el.classList.add("is-active");
+  }
+}
+
+
+
+/** Sincroniza o badge de erros na sidebar com o contador principal */
+function syncSidebarMistakesBadge(certId) {
+  const mistakes = storageManager.getMistakes(certId || getActiveCertificationId());
+  const count = mistakes.length;
+  const sidebarBtn = document.getElementById("sidebar-btn-mistakes");
+  const badge = document.getElementById("sidebar-mistakes-count");
+  if (sidebarBtn) sidebarBtn.classList.toggle("hidden", count === 0);
+  if (badge) badge.textContent = String(count);
+}
+
+/** Alterna a visibilidade da sidebar esquerda (mostrar / esconder) */
+function toggleLeftSidebar() {
+  const body = document.body;
+  const isClosed = body.classList.toggle("sidebar-closed");
+  localStorage.setItem("aws_sidebar_closed", isClosed ? "true" : "false");
+
+  const cloudBtn = document.getElementById("cloud-sidebar-toggle");
+  if (cloudBtn) {
+    cloudBtn.setAttribute("aria-expanded", String(!isClosed));
+    cloudBtn.title = isClosed ? "Mostrar menu lateral" : "Esconder menu lateral";
+  }
+}
+
+/** Inicializa o estado persistido e evento de toggle da sidebar */
+function initLeftSidebarToggle() {
+  const savedClosed = localStorage.getItem("aws_sidebar_closed") === "true";
+  if (savedClosed) {
+    document.body.classList.add("sidebar-closed");
+  }
+
+  const cloudBtn = document.getElementById("cloud-sidebar-toggle");
+  if (cloudBtn) {
+    cloudBtn.setAttribute("aria-expanded", String(!savedClosed));
+    cloudBtn.title = savedClosed ? "Mostrar menu lateral" : "Esconder menu lateral";
+  }
+
+  const cloudIcon = document.getElementById("cloud-logo-icon");
+  if (cloudIcon) {
+    cloudIcon.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleLeftSidebar();
+    });
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 // UTILITÁRIOS GERAIS
 function updateScoreDisplayUI() {
@@ -2629,7 +2862,7 @@ window.startMission = async function (stageId) {
   ) {
     alert(
       t("mission_locked", uiState.language) ||
-        "Este módulo ainda está bloqueado. Complete os anteriores primeiro!",
+      "Este módulo ainda está bloqueado. Complete os anteriores primeiro!",
     );
     return;
   }
@@ -2880,14 +3113,14 @@ function renderStudyPlanBanner() {
                 </p>
                 <div class="flex flex-wrap gap-2">
                     ${domainNames
-                      .map(
-                        (name) => `
+      .map(
+        (name) => `
                         <span class="a3-skill-badge a3-skill-badge-danger text-xs">
                             ${name}
                         </span>
                     `,
-                      )
-                      .join("")}
+      )
+      .join("")}
                 </div>
             </div>
         </div>
