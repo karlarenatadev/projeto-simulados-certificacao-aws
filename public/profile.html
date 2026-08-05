@@ -1,8 +1,9 @@
+<!doctype html>
 <html lang="pt">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Meu Perfil — Cloud Academy A3" />
+    <meta name="description" content="Perfil do usuário — histórico, certificações e conquistas." />
     <title>Meu Perfil — Cloud Academy A3</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -28,16 +29,13 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-
     <link rel="stylesheet" href="./css/style.css" />
+    <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   </head>
 
-  <body
-    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
-  >
-    <!-- ===== HEADER — App Shell padronizado ===== -->
-    <header class="a3-header">
+  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
+<header class="a3-header">
       <div class="flex items-center gap-2 md:gap-3">
         <button
           id="cloud-sidebar-toggle"
@@ -85,18 +83,41 @@
             aria-hidden="true"
           ></i>
         </button>
+        <button
+          id="install-app"
+          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
+        >
+          <i class="fa-solid fa-download"></i> Baixar App
+        </button>
         <!-- User Menu — populado pelo shell.js -->
         <div id="user-menu-container"></div>
       </div>
     </header>
+<nav id="left-sidebar" aria-label="Menu principal" role="navigation">
+  <!--
+    .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
+    no momento do boot. O botão abaixo é apenas um fallback visual
+    para Progressive Enhancement (evita flash de sidebar vazia).
+  -->
+  <div class="left-sidebar-nav">
+    <button
+      id="sidebar-btn-hub"
+      class="left-sidebar-item left-sidebar-item-primary"
+      aria-label="Learning Hub — Painel Principal"
+      title="Learning Hub — Painel Principal"
+    >
+      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <span class="left-sidebar-item-label">Hub</span>
+    </button>
+  </div>
+  <!--
+    .left-sidebar-footer é gerado dinamicamente por buildSidebar(user).
+    Contém: divisor, Perfil, Config, divisor, botão Recolher.
+  -->
+</nav>
 
-    <!-- ===== SIDEBAR ESQUERDA — gerada dinamicamente pelo shell.js ===== -->
-    <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
-      <div class="left-sidebar-nav">
-        <!-- Populado por buildSidebar() no shell.js -->
-      </div>
-    </nav>
-    <!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
+
+<!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
 
     <!-- ===== CONTEÚDO PRINCIPAL ===== -->
     <main class="main-content-container profile-main" id="profile-page">
@@ -182,11 +203,22 @@
     </main>
 
     <!-- App Shell: tema, idioma, UserMenu e Sidebar -->
+<footer
+      class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
+    >
+      Plataforma colaborativa de estudo para certificações AWS construída para a
+      comunidade da Guilda Z-Maguinhos | A3Data.
+    </footer>
+
+
+    <script type="module">
+      import { storageManager } from "./js/storageManager.js";
+      import { userManager } from "./js/userManager.js";
+    </script>
     <script type="module">
       import { initShell } from "./js/shell.js";
       import { AuthService } from "./js/services/authService.js";
       document.addEventListener("DOMContentLoaded", async () => {
-        // Guarda de sessão: redireciona para a home se não estiver autenticado.
         const user = await AuthService.restoreSession();
         if (!user) {
           window.location.replace("./index.html");
@@ -195,186 +227,25 @@
         initShell(user);
       });
     </script>
-
-    <!-- Listeners de tema/idioma -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const themeBtn = document.getElementById("theme-toggle");
         const langBtn = document.getElementById("btn-language");
-        if (themeBtn) {
-          themeBtn.addEventListener("click", () => {
-            if (window.toggleDarkModeShell) window.toggleDarkModeShell();
-          });
-        }
-        if (langBtn) {
+        if (themeBtn)
+          themeBtn.addEventListener(
+            "click",
+            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
+          );
+        if (langBtn)
           langBtn.addEventListener("click", () => {
             const lang = localStorage.getItem("aws_sim_lang") || "pt";
             const next = lang === "pt" ? "en" : "pt";
             localStorage.setItem("aws_sim_lang", next);
-            if (window.syncLanguageButtonShell)
-              window.syncLanguageButtonShell();
+            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
             window.location.reload();
           });
-        }
       });
     </script>
 
-    <!-- Dados do perfil via localStorage -->
-    <script type="module">
-      import { userManager } from "./js/userManager.js";
-      import { storageManager } from "./js/storageManager.js";
-
-      document.addEventListener("DOMContentLoaded", () => {
-        // ── Dados do usuário via userManager (chave cloudacademy_user) ─────
-        const user = userManager.getStoredUser();
-        const history = storageManager.getHistory();
-        const gamification = storageManager.getGamification();
-
-        const displayName =
-          (user && (user.nickname || user.full_name || user.email)) ||
-          "Usuário";
-        const email = (user && user.email) || "";
-        const role = ((user && user.role) || "STUDENT").toUpperCase();
-
-        // ── Cabeçalho de perfil ──────────────────────────────────────────
-        const nameEl = document.getElementById("profile-display-name");
-        const emailEl = document.getElementById("profile-email");
-        const avatarEl = document.getElementById("profile-avatar-initials");
-        const roleEl = document.getElementById("profile-role-badge");
-
-        if (nameEl) nameEl.textContent = displayName;
-        if (emailEl) emailEl.textContent = email;
-        if (avatarEl)
-          avatarEl.textContent = displayName.charAt(0).toUpperCase();
-
-        const roleLabels = {
-          STUDENT: "Estudante",
-          VALIDATOR: "Validador",
-          ADMIN: "Admin",
-        };
-        const roleClasses = {
-          STUDENT: "a3-role-student",
-          VALIDATOR: "a3-role-validator",
-          ADMIN: "a3-role-admin",
-        };
-        if (roleEl) {
-          roleEl.textContent = roleLabels[role] || role;
-          roleEl.className =
-            "a3-badge " + (roleClasses[role] || "a3-role-student");
-        }
-
-        // ── Estatísticas ─────────────────────────────────────────────────
-        const totalQuizzes = Array.isArray(history) ? history.length : 0;
-        const bestScore =
-          totalQuizzes > 0
-            ? Math.max(...history.map((h) => h.percentage || 0))
-            : 0;
-        const streak = gamification.currentStreak || 0;
-        const xp =
-          gamification.xp || gamification.xpPoints || gamification.totalXP || 0;
-
-        const totalEl = document.getElementById("stat-total-quizzes");
-        const bestEl = document.getElementById("stat-best-score");
-        const streakEl = document.getElementById("stat-streak");
-        const xpEl = document.getElementById("stat-xp");
-
-        if (totalEl) totalEl.textContent = String(totalQuizzes);
-        if (bestEl)
-          bestEl.textContent =
-            totalQuizzes > 0 ? Math.round(bestScore) + "%" : "—";
-        if (streakEl) streakEl.textContent = String(streak);
-        if (xpEl) xpEl.textContent = String(xp);
-
-        // ── Certificações iniciadas ───────────────────────────────────────
-        const certNames = {
-          "clf-c02": "Cloud Practitioner",
-          "saa-c03": "Solutions Architect",
-          "dva-c02": "Developer Associate",
-          "aif-c01": "AI Practitioner",
-        };
-        const certIcons = {
-          "clf-c02": "fa-cloud",
-          "saa-c03": "fa-building-columns",
-          "dva-c02": "fa-code",
-          "aif-c01": "fa-robot",
-        };
-
-        const certsSeen = {};
-        if (Array.isArray(history)) {
-          history.forEach((h) => {
-            if (h.certId) {
-              if (!certsSeen[h.certId])
-                certsSeen[h.certId] = { count: 0, best: 0 };
-              certsSeen[h.certId].count++;
-              if ((h.percentage || 0) > certsSeen[h.certId].best) {
-                certsSeen[h.certId].best = h.percentage || 0;
-              }
-            }
-          });
-        }
-
-        const certsEl = document.getElementById("profile-certs-list");
-        if (certsEl) {
-          const certKeys = Object.keys(certsSeen);
-          if (certKeys.length === 0) {
-            certsEl.innerHTML =
-              '<p class="profile-empty-hint">Nenhuma certificação iniciada. Realize seu primeiro simulado!</p>';
-          } else {
-            certsEl.innerHTML = certKeys
-              .map((certId) => {
-                const data = certsSeen[certId];
-                const awsBest = Math.floor((data.best / 100) * 900) + 100;
-                return (
-                  '<div class="a3-card profile-cert-card">' +
-                  '<i class="fa-solid ' +
-                  (certIcons[certId] || "fa-award") +
-                  ' profile-cert-icon" aria-hidden="true"></i>' +
-                  '<div class="profile-cert-info">' +
-                  '<p class="profile-cert-name">' +
-                  (certNames[certId] || certId) +
-                  "</p>" +
-                  '<p class="profile-cert-meta">' +
-                  data.count +
-                  " simulado(s) · Melhor: " +
-                  awsBest +
-                  "</p>" +
-                  "</div>" +
-                  "</div>"
-                );
-              })
-              .join("");
-          }
-        }
-
-        // ── Conquistas/badges via gamification.badges ─────────────────────
-        const earnedBadges = gamification.badges || [];
-        const badgesEl = document.getElementById("profile-badges-grid");
-        if (badgesEl) {
-          if (!earnedBadges || earnedBadges.length === 0) {
-            badgesEl.innerHTML =
-              '<p class="profile-empty-hint">Nenhuma conquista ainda. Continue estudando!</p>';
-          } else {
-            badgesEl.innerHTML = earnedBadges
-              .map((badge) => {
-                const name =
-                  typeof badge === "string"
-                    ? badge
-                    : badge.name || badge.id || "Conquista";
-                return (
-                  '<div class="a3-card profile-badge-card" title="' +
-                  name +
-                  '">' +
-                  '<i class="fa-solid fa-award profile-badge-icon" aria-hidden="true"></i>' +
-                  '<p class="profile-badge-name">' +
-                  name +
-                  "</p>" +
-                  "</div>"
-                );
-              })
-              .join("");
-          }
-        }
-      });
-    </script>
   </body>
 </html>

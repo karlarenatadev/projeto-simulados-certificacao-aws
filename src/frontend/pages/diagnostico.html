@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Diagnóstico de nivelamento AWS — identifique seus pontos fortes e fracos." />
+    <meta name="description" content="Diagnóstico de nivelamento AWS — identifique pontos fortes e fracos." />
     <title>Raio-X da Nuvem — Cloud Academy A3</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -40,7 +40,69 @@
 
     <!-- {{SIDEBAR}} -->
 
-    <!-- MAIN CONTENT: diagnostico -->
+    <main class="flex-1 a3-container py-6 main-content-container">
+
+      <section
+        id="screen-diagnostic"
+        class="p-8 md:p-12 flex flex-col items-center justify-center text-center"
+      >
+        <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
+          <i class="fa-solid fa-stethoscope text-a3-primary text-4xl" aria-hidden="true"></i>
+        </div>
+        <h2 class="text-3xl font-bold mb-4 text-strong">Raio-X da Nuvem</h2>
+        <p class="text-muted mb-8 max-w-lg leading-relaxed">
+          Descubra seus pontos fortes e domínios a melhorar. O diagnóstico avalia seu nível
+          em cada área de conhecimento da certificação selecionada.
+        </p>
+
+        <!-- Seleção de certificação -->
+        <div class="a3-card w-full max-w-md mb-6">
+          <h3 class="text-lg font-bold text-strong mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-certificate text-a3-primary" aria-hidden="true"></i>
+            Selecione sua Certificação
+          </h3>
+          <select
+            id="certification-select"
+            class="w-full px-4 py-3 border-2 border-gray-300 dark:border-slate-500 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all outline-none text-gray-700 dark:text-gray-200 font-medium bg-white cursor-pointer"
+            aria-label="Selecionar certificação AWS para o diagnóstico"
+          >
+            <option value="clf-c02">AWS Certified Cloud Practitioner (CLF-C02)</option>
+            <option value="saa-c03">AWS Certified Solutions Architect (SAA-C03)</option>
+            <option value="aif-c01">AWS Certified AI Practitioner (AIF-C01)</option>
+            <option value="dva-c02">AWS Certified Developer Associate (DVA-C02)</option>
+          </select>
+        </div>
+
+        <!-- Botão de iniciar diagnóstico -->
+        <div class="flex flex-col gap-3 w-full max-w-md mx-auto mb-8">
+          <button
+            id="btn-start-diagnostic"
+            class="a3-btn a3-btn-primary a3-btn-lg shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 flex items-center justify-center w-full"
+            aria-label="Iniciar diagnóstico de nivelamento"
+          >
+            <i class="fa-solid fa-microscope mr-2" aria-hidden="true"></i> Iniciar Diagnóstico
+          </button>
+        </div>
+
+        <!-- Área de resultado do diagnóstico -->
+        <div id="diagnostic-report" class="w-full max-w-2xl hidden">
+          <div class="a3-card mb-6 shadow-sm">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-chart-radar text-aws-orange"></i> Análise por Domínio
+            </h3>
+            <div class="relative h-[300px] w-full">
+              <canvas id="radarChart"></canvas>
+            </div>
+          </div>
+
+          <div id="diagnostic-details" class="w-full">
+            <!-- Preenchido por renderDiagnosticReport() no app.js -->
+          </div>
+        </div>
+
+      </section>
+
+    </main>
 
     <!-- {{FOOTER}} -->
 

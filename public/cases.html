@@ -3,10 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Cases de Arquitetura AWS — Estude arquiteturas reais conectando teoria, prática e questões de certificação."
-    />
+    <meta name="description" content="Cases de Arquitetura AWS — Estude arquiteturas reais conectando teoria, prática e questões de certificação." />
     <title>Cases de Arquitetura — Simulador AWS</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -32,16 +29,14 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/cases.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#001863" />
   </head>
 
   <body class="cases-page has-left-sidebar" id="cases-page-body">
-    <!-- ======================================================
-         HEADER — App Shell padronizado
-         ====================================================== -->
-    <header class="a3-header">
+<header class="a3-header">
       <div class="flex items-center gap-2 md:gap-3">
         <button
           id="cloud-sidebar-toggle"
@@ -99,14 +94,31 @@
         <div id="user-menu-container"></div>
       </div>
     </header>
+<nav id="left-sidebar" aria-label="Menu principal" role="navigation">
+  <!--
+    .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
+    no momento do boot. O botão abaixo é apenas um fallback visual
+    para Progressive Enhancement (evita flash de sidebar vazia).
+  -->
+  <div class="left-sidebar-nav">
+    <button
+      id="sidebar-btn-hub"
+      class="left-sidebar-item left-sidebar-item-primary"
+      aria-label="Learning Hub — Painel Principal"
+      title="Learning Hub — Painel Principal"
+    >
+      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <span class="left-sidebar-item-label">Hub</span>
+    </button>
+  </div>
+  <!--
+    .left-sidebar-footer é gerado dinamicamente por buildSidebar(user).
+    Contém: divisor, Perfil, Config, divisor, botão Recolher.
+  -->
+</nav>
 
-    <!-- ===== SIDEBAR ESQUERDA — gerada dinamicamente pelo shell.js ===== -->
-    <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
-      <div class="left-sidebar-nav">
-        <!-- Populado por buildSidebar() no shell.js -->
-      </div>
-    </nav>
-    <!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
+
+<!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
 
     <!-- ======================================================
          HERO
@@ -213,162 +225,19 @@
     <!-- ======================================================
          SCRIPTS
          ====================================================== -->
-    <script type="module">
-      import {
-        getCases,
-        getDifficultyInfo,
-        isCompleted,
-        getApiStatus,
-      } from "./js/cases/caseManager.js";
+<footer
+      class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
+    >
+      Plataforma colaborativa de estudo para certificações AWS construída para a
+      comunidade da Guilda Z-Maguinhos | A3Data.
+    </footer>
 
-      // ---- Render helpers ----
-      // Nota: tema gerenciado pelo shell.js via aws_sim_theme (Design System)
-      function renderCertTags(certifications) {
-        if (!Array.isArray(certifications) || certifications.length === 0)
-          return "";
-        return `<div class="case-cert-tags">
-          ${certifications.map((c) => `<span class="cert-tag">${c}</span>`).join("")}
-        </div>`;
-      }
 
-      function renderCard(caseData) {
-        const { label, cls } = getDifficultyInfo(caseData.difficulty);
-        const completed = isCompleted(caseData.id);
-        const servicesCount = Array.isArray(caseData.services)
-          ? caseData.services.length
-          : 0;
-        const scenario = caseData.scenario
-          ? caseData.scenario.split("\n")[0].slice(0, 180)
-          : "";
 
-        return `
-          <a
-            href="./case-view.html?id=${encodeURIComponent(caseData.slug || caseData.id)}"
-            class="case-card"
-            role="listitem"
-            aria-label="Case: ${caseData.title}"
-            id="case-card-${caseData.id}"
-          >
-            <div class="case-card-accent"></div>
-            <div class="case-card-body">
-              <div class="case-card-header">
-                <h2 class="case-card-title">${escapeHtml(caseData.title)}</h2>
-                <span class="difficulty-badge ${cls}">${label}</span>
-              </div>
-              <p class="case-card-scenario">${escapeHtml(scenario)}</p>
-              <div class="case-card-footer">
-                ${renderCertTags(caseData.certifications)}
-                <div class="flex items-center gap-3">
-                  ${
-                    servicesCount > 0
-                      ? `<span class="case-services-count">
-                        <i class="fa-solid fa-cubes-stacked"></i> ${servicesCount} serviços
-                      </span>`
-                      : ""
-                  }
-                  ${
-                    completed
-                      ? `<span class="case-completed-badge">
-                        <i class="fa-solid fa-circle-check"></i> Concluído
-                      </span>`
-                      : ""
-                  }
-                </div>
-              </div>
-            </div>
-          </a>`;
-      }
-
-      function escapeHtml(str) {
-        if (!str) return "";
-        return String(str)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
-      }
-
-      // ---- Load & Render ----
-      const grid = document.getElementById("cases-grid");
-      const countLabel = document.getElementById("cases-count-label");
-      let allCases = [];
-
-      async function loadCases(filters = {}) {
-        grid.innerHTML = `
-          <div class="case-card-skeleton" aria-hidden="true">
-            <div class="skeleton-line tall"></div>
-            <div class="skeleton-line"></div>
-            <div class="skeleton-line short"></div>
-          </div>
-          <div class="case-card-skeleton" aria-hidden="true">
-            <div class="skeleton-line tall"></div>
-            <div class="skeleton-line"></div>
-            <div class="skeleton-line short"></div>
-          </div>`;
-
-        const cases = await getCases(filters);
-        const status = getApiStatus();
-        allCases = cases;
-
-        countLabel.textContent =
-          cases.length === 0
-            ? ""
-            : `${cases.length} case${cases.length !== 1 ? "s" : ""} encontrado${cases.length !== 1 ? "s" : ""}`;
-
-        // Remover banner antigo se houver
-        const oldBanner = document.getElementById("offline-banner");
-        if (oldBanner) oldBanner.remove();
-
-        if (status.fallbackUsed) {
-          const banner = document.createElement("div");
-          banner.id = "offline-banner";
-          banner.className = "cases-offline-banner";
-          banner.innerHTML =
-            '<i class="fa-solid fa-wifi-slash cases-offline-banner-icon" aria-hidden="true"></i> Não foi possível conectar ao servidor. Usando modo offline.';
-          grid.parentNode.insertBefore(banner, grid);
-        }
-
-        if (cases.length === 0) {
-          let emptyMessage = "Nenhum case disponível.";
-          if (!status.apiAvailable && !status.fallbackUsed) {
-            emptyMessage =
-              "Serviço indisponível no momento. Tente novamente mais tarde.";
-          }
-          grid.innerHTML = `
-            <div class="cases-empty-state col-span-full">
-              <i class="fa-solid fa-box-open" aria-hidden="true"></i>
-              <p>${escapeHtml(emptyMessage)}</p>
-            </div>`;
-          return;
-        }
-
-        grid.innerHTML = cases.map(renderCard).join("");
-      }
-
-      // Initial load
-      loadCases();
-
-      // Filters
-      const certSelect = document.getElementById("filter-certification");
-      const diffSelect = document.getElementById("filter-difficulty");
-
-      function applyFilters() {
-        loadCases({
-          certification: certSelect.value || undefined,
-          difficulty: diffSelect.value || undefined,
-        });
-      }
-
-      certSelect.addEventListener("change", applyFilters);
-      diffSelect.addEventListener("change", applyFilters);
-    </script>
-
-    <!-- App Shell: tema, idioma, UserMenu e Sidebar -->
     <script type="module">
       import { initShell } from "./js/shell.js";
       import { AuthService } from "./js/services/authService.js";
       document.addEventListener("DOMContentLoaded", async () => {
-        // Guarda de sessão: redireciona para a home se não estiver autenticado.
         const user = await AuthService.restoreSession();
         if (!user) {
           window.location.replace("./index.html");
@@ -377,8 +246,6 @@
         initShell(user);
       });
     </script>
-
-    <!-- Listeners de tema e idioma via shell -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const themeBtn = document.getElementById("theme-toggle");
@@ -393,12 +260,11 @@
             const lang = localStorage.getItem("aws_sim_lang") || "pt";
             const next = lang === "pt" ? "en" : "pt";
             localStorage.setItem("aws_sim_lang", next);
-            if (window.syncLanguageButtonShell)
-              window.syncLanguageButtonShell();
-            // Reload para aplicar i18n (sem depender do app.js)
+            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
             window.location.reload();
           });
       });
     </script>
+
   </body>
 </html>

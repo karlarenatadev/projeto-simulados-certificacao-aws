@@ -25,6 +25,31 @@ import { AuthService } from "./services/authService.js";
 const THEME_KEY = "aws_sim_theme";
 const LANG_KEY = "aws_sim_lang";
 
+// ─── DETECÇÃO DE CONTEXTO ─────────────────────────────────────────────────────
+
+/**
+ * Retorna true quando a página atual é o SPA principal (index.html).
+ *
+ * Usado pelo app.js para guardar lógica exclusiva do Hub (showLearningHub,
+ * showLoginUI) contra execução inadvertida em páginas independentes como
+ * simulados.html, jornada.html, flashcards.html e diagnostico.html.
+ *
+ * A mesma lógica é usada internamente por _createSidebarItem() para decidir
+ * se chama window[action] ou redireciona para index.html.
+ *
+ * @returns {boolean}
+ */
+export function isSPAPage() {
+  const path = window.location.pathname;
+  return (
+    path.endsWith("/") ||
+    path.endsWith("index.html") ||
+    path === "" ||
+    // GitHub Pages serve o SPA na raiz do repositório
+    /\/projeto-simulados-certificacao-aws\/?$/.test(path)
+  );
+}
+
 /**
  * Mapa de itens da sidebar por role.
  * Cada entrada: { id, label, icon, href?, action?, roles, conditional? }
@@ -485,20 +510,12 @@ function _createSidebarItem(item) {
 
   if (item.action) {
     el.addEventListener("click", () => {
-      // Detecta se estamos no SPA (index.html) ou em página secundária.
-      // Em páginas secundárias (cases.html, resources.html, etc.) as funções
+      // Usa isSPAPage() exportada para determinar se estamos no SPA principal.
+      // Em páginas secundárias (simulados.html, cases.html, etc.) as funções
       // do app.js não existem no window — redireciona para o Hub em vez de
       // tentar chamá-las silenciosamente.
-      const path = window.location.pathname;
-      const isOnSPA =
-        path.endsWith("/") ||
-        path.endsWith("index.html") ||
-        path === "" ||
-        // GitHub Pages serve o SPA na raiz do repositório
-        /\/projeto-simulados-certificacao-aws\/?$/.test(path);
-
       const fn = window[item.action];
-      if (isOnSPA && typeof fn === "function") {
+      if (isSPAPage() && typeof fn === "function") {
         fn();
       } else {
         // Em página secundária: volta para o Hub (index.html)

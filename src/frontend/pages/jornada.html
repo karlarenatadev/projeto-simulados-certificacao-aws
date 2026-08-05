@@ -40,7 +40,42 @@
 
     <!-- {{SIDEBAR}} -->
 
-    <!-- MAIN CONTENT: jornada -->
+    <main class="flex-1 a3-container py-6 main-content-container">
+        <div
+          id="screen-jornada"
+          class="hidden p-8 md:p-12 flex flex-col items-center h-full overflow-y-auto custom-scroll fade-in"
+        >
+          <div class="w-full max-w-2xl text-center mb-10">
+            <h2 class="text-3xl font-bold text-strong mb-2">
+              <i class="fa-solid fa-map-location-dot text-aws-orange mr-2"></i>
+              Jornada AWS
+            </h2>
+            <p class="text-muted dark:text-gray-400">
+              Complete os módulos para desbloquear novas certificações e ganhar
+              insígnias.
+            </p>
+          </div>
+
+          <div
+            class="trail-container w-full mb-16"
+            id="trail-render-area"
+          ></div>
+
+          <div class="w-full max-w-4xl mb-12">
+            <h3
+              class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2"
+            >
+              <i class="fa-solid fa-medal text-yellow-500"></i> Suas Conquistas
+            </h3>
+            <div
+              id="gamificacao-badges-grid"
+              class="grid grid-cols-2 md:grid-cols-4 gap-4"
+            ></div>
+          </div>
+
+        </div>
+
+    </main>
 
     <!-- {{FOOTER}} -->
 

@@ -21,7 +21,9 @@ import casesRoutes, { servicesRouter } from './routes/cases.js';
 
 const app = express();
 const API_PORT = Number.parseInt(process.env.PORT, 10) || 3001;
-const API_HOST = '127.0.0.1';
+// Escuta em 0.0.0.0 para aceitar conexões de localhost, 127.0.0.1 e
+// do host Windows ao acessar via WSL2 (ex: http://localhost:3001 no browser).
+const API_HOST = '0.0.0.0';
 
 app.use(helmet());
 
@@ -160,6 +162,22 @@ export async function startServer() {
 
     process.on('SIGINT', gracefulShutdown);
     process.on('SIGTERM', gracefulShutdown);
+
+    // SIGHUP: terminal fechado (WSL, SSH disconnection, etc.)
+    process.on('SIGHUP', gracefulShutdown);
+
+    // Erros não capturados — tenta fechar o banco antes de sair
+    // para evitar corrupção do diretório .pglite-data
+    process.on('uncaughtException', async (error) => {
+      console.error('Uncaught exception:', error.message);
+      await closeDatabase().catch(() => {});
+      process.exit(1);
+    });
+    process.on('unhandledRejection', async (reason) => {
+      console.error('Unhandled rejection:', reason);
+      await closeDatabase().catch(() => {});
+      process.exit(1);
+    });
 
     return server;
   } catch (error) {

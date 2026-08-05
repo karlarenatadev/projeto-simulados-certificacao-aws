@@ -1,8 +1,9 @@
+<!doctype html>
 <html lang="pt">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Configurações — Cloud Academy A3" />
+    <meta name="description" content="Configurações da plataforma CloudAcademy A3." />
     <title>Configurações — Cloud Academy A3</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -28,16 +29,13 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-
     <link rel="stylesheet" href="./css/style.css" />
+    <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   </head>
 
-  <body
-    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
-  >
-    <!-- ===== HEADER — App Shell padronizado ===== -->
-    <header class="a3-header">
+  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
+<header class="a3-header">
       <div class="flex items-center gap-2 md:gap-3">
         <button
           id="cloud-sidebar-toggle"
@@ -85,18 +83,41 @@
             aria-hidden="true"
           ></i>
         </button>
+        <button
+          id="install-app"
+          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
+        >
+          <i class="fa-solid fa-download"></i> Baixar App
+        </button>
         <!-- User Menu — populado pelo shell.js -->
         <div id="user-menu-container"></div>
       </div>
     </header>
+<nav id="left-sidebar" aria-label="Menu principal" role="navigation">
+  <!--
+    .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
+    no momento do boot. O botão abaixo é apenas um fallback visual
+    para Progressive Enhancement (evita flash de sidebar vazia).
+  -->
+  <div class="left-sidebar-nav">
+    <button
+      id="sidebar-btn-hub"
+      class="left-sidebar-item left-sidebar-item-primary"
+      aria-label="Learning Hub — Painel Principal"
+      title="Learning Hub — Painel Principal"
+    >
+      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <span class="left-sidebar-item-label">Hub</span>
+    </button>
+  </div>
+  <!--
+    .left-sidebar-footer é gerado dinamicamente por buildSidebar(user).
+    Contém: divisor, Perfil, Config, divisor, botão Recolher.
+  -->
+</nav>
 
-    <!-- ===== SIDEBAR ESQUERDA — gerada dinamicamente pelo shell.js ===== -->
-    <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
-      <div class="left-sidebar-nav">
-        <!-- Populado por buildSidebar() no shell.js -->
-      </div>
-    </nav>
-    <!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
+
+<!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
 
     <!-- ===== CONTEÚDO PRINCIPAL ===== -->
     <main class="main-content-container settings-main" id="settings-page">
@@ -377,11 +398,19 @@
     </div>
 
     <!-- App Shell: tema, idioma, UserMenu e Sidebar -->
+<footer
+      class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
+    >
+      Plataforma colaborativa de estudo para certificações AWS construída para a
+      comunidade da Guilda Z-Maguinhos | A3Data.
+    </footer>
+
+
+
     <script type="module">
       import { initShell } from "./js/shell.js";
       import { AuthService } from "./js/services/authService.js";
       document.addEventListener("DOMContentLoaded", async () => {
-        // Guarda de sessão: redireciona para a home se não estiver autenticado.
         const user = await AuthService.restoreSession();
         if (!user) {
           window.location.replace("./index.html");
@@ -390,243 +419,25 @@
         initShell(user);
       });
     </script>
-
-    <!-- Listeners de tema/idioma -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const themeBtn = document.getElementById("theme-toggle");
         const langBtn = document.getElementById("btn-language");
-        if (themeBtn) {
-          themeBtn.addEventListener("click", () => {
-            if (window.toggleDarkModeShell) window.toggleDarkModeShell();
-            // Sincroniza o toggle de tema escuro
-            var darkToggle = document.getElementById("setting-dark-mode");
-            if (darkToggle) {
-              darkToggle.checked =
-                document.documentElement.classList.contains("dark");
-            }
-          });
-        }
-        if (langBtn) {
+        if (themeBtn)
+          themeBtn.addEventListener(
+            "click",
+            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
+          );
+        if (langBtn)
           langBtn.addEventListener("click", () => {
             const lang = localStorage.getItem("aws_sim_lang") || "pt";
             const next = lang === "pt" ? "en" : "pt";
             localStorage.setItem("aws_sim_lang", next);
-            if (window.syncLanguageButtonShell)
-              window.syncLanguageButtonShell();
+            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
             window.location.reload();
           });
-        }
       });
     </script>
 
-    <!-- Lógica das configurações -->
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // ── Chaves de localStorage ────────────────────────────────────────
-        var KEYS = {
-          THEME: "aws_sim_theme",
-          LANG: "aws_sim_lang",
-          SIDEBAR: "sidebar_closed",
-          POMODORO: "aws_pomodoro_minutes",
-          DAILY_GOAL: "aws_daily_goal",
-          USER: "aws_sim_user",
-          HISTORY: "aws_quiz_history",
-          GAMIFICATION: "aws_gamification",
-          BADGES: "aws_earned_badges",
-        };
-
-        function safeGet(key, fallback) {
-          try {
-            var raw = localStorage.getItem(key);
-            return raw !== null ? JSON.parse(raw) : fallback;
-          } catch (e) {
-            return fallback;
-          }
-        }
-
-        function showToast(msg, danger) {
-          var toast = document.getElementById("settings-toast");
-          var msgEl = document.getElementById("settings-toast-msg");
-          if (!toast) return;
-          if (msgEl) msgEl.textContent = msg || "Configurações salvas!";
-          toast.classList.toggle("settings-toast-danger", !!danger);
-          toast.classList.add("is-visible");
-          setTimeout(function () {
-            toast.classList.remove("is-visible");
-          }, 2800);
-        }
-
-        // ── Carregar valores salvos ───────────────────────────────────────
-
-        // Nome de exibição
-        var user = safeGet(KEYS.USER, null);
-        var displayNameInput = document.getElementById("setting-display-name");
-        if (displayNameInput && user) {
-          displayNameInput.value =
-            user.nickname || user.full_name || user.email || "";
-        }
-
-        // Idioma
-        var langSelect = document.getElementById("setting-lang");
-        if (langSelect)
-          langSelect.value = localStorage.getItem(KEYS.LANG) || "pt";
-
-        // Tema escuro
-        var darkToggle = document.getElementById("setting-dark-mode");
-        if (darkToggle) {
-          darkToggle.checked =
-            (localStorage.getItem(KEYS.THEME) || "light") === "dark";
-          darkToggle.addEventListener("change", function () {
-            var isDark = darkToggle.checked;
-            localStorage.setItem(KEYS.THEME, isDark ? "dark" : "light");
-            document.documentElement.classList.toggle("dark", isDark);
-            if (window.toggleDarkModeShell) {
-              // Re-sync o ícone do tema no header
-              var themeIconEl = document.getElementById("theme-icon");
-              if (themeIconEl) {
-                themeIconEl.className = isDark
-                  ? "fa-solid fa-sun text-base md:text-xl"
-                  : "fa-solid fa-moon text-base md:text-xl";
-              }
-            }
-          });
-        }
-
-        // Sidebar fechada
-        var sidebarToggle = document.getElementById("setting-sidebar-closed");
-        if (sidebarToggle) {
-          sidebarToggle.checked = localStorage.getItem(KEYS.SIDEBAR) === "true";
-          sidebarToggle.addEventListener("change", function () {
-            var isClosed = sidebarToggle.checked;
-            localStorage.setItem(KEYS.SIDEBAR, String(isClosed));
-            document.body.classList.toggle("sidebar-closed", isClosed);
-            if (window.initLeftSidebarToggleShell) {
-              // Re-sync botões de toggle
-            }
-          });
-        }
-
-        // Pomodoro
-        var pomodoroSelect = document.getElementById("setting-pomodoro");
-        if (pomodoroSelect) {
-          pomodoroSelect.value = String(safeGet(KEYS.POMODORO, 15));
-          // Normalize para opções disponíveis
-          if (!["15", "25", "30", "60"].includes(pomodoroSelect.value)) {
-            pomodoroSelect.value = "15";
-          }
-        }
-
-        // Meta diária
-        var dailyGoalSelect = document.getElementById("setting-daily-goal");
-        if (dailyGoalSelect) {
-          dailyGoalSelect.value = String(safeGet(KEYS.DAILY_GOAL, 20));
-          if (!["10", "20", "30", "50"].includes(dailyGoalSelect.value)) {
-            dailyGoalSelect.value = "20";
-          }
-        }
-
-        // Versão (usando package.json seria ideal; usar valor fixo)
-        var versionEl = document.getElementById("settings-version");
-        if (versionEl) {
-          versionEl.textContent = "Cloud Academy A3 · v1.0.0";
-        }
-
-        // ── Salvar todas as configurações ────────────────────────────────
-
-        var saveBtn = document.getElementById("settings-btn-save");
-        if (saveBtn) {
-          saveBtn.addEventListener("click", function () {
-            // Nome de exibição
-            if (displayNameInput && displayNameInput.value.trim() && user) {
-              user.nickname = displayNameInput.value.trim();
-              try {
-                localStorage.setItem(KEYS.USER, JSON.stringify(user));
-              } catch (e) {
-                /* silent */
-              }
-            }
-
-            // Idioma
-            if (langSelect) {
-              localStorage.setItem(KEYS.LANG, langSelect.value);
-              if (window.syncLanguageButtonShell)
-                window.syncLanguageButtonShell();
-            }
-
-            // Pomodoro
-            if (pomodoroSelect) {
-              localStorage.setItem(KEYS.POMODORO, pomodoroSelect.value);
-            }
-
-            // Meta diária
-            if (dailyGoalSelect) {
-              localStorage.setItem(KEYS.DAILY_GOAL, dailyGoalSelect.value);
-            }
-
-            showToast("Configurações salvas com sucesso!");
-          });
-        }
-
-        // ── Logout ────────────────────────────────────────────────────────
-
-        var logoutBtn = document.getElementById("setting-btn-logout");
-        if (logoutBtn) {
-          logoutBtn.addEventListener("click", function () {
-            try {
-              localStorage.removeItem(KEYS.USER);
-            } catch (e) {
-              /* silent */
-            }
-            window.location.href = "./index.html";
-          });
-        }
-
-        // ── Limpar histórico ──────────────────────────────────────────────
-
-        var clearHistoryBtn = document.getElementById(
-          "setting-btn-clear-history",
-        );
-        if (clearHistoryBtn) {
-          clearHistoryBtn.addEventListener("click", function () {
-            if (
-              !confirm("Tem certeza? O histórico de simulados será removido.")
-            )
-              return;
-            try {
-              localStorage.removeItem(KEYS.HISTORY);
-            } catch (e) {
-              /* silent */
-            }
-            showToast("Histórico removido.", false);
-          });
-        }
-
-        // ── Resetar tudo ──────────────────────────────────────────────────
-
-        var resetBtn = document.getElementById("setting-btn-reset-all");
-        if (resetBtn) {
-          resetBtn.addEventListener("click", function () {
-            if (
-              !confirm(
-                "Tem certeza? Todo o seu progresso (histórico, XP, sequência e conquistas) será apagado. Essa ação é irreversível.",
-              )
-            )
-              return;
-            try {
-              localStorage.removeItem(KEYS.HISTORY);
-              localStorage.removeItem(KEYS.GAMIFICATION);
-              localStorage.removeItem(KEYS.BADGES);
-            } catch (e) {
-              /* silent */
-            }
-            showToast("Progresso resetado.", false);
-            setTimeout(function () {
-              window.location.reload();
-            }, 1500);
-          });
-        }
-      });
-    </script>
   </body>
 </html>

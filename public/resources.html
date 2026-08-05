@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Recursos de Estudo - Cloud Academy A3</title>
+    <meta name="description" content="Biblioteca de materiais de estudo para certificações AWS." />
+    <title>Recursos de Estudo — Cloud Academy A3</title>
 
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -21,21 +21,21 @@
       };
     </script>
 
-    <!-- FontAwesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
+    />
     <link rel="stylesheet" href="./css/style.css" />
+    <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   </head>
 
-  <body
-    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
-  >
-    <!-- Header — App Shell padronizado -->
-    <header class="a3-header">
+  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
+<header class="a3-header">
       <div class="flex items-center gap-2 md:gap-3">
         <button
           id="cloud-sidebar-toggle"
@@ -93,14 +93,31 @@
         <div id="user-menu-container"></div>
       </div>
     </header>
+<nav id="left-sidebar" aria-label="Menu principal" role="navigation">
+  <!--
+    .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
+    no momento do boot. O botão abaixo é apenas um fallback visual
+    para Progressive Enhancement (evita flash de sidebar vazia).
+  -->
+  <div class="left-sidebar-nav">
+    <button
+      id="sidebar-btn-hub"
+      class="left-sidebar-item left-sidebar-item-primary"
+      aria-label="Learning Hub — Painel Principal"
+      title="Learning Hub — Painel Principal"
+    >
+      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <span class="left-sidebar-item-label">Hub</span>
+    </button>
+  </div>
+  <!--
+    .left-sidebar-footer é gerado dinamicamente por buildSidebar(user).
+    Contém: divisor, Perfil, Config, divisor, botão Recolher.
+  -->
+</nav>
 
-    <!-- ===== SIDEBAR ESQUERDA — gerada dinamicamente pelo shell.js ===== -->
-    <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
-      <div class="left-sidebar-nav">
-        <!-- Populado por buildSidebar() no shell.js -->
-      </div>
-    </nav>
-    <!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
+
+<!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
 
     <main
       class="flex-grow a3-container py-8 main-content-container"
@@ -651,6 +668,15 @@
     </main>
 
     <!-- App Shell: tema, idioma, UserMenu e Sidebar -->
+<footer
+      class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
+    >
+      Plataforma colaborativa de estudo para certificações AWS construída para a
+      comunidade da Guilda Z-Maguinhos | A3Data.
+    </footer>
+
+
+
     <script type="module">
       import { initShell } from "./js/shell.js";
       import { AuthService } from "./js/services/authService.js";
@@ -663,8 +689,6 @@
         initShell(user);
       });
     </script>
-
-    <!-- Listeners de tema e idioma via shell -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const themeBtn = document.getElementById("theme-toggle");
@@ -679,11 +703,11 @@
             const lang = localStorage.getItem("aws_sim_lang") || "pt";
             const next = lang === "pt" ? "en" : "pt";
             localStorage.setItem("aws_sim_lang", next);
-            if (window.syncLanguageButtonShell)
-              window.syncLanguageButtonShell();
+            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
             window.location.reload();
           });
       });
     </script>
+
   </body>
 </html>

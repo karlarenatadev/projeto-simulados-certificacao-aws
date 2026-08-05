@@ -23,6 +23,7 @@ import {
   buildSidebar,
   initThemeShell,
   initLeftSidebarToggleShell,
+  isSPAPage,
 } from "./shell.js";
 import {
   togglePomodoroWidget,
@@ -173,10 +174,22 @@ function showLoginUI() {
 
         resolve(user);
       } catch (error) {
-        const msg =
-          error?.message?.includes("403") || error?.message?.includes("403")
-            ? "Email não autorizado. Use seu email @a3data.com.br."
-            : error?.message || "Erro ao autenticar. Tente novamente.";
+        const rawMsg = error?.message || "";
+        let msg;
+        if (rawMsg.includes("403") || rawMsg.includes("não autorizado")) {
+          msg = "Email não autorizado. Use seu email @a3data.com.br.";
+        } else if (
+          rawMsg.includes("timeout") ||
+          rawMsg.includes("signal is aborted") ||
+          error?.statusCode === 0
+        ) {
+          msg =
+            "Não foi possível conectar ao servidor. Verifique se a API está rodando (npm run api:start) e tente novamente.";
+        } else if (rawMsg.includes("Network") || rawMsg.includes("fetch")) {
+          msg = "Sem conexão com o servidor. Tente novamente em instantes.";
+        } else {
+          msg = rawMsg || "Erro ao autenticar. Tente novamente.";
+        }
         showError(msg);
       } finally {
         setLoading(false);
@@ -209,29 +222,45 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // FASE 0: Autenticação — bloqueia o boot até ter sessão válida
+  // Em páginas secundárias (simulados.html, jornada.html, etc.) o app.js é
+  // carregado para disponibilizar as funções window.*, mas o fluxo de login
+  // e o Hub são responsabilidade exclusiva do index.html.
+  // O authGuard dessas páginas é feito pelo inline module via AuthService +
+  // window.location.replace('./index.html') — sem depender do app.js.
   let authenticatedUser = null;
-  try {
-    let user = await AuthService.restoreSession();
-
-    if (!user) {
-      // Exibe overlay de login e aguarda autenticação
-      user = await showLoginUI();
-    }
-
-    // Sessão garantida a partir daqui
-    authenticatedUser = user;
-    await quizManager.initialize(user.id);
-    logger.info(`✓ Sessão ativa: ${user.email || user.id} (${user.role})`);
-  } catch (error) {
-    logger.error("Falha crítica na autenticação:", error);
-    // Exibe overlay de login como fallback de segurança
+  if (isSPAPage()) {
     try {
-      const user = await showLoginUI();
+      let user = await AuthService.restoreSession();
+
+      if (!user) {
+        // Exibe overlay de login e aguarda autenticação
+        user = await showLoginUI();
+      }
+
+      // Sessão garantida a partir daqui
       authenticatedUser = user;
       await quizManager.initialize(user.id);
-    } catch (_e) {
-      logger.error("Impossível inicializar sem autenticação.");
-      return; // Aborta o boot — não há como continuar
+      logger.info(`✓ Sessão ativa: ${user.email || user.id} (${user.role})`);
+    } catch (error) {
+      logger.error("Falha crítica na autenticação:", error);
+      // Exibe overlay de login como fallback de segurança
+      try {
+        const user = await showLoginUI();
+        authenticatedUser = user;
+        await quizManager.initialize(user.id);
+      } catch (_e) {
+        logger.error("Impossível inicializar sem autenticação.");
+        return; // Aborta o boot — não há como continuar
+      }
+    }
+  } else {
+    // Página secundária: apenas restaura sessão para disponibilizar
+    // o usuário às funções window.* (quiz, flashcards, etc.).
+    // O redirect para index.html, se não autenticado, é feito pelo
+    // inline authGuard de cada página.
+    authenticatedUser = AuthService.getCurrentUser();
+    if (authenticatedUser) {
+      await quizManager.initialize(authenticatedUser.id);
     }
   }
 
@@ -261,9 +290,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   initLeftSidebarToggleShell();
 
   // FASE 6: Learning Hub é a Home — exibe como tela inicial
-  showLearningHub();
+  // Exclusivo do SPA (index.html): em páginas secundárias as screens já estão
+  // visíveis por padrão no HTML estático e não devem ser ocultadas pelo Hub.
+  if (isSPAPage()) {
+    showLearningHub();
+  }
 
   // Remove o boot overlay — a aplicação está pronta
+  // O boot overlay só existe em index.html; em páginas secundárias não há nada a remover.
   const bootOverlay = document.getElementById("app-boot-overlay");
   if (bootOverlay) {
     bootOverlay.style.transition = "opacity 0.3s ease";
