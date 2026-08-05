@@ -353,6 +353,7 @@ function wireUIActions() {
   bindClick("sprint-start-btn", startMicroSprint);
 
   // ── SIDEBAR ESQUERDA ──────────────────────────────────────────────────────
+  bindClick("sidebar-btn-hub", showLearningHub);
   bindClick("sidebar-btn-quiz", startQuiz);
   bindClick("sidebar-btn-journey", startJornada);
   bindClick("sidebar-btn-diagnostic", startDiagnostic);
@@ -1174,7 +1175,7 @@ function toggleFlag() {
 //  TELAS E RELATÓRIOS
 
 function showScreen(screenName) {
-  const screens = ["start", "quiz", "results", "flashcards", "jornada"];
+  const screens = ["hub", "start", "quiz", "results", "flashcards", "jornada"];
   screens.forEach((s) => {
     const el = document.getElementById(`screen-${s}`);
     if (el) el.classList.add("hidden");
@@ -1184,8 +1185,146 @@ function showScreen(screenName) {
     target.classList.remove("hidden");
     target.classList.add("flex", "flex-col", "fade-in");
   }
+
+  // Restaura sidebar direita e layout ao sair do hub (exceto quiz que gerencia o próprio layout)
+  if (screenName !== "hub" && screenName !== "quiz") {
+    const sideInfo = document.getElementById("side-info");
+    const mainSection = document.getElementById("main-section");
+    if (sideInfo) sideInfo.classList.remove("hidden");
+    if (mainSection) {
+      mainSection.classList.add("lg:w-2/3");
+      mainSection.classList.remove("w-full");
+    }
+  }
+
   updateSidebarActiveItem(screenName);
 }
+
+// ── LEARNING HUB ───────────────────────────────────────────────────────────
+
+function showLearningHub() {
+  // Esconde a sidebar direita — o hub ocupa toda a área principal
+  const sidebar = document.getElementById("side-info");
+  const mainSection = document.getElementById("main-section");
+  const scoreContainer = document.getElementById("score-container");
+  const missionHud = document.getElementById("mission-hud");
+
+  if (sidebar) sidebar.classList.add("hidden");
+  if (mainSection) {
+    mainSection.classList.remove("lg:w-2/3");
+    mainSection.classList.add("w-full");
+  }
+  if (scoreContainer) scoreContainer.style.display = "none";
+  if (missionHud) missionHud?.classList.add("hidden");
+
+  showScreen("hub");
+  renderLearningHubData();
+}
+
+function renderLearningHubData() {
+  const history = storageManager.getHistory();
+  const safeHistory = Array.isArray(history) ? history : [];
+  const gamification = storageManager.getGamification();
+  const certId = getActiveCertificationId() || "clf-c02";
+  const mistakes = storageManager.getMistakes(certId);
+
+  // ── Melhor nota ──
+  const bestEl = document.getElementById("hub-best-score");
+  const bestHintEl = document.getElementById("hub-best-score-hint");
+  if (bestEl) {
+    if (safeHistory.length > 0) {
+      const best = Math.max(...safeHistory.map((h) => h.percentage || 0));
+      const awsScale = Math.floor((best / 100) * 900) + 100;
+      bestEl.textContent = String(awsScale);
+      if (bestHintEl) bestHintEl.textContent = `${best.toFixed(0)}% de acerto`;
+    } else {
+      bestEl.textContent = "—";
+      if (bestHintEl) bestHintEl.textContent = "sem histórico";
+    }
+  }
+
+  // ── Média geral ──
+  const avgEl = document.getElementById("hub-avg-score");
+  const avgHintEl = document.getElementById("hub-avg-score-hint");
+  if (avgEl) {
+    if (safeHistory.length > 0) {
+      const avg = safeHistory.reduce((s, h) => s + (h.percentage || 0), 0) / safeHistory.length;
+      const awsAvg = Math.floor((avg / 100) * 900) + 100;
+      avgEl.textContent = String(awsAvg);
+      if (avgHintEl) avgHintEl.textContent = `${avg.toFixed(0)}% média`;
+    } else {
+      avgEl.textContent = "—";
+      if (avgHintEl) avgHintEl.textContent = "sem histórico";
+    }
+  }
+
+  // ── Sequência ──
+  const streakEl = document.getElementById("hub-streak");
+  if (streakEl) {
+    streakEl.textContent = String(gamification?.currentStreak || 0);
+  }
+
+  // ── Erros pendentes ──
+  const mistakesEl = document.getElementById("hub-mistakes-count");
+  if (mistakesEl) mistakesEl.textContent = String(mistakes.length);
+
+  // ── Botão revisar erros ── desabilita se não houver erros
+  const quickMistakes = document.getElementById("hub-quick-mistakes");
+  if (quickMistakes) {
+    quickMistakes.disabled = mistakes.length === 0;
+    quickMistakes.style.opacity = mistakes.length === 0 ? "0.45" : "1";
+    quickMistakes.onclick = mistakes.length > 0 ? startMistakesQuiz : null;
+  }
+
+  // ── Último simulado ──
+  const lastQuizEl = document.getElementById("hub-last-quiz");
+  if (lastQuizEl) {
+    if (safeHistory.length > 0) {
+      const last = safeHistory[safeHistory.length - 1];
+      const awsScore = Math.floor(((last.percentage || 0) / 100) * 900) + 100;
+      const passed = awsScore >= 700;
+      const dateStr = last.date ? new Date(last.date).toLocaleDateString("pt-BR") : "—";
+      const certNames = {
+        "clf-c02": "Cloud Practitioner",
+        "saa-c03": "Solutions Architect",
+        "aif-c01": "AI Practitioner",
+        "dva-c02": "Developer Associate",
+      };
+      const certLabel = certNames[last.certId] || last.certId || "—";
+      lastQuizEl.innerHTML = `
+        <div class="lh-last-quiz-entry">
+          <div>
+            <p class="lh-last-quiz-label">Último simulado · ${certLabel}</p>
+            <p class="lh-last-quiz-date">${dateStr}</p>
+          </div>
+          <div style="text-align:right">
+            <p class="lh-last-quiz-score ${passed ? "pass" : "fail"}">${awsScore}</p>
+            <p class="lh-last-quiz-hint" style="font-size:0.68rem;color:var(--text-muted);margin:0">${passed ? "✓ Aprovado" : "✗ Reprovado"}</p>
+          </div>
+        </div>`;
+    } else {
+      lastQuizEl.innerHTML = `<p class="lh-last-quiz-empty">Nenhum simulado realizado ainda. Que tal começar agora?</p>`;
+    }
+  }
+
+  // ── Insight IA ──
+  const insightEl = document.getElementById("hub-insight-text");
+  if (insightEl) {
+    if (safeHistory.length > 0) {
+      const insight = computeSmartInsight(safeHistory);
+      insightEl.textContent = insight || "Continue praticando para obter insights personalizados.";
+    } else {
+      insightEl.textContent = "Realize seu primeiro simulado para receber análises personalizadas de IA sobre seus pontos fortes e áreas de melhoria.";
+    }
+  }
+}
+
+/** Navega para a tela de configuração do simulado (screen-start) */
+function showLearningHubQuickStart() {
+  showScreen("start");
+}
+
+// ── FIM LEARNING HUB ────────────────────────────────────────────────────────
 
 // showResultsScreen com polling para garantir que o canvas está visível
 function showResultsScreen() {
@@ -1915,6 +2054,7 @@ function updateGamification(pct) {
  */
 function updateSidebarActiveItem(screenName) {
   const map = {
+    hub: "sidebar-btn-hub",
     start: "sidebar-btn-quiz",
     quiz: "sidebar-btn-quiz",
     results: "sidebar-btn-quiz",

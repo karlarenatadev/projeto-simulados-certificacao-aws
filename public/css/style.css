@@ -2734,6 +2734,479 @@ body.sidebar-closed #left-sidebar,
 }
 
 
+/* ==========================================================================
+   LEARNING HUB — Dashboard central do simulador
+   ========================================================================== */
+
+/* ── Banner "Comece por aqui" ──────────────────────────────────────────── */
+.lh-banner {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto auto;
+  column-gap: 1.25rem;
+  align-items: start;
+  background: linear-gradient(135deg, var(--a3-deep-sea) 0%, #0a1f5e 60%, #0d2878 100%);
+  border: 1px solid color-mix(in srgb, var(--a3-tech-blue) 30%, transparent);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem 1.75rem;
+  overflow: hidden;
+  box-shadow: var(--a3-shadow-card);
+}
+
+.lh-banner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 50%, color-mix(in srgb, var(--a3-tech-blue) 12%, transparent) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.lh-banner-left {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  min-width: 0;
+}
+
+.lh-banner-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--a3-accent);
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.lh-banner-title {
+  font-size: clamp(1.4rem, 3vw, 1.9rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.15;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.lh-banner-icon-wrap {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: start;
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--a3-accent) 18%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--a3-accent);
+  margin-bottom: 0.5rem;
+}
+
+.lh-banner-desc {
+  grid-column: 2;
+  grid-row: 2;
+  font-size: 0.82rem;
+  color: color-mix(in srgb, #fff 75%, transparent);
+  line-height: 1.55;
+  max-width: 36rem;
+  margin: 0;
+}
+
+.lh-banner-actions {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 1.1rem;
+}
+
+.lh-banner-btn {
+  font-size: 0.8rem;
+  padding: 0.45rem 0.9rem;
+}
+
+/* ── Grade principal ───────────────────────────────────────────────────── */
+.lh-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .lh-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lh-banner {
+    grid-template-columns: 1fr;
+  }
+
+  .lh-banner-left,
+  .lh-banner-icon-wrap,
+  .lh-banner-desc {
+    grid-column: 1;
+  }
+
+  .lh-banner-icon-wrap {
+    display: none;
+  }
+}
+
+.lh-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.lh-section-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  color: var(--a3-tech-blue);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* ── Card de Métricas ──────────────────────────────────────────────────── */
+.lh-metrics-card {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border-theme);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+  box-shadow: var(--a3-shadow-card);
+}
+
+.lh-metrics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.lh-metrics-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-strong);
+  margin: 0 0 0.2rem;
+}
+
+.lh-metrics-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.lh-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.lh-metric-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: var(--a3-surface-soft);
+  border-radius: var(--radius-lg);
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--border-theme);
+}
+
+.lh-metric-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.lh-metric-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin: 0 0 0.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.lh-metric-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+  margin: 0 0 0.1rem;
+}
+
+.lh-metric-hint {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.lh-metric-blue  .lh-metric-icon,
+.lh-metric-blue  .lh-metric-value { color: var(--a3-tech-blue); }
+.lh-metric-blue  { border-color: color-mix(in srgb, var(--a3-tech-blue) 22%, transparent); }
+
+.lh-metric-cyan  .lh-metric-icon,
+.lh-metric-cyan  .lh-metric-value { color: var(--a3-sky-frost); }
+.lh-metric-cyan  { border-color: color-mix(in srgb, var(--a3-sky-frost) 22%, transparent); }
+
+.lh-metric-green .lh-metric-icon,
+.lh-metric-green .lh-metric-value { color: var(--a3-success); }
+.lh-metric-green { border-color: color-mix(in srgb, var(--a3-success) 22%, transparent); }
+
+.lh-metric-warning .lh-metric-icon,
+.lh-metric-warning .lh-metric-value { color: var(--a3-warning); }
+.lh-metric-warning { border-color: color-mix(in srgb, var(--a3-warning) 22%, transparent); }
+
+/* Último simulado */
+.lh-last-quiz {
+  border-top: 1px solid var(--border-theme);
+  padding-top: 0.85rem;
+}
+
+.lh-last-quiz-empty {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: 0;
+  text-align: center;
+  padding: 0.4rem 0;
+}
+
+.lh-last-quiz-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.lh-last-quiz-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.lh-last-quiz-score {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-strong);
+  margin: 0;
+}
+
+.lh-last-quiz-score.pass { color: var(--a3-success); }
+.lh-last-quiz-score.fail { color: var(--a3-danger); }
+
+.lh-last-quiz-date {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* ── "O que você encontra" — lista de funcionalidades ─────────────────── */
+.lh-whats-here-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-strong);
+  margin: 0 0 0.75rem;
+}
+
+.lh-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.lh-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 0.9rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-theme);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.18s, border-color 0.18s, transform 0.15s;
+  width: 100%;
+}
+
+.lh-feature-item:hover {
+  background: var(--a3-surface-soft);
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 35%, transparent);
+  transform: translateX(3px);
+}
+
+.lh-feature-item-highlight {
+  border-color: color-mix(in srgb, var(--a3-accent) 30%, transparent);
+  background: color-mix(in srgb, var(--a3-accent) 5%, var(--bg-card));
+}
+
+.lh-feature-item-highlight:hover {
+  background: color-mix(in srgb, var(--a3-accent) 10%, var(--bg-card));
+  border-color: color-mix(in srgb, var(--a3-accent) 55%, transparent);
+}
+
+.lh-feature-icon {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.lh-feat-blue   { background: color-mix(in srgb, var(--a3-tech-blue) 18%, transparent); color: var(--a3-tech-blue); }
+.lh-feat-purple { background: color-mix(in srgb, var(--a3-amethyst-velvet) 20%, transparent); color: var(--a3-amethyst-velvet); }
+.lh-feat-cyan   { background: color-mix(in srgb, var(--a3-sky-frost) 18%, transparent); color: var(--a3-sky-frost); }
+.lh-feat-green  { background: color-mix(in srgb, var(--a3-success) 18%, transparent); color: var(--a3-success); }
+.lh-feat-pink   { background: color-mix(in srgb, var(--a3-accent) 18%, transparent); color: var(--a3-accent); }
+
+.lh-feature-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.lh-feature-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-strong);
+  margin: 0 0 0.15rem;
+}
+
+.lh-feature-desc {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.lh-feature-arrow {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.lh-feature-cta {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--a3-accent);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Linha inferior ────────────────────────────────────────────────────── */
+.lh-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 680px) {
+  .lh-bottom-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Card de Insight IA ────────────────────────────────────────────────── */
+.lh-insight-card {
+  background: linear-gradient(135deg, var(--bg-card) 0%, color-mix(in srgb, var(--a3-amethyst-velvet) 8%, var(--bg-card)) 100%);
+  border: 1px solid color-mix(in srgb, var(--a3-amethyst-velvet) 28%, transparent);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+  box-shadow: var(--a3-shadow-card);
+}
+
+.lh-insight-header {
+  margin-bottom: 0.75rem;
+}
+
+.lh-insight-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--a3-amethyst-velvet);
+  background: color-mix(in srgb, var(--a3-amethyst-velvet) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--a3-amethyst-velvet) 28%, transparent);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full);
+}
+
+.lh-insight-text {
+  font-size: 0.83rem;
+  color: var(--text-main);
+  line-height: 1.6;
+  margin: 0;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+/* ── Ações Rápidas ─────────────────────────────────────────────────────── */
+.lh-quick-actions {
+  background: var(--bg-card);
+  border: 1px solid var(--border-theme);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+  box-shadow: var(--a3-shadow-card);
+}
+
+.lh-quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.lh-quick-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.85rem 0.5rem;
+  background: var(--a3-surface-soft);
+  border: 1px solid var(--border-theme);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--text-main);
+  font-size: 0.73rem;
+  font-weight: 600;
+  transition: background 0.18s, border-color 0.18s, transform 0.15s;
+  text-align: center;
+}
+
+.lh-quick-btn i {
+  font-size: 1.1rem;
+  color: var(--a3-tech-blue);
+}
+
+.lh-quick-btn:hover {
+  background: color-mix(in srgb, var(--a3-tech-blue) 10%, var(--bg-card));
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 38%, transparent);
+  transform: translateY(-2px);
+  color: var(--text-strong);
+}
+
+/* ── Sidebar: Hub item ─────────────────────────────────────────────────── */
+#sidebar-btn-hub.is-active {
+  background: color-mix(in srgb, var(--a3-tech-blue) 15%, transparent);
+  color: var(--a3-tech-blue);
+}
+
+/* ── Scrollbar do hub ──────────────────────────────────────────────────── */
+#screen-hub {
+  scrollbar-width: thin;
+  scrollbar-color: var(--a3-tech-blue) transparent;
+}
+
+#screen-hub::-webkit-scrollbar { width: 5px; }
+#screen-hub::-webkit-scrollbar-track { background: transparent; }
+#screen-hub::-webkit-scrollbar-thumb { background: var(--a3-tech-blue); border-radius: 99px; }
+
+
 /* --- cases.css --- */
 /* ==========================================================================
    CASES CSS — Practice Domain / Arquiteturas na Prática

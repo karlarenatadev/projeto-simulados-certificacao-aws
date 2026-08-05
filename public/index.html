@@ -97,7 +97,13 @@
   <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
     <!-- Itens de navegação principal -->
     <div class="left-sidebar-nav">
-      <button id="sidebar-btn-quiz" class="left-sidebar-item left-sidebar-item-primary" aria-label="Iniciar Simulação"
+      <button id="sidebar-btn-hub" class="left-sidebar-item left-sidebar-item-primary" aria-label="Learning Hub"
+        title="Learning Hub — Painel Principal">
+        <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+        <span class="left-sidebar-item-label">Hub</span>
+      </button>
+
+      <button id="sidebar-btn-quiz" class="left-sidebar-item" aria-label="Iniciar Simulação"
         title="Iniciar Simulação">
         <i class="fa-solid fa-play left-sidebar-item-icon" aria-hidden="true"></i>
         <span class="left-sidebar-item-label" data-i18n="sidebar_start">Simulação</span>
@@ -149,6 +155,192 @@
     id="main-content-wrapper">
     <section id="main-section"
       class="lg:w-2/3 flex flex-col h-full bg-white rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 overflow-hidden transition-colors">
+      <!-- ===== LEARNING HUB ===== -->
+      <div id="screen-hub" class="hidden p-6 md:p-8 flex flex-col h-full overflow-y-auto">
+
+        <!-- Banner "Comece por aqui" -->
+        <div class="lh-banner mb-6">
+          <div class="lh-banner-left">
+            <p class="lh-banner-tag">SIMULADOR IA</p>
+            <h2 class="lh-banner-title">Comece por aqui</h2>
+          </div>
+          <div class="lh-banner-icon-wrap" aria-hidden="true">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <p class="lh-banner-desc">
+            Seu painel central de estudos: acompanhe seu progresso, veja insights de IA, acesse simulados e muito mais — tudo em um só lugar.
+          </p>
+          <div class="lh-banner-actions">
+            <button class="a3-btn a3-btn-secondary lh-banner-btn" onclick="showLearningHubQuickStart()">
+              <i class="fa-solid fa-play"></i> Simular agora
+            </button>
+            <button class="a3-btn a3-btn-outline lh-banner-btn" onclick="startJornada()">
+              <i class="fa-solid fa-route"></i> Minha Jornada
+            </button>
+          </div>
+        </div>
+
+        <!-- Grade principal: indicadores + o que encontrar -->
+        <div class="lh-grid mb-6">
+
+          <!-- COLUNA ESQUERDA: Indicadores principais -->
+          <div class="lh-panel">
+            <p class="lh-section-label">INDICADORES PRINCIPAIS</p>
+
+            <div class="lh-metrics-card">
+              <div class="lh-metrics-header">
+                <div>
+                  <p class="lh-metrics-title">Sua performance geral</p>
+                  <p class="lh-metrics-sub">Leitura consolidada dos seus simulados</p>
+                </div>
+              </div>
+              <div class="lh-metrics-grid">
+                <div class="lh-metric-item lh-metric-blue">
+                  <i class="fa-solid fa-chart-line lh-metric-icon"></i>
+                  <div>
+                    <p class="lh-metric-label">Melhor Nota</p>
+                    <p class="lh-metric-value" id="hub-best-score">—</p>
+                    <p class="lh-metric-hint" id="hub-best-score-hint">escala AWS</p>
+                  </div>
+                </div>
+                <div class="lh-metric-item lh-metric-cyan">
+                  <i class="fa-solid fa-bullseye lh-metric-icon"></i>
+                  <div>
+                    <p class="lh-metric-label">Média Geral</p>
+                    <p class="lh-metric-value" id="hub-avg-score">—</p>
+                    <p class="lh-metric-hint" id="hub-avg-score-hint">escala AWS</p>
+                  </div>
+                </div>
+                <div class="lh-metric-item lh-metric-green">
+                  <i class="fa-solid fa-fire-flame-curved lh-metric-icon"></i>
+                  <div>
+                    <p class="lh-metric-label">Sequência</p>
+                    <p class="lh-metric-value" id="hub-streak">0</p>
+                    <p class="lh-metric-hint">dias seguidos</p>
+                  </div>
+                </div>
+                <div class="lh-metric-item lh-metric-warning">
+                  <i class="fa-solid fa-triangle-exclamation lh-metric-icon"></i>
+                  <div>
+                    <p class="lh-metric-label">Erros Pendentes</p>
+                    <p class="lh-metric-value" id="hub-mistakes-count">0</p>
+                    <p class="lh-metric-hint">para revisar</p>
+                  </div>
+                </div>
+              </div>
+              <!-- Último simulado -->
+              <div class="lh-last-quiz" id="hub-last-quiz">
+                <p class="lh-last-quiz-empty">Nenhum simulado realizado ainda. Que tal começar agora?</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- COLUNA DIREITA: O que você encontra -->
+          <div class="lh-panel">
+            <p class="lh-section-label">GUIA DA PLATAFORMA</p>
+            <h3 class="lh-whats-here-title">O que você encontra</h3>
+
+            <div class="lh-features-list">
+              <button class="lh-feature-item" onclick="showLearningHubQuickStart()">
+                <span class="lh-feature-icon lh-feat-blue">
+                  <i class="fa-solid fa-play"></i>
+                </span>
+                <div class="lh-feature-info">
+                  <p class="lh-feature-name">Simulados com IA</p>
+                  <p class="lh-feature-desc">Questões no estilo oficial AWS, geradas e avaliadas por IA em tempo real</p>
+                </div>
+                <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+              </button>
+
+              <button class="lh-feature-item" onclick="startJornada()">
+                <span class="lh-feature-icon lh-feat-purple">
+                  <i class="fa-solid fa-route"></i>
+                </span>
+                <div class="lh-feature-info">
+                  <p class="lh-feature-name">Trilha de Jornada</p>
+                  <p class="lh-feature-desc">Progresso gamificado por módulos, fases e conquistas desbloqueáveis</p>
+                </div>
+                <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+              </button>
+
+              <button class="lh-feature-item" onclick="startDiagnostic()">
+                <span class="lh-feature-icon lh-feat-cyan">
+                  <i class="fa-solid fa-stethoscope"></i>
+                </span>
+                <div class="lh-feature-info">
+                  <p class="lh-feature-name">Raio-X de Domínios</p>
+                  <p class="lh-feature-desc">Diagnóstico por área: veja onde você está forte e onde precisa evoluir</p>
+                </div>
+                <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+              </button>
+
+              <button class="lh-feature-item" onclick="startFlashcards()">
+                <span class="lh-feature-icon lh-feat-green">
+                  <i class="fa-solid fa-layer-group"></i>
+                </span>
+                <div class="lh-feature-info">
+                  <p class="lh-feature-name">Flashcards</p>
+                  <p class="lh-feature-desc">Revisão rápida por cartões — conceitos, serviços e siglas AWS</p>
+                </div>
+                <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+              </button>
+
+              <button class="lh-feature-item lh-feature-item-highlight" onclick="showLearningHubQuickStart()">
+                <span class="lh-feature-icon lh-feat-pink">
+                  <i class="fa-solid fa-lightbulb"></i>
+                </span>
+                <div class="lh-feature-info">
+                  <p class="lh-feature-name">Insights e Estatísticas</p>
+                  <p class="lh-feature-desc">Análise inteligente do seu histórico, pontos fracos e recomendações de estudo</p>
+                </div>
+                <span class="lh-feature-cta">Ver painel <i class="fa-solid fa-arrow-right"></i></span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Linha inferior: Insight IA + Ações rápidas -->
+        <div class="lh-bottom-row">
+
+          <!-- Insight IA -->
+          <div class="lh-insight-card">
+            <div class="lh-insight-header">
+              <span class="lh-insight-badge">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Insight IA
+              </span>
+            </div>
+            <p class="lh-insight-text" id="hub-insight-text">
+              Carregando análise personalizada...
+            </p>
+          </div>
+
+          <!-- Ações rápidas -->
+          <div class="lh-quick-actions">
+            <p class="lh-section-label" style="margin-bottom: 0.75rem;">ACESSO RÁPIDO</p>
+            <div class="lh-quick-grid">
+              <button class="lh-quick-btn" onclick="showLearningHubQuickStart()">
+                <i class="fa-solid fa-bolt"></i>
+                <span>Simulado rápido</span>
+              </button>
+              <button class="lh-quick-btn" onclick="startMistakesQuiz ? startMistakesQuiz() : null" id="hub-quick-mistakes">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Revisar erros</span>
+              </button>
+              <a class="lh-quick-btn" href="./resources.html">
+                <i class="fa-solid fa-book-open-reader"></i>
+                <span>Recursos</span>
+              </a>
+              <a class="lh-quick-btn" href="./cases.html">
+                <i class="fa-solid fa-diagram-project"></i>
+                <span>Casos práticos</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- ===== FIM LEARNING HUB ===== -->
+
       <div id="screen-start" class="p-8 md:p-12 flex flex-col items-center justify-center text-center h-full">
         <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
           <i class="fa-solid fa-brain text-a3-primary text-4xl" aria-hidden="true"></i>
