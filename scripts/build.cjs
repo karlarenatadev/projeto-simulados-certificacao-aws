@@ -68,6 +68,83 @@ function copyFile(src, dest) {
 }
 
 
+// ============================================================
+// HTML TEMPLATE PROCESSING — Opção C (build-time partials)
+//
+// Lê os partials de src/frontend/partials/ e substitui
+// placeholders nos templates de src/frontend/pages/.
+// Gera os HTMLs finais em public/.
+//
+// Placeholders suportados:
+//   {{BOOT_OVERLAY}}    → partials/boot-overlay.html
+//   {{LOGIN_OVERLAY}}   → partials/login-overlay.html
+//   {{HEADER_SPA}}      → partials/header-spa.html   (somente index.html)
+//   {{HEADER_PAGE}}     → partials/header-page.html  (páginas independentes)
+//   {{SIDEBAR}}         → partials/sidebar.html
+//   {{FOOTER}}          → partials/footer.html
+//   {{POMODORO_WIDGET}} → partials/pomodoro-widget.html
+// ============================================================
+
+function processHTMLTemplates() {
+  const partialsDir = 'src/frontend/partials';
+  const pagesDir    = 'src/frontend/pages';
+  const outputDir   = 'public';
+
+  if (!fs.existsSync(partialsDir)) {
+    console.warn('⚠️  src/frontend/partials/ não encontrado — pulando processamento de templates HTML.');
+    return;
+  }
+  if (!fs.existsSync(pagesDir)) {
+    console.warn('⚠️  src/frontend/pages/ não encontrado — pulando processamento de templates HTML.');
+    return;
+  }
+
+  // Carregar partials
+  const partialFiles = {
+    'BOOT_OVERLAY':    path.join(partialsDir, 'boot-overlay.html'),
+    'LOGIN_OVERLAY':   path.join(partialsDir, 'login-overlay.html'),
+    'HEADER_SPA':      path.join(partialsDir, 'header-spa.html'),
+    'HEADER_PAGE':     path.join(partialsDir, 'header-page.html'),
+    'SIDEBAR':         path.join(partialsDir, 'sidebar.html'),
+    'FOOTER':          path.join(partialsDir, 'footer.html'),
+    'POMODORO_WIDGET': path.join(partialsDir, 'pomodoro-widget.html'),
+  };
+
+  const partials = {};
+  for (const [key, filePath] of Object.entries(partialFiles)) {
+    if (fs.existsSync(filePath)) {
+      partials[key] = fs.readFileSync(filePath, 'utf8');
+    } else {
+      console.warn(`  ⚠️  Partial não encontrado: ${filePath}`);
+      partials[key] = `<!-- PARTIAL ${key} NOT FOUND -->`;
+    }
+  }
+
+  // Processar cada template em src/frontend/pages/
+  const templateFiles = fs.readdirSync(pagesDir).filter(f => f.endsWith('.html'));
+
+  for (const templateFile of templateFiles) {
+    const templatePath = path.join(pagesDir, templateFile);
+    let html = fs.readFileSync(templatePath, 'utf8');
+
+    // Substituir cada placeholder pelo conteúdo do partial
+    for (const [key, content] of Object.entries(partials)) {
+      // Suporta tanto <!-- {{KEY}} --> quanto {{KEY}} simples
+      const commentPlaceholder = new RegExp(`\\s*<!--\\s*\\{\\{${key}\\}\\}\\s*-->`, 'g');
+      const simplePlaceholder  = new RegExp(`\\{\\{${key}\\}\\}`, 'g');
+      html = html.replace(commentPlaceholder, '\n' + content);
+      html = html.replace(simplePlaceholder,  content);
+    }
+
+    // Gravar o artefato final em public/
+    const outputPath = path.join(outputDir, templateFile);
+    fs.writeFileSync(outputPath, html, 'utf8');
+    console.log(`  ✅ ${templateFile} (${Math.round(html.length / 1024)}KB)`);
+  }
+
+  console.log(`  → ${templateFiles.length} página(s) processada(s) com partials.`);
+}
+
 console.log('🔨 Building...');
 
 
@@ -87,6 +164,13 @@ try {
     'src/frontend/js',
     'public/js'
   );
+
+  // ============================================================
+  // HTML TEMPLATES — build-time partial injection
+  // ============================================================
+
+  console.log('🧩 Processando templates HTML com partials...');
+  processHTMLTemplates();
 
   // ============================================================
   // PARTIALS HTML (sidebar.html, etc.)
@@ -288,6 +372,7 @@ try {
   console.log('');
   console.log('Public atualizado com:');
   console.log('  ✅ frontend JS');
+  console.log('  ✅ templates HTML (partials injetados)');
   console.log('  ✅ CSS');
   console.log('  ✅ services');
   console.log('  ✅ data completo');

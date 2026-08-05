@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Cases de Arquitetura AWS — Estude arquiteturas reais conectando teoria, prática e questões de certificação." />
+    <title>Cases de Arquitetura — Simulador AWS</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "aws-dark": "#001863",
+              "aws-orange": "#0033FF",
+            },
+          },
+        },
+      };
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/cases.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#001863" />
+  </head>
+
+  <body class="cases-page has-left-sidebar" id="cases-page-body">
+
+    <!-- {{HEADER_PAGE}} -->
+
+    <!-- {{SIDEBAR}} -->
+
+<!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
+
+    <!-- ======================================================
+         HERO
+         ====================================================== -->
+    <section class="cases-hero">
+      <div class="cases-hero-badge">
+        <i class="fa-solid fa-diagram-project"></i>
+        Cases · Arquiteturas na Prática
+      </div>
+      <h1>Aprenda Arquitetura AWS com Casos Reais</h1>
+      <p>
+        Conecte os pontos entre o que você estuda e como as empresas usam a AWS
+        na prática. Cada case traz cenário, diagrama, serviços e questões de
+        fixação.
+      </p>
+
+      <!-- Learning Loop -->
+      <div class="learning-loop" aria-label="Ciclo de aprendizado">
+        <span class="loop-step"
+          ><i class="fa-solid fa-circle-xmark"></i> Questão errada</span
+        >
+        <span class="loop-arrow">→</span>
+        <span class="loop-step"
+          ><i class="fa-solid fa-lightbulb"></i> Conceito</span
+        >
+        <span class="loop-arrow">→</span>
+        <span class="loop-step"
+          ><i class="fa-solid fa-diagram-project"></i> Case</span
+        >
+        <span class="loop-arrow">→</span>
+        <span class="loop-step"
+          ><i class="fa-solid fa-network-wired"></i> Arquitetura</span
+        >
+        <span class="loop-arrow">→</span>
+        <span class="loop-step"
+          ><i class="fa-solid fa-book"></i> Documentação</span
+        >
+        <span class="loop-arrow">→</span>
+        <span class="loop-step"
+          ><i class="fa-solid fa-circle-check"></i> Nova questão</span
+        >
+      </div>
+    </section>
+
+    <!-- ======================================================
+         FILTROS
+         ====================================================== -->
+    <div class="cases-filters" role="search" aria-label="Filtros de cases">
+      <label for="filter-certification">
+        <i class="fa-solid fa-certificate cases-filter-icon"></i>
+        Certificação:
+      </label>
+      <select id="filter-certification" class="cases-filter-select">
+        <option value="">Todas</option>
+        <option value="CLF-C02">CLF-C02 — Cloud Practitioner</option>
+        <option value="SAA-C03">SAA-C03 — Solutions Architect</option>
+        <option value="DVA-C02">DVA-C02 — Developer Associate</option>
+        <option value="AIF-C01">AIF-C01 — AI Practitioner</option>
+      </select>
+
+      <label for="filter-difficulty" class="cases-filter-label-gap">
+        <i class="fa-solid fa-signal cases-filter-icon"></i>
+        Nível:
+      </label>
+      <select id="filter-difficulty" class="cases-filter-select">
+        <option value="">Todos</option>
+        <option value="beginner">Iniciante</option>
+        <option value="intermediate">Intermediário</option>
+        <option value="advanced">Avançado</option>
+      </select>
+
+      <span id="cases-count-label" class="cases-count-text"></span>
+    </div>
+
+    <!-- ======================================================
+         GRID DE CASES
+         ====================================================== -->
+    <main class="cases-container main-content-container" id="cases-main">
+      <div
+        id="cases-grid"
+        class="cases-grid"
+        role="list"
+        aria-label="Lista de cases de arquitetura"
+      >
+        <!-- Skeletons carregando -->
+        <div class="case-card-skeleton" aria-hidden="true">
+          <div class="skeleton-line tall"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+        <div class="case-card-skeleton" aria-hidden="true">
+          <div class="skeleton-line tall"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+        <div class="case-card-skeleton" aria-hidden="true">
+          <div class="skeleton-line tall"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- ======================================================
+         SCRIPTS
+         ====================================================== -->
+
+    <!-- {{FOOTER}} -->
+
+
+    <script type="module">
+      import { initShell } from "./js/shell.js";
+      import { AuthService } from "./js/services/authService.js";
+      document.addEventListener("DOMContentLoaded", async () => {
+        const user = await AuthService.restoreSession();
+        if (!user) {
+          window.location.replace("./index.html");
+          return;
+        }
+        initShell(user);
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeBtn = document.getElementById("theme-toggle");
+        const langBtn = document.getElementById("btn-language");
+        if (themeBtn)
+          themeBtn.addEventListener(
+            "click",
+            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
+          );
+        if (langBtn)
+          langBtn.addEventListener("click", () => {
+            const lang = localStorage.getItem("aws_sim_lang") || "pt";
+            const next = lang === "pt" ? "en" : "pt";
+            localStorage.setItem("aws_sim_lang", next);
+            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
+            window.location.reload();
+          });
+      });
+    </script>
+
+  </body>
+</html>

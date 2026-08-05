@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Flashcards AWS — Revisão espaçada de termos e conceitos essenciais para certificações." />
+    <title>Flashcards — Cloud Academy A3</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "aws-dark": "#001863",
+              "aws-orange": "#0033FF",
+            },
+          },
+        },
+      };
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#001863" />
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
+
+    <!-- {{HEADER_PAGE}} -->
+
+    <!-- {{SIDEBAR}} -->
+
+    <!-- MAIN CONTENT: flashcards -->
+
+    <!-- {{FOOTER}} -->
+
+    <script src="./js/pomodoroManager.js" type="module"></script>
+    <script src="./js/app.js" type="module"></script>
+    <script type="module">
+      import { initShell } from "./js/shell.js";
+      import { AuthService } from "./js/services/authService.js";
+      document.addEventListener("DOMContentLoaded", async () => {
+        const user = await AuthService.restoreSession();
+        if (!user) {
+          window.location.replace("./index.html");
+          return;
+        }
+        initShell(user);
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeBtn = document.getElementById("theme-toggle");
+        const langBtn = document.getElementById("btn-language");
+        if (themeBtn)
+          themeBtn.addEventListener(
+            "click",
+            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
+          );
+        if (langBtn)
+          langBtn.addEventListener("click", () => {
+            const lang = localStorage.getItem("aws_sim_lang") || "pt";
+            const next = lang === "pt" ? "en" : "pt";
+            localStorage.setItem("aws_sim_lang", next);
+            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
+            window.location.reload();
+          });
+      });
+    </script>
+
+  </body>
+</html>
