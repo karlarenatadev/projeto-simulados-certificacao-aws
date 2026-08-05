@@ -16,6 +16,7 @@ import {
   executeQuery
 } from '../../database/db.js';
 import { SimulatorEngine } from '../services/simulatorEngine.js';
+import { requireAuth } from '../middleware/requireRole.js';
 
 const router = Router();
 
@@ -105,7 +106,7 @@ router.get('/:idOrSlug', async (req, res, next) => {
 // POST /api/cases/:id/complete — Mark case as completed
 // ============================================================================
 
-router.post('/:id/complete', async (req, res, next) => {
+router.post('/:id/complete', requireAuth, async (req, res, next) => {
   try {
     const { id } = req.params;
     const { user_id } = req.body;

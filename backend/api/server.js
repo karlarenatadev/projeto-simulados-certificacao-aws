@@ -25,11 +25,34 @@ const API_HOST = '127.0.0.1';
 
 app.use(helmet());
 
-app.use(cors({
-  origin: '*',
+// Origens permitidas: localhost em dev/test e o domínio do GitHub Pages em produção.
+// Em NODE_ENV=test, aceita qualquer origem para não bloquear a suíte Jest.
+const ALLOWED_ORIGINS = new Set([
+  'http://localhost:8080',
+  'http://127.0.0.1:8080',
+  'http://localhost:3001',
+  'http://127.0.0.1:3001',
+  'https://karlarenatadev.github.io',
+]);
+
+const corsOptions = {
+  origin(origin, callback) {
+    // Permite requisições sem Origin (ex: curl, Postman, server-to-server)
+    // e qualquer origem em ambiente de teste para não bloquear Jest.
+    if (!origin || process.env.NODE_ENV === 'test') {
+      return callback(null, true);
+    }
+    if (ALLOWED_ORIGINS.has(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS: origin not allowed — ${origin}`));
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Id'],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

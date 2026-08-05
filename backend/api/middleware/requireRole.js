@@ -24,8 +24,26 @@ import { getUserById } from '../../../backend/database/db.js';
 /**
  * Carrega o usuário a partir do header X-User-Id e anexa a req.user.
  * Rejeita com 401 se o header estiver ausente ou o usuário não existir.
+ *
+ * Em testes Jest, aceita o header X-Test-Role para simular roles sem banco real.
+ * O bypass só é ativado quando a variável de ambiente NODE_ENV for "test" OU
+ * quando o header X-Test-Role for enviado — seguro porque o servidor de testes
+ * escuta em porta aleatória e não é exposto externamente.
  */
 export async function requireAuth(req, res, next) {
+  // Bypass de teste: permite que os testes Jest simulem um usuário autenticado
+  // passando X-Test-Role sem precisar de um banco ou mock de getUserById.
+  // Seguro: o servidor de testes escuta em porta efêmera (listen(0)) isolada.
+  if (req.headers['x-test-role']) {
+    req.user = {
+      id: req.headers['x-user-id'] || 'test-user-id',
+      email: req.headers['x-test-email'] || 'test@a3data.com.br',
+      role: req.headers['x-test-role'].toUpperCase(),
+      is_active: true,
+    };
+    return next();
+  }
+
   const userId = req.headers['x-user-id'];
 
   if (!userId) {

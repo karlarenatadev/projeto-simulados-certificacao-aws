@@ -105,7 +105,16 @@
     <!-- App Shell: tema, UserMenu e Sidebar via AuthService central -->
     <script type="module">
       import { initShell } from '../js/shell.js';
-      document.addEventListener('DOMContentLoaded', () => initShell(null));
+      import { AuthService } from '../js/services/authService.js';
+      document.addEventListener('DOMContentLoaded', async () => {
+        // Guarda de sessão: redireciona para a home se não estiver autenticado.
+        const user = await AuthService.restoreSession();
+        if (!user) {
+          window.location.replace('../index.html');
+          return;
+        }
+        initShell(user);
+      });
     </script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {

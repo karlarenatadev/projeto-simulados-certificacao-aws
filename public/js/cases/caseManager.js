@@ -37,8 +37,7 @@ async function fetchFallbackCases() {
       slug: c.slug || c.id,
       // certifications: array esperado pelo renderCard; converte string singular se necessário
       certifications:
-        c.certifications ||
-        (c.certification ? [c.certification] : []),
+        c.certifications || (c.certification ? [c.certification] : []),
       // difficulty: campo obrigatório para badge e filtros
       difficulty: c.difficulty || "intermediate",
       // services: normaliza campos do JSON (service_slug/service_name → slug/name)

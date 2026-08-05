@@ -26,11 +26,11 @@ const baseQuestion = {
   is_active: true,
 };
 
-const getPendingQuestionsMock = jest.fn(async () => (
+const getPendingQuestionsMock = jest.fn(async () =>
   Array.from(mockQuestions.values()).filter(
     (question) => question.is_active && question.validation_status === 'PENDING',
-  )
-));
+  ),
+);
 
 const validateQuestionMock = jest.fn(async (
   questionId,
@@ -125,10 +125,18 @@ function closeServer(server) {
   });
 }
 
+/**
+ * Helper de request.
+ * Usa X-Test-Role para simular autenticação em NODE_ENV=test (bypass no requireAuth).
+ * validated_by é passado no body para os testes que precisam identificar o validador.
+ */
 async function request(baseUrl, path, options = {}) {
   const response = await fetch(`${baseUrl}${path}`, {
     headers: {
       'Content-Type': 'application/json',
+      // Usa o bypass de test do requireAuth (ver requireRole.js)
+      'X-Test-Role': 'VALIDATOR',
+      'X-Test-Email': 'validator@a3data.com.br',
       ...options.headers,
     },
     ...options,

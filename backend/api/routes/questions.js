@@ -18,6 +18,7 @@ import {
   getPendingQuestions,
   validateQuestion,
 } from '../../database/db.js';
+import { requireAuth, requireRole } from '../middleware/requireRole.js';
 
 const router = Router();
 const VALID_VALIDATION_STATUSES = new Set(['APPROVED', 'REJECTED']);
@@ -111,7 +112,7 @@ function validateValidationPayload(payload = {}) {
 // GET /api/questions/pending - List questions waiting for validation
 // ============================================================================
 
-router.get('/pending', async (req, res, next) => {
+router.get('/pending', requireRole('VALIDATOR', 'ADMIN'), async (req, res, next) => {
   try {
     const { limit = 50, offset = 0 } = req.query;
     const questions = await getPendingQuestions({ limit, offset });
@@ -134,14 +135,15 @@ router.get('/pending', async (req, res, next) => {
 // POST /api/questions/:id/validate - Approve or reject a question
 // ============================================================================
 
-router.post('/:id/validate', async (req, res, next) => {
+router.post('/:id/validate', requireRole('VALIDATOR', 'ADMIN'), async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { errors, data } = validateValidationPayload(req.body);
 
     if (!id) {
       throw createHttpError(400, 'Question ID is required');
     }
+
+    const { errors, data } = validateValidationPayload(req.body);
 
     if (errors.length > 0) {
       throw createHttpError(400, errors.join('; '));
@@ -246,7 +248,7 @@ router.get('/:id', async (req, res, next) => {
 // POST /api/questions - Create new question
 // ============================================================================
 
-router.post('/', async (req, res, next) => {
+router.post('/', requireAuth, async (req, res, next) => {
   try {
     const payload = req.body;
 
@@ -284,7 +286,7 @@ router.post('/', async (req, res, next) => {
 // PUT /api/questions/:id - Update question
 // ============================================================================
 
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', requireAuth, async (req, res, next) => {
   try {
     const { id } = req.params;
     const updates = req.body;
@@ -332,7 +334,7 @@ router.put('/:id', async (req, res, next) => {
 // DELETE /api/questions/:id - Delete question (soft delete)
 // ============================================================================
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', requireRole('ADMIN'), async (req, res, next) => {
   try {
     const { id } = req.params;
 

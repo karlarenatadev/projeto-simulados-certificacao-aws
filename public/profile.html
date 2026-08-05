@@ -184,7 +184,16 @@
     <!-- App Shell: tema, idioma, UserMenu e Sidebar -->
     <script type="module">
       import { initShell } from "./js/shell.js";
-      document.addEventListener("DOMContentLoaded", () => initShell(null));
+      import { AuthService } from "./js/services/authService.js";
+      document.addEventListener("DOMContentLoaded", async () => {
+        // Guarda de sessão: redireciona para a home se não estiver autenticado.
+        const user = await AuthService.restoreSession();
+        if (!user) {
+          window.location.replace("./index.html");
+          return;
+        }
+        initShell(user);
+      });
     </script>
 
     <!-- Listeners de tema/idioma -->
@@ -211,51 +220,39 @@
     </script>
 
     <!-- Dados do perfil via localStorage -->
-    <script>
+    <script type="module">
+      import { userManager } from "./js/userManager.js";
+      import { storageManager } from "./js/storageManager.js";
+
       document.addEventListener("DOMContentLoaded", () => {
-        // ── Ler dados do localStorage ──────────────────────────────────────
-        var STORAGE_KEY_USER = "aws_sim_user";
-        var STORAGE_KEY_HISTORY = "aws_quiz_history";
-        var STORAGE_KEY_GAMIFICATION = "aws_gamification";
-        var STORAGE_KEY_BADGES = "aws_earned_badges";
+        // ── Dados do usuário via userManager (chave cloudacademy_user) ─────
+        const user = userManager.getStoredUser();
+        const history = storageManager.getHistory();
+        const gamification = storageManager.getGamification();
 
-        function safeGet(key) {
-          try {
-            var raw = localStorage.getItem(key);
-            return raw ? JSON.parse(raw) : null;
-          } catch (e) {
-            return null;
-          }
-        }
-
-        var user = safeGet(STORAGE_KEY_USER);
-        var history = safeGet(STORAGE_KEY_HISTORY) || [];
-        var gamification = safeGet(STORAGE_KEY_GAMIFICATION) || {};
-        var earnedBadges = safeGet(STORAGE_KEY_BADGES) || [];
-
-        // ── Cabeçalho de perfil ────────────────────────────────────────────
-        var displayName =
+        const displayName =
           (user && (user.nickname || user.full_name || user.email)) ||
           "Usuário";
-        var email = (user && user.email) || "";
-        var role = ((user && user.role) || "STUDENT").toUpperCase();
+        const email = (user && user.email) || "";
+        const role = ((user && user.role) || "STUDENT").toUpperCase();
 
-        var nameEl = document.getElementById("profile-display-name");
-        var emailEl = document.getElementById("profile-email");
-        var avatarEl = document.getElementById("profile-avatar-initials");
-        var roleEl = document.getElementById("profile-role-badge");
+        // ── Cabeçalho de perfil ──────────────────────────────────────────
+        const nameEl = document.getElementById("profile-display-name");
+        const emailEl = document.getElementById("profile-email");
+        const avatarEl = document.getElementById("profile-avatar-initials");
+        const roleEl = document.getElementById("profile-role-badge");
 
         if (nameEl) nameEl.textContent = displayName;
         if (emailEl) emailEl.textContent = email;
         if (avatarEl)
           avatarEl.textContent = displayName.charAt(0).toUpperCase();
 
-        var roleLabels = {
+        const roleLabels = {
           STUDENT: "Estudante",
           VALIDATOR: "Validador",
           ADMIN: "Admin",
         };
-        var roleClasses = {
+        const roleClasses = {
           STUDENT: "a3-role-student",
           VALIDATOR: "a3-role-validator",
           ADMIN: "a3-role-admin",
@@ -266,24 +263,20 @@
             "a3-badge " + (roleClasses[role] || "a3-role-student");
         }
 
-        // ── Estatísticas ───────────────────────────────────────────────────
-        var totalQuizzes = Array.isArray(history) ? history.length : 0;
-        var bestScore = 0;
-        if (totalQuizzes > 0) {
-          bestScore = Math.max.apply(
-            null,
-            history.map(function (h) {
-              return h.percentage || 0;
-            }),
-          );
-        }
-        var streak = gamification.currentStreak || 0;
-        var xp = gamification.xp || 0;
+        // ── Estatísticas ─────────────────────────────────────────────────
+        const totalQuizzes = Array.isArray(history) ? history.length : 0;
+        const bestScore =
+          totalQuizzes > 0
+            ? Math.max(...history.map((h) => h.percentage || 0))
+            : 0;
+        const streak = gamification.currentStreak || 0;
+        const xp =
+          gamification.xp || gamification.xpPoints || gamification.totalXP || 0;
 
-        var totalEl = document.getElementById("stat-total-quizzes");
-        var bestEl = document.getElementById("stat-best-score");
-        var streakEl = document.getElementById("stat-streak");
-        var xpEl = document.getElementById("stat-xp");
+        const totalEl = document.getElementById("stat-total-quizzes");
+        const bestEl = document.getElementById("stat-best-score");
+        const streakEl = document.getElementById("stat-streak");
+        const xpEl = document.getElementById("stat-xp");
 
         if (totalEl) totalEl.textContent = String(totalQuizzes);
         if (bestEl)
@@ -292,23 +285,23 @@
         if (streakEl) streakEl.textContent = String(streak);
         if (xpEl) xpEl.textContent = String(xp);
 
-        // ── Certificações iniciadas ────────────────────────────────────────
-        var certNames = {
+        // ── Certificações iniciadas ───────────────────────────────────────
+        const certNames = {
           "clf-c02": "Cloud Practitioner",
           "saa-c03": "Solutions Architect",
           "dva-c02": "Developer Associate",
           "aif-c01": "AI Practitioner",
         };
-        var certIcons = {
+        const certIcons = {
           "clf-c02": "fa-cloud",
           "saa-c03": "fa-building-columns",
           "dva-c02": "fa-code",
           "aif-c01": "fa-robot",
         };
 
-        var certsSeen = {};
+        const certsSeen = {};
         if (Array.isArray(history)) {
-          history.forEach(function (h) {
+          history.forEach((h) => {
             if (h.certId) {
               if (!certsSeen[h.certId])
                 certsSeen[h.certId] = { count: 0, best: 0 };
@@ -320,17 +313,17 @@
           });
         }
 
-        var certsEl = document.getElementById("profile-certs-list");
+        const certsEl = document.getElementById("profile-certs-list");
         if (certsEl) {
-          var certKeys = Object.keys(certsSeen);
+          const certKeys = Object.keys(certsSeen);
           if (certKeys.length === 0) {
             certsEl.innerHTML =
               '<p class="profile-empty-hint">Nenhuma certificação iniciada. Realize seu primeiro simulado!</p>';
           } else {
             certsEl.innerHTML = certKeys
-              .map(function (certId) {
-                var data = certsSeen[certId];
-                var awsBest = Math.floor((data.best / 100) * 900) + 100;
+              .map((certId) => {
+                const data = certsSeen[certId];
+                const awsBest = Math.floor((data.best / 100) * 900) + 100;
                 return (
                   '<div class="a3-card profile-cert-card">' +
                   '<i class="fa-solid ' +
@@ -353,22 +346,27 @@
           }
         }
 
-        // ── Conquistas/badges ──────────────────────────────────────────────
-        var badgesEl = document.getElementById("profile-badges-grid");
+        // ── Conquistas/badges via gamification.badges ─────────────────────
+        const earnedBadges = gamification.badges || [];
+        const badgesEl = document.getElementById("profile-badges-grid");
         if (badgesEl) {
           if (!earnedBadges || earnedBadges.length === 0) {
             badgesEl.innerHTML =
               '<p class="profile-empty-hint">Nenhuma conquista ainda. Continue estudando!</p>';
           } else {
             badgesEl.innerHTML = earnedBadges
-              .map(function (badge) {
+              .map((badge) => {
+                const name =
+                  typeof badge === "string"
+                    ? badge
+                    : badge.name || badge.id || "Conquista";
                 return (
                   '<div class="a3-card profile-badge-card" title="' +
-                  (badge.name || badge.id || "Conquista") +
+                  name +
                   '">' +
                   '<i class="fa-solid fa-award profile-badge-icon" aria-hidden="true"></i>' +
                   '<p class="profile-badge-name">' +
-                  (badge.name || badge.id || "Conquista") +
+                  name +
                   "</p>" +
                   "</div>"
                 );

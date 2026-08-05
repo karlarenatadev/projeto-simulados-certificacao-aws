@@ -1,4 +1,5 @@
 import { logger, dispatchBusinessEvent, recordMetric } from "./utils/logger.js";
+import { sanitizeHTML } from "./utils/sanitize.js";
 
 import { identifyWeakDomains, QuizEngine } from "./quizEngine.js";
 import { certificationPaths } from "./data.js";
@@ -515,10 +516,9 @@ function wireUIActions() {
   bindClick("sidebar-btn-diagnostic", startDiagnostic);
   bindClick("sidebar-btn-flashcards", startFlashcards);
   bindClick("sidebar-btn-mistakes", startMistakesQuiz);
-  bindClick("cloud-sidebar-toggle", (e) => {
-    if (e && e.stopPropagation) e.stopPropagation();
-    toggleLeftSidebar();
-  });
+  // Nota: o toggle da sidebar (cloud-sidebar-toggle) é gerenciado por
+  // initLeftSidebarToggleShell() em shell.js, que usa a chave "sidebar_closed".
+  // Não duplicar o listener aqui.
   // ─────────────────────────────────────────────────────────────────────────
 
   const flashcardContainer = document.getElementById("flashcard-container");
@@ -1079,7 +1079,8 @@ function loadQuestionUI() {
   const questionText = isMulti
     ? `${q.question} <br><span class="text-sm text-aws-orange italic mt-2 block">(${t("choose_options", uiState.language, { count: q.correct.length })})</span>`
     : q.question;
-  document.getElementById("question-text").innerHTML = questionText;
+  document.getElementById("question-text").innerHTML =
+    sanitizeHTML(questionText);
 
   document.getElementById("current-q-num").textContent = progress.current;
   document.getElementById("total-q-num").textContent = progress.total;
@@ -2400,45 +2401,6 @@ function syncSidebarMistakesBadge(certId) {
   const badge = document.getElementById("sidebar-mistakes-count");
   if (sidebarBtn) sidebarBtn.classList.toggle("hidden", count === 0);
   if (badge) badge.textContent = String(count);
-}
-
-/** Alterna a visibilidade da sidebar esquerda (mostrar / esconder) */
-function toggleLeftSidebar() {
-  const body = document.body;
-  const isClosed = body.classList.toggle("sidebar-closed");
-  localStorage.setItem("aws_sidebar_closed", isClosed ? "true" : "false");
-
-  const cloudBtn = document.getElementById("cloud-sidebar-toggle");
-  if (cloudBtn) {
-    cloudBtn.setAttribute("aria-expanded", String(!isClosed));
-    cloudBtn.title = isClosed
-      ? "Mostrar menu lateral"
-      : "Esconder menu lateral";
-  }
-}
-
-/** Inicializa o estado persistido e evento de toggle da sidebar */
-function initLeftSidebarToggle() {
-  const savedClosed = localStorage.getItem("aws_sidebar_closed") === "true";
-  if (savedClosed) {
-    document.body.classList.add("sidebar-closed");
-  }
-
-  const cloudBtn = document.getElementById("cloud-sidebar-toggle");
-  if (cloudBtn) {
-    cloudBtn.setAttribute("aria-expanded", String(!savedClosed));
-    cloudBtn.title = savedClosed
-      ? "Mostrar menu lateral"
-      : "Esconder menu lateral";
-  }
-
-  const cloudIcon = document.getElementById("cloud-logo-icon");
-  if (cloudIcon) {
-    cloudIcon.addEventListener("click", (e) => {
-      e.stopPropagation();
-      toggleLeftSidebar();
-    });
-  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

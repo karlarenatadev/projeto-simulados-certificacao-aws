@@ -5677,6 +5677,35 @@ textarea {
   margin-bottom: 0.15rem;
 }
 
+.resource-simple-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: var(--a3-tech-blue);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.resource-simple-link i {
+  color: var(--text-muted);
+  font-size: 0.9em;
+}
+
+.dark .resource-simple-link {
+  color: var(--a3-sky-frost);
+}
+
+.resource-simple-link:hover {
+  text-decoration: underline;
+  color: var(--aws-orange-hover);
+}
+
+.dark .resource-simple-link:hover {
+  color: var(--a3-text-inverse);
+}
+
 .dark .resource-title {
   color: var(--text-strong);
 }

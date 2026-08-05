@@ -50,16 +50,34 @@ class ValidationUI {
   }
 
   async init() {
-    // Tenta restaurar sessão do AuthService central (mesmas chaves do app principal)
-    // O AuthService persiste: aws_sim_user_id, aws_sim_user_role, aws_sim_user_nickname
-    const userId = localStorage.getItem("aws_sim_user_id");
-    const role = localStorage.getItem("aws_sim_user_role");
-    const nickname = localStorage.getItem("aws_sim_user_nickname") || localStorage.getItem("aws_sim_user_name");
-    const email = localStorage.getItem("aws_sim_user_email") || "";
+    // Restaura sessão da chave unificada cloudacademy_user (padrão do userManager.js)
+    const SESSION_KEY = "cloudacademy_user";
+    let userId = null;
+    let role = null;
+    let nickname = null;
+    let email = "";
+
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      if (raw) {
+        const session = JSON.parse(raw);
+        userId = session?.id || null;
+        role = session?.role || null;
+        nickname = session?.nickname || null;
+        email = session?.email || "";
+      }
+    } catch {
+      // JSON corrompido — ignora
+    }
 
     if (userId && (role === "VALIDATOR" || role === "ADMIN")) {
       // Sessão central válida com permissão de validação
-      this.currentUser = { id: userId, role, nickname: nickname || email.split("@")[0] || "Validador" };
+      this.currentUser = {
+        id: userId,
+        role,
+        nickname: nickname || email.split("@")[0] || "Validador",
+        email,
+      };
       this.showAuthenticatedState();
       this.loadQuestions();
     } else if (userId) {
@@ -107,13 +125,16 @@ class ValidationUI {
         return;
       }
 
-      // Persiste sessão
-      localStorage.setItem("aws_sim_user_id", user.id);
-      localStorage.setItem("aws_sim_user_role", user.role);
-      localStorage.setItem(
-        "aws_sim_user_nickname",
-        user.nickname || email.split("@")[0],
-      );
+      // Persiste sessão na chave unificada cloudacademy_user (padrão do userManager.js)
+      const SESSION_KEY = "cloudacademy_user";
+      const session = {
+        id: user.id,
+        email: user.email || email,
+        nickname: user.nickname || email.split("@")[0] || "",
+        role: user.role || "STUDENT",
+        full_name: user.full_name || "",
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
 
       this.currentUser = user;
       this.showAuthenticatedState();
