@@ -44,9 +44,13 @@
           grid.innerHTML = '';
 
           try {
-              const response = await fetch('./api/cases?limit=100').catch(() => null);
+              let response = await fetch('./api/cases?limit=100').catch(() => null);
               if (!response || !response.ok) {
-                  // API indisponível — renderiza todos como "em breve"
+                  // Fallback para arquivo estático
+                  response = await fetch('./data/cases/architecture_cases.json').catch(() => null);
+              }
+              if (!response || !response.ok) {
+                  // API e arquivo indisponíveis — renderiza todos como "em breve"
                   LEVELS.forEach(level => {
                       const card = document.createElement('div');
                       card.className = 'level-card';

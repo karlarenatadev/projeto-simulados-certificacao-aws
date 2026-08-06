@@ -21,7 +21,7 @@
 /* ── Header global ─────────────────────────────────────────────────────── */
 
 header {
-  background-color: var(--a3-primary-dark) !important;
+  background-color: var(--a3-primary-dark);
   border-bottom: 1px solid
     color-mix(in srgb, var(--a3-text-inverse) 16%, transparent);
 }
@@ -110,9 +110,9 @@ input[type="text"],
 input[type="number"],
 input[type="email"],
 textarea {
-  background-color: var(--a3-surface) !important;
-  border-color: var(--a3-border-default) !important;
-  color: var(--text-main) !important;
+  background-color: var(--a3-surface);
+  border-color: var(--a3-border-default);
+  color: var(--text-main);
 }
 
 .dark select,
@@ -332,7 +332,7 @@ textarea {
     font-size: 14px !important;
   }
   button {
-    padding: 12px 16px !important;
+    padding: 12px 16px;
     font-size: 14px;
     min-height: 44px;
   }
@@ -389,8 +389,8 @@ textarea {
     padding: 0.75rem !important;
   }
   button {
-    padding: 10px 12px !important;
-    font-size: 13px !important;
+    padding: 10px 12px;
+    font-size: 13px;
     min-height: 40px;
   }
   .flashcard-container {

@@ -222,7 +222,7 @@ ALIASES VISUAIS A3 PARA UTILITÁRIOS EXISTENTES
 }
 .focus\:border-orange-500:focus,
 .focus\:ring-aws-orange:focus,
-.focus\:ring-orange-200:focus, {
+.focus\:ring-orange-200:focus {
   border-color: var(--a3-tech-blue) !important;
   --tw-ring-color: color-mix(in srgb, var(--a3-tech-blue) 24%, transparent) !important;
 }

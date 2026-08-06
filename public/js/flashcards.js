@@ -70,8 +70,14 @@ export function filterFlashcards() {
       return {
         cert: selectedCert,
         domain: "review-deck",
-        term: q.question,
-        definition: `<strong>Resposta:</strong><br>• ${correctText}<br><br><strong>Explicação:</strong><br>${q.explanation}`,
+        term: {
+          pt: q.question,
+          en: q.question
+        },
+        definition: {
+          pt: `<strong>Resposta:</strong><br>• ${correctText}<br><br><strong>Explicação:</strong><br>${q.explanation}`,
+          en: `<strong>Answer:</strong><br>• ${correctText}<br><br><strong>Explanation:</strong><br>${q.explanation}`
+        }
       };
     });
   } else {
