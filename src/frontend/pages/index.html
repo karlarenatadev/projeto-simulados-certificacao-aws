@@ -116,6 +116,32 @@
             </div>
           </div>
 
+          <!-- DASHBOARD DA JORNADA INJETADO NO HUB -->
+          <div class="w-full mb-6 mt-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="jornada-dashboard-grid">
+              <!-- Card Progresso -->
+              <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 text-center">
+                <p class="text-[10px] text-gray-500 uppercase tracking-wide font-bold mb-1">Progresso</p>
+                <p class="text-2xl font-black text-aws-orange" id="jornada-progress">0%</p>
+              </div>
+              <!-- Card Taxa de Acerto -->
+              <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 text-center">
+                <p class="text-[10px] text-gray-500 uppercase tracking-wide font-bold mb-1">Taxa Acerto</p>
+                <p class="text-2xl font-black text-green-500" id="jornada-accuracy">0%</p>
+              </div>
+              <!-- Card Questões -->
+              <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 text-center">
+                <p class="text-[10px] text-gray-500 uppercase tracking-wide font-bold mb-1">Questões</p>
+                <p class="text-2xl font-black text-blue-500" id="jornada-questions">0</p>
+              </div>
+              <!-- Card Ponto Fraco -->
+              <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 text-center">
+                <p class="text-[10px] text-gray-500 uppercase tracking-wide font-bold mb-1">Ponto Fraco</p>
+                <p class="text-sm font-black text-red-500 mt-2 truncate" id="jornada-weak-domain">-</p>
+              </div>
+            </div>
+          </div>
+
           <!-- Grade principal: indicadores + o que encontrar -->
           <div class="lh-grid mb-6">
             <!-- COLUNA ESQUERDA: Indicadores principais -->
@@ -188,7 +214,7 @@
               <div class="lh-features-list">
                 <button
                   class="lh-feature-item"
-                  onclick="showLearningHubQuickStart()"
+                  onclick="window.location.href='./simulados.html'"
                 >
                   <span class="lh-feature-icon lh-feat-blue">
                     <i class="fa-solid fa-play"></i>
@@ -203,7 +229,7 @@
                   <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
                 </button>
 
-                <button class="lh-feature-item" onclick="startJornada()">
+                <button class="lh-feature-item" onclick="window.location.href='./jornada.html'">
                   <span class="lh-feature-icon lh-feat-purple">
                     <i class="fa-solid fa-route"></i>
                   </span>
@@ -217,7 +243,7 @@
                   <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
                 </button>
 
-                <button class="lh-feature-item" onclick="startDiagnostic()">
+                <button class="lh-feature-item" onclick="window.location.href='./diagnostico.html'">
                   <span class="lh-feature-icon lh-feat-cyan">
                     <i class="fa-solid fa-stethoscope"></i>
                   </span>
@@ -231,7 +257,7 @@
                   <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
                 </button>
 
-                <button class="lh-feature-item" onclick="startFlashcards()">
+                <button class="lh-feature-item" onclick="window.location.href='./flashcards.html'">
                   <span class="lh-feature-icon lh-feat-green">
                     <i class="fa-solid fa-layer-group"></i>
                   </span>
@@ -247,7 +273,7 @@
 
                 <button
                   class="lh-feature-item lh-feature-item-highlight"
-                  onclick="showLearningHubQuickStart()"
+                  onclick="window.location.href='./profile.html'"
                 >
                   <span class="lh-feature-icon lh-feat-pink">
                     <i class="fa-solid fa-lightbulb"></i>
@@ -290,14 +316,14 @@
               <div class="lh-quick-grid">
                 <button
                   class="lh-quick-btn"
-                  onclick="showLearningHubQuickStart()"
+                  onclick="window.location.href='./cases.html'"
                 >
                   <i class="fa-solid fa-bolt"></i>
                   <span>Simulado rápido</span>
                 </button>
                 <button
                   class="lh-quick-btn"
-                  onclick="startMistakesQuiz ? startMistakesQuiz() : null"
+                  onclick="window.location.href='./simulados.html'"
                   id="hub-quick-mistakes"
                 >
                   <i class="fa-solid fa-triangle-exclamation"></i>

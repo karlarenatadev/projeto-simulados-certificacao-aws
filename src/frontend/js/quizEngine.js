@@ -11,7 +11,7 @@ import { logger } from "./utils/logger.js";
  * @typedef {import('./types.js').Result} Result
  */
 
-import apiService from "../services/api.js";
+import apiService from "./services/api.js";
 import { createDataRepository } from "./dataRepository.js";
 import { storageManager } from "./storageManager.js";
 

@@ -13,7 +13,7 @@ import { logger } from "./utils/logger.js";
  * @module userManager
  */
 
-import apiService from "../services/api.js";
+import apiService from "./services/api.js";
 
 /** @type {string} Chave única de sessão no localStorage */
 const SESSION_KEY = "cloudacademy_user";
@@ -122,6 +122,21 @@ export const userManager = {
 
       throw new Error(response.message || "Falha no login corporativo.");
     } catch (error) {
+      // Fallback: Se a API estiver inacessível (offline/GitHub Pages)
+      // e for um email corporativo válido, criamos a sessão local.
+      if ((error.apiDisabled || error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) && email.endsWith("@a3data.com.br")) {
+        logger.warn("⚠️ API indisponível. Iniciando sessão offline para usuário corporativo.");
+        const fallbackUser = {
+          id: `local_${Date.now()}`,
+          email,
+          nickname: profile.nickname || email.split("@")[0],
+          role: "STUDENT",
+          full_name: profile.full_name || email.split("@")[0]
+        };
+        this._persist(fallbackUser);
+        return fallbackUser;
+      }
+      
       logger.error("Erro no login:", error);
       throw error;
     }

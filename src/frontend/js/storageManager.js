@@ -1,5 +1,5 @@
 import { logger } from "./utils/logger.js";
-import apiService from "../services/api.js";
+import apiService from "./services/api.js";
 import { createDataRepository } from "./dataRepository.js";
 import { generateQuestionId } from "./utils/questionIdentity.js";
 

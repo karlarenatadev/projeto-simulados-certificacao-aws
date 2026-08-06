@@ -17,6 +17,7 @@ import { t } from "./i18n/useTranslation.js";
 import { initializeUI } from "./i18n/initUI.js";
 import { renderTrail } from "./gamificacao/trailManager.js";
 import { renderGuildDashboard } from "./gamificacao/leaderboard.js";
+import { renderJornadaDashboard } from "./modules/jornada.js";
 import { renderBadges } from "./gamificacao/badges.js";
 import {
   renderUserMenu,
@@ -366,6 +367,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (badge) badge.innerText = certId.toUpperCase();
 
         renderSprintUI();
+        renderJornadaDashboard(certId);
 
         // 3. A SINCRONIZAÇÃO
         updateSidebarProgress(); // Atualiza a caixa "O Meu Progresso" para o nome correto
@@ -2738,6 +2740,10 @@ function goHome() {
 async function startJornada() {
   if (uiState.timerInterval) clearInterval(uiState.timerInterval);
   showScreen("jornada");
+  
+  const certId = getActiveCertificationId();
+  renderJornadaDashboard(certId);
+  
   renderTrail();
   await renderGuildDashboard();
   renderBadges();

@@ -230,6 +230,15 @@ export const translations = {
     practice_makes_perfect: "💡 A prática leva à perfeição",
     quiz_singular: "",
     quiz_plural: "s",
+    
+    // StudyNow Recommendations
+    "studyNow.loading": "Analisando dados...",
+    "studyNow.empty_state_no_history": "Complete seu primeiro simulado para receber recomendações",
+    "studyNow.empty_state_doing_great": "Mandando bem! Nenhum domínio fraco detectado.",
+    "studyNow.review_domain": "Revisar {{domain}}",
+    "studyNow.review_domain_desc": "Seu desempenho está abaixo de {{threshold}}%",
+    "studyNow.start_quiz_action": "Estudar Pontos Fracos",
+    "studyNow.study_docs_action": "Estudar Documentação"
   },
 
   en: {
@@ -453,6 +462,15 @@ export const translations = {
     quizzes_completed: "You've taken {{count}} quiz{{plural}}! Keep it up!",
     practice_makes_perfect: "💡 Practice makes perfect",
     quiz_singular: "",
-    quiz_plural: "zes",
+    quiz_plural: "s",
+
+    // StudyNow Recommendations
+    "studyNow.loading": "Analyzing data...",
+    "studyNow.empty_state_no_history": "Complete your first simulation to receive recommendations",
+    "studyNow.empty_state_doing_great": "Doing great! No weak domains detected.",
+    "studyNow.review_domain": "Review {{domain}}",
+    "studyNow.review_domain_desc": "Your performance is below {{threshold}}%",
+    "studyNow.start_quiz_action": "Study Weak Points",
+    "studyNow.study_docs_action": "Study Documentation"
   },
 };
