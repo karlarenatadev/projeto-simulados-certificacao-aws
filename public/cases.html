@@ -1,70 +1,124 @@
-<!DOCTYPE html><html lang="pt"><head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Cases de Arquitetura AWS — Estude arquiteturas reais conectando teoria, prática e questões de certificação.">
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Cases de Arquitetura AWS — Estude arquiteturas reais conectando teoria, prática e questões de certificação." />
     <title>Cases de Arquitetura — Simulador AWS</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
-        darkMode: 'class',
+        darkMode: "class",
         theme: {
           extend: {
             colors: {
-              'aws-dark': '#001863',
-              'aws-orange': '#0033FF',
+              "aws-dark": "#001863",
+              "aws-orange": "#0033FF",
             },
           },
         },
       };
     </script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E">
-
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/cases.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/cases.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#001863" />
   </head>
 
-  <body class="cases-page" id="cases-page-body">
-
-    <!-- ======================================================
-         HEADER — igual ao index.html
-         ====================================================== -->
-    <header class="a3-header">
-      <a href="index.html" class="a3-header-link group" title="Voltar ao início">
-        <i class="fa-solid fa-cloud text-[#F53199] text-xl md:text-2xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
-        <div>
-          <h1 class="text-base md:text-xl font-bold leading-tight group-hover:text-primary transition-colors">
-            Cloud Academy A3
-          </h1>
-          <p class="text-[10px] md:text-xs text-gray-300">Sua jornada para certificações AWS</p>
-        </div>
-      </a>
+  <body class="cases-page has-left-sidebar" id="cases-page-body">
+<header class="a3-header">
+      <div class="flex items-center gap-2 md:gap-3">
+        <button
+          id="cloud-sidebar-toggle"
+          class="btn-sidebar-toggle flex items-center justify-center group/cloud"
+          title="Esconder menu lateral"
+          aria-label="Alternar menu lateral"
+          aria-expanded="true"
+        >
+          <i
+            id="cloud-logo-icon"
+            class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
+            aria-hidden="true"
+          ></i>
+        </button>
+        <a href="index.html" class="a3-header-link" title="Voltar ao início">
+          <div>
+            <h1 class="text-base md:text-xl font-bold leading-tight">
+              Cloud Academy A3
+            </h1>
+            <p class="text-[10px] md:text-xs text-gray-300">
+              Sua jornada para certificações AWS
+            </p>
+          </div>
+        </a>
+      </div>
       <div class="a3-header-actions">
-        <button id="btn-language" class="a3-btn a3-btn-secondary" style="background: transparent; color: inherit; border: none; font-size: inherit;" aria-label="Alternar idioma" title="Alternar idioma">
-          <span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>
+        <button
+          id="btn-language"
+          class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
+          aria-label="Alternar idioma"
+          title="Alternar idioma"
+        >
+          <span class="text-[10px] md:text-xs font-bold"
+            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
+          >
         </button>
-
-        <button id="theme-toggle" class="a3-btn a3-btn-secondary" style="background: transparent; color: inherit; border: none; font-size: inherit;" aria-label="Alternar modo escuro">
-          <i id="theme-icon" class="fa-solid fa-moon text-base md:text-xl" aria-hidden="true"></i>
+        <button
+          id="theme-toggle"
+          class="a3-btn a3-btn-secondary"
+          aria-label="Alternar modo escuro"
+        >
+          <i
+            id="theme-icon"
+            class="fa-solid fa-moon text-base md:text-xl"
+            aria-hidden="true"
+          ></i>
         </button>
-
-        <button id="header-pomodoro-btn" class="a3-btn a3-btn-secondary">
-          <i class="fa-solid fa-stopwatch group-hover:animate-pulse"></i>
-          <span id="header-pomodoro-timer" class="font-mono">15:00</span>
-        </button>
-
-        <button id="install-app" class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2" style="background: transparent; color: inherit; font-size: inherit;">
+        <button
+          id="install-app"
+          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
+        >
           <i class="fa-solid fa-download"></i> Baixar App
         </button>
-
-        <div id="score-container" style="display: none" class="a3-badge a3-badge-primary">
-          <i class="fa-solid fa-bullseye text-green-400 text-xs md:text-base" aria-hidden="true"></i>
-          <span id="score-display" class="text-xs md:text-sm" aria-live="polite">0 / 0</span>
-        </div>
+        <!-- User Menu — populado pelo shell.js -->
+        <div id="user-menu-container"></div>
       </div>
     </header>
+<nav id="left-sidebar" aria-label="Menu principal" role="navigation">
+  <!--
+    .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
+    no momento do boot. O botão abaixo é apenas um fallback visual
+    para Progressive Enhancement (evita flash de sidebar vazia).
+  -->
+  <div class="left-sidebar-nav">
+    <button
+      id="sidebar-btn-hub"
+      class="left-sidebar-item left-sidebar-item-primary"
+      aria-label="Learning Hub — Painel Principal"
+      title="Learning Hub — Painel Principal"
+    >
+      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <span class="left-sidebar-item-label">Hub</span>
+    </button>
+  </div>
+  <!--
+    .left-sidebar-footer é gerado dinamicamente por buildSidebar(user).
+    Contém: divisor, Perfil, Config, divisor, botão Recolher.
+  -->
+</nav>
+
+
+<!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
 
     <!-- ======================================================
          HERO
@@ -76,24 +130,36 @@
       </div>
       <h1>Aprenda Arquitetura AWS com Casos Reais</h1>
       <p>
-        Conecte os pontos entre o que você estuda e como as empresas
-        usam a AWS na prática. Cada case traz cenário, diagrama,
-        serviços e questões de fixação.
+        Conecte os pontos entre o que você estuda e como as empresas usam a AWS
+        na prática. Cada case traz cenário, diagrama, serviços e questões de
+        fixação.
       </p>
 
       <!-- Learning Loop -->
       <div class="learning-loop" aria-label="Ciclo de aprendizado">
-        <span class="loop-step"><i class="fa-solid fa-circle-xmark"></i> Questão errada</span>
+        <span class="loop-step"
+          ><i class="fa-solid fa-circle-xmark"></i> Questão errada</span
+        >
         <span class="loop-arrow">→</span>
-        <span class="loop-step"><i class="fa-solid fa-lightbulb"></i> Conceito</span>
+        <span class="loop-step"
+          ><i class="fa-solid fa-lightbulb"></i> Conceito</span
+        >
         <span class="loop-arrow">→</span>
-        <span class="loop-step"><i class="fa-solid fa-diagram-project"></i> Case</span>
+        <span class="loop-step"
+          ><i class="fa-solid fa-diagram-project"></i> Case</span
+        >
         <span class="loop-arrow">→</span>
-        <span class="loop-step"><i class="fa-solid fa-network-wired"></i> Arquitetura</span>
+        <span class="loop-step"
+          ><i class="fa-solid fa-network-wired"></i> Arquitetura</span
+        >
         <span class="loop-arrow">→</span>
-        <span class="loop-step"><i class="fa-solid fa-book"></i> Documentação</span>
+        <span class="loop-step"
+          ><i class="fa-solid fa-book"></i> Documentação</span
+        >
         <span class="loop-arrow">→</span>
-        <span class="loop-step"><i class="fa-solid fa-circle-check"></i> Nova questão</span>
+        <span class="loop-step"
+          ><i class="fa-solid fa-circle-check"></i> Nova questão</span
+        >
       </div>
     </section>
 
@@ -102,7 +168,7 @@
          ====================================================== -->
     <div class="cases-filters" role="search" aria-label="Filtros de cases">
       <label for="filter-certification">
-        <i class="fa-solid fa-certificate" style="color:var(--a3-tech-blue);"></i>
+        <i class="fa-solid fa-certificate cases-filter-icon"></i>
         Certificação:
       </label>
       <select id="filter-certification" class="cases-filter-select">
@@ -113,8 +179,8 @@
         <option value="AIF-C01">AIF-C01 — AI Practitioner</option>
       </select>
 
-      <label for="filter-difficulty" style="margin-left:0.5rem;">
-        <i class="fa-solid fa-signal" style="color:var(--a3-tech-blue);"></i>
+      <label for="filter-difficulty" class="cases-filter-label-gap">
+        <i class="fa-solid fa-signal cases-filter-icon"></i>
         Nível:
       </label>
       <select id="filter-difficulty" class="cases-filter-select">
@@ -124,27 +190,32 @@
         <option value="advanced">Avançado</option>
       </select>
 
-      <span id="cases-count-label" class="text-muted ml-auto" style="font-size:0.8rem;"></span>
+      <span id="cases-count-label" class="cases-count-text"></span>
     </div>
 
     <!-- ======================================================
          GRID DE CASES
          ====================================================== -->
-    <main class="cases-container" id="cases-main">
-      <div id="cases-grid" class="cases-grid" role="list" aria-label="Lista de cases de arquitetura">
+    <main class="cases-container main-content-container" id="cases-main">
+      <div
+        id="cases-grid"
+        class="cases-grid"
+        role="list"
+        aria-label="Lista de cases de arquitetura"
+      >
         <!-- Skeletons carregando -->
         <div class="case-card-skeleton" aria-hidden="true">
-          <div class="skeleton-line tall" style="margin-top:1.5rem;"></div>
+          <div class="skeleton-line tall"></div>
           <div class="skeleton-line"></div>
           <div class="skeleton-line short"></div>
         </div>
         <div class="case-card-skeleton" aria-hidden="true">
-          <div class="skeleton-line tall" style="margin-top:1.5rem;"></div>
+          <div class="skeleton-line tall"></div>
           <div class="skeleton-line"></div>
           <div class="skeleton-line short"></div>
         </div>
         <div class="case-card-skeleton" aria-hidden="true">
-          <div class="skeleton-line tall" style="margin-top:1.5rem;"></div>
+          <div class="skeleton-line tall"></div>
           <div class="skeleton-line"></div>
           <div class="skeleton-line short"></div>
         </div>
@@ -154,161 +225,146 @@
     <!-- ======================================================
          SCRIPTS
          ====================================================== -->
+<footer
+      class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
+    >
+      Plataforma colaborativa de estudo para certificações AWS construída para a
+      comunidade da Guilda Z-Maguinhos | A3Data.
+    </footer>
+
+
+
     <script type="module">
-      import { getCases, getDifficultyInfo, isCompleted, getApiStatus } from './js/cases/caseManager.js';
+      import { initShell } from "./js/shell.js";
+      import { AuthService } from "./js/services/authService.js";
+      import {
+        getCases,
+        getDifficultyInfo,
+        isCompleted,
+      } from "./js/cases/caseManager.js";
 
-      // ---- Theme ----
-      const themeToggle = document.getElementById('theme-toggle');
-      const themeIcon = document.getElementById('theme-icon');
-      const body = document.getElementById('cases-page-body');
-
-      function applyTheme(dark) {
-        document.documentElement.classList.toggle('dark', dark);
-        body.classList.toggle('dark', dark);
-        themeIcon.className = dark
-          ? 'fa-solid fa-sun text-base md:text-xl'
-          : 'fa-solid fa-moon text-base md:text-xl';
-      }
-
-      const savedDark = localStorage.getItem('theme') === 'dark';
-      applyTheme(savedDark);
-
-      themeToggle.addEventListener('click', () => {
-        const isDark = document.documentElement.classList.contains('dark');
-        applyTheme(!isDark);
-        localStorage.setItem('theme', !isDark ? 'dark' : 'light');
-      });
-
-      // ---- Render helpers ----
-      function renderCertTags(certifications) {
-        if (!Array.isArray(certifications) || certifications.length === 0) return '';
-        return `<div class="case-cert-tags">
-          ${certifications.map(c => `<span class="cert-tag">${c}</span>`).join('')}
-        </div>`;
-      }
-
-      function renderCard(caseData) {
-        const { label, cls } = getDifficultyInfo(caseData.difficulty);
-        const completed = isCompleted(caseData.id);
-        const servicesCount = Array.isArray(caseData.services) ? caseData.services.length : 0;
-        const scenario = caseData.scenario
-          ? caseData.scenario.split('\n')[0].slice(0, 180)
-          : '';
-
+      // ── Render card ───────────────────────────────────────────────────────
+      function buildCaseCard(c) {
+        const diffInfo = getDifficultyInfo(c.difficulty);
+        const done = isCompleted(c.id || c.slug);
+        const certs = Array.isArray(c.certifications)
+          ? c.certifications
+          : c.certification
+            ? [c.certification]
+            : [];
+        const certTagsHtml = certs
+          .map(
+            (cert) =>
+              `<span class="cert-tag">${cert.toUpperCase()}</span>`,
+          )
+          .join("");
+        const doneHtml = done
+          ? `<span class="case-done-badge"><i class="fa-solid fa-circle-check"></i> Concluído</span>`
+          : "";
+        const slug = c.slug || c.id;
         return `
-          <a
-            href="./case-view.html?id=${encodeURIComponent(caseData.slug || caseData.id)}"
-            class="case-card"
-            role="listitem"
-            aria-label="Case: ${caseData.title}"
-            id="case-card-${caseData.id}"
-          >
+          <a href="./case-view.html?id=${encodeURIComponent(slug)}"
+             class="case-card"
+             role="listitem"
+             aria-label="${c.title}">
             <div class="case-card-accent"></div>
             <div class="case-card-body">
               <div class="case-card-header">
-                <h2 class="case-card-title">${escapeHtml(caseData.title)}</h2>
-                <span class="difficulty-badge ${cls}">${label}</span>
+                <h3 class="case-card-title">${c.title}</h3>
+                <span class="difficulty-badge ${diffInfo.cls}">${diffInfo.label}</span>
               </div>
-              <p class="case-card-scenario">${escapeHtml(scenario)}</p>
+              <p class="case-card-scenario">${c.scenario || ""}</p>
               <div class="case-card-footer">
-                ${renderCertTags(caseData.certifications)}
-                <div class="flex items-center gap-3">
-                  ${servicesCount > 0
-                    ? `<span class="case-services-count">
-                        <i class="fa-solid fa-cubes-stacked"></i> ${servicesCount} serviços
-                      </span>`
-                    : ''}
-                  ${completed
-                    ? `<span class="case-completed-badge">
-                        <i class="fa-solid fa-circle-check"></i> Concluído
-                      </span>`
-                    : ''}
-                </div>
+                <div class="case-cert-tags">${certTagsHtml}</div>
+                ${doneHtml}
               </div>
             </div>
           </a>`;
       }
 
-      function escapeHtml(str) {
-        if (!str) return '';
-        return String(str)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;');
+      // ── Render grid ───────────────────────────────────────────────────────
+      async function renderCasesGrid(filters = {}) {
+        const grid = document.getElementById("cases-grid");
+        const countLabel = document.getElementById("cases-count-label");
+        if (!grid) return;
+
+        // Mantém skeletons enquanto carrega
+        try {
+          const cases = await getCases(filters);
+
+          if (!cases || cases.length === 0) {
+            grid.innerHTML = `
+              <div class="cases-empty" style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--a3-text-muted);">
+                <i class="fa-solid fa-diagram-project" style="font-size:2.5rem;opacity:0.3;display:block;margin-bottom:0.75rem;"></i>
+                <p>Nenhum case encontrado para os filtros selecionados.</p>
+              </div>`;
+            if (countLabel) countLabel.textContent = "0 cases";
+            return;
+          }
+
+          grid.innerHTML = cases.map(buildCaseCard).join("");
+          if (countLabel)
+            countLabel.textContent = `${cases.length} case${cases.length !== 1 ? "s" : ""}`;
+        } catch (err) {
+          grid.innerHTML = `
+            <div class="cases-empty" style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--a3-text-muted);">
+              <i class="fa-solid fa-triangle-exclamation" style="font-size:2rem;display:block;margin-bottom:0.75rem;color:var(--a3-warning);"></i>
+              <p>Erro ao carregar cases. Tente recarregar a página.</p>
+            </div>`;
+          if (countLabel) countLabel.textContent = "";
+        }
       }
 
-      // ---- Load & Render ----
-      const grid = document.getElementById('cases-grid');
-      const countLabel = document.getElementById('cases-count-label');
-      let allCases = [];
+      // ── Filtros ───────────────────────────────────────────────────────────
+      function getFilters() {
+        const cert = document.getElementById("filter-certification")?.value || "";
+        const diff = document.getElementById("filter-difficulty")?.value || "";
+        const filters = {};
+        if (cert) filters.certification = cert;
+        if (diff) filters.difficulty = diff;
+        return filters;
+      }
 
-      async function loadCases(filters = {}) {
-        grid.innerHTML = `
-          <div class="case-card-skeleton" aria-hidden="true">
-            <div class="skeleton-line tall" style="margin-top:1.5rem;"></div>
-            <div class="skeleton-line"></div>
-            <div class="skeleton-line short"></div>
-          </div>
-          <div class="case-card-skeleton" aria-hidden="true">
-            <div class="skeleton-line tall" style="margin-top:1.5rem;"></div>
-            <div class="skeleton-line"></div>
-            <div class="skeleton-line short"></div>
-          </div>`;
-
-        const cases = await getCases(filters);
-        const status = getApiStatus();
-        allCases = cases;
-
-        countLabel.textContent = cases.length === 0
-          ? ''
-          : `${cases.length} case${cases.length !== 1 ? 's' : ''} encontrado${cases.length !== 1 ? 's' : ''}`;
-
-        // Remover banner antigo se houver
-        const oldBanner = document.getElementById('offline-banner');
-        if (oldBanner) oldBanner.remove();
-
-        if (status.fallbackUsed) {
-          const banner = document.createElement('div');
-          banner.id = 'offline-banner';
-          banner.style.cssText = 'background:var(--a3-surface-warning); color:var(--text-main); padding:0.75rem; border-radius:8px; margin-bottom:1rem; text-align:center; font-size:0.9rem; border: 1px solid var(--a3-accent); display:flex; align-items:center; justify-content:center; gap:0.5rem;';
-          banner.innerHTML = '<i class="fa-solid fa-wifi-slash" style="color:var(--a3-warning);"></i> Não foi possível conectar ao servidor. Usando modo offline.';
-          grid.parentNode.insertBefore(banner, grid);
-        }
-
-        if (cases.length === 0) {
-          let emptyMessage = 'Nenhum case disponível.';
-          if (!status.apiAvailable && !status.fallbackUsed) {
-             emptyMessage = 'Serviço indisponível no momento. Tente novamente mais tarde.';
-          }
-          grid.innerHTML = `
-            <div class="cases-empty-state" style="grid-column:1/-1;">
-              <i class="fa-solid fa-box-open" aria-hidden="true"></i>
-              <p>${escapeHtml(emptyMessage)}</p>
-            </div>`;
+      // ── Init ──────────────────────────────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", async () => {
+        const user = await AuthService.restoreSession();
+        if (!user) {
+          window.location.replace("./index.html");
           return;
         }
+        initShell(user);
 
-        grid.innerHTML = cases.map(renderCard).join('');
-      }
+        // Carrega os cases inicialmente
+        await renderCasesGrid();
 
-      // Initial load
-      loadCases();
-
-      // Filters
-      const certSelect = document.getElementById('filter-certification');
-      const diffSelect = document.getElementById('filter-difficulty');
-
-      function applyFilters() {
-        loadCases({
-          certification: certSelect.value || undefined,
-          difficulty: diffSelect.value || undefined,
-        });
-      }
-
-      certSelect.addEventListener('change', applyFilters);
-      diffSelect.addEventListener('change', applyFilters);
+        // Filtros reativos
+        document
+          .getElementById("filter-certification")
+          ?.addEventListener("change", () => renderCasesGrid(getFilters()));
+        document
+          .getElementById("filter-difficulty")
+          ?.addEventListener("change", () => renderCasesGrid(getFilters()));
+      });
     </script>
-  
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeBtn = document.getElementById("theme-toggle");
+        const langBtn = document.getElementById("btn-language");
+        if (themeBtn)
+          themeBtn.addEventListener(
+            "click",
+            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
+          );
+        if (langBtn)
+          langBtn.addEventListener("click", () => {
+            const lang = localStorage.getItem("aws_sim_lang") || "pt";
+            const next = lang === "pt" ? "en" : "pt";
+            localStorage.setItem("aws_sim_lang", next);
+            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
+            window.location.reload();
+          });
+      });
+    </script>
 
-</body></html>
+  </body>
+</html>

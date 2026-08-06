@@ -1,9 +1,11 @@
-<!DOCTYPE html><html lang="pt"><head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recursos de Estudo - Simulador IA AWS</title>
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Biblioteca de materiais de estudo para certificações AWS." />
+    <title>Recursos de Estudo — Cloud Academy A3</title>
 
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -19,186 +21,693 @@
       };
     </script>
 
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="./css/style.css">
-    <meta name="theme-color" content="#001863">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#001863" />
   </head>
 
-  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300">
-    <!-- Header -->
-    <header class="a3-header">
-      <a href="index.html" class="flex items-center gap-2 md:gap-3 cursor-pointer group no-underline text-white" title="Voltar ao início">
-        <i class="fa-solid fa-cloud text-[#F53199] text-xl md:text-2xl group-hover:scale-110 transition-transform" aria-hidden="true"></i>
-        <div>
-          <h1 class="text-base md:text-xl font-bold leading-tight group-hover:text-primary transition-colors">
-            Cloud Academy A3
-          </h1>
-          <p class="text-[10px] md:text-xs text-gray-300">Sua jornada para certificações AWS</p>
-        </div>
-      </a>
+  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
+<header class="a3-header">
+      <div class="flex items-center gap-2 md:gap-3">
+        <button
+          id="cloud-sidebar-toggle"
+          class="btn-sidebar-toggle flex items-center justify-center group/cloud"
+          title="Esconder menu lateral"
+          aria-label="Alternar menu lateral"
+          aria-expanded="true"
+        >
+          <i
+            id="cloud-logo-icon"
+            class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
+            aria-hidden="true"
+          ></i>
+        </button>
+        <a href="index.html" class="a3-header-link" title="Voltar ao início">
+          <div>
+            <h1 class="text-base md:text-xl font-bold leading-tight">
+              Cloud Academy A3
+            </h1>
+            <p class="text-[10px] md:text-xs text-gray-300">
+              Sua jornada para certificações AWS
+            </p>
+          </div>
+        </a>
+      </div>
       <div class="a3-header-actions">
-        <button id="btn-language" class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2" aria-label="Alternar idioma" title="Alternar idioma">
-          <span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>
+        <button
+          id="btn-language"
+          class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
+          aria-label="Alternar idioma"
+          title="Alternar idioma"
+        >
+          <span class="text-[10px] md:text-xs font-bold"
+            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
+          >
         </button>
-
-        <button id="theme-toggle" class="a3-btn a3-btn-secondary" aria-label="Alternar modo escuro">
-          <i id="theme-icon" class="fa-solid fa-moon text-base md:text-xl" aria-hidden="true"></i>
+        <button
+          id="theme-toggle"
+          class="a3-btn a3-btn-secondary"
+          aria-label="Alternar modo escuro"
+        >
+          <i
+            id="theme-icon"
+            class="fa-solid fa-moon text-base md:text-xl"
+            aria-hidden="true"
+          ></i>
         </button>
-
-        <button id="header-pomodoro-btn" class="a3-btn a3-btn-secondary flex items-center gap-2 group">
-          <i class="fa-solid fa-stopwatch group-hover:animate-pulse"></i>
-          <span id="header-pomodoro-timer" class="font-mono">15:00</span>
-        </button>
-
-        <button id="install-app" class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2">
+        <button
+          id="install-app"
+          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
+        >
           <i class="fa-solid fa-download"></i> Baixar App
         </button>
-
-        <div id="score-container" style="display: none" class="bg-gray-700 px-2 py-1 md:px-3 rounded-full flex items-center gap-1 md:gap-2">
-          <i class="fa-solid fa-bullseye text-green-400 text-xs md:text-base" aria-hidden="true"></i>
-          <span id="score-display" class="text-xs md:text-sm" aria-live="polite">0 / 0</span>
-        </div>
+        <!-- User Menu — populado pelo shell.js -->
+        <div id="user-menu-container"></div>
       </div>
     </header>
+<nav id="left-sidebar" aria-label="Menu principal" role="navigation">
+  <!--
+    .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
+    no momento do boot. O botão abaixo é apenas um fallback visual
+    para Progressive Enhancement (evita flash de sidebar vazia).
+  -->
+  <div class="left-sidebar-nav">
+    <button
+      id="sidebar-btn-hub"
+      class="left-sidebar-item left-sidebar-item-primary"
+      aria-label="Learning Hub — Painel Principal"
+      title="Learning Hub — Painel Principal"
+    >
+      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <span class="left-sidebar-item-label">Hub</span>
+    </button>
+  </div>
+  <!--
+    .left-sidebar-footer é gerado dinamicamente por buildSidebar(user).
+    Contém: divisor, Perfil, Config, divisor, botão Recolher.
+  -->
+</nav>
 
-    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl">
+
+<!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
+
+    <main
+      class="flex-grow a3-container py-8 main-content-container"
+      id="resources-main"
+    >
       <div class="mb-8">
-        <h2 class="text-3xl font-bold text-slate-800 mb-2">
-          <i class="fa-solid fa-book-open-reader text-[#0033FF] mr-2"></i> Materiais de Estudo Recomendados
+        <h2 class="text-3xl font-bold text-strong mb-2 flex items-center gap-3">
+          <i class="fa-solid fa-book-open-reader text-primary"></i>
+          Materiais de Estudo Recomendados
         </h2>
-        <p class="text-slate-600 dark:text-slate-400">
-          Explore essa curadoria de links oficiais da AWS e de comunidades externas para aprofundar seus conhecimentos.
+        <p class="text-muted text-lg">
+          Explore essa curadoria de links oficiais da AWS e de comunidades
+          externas para aprofundar seus conhecimentos.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
+      <div class="a3-grid">
         <!-- Treinamento Oficial e Skill Builder -->
-        <div class="a3-card shadow-md hover:shadow-lg">
-          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
-            <i class="fa-solid fa-graduation-cap text-[#0033FF] mr-2"></i> Treinamento Oficial
-          </h3>
-          <ul class="space-y-3 text-sm">
-            <li><a href="https://skillbuilder.aws" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS Skill Builder</a></li>
-            <li><a href="https://skillbuilder.aws/exam-prep" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Exam Prep Oficial</a></li>
-            <li><a href="https://skillbuilder.aws/learn/course/134/aws-cloud-practitioner-essentials" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Cloud Practitioner Essentials</a></li>
-            <li><a href="https://awstreinabrasil.com/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS Treina Brasil</a></li>
-            <li><a href="https://aws.amazon.com/pt/training/restart/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS re/Start</a></li>
-            <li><a href="https://aws.amazon.com/education/awseducate/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS Educate</a></li>
-            <li><a href="https://workshops.aws" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS Workshops</a></li>
-            <li><a href="https://aws.amazon.com/getting-started/hands-on/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Hands-on Tutorials</a></li>
-            <li><a href="https://aws.amazon.com/training/digital/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Treinamento Digital</a></li>
-            <li><a href="https://aws.amazon.com/free/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS Free Tier</a></li>
-            <li><a href="https://aws.amazon.com/training/ai-ml/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Treinamento AI/ML</a></li>
-          </ul>
-        </div>
-
-        <!-- Certificações AWS -->
-        <div class="a3-card shadow-md hover:shadow-lg">
-          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
-            <i class="fa-solid fa-award text-yellow-500 mr-2"></i> Certificações
-          </h3>
-          <ul class="space-y-3 text-sm">
-            <li><a href="https://aws.amazon.com/certification/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Portal de Certificações</a></li>
-            <li><a href="https://aws.amazon.com/certification/certified-cloud-practitioner/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Cloud Practitioner (CLF)</a></li>
-            <li><a href="https://aws.amazon.com/certification/certified-solutions-architect-associate/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Solutions Architect (SAA)</a></li>
-            <li><a href="https://aws.amazon.com/certification/certified-developer-associate/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Developer Associate (DVA)</a></li>
-            <li><a href="https://aws.amazon.com/certification/certified-ai-practitioner/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AI Practitioner (AIF)</a></li>
-          </ul>
-        </div>
-
-        <!-- Arquitetura e Boas Práticas -->
-        <div class="a3-card shadow-md hover:shadow-lg">
-          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
-            <i class="fa-solid fa-sitemap text-teal-500 mr-2"></i> Arquitetura
-          </h3>
-          <ul class="space-y-3 text-sm">
-            <li><a href="https://aws.amazon.com/architecture/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS Architecture Center</a></li>
-            <li><a href="https://aws.amazon.com/architecture/well-architected/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Well-Architected Framework</a></li>
-            <li><a href="https://aws.amazon.com/whitepapers/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS Whitepapers</a></li>
-            <li><a href="https://aws.amazon.com/compliance/shared-responsibility-model/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Shared Responsibility Model</a></li>
-            <li><a href="https://aws.amazon.com/solutions/implementations/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS Solutions Implementations</a></li>
-            <li><a href="https://aws.amazon.com/quickstart/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS Quick Starts</a></li>
-          </ul>
-        </div>
-
-        <!-- Canais do YouTube -->
-        <div class="a3-card shadow-md hover:shadow-lg">
-          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
-            <i class="fa-brands fa-youtube text-red-500 mr-2"></i> Canais YouTube
-          </h3>
-          <ul class="space-y-3 text-sm">
-            <li><a href="https://www.youtube.com/@amazonwebservices" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-video mr-1 text-gray-400"></i> Amazon Web Services</a></li>
-            <li><a href="https://www.youtube.com/@AWSTrainingandCertification" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-video mr-1 text-gray-400"></i> AWS Training and Cert</a></li>
-            <li><a href="https://www.youtube.com/@learncantrill" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-video mr-1 text-gray-400"></i> Adrian Cantrill</a></li>
-            <li><a href="https://www.youtube.com/@StephaneMaarek" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-video mr-1 text-gray-400"></i> Stephane Maarek</a></li>
-            <li><a href="https://www.youtube.com/@freecodecamp" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-video mr-1 text-gray-400"></i> freeCodeCamp (Aulões)</a></li>
-          </ul>
-        </div>
-
-        <!-- Comunidade e Plataformas Externas -->
-        <div class="a3-card shadow-md hover:shadow-lg">
-          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
-            <i class="fa-solid fa-users text-purple-500 mr-2"></i> Comunidade e Testes
-          </h3>
-          <ul class="space-y-3 text-sm">
-            <li><a href="https://repost.aws" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS re:Post</a></li>
-            <li><a href="https://www.examtopics.com/exams/amazon/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> ExamTopics (Discussões)</a></li>
-            <li><a href="https://tutorialsdojo.com" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Tutorials Dojo</a></li>
-            <li><a href="https://portal.tutorialsdojo.com/product/free-aws-certified-solutions-architect-associate-practice-exams-sampler/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Free SAA Practice Exams</a></li>
-            <li><a href="https://tutorialsdojo.com/aws-cheat-sheets/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS Cheat Sheets</a></li>
-            <li><a href="https://www.whizlabs.com" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> Whizlabs</a></li>
-            <li><a href="https://github.com/aws-samples" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-brands fa-github mr-1 text-gray-400"></i> AWS Samples (GitHub)</a></li>
-            <li><a href="https://github.com/Thiago-code-lab/aws-certified-solutions-architect-associate-brasil" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-brands fa-github mr-1 text-gray-400"></i> GitHub SAA Brasil</a></li>
-          </ul>
-        </div>
-
-        <!-- Blogs -->
-        <div class="a3-card shadow-md hover:shadow-lg">
-          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
-            <i class="fa-solid fa-rss text-orange-500 mr-2"></i> AWS Blogs
-          </h3>
-          <ul class="space-y-3 text-sm">
-            <li><a href="https://aws.amazon.com/blogs/aws/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS News Blog</a></li>
-            <li><a href="https://aws.amazon.com/blogs/architecture/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS Architecture Blog</a></li>
-            <li><a href="https://aws.amazon.com/blogs/security/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS Security Blog</a></li>
-            <li><a href="https://aws.amazon.com/blogs/machine-learning/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline"><i class="fa-solid fa-link mr-1 text-gray-400"></i> AWS Machine Learning Blog</a></li>
-          </ul>
-        </div>
-
-        <!-- Documentação Core -->
-        <div class="a3-card shadow-md hover:shadow-lg">
-          <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-gray-100 dark:border-slate-700 pb-2">
-            <i class="fa-solid fa-file-lines text-indigo-500 mr-2"></i> Referências da Documentação
-          </h3>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 text-sm">
-            <a href="https://docs.aws.amazon.com/ec2/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-server w-4 text-gray-400"></i> EC2</a>
-            <a href="https://docs.aws.amazon.com/s3/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-database w-4 text-gray-400"></i> S3</a>
-            <a href="https://docs.aws.amazon.com/iam/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-shield-halved w-4 text-gray-400"></i> IAM</a>
-            <a href="https://docs.aws.amazon.com/vpc/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-network-wired w-4 text-gray-400"></i> VPC</a>
-            <a href="https://docs.aws.amazon.com/lambda/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-bolt w-4 text-gray-400"></i> Lambda</a>
-            <a href="https://docs.aws.amazon.com/rds/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-database w-4 text-gray-400"></i> RDS</a>
-            <a href="https://docs.aws.amazon.com/dynamodb/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-table w-4 text-gray-400"></i> DynamoDB</a>
-            <a href="https://docs.aws.amazon.com/cloudwatch/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-chart-line w-4 text-gray-400"></i> CloudWatch</a>
-            <a href="https://docs.aws.amazon.com/cloudfront/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-globe w-4 text-gray-400"></i> CloudFront</a>
-            <a href="https://docs.aws.amazon.com/route53/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-compass w-4 text-gray-400"></i> Route 53</a>
-            <a href="https://docs.aws.amazon.com/sqs/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-envelope w-4 text-gray-400"></i> SQS &amp; SNS</a>
-            <a href="https://docs.aws.amazon.com/eventbridge/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-code-branch w-4 text-gray-400"></i> EventBridge</a>
-            <a href="https://docs.aws.amazon.com/step-functions/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-diagram-next w-4 text-gray-400"></i> Step Functions</a>
-            <a href="https://aws.amazon.com/bedrock/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-brain w-4 text-gray-400"></i> Bedrock (IA)</a>
-            <a href="https://docs.aws.amazon.com/cloudformation/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-code w-4 text-gray-400"></i> CloudFormation</a>
-            <a href="https://developer.hashicorp.com/terraform/tutorials/aws-get-started" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-code w-4 text-gray-400"></i> Terraform</a>
-            <a href="https://docs.aws.amazon.com/organizations/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-sitemap w-4 text-gray-400"></i> Organizations</a>
-            <a href="https://docs.aws.amazon.com/kms/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-key w-4 text-gray-400"></i> KMS</a>
-            <a href="https://docs.aws.amazon.com/cloudtrail/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-shoe-prints w-4 text-gray-400"></i> CloudTrail</a>
-            <a href="https://docs.aws.amazon.com/config/" target="_blank" class="text-blue-600 dark:text-blue-400 hover:underline block truncate"><i class="fa-solid fa-gear w-4 text-gray-400"></i> AWS Config</a>
+        <div class="a3-card a3-card-interactive">
+          <div class="a3-card-header">
+            <h3>
+              <i class="fa-solid fa-graduation-cap text-primary mr-2"></i>
+              Treinamento Oficial
+            </h3>
+          </div>
+          <div class="a3-card-body">
+            <ul class="space-y-4">
+              <li>
+                <a
+                  href="https://skillbuilder.aws"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS Skill Builder</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://skillbuilder.aws/exam-prep"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Exam Prep Oficial</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://skillbuilder.aws/learn/course/134/aws-cloud-practitioner-essentials"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Cloud Practitioner
+                  Essentials</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://awstreinabrasil.com/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS Treina Brasil</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/pt/training/restart/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS re/Start</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/education/awseducate/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS Educate</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://workshops.aws"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS Workshops</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/getting-started/hands-on/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Hands-on Tutorials</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/training/digital/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Treinamento Digital</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/free/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS Free Tier</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/training/ai-ml/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Treinamento AI/ML</a
+                >
+              </li>
+            </ul>
           </div>
         </div>
 
+        <!-- Certificações AWS -->
+        <div class="a3-card a3-card-interactive">
+          <div class="a3-card-header">
+            <h3>
+              <i class="fa-solid fa-award text-warning mr-2"></i> Certificações
+            </h3>
+          </div>
+          <div class="a3-card-body">
+            <ul class="space-y-4">
+              <li>
+                <a
+                  href="https://aws.amazon.com/certification/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Portal de Certificações</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/certification/certified-cloud-practitioner/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Cloud Practitioner (CLF)</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/certification/certified-solutions-architect-associate/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Solutions Architect (SAA)</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/certification/certified-developer-associate/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Developer Associate (DVA)</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/certification/certified-ai-practitioner/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AI Practitioner (AIF)</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Arquitetura e Boas Práticas -->
+        <div class="a3-card a3-card-interactive">
+          <div class="a3-card-header">
+            <h3>
+              <i class="fa-solid fa-sitemap text-sky-frost mr-2"></i>
+              Arquitetura
+            </h3>
+          </div>
+          <div class="a3-card-body">
+            <ul class="space-y-4">
+              <li>
+                <a
+                  href="https://aws.amazon.com/architecture/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS Architecture Center</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/architecture/well-architected/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Well-Architected
+                  Framework</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/whitepapers/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS Whitepapers</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/compliance/shared-responsibility-model/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Shared Responsibility
+                  Model</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/solutions/implementations/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS Solutions
+                  Implementations</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/quickstart/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS Quick Starts</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Canais do YouTube -->
+        <div class="a3-card a3-card-interactive">
+          <div class="a3-card-header">
+            <h3>
+              <i class="fa-brands fa-youtube text-danger mr-2"></i> Canais
+              YouTube
+            </h3>
+          </div>
+          <div class="a3-card-body">
+            <ul class="space-y-4">
+              <li>
+                <a
+                  href="https://www.youtube.com/@amazonwebservices"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-video"></i> Amazon Web Services</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.youtube.com/@AWSTrainingandCertification"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-video"></i> AWS Training and Cert</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.youtube.com/@learncantrill"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-video"></i> Adrian Cantrill</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.youtube.com/@StephaneMaarek"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-video"></i> Stephane Maarek</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.youtube.com/@freecodecamp"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-video"></i> freeCodeCamp (Aulões)</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Comunidade e Plataformas Externas -->
+        <div class="a3-card a3-card-interactive">
+          <div class="a3-card-header">
+            <h3>
+              <i class="fa-solid fa-users text-magenta mr-2"></i> Comunidade e
+              Testes
+            </h3>
+          </div>
+          <div class="a3-card-body">
+            <ul class="space-y-4">
+              <li>
+                <a
+                  href="https://repost.aws"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS re:Post</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.examtopics.com/exams/amazon/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> ExamTopics (Discussões)</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://tutorialsdojo.com"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Tutorials Dojo</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://portal.tutorialsdojo.com/product/free-aws-certified-solutions-architect-associate-practice-exams-sampler/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Free SAA Practice Exams</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://tutorialsdojo.com/aws-cheat-sheets/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS Cheat Sheets</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://www.whizlabs.com"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> Whizlabs</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://github.com/aws-samples"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-brands fa-github"></i> AWS Samples (GitHub)</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://github.com/Thiago-code-lab/aws-certified-solutions-architect-associate-brasil"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-brands fa-github"></i> GitHub SAA Brasil</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Blogs -->
+        <div class="a3-card a3-card-interactive">
+          <div class="a3-card-header">
+            <h3><i class="fa-solid fa-rss text-warning mr-2"></i> AWS Blogs</h3>
+          </div>
+          <div class="a3-card-body">
+            <ul class="space-y-4">
+              <li>
+                <a
+                  href="https://aws.amazon.com/blogs/aws/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS News Blog</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/blogs/architecture/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS Architecture Blog</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/blogs/security/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS Security Blog</a
+                >
+              </li>
+              <li>
+                <a
+                  href="https://aws.amazon.com/blogs/machine-learning/"
+                  target="_blank"
+                  class="resource-simple-link"
+                  ><i class="fa-solid fa-link"></i> AWS Machine Learning Blog</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documentação Core: Expandida abaixo do Grid -->
+      <div class="a3-card a3-card-interactive mt-6">
+        <div class="a3-card-header">
+          <h3>
+            <i class="fa-solid fa-file-lines text-primary mr-2"></i> Referências
+            da Documentação
+          </h3>
+        </div>
+        <div class="a3-card-body">
+          <div class="flex flex-wrap gap-3">
+            <a
+              href="https://docs.aws.amazon.com/ec2/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-server"></i> EC2</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/s3/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-database"></i> S3</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/iam/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-shield-halved"></i> IAM</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/vpc/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-network-wired"></i> VPC</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/lambda/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-bolt"></i> Lambda</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/rds/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-database"></i> RDS</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/dynamodb/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-table"></i> DynamoDB</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/cloudwatch/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-chart-line"></i> CloudWatch</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/cloudfront/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-globe"></i> CloudFront</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/route53/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-compass"></i> Route 53</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/sqs/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-envelope"></i> SQS & SNS</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/eventbridge/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-code-branch"></i> EventBridge</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/step-functions/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-diagram-next"></i> Step Functions</a
+            >
+            <a
+              href="https://aws.amazon.com/bedrock/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-brain"></i> Bedrock (IA)</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/cloudformation/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-code"></i> CloudFormation</a
+            >
+            <a
+              href="https://developer.hashicorp.com/terraform/tutorials/aws-get-started"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-code"></i> Terraform</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/organizations/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-sitemap"></i> Organizations</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/kms/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-key"></i> KMS</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/cloudtrail/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-shoe-prints"></i> CloudTrail</a
+            >
+            <a
+              href="https://docs.aws.amazon.com/config/"
+              target="_blank"
+              class="a3-badge a3-badge-primary hover:-translate-y-1 transition-transform"
+              ><i class="fa-solid fa-gear"></i> AWS Config</a
+            >
+          </div>
+        </div>
       </div>
     </main>
-  
 
-</body></html>
+    <!-- App Shell: tema, idioma, UserMenu e Sidebar -->
+<footer
+      class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
+    >
+      Plataforma colaborativa de estudo para certificações AWS construída para a
+      comunidade da Guilda Z-Maguinhos | A3Data.
+    </footer>
+
+
+
+    <script type="module">
+      import { initShell } from "./js/shell.js";
+      import { AuthService } from "./js/services/authService.js";
+      document.addEventListener("DOMContentLoaded", async () => {
+        const user = await AuthService.restoreSession();
+        if (!user) {
+          window.location.replace("./index.html");
+          return;
+        }
+        initShell(user);
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeBtn = document.getElementById("theme-toggle");
+        const langBtn = document.getElementById("btn-language");
+        if (themeBtn)
+          themeBtn.addEventListener(
+            "click",
+            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
+          );
+        if (langBtn)
+          langBtn.addEventListener("click", () => {
+            const lang = localStorage.getItem("aws_sim_lang") || "pt";
+            const next = lang === "pt" ? "en" : "pt";
+            localStorage.setItem("aws_sim_lang", next);
+            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
+            window.location.reload();
+          });
+      });
+    </script>
+
+  </body>
+</html>

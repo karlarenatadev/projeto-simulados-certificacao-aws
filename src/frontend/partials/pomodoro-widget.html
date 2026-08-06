@@ -1,0 +1,73 @@
+<div
+      id="pomodoro-widget"
+      class="hidden fixed top-20 right-6 z-50 bg-white p-5 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 w-64 animate-fade-in"
+    >
+      <div class="flex justify-between items-center mb-4">
+        <h4 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-stopwatch text-aws-orange"></i> Sessão de Foco
+        </h4>
+        <button
+          onclick="togglePomodoroWidget()"
+          class="a3-btn a3-btn-danger"
+          aria-label="Fechar widget Pomodoro"
+        >
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div
+        id="pomodoro-display"
+        class="text-5xl font-mono font-black text-center text-gray-800 dark:text-white my-4"
+        aria-live="polite"
+        aria-label="Tempo restante do Pomodoro"
+      >
+        25:00
+      </div>
+
+      <div class="flex justify-center gap-2 mb-4">
+        <button
+          onclick="setPomodoroDuration(15)"
+          data-pomodoro-duration="15"
+          aria-pressed="false"
+          class="a3-btn a3-btn-secondary"
+        >
+          15 min
+        </button>
+        <button
+          onclick="setPomodoroDuration(30)"
+          data-pomodoro-duration="30"
+          aria-pressed="false"
+          class="a3-btn a3-btn-secondary"
+        >
+          30 min
+        </button>
+        <button
+          onclick="setPomodoroDuration(60)"
+          data-pomodoro-duration="60"
+          aria-pressed="false"
+          class="a3-btn a3-btn-secondary"
+        >
+          60 min
+        </button>
+      </div>
+
+      <div class="flex justify-center gap-4">
+        <button
+          id="btn-pomodoro-toggle"
+          onclick="togglePomodoro()"
+          class="a3-btn a3-btn-primary a3-btn-lg w-14 flex items-center justify-center shadow-md"
+          aria-label="Iniciar Pomodoro"
+          type="button"
+        >
+          <i class="fa-solid fa-play text-xl" aria-hidden="true"></i>
+        </button>
+        <button
+          onclick="resetPomodoro()"
+          class="a3-btn a3-btn-secondary w-14 flex items-center justify-center"
+          aria-label="Reiniciar Pomodoro"
+          type="button"
+        >
+          <i class="fa-solid fa-rotate-right font-bold" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>

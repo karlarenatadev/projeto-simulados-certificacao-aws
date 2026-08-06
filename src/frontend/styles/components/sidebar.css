@@ -1,0 +1,437 @@
+/* ==========================================================================
+   SIDEBAR CSS
+   Left Sidebar — navegação lateral fixa do App Shell
+   Extraído de style.css para isolamento e manutenção.
+   Utiliza exclusivamente tokens do Design System (tokens.css).
+   ========================================================================== */
+
+/* ── Variáveis da sidebar ──────────────────────────────────────────────── */
+
+:root {
+  --sidebar-width: 72px;
+  --header-height: 68px;
+}
+
+/* ── Layout do body ────────────────────────────────────────────────────── */
+
+body.has-left-sidebar {
+  padding-left: 0;
+}
+
+/* ── Sidebar base ──────────────────────────────────────────────────────── */
+
+#left-sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--header-height));
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  background-color: var(--a3-primary-dark);
+  border-right: 1px solid
+    color-mix(in srgb, var(--a3-text-inverse) 12%, transparent);
+  box-shadow: 2px 0 16px color-mix(in srgb, var(--a3-deep-sea) 40%, transparent);
+  overflow: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s ease;
+}
+
+#left-sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Estado fechado ────────────────────────────────────────────────────── */
+
+body.sidebar-closed #left-sidebar,
+#left-sidebar.is-closed {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Adaptação da área central ─────────────────────────────────────────── */
+
+#main-content-wrapper,
+.main-content-container {
+  transition:
+    padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (min-width: 641px) {
+  body.has-left-sidebar:not(.sidebar-closed) #main-content-wrapper,
+  body.has-left-sidebar:not(.sidebar-closed) .main-content-container {
+    padding-left: calc(var(--space-16) + var(--sidebar-width));
+  }
+
+  body.sidebar-closed #main-content-wrapper,
+  body.sidebar-closed .main-content-container {
+    padding-left: var(--space-16);
+  }
+
+  /* Elementos fora do main-content-container que também precisam de deslocamento */
+  body.has-left-sidebar:not(.sidebar-closed) .cases-hero,
+  body.has-left-sidebar:not(.sidebar-closed) .cases-filters {
+    padding-left: calc(1.5rem + var(--sidebar-width));
+  }
+
+  body.sidebar-closed .cases-hero,
+  body.sidebar-closed .cases-filters {
+    padding-left: 1.5rem;
+  }
+}
+
+/* ── Área de navegação ─────────────────────────────────────────────────── */
+
+.left-sidebar-nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-16) 0 var(--space-8);
+}
+
+/* ── Itens ─────────────────────────────────────────────────────────────── */
+
+.left-sidebar-item {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.65rem var(--space-8);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  text-decoration: none;
+  color: color-mix(in srgb, var(--a3-text-inverse) 75%, transparent);
+  transition: all 0.2s ease;
+  min-height: 56px;
+}
+
+.left-sidebar-item:hover {
+  background-color: color-mix(in srgb, var(--a3-text-inverse) 10%, transparent);
+  color: var(--a3-text-inverse);
+}
+
+.left-sidebar-item:focus-visible {
+  outline: 2px solid var(--a3-accent);
+  outline-offset: -2px;
+}
+
+.left-sidebar-item.is-active {
+  background-color: color-mix(in srgb, var(--a3-tech-blue) 25%, transparent);
+  color: var(--a3-text-inverse);
+  border-left: 3px solid var(--a3-tech-blue);
+}
+
+/* ── Item primário ─────────────────────────────────────────────────────── */
+
+.left-sidebar-item-primary {
+  color: var(--a3-text-inverse);
+}
+
+.left-sidebar-item-primary .left-sidebar-item-icon {
+  color: var(--a3-tech-blue);
+  filter: drop-shadow(
+    0 0 6px color-mix(in srgb, var(--a3-tech-blue) 60%, transparent)
+  );
+}
+
+.left-sidebar-item-primary:hover .left-sidebar-item-icon {
+  filter: drop-shadow(
+    0 0 10px color-mix(in srgb, var(--a3-tech-blue) 80%, transparent)
+  );
+}
+
+/* ── Item de perigo ────────────────────────────────────────────────────── */
+
+.left-sidebar-item-danger .left-sidebar-item-icon {
+  color: var(--a3-danger);
+}
+
+/* ── Ícone ─────────────────────────────────────────────────────────────── */
+
+.left-sidebar-item-icon {
+  font-size: 1.2rem;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.left-sidebar-item:hover .left-sidebar-item-icon {
+  transform: scale(1.1);
+}
+
+/* ── Label ─────────────────────────────────────────────────────────────── */
+
+.left-sidebar-item-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0.85;
+}
+
+.left-sidebar-item:hover .left-sidebar-item-label {
+  opacity: 1;
+}
+
+/* ── Badge (contador) ──────────────────────────────────────────────────── */
+
+.left-sidebar-badge {
+  position: absolute;
+  top: var(--space-8);
+  right: 0.6rem;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  background-color: var(--a3-danger);
+  color: var(--a3-text-inverse);
+  border-radius: var(--radius-full);
+  font-size: 0.6rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ── Divisor ───────────────────────────────────────────────────────────── */
+
+.left-sidebar-divider {
+  width: 40%;
+  height: 1px;
+  background-color: color-mix(in srgb, var(--a3-text-inverse) 15%, transparent);
+  margin: var(--space-4) 0;
+  flex-shrink: 0;
+}
+
+/* ── Footer (rodapé da sidebar) ─────────────────────────────────────────── */
+
+.left-sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-8) 0 var(--space-16);
+  flex-shrink: 0;
+  border-top: 1px solid
+    color-mix(in srgb, var(--a3-text-inverse) 10%, transparent);
+}
+
+/* ── Botão de recolher/expandir sidebar (rodapé) ───────────────────────── */
+
+.sidebar-collapse-btn {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: var(--space-8) var(--space-8);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: color-mix(in srgb, var(--a3-text-inverse) 55%, transparent);
+  transition: all 0.2s ease;
+  min-height: 48px;
+}
+
+.sidebar-collapse-btn:hover {
+  background-color: color-mix(in srgb, var(--a3-text-inverse) 8%, transparent);
+  color: var(--a3-text-inverse);
+}
+
+.sidebar-collapse-btn:focus-visible {
+  outline: 2px solid var(--a3-accent);
+  outline-offset: -2px;
+}
+
+.sidebar-collapse-btn .sidebar-collapse-icon {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-collapse-btn .sidebar-collapse-label {
+  font-size: 0.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+}
+
+/* Ícone inverte quando a sidebar está recolhida */
+body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
+  transform: rotate(180deg);
+}
+
+/* ── Dark mode ─────────────────────────────────────────────────────────── */
+
+.dark #left-sidebar {
+  background-color: #050e2e;
+  border-right-color: color-mix(
+    in srgb,
+    var(--a3-text-inverse) 8%,
+    transparent
+  );
+}
+
+/* ── Tooltip ───────────────────────────────────────────────────────────── */
+
+.left-sidebar-item::before {
+  content: attr(title);
+  position: absolute;
+  left: calc(var(--sidebar-width) - 4px);
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--a3-primary-dark);
+  color: var(--a3-text-inverse);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  padding: var(--space-4) var(--space-12);
+  border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--a3-text-inverse) 15%, transparent);
+  box-shadow: var(--a3-shadow-card);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 100;
+  transition: opacity 0.15s ease;
+}
+
+.left-sidebar-item:hover::before {
+  opacity: 1;
+}
+
+.sidebar-collapse-btn::before {
+  content: attr(title);
+  position: absolute;
+  left: calc(var(--sidebar-width) - 4px);
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--a3-primary-dark);
+  color: var(--a3-text-inverse);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  padding: var(--space-4) var(--space-12);
+  border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--a3-text-inverse) 15%, transparent);
+  box-shadow: var(--a3-shadow-card);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 100;
+  transition: opacity 0.15s ease;
+}
+
+.sidebar-collapse-btn:hover::before {
+  opacity: 1;
+}
+
+/* ── Responsividade ────────────────────────────────────────────────────── */
+
+/* Mobile (≤640px): sidebar como drawer deslizante — NÃO usa display:none */
+@media (max-width: 640px) {
+  body.has-left-sidebar {
+    padding-left: 0;
+  }
+
+  #left-sidebar {
+    /* Drawer: 200px de largura, oculto por padrão via transform */
+    width: 200px;
+    transform: translateX(-100%);
+    opacity: 1; /* mantém opaco — a transform controla visibilidade */
+    box-shadow: none;
+    z-index: 200; /* acima do overlay */
+  }
+
+  /* Itens expandidos no drawer mobile — exibe ícone + label lado a lado */
+  .left-sidebar-item {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: var(--space-12);
+    padding: var(--space-12) var(--space-16);
+    min-height: 48px;
+  }
+
+  .left-sidebar-item-label {
+    font-size: var(--text-xs);
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: 1;
+    white-space: nowrap;
+  }
+
+  .left-sidebar-item-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  /* Botão de colapso fica oculto no drawer mobile */
+  .sidebar-collapse-btn {
+    display: none;
+  }
+
+  /* Tooltip desabilitado no mobile (já há labels visíveis) */
+  .left-sidebar-item::before,
+  .sidebar-collapse-btn::before {
+    display: none;
+  }
+
+  /* Drawer ABERTO: sidebar desliza para dentro */
+  body.sidebar-open #left-sidebar {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px color-mix(in srgb, var(--a3-deep-sea) 50%, transparent);
+  }
+
+  /* Overlay escuro quando drawer está aberto */
+  body.sidebar-open::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-color: color-mix(in srgb, #000 50%, transparent);
+    z-index: 199; /* abaixo da sidebar, acima do conteúdo */
+    animation: fadeIn 0.25s ease forwards;
+  }
+
+  /* Conteúdo principal NÃO se desloca no mobile — sidebar fica por cima */
+  body.has-left-sidebar:not(.sidebar-closed) #main-content-wrapper,
+  body.has-left-sidebar:not(.sidebar-closed) .main-content-container,
+  body.sidebar-open #main-content-wrapper,
+  body.sidebar-open .main-content-container {
+    padding-left: 0;
+  }
+
+  /* Estado sidebar-closed no mobile: garantir que não esteja aberta */
+  body.sidebar-closed #left-sidebar {
+    transform: translateX(-100%);
+    opacity: 1;
+    pointer-events: none;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  :root {
+    --sidebar-width: 64px;
+  }
+}

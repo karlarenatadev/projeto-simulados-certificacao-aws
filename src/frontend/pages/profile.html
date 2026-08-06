@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Perfil do usuário — histórico, certificações e conquistas." />
+    <title>Meu Perfil — Cloud Academy A3</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "aws-dark": "#001863",
+              "aws-orange": "#0033FF",
+            },
+          },
+        },
+      };
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#001863" />
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
+
+    <!-- {{HEADER_PAGE}} -->
+
+    <!-- {{SIDEBAR}} -->
+
+<!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
+
+    <!-- ===== CONTEÚDO PRINCIPAL ===== -->
+    <main class="main-content-container profile-main" id="profile-page">
+      <!-- Cabeçalho do perfil -->
+      <div class="a3-card profile-header-card" id="profile-header">
+        <div class="profile-avatar-wrap">
+          <div class="a3-avatar profile-avatar-xl" id="profile-avatar-initials">
+            ?
+          </div>
+        </div>
+        <div class="profile-info">
+          <h2 class="profile-name" id="profile-display-name">Carregando…</h2>
+          <p class="profile-email" id="profile-email"></p>
+          <span class="a3-badge a3-role-student" id="profile-role-badge"
+            >Estudante</span
+          >
+        </div>
+      </div>
+
+      <!-- Grade de estatísticas -->
+      <section class="profile-section" aria-labelledby="profile-stats-title">
+        <h3 class="profile-section-title" id="profile-stats-title">
+          <i class="fa-solid fa-chart-simple" aria-hidden="true"></i>
+          Estatísticas
+        </h3>
+        <div class="profile-stats-grid">
+          <div class="a3-card profile-stat-card">
+            <i
+              class="fa-solid fa-circle-play profile-stat-icon profile-stat-icon-quiz"
+              aria-hidden="true"
+            ></i>
+            <p class="profile-stat-value" id="stat-total-quizzes">0</p>
+            <p class="profile-stat-label">Simulados</p>
+          </div>
+          <div class="a3-card profile-stat-card">
+            <i
+              class="fa-solid fa-trophy profile-stat-icon profile-stat-icon-best"
+              aria-hidden="true"
+            ></i>
+            <p class="profile-stat-value" id="stat-best-score">—</p>
+            <p class="profile-stat-label">Melhor nota</p>
+          </div>
+          <div class="a3-card profile-stat-card">
+            <i
+              class="fa-solid fa-fire profile-stat-icon profile-stat-icon-streak"
+              aria-hidden="true"
+            ></i>
+            <p class="profile-stat-value" id="stat-streak">0</p>
+            <p class="profile-stat-label">Sequência</p>
+          </div>
+          <div class="a3-card profile-stat-card">
+            <i
+              class="fa-solid fa-star profile-stat-icon profile-stat-icon-xp"
+              aria-hidden="true"
+            ></i>
+            <p class="profile-stat-value" id="stat-xp">0</p>
+            <p class="profile-stat-label">XP total</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Certificações iniciadas -->
+      <section class="profile-section" aria-labelledby="profile-certs-title">
+        <h3 class="profile-section-title" id="profile-certs-title">
+          <i class="fa-solid fa-certificate" aria-hidden="true"></i>
+          Certificações em andamento
+        </h3>
+        <div class="profile-certs-list" id="profile-certs-list">
+          <!-- Populado por JS -->
+        </div>
+      </section>
+
+      <!-- Conquistas / badges -->
+      <section class="profile-section" aria-labelledby="profile-badges-title">
+        <h3 class="profile-section-title" id="profile-badges-title">
+          <i class="fa-solid fa-award" aria-hidden="true"></i>
+          Conquistas
+        </h3>
+        <div class="profile-badges-grid" id="profile-badges-grid">
+          <!-- Populado por JS -->
+        </div>
+      </section>
+    </main>
+
+    <!-- App Shell: tema, idioma, UserMenu e Sidebar -->
+
+    <!-- {{FOOTER}} -->
+
+    <script type="module">
+      import { storageManager } from "./js/storageManager.js";
+      import { initShell } from "./js/shell.js";
+      import { AuthService } from "./js/services/authService.js";
+
+      // ── Helpers ───────────────────────────────────────────────────────────
+      const CERT_LABELS = {
+        "clf-c02": "Cloud Practitioner",
+        "saa-c03": "Solutions Architect",
+        "dva-c02": "Developer Associate",
+        "aif-c01": "AI Practitioner",
+      };
+      const ROLE_LABELS = {
+        STUDENT: "Estudante",
+        VALIDATOR: "Validador",
+        ADMIN: "Admin",
+      };
+      const ROLE_CLASSES = {
+        STUDENT: "a3-role-student",
+        VALIDATOR: "a3-role-validator",
+        ADMIN: "a3-role-admin",
+      };
+      const BADGE_CATALOG = [
+        { id: "perfect", icon: "fa-star", color: "text-yellow-400", bg: "bg-yellow-500/10", title: "100% Perfeita", desc: "Gabaritou um simulado inteiro." },
+        { id: "dedicated", icon: "fa-book-open", color: "text-blue-400", bg: "bg-blue-500/10", title: "Dedicada", desc: "Completou 10 simulados." },
+        { id: "streak", icon: "fa-fire", color: "text-orange-500", bg: "bg-orange-500/10", title: "No Foco", desc: "5 aprovações consecutivas." },
+        { id: "speed", icon: "fa-stopwatch", color: "text-rose-400", bg: "bg-rose-500/10", title: "The Flash", desc: "Terminou na metade do tempo." },
+      ];
+
+      function setText(id, val) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      }
+
+      // ── Render user header ────────────────────────────────────────────────
+      function renderUserHeader(user) {
+        const displayName = user.nickname || user.full_name || user.email || "Usuário";
+        const initial = displayName.charAt(0).toUpperCase();
+        const role = (user.role || "STUDENT").toUpperCase();
+
+        setText("profile-display-name", displayName);
+        setText("profile-email", user.email || "");
+        setText("profile-avatar-initials", initial);
+
+        const roleBadge = document.getElementById("profile-role-badge");
+        if (roleBadge) {
+          roleBadge.textContent = ROLE_LABELS[role] || role;
+          roleBadge.className = `a3-badge ${ROLE_CLASSES[role] || "a3-role-student"}`;
+        }
+      }
+
+      // ── Render stats ──────────────────────────────────────────────────────
+      function renderStats() {
+        const gam = storageManager.getGamification() || {};
+        const history = storageManager.getHistory() || [];
+
+        const totalQuizzes = gam.totalQuizzes || history.length || 0;
+        const bestScore =
+          gam.bestScore != null && gam.bestScore > 0
+            ? `${Math.round(gam.bestScore)}%`
+            : "—";
+        const streak = gam.currentStreak || 0;
+        const xp = Math.round((gam.totalQuizzes || 0) * 10 + (gam.bestScore || 0) * 2);
+
+        setText("stat-total-quizzes", totalQuizzes);
+        setText("stat-best-score", bestScore);
+        setText("stat-streak", streak);
+        setText("stat-xp", xp);
+      }
+
+      // ── Render certifications ─────────────────────────────────────────────
+      function renderCerts() {
+        const container = document.getElementById("profile-certs-list");
+        if (!container) return;
+
+        const history = storageManager.getHistory() || [];
+        const certIds = [...new Set(history.map((h) => h.certId).filter(Boolean))];
+
+        if (certIds.length === 0) {
+          container.innerHTML = `<p class="text-sm text-muted" style="color:var(--a3-text-muted);">Nenhuma certificação iniciada ainda.</p>`;
+          return;
+        }
+
+        container.innerHTML = certIds
+          .map((certId) => {
+            const certSessions = history.filter((h) => h.certId === certId);
+            const bestPct = Math.max(...certSessions.map((h) => Number(h.percentage) || 0));
+            const label = CERT_LABELS[certId] || certId.toUpperCase();
+            return `
+              <div class="a3-card" style="padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;margin-bottom:0.5rem;">
+                <i class="fa-solid fa-certificate" style="color:var(--a3-tech-blue);font-size:1.25rem;" aria-hidden="true"></i>
+                <div style="flex:1;">
+                  <p style="font-weight:700;font-size:0.9rem;">${label}</p>
+                  <p style="font-size:0.75rem;color:var(--a3-text-muted);">${certSessions.length} simulado${certSessions.length !== 1 ? "s" : ""} · Melhor: ${bestPct > 0 ? Math.round(bestPct) + "%" : "—"}</p>
+                </div>
+                <span style="font-size:0.7rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:999px;background:color-mix(in srgb, var(--a3-tech-blue) 10%, transparent);color:var(--a3-tech-blue);">${certId.toUpperCase()}</span>
+              </div>`;
+          })
+          .join("");
+      }
+
+      // ── Render badges ─────────────────────────────────────────────────────
+      function renderBadgesGrid() {
+        const container = document.getElementById("profile-badges-grid");
+        if (!container) return;
+
+        const gam = storageManager.getGamification() || {};
+        const earnedBadges = new Set(gam.badges || []);
+
+        container.innerHTML = BADGE_CATALOG.map((badge) => {
+          const earned = earnedBadges.has(badge.id);
+          const opacity = earned ? "" : "opacity-40 grayscale cursor-not-allowed";
+          return `
+            <div class="a3-card relative ${opacity} ${badge.bg} p-4 flex flex-col items-center text-center" style="min-height:110px;">
+              ${!earned ? '<div style="position:absolute;top:0.5rem;right:0.5rem;font-size:0.6rem;color:var(--a3-text-muted);"><i class="fa-solid fa-lock"></i></div>' : ""}
+              <i class="fa-solid ${badge.icon} ${badge.color} text-2xl mb-2"></i>
+              <h4 style="font-weight:700;font-size:0.75rem;">${badge.title}</h4>
+              <p style="font-size:0.7rem;color:var(--a3-text-muted);margin-top:0.25rem;">${badge.desc}</p>
+            </div>`;
+        }).join("");
+      }
+
+      // ── Boot ──────────────────────────────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", async () => {
+        const user = await AuthService.restoreSession();
+        if (!user) {
+          window.location.replace("./index.html");
+          return;
+        }
+        initShell(user);
+        renderUserHeader(user);
+        renderStats();
+        renderCerts();
+        renderBadgesGrid();
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeBtn = document.getElementById("theme-toggle");
+        const langBtn = document.getElementById("btn-language");
+        if (themeBtn)
+          themeBtn.addEventListener(
+            "click",
+            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
+          );
+        if (langBtn)
+          langBtn.addEventListener("click", () => {
+            const lang = localStorage.getItem("aws_sim_lang") || "pt";
+            const next = lang === "pt" ? "en" : "pt";
+            localStorage.setItem("aws_sim_lang", next);
+            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
+            window.location.reload();
+          });
+      });
+    </script>
+
+  </body>
+</html>

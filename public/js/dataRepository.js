@@ -19,6 +19,24 @@
  * @returns {object} Interface única de acesso a dados
  */
 export function createDataRepository(storage, _api = null) {
+  /**
+   * Helper que tenta sincronizar com a API.
+   * Se falhar (modo offline, timeout, etc), engole o erro silenciosamente
+   * permitindo o fallback para storage local.
+   */
+  async function _safeApiCall(apiFn) {
+    if (!_api) return null;
+    try {
+      return await apiFn();
+    } catch (e) {
+      console.warn(
+        "[DataRepository] API call failed, falling back to local:",
+        e.message,
+      );
+      return null;
+    }
+  }
+
   return {
     // -------------------------------------------------------------------------
     // Progresso e histórico
@@ -32,15 +50,11 @@ export function createDataRepository(storage, _api = null) {
       return storage.getProgressFromHistory(certId, totalModules);
     },
 
-    saveQuizResult(result) {
+    async saveQuizResult(result) {
       const saved = storage.saveQuizResult(result);
 
-      // Ponto de extensão — sincronizar com API quando endpoint existir:
-      // if (saved && isApiEnabled()) {
-      //   api.syncQuizResult(result).catch((e) =>
-      //     console.warn("[DataRepository] Falha ao sincronizar resultado:", e)
-      //   );
-      // }
+      // Sincroniza com API silenciosamente (fallback p/ local já garantido na linha acima)
+      await _safeApiCall(() => _api.syncQuizResult(result));
 
       return saved;
     },
@@ -104,7 +118,7 @@ export function createDataRepository(storage, _api = null) {
     getReviewDeck(certId) {
       return storage.getReviewDeck(certId);
     },
-    
+
     addReviewQuestion(certId, question) {
       return storage.addReviewQuestion(certId, question);
     },
@@ -117,7 +131,6 @@ export function createDataRepository(storage, _api = null) {
       return storage.getReviewStats(certId);
     },
 
-
     // -------------------------------------------------------------------------
     // Gamificação
     // -------------------------------------------------------------------------
@@ -126,16 +139,11 @@ export function createDataRepository(storage, _api = null) {
       return storage.getGamification();
     },
 
-    updateGamification(percentage) {
+    async updateGamification(percentage) {
       const result = storage.updateGamification(percentage);
 
-      // Ponto de extensão — sincronizar com API quando endpoint existir:
-      // GET/PUT /api/users/:id/gamification está listado como rota planejada
-      // if (isApiEnabled()) {
-      //   api.syncGamification(result).catch((e) =>
-      //     console.warn("[DataRepository] Falha ao sincronizar gamificação:", e)
-      //   );
-      // }
+      // Sincroniza com API silenciosamente
+      await _safeApiCall(() => _api.syncGamification(result));
 
       return result;
     },
@@ -149,19 +157,58 @@ export function createDataRepository(storage, _api = null) {
     },
 
     // -------------------------------------------------------------------------
+    // Gamificação (Sprints, Badges, etc)
+    // -------------------------------------------------------------------------
+    // Casos práticos (sessão ativa)
+    // -------------------------------------------------------------------------
+
+    saveActiveCase(caseState) {
+      return storage.saveActiveCase(caseState);
+    },
+
+    loadActiveCase(caseId) {
+      return storage.loadActiveCase(caseId);
+    },
+
+    clearActiveCase(caseId) {
+      return storage.clearActiveCase(caseId);
+    },
+
+    // -------------------------------------------------------------------------
+    // Sessões de simulado (retomada)
+    // -------------------------------------------------------------------------
+
+    saveActiveSession(sessionState) {
+      return storage.saveActiveSession(sessionState);
+    },
+
+    loadActiveSession(certId) {
+      return storage.loadActiveSession(certId);
+    },
+
+    clearActiveSession(certId) {
+      return storage.clearActiveSession(certId);
+    },
+
+    // -------------------------------------------------------------------------
+
+    getSprintState(certId) {
+      return storage.getSprintState(certId);
+    },
+
+    saveSprintState(certId, state) {
+      return storage.saveSprintState(certId, state);
+    },
+
+    // -------------------------------------------------------------------------
     // Sessões de foco (Pomodoro)
     // -------------------------------------------------------------------------
 
-    saveFocusSession(minutes, type = "work") {
+    async saveFocusSession(minutes, type = "work") {
       const saved = storage.saveFocusSession(minutes, type);
 
-      // Ponto de extensão — sincronizar com API quando endpoint existir:
-      // POST /api/focus-sessions está listado como rota planejada
-      // if (saved && isApiEnabled()) {
-      //   api.syncFocusSession({ minutes, type }).catch((e) =>
-      //     console.warn("[DataRepository] Falha ao sincronizar sessão:", e)
-      //   );
-      // }
+      // Sincroniza silenciosamente
+      await _safeApiCall(() => _api.syncFocusSession({ minutes, type }));
 
       return saved;
     },
@@ -192,6 +239,48 @@ export function createDataRepository(storage, _api = null) {
 
     importData(data) {
       return storage.importData(data);
+    },
+
+    // -------------------------------------------------------------------------
+    // Validação de Domínio (Bloco B)
+    // -------------------------------------------------------------------------
+
+    /**
+     * Valida um lote de questões contra o Modelo de Domínio `Question`
+     * @param {Array} questions - Lote de questões a ser validado
+     * @returns {Array} Lote contendo apenas as questões válidas (consistentes)
+     */
+    validateQuestions(questions) {
+      if (!Array.isArray(questions)) return [];
+
+      return questions.filter((q) => {
+        // Validação das propriedades obrigatórias segundo o modelo
+        const hasId = q.id !== undefined && q.id !== null;
+        const hasText =
+          typeof q.question === "string" && q.question.trim().length > 0;
+        const hasOptions = Array.isArray(q.options) && q.options.length > 1;
+
+        // Verifica correctAnswers (suporta índice numérico ou array de números)
+        const hasCorrectAnswers =
+          (typeof q.correct === "number" &&
+            q.correct >= 0 &&
+            q.correct < q.options.length) ||
+          (Array.isArray(q.correct) &&
+            q.correct.length > 0 &&
+            q.correct.every(
+              (idx) =>
+                typeof idx === "number" && idx >= 0 && idx < q.options.length,
+            ));
+
+        if (!hasId || !hasText || !hasOptions || !hasCorrectAnswers) {
+          console.warn(
+            "[DataRepository] Questão inválida ou corrompida descartada:",
+            q,
+          );
+          return false;
+        }
+        return true;
+      });
     },
   };
 }

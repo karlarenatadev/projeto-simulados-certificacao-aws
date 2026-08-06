@@ -300,7 +300,7 @@ export function renderBadges() {
       const iconColor = isEarned ? badge.color : "text-gray-400";
 
       return `
-            <div class="a3-card relative ${glassClass} ${isEarned ? badge.bg : 'bg-gray-100/10'} p-4 flex flex-col items-center text-center transition-all duration-300">
+            <div class="a3-card relative ${glassClass} ${isEarned ? badge.bg : "bg-gray-100/10"} p-4 flex flex-col items-center text-center transition-all duration-300">
                 ${!isEarned ? '<div class="absolute top-2 right-2 text-[10px] text-muted"><i class="fa-solid fa-lock"></i></div>' : ""}
                 <i class="fa-solid ${badge.icon} ${iconColor} text-2xl mb-2"></i>
                 <h4 class="font-bold text-xs text-main">${badge.title[currentLang]}</h4>

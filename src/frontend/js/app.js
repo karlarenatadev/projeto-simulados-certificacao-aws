@@ -1,9 +1,16 @@
-import { logger } from "./utils/logger.js";
+import { logger, dispatchBusinessEvent, recordMetric } from "./utils/logger.js";
+import { sanitizeHTML } from "./utils/sanitize.js";
+
 import { identifyWeakDomains, QuizEngine } from "./quizEngine.js";
 import { certificationPaths } from "./data.js";
+import { ModalService } from "./services/modalService.js";
+import { NotificationService } from "./services/notificationService.js";
+import { initUIRenderer } from "./uiRenderer.js";
+import { ShowcaseService } from "./services/showcaseService.js";
 import { initStudyNow, refreshStudyNow } from "./recommendations/studyNow.js";
 import { storageManager } from "./storageManager.js";
 import { userManager } from "./userManager.js";
+import { AuthService } from "./services/authService.js";
 import { quizManager } from "./quizManager.js";
 import { renderRadarChart, renderGlobalRadarChart } from "./chartManager.js";
 import { t } from "./i18n/useTranslation.js";
@@ -11,6 +18,13 @@ import { initializeUI } from "./i18n/initUI.js";
 import { renderTrail } from "./gamificacao/trailManager.js";
 import { renderGuildDashboard } from "./gamificacao/leaderboard.js";
 import { renderBadges } from "./gamificacao/badges.js";
+import {
+  renderUserMenu,
+  buildSidebar,
+  initThemeShell,
+  initLeftSidebarToggleShell,
+  isSPAPage,
+} from "./shell.js";
 import {
   togglePomodoroWidget,
   togglePomodoro,
@@ -79,22 +93,184 @@ let uiState = {
 
 let lastRenderedResult = null;
 let lastDiagnosticRecommendation = null;
+
+// ---------------------------------------------------------------------------
+// LOGIN UI — exibe o overlay de login e retorna uma Promise que resolve com
+// o usuário autenticado. Rejeitada se o usuário fechar sem autenticar.
+// ---------------------------------------------------------------------------
+
+/**
+ * Exibe o overlay #login-overlay e aguarda o usuário autenticar com sucesso.
+ *
+ * @returns {Promise<{ id, email, nickname, role }>}
+ */
+function showLoginUI() {
+  return new Promise((resolve, reject) => {
+    const overlay = document.getElementById("login-overlay");
+    const form = document.getElementById("login-form");
+    const emailInput = document.getElementById("login-email-input");
+    const submitBtn = document.getElementById("login-submit-btn");
+    const btnText = document.getElementById("login-btn-text");
+    const spinner = document.getElementById("login-btn-spinner");
+    const errorMsg = document.getElementById("login-error-msg");
+
+    if (!overlay || !form) {
+      reject(new Error("Login overlay não encontrado no DOM."));
+      return;
+    }
+
+    // Torna o overlay visível
+    overlay.classList.remove("hidden");
+    emailInput?.focus();
+
+    function showError(msg) {
+      if (!errorMsg) return;
+      errorMsg.textContent = msg;
+      errorMsg.classList.remove("hidden");
+    }
+
+    function clearError() {
+      if (!errorMsg) return;
+      errorMsg.textContent = "";
+      errorMsg.classList.add("hidden");
+    }
+
+    function setLoading(loading) {
+      if (!submitBtn) return;
+      submitBtn.disabled = loading;
+      if (btnText) btnText.textContent = loading ? "Autenticando..." : "Entrar";
+      if (spinner) spinner.classList.toggle("hidden", !loading);
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      clearError();
+
+      const email = emailInput?.value?.trim() || "";
+
+      if (!email) {
+        showError("Informe seu email corporativo.");
+        return;
+      }
+
+      const emailLower = email.toLowerCase();
+      const isA3data =
+        emailLower.endsWith("@a3data.com.br") ||
+        emailLower.endsWith("@a3data.com");
+
+      if (!isA3data) {
+        showError("Acesso restrito a emails @a3data.com.br.");
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const user = await AuthService.login(email);
+
+        // Oculta overlay após autenticação bem-sucedida
+        overlay.classList.add("hidden");
+        form.removeEventListener("submit", handleSubmit);
+
+        resolve(user);
+      } catch (error) {
+        const rawMsg = error?.message || "";
+        let msg;
+        if (rawMsg.includes("403") || rawMsg.includes("não autorizado")) {
+          msg = "Email não autorizado. Use seu email @a3data.com.br.";
+        } else if (
+          rawMsg.includes("timeout") ||
+          rawMsg.includes("signal is aborted") ||
+          error?.statusCode === 0
+        ) {
+          msg =
+            "Não foi possível conectar ao servidor. Verifique se a API está rodando (npm run api:start) e tente novamente.";
+        } else if (rawMsg.includes("Network") || rawMsg.includes("fetch")) {
+          msg = "Sem conexão com o servidor. Tente novamente em instantes.";
+        } else {
+          msg = rawMsg || "Erro ao autenticar. Tente novamente.";
+        }
+        showError(msg);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    form.addEventListener("submit", handleSubmit);
+  });
+}
+
 // INICIALIZAÇÃO
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // FASE 0: User Initialization (Before everything else)
-  try {
-    const user = await userManager.getOrCreateUser();
-    await quizManager.initialize(user.id);
-    logger.info(`✓ Initialized with user: ${user.id}`);
-  } catch (error) {
-    logger.error("Failed to initialize user:", error);
-    // Continue anyway - app can still work in offline mode
+  initUIRenderer();
+
+  // FASE SHOWCASE: Interceptador de URL para demonstrações
+  const urlParams = new URLSearchParams(window.location.search);
+  const showcaseMode = urlParams.get("mode");
+  if (showcaseMode === "showcase") {
+    const persona = urlParams.get("persona") || "advanced";
+    const cert = urlParams.get("cert") || "clf-c02";
+    // O offline/theme parameter poderiam ser salvos no uiState
+    if (urlParams.get("offline") === "true") {
+      window.sessionStorage.setItem("force_offline", "true");
+    }
+    await ShowcaseService.initDemo(persona, cert);
+
+    // Limpa a URL para não poluir
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
+  // FASE 0: Autenticação — bloqueia o boot até ter sessão válida
+  // Em páginas secundárias (simulados.html, jornada.html, etc.) o app.js é
+  // carregado para disponibilizar as funções window.*, mas o fluxo de login
+  // e o Hub são responsabilidade exclusiva do index.html.
+  // O authGuard dessas páginas é feito pelo inline module via AuthService +
+  // window.location.replace('./index.html') — sem depender do app.js.
+  let authenticatedUser = null;
+  if (isSPAPage()) {
+    try {
+      let user = await AuthService.restoreSession();
+
+      if (!user) {
+        // Exibe overlay de login e aguarda autenticação
+        user = await showLoginUI();
+      }
+
+      // Sessão garantida a partir daqui
+      authenticatedUser = user;
+      await quizManager.initialize(user.id);
+      logger.info(`✓ Sessão ativa: ${user.email || user.id} (${user.role})`);
+    } catch (error) {
+      logger.error("Falha crítica na autenticação:", error);
+      // Exibe overlay de login como fallback de segurança
+      try {
+        const user = await showLoginUI();
+        authenticatedUser = user;
+        await quizManager.initialize(user.id);
+      } catch (_e) {
+        logger.error("Impossível inicializar sem autenticação.");
+        return; // Aborta o boot — não há como continuar
+      }
+    }
+  } else {
+    // Página secundária: apenas restaura sessão para disponibilizar
+    // o usuário às funções window.* (quiz, flashcards, etc.).
+    // O redirect para index.html, se não autenticado, é feito pelo
+    // inline authGuard de cada página.
+    authenticatedUser = AuthService.getCurrentUser();
+    if (authenticatedUser) {
+      await quizManager.initialize(authenticatedUser.id);
+    }
   }
 
   // FASE 1: Configurações Base (Sincronizadas)
-  initTheme();
+  initThemeShell();
   initializeUI(uiState.language);
+
+  // FASE 1.5: App Shell — UserMenu e Sidebar dinâmica por role
+  renderUserMenu(authenticatedUser);
+  buildSidebar(authenticatedUser);
 
   // FASE 2: Traduções (Só títulos estáticos, sem destruir conteúdo)
   updateSidebarTexts();
@@ -110,9 +286,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   initStudyNow({ startFilteredQuiz: startWeakestDomainQuiz });
   refreshStudyNow();
 
-  // Inicializa a sidebar esquerda
-  updateSidebarActiveItem("start");
-  initLeftSidebarToggle();
+  // Inicializa a sidebar esquerda (toggle via shell.js)
+  initLeftSidebarToggleShell();
+
+  // FASE 6: Learning Hub é a Home — exibe como tela inicial
+  // Exclusivo do SPA (index.html): em páginas secundárias as screens já estão
+  // visíveis por padrão no HTML estático e não devem ser ocultadas pelo Hub.
+  if (isSPAPage()) {
+    showLearningHub();
+  }
+
+  // Remove o boot overlay — a aplicação está pronta
+  // O boot overlay só existe em index.html; em páginas secundárias não há nada a remover.
+  const bootOverlay = document.getElementById("app-boot-overlay");
+  if (bootOverlay) {
+    bootOverlay.style.transition = "opacity 0.3s ease";
+    bootOverlay.style.opacity = "0";
+    setTimeout(() => bootOverlay.remove(), 320);
+  }
 
   // FASE 5: Setup de Certificação
   const certSelect = document.getElementById("certification-select");
@@ -150,6 +341,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     loadLastScore();
     updateDifficultyFilters(certSelect.value);
     updateMistakesControls(certSelect.value);
+    checkActiveSession(certSelect.value);
   }
 
   // LISTENER: Mudança de Certificação
@@ -167,6 +359,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         loadLastScore();
         updateDifficultyFilters(certId);
         updateMistakesControls(certId);
+        checkActiveSession(certId);
 
         // 2. Atualiza a Sprint para a nova certificação
         const badge = document.getElementById("sprint-current-cert-badge");
@@ -351,16 +544,12 @@ function wireUIActions() {
   bindClick("sprint-start-btn", startMicroSprint);
 
   // ── SIDEBAR ESQUERDA ──────────────────────────────────────────────────────
-  bindClick("sidebar-btn-hub", showLearningHub);
-  bindClick("sidebar-btn-quiz", startQuiz);
-  bindClick("sidebar-btn-journey", startJornada);
-  bindClick("sidebar-btn-diagnostic", startDiagnostic);
-  bindClick("sidebar-btn-flashcards", startFlashcards);
-  bindClick("sidebar-btn-mistakes", startMistakesQuiz);
-  bindClick("cloud-sidebar-toggle", (e) => {
-    if (e && e.stopPropagation) e.stopPropagation();
-    toggleLeftSidebar();
-  });
+  // Os itens da sidebar com 'action' já têm listeners registrados pelo shell.js
+  // via _createSidebarItem(). As funções estão expostas em window.* abaixo para
+  // que o shell.js possa chamá-las corretamente via window[item.action].
+  // NÃO duplicar os bindClick aqui para evitar chamadas duplas.
+  // Nota: o toggle da sidebar (cloud-sidebar-toggle) é gerenciado por
+  // initLeftSidebarToggleShell() em shell.js, que usa a chave "sidebar_closed".
   // ─────────────────────────────────────────────────────────────────────────
 
   const flashcardContainer = document.getElementById("flashcard-container");
@@ -399,6 +588,21 @@ function wireUIActions() {
 }
 
 // MOTOR DO QUIZ E TIMER
+
+function checkActiveSession(certId) {
+  const btn = document.getElementById("btn-start-quiz");
+  if (!btn) return;
+  const activeSession = storageManager.loadActiveSession(certId);
+  if (activeSession) {
+    btn.innerHTML = `${t("resume_simulation", uiState.language) || "Retomar Simulado"} <i class="fa-solid fa-play ml-2"></i>`;
+    btn.classList.add("bg-orange-500");
+    btn.classList.remove("bg-aws-orange");
+  } else {
+    btn.innerHTML = `${t("start_simulation", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>`;
+    btn.classList.add("bg-aws-orange");
+    btn.classList.remove("bg-orange-500");
+  }
+}
 
 async function startWeakestDomainQuiz(domainId, certId) {
   if (!domainId) return;
@@ -440,18 +644,54 @@ async function startQuiz() {
   const modeInput =
     document.querySelector('input[name="quiz-mode"]:checked')?.value || "exam";
   const topicSelect = document.getElementById("topic-filter")?.value || "";
-  const btn = document.getElementById("btn-start-quiz");
-
   if (!certSelect) return;
 
+  const btn = document.getElementById("btn-start-quiz");
+  let hideLoading = null;
+
   try {
-    btn.disabled = true;
-    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>${t("loading", uiState.language)}`;
+    if (btn) btn.disabled = true;
+    hideLoading = ModalService.showLoading(
+      t("loading", uiState.language) || "Carregando simulado...",
+    );
 
     const certId = certSelect.value;
     const currentCertInfo = certificationPaths[certId];
     uiState.currentCertificationInfo = currentCertInfo;
-    uiState.currentMode = modeInput;
+
+    // Verificar Resume de Sessão
+    const activeSession = storageManager.loadActiveSession(certId);
+    let isResuming = false;
+
+    const resumeAgreed = await ModalService.confirm({
+      title: "Sessão Ativa Encontrada",
+      message:
+        t("resume_session_prompt", uiState.language) ||
+        "Você possui um simulado em andamento. Deseja retomá-lo de onde parou?",
+      confirmText: "Retomar",
+      cancelText: "Descartar",
+    });
+
+    if (activeSession && resumeAgreed) {
+      isResuming = true;
+      engine.state.certId = activeSession.certId;
+      engine.state.mode = activeSession.mode || "exam";
+      engine.state.questions = activeSession.questions;
+      engine.state.answers = activeSession.answers;
+      engine.state.currentIndex = activeSession.currentIndex;
+      engine.state.score = activeSession.score;
+      engine.state.domainScores = activeSession.domainScores || {};
+
+      uiState.currentMode = activeSession.mode || "exam";
+      uiState.timeRemaining = activeSession.timeRemaining;
+      uiState.flags = activeSession.flags || [];
+      logger.info(`Resuming session for ${certId}`);
+    } else {
+      if (activeSession) {
+        storageManager.clearActiveSession(certId);
+      }
+      uiState.currentMode = modeInput;
+    }
 
     // START QUIZ ON BACKEND
     const userId = userManager.getUserId();
@@ -470,39 +710,47 @@ async function startQuiz() {
       }
     }
 
-    const filters = {
-      quantity: parseInt(quantityInput),
-      difficulty: difficultyInput,
-      topic: topicSelect,
-      mode: modeInput,
-    };
+    if (!isResuming) {
+      dispatchBusinessEvent("QuizStarted", {
+        certId,
+        mode: modeInput,
+        quantity: quantityInput,
+      });
+      const filters = {
+        quantity: parseInt(quantityInput),
+        difficulty: difficultyInput,
+        topic: topicSelect,
+        mode: modeInput,
+      };
 
-    const result = await engine.loadQuestions(
-      certId,
-      currentCertInfo.domains,
-      filters,
-      uiState.language,
-    );
-
-    if (!result.success) {
-      alert(
-        t("error_loading_questions", uiState.language, {
-          message: result.message,
-        }),
+      const result = await engine.loadQuestions(
+        certId,
+        currentCertInfo.domains,
+        filters,
+        uiState.language,
       );
-      return;
-    }
 
-    let tempoPorQuestao = 90;
-    if (certId === "saa-c03" || certId === "dva-c02") {
-      tempoPorQuestao = 120;
-    } else if (certId === "clf-c02") {
-      tempoPorQuestao = 83;
-    } else if (certId === "aif-c01") {
-      tempoPorQuestao = 110;
-    }
+      if (!result.success) {
+        alert(
+          t("error_loading_questions", uiState.language, {
+            message: result.message,
+          }),
+        );
+        return;
+      }
 
-    uiState.timeRemaining = result.totalQuestions * tempoPorQuestao;
+      let tempoPorQuestao = 90;
+      if (certId === "saa-c03" || certId === "dva-c02") {
+        tempoPorQuestao = 120;
+      } else if (certId === "clf-c02") {
+        tempoPorQuestao = 83;
+      } else if (certId === "aif-c01") {
+        tempoPorQuestao = 110;
+      }
+
+      uiState.timeRemaining = result.totalQuestions * tempoPorQuestao;
+      uiState.flags = []; // Reseta flags de revisão
+    }
 
     const oldReport = document.getElementById("detailed-report");
     if (oldReport) oldReport.remove();
@@ -524,7 +772,7 @@ async function startQuiz() {
     // --- FIM DAS MODIFICAÇÕES DE LAYOUT ---
 
     const timerContainer = document.getElementById("timer-container");
-    if (filters.mode === "exam") {
+    if (uiState.currentMode === "exam") {
       if (timerContainer) timerContainer.classList.remove("hidden");
       startTimer();
     } else {
@@ -532,12 +780,19 @@ async function startQuiz() {
     }
 
     loadQuestionUI();
+    saveCurrentSession();
   } catch (err) {
-    alert(t("error_starting_quiz", uiState.language, { message: err.message }));
+    if (hideLoading) hideLoading();
+    NotificationService.error(
+      t("error_starting_quiz", uiState.language, { message: err.message }),
+    );
     logger.error("Erro ao iniciar quiz:", err);
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = `${t("start_simulation", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>`;
+    if (hideLoading) hideLoading();
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `${t("start_simulation", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>`;
+    }
   }
 }
 
@@ -549,10 +804,12 @@ async function startDiagnostic() {
   if (!certSelect) return;
 
   const btn = document.getElementById("btn-start-diagnostic");
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i>${t("loading", uiState.language)}`;
-  }
+  let hideLoading = null;
+
+  if (btn) btn.disabled = true;
+  hideLoading = ModalService.showLoading(
+    t("loading", uiState.language) || "Carregando diagnóstico...",
+  );
 
   try {
     const certId = certSelect.value;
@@ -594,12 +851,18 @@ async function startDiagnostic() {
     if (scoreContainer) scoreContainer.style.display = "flex";
 
     loadQuestionUI();
+    saveCurrentSession();
   } catch (err) {
+    if (hideLoading) hideLoading();
+    NotificationService.error(
+      t("error_starting_quiz", uiState.language, { message: err.message }),
+    );
     logger.error("Erro ao iniciar diagnóstico:", err);
   } finally {
+    if (hideLoading) hideLoading();
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = `Fazer Diagnóstico <i class="fa-solid fa-stethoscope ml-2"></i>`;
+      btn.innerHTML = `<i class="fa-solid fa-stethoscope mr-2"></i>${t("start_diagnostic", uiState.language)}`;
     }
   }
 }
@@ -847,7 +1110,8 @@ function loadQuestionUI() {
   const questionText = isMulti
     ? `${q.question} <br><span class="text-sm text-aws-orange italic mt-2 block">(${t("choose_options", uiState.language, { count: q.correct.length })})</span>`
     : q.question;
-  document.getElementById("question-text").innerHTML = questionText;
+  document.getElementById("question-text").innerHTML =
+    sanitizeHTML(questionText);
 
   document.getElementById("current-q-num").textContent = progress.current;
   document.getElementById("total-q-num").textContent = progress.total;
@@ -948,6 +1212,13 @@ function submitAnswer() {
   const question = engine.getCurrentQuestion();
   const isMulti = Array.isArray(question.correct);
   const result = engine.submitAnswer(uiState.tempSelectedAnswer);
+
+  dispatchBusinessEvent("AnswerSubmitted", {
+    questionId: question.id,
+    isCorrect: result.isCorrect,
+    domain: question.domain,
+  });
+
   syncMistakeRecord(question, result);
 
   // Record answer to backend asynchronously (don't block UI)
@@ -1044,8 +1315,8 @@ function submitAnswer() {
   if (!result.isCorrect) {
     let userText = isMulti
       ? uiState.tempSelectedAnswer
-        .map((i) => question.options[i])
-        .join("<br>• ")
+          .map((i) => question.options[i])
+          .join("<br>• ")
       : question.options[uiState.tempSelectedAnswer];
     feedbackHTML += `<div class="a3-feedback a3-feedback-error mb-2"><strong>${t("your_answer", uiState.language)}</strong><br>• ${userText}</div>`;
   }
@@ -1068,6 +1339,7 @@ function submitAnswer() {
   }
 
   updateScoreDisplayUI();
+  saveCurrentSession();
 }
 
 function applyStyleToOptionCard(optionIdx, styleType) {
@@ -1083,9 +1355,25 @@ function applyStyleToOptionCard(optionIdx, styleType) {
   }
 }
 
+function saveCurrentSession() {
+  if (!engine.state.certId) return;
+  storageManager.saveActiveSession({
+    certId: engine.state.certId,
+    mode: engine.state.mode,
+    questions: engine.state.questions,
+    answers: engine.state.answers,
+    currentIndex: engine.state.currentIndex,
+    score: engine.state.score,
+    domainScores: engine.state.domainScores,
+    timeRemaining: uiState.timeRemaining,
+    flags: uiState.flags,
+  });
+}
+
 function nextQuestion() {
   if (engine.nextQuestion()) {
     loadQuestionUI();
+    saveCurrentSession();
   }
 
   if (uiState.currentMode === "mission") {
@@ -1103,6 +1391,8 @@ function finishQuiz() {
 
   if (uiState.timerInterval) clearInterval(uiState.timerInterval);
   if (uiState.qTimerInterval) clearInterval(uiState.qTimerInterval);
+
+  storageManager.clearActiveSession(engine.state.certId);
 
   saveQuizResult();
   updateHistoryDisplay();
@@ -1160,7 +1450,7 @@ function toggleFlag() {
   const certId = getActiveCertificationId();
 
   if (uiState.flags.includes(currentIdx)) {
-    uiState.flags = uiState.flags.filter(i => i !== currentIdx);
+    uiState.flags = uiState.flags.filter((i) => i !== currentIdx);
     flagBtn.classList.remove("text-orange-500");
     storageManager.removeReviewQuestion(certId, question);
   } else {
@@ -1176,11 +1466,16 @@ function showScreen(screenName) {
   const screens = ["hub", "start", "quiz", "results", "flashcards", "jornada"];
   screens.forEach((s) => {
     const el = document.getElementById(`screen-${s}`);
-    if (el) el.classList.add("hidden");
+    if (el) {
+      el.classList.add("hidden");
+      el.classList.remove("fade-in"); // reset para próxima transição
+    }
   });
   const target = document.getElementById(`screen-${screenName}`);
   if (target) {
     target.classList.remove("hidden");
+    // Force reflow para garantir que a animação reinicia
+    void target.offsetWidth;
     target.classList.add("flex", "flex-col", "fade-in");
   }
 
@@ -1226,6 +1521,41 @@ function renderLearningHubData() {
   const certId = getActiveCertificationId() || "clf-c02";
   const mistakes = storageManager.getMistakes(certId);
 
+  // ── Empty state para primeiro acesso ──
+  const metricsCard = document.querySelector(".lh-metrics-card");
+  const emptyStateId = "lh-empty-state";
+  const existingEmpty = document.getElementById(emptyStateId);
+
+  if (safeHistory.length === 0) {
+    // Injeta empty state acima do metrics card se ainda não existe
+    if (metricsCard && !existingEmpty) {
+      const emptyEl = document.createElement("div");
+      emptyEl.id = emptyStateId;
+      emptyEl.className = "lh-empty-state";
+      emptyEl.innerHTML = `
+        <div class="lh-empty-icon" aria-hidden="true">
+          <i class="fa-solid fa-rocket"></i>
+        </div>
+        <p class="lh-empty-title">Bem-vindo à Cloud Academy A3!</p>
+        <p class="lh-empty-desc">
+          Você ainda não realizou nenhum simulado. Comece agora e acompanhe
+          sua evolução para as certificações AWS.
+        </p>
+        <button class="a3-btn a3-btn-primary lh-empty-cta" onclick="showLearningHubQuickStart()">
+          <i class="fa-solid fa-play"></i>
+          Iniciar primeiro simulado
+        </button>
+      `;
+      metricsCard.parentNode.insertBefore(emptyEl, metricsCard);
+    }
+    // Esconde o metrics card quando não há dados
+    if (metricsCard) metricsCard.classList.add("hidden");
+  } else {
+    // Remove o empty state se já foi realizado algum simulado
+    if (existingEmpty) existingEmpty.remove();
+    if (metricsCard) metricsCard.classList.remove("hidden");
+  }
+
   // ── Melhor nota ──
   const bestEl = document.getElementById("hub-best-score");
   const bestHintEl = document.getElementById("hub-best-score-hint");
@@ -1246,7 +1576,9 @@ function renderLearningHubData() {
   const avgHintEl = document.getElementById("hub-avg-score-hint");
   if (avgEl) {
     if (safeHistory.length > 0) {
-      const avg = safeHistory.reduce((s, h) => s + (h.percentage || 0), 0) / safeHistory.length;
+      const avg =
+        safeHistory.reduce((s, h) => s + (h.percentage || 0), 0) /
+        safeHistory.length;
       const awsAvg = Math.floor((avg / 100) * 900) + 100;
       avgEl.textContent = String(awsAvg);
       if (avgHintEl) avgHintEl.textContent = `${avg.toFixed(0)}% média`;
@@ -1281,7 +1613,9 @@ function renderLearningHubData() {
       const last = safeHistory[safeHistory.length - 1];
       const awsScore = Math.floor(((last.percentage || 0) / 100) * 900) + 100;
       const passed = awsScore >= 700;
-      const dateStr = last.date ? new Date(last.date).toLocaleDateString("pt-BR") : "—";
+      const dateStr = last.date
+        ? new Date(last.date).toLocaleDateString("pt-BR")
+        : "—";
       const certNames = {
         "clf-c02": "Cloud Practitioner",
         "saa-c03": "Solutions Architect",
@@ -1310,15 +1644,26 @@ function renderLearningHubData() {
   if (insightEl) {
     if (safeHistory.length > 0) {
       const insight = computeSmartInsight(safeHistory);
-      insightEl.textContent = insight || "Continue praticando para obter insights personalizados.";
+      insightEl.textContent =
+        insight || "Continue praticando para obter insights personalizados.";
     } else {
-      insightEl.textContent = "Realize seu primeiro simulado para receber análises personalizadas de IA sobre seus pontos fortes e áreas de melhoria.";
+      insightEl.textContent =
+        "Realize seu primeiro simulado para receber análises personalizadas de IA sobre seus pontos fortes e áreas de melhoria.";
     }
   }
 }
 
 /** Navega para a tela de configuração do simulado (screen-start) */
 function showLearningHubQuickStart() {
+  showScreen("start");
+}
+
+/**
+ * Navega para a tela de configuração do simulado sem iniciar o quiz.
+ * Usado pela sidebar (sidebar-btn-quiz) para que o usuário configure
+ * certificação, dificuldade e quantidade antes de iniciar.
+ */
+function showQuizConfig() {
   showScreen("start");
 }
 
@@ -1534,13 +1879,13 @@ function renderDetailedReportUI(results) {
               <div class="space-y-4">
       `;
 
-    uiState.flags.forEach(qIdx => {
+    uiState.flags.forEach((qIdx) => {
       const q = engine.state.questions[qIdx];
       if (!q) return;
 
       const isMulti = Array.isArray(q.correct);
       let correctText = isMulti
-        ? q.correct.map(i => q.options[i]).join("<br>• ")
+        ? q.correct.map((i) => q.options[i]).join("<br>• ")
         : q.options[q.correct];
 
       html += `
@@ -1601,14 +1946,15 @@ function renderDetailedReportUI(results) {
                     <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">${t("your_answer_label", uiState.language)}</span>
                     <span class="${colorClass} font-semibold block leading-snug">${icon} ${isMulti ? "<br>• " : ""}${userText}</span>
                 </div>
-                ${!ans.isCorrect
-        ? `
+                ${
+                  !ans.isCorrect
+                    ? `
                 <div class="mt-2 pt-2 border-t border-gray-200 dark:border-slate-600">
                     <span class="font-bold text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider block mb-1 print-text-black">${t("correct_answer_label", uiState.language)}</span>
                     <span class="print-text-green text-green-600 dark:text-green-400 font-semibold block leading-snug">✅ ${isMulti ? "<br>• " : ""}${correctText}</span>
                 </div>`
-        : ""
-      }
+                    : ""
+                }
             </div>
             <div class="explanation-print mt-4 a3-feedback print-no-bg">
                 <strong class="text-main block mb-2 print-text-black">${t("explanation_label", uiState.language)}</strong>
@@ -1636,11 +1982,11 @@ function renderDiagnosticReport(results) {
   lastDiagnosticRecommendation =
     weakDomains.length > 0
       ? {
-        certificationId: results.certId,
-        weakDomains,
-        generatedAt: new Date().toISOString(),
-        source: "diagnostic",
-      }
+          certificationId: results.certId,
+          weakDomains,
+          generatedAt: new Date().toISOString(),
+          source: "diagnostic",
+        }
       : null;
 
   const weakDomainsHtml =
@@ -1652,14 +1998,14 @@ function renderDiagnosticReport(results) {
             </h3>
             <div class="flex flex-wrap gap-2">
                 ${weakDomains
-        .map(
-          (domain) => `
+                  .map(
+                    (domain) => `
                     <span class="a3-skill-badge a3-skill-badge-danger">
                         ${domain.name} - ${domain.percentage.toFixed(0)}%
                     </span>
                 `,
-        )
-        .join("")}
+                  )
+                  .join("")}
             </div>
         </div>
     `
@@ -1724,12 +2070,13 @@ function renderDiagnosticReport(results) {
             <button onclick="goHome()" class="a3-button-secondary py-3 px-8 text-lg w-auto">
                 Voltar ao Início
             </button>
-            ${weakDomains.length > 0
-      ? `<button id="btn-start-personalized-diagnostic-quiz" class="a3-button-primary py-3 px-8 text-lg w-auto">
+            ${
+              weakDomains.length > 0
+                ? `<button id="btn-start-personalized-diagnostic-quiz" class="a3-button-primary py-3 px-8 text-lg w-auto">
                     ${t("practice_weak_domains", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>
                 </button>`
-      : ""
-    }
+                : ""
+            }
         </div>
     `;
 
@@ -1787,10 +2134,7 @@ function loadLastScore() {
 
   if (last && typeof last.percentage === "number") {
     banner.classList.remove("hidden");
-    banner.classList.add(
-      "cursor-pointer",
-      "a3-hover-lift",
-    );
+    banner.classList.add("cursor-pointer", "a3-hover-lift");
     const awsScore = Math.floor((last.percentage / 100) * 900) + 100;
 
     banner.innerHTML = `
@@ -1940,7 +2284,7 @@ function updateHistoryDisplay() {
   updateDynamicInsight(history);
 }
 
-function removeHistoryItem(event, index) {
+async function removeHistoryItem(event, index) {
   if (event) {
     event.preventDefault();
     event.stopPropagation();
@@ -1951,7 +2295,7 @@ function removeHistoryItem(event, index) {
       ? "Remove this session from history?"
       : "Remover esta sessão do histórico?";
 
-  if (!confirm(confirmMessage)) return;
+  if (!(await ModalService.confirm({ message: confirmMessage }))) return;
 
   const removed = storageManager.removeHistoryItem(index);
   if (!removed) return;
@@ -1968,8 +2312,15 @@ function removeHistoryItem(event, index) {
   refreshStudyNow();
 }
 
-function clearHistory() {
-  if (confirm(t("clear_history_confirm", uiState.language))) {
+async function clearHistory() {
+  const history = storageManager.getHistory();
+  if (history.length === 0) return;
+
+  if (
+    await ModalService.confirm({
+      message: t("clear_history_confirm", uiState.language),
+    })
+  ) {
     storageManager.clearHistory();
     updateHistoryDisplay();
 
@@ -2071,51 +2422,16 @@ function updateSidebarActiveItem(screenName) {
   }
 }
 
-
-
 /** Sincroniza o badge de erros na sidebar com o contador principal */
 function syncSidebarMistakesBadge(certId) {
-  const mistakes = storageManager.getMistakes(certId || getActiveCertificationId());
+  const mistakes = storageManager.getMistakes(
+    certId || getActiveCertificationId(),
+  );
   const count = mistakes.length;
   const sidebarBtn = document.getElementById("sidebar-btn-mistakes");
   const badge = document.getElementById("sidebar-mistakes-count");
   if (sidebarBtn) sidebarBtn.classList.toggle("hidden", count === 0);
   if (badge) badge.textContent = String(count);
-}
-
-/** Alterna a visibilidade da sidebar esquerda (mostrar / esconder) */
-function toggleLeftSidebar() {
-  const body = document.body;
-  const isClosed = body.classList.toggle("sidebar-closed");
-  localStorage.setItem("aws_sidebar_closed", isClosed ? "true" : "false");
-
-  const cloudBtn = document.getElementById("cloud-sidebar-toggle");
-  if (cloudBtn) {
-    cloudBtn.setAttribute("aria-expanded", String(!isClosed));
-    cloudBtn.title = isClosed ? "Mostrar menu lateral" : "Esconder menu lateral";
-  }
-}
-
-/** Inicializa o estado persistido e evento de toggle da sidebar */
-function initLeftSidebarToggle() {
-  const savedClosed = localStorage.getItem("aws_sidebar_closed") === "true";
-  if (savedClosed) {
-    document.body.classList.add("sidebar-closed");
-  }
-
-  const cloudBtn = document.getElementById("cloud-sidebar-toggle");
-  if (cloudBtn) {
-    cloudBtn.setAttribute("aria-expanded", String(!savedClosed));
-    cloudBtn.title = savedClosed ? "Mostrar menu lateral" : "Esconder menu lateral";
-  }
-
-  const cloudIcon = document.getElementById("cloud-logo-icon");
-  if (cloudIcon) {
-    cloudIcon.addEventListener("click", (e) => {
-      e.stopPropagation();
-      toggleLeftSidebar();
-    });
-  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2432,8 +2748,14 @@ function retakeQuiz() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function cancelQuiz() {
-  if (confirm(t("exit_quiz_confirm", uiState.language))) goHome();
+async function cancelQuiz() {
+  if (
+    await ModalService.confirm({
+      message: t("exit_quiz_confirm", uiState.language),
+    })
+  ) {
+    goHome();
+  }
 }
 
 async function startMistakesQuiz() {
@@ -2492,10 +2814,12 @@ async function startMistakesQuiz() {
       }
       if (response.ok) {
         allQuestions = await response.json();
-        console.log(`✓ Banco de questões carregado: ${allQuestions.length} questões para seleção por domínio`);
       }
     } catch (err) {
-      console.warn("Não foi possível carregar banco de questões, usando questões exatas:", err);
+      console.warn(
+        "Não foi possível carregar banco de questões, usando questões exatas:",
+        err,
+      );
     }
 
     const result = engine.loadMistakesByDomain(
@@ -2552,8 +2876,12 @@ async function startMistakesQuiz() {
   }
 }
 
-function clearMistakes() {
-  if (confirm(t("clear_mistakes_confirm", uiState.language))) {
+async function clearMistakes() {
+  if (
+    await ModalService.confirm({
+      message: t("clear_mistakes_confirm", uiState.language),
+    })
+  ) {
     storageManager.clearMistakes(getActiveCertificationId());
     updateMistakesControls();
     alert(t("mistakes_cleared", uiState.language));
@@ -2800,6 +3128,7 @@ function updateSidebarProgress() {
 // EXPOSIÇÃO GLOBAL
 
 window.startQuiz = startQuiz;
+window.showQuizConfig = showQuizConfig;
 window.submitAnswer = submitAnswer;
 window.nextQuestion = nextQuestion;
 window.finishQuiz = finishQuiz;
@@ -2827,6 +3156,11 @@ window.updateSidebarTexts = updateSidebarTexts;
 window.togglePomodoroWidget = togglePomodoroWidget;
 window.togglePomodoro = togglePomodoro;
 window.resetPomodoro = resetPomodoro;
+// Funções da sidebar: necessárias para que shell.js possa chamar window[action]
+// sem redirecionar para index.html quando já estamos no SPA.
+window.showLearningHub = showLearningHub;
+window.startJornada = startJornada;
+window.startDiagnostic = startDiagnostic;
 
 // ============================================================================
 // SISTEMA DE MISSÕES DA JORNADA (GAMIFICAÇÃO) - VERSÃO ISOLADA
@@ -2862,7 +3196,7 @@ window.startMission = async function (stageId) {
   ) {
     alert(
       t("mission_locked", uiState.language) ||
-      "Este módulo ainda está bloqueado. Complete os anteriores primeiro!",
+        "Este módulo ainda está bloqueado. Complete os anteriores primeiro!",
     );
     return;
   }
@@ -2873,9 +3207,7 @@ window.startMission = async function (stageId) {
   const currentCertInfo = certificationPaths[currentCertId];
 
   if (!currentCertInfo) {
-    logger.error(
-      `[startMission] Certificação ${currentCertId} não encontrada`,
-    );
+    logger.error(`[startMission] Certificação ${currentCertId} não encontrada`);
     alert("Erro ao carregar a certificação. Tente novamente.");
     return;
   }
@@ -2889,9 +3221,7 @@ window.startMission = async function (stageId) {
     currentStage = activeTrail.find((s) => s.id === stageId);
 
     if (!currentStage) {
-      logger.error(
-        `[startMission] Módulo ${stageId} não encontrado na trilha`,
-      );
+      logger.error(`[startMission] Módulo ${stageId} não encontrado na trilha`);
       alert("Erro ao identificar o módulo. Tente novamente.");
       return;
     }
@@ -3113,14 +3443,14 @@ function renderStudyPlanBanner() {
                 </p>
                 <div class="flex flex-wrap gap-2">
                     ${domainNames
-      .map(
-        (name) => `
+                      .map(
+                        (name) => `
                         <span class="a3-skill-badge a3-skill-badge-danger text-xs">
                             ${name}
                         </span>
                     `,
-      )
-      .join("")}
+                      )
+                      .join("")}
                 </div>
             </div>
         </div>

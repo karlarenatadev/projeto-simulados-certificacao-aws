@@ -42,6 +42,8 @@ export default [
         clearTimeout: 'readonly',
         Blob: 'readonly',
         URL: 'readonly',
+        URLSearchParams: 'readonly',
+        CustomEvent: 'readonly',
         Event: 'readonly',
         Chart: 'readonly',
         Sortable: 'readonly',

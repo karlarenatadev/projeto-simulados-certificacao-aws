@@ -34,13 +34,14 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
   // ─────────────────────────────────────────────────────────────────────────────
 
   describe("Critério 1 — app funciona sem backend", () => {
-    test("userManager cria usuário local quando API está indisponível", async () => {
+    test("userManager retorna null quando não há sessão e API está indisponível", async () => {
       global.fetch.mockRejectedValue(new Error("Network error"));
 
       const user = await userManager.getOrCreateUser();
 
-      expect(user.id).toMatch(/^local_/);
-      expect(localStorage.getItem("aws_sim_user_id")).toMatch(/^local_/);
+      // Novo comportamento: sem sessão salva + API indisponível = null (não cria anônimo)
+      expect(user).toBeNull();
+      expect(localStorage.getItem("aws_sim_user_id")).toBeNull();
     });
 
     test("quizManager.initialize() seta isAPIAvailable = false quando API cai", async () => {
@@ -77,11 +78,11 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
       expect(global.fetch).not.toHaveBeenCalled();
 
       const saved = JSON.parse(
-        localStorage.getItem("aws_sim_quiz_answers_local_quiz_xyz") || "[]",
+        localStorage.getItem("aws_sim_ans_local_quiz_xyz_q1") || "null"
       );
-      expect(saved).toHaveLength(1);
-      expect(saved[0].synced).toBe(false);
-      expect(saved[0].question_id).toBe("q1");
+      expect(saved).not.toBeNull();
+      expect(saved.synced).toBe(false);
+      expect(saved.question_id).toBe("q1");
     });
 
     test("quizManager.getQuizResults() calcula resultado de localStorage quando offline", async () => {
@@ -93,10 +94,9 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
         { question_id: "q2", is_correct: true, time_secs: 8, synced: false },
         { question_id: "q3", is_correct: false, time_secs: 12, synced: false },
       ];
-      localStorage.setItem(
-        "aws_sim_quiz_answers_local_quiz_xyz",
-        JSON.stringify(answers),
-      );
+      for (const a of answers) {
+          localStorage.setItem(`aws_sim_ans_local_quiz_xyz_${a.question_id}`, JSON.stringify(a));
+      }
 
       const results = await quizManager.getQuizResults();
 
@@ -112,30 +112,32 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
   // ─────────────────────────────────────────────────────────────────────────────
 
   describe("Critério 2 — sincronização quando backend volta", () => {
-    test("userManager substitui local_* por ID do backend quando API fica disponível", async () => {
-      localStorage.setItem("aws_sim_user_id", "local_abc123");
-      localStorage.setItem("aws_sim_user_name", "AnonymousLocal");
-
+    test("userManager.login() autentica e persiste sessão quando API disponível", async () => {
       global.fetch
-        .mockResolvedValueOnce(
-          jsonResponse({ success: true, message: "API is healthy" }),
-        ) // isAvailable → GET /api/health
         .mockResolvedValueOnce(
           jsonResponse({
             success: true,
-            data: { id: "backend-uuid-1", anonymous_name: "CloudNinja#42" },
+            data: {
+              id: "backend-uuid-1",
+              email: "usuario@a3data.com.br",
+              nickname: "UsuarioA3",
+              role: "STUDENT",
+            },
           }),
-        ); // createUser → POST /api/users
+        ); // POST /api/auth/login
 
-      const user = await userManager.getOrCreateUser();
+      const user = await userManager.login("usuario@a3data.com.br");
 
       expect(user.id).toBe("backend-uuid-1");
-      expect(user.anonymous_name).toBe("CloudNinja#42");
-      expect(localStorage.getItem("aws_sim_user_id")).toBe("backend-uuid-1");
-      expect(localStorage.getItem("aws_sim_user_name")).toBe("CloudNinja#42");
+      expect(user.nickname).toBe("UsuarioA3");
+      // Verifica nova chave unificada cloudacademy_user
+      const session = JSON.parse(localStorage.getItem("cloudacademy_user") || "null");
+      expect(session?.id).toBe("backend-uuid-1");
+      expect(session?.nickname).toBe("UsuarioA3");
     });
 
-    test("userManager mantém local_* quando API continua indisponível", async () => {
+    test("userManager migra chaves legadas e retorna sessão quando API indisponível", async () => {
+      // Simula localStorage com chaves legadas (usuário vindo de versão anterior)
       localStorage.setItem("aws_sim_user_id", "local_abc123");
       localStorage.setItem("aws_sim_user_name", "AnonymousLocal");
 
@@ -144,7 +146,11 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
       const user = await userManager.getOrCreateUser();
 
       expect(user.id).toBe("local_abc123");
-      expect(localStorage.getItem("aws_sim_user_id")).toBe("local_abc123");
+      // Após migração automática, cloudacademy_user deve conter o id
+      const session = JSON.parse(localStorage.getItem("cloudacademy_user") || "null");
+      expect(session?.id).toBe("local_abc123");
+      // Chaves legadas devem ter sido removidas
+      expect(localStorage.getItem("aws_sim_user_id")).toBeNull();
     });
 
     test("quizManager.recordAnswer() marca synced: true após envio bem-sucedido à API", async () => {
@@ -166,10 +172,10 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
       });
 
       const saved = JSON.parse(
-        localStorage.getItem("aws_sim_quiz_answers_backend-quiz-abc") || "[]",
+        localStorage.getItem("aws_sim_ans_backend-quiz-abc_q1") || "{}"
       );
-      expect(saved[0].synced).toBe(true);
-      expect(saved[0].syncedAt).not.toBeNull();
+      expect(saved.synced).toBe(true);
+      expect(saved.syncedAt).not.toBeUndefined();
     });
 
     test("quizManager.recordAnswer() mantém synced: false quando API falha", async () => {
@@ -186,10 +192,10 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
       });
 
       const saved = JSON.parse(
-        localStorage.getItem("aws_sim_quiz_answers_backend-quiz-abc") || "[]",
+        localStorage.getItem("aws_sim_ans_backend-quiz-abc_q1") || "{}"
       );
-      expect(saved[0].synced).toBe(false);
-      expect(saved[0].syncedAt).toBeNull();
+      expect(saved.synced).toBeFalsy();
+      expect(saved.syncedAt).toBeNull();
     });
   });
 });

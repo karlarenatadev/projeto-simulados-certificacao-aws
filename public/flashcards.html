@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Flashcards AWS — Revisão espaçada de termos e conceitos essenciais." />
+    <title>Flashcards — Cloud Academy A3</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "aws-dark": "#001863",
+              "aws-orange": "#0033FF",
+            },
+          },
+        },
+      };
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#001863" />
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
+<header class="a3-header">
+      <div class="flex items-center gap-2 md:gap-3">
+        <button
+          id="cloud-sidebar-toggle"
+          class="btn-sidebar-toggle flex items-center justify-center group/cloud"
+          title="Esconder menu lateral"
+          aria-label="Alternar menu lateral"
+          aria-expanded="true"
+        >
+          <i
+            id="cloud-logo-icon"
+            class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
+            aria-hidden="true"
+          ></i>
+        </button>
+        <a href="index.html" class="a3-header-link" title="Voltar ao início">
+          <div>
+            <h1 class="text-base md:text-xl font-bold leading-tight">
+              Cloud Academy A3
+            </h1>
+            <p class="text-[10px] md:text-xs text-gray-300">
+              Sua jornada para certificações AWS
+            </p>
+          </div>
+        </a>
+      </div>
+      <div class="a3-header-actions">
+        <button
+          id="btn-language"
+          class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
+          aria-label="Alternar idioma"
+          title="Alternar idioma"
+        >
+          <span class="text-[10px] md:text-xs font-bold"
+            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
+          >
+        </button>
+        <button
+          id="theme-toggle"
+          class="a3-btn a3-btn-secondary"
+          aria-label="Alternar modo escuro"
+        >
+          <i
+            id="theme-icon"
+            class="fa-solid fa-moon text-base md:text-xl"
+            aria-hidden="true"
+          ></i>
+        </button>
+        <button
+          id="install-app"
+          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
+        >
+          <i class="fa-solid fa-download"></i> Baixar App
+        </button>
+        <!-- User Menu — populado pelo shell.js -->
+        <div id="user-menu-container"></div>
+      </div>
+    </header>
+<nav id="left-sidebar" aria-label="Menu principal" role="navigation">
+  <!--
+    .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
+    no momento do boot. O botão abaixo é apenas um fallback visual
+    para Progressive Enhancement (evita flash de sidebar vazia).
+  -->
+  <div class="left-sidebar-nav">
+    <button
+      id="sidebar-btn-hub"
+      class="left-sidebar-item left-sidebar-item-primary"
+      aria-label="Learning Hub — Painel Principal"
+      title="Learning Hub — Painel Principal"
+    >
+      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <span class="left-sidebar-item-label">Hub</span>
+    </button>
+  </div>
+  <!--
+    .left-sidebar-footer é gerado dinamicamente por buildSidebar(user).
+    Contém: divisor, Perfil, Config, divisor, botão Recolher.
+  -->
+</nav>
+
+
+    <main class="flex-1 a3-container py-6 main-content-container">
+        <div
+          id="screen-flashcards"
+          class="p-4 md:p-8 flex flex-col items-center justify-center text-center min-h-[80vh]"
+        >
+          <div class="flex flex-col items-center mb-6 fade-in">
+            <span
+              id="flashcards-cert-badge"
+              class="bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 border border-orange-300 dark:border-orange-700 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest mb-4 shadow-sm"
+            >
+              CLF-C02
+            </span>
+
+            <h2 class="text-3xl font-bold mb-2 text-strong">
+              <i class="fa-solid fa-layer-group text-a3-primary mr-2"></i> Modo
+              Flashcards
+            </h2>
+            <p class="text-muted dark:text-gray-400 text-center">
+              Revise termos essenciais da AWS de forma rápida e eficiente
+            </p>
+          </div>
+
+          <div
+            class="a3-card w-full max-w-2xl mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-sm"
+          >
+            <div class="flex-1 w-full text-left">
+              <label
+                for="flashcard-category"
+                class="block text-xs font-bold text-muted dark:text-gray-400 uppercase tracking-wider mb-1"
+              >
+                <i class="fa-solid fa-filter mr-1"></i> Focar em:
+              </label>
+              <select
+                id="flashcard-category"
+                class="w-full bg-gray-50 border border-gray-300 dark:border-slate-600 text-gray-800 rounded-lg p-2.5 outline-none focus:border-orange-500 transition-colors cursor-pointer"
+              >
+                <option value="all">Todos os Domínios (Misturado)</option>
+                <option value="review-deck" class="font-bold text-orange-600">
+                  🚩 Meu Deck de Revisão
+                </option>
+              </select>
+            </div>
+
+            <div
+              class="text-sm font-bold text-muted whitespace-nowrap bg-gray-100 /50 py-2.5 px-4 rounded-lg border border-gray-200 dark:border-slate-600"
+            >
+              Cartão
+              <span id="flashcard-counter" class="text-aws-orange ml-1 text-lg"
+                >1 / 96</span
+              >
+            </div>
+          </div>
+
+          <div class="w-full max-w-2xl mb-8">
+            <div
+              id="flashcard-container"
+              class="flashcard-container mx-auto"
+              role="button"
+              tabindex="0"
+              aria-label="Cartão de estudo. Clique para virar e ver a definição"
+            >
+              <div class="flashcard shadow-lg rounded-2xl">
+                <div
+                  class="flashcard-front bg-white border-2 border-gray-100 dark:border-slate-700 rounded-2xl"
+                >
+                  <div
+                    class="text-sm uppercase tracking-wider text-muted dark:text-gray-400 mb-4 font-bold"
+                    id="flashcard-domain-badge"
+                  >
+                    Termo AWS
+                  </div>
+                  <h3
+                    id="flashcard-term"
+                    class="text-2xl md:text-3xl font-bold text-strong mb-4"
+                  >
+                    Região AWS
+                  </h3>
+                  <div
+                    class="text-sm text-gray-400 dark:text-muted italic mt-8 animate-pulse"
+                  >
+                    <i class="fa-solid fa-hand-pointer mr-2"></i> Clique para
+                    ver a definição
+                  </div>
+                </div>
+
+                <div
+                  class="flashcard-back bg-orange-50 border-2 border-orange-200 dark:border-slate-600 rounded-2xl"
+                >
+                  <div
+                    class="text-sm uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-4 font-bold"
+                  >
+                    Definição Oficial
+                  </div>
+                  <p
+                    id="flashcard-definition"
+                    class="text-lg text-gray-800 dark:text-gray-200 leading-relaxed font-medium"
+                  >
+                    Área geográfica que contém múltiplas Zonas de
+                    Disponibilidade isoladas...
+                  </p>
+                  <div
+                    class="text-sm text-gray-400 dark:text-muted italic mt-8"
+                  >
+                    <i class="fa-solid fa-rotate-left mr-2"></i> Clique para
+                    voltar
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 mb-8 w-full max-w-2xl justify-center">
+            <button
+              id="btn-prev-flashcard"
+              class="a3-btn a3-btn-secondary flex-1 max-w-[200px] shadow-sm"
+              aria-label="Cartão anterior"
+            >
+              <i class="fa-solid fa-arrow-left mr-2"></i> Anterior
+            </button>
+
+            <button
+              id="btn-next-flashcard"
+              class="a3-btn a3-btn-primary a3-btn-lg flex-1 max-w-[200px] shadow-md"
+              aria-label="Próximo cartão"
+            >
+              Próximo <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+          </div>
+
+          <button
+            onclick="exportToAnki()"
+            class="a3-btn a3-btn-secondary flex items-center gap-2"
+          >
+            <i class="fa-solid fa-file-export"></i> Exportar para Anki
+          </button>
+        </div>
+    </main>
+<footer
+      class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
+    >
+      Plataforma colaborativa de estudo para certificações AWS construída para a
+      comunidade da Guilda Z-Maguinhos | A3Data.
+    </footer>
+
+
+    <script src="./js/pomodoroManager.js" type="module"></script>
+    <script src="./js/app.js" type="module"></script>
+    <script type="module">
+      import { initShell } from "./js/shell.js";
+      import { AuthService } from "./js/services/authService.js";
+      document.addEventListener("DOMContentLoaded", async () => {
+        const user = await AuthService.restoreSession();
+        if (!user) {
+          window.location.replace("./index.html");
+          return;
+        }
+        initShell(user);
+        // Inicializa os flashcards após o app.js ter registrado as funções window.*
+        setTimeout(() => {
+          if (typeof window.startFlashcards === "function") {
+            window.startFlashcards();
+          }
+        }, 0);
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeBtn = document.getElementById("theme-toggle");
+        const langBtn = document.getElementById("btn-language");
+        if (themeBtn)
+          themeBtn.addEventListener(
+            "click",
+            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
+          );
+        if (langBtn)
+          langBtn.addEventListener("click", () => {
+            const lang = localStorage.getItem("aws_sim_lang") || "pt";
+            const next = lang === "pt" ? "en" : "pt";
+            localStorage.setItem("aws_sim_lang", next);
+            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
+            window.location.reload();
+          });
+      });
+    </script>
+
+  </body>
+</html>

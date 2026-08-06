@@ -131,3 +131,39 @@ Design System Grid, Container and Core Structures
     margin-bottom: var(--space-32);
   }
 }
+
+/* ── main-content-container — área principal das páginas secundárias ─────── */
+
+.main-content-container {
+  min-height: calc(100vh - var(--header-height, 68px));
+  overflow-x: hidden;
+}
+
+/* Padding mobile para páginas secundárias com sidebar */
+@media (max-width: 640px) {
+  .main-content-container {
+    padding-left: var(--space-16) !important;
+    padding-right: var(--space-16) !important;
+  }
+
+  /* Tabelas e elementos com scroll horizontal controlado */
+  .a3-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  /* Evita que imagens e iframes causem overflow */
+  img,
+  iframe,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Headers das páginas secundárias: fonte menor em mobile */
+  h2.text-2xl,
+  h2.text-3xl {
+    font-size: var(--text-xl) !important;
+  }
+}

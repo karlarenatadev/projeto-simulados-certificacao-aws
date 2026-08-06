@@ -23,10 +23,12 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  /* Transição do padding-left gerenciada pelo sidebar.css */
+  transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cases-hero::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(
@@ -111,6 +113,8 @@
   border-bottom: 1px solid var(--border-theme);
   flex-wrap: wrap;
   align-items: center;
+  /* Transição do padding-left gerenciada pelo sidebar.css */
+  transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .cases-filters {
@@ -123,6 +127,43 @@
   font-weight: 600;
   color: var(--text-muted);
   white-space: nowrap;
+}
+
+/* Ícone de filtro com cor primária */
+.cases-filter-icon {
+  color: var(--a3-tech-blue);
+}
+
+/* Label de filtro com espaço esquerdo */
+.cases-filter-label-gap {
+  margin-left: var(--space-8);
+}
+
+/* Contador de resultados */
+.cases-count-text {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* Banner de modo offline */
+.cases-offline-banner {
+  background: var(--a3-surface-warning);
+  color: var(--text-main);
+  padding: var(--space-12);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-16);
+  text-align: center;
+  font-size: var(--text-sm);
+  border: 1px solid var(--a3-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+.cases-offline-banner-icon {
+  color: var(--a3-warning);
 }
 
 .cases-filter-select {
@@ -154,6 +195,12 @@
   padding: 2rem 1.5rem;
 }
 
+@media (max-width: 640px) {
+  .cases-container {
+    padding: 1rem var(--space-12);
+  }
+}
+
 .cases-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -167,7 +214,10 @@
   border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
   display: flex;
   flex-direction: column;
   text-decoration: none;
@@ -177,7 +227,8 @@
 
 .case-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 40px color-mix(in srgb, var(--a3-deep-sea) 12%, transparent);
+  box-shadow: 0 16px 40px
+    color-mix(in srgb, var(--a3-deep-sea) 12%, transparent);
   border-color: color-mix(in srgb, var(--a3-tech-blue) 50%, transparent);
 }
 
@@ -249,7 +300,27 @@
 .difficulty-badge.advanced {
   background: color-mix(in srgb, var(--a3-amethyst-velvet) 12%, transparent);
   color: var(--a3-amethyst-velvet);
-  border: 1px solid color-mix(in srgb, var(--a3-amethyst-velvet) 30%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--a3-amethyst-velvet) 30%, transparent);
+}
+
+/* Dark mode: badges com contraste reforçado */
+.dark .difficulty-badge.beginner {
+  background: color-mix(in srgb, var(--a3-success) 18%, transparent);
+  color: #5ce08a;
+  border-color: color-mix(in srgb, var(--a3-success) 40%, transparent);
+}
+
+.dark .difficulty-badge.intermediate {
+  background: color-mix(in srgb, var(--a3-sky-frost) 14%, transparent);
+  color: var(--a3-sky-frost);
+  border-color: color-mix(in srgb, var(--a3-sky-frost) 40%, transparent);
+}
+
+.dark .difficulty-badge.advanced {
+  background: color-mix(in srgb, var(--a3-amethyst-velvet) 20%, transparent);
+  color: #b98de8;
+  border-color: color-mix(in srgb, var(--a3-amethyst-velvet) 45%, transparent);
 }
 
 .case-card-scenario {
@@ -295,9 +366,9 @@
 }
 
 .dark .cert-tag {
-  background: color-mix(in srgb, var(--a3-text-inverse) 7%, transparent);
-  color: var(--text-muted);
-  border-color: color-mix(in srgb, var(--a3-text-inverse) 12%, transparent);
+  background: color-mix(in srgb, var(--a3-sky-frost) 12%, transparent);
+  color: var(--a3-sky-frost);
+  border-color: color-mix(in srgb, var(--a3-sky-frost) 30%, transparent);
 }
 
 .case-services-count {
@@ -369,7 +440,7 @@
 }
 
 .case-view-header::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(
@@ -429,7 +500,9 @@
   border-bottom: 3px solid transparent;
   background: transparent;
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
   white-space: nowrap;
 }
 
@@ -525,7 +598,9 @@
   background: var(--bg-card);
   border: 1.5px solid var(--border-theme);
   border-radius: 10px;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .service-chip:hover {
@@ -804,7 +879,9 @@
   border-radius: 10px;
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .resource-item:hover {
@@ -881,7 +958,9 @@
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition: background 0.15s, transform 0.15s;
+  transition:
+    background 0.15s,
+    transform 0.15s;
 }
 
 .case-complete-btn:hover {
@@ -909,11 +988,19 @@
 .cases-empty-state i {
   font-size: 3rem;
   margin-bottom: 1rem;
-  opacity: 0.4;
+  opacity: 0.35;
+  display: block;
+  color: var(--a3-tech-blue);
 }
 
 .cases-empty-state p {
   font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.dark .cases-empty-state i {
+  color: var(--a3-sky-frost);
+  opacity: 0.4;
 }
 
 /* Loading skeleton */
@@ -934,18 +1021,30 @@
   background: linear-gradient(
     90deg,
     var(--border-theme) 25%,
-    var(--a3-surface-alt) 50%,
+    color-mix(in srgb, var(--a3-surface-alt) 80%, var(--border-theme)) 50%,
     var(--border-theme) 75%
   );
   background-size: 200% 100%;
-  animation: skeleton-shimmer 1.4s infinite;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
   border-radius: 6px;
   height: 14px;
   margin: 1rem 1.5rem;
 }
 
+.dark .skeleton-line {
+  background: linear-gradient(
+    90deg,
+    var(--border-theme) 25%,
+    color-mix(in srgb, var(--a3-surface-soft) 60%, var(--a3-tech-blue)) 50%,
+    var(--border-theme) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
 .skeleton-line.tall {
   height: 20px;
+  margin-top: 1.5rem;
   margin-bottom: 0.5rem;
 }
 
@@ -954,8 +1053,12 @@
 }
 
 @keyframes skeleton-shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Responsive */
@@ -1057,7 +1160,10 @@
   background: var(--bg-card);
   color: var(--text-muted);
   cursor: pointer;
-  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
   font-family: inherit;
 }
 
@@ -1199,14 +1305,38 @@
   position: relative;
   overflow: hidden;
   background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 24px, var(--a3-border) 24px, var(--a3-border) 25px),
-    repeating-linear-gradient(90deg, transparent, transparent 24px, var(--a3-border) 24px, var(--a3-border) 25px);
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 24px,
+      var(--a3-border) 24px,
+      var(--a3-border) 25px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 24px,
+      var(--a3-border) 24px,
+      var(--a3-border) 25px
+    );
 }
 
 .dark .builder-canvas-wrap {
   background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 24px, var(--a3-surface-soft) 24px, var(--a3-surface-soft) 25px),
-    repeating-linear-gradient(90deg, transparent, transparent 24px, var(--a3-surface-soft) 24px, var(--a3-surface-soft) 25px);
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 24px,
+      var(--a3-surface-soft) 24px,
+      var(--a3-surface-soft) 25px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 24px,
+      var(--a3-surface-soft) 24px,
+      var(--a3-surface-soft) 25px
+    );
 }
 
 #drawflow {
@@ -1255,7 +1385,11 @@
 }
 
 .dark .builder-tip-bar {
-  background: color-mix(in srgb, var(--a3-sky-frost) 4%, var(--a3-surface-soft));
+  background: color-mix(
+    in srgb,
+    var(--a3-sky-frost) 4%,
+    var(--a3-surface-soft)
+  );
 }
 
 .builder-tip-bar i {
@@ -1442,9 +1576,15 @@
   gap: 0.4rem;
 }
 
-.builder-result-group--correct .builder-result-group-title { color: var(--a3-success); }
-.builder-result-group--missing .builder-result-group-title { color: var(--a3-danger); }
-.builder-result-group--extra   .builder-result-group-title { color: var(--a3-warning); }
+.builder-result-group--correct .builder-result-group-title {
+  color: var(--a3-success);
+}
+.builder-result-group--missing .builder-result-group-title {
+  color: var(--a3-danger);
+}
+.builder-result-group--extra .builder-result-group-title {
+  color: var(--a3-warning);
+}
 
 .builder-result-item {
   display: flex;
@@ -1555,9 +1695,12 @@
   border-radius: 12px;
   min-width: 130px;
   padding: 0;
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--a3-text-strong) 10%, transparent);
+  box-shadow: 0 4px 16px
+    color-mix(in srgb, var(--a3-text-strong) 10%, transparent);
   font-family: inherit;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .drawflow .drawflow-node:hover,
@@ -1642,4 +1785,128 @@
     font-size: 0.72rem;
     padding: 0.3rem 0.6rem;
   }
+}
+
+/* ==========================================================================
+   CASE VIEW — Classes utilitárias extraídas de inline styles
+   Adicionadas para eliminar inline styles do case-view.html
+   ========================================================================== */
+
+/* Botão ghost: transparente, sem borda, herda cor e tamanho de fonte */
+.a3-btn-ghost {
+  background: transparent !important;
+  color: inherit !important;
+  border: none !important;
+  font-size: inherit !important;
+}
+
+/* Chevrons e ícones minúsculos (ex: separadores do breadcrumb) */
+.icon-xs {
+  font-size: 0.6rem;
+}
+
+/* Texto auxiliar / dica: menor, cor muted */
+.text-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Cor sky-frost para ícones e textos informativos */
+.text-sky-frost {
+  color: var(--a3-sky-frost) !important;
+}
+
+/* Parágrafo de corpo reduzido (ex: explicação de arquitetura) */
+.text-body-sm {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+}
+
+/* Botão com cor amethyst-velvet (ex: "Praticar com Questões") */
+.btn-amethyst {
+  background: var(--a3-amethyst-velvet) !important;
+  color: var(--a3-text-inverse) !important;
+  border-color: var(--a3-amethyst-velvet) !important;
+}
+
+.btn-amethyst:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--a3-amethyst-velvet) 85%, var(--a3-deep-sea)) !important;
+  border-color: color-mix(in srgb, var(--a3-amethyst-velvet) 85%, var(--a3-deep-sea)) !important;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--a3-amethyst-velvet) 30%, transparent);
+  transform: translateY(-1px);
+}
+
+/* Botão outline com cor tech-blue (ex: "Ver Arquitetura") */
+.btn-outline-primary {
+  background: transparent !important;
+  border-color: var(--a3-tech-blue) !important;
+  color: var(--a3-tech-blue) !important;
+}
+
+.btn-outline-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--a3-tech-blue) 8%, transparent) !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--a3-tech-blue) 20%, transparent);
+}
+
+/* Estado "Concluído" do botão #complete-btn (usa .a3-btn + .completed via JS) */
+.a3-btn.completed,
+#complete-btn.completed {
+  background: var(--a3-success) !important;
+  border-color: var(--a3-success) !important;
+  color: var(--a3-text-inverse) !important;
+  cursor: default;
+}
+
+.a3-btn.completed:hover,
+#complete-btn.completed:hover {
+  background: var(--a3-success) !important;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Badge de contagem nas abas (ex: contagem de questões) */
+.case-tab-badge {
+  display: none; /* controlado por JS via badge.style.display = 'inline' */
+  background: var(--a3-tech-blue);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 800;
+  font-family: var(--font-family-base, system-ui, sans-serif);
+  line-height: 1;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+
+.dark .case-tab-badge {
+  background: var(--a3-sky-frost);
+  color: var(--a3-deep-sea);
+}
+
+/* Estado de carregamento centralizado no header do case */
+.cv-loading-state {
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Spinner dentro do loading state */
+.cv-loading-spinner {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Parágrafo secundário no empty state (hint de ação) */
+.cv-empty-hint {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+
+/* Link de ação dentro do empty state */
+.cv-simulator-link {
+  display: inline-flex;
+  margin-top: 1rem;
+  text-decoration: none;
 }

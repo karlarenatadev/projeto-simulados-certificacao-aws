@@ -5,9 +5,17 @@ import { logger } from "./utils/logger.js";
  * Zero manipulação de DOM (HTML/CSS) acontece aqui.
  *
  * Now integrates with REST API for question loading.
+ *
+ * @typedef {import('./types.js').Question} Question
+ * @typedef {import('./types.js').Session} Session
+ * @typedef {import('./types.js').Result} Result
  */
 
 import apiService from "../services/api.js";
+import { createDataRepository } from "./dataRepository.js";
+import { storageManager } from "./storageManager.js";
+
+const dataRepo = createDataRepository(storageManager);
 
 const DEFAULT_PERSONALIZED_QUESTION_COUNT = 10;
 const WEAK_DOMAIN_THRESHOLD = 60;
@@ -98,31 +106,42 @@ export class QuizEngine {
   // 1. CARREGAMENTO E FILTRAGEM
   async _sanitizeQuestions(data, certId) {
     try {
-      const manifestRes = await fetch("data/taxonomy/certification-manifest.json");
+      const manifestRes = await fetch(
+        "data/taxonomy/certification-manifest.json",
+      );
       if (!manifestRes.ok) {
-        logger.warn("⚠️ Não foi possível carregar o manifesto. Sanitização ignorada.");
-        return data;
+        logger.warn(
+          "⚠️ Não foi possível carregar o manifesto. Sanitização ignorada.",
+        );
+        return dataRepo.validateQuestions(data);
       }
       const manifest = await manifestRes.json();
       const config = manifest[certId];
       if (!config) {
         logger.warn(`⚠️ Certificação ${certId} ausente no manifesto.`);
-        return data;
+        return dataRepo.validateQuestions(data);
       }
-      
-      const sanitized = data.filter(q => {
-        if (!q.questionId) return false;
-        if (q.certId !== certId) return false;
-        if (!config.allowedDomains.includes(q.domain)) return false;
-        if (q.validation?.status !== 'validated') return false;
+
+      let sanitized = data.filter((q) => {
+        if (!q.id && !q.questionId) return false;
+        if (q.certId && q.certId !== certId) return false;
+        if (!config.allowedDomains.includes(q.domain || q.domainId))
+          return false;
+        if (q.validation?.status && q.validation.status !== "validated")
+          return false;
         return true;
       });
 
-      logger.info(`🛡️ Sanitização: ${sanitized.length}/${data.length} questões aprovadas.`);
+      // Validar estrutura das propriedades usando dataRepo
+      sanitized = dataRepo.validateQuestions(sanitized);
+
+      logger.info(
+        `🛡️ Sanitização: ${sanitized.length}/${data.length} questões aprovadas.`,
+      );
       return sanitized;
     } catch (e) {
       logger.error("Erro na sanitização:", e);
-      return data;
+      return dataRepo.validateQuestions(data);
     }
   }
 
@@ -157,7 +176,9 @@ export class QuizEngine {
       // Fallback to JSON if API fails
       if (!data || data.length === 0) {
         const fileSuffix = language === "en" ? "-en" : "";
-        const response = await fetch(`data/questions/${certId}${fileSuffix}.json`);
+        const response = await fetch(
+          `data/questions/${certId}${fileSuffix}.json`,
+        );
         if (!response.ok)
           throw new Error("Arquivo de questões não encontrado.");
 
@@ -237,7 +258,9 @@ export class QuizEngine {
 
       if (!data || data.length === 0) {
         const fileSuffix = language === "en" ? "-en" : "";
-        let response = await fetch(`data/questions/${certId}${fileSuffix}.json`);
+        let response = await fetch(
+          `data/questions/${certId}${fileSuffix}.json`,
+        );
 
         if (!response.ok && language === "en") {
           response = await fetch(`data/questions/${certId}.json`);
@@ -553,11 +576,7 @@ export class QuizEngine {
 
     // Coleta os domínios únicos errados, preservando a ordem mais recente
     const domainsErrados = [
-      ...new Set(
-        mistakes
-          .filter((m) => m.domain)
-          .map((m) => m.domain),
-      ),
+      ...new Set(mistakes.filter((m) => m.domain).map((m) => m.domain)),
     ];
 
     if (domainsErrados.length === 0) {
@@ -565,7 +584,9 @@ export class QuizEngine {
     }
 
     // IDs das questões que o usuário já errou (para priorizar questões novas)
-    const idsJaErrados = new Set(mistakes.map((m) => m.questionId).filter(Boolean));
+    const idsJaErrados = new Set(
+      mistakes.map((m) => m.questionId).filter(Boolean),
+    );
 
     const questoesSelecionadas = [];
 
@@ -601,7 +622,9 @@ export class QuizEngine {
 
     // Normaliza e embaralha as opções de cada questão selecionada
     this.state.questions = this._shuffleArray(
-      questoesSelecionadas.map((q) => this._shuffleOptions(this._normalizeQuestion(q))),
+      questoesSelecionadas.map((q) =>
+        this._shuffleOptions(this._normalizeQuestion(q)),
+      ),
     );
 
     // Inicializa o placar de domínios

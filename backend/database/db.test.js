@@ -522,7 +522,7 @@ describe('User, gamification, leaderboard, and user stats operations', () => {
 
     const leaderboard = await getLeaderboard();
 
-    expect(leaderboard.map((entry) => entry.anonymous_name)).toEqual([
+    expect(leaderboard.map((entry) => entry.display_name)).toEqual([
       second.anonymous_name,
       third.anonymous_name,
       first.anonymous_name,
@@ -540,9 +540,9 @@ describe('User, gamification, leaderboard, and user stats operations', () => {
     const invalidLimit = await getLeaderboard(0);
 
     expect(leaderboard).toHaveLength(1);
-    expect(leaderboard[0].anonymous_name).toBe(second.anonymous_name);
+    expect(leaderboard[0].display_name).toBe(second.anonymous_name);
     expect(invalidLimit).toHaveLength(2);
-    expect(invalidLimit[0].anonymous_name).toBe(second.anonymous_name);
+    expect(invalidLimit[0].display_name).toBe(second.anonymous_name);
   });
 
   test('calculates complete user stats from quizzes, answers, focus, and gamification', async () => {

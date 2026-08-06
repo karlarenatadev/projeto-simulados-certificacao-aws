@@ -1,8 +1,8 @@
 export const translations = {
   pt: {
     // Header
-    app_title: "Simulador IA",
-    app_subtitle: "Certificações AWS",
+    app_title: "Cloud Academy A3",
+    app_subtitle: "Sua jornada para certificações AWS",
     download_app: "Baixar App",
     toggle_language: "Alternar idioma",
     toggle_dark_mode: "Alternar modo escuro",

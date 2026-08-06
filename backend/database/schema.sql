@@ -37,15 +37,50 @@ END $$;
 -- ============================================================================
 
 CREATE TABLE IF NOT EXISTS users (
-    id              UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-    anonymous_name  VARCHAR(100) NOT NULL UNIQUE,
-    created_at      TIMESTAMP   NOT NULL DEFAULT NOW(),
-    updated_at      TIMESTAMP   NOT NULL DEFAULT NOW()
+    id              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    anonymous_name  VARCHAR(100) UNIQUE,                          -- mantido para compatibilidade; nullable após migração
+    email           VARCHAR(120) UNIQUE,                          -- email corporativo @a3data
+    full_name       VARCHAR(150),                                 -- nome completo real
+    nickname        VARCHAR(60),                                  -- apelido público (leaderboard, gamificação)
+    role            VARCHAR(20)  NOT NULL DEFAULT 'STUDENT'
+                                 CHECK (role IN ('STUDENT', 'VALIDATOR', 'ADMIN')),
+    is_active       BOOLEAN      NOT NULL DEFAULT TRUE,
+    last_login      TIMESTAMP,
+    created_at      TIMESTAMP    NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMP    NOT NULL DEFAULT NOW()
 );
 
-COMMENT ON TABLE  users                IS 'Usuários anônimos do simulador';
+-- Índices para os novos campos
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email    ON users(email)    WHERE email    IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_nickname ON users(nickname) WHERE nickname IS NOT NULL;
+CREATE INDEX        IF NOT EXISTS idx_users_role     ON users(role);
+CREATE INDEX        IF NOT EXISTS idx_users_active   ON users(is_active) WHERE is_active = TRUE;
+
+-- Adiciona colunas idempotentemente caso a tabela já exista sem elas
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS email      VARCHAR(120),
+    ADD COLUMN IF NOT EXISTS full_name  VARCHAR(150),
+    ADD COLUMN IF NOT EXISTS nickname   VARCHAR(60),
+    ADD COLUMN IF NOT EXISTS role       VARCHAR(20) NOT NULL DEFAULT 'STUDENT',
+    ADD COLUMN IF NOT EXISTS is_active  BOOLEAN     NOT NULL DEFAULT TRUE,
+    ADD COLUMN IF NOT EXISTS last_login TIMESTAMP;
+
+-- Garante o CHECK de role (idempotente via DO block)
+DO $$ BEGIN
+    ALTER TABLE users ADD CONSTRAINT chk_users_role
+        CHECK (role IN ('STUDENT', 'VALIDATOR', 'ADMIN'));
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+
+COMMENT ON TABLE  users                IS 'Usuários da plataforma CloudAcademy A3Data';
 COMMENT ON COLUMN users.id             IS 'Identificador único do usuário (UUID v4)';
-COMMENT ON COLUMN users.anonymous_name IS 'Nome público anônimo (ex: "CloudNinja#4821")';
+COMMENT ON COLUMN users.anonymous_name IS 'Nome público legado — substituído por nickname';
+COMMENT ON COLUMN users.email          IS 'Email corporativo @a3data (obrigatório para login)';
+COMMENT ON COLUMN users.full_name      IS 'Nome completo real do usuário';
+COMMENT ON COLUMN users.nickname       IS 'Apelido público exibido no leaderboard e gamificação';
+COMMENT ON COLUMN users.role           IS 'Perfil de acesso: STUDENT | VALIDATOR | ADMIN';
+COMMENT ON COLUMN users.is_active      IS 'FALSE = usuário desativado';
+COMMENT ON COLUMN users.last_login     IS 'Data e hora do último login';
 COMMENT ON COLUMN users.created_at     IS 'Data de criação do registro';
 COMMENT ON COLUMN users.updated_at     IS 'Data da última atualização';
 
@@ -128,11 +163,13 @@ ALTER TABLE questions
     ADD COLUMN IF NOT EXISTS validation_status VARCHAR(20) NOT NULL DEFAULT 'PENDING'
         CHECK (validation_status IN ('PENDING', 'APPROVED', 'REJECTED')),
     ADD COLUMN IF NOT EXISTS rejection_reason TEXT,
-    ADD COLUMN IF NOT EXISTS validation_logs JSONB NOT NULL DEFAULT '[]'::jsonb;
+    ADD COLUMN IF NOT EXISTS validation_logs JSONB NOT NULL DEFAULT '[]'::jsonb,
+    ADD COLUMN IF NOT EXISTS validated_by_id UUID REFERENCES users(id) ON DELETE SET NULL;
 
 COMMENT ON COLUMN questions.validation_status IS 'Status de validacao da questao: PENDING, APPROVED ou REJECTED';
 COMMENT ON COLUMN questions.rejection_reason  IS 'Motivo informado quando a questao e rejeitada na validacao';
 COMMENT ON COLUMN questions.validation_logs   IS 'Historico JSON de eventos de validacao da questao';
+COMMENT ON COLUMN questions.validated_by_id   IS 'FK para o usuário VALIDATOR que realizou a validação';
 
 CREATE INDEX IF NOT EXISTS idx_questions_certification ON questions(certification);
 CREATE INDEX IF NOT EXISTS idx_questions_domain        ON questions(domain);
@@ -269,7 +306,7 @@ CREATE INDEX IF NOT EXISTS idx_focus_sessions_type ON focus_sessions(session_typ
 
 CREATE OR REPLACE VIEW leaderboard AS
 SELECT
-    u.anonymous_name,
+    COALESCE(u.nickname, u.anonymous_name, 'Usuário') AS display_name,
     g.xp_points,
     g.best_score,
     g.total_quizzes,
@@ -278,9 +315,10 @@ SELECT
     RANK() OVER (ORDER BY g.xp_points DESC) AS rank
 FROM gamification g
 JOIN users u ON u.id = g.user_id
+WHERE u.is_active = TRUE OR u.is_active IS NULL
 ORDER BY g.xp_points DESC;
 
-COMMENT ON VIEW leaderboard IS 'Ranking público de usuários por pontos de XP';
+COMMENT ON VIEW leaderboard IS 'Ranking público de usuários por pontos de XP — exibe nickname sem expor identidade real';
 
 -- ============================================================================
 -- VIEW: user_stats
@@ -308,7 +346,10 @@ focus_stats AS (
 )
 SELECT
     u.id              AS user_id,
+    COALESCE(u.nickname, u.anonymous_name, 'Usuário') AS display_name,
+    u.nickname,
     u.anonymous_name,
+    u.role,
     COALESCE(qs.total_quizzes, 0)                            AS total_quizzes,
     COALESCE(qs.avg_score, 0)::DECIMAL(5,2)                  AS avg_score,
     COALESCE(qs.best_score, 0)                               AS best_score,

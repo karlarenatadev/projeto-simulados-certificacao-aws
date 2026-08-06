@@ -63,27 +63,28 @@ describe('apiService response normalization', () => {
     expect(response.meta).toBeUndefined();
   });
 
-  test('returns normalized user data to user initialization', async () => {
+  test('returns normalized user data to user login', async () => {
     global.fetch.mockResolvedValue(jsonResponse({
       success: true,
       data: {
         id: 'user-1',
-        anonymous_name: 'CloudUser',
+        email: 'usuario@a3data.com.br',
+        nickname: 'UsuarioA3',
+        role: 'STUDENT',
       },
-      message: 'User created successfully',
-    }, 201));
+      message: 'Login realizado com sucesso.',
+    }, 200));
 
-    const apiResponse = await apiService.createUser({});
-    jest.spyOn(apiService, 'createUser').mockResolvedValue(apiResponse);
+    const apiResponse = await apiService.loginUser({ email: 'usuario@a3data.com.br' });
+    jest.spyOn(apiService, 'loginUser').mockResolvedValue(apiResponse);
 
-    const user = await userManager.getOrCreateUser();
+    const user = await userManager.login('usuario@a3data.com.br');
 
     expect(apiResponse.data.id).toBe('user-1');
-    expect(user).toEqual({
-      id: 'user-1',
-      anonymous_name: 'CloudUser',
-    });
-    expect(localStorage.getItem('aws_sim_user_id')).toBe('user-1');
+    expect(user.id).toBe('user-1');
+    expect(user.nickname).toBe('UsuarioA3');
+    const session = JSON.parse(localStorage.getItem('cloudacademy_user') || 'null');
+    expect(session?.id).toBe('user-1');
   });
 
   test('preserves a direct list response', async () => {

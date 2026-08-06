@@ -15,9 +15,18 @@ Design System Inputs & Forms
   color: var(--text-main);
   background-color: var(--a3-surface-soft);
   background-clip: padding-box;
-  border: 1px solid var(--border-theme);
+  border: 1.5px solid var(--border-theme);
   border-radius: var(--radius-md);
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: border-color var(--a3-transition-fast),
+              box-shadow var(--a3-transition-fast),
+              background-color var(--a3-transition-fast);
+  -webkit-appearance: none;
+}
+
+.a3-input:hover:not(:disabled):not(:focus),
+.a3-select:hover:not(:disabled):not(:focus),
+.a3-textarea:hover:not(:disabled):not(:focus) {
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 40%, var(--border-theme));
 }
 
 .a3-input:focus,
@@ -26,8 +35,8 @@ Design System Inputs & Forms
   color: var(--text-strong);
   background-color: var(--bg-card);
   border-color: var(--a3-tech-blue);
-  outline: 0;
-  box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--a3-tech-blue) 25%, transparent);
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
 }
 
 .a3-input::placeholder,
@@ -40,8 +49,22 @@ Design System Inputs & Forms
 .a3-select:disabled,
 .a3-textarea:disabled {
   background-color: var(--bg-main);
-  opacity: 1;
+  opacity: 0.6;
   cursor: not-allowed;
+  border-color: var(--border-theme);
+}
+
+/* Estado de erro */
+.a3-input.is-invalid,
+.a3-select.is-invalid,
+.a3-textarea.is-invalid {
+  border-color: var(--a3-danger);
+}
+
+.a3-input.is-invalid:focus,
+.a3-select.is-invalid:focus,
+.a3-textarea.is-invalid:focus {
+  box-shadow: var(--a3-focus-ring-danger);
 }
 
 /* Checkboxes and Radios */
@@ -55,9 +78,11 @@ Design System Inputs & Forms
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-  border: 1px solid var(--border-theme);
+  border: 1.5px solid var(--border-theme);
   appearance: none;
   cursor: pointer;
+  transition: border-color var(--a3-transition-fast),
+              background-color var(--a3-transition-fast);
 }
 
 .a3-checkbox {
@@ -68,10 +93,21 @@ Design System Inputs & Forms
   border-radius: 50%;
 }
 
+.a3-checkbox:hover,
+.a3-radio:hover {
+  border-color: var(--a3-tech-blue);
+}
+
 .a3-checkbox:checked,
 .a3-radio:checked {
   background-color: var(--a3-tech-blue);
   border-color: var(--a3-tech-blue);
+}
+
+.a3-checkbox:focus-visible,
+.a3-radio:focus-visible {
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
 }
 
 .a3-checkbox:checked {
@@ -80,4 +116,28 @@ Design System Inputs & Forms
 
 .a3-radio:checked {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+/* Label helpers */
+.a3-form-label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-strong);
+  margin-bottom: var(--space-4);
+}
+
+.a3-form-hint {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-4);
+}
+
+.a3-form-error {
+  font-size: var(--text-xs);
+  color: var(--a3-danger);
+  margin-top: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
 }

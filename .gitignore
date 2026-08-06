@@ -22,4 +22,6 @@ env/
 Thumbs.db
 .vscode/
 .pglite-data
+.pglite-data-backup
 /archive/
+.pglite-data-new

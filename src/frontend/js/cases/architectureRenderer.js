@@ -4,7 +4,8 @@ import { logger } from "../utils/logger.js";
  * Handles rendering Mermaid.js diagrams from the case's architecture_graph field.
  */
 
-const MERMAID_CDN = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+const MERMAID_CDN =
+  "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
 
 let mermaidInstance = null;
 let loadPromise = null;
@@ -29,33 +30,35 @@ async function loadMermaid() {
 
       mermaidInstance.initialize({
         startOnLoad: false,
-        theme: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
-        fontFamily: 'Segoe UI, system-ui, sans-serif',
+        theme: document.documentElement.classList.contains("dark")
+          ? "dark"
+          : "default",
+        fontFamily: "Segoe UI, system-ui, sans-serif",
         flowchart: {
           htmlLabels: true,
-          curve: 'basis',
+          curve: "basis",
           nodeSpacing: 50,
           rankSpacing: 60,
         },
         themeVariables: {
-          primaryColor: '#0033FF',
-          primaryTextColor: '#f5f7ff',
-          primaryBorderColor: '#001863',
-          lineColor: '#94a3b8',
-          secondaryColor: '#001863',
-          tertiaryColor: '#1e293b',
-          background: '#ffffff',
-          mainBkg: '#001863',
-          nodeBkg: '#0033FF',
-          clusterBkg: '#f8fafc',
-          titleColor: '#00083d',
-          edgeLabelBackground: '#f5f5f5',
+          primaryColor: "#0033FF",
+          primaryTextColor: "#f5f7ff",
+          primaryBorderColor: "#001863",
+          lineColor: "#94a3b8",
+          secondaryColor: "#001863",
+          tertiaryColor: "#1e293b",
+          background: "#ffffff",
+          mainBkg: "#001863",
+          nodeBkg: "#0033FF",
+          clusterBkg: "#f8fafc",
+          titleColor: "#00083d",
+          edgeLabelBackground: "#f5f5f5",
         },
       });
 
       return mermaidInstance;
     } catch (error) {
-      logger.error('[architectureRenderer] Failed to load Mermaid.js:', error);
+      logger.error("[architectureRenderer] Failed to load Mermaid.js:", error);
       throw error;
     } finally {
       loadPromise = null;
@@ -77,11 +80,11 @@ async function loadMermaid() {
  */
 export async function renderArchitecture(container, architectureGraph) {
   if (!container) {
-    throw new Error('[architectureRenderer] container element is required');
+    throw new Error("[architectureRenderer] container element is required");
   }
 
   // Clear previous content
-  container.innerHTML = '';
+  container.innerHTML = "";
 
   if (!architectureGraph || !architectureGraph.content) {
     container.innerHTML = `
@@ -92,7 +95,7 @@ export async function renderArchitecture(container, architectureGraph) {
     return;
   }
 
-  if (architectureGraph.type !== 'mermaid') {
+  if (architectureGraph.type !== "mermaid") {
     container.innerHTML = `
       <div style="text-align:center; padding: 3rem; color: var(--a3-text-muted);">
         <p style="font-size:0.875rem;">Tipo de diagrama não suportado: ${architectureGraph.type}</p>
@@ -111,8 +114,8 @@ export async function renderArchitecture(container, architectureGraph) {
     const mermaid = await loadMermaid();
 
     // Re-initialize with current theme
-    const isDark = document.documentElement.classList.contains('dark');
-    mermaid.initialize({ theme: isDark ? 'dark' : 'default' });
+    const isDark = document.documentElement.classList.contains("dark");
+    mermaid.initialize({ theme: isDark ? "dark" : "default" });
 
     const diagramId = `arch-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const { svg } = await mermaid.render(diagramId, architectureGraph.content);
@@ -120,14 +123,14 @@ export async function renderArchitecture(container, architectureGraph) {
     container.innerHTML = svg;
 
     // Make the SVG responsive
-    const svgEl = container.querySelector('svg');
+    const svgEl = container.querySelector("svg");
     if (svgEl) {
-      svgEl.removeAttribute('height');
-      svgEl.style.maxWidth = '100%';
-      svgEl.style.height = 'auto';
+      svgEl.removeAttribute("height");
+      svgEl.style.maxWidth = "100%";
+      svgEl.style.height = "auto";
     }
   } catch (error) {
-    logger.error('[architectureRenderer] Render error:', error);
+    logger.error("[architectureRenderer] Render error:", error);
     container.innerHTML = `
       <div style="text-align:center; padding: 2rem;">
         <i class="fa-solid fa-triangle-exclamation" style="font-size:1.75rem; color:var(--a3-warning); display:block; margin-bottom:0.75rem;"></i>
@@ -142,9 +145,9 @@ export async function renderArchitecture(container, architectureGraph) {
 
 function escapeHtml(str) {
   return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }

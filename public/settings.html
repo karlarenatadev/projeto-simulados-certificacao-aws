@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Configurações da plataforma CloudAcademy A3." />
+    <title>Configurações — Cloud Academy A3</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "aws-dark": "#001863",
+              "aws-orange": "#0033FF",
+            },
+          },
+        },
+      };
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#001863" />
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
+<header class="a3-header">
+      <div class="flex items-center gap-2 md:gap-3">
+        <button
+          id="cloud-sidebar-toggle"
+          class="btn-sidebar-toggle flex items-center justify-center group/cloud"
+          title="Esconder menu lateral"
+          aria-label="Alternar menu lateral"
+          aria-expanded="true"
+        >
+          <i
+            id="cloud-logo-icon"
+            class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
+            aria-hidden="true"
+          ></i>
+        </button>
+        <a href="index.html" class="a3-header-link" title="Voltar ao início">
+          <div>
+            <h1 class="text-base md:text-xl font-bold leading-tight">
+              Cloud Academy A3
+            </h1>
+            <p class="text-[10px] md:text-xs text-gray-300">
+              Sua jornada para certificações AWS
+            </p>
+          </div>
+        </a>
+      </div>
+      <div class="a3-header-actions">
+        <button
+          id="btn-language"
+          class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
+          aria-label="Alternar idioma"
+          title="Alternar idioma"
+        >
+          <span class="text-[10px] md:text-xs font-bold"
+            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
+          >
+        </button>
+        <button
+          id="theme-toggle"
+          class="a3-btn a3-btn-secondary"
+          aria-label="Alternar modo escuro"
+        >
+          <i
+            id="theme-icon"
+            class="fa-solid fa-moon text-base md:text-xl"
+            aria-hidden="true"
+          ></i>
+        </button>
+        <button
+          id="install-app"
+          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
+        >
+          <i class="fa-solid fa-download"></i> Baixar App
+        </button>
+        <!-- User Menu — populado pelo shell.js -->
+        <div id="user-menu-container"></div>
+      </div>
+    </header>
+<nav id="left-sidebar" aria-label="Menu principal" role="navigation">
+  <!--
+    .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
+    no momento do boot. O botão abaixo é apenas um fallback visual
+    para Progressive Enhancement (evita flash de sidebar vazia).
+  -->
+  <div class="left-sidebar-nav">
+    <button
+      id="sidebar-btn-hub"
+      class="left-sidebar-item left-sidebar-item-primary"
+      aria-label="Learning Hub — Painel Principal"
+      title="Learning Hub — Painel Principal"
+    >
+      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <span class="left-sidebar-item-label">Hub</span>
+    </button>
+  </div>
+  <!--
+    .left-sidebar-footer é gerado dinamicamente por buildSidebar(user).
+    Contém: divisor, Perfil, Config, divisor, botão Recolher.
+  -->
+</nav>
+
+
+<!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
+
+    <!-- ===== CONTEÚDO PRINCIPAL ===== -->
+    <main class="main-content-container settings-main" id="settings-page">
+      <h2 class="settings-page-title">
+        <i class="fa-solid fa-gear" aria-hidden="true"></i>
+        Configurações
+      </h2>
+
+      <!-- ── SEÇÃO: Conta ─────────────────────────────────────────── -->
+      <div class="settings-group">
+        <p class="settings-group-title">Conta</p>
+        <div class="settings-card">
+          <!-- Nome de exibição -->
+          <div class="settings-item">
+            <i
+              class="fa-solid fa-user settings-item-icon"
+              aria-hidden="true"
+            ></i>
+            <div class="settings-item-body">
+              <p class="settings-item-label">Nome de exibição</p>
+              <p class="settings-item-hint">Como aparece no painel e no menu</p>
+            </div>
+            <div class="settings-item-control">
+              <input
+                type="text"
+                id="setting-display-name"
+                class="settings-input"
+                placeholder="Seu nome"
+                aria-label="Nome de exibição"
+                maxlength="60"
+              />
+            </div>
+          </div>
+
+          <!-- Idioma -->
+          <div class="settings-item">
+            <i
+              class="fa-solid fa-globe settings-item-icon"
+              aria-hidden="true"
+            ></i>
+            <div class="settings-item-body">
+              <p class="settings-item-label">Idioma</p>
+              <p class="settings-item-hint">Idioma das questões e interface</p>
+            </div>
+            <div class="settings-item-control">
+              <select
+                id="setting-lang"
+                class="settings-select"
+                aria-label="Idioma"
+              >
+                <option value="pt">🇧🇷 PT-BR</option>
+                <option value="en">🇺🇸 EN-US</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Logout -->
+          <div class="settings-item settings-item-danger">
+            <i
+              class="fa-solid fa-right-from-bracket settings-item-icon"
+              aria-hidden="true"
+            ></i>
+            <div class="settings-item-body">
+              <p class="settings-item-label">Sair da conta</p>
+              <p class="settings-item-hint">Encerra a sessão atual</p>
+            </div>
+            <div class="settings-item-control">
+              <button
+                id="setting-btn-logout"
+                class="a3-btn a3-btn-outline"
+                aria-label="Sair da conta"
+              >
+                Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SEÇÃO: Aparência ─────────────────────────────────────── -->
+      <div class="settings-group">
+        <p class="settings-group-title">Aparência</p>
+        <div class="settings-card">
+          <!-- Tema -->
+          <div class="settings-item">
+            <i
+              class="fa-solid fa-moon settings-item-icon"
+              aria-hidden="true"
+            ></i>
+            <div class="settings-item-body">
+              <p class="settings-item-label">Tema escuro</p>
+              <p class="settings-item-hint">Modo claro/escuro da interface</p>
+            </div>
+            <div class="settings-item-control">
+              <label class="settings-toggle" aria-label="Ativar tema escuro">
+                <input type="checkbox" id="setting-dark-mode" role="switch" />
+                <span class="settings-toggle-track" aria-hidden="true"></span>
+                <span class="settings-toggle-thumb" aria-hidden="true"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Sidebar recolhida por padrão -->
+          <div class="settings-item">
+            <i
+              class="fa-solid fa-sidebar settings-item-icon"
+              aria-hidden="true"
+            ></i>
+            <div class="settings-item-body">
+              <p class="settings-item-label">Sidebar recolhida por padrão</p>
+              <p class="settings-item-hint">
+                Inicia com o menu lateral fechado
+              </p>
+            </div>
+            <div class="settings-item-control">
+              <label
+                class="settings-toggle"
+                aria-label="Recolher sidebar por padrão"
+              >
+                <input
+                  type="checkbox"
+                  id="setting-sidebar-closed"
+                  role="switch"
+                />
+                <span class="settings-toggle-track" aria-hidden="true"></span>
+                <span class="settings-toggle-thumb" aria-hidden="true"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SEÇÃO: Estudo ────────────────────────────────────────── -->
+      <div class="settings-group">
+        <p class="settings-group-title">Estudo</p>
+        <div class="settings-card">
+          <!-- Pomodoro padrão -->
+          <div class="settings-item">
+            <i
+              class="fa-solid fa-stopwatch settings-item-icon"
+              aria-hidden="true"
+            ></i>
+            <div class="settings-item-body">
+              <p class="settings-item-label">Tempo padrão do Pomodoro</p>
+              <p class="settings-item-hint">
+                Duração padrão ao iniciar o temporizador
+              </p>
+            </div>
+            <div class="settings-item-control">
+              <select
+                id="setting-pomodoro"
+                class="settings-select"
+                aria-label="Tempo do Pomodoro"
+              >
+                <option value="15">15 min</option>
+                <option value="25">25 min</option>
+                <option value="30">30 min</option>
+                <option value="60">60 min</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Meta diária -->
+          <div class="settings-item">
+            <i
+              class="fa-solid fa-bullseye settings-item-icon"
+              aria-hidden="true"
+            ></i>
+            <div class="settings-item-body">
+              <p class="settings-item-label">Meta diária de questões</p>
+              <p class="settings-item-hint">Número de questões por dia</p>
+            </div>
+            <div class="settings-item-control">
+              <select
+                id="setting-daily-goal"
+                class="settings-select"
+                aria-label="Meta diária"
+              >
+                <option value="10">10 questões</option>
+                <option value="20">20 questões</option>
+                <option value="30">30 questões</option>
+                <option value="50">50 questões</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SEÇÃO: Plataforma ────────────────────────────────────── -->
+      <div class="settings-group">
+        <p class="settings-group-title">Plataforma</p>
+        <div class="settings-card">
+          <!-- Versão -->
+          <div class="settings-item">
+            <i
+              class="fa-solid fa-circle-info settings-item-icon"
+              aria-hidden="true"
+            ></i>
+            <div class="settings-item-body">
+              <p class="settings-item-label">Versão</p>
+              <p class="settings-item-hint" id="settings-version">
+                Cloud Academy A3
+              </p>
+            </div>
+          </div>
+
+          <!-- Limpar cache -->
+          <div class="settings-item settings-item-danger">
+            <i
+              class="fa-solid fa-broom settings-item-icon"
+              aria-hidden="true"
+            ></i>
+            <div class="settings-item-body">
+              <p class="settings-item-label">Limpar cache/histórico</p>
+              <p class="settings-item-hint">
+                Remove o histórico de simulados (mantém progresso)
+              </p>
+            </div>
+            <div class="settings-item-control">
+              <button
+                id="setting-btn-clear-history"
+                class="a3-btn a3-btn-outline"
+                aria-label="Limpar histórico"
+              >
+                Limpar
+              </button>
+            </div>
+          </div>
+
+          <!-- Resetar progresso -->
+          <div class="settings-item settings-item-danger">
+            <i
+              class="fa-solid fa-rotate-left settings-item-icon"
+              aria-hidden="true"
+            ></i>
+            <div class="settings-item-body">
+              <p class="settings-item-label">Resetar todo o progresso</p>
+              <p class="settings-item-hint">
+                Remove histórico, XP, sequência e conquistas
+              </p>
+            </div>
+            <div class="settings-item-control">
+              <button
+                id="setting-btn-reset-all"
+                class="a3-btn a3-btn-outline"
+                aria-label="Resetar progresso"
+              >
+                Resetar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de salvar -->
+      <div class="settings-save-bar">
+        <button
+          id="settings-btn-save"
+          class="a3-btn a3-btn-primary"
+          aria-label="Salvar configurações"
+        >
+          <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+          Salvar alterações
+        </button>
+      </div>
+    </main>
+
+    <!-- Toast de feedback -->
+    <div
+      id="settings-toast"
+      class="settings-toast"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      <i class="fa-solid fa-check" aria-hidden="true"></i>
+      <span id="settings-toast-msg">Configurações salvas!</span>
+    </div>
+
+    <!-- App Shell: tema, idioma, UserMenu e Sidebar -->
+<footer
+      class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
+    >
+      Plataforma colaborativa de estudo para certificações AWS construída para a
+      comunidade da Guilda Z-Maguinhos | A3Data.
+    </footer>
+
+
+
+    <script type="module">
+      import { storageManager } from "./js/storageManager.js";
+      import { initShell } from "./js/shell.js";
+      import { AuthService } from "./js/services/authService.js";
+
+      // ── Chaves de preferências ────────────────────────────────────────────
+      const LANG_KEY = "aws_sim_lang";
+      const THEME_KEY = "aws_sim_theme";
+      const SIDEBAR_KEY = "sidebar_closed";
+      const POMODORO_KEY = "aws_sim_pomodoro_duration";
+      const DAILY_GOAL_KEY = "aws_sim_daily_goal";
+
+      // ── Toast ──────────────────────────────────────────────────────────────
+      function showToast(msg = "Configurações salvas!", isError = false) {
+        const toast = document.getElementById("settings-toast");
+        const toastMsg = document.getElementById("settings-toast-msg");
+        const icon = toast?.querySelector("i");
+        if (!toast) return;
+        if (toastMsg) toastMsg.textContent = msg;
+        if (icon) {
+          icon.className = isError
+            ? "fa-solid fa-triangle-exclamation"
+            : "fa-solid fa-check";
+        }
+        toast.classList.add("is-visible");
+        setTimeout(() => toast.classList.remove("is-visible"), 3000);
+      }
+
+      // ── Carregar preferências salvas ───────────────────────────────────────
+      function loadPreferences(user) {
+        // Nome de exibição
+        const nameInput = document.getElementById("setting-display-name");
+        if (nameInput) {
+          nameInput.value =
+            user.nickname || user.full_name || user.email?.split("@")[0] || "";
+        }
+
+        // Idioma
+        const langSelect = document.getElementById("setting-lang");
+        if (langSelect) {
+          langSelect.value = localStorage.getItem(LANG_KEY) || "pt";
+        }
+
+        // Tema escuro
+        const darkToggle = document.getElementById("setting-dark-mode");
+        if (darkToggle) {
+          darkToggle.checked =
+            document.documentElement.classList.contains("dark") ||
+            localStorage.getItem(THEME_KEY) === "dark";
+        }
+
+        // Sidebar fechada
+        const sidebarToggle = document.getElementById("setting-sidebar-closed");
+        if (sidebarToggle) {
+          sidebarToggle.checked = localStorage.getItem(SIDEBAR_KEY) === "true";
+        }
+
+        // Pomodoro
+        const pomodoroSelect = document.getElementById("setting-pomodoro");
+        if (pomodoroSelect) {
+          pomodoroSelect.value =
+            localStorage.getItem(POMODORO_KEY) || "25";
+        }
+
+        // Meta diária
+        const dailyGoalSelect = document.getElementById("setting-daily-goal");
+        if (dailyGoalSelect) {
+          dailyGoalSelect.value =
+            localStorage.getItem(DAILY_GOAL_KEY) || "20";
+        }
+      }
+
+      // ── Aplicar e salvar preferências ──────────────────────────────────────
+      function savePreferences() {
+        const nameInput = document.getElementById("setting-display-name");
+        const langSelect = document.getElementById("setting-lang");
+        const darkToggle = document.getElementById("setting-dark-mode");
+        const sidebarToggle = document.getElementById("setting-sidebar-closed");
+        const pomodoroSelect = document.getElementById("setting-pomodoro");
+        const dailyGoalSelect = document.getElementById("setting-daily-goal");
+
+        // Idioma
+        if (langSelect) {
+          localStorage.setItem(LANG_KEY, langSelect.value);
+        }
+
+        // Tema escuro
+        if (darkToggle) {
+          const isDark = darkToggle.checked;
+          localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
+          document.documentElement.classList.toggle("dark", isDark);
+          if (window.toggleDarkModeShell) {
+            // Sincroniza o ícone do tema no header
+            const currentIsDark =
+              document.documentElement.classList.contains("dark");
+            if (currentIsDark !== isDark) window.toggleDarkModeShell();
+          }
+        }
+
+        // Sidebar
+        if (sidebarToggle) {
+          localStorage.setItem(SIDEBAR_KEY, String(sidebarToggle.checked));
+        }
+
+        // Pomodoro
+        if (pomodoroSelect) {
+          localStorage.setItem(POMODORO_KEY, pomodoroSelect.value);
+        }
+
+        // Meta diária
+        if (dailyGoalSelect) {
+          localStorage.setItem(DAILY_GOAL_KEY, dailyGoalSelect.value);
+        }
+
+        // Atualiza botão de idioma
+        if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
+
+        showToast("Configurações salvas!");
+      }
+
+      // ── Boot ──────────────────────────────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", async () => {
+        const user = await AuthService.restoreSession();
+        if (!user) {
+          window.location.replace("./index.html");
+          return;
+        }
+        initShell(user);
+        loadPreferences(user);
+
+        // Salvar
+        document
+          .getElementById("settings-btn-save")
+          ?.addEventListener("click", savePreferences);
+
+        // Limpar histórico (mantém progresso de gamificação)
+        document
+          .getElementById("setting-btn-clear-history")
+          ?.addEventListener("click", () => {
+            if (
+              !confirm(
+                "Tem certeza? O histórico de simulados será removido (XP e conquistas são mantidos).",
+              )
+            )
+              return;
+            storageManager.clearHistory();
+            showToast("Histórico de simulados removido.");
+          });
+
+        // Resetar tudo
+        document
+          .getElementById("setting-btn-reset-all")
+          ?.addEventListener("click", () => {
+            if (
+              !confirm(
+                "Tem certeza? Todo o progresso (histórico, XP, sequência e conquistas) será removido permanentemente.",
+              )
+            )
+              return;
+            storageManager.clearAll();
+            showToast("Progresso resetado com sucesso.");
+          });
+
+        // Logout
+        document
+          .getElementById("setting-btn-logout")
+          ?.addEventListener("click", async () => {
+            try {
+              const { AuthService: AS } = await import(
+                "./js/services/authService.js"
+              );
+              await AS.logout();
+            } catch (_) {
+              /* offline */
+            }
+            window.location.replace("./index.html");
+          });
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeBtn = document.getElementById("theme-toggle");
+        const langBtn = document.getElementById("btn-language");
+        if (themeBtn)
+          themeBtn.addEventListener(
+            "click",
+            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
+          );
+        if (langBtn)
+          langBtn.addEventListener("click", () => {
+            const lang = localStorage.getItem("aws_sim_lang") || "pt";
+            const next = lang === "pt" ? "en" : "pt";
+            localStorage.setItem("aws_sim_lang", next);
+            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
+            window.location.reload();
+          });
+      });
+    </script>
+
+  </body>
+</html>

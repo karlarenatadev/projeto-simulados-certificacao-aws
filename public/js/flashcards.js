@@ -61,23 +61,24 @@ export function filterFlashcards() {
 
   if (selectedDomain === "review-deck") {
     const savedDeck = storageManager.getReviewDeck(selectedCert);
-    flashcardState.filteredTerms = savedDeck.map(q => {
+    flashcardState.filteredTerms = savedDeck.map((q) => {
       const isMulti = Array.isArray(q.correct);
-      const correctText = isMulti 
-          ? q.correct.map(i => q.options[i]).join("<br>• ") 
-          : q.options[q.correct];
-          
+      const correctText = isMulti
+        ? q.correct.map((i) => q.options[i]).join("<br>• ")
+        : q.options[q.correct];
+
       return {
         cert: selectedCert,
         domain: "review-deck",
         term: q.question,
-        definition: `<strong>Resposta:</strong><br>• ${correctText}<br><br><strong>Explicação:</strong><br>${q.explanation}`
+        definition: `<strong>Resposta:</strong><br>• ${correctText}<br><br><strong>Explicação:</strong><br>${q.explanation}`,
       };
     });
   } else {
     flashcardState.filteredTerms = glossaryTerms.filter((card) => {
       const matchCert = card.cert === "all" || card.cert === selectedCert;
-      const matchDomain = selectedDomain === "all" || card.domain === selectedDomain;
+      const matchDomain =
+        selectedDomain === "all" || card.domain === selectedDomain;
       return matchCert && matchDomain;
     });
   }

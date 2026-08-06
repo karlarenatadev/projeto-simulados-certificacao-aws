@@ -4,19 +4,35 @@
  * - Network First for JSON data (questions) to ensure users always have the latest dataset.
  * - Cache First for static assets (HTML, CSS, JS) for fast offline load speeds.
  */
-const CACHE_NAME = 'aws-sim-cache-v7'; // Change this to invalidate old caches on deploy.
+const CACHE_NAME = 'aws-sim-cache-v8'; // Change this to invalidate old caches on deploy.
 
 // Removemos os .json daqui para não ficarem trancados para sempre
 const urlsToCache = [
   './',
   './index.html',
+  './simulados.html',
+  './jornada.html',
+  './flashcards.html',
+  './diagnostico.html',
+  './profile.html',
+  './settings.html',
+  './resources.html',
+  './cases.html',
+  './case-view.html',
+  './404.html',
   './css/style.css',
+  './css/cases.css',
   './js/app.js',
   './js/data.js',
   './js/quizEngine.js',
   './js/storageManager.js',
   './js/chartManager.js',
   './js/flashcards.js',
+  './js/shell.js',
+  './js/pomodoroManager.js',
+  './js/sprintData.js',
+  './js/userManager.js',
+  './services/api.js',
   './manifest.json'
 ];
 

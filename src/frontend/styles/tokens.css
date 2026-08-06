@@ -54,6 +54,8 @@
   --aws-dark: var(--a3-deep-sea);
   --aws-orange: var(--a3-tech-blue);
   --aws-orange-hover: color-mix(in srgb, var(--a3-tech-blue) 84%, var(--a3-deep-sea));
+  /* Alias prefixado a3- para uso no cases.css e componentes novos */
+  --a3-aws-orange-hover: color-mix(in srgb, var(--a3-tech-blue) 84%, var(--a3-deep-sea));
   --aws-light-gray: var(--a3-background-light);
   --aws-border: var(--a3-border-default);
   --success-green: var(--a3-success);
@@ -95,5 +97,22 @@
   --radius-lg: 0.5rem;
   --radius-xl: 1rem;
   --radius-full: 9999px;
+
+  /* ── UX Polish Tokens ──────────────────────────────────────────────── */
+  --a3-transition-fast:   0.12s ease;
+  --a3-transition-base:   0.2s ease;
+  --a3-transition-slow:   0.35s ease;
+  --a3-focus-ring:        0 0 0 3px color-mix(in srgb, var(--a3-tech-blue) 28%, transparent);
+  --a3-focus-ring-danger: 0 0 0 3px color-mix(in srgb, var(--a3-danger) 28%, transparent);
+  --a3-shadow-sm: 0 1px 3px color-mix(in srgb, var(--a3-deep-sea) 8%, transparent),
+                  0 1px 2px color-mix(in srgb, var(--a3-deep-sea) 6%, transparent);
+  --a3-shadow-hover: 0 8px 24px color-mix(in srgb, var(--a3-deep-sea) 14%, transparent);
+  --a3-skeleton-bg: linear-gradient(
+    90deg,
+    var(--a3-surface-soft) 25%,
+    color-mix(in srgb, var(--a3-border-default) 60%, var(--a3-surface)) 50%,
+    var(--a3-surface-soft) 75%
+  );
+  --a3-skeleton-size: 200% 100%;
 
 }

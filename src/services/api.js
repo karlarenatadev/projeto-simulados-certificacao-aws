@@ -1,4 +1,4 @@
-import { logger } from "../js/utils/logger.js";
+import { logger } from "../frontend/js/utils/logger.js";
 /**
  * API Service Layer
  * Centralized HTTP client for all backend API calls
@@ -32,7 +32,9 @@ function getConfiguredApiUrl() {
 const API_CONFIG = {
   // GitHub Pages is static; avoid calling the visitor's own localhost in production.
   BASE_URL: getConfiguredApiUrl(),
-  TIMEOUT: 2000,
+  // Timeout aumentado para 8s: PGlite em /mnt/c (WSL) pode levar 5-8s
+  // para inicializar. Operações de escrita (login, quiz) também são mais lentas.
+  TIMEOUT: 8000,
   RETRY_ATTEMPTS: 1,
 };
 
@@ -45,11 +47,13 @@ const API_CONFIG = {
  * @returns {object} Structured error object
  */
 function createError(message, statusCode = 0, details = {}) {
+  // Garantir que details nunca seja null — evita TypeError ao acessar details.apiDisabled
+  const safeDetails = details !== null && details !== undefined ? details : {};
   return {
     message,
     statusCode,
-    details,
-    apiDisabled: Boolean(details.apiDisabled),
+    details: safeDetails,
+    apiDisabled: Boolean(safeDetails.apiDisabled),
     timestamp: new Date().toISOString(),
   };
 }
@@ -142,7 +146,7 @@ async function fetchWithRetry(endpoint, options = {}) {
       // Handle HTTP errors
       if (!response.ok) {
         const errorMessage = data?.message || `HTTP ${response.status}`;
-        lastError = createError(errorMessage, response.status, data);
+        lastError = createError(errorMessage, response.status, data ?? {});
         
         // Don't retry on client errors (4xx)
         if (response.status >= 400 && response.status < 500) {
@@ -264,12 +268,57 @@ export const apiService = {
   // ========================================================================
 
   /**
-   * Create anonymous user
+   * Login corporativo — POST /api/auth/login
+   * Cria usuário como STUDENT se não existir, retorna existente se já houver.
+   *
+   * @param {object} options
+   * @param {string} options.email - Email @a3data
+   * @param {string} [options.full_name]
+   * @param {string} [options.nickname]
+   * @returns {Promise<object>} { success, data: { id, email, nickname, role, ... }, created }
+   */
+  async loginUser(options = {}) {
+    try {
+      const response = await fetchWithRetry('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: options.email,
+          full_name: options.full_name || undefined,
+          nickname: options.nickname || undefined,
+        }),
+      });
+      return response;
+    } catch (error) {
+      if (!error || !error.apiDisabled) logger.error('Login failed:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Retorna o perfil do usuário autenticado — GET /api/auth/me
+   * Envia o user_id via header X-User-Id.
+   *
+   * @param {string} userId - UUID do usuário
+   * @returns {Promise<object>} { success, data: { id, email, nickname, role, ... } }
+   */
+  async getMe(userId) {
+    try {
+      const response = await fetchWithRetry('/api/auth/me', {
+        headers: { 'X-User-Id': userId },
+      });
+      return response;
+    } catch (error) {
+      if (!error || !error.apiDisabled) logger.error('getMe failed:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Create anonymous user (mantido para compatibilidade com testes legados)
    * POST /api/users
-   * 
-   * @param {object} options - User data
-   * @param {string} [options.anonymous_name] - User display name (auto-generated if not provided)
-   * 
+   *
+   * @param {object} options
+   * @param {string} [options.anonymous_name]
    * @returns {Promise<object>} { success, data: { id, anonymous_name, created_at } }
    */
   async createUser(options = {}) {
@@ -528,7 +577,9 @@ export const apiService = {
 
     try {
       const response = await fetchWithRetry('/api/health', {
-        timeout: 1500,
+        // Timeout mais generoso para o health check: PGlite em WSL pode
+        // levar alguns segundos para responder logo após inicializar.
+        timeout: 5000,
       });
       return response.success;
     } catch {
