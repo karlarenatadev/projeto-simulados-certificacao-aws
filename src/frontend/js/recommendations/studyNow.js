@@ -1,83 +1,22 @@
 /**
  * Study Now ("O Que Estudar Agora")
  * Componente isolado de recomendacao que exibe na sidebar os 3 dominios com
- * maior taxa de erro do usuario, com links para a documentacao oficial AWS e
- * um botao que inicia um quiz filtrado pelo dominio mais fraco.
+ * maior taxa de erro do usuario. Agora opera como Adapter para o LearningAnalytics.
  *
  * @module recommendations/studyNow
  */
 
-import apiService from "../services/api.js";
-import { userManager } from "../userManager.js";
 import { storageManager } from "../storageManager.js";
-import { certificationPaths } from "../data.js";
+import { LearningAnalytics } from "../analytics/learningAnalytics.js";
+import { RecommendationEngine } from "./recommendationEngine.js";
+import { userManager } from "../userManager.js";
+import { t } from "../i18n/useTranslation.js";
 
 const CONTENT_ID = "weak-domains-content";
-const WEAK_THRESHOLD = 70;
-const MAX_DOMAINS = 3;
-
-const AWS_STUDY_LINKS = {
-  "conceitos-cloud":
-    "https://aws.amazon.com/pt/getting-started/cloud-essentials/",
-  "cloud-concepts":
-    "https://aws.amazon.com/pt/getting-started/cloud-essentials/",
-  seguranca:
-    "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
-  security:
-    "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
-  "security-compliance":
-    "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/security-and-compliance.html",
-  tecnologia: "https://aws.amazon.com/pt/products/",
-  faturamento:
-    "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-what-is.html",
-  "billing-cost-management":
-    "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-what-is.html",
-  "design-resiliente":
-    "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
-  "design-resilient-architectures":
-    "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
-  "design-performance":
-    "https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/welcome.html",
-  "design-high-performing-architectures":
-    "https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/welcome.html",
-  "seguranca-aplicacoes":
-    "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
-  "design-secure-architectures":
-    "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
-  "design-custo":
-    "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
-  "design-cost-optimized-architectures":
-    "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
-  "fundamentals-ai-ml": "https://aws.amazon.com/pt/machine-learning/learn/",
-  "inteligencia-artificial":
-    "https://aws.amazon.com/pt/machine-learning/learn/",
-  "fundamentals-genai": "https://aws.amazon.com/pt/generative-ai/",
-  "applications-foundation-models": "https://aws.amazon.com/pt/bedrock/",
-  "guidelines-responsible-ai":
-    "https://aws.amazon.com/pt/machine-learning/responsible-ai/",
-  "security-compliance-governance":
-    "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/security-and-compliance.html",
-  "desenvolvimento-servicos": "https://aws.amazon.com/pt/developer/",
-  development: "https://aws.amazon.com/pt/developer/",
-  "seguranca-app":
-    "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html",
-  implementacao: "https://aws.amazon.com/pt/products/developer-tools/",
-  deployment: "https://aws.amazon.com/pt/products/developer-tools/",
-  "resolucao-problemas":
-    "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html",
-  "troubleshooting-performance":
-    "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html",
-  arquitetura: "https://aws.amazon.com/pt/architecture/well-architected/",
-  automacao:
-    "https://docs.aws.amazon.com/systems-manager/latest/userguide/what-is-systems-manager.html",
-  rede: "https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html",
-  operacoes:
-    "https://docs.aws.amazon.com/wellarchitected/latest/operational-excellence-pillar/welcome.html",
-  "cloud-storage":
-    "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html",
-};
 
 let onStudyWeakest = null;
+let learningAnalytics = null;
+let recommendationEngine = null;
 
 /**
  * Inicializa o componente, registrando o callback que inicia um quiz filtrado.
@@ -86,121 +25,106 @@ let onStudyWeakest = null;
  * @param {(domainId: string, certId: string|null) => void} options.startFilteredQuiz
  */
 export function initStudyNow({ startFilteredQuiz } = {}) {
-  onStudyWeakest =
-    typeof startFilteredQuiz === "function" ? startFilteredQuiz : null;
+  onStudyWeakest = typeof startFilteredQuiz === "function" ? startFilteredQuiz : null;
+  learningAnalytics = new LearningAnalytics(storageManager);
+  recommendationEngine = new RecommendationEngine();
 }
 
 function getContainer() {
   return document.getElementById(CONTENT_ID);
 }
 
-function getDomainName(id) {
-  for (const cert of Object.values(certificationPaths)) {
-    const found = cert.domains?.find((d) => d.id === id);
-    if (found) return found.name;
-  }
-  return id;
-}
-
-function getCertForDomain(id) {
-  for (const [certId, cert] of Object.entries(certificationPaths)) {
-    if (cert.domains?.some((d) => d.id === id)) return certId;
-  }
-  return null;
-}
-
-function severityForAccuracy(accuracy) {
-  if (accuracy === null || accuracy < 40) return "high";
-  if (accuracy < 55) return "medium";
-  return "low";
-}
-
-function renderEmpty(message, success = false) {
+function renderEmpty(messageKey, success = false) {
   const container = getContainer();
   if (!container) return;
+  const lang = localStorage.getItem("language") || "pt";
+  const message = t(messageKey, lang);
   const cls = success ? "study-now-success" : "study-now-empty";
   const icon = success ? '<i class="fa-solid fa-circle-check"></i> ' : "";
   container.innerHTML = `<p class="${cls}">${icon}${message}</p>`;
 }
 
-function render(domains) {
+function renderActions(actions) {
   const container = getContainer();
   if (!container) return;
+  
+  const lang = localStorage.getItem("language") || "pt";
 
-  const items = domains
-    .map((d, i) => {
-      const domainKey = d.domain || d.id || String(d);
-      const label = getDomainName(domainKey);
-      const link = AWS_STUDY_LINKS[domainKey] || null;
-      const accuracy = typeof d.accuracy === "number" ? d.accuracy : null;
-      const pct = accuracy === null ? "--" : Math.round(accuracy);
-      const severity = severityForAccuracy(accuracy);
-      const studyLink = link
-        ? `<a href="${link}" target="_blank" rel="noopener noreferrer" class="study-now-link">Estudar <i class="fa-solid fa-arrow-up-right-from-square"></i></a>`
-        : "";
+  if (!actions || actions.length === 0) {
+    renderEmpty("studyNow.empty_state_doing_great", true);
+    return;
+  }
+
+  // Se a primeira ação for um empty state, renderiza como vazio
+  if (actions[0].type === "empty_state") {
+    renderEmpty(actions[0].title, actions[0].icon === "fa-solid fa-trophy");
+    return;
+  }
+
+  const items = actions
+    .map((action, i) => {
+      const title = t(action.title, lang, action.titleVariables || {});
+      const desc = t(action.description, lang, action.descriptionVariables || {});
+      
+      const isExternal = action.isExternal ? 'target="_blank" rel="noopener noreferrer"' : '';
+      const studyLink = `<a href="${action.route}" ${isExternal} class="study-now-link">${title} <i class="fa-solid fa-arrow-right"></i></a>`;
 
       return `<div class="study-now-item">
         <span class="study-now-rank">${i + 1}.</span>
-        <span class="study-now-label" title="${label}">${label}</span>
-        <span class="study-now-badge study-now-badge--${severity}">${pct}%</span>
+        <span class="study-now-label" title="${action.domain}">${action.domain}</span>
+        <span class="study-now-badge study-now-badge--high">${desc}</span>
         ${studyLink}
       </div>`;
     })
     .join("");
 
-  const weakest = domains[0]?.domain || domains[0]?.id || null;
-  const button = weakest
-    ? `<button type="button" class="study-now-btn" data-domain="${weakest}">
-        <i class="fa-solid fa-bolt"></i> Estudar Meus Pontos Fracos
+  const firstPractice = actions.find(a => a.type === "practice");
+  const button = firstPractice
+    ? `<button type="button" class="study-now-btn" data-route="${firstPractice.route}">
+        <i class="${firstPractice.icon}"></i> ${t(firstPractice.title, lang, firstPractice.titleVariables || {})}
       </button>`
     : "";
 
   container.innerHTML = `<div class="study-now-list">${items}</div>${button}`;
 
   const btn = container.querySelector(".study-now-btn");
-  if (btn && onStudyWeakest) {
+  if (btn) {
     btn.addEventListener("click", () => {
-      const domainId = btn.getAttribute("data-domain");
-      onStudyWeakest(domainId, getCertForDomain(domainId));
+      const route = btn.getAttribute("data-route");
+      // Se não houver override de navegação (SPA antigo), usa a rota física
+      if (onStudyWeakest) {
+         // Fallback legacy caso precise (mas agora as rotas já vêm prontas do backend analytics)
+         window.location.href = route;
+      } else {
+         window.location.href = route;
+      }
     });
   }
 }
 
 /**
- * Busca os dominios fracos na API e re-renderiza o card.
- * Deve ser chamado no carregamento e apos cada quiz concluido.
+ * Busca os dominios fracos offline via Analytics Engine e re-renderiza o card.
  */
 export async function refreshStudyNow() {
   const container = getContainer();
   if (!container) return;
 
-  const userId = userManager.getUserId();
-  if (!userId || userId.startsWith("local_")) {
-    renderEmpty("Complete um quiz para ver suas áreas de foco.");
-    return;
-  }
-
-  container.innerHTML = '<p class="study-now-loading">Analisando dados...</p>';
+  const lang = localStorage.getItem("language") || "pt";
+  container.innerHTML = `<p class="study-now-loading">${t("studyNow.loading", lang)}</p>`;
 
   try {
-    const response = await apiService.getWeakDomains(userId, WEAK_THRESHOLD);
-    if (!response.success) throw new Error("API error");
+    const certId = localStorage.getItem("activeCertification") || "saa-c03";
+    
+    // Fallback instantiation if called before initApp (sanity check)
+    if (!learningAnalytics) learningAnalytics = new LearningAnalytics(storageManager);
+    if (!recommendationEngine) recommendationEngine = new RecommendationEngine();
 
-    const domains = (response.data?.weak_domains || []).slice(0, MAX_DOMAINS);
+    const profile = learningAnalytics.getLearningProfile(certId);
+    const plan = recommendationEngine.generateStudyPlan(profile);
 
-    if (domains.length === 0) {
-      const history = storageManager.getHistory();
-      const hasHistory = Array.isArray(history) && history.length > 0;
-      if (hasHistory) {
-        renderEmpty("Mandando bem! Nenhum domínio abaixo de 70%.", true);
-      } else {
-        renderEmpty("Complete um quiz para ver suas áreas de foco.");
-      }
-      return;
-    }
-
-    render(domains);
-  } catch {
-    renderEmpty("Não foi possível carregar suas áreas de foco.");
+    renderActions(plan.nextActions);
+  } catch (error) {
+    console.error("[StudyNow] Erro ao gerar recomendacoes:", error);
+    renderEmpty("studyNow.empty_state_no_history");
   }
 }

@@ -59,41 +59,33 @@ export class RecommendationEngine {
 
   _buildActionsForGap(domain, certId) {
     const domainSlug = this._slugify(domain.name);
-    const resources = this.resourceMapper.getResources(domain.name, certId);
+    const resources = this.resourceMapper.getResources(certId, domainSlug);
     const actions = [];
 
     // 1. Simulado focado (prioridade máxima)
     actions.push({
       type: "practice",
-      title: "Fazer simulado focado",
-      description: `Praticar questões somente de "${domain.name}" (${domain.score}% de acerto atual)`,
-      action: `index.html?mode=focus&domain=${domainSlug}&cert=${certId}`,
+      title: "studyNow.start_quiz_action",
+      description: "studyNow.review_domain_desc",
+      descriptionVariables: { threshold: domain.score },
+      domain: domain.name,
+      route: `./simulados.html?mode=focus&domain=${domainSlug}&cert=${certId}`,
       icon: "fa-solid fa-bullseye",
       style: "primary",
     });
 
-    // 2. Revisar erros (se tiver erros mapeados)
-    if (domain.mistakes > 0) {
-      actions.push({
-        type: "review",
-        title: `Revisar ${domain.mistakes} erro${domain.mistakes > 1 ? "s" : ""} anteriores`,
-        description: `Você tem erros registrados em "${domain.name}". Revise para não repetir.`,
-        action: `index.html?mode=review&domain=${domainSlug}&cert=${certId}`,
-        icon: "fa-solid fa-rotate-left",
-        style: "secondary",
-      });
-    }
-
-    // 3. Material de estudo
-    if (resources.length > 0) {
+    // 2. Material de estudo (se houver documentação mapeada)
+    if (resources && resources.documentation) {
       actions.push({
         type: "theory",
-        title: "Estudar material de referência",
-        description: `${resources.length} recurso${resources.length > 1 ? "s" : ""} disponível para "${domain.name}"`,
-        action: `study-hub.html?tab=library&domain=${domainSlug}`,
+        title: "studyNow.study_docs_action",
+        description: "studyNow.review_domain",
+        descriptionVariables: { domain: domain.name },
+        domain: domain.name,
+        route: resources.documentation,
         icon: "fa-solid fa-book-open",
         style: "outline",
-        resources,
+        isExternal: true
       });
     }
 
@@ -102,10 +94,10 @@ export class RecommendationEngine {
 
   _buildFirstExamAction(certId) {
     return {
-      type: "practice",
-      title: "Fazer seu primeiro simulado",
-      description: `Você ainda não tem histórico de ${certId}. Comece agora!`,
-      action: `index.html?cert=${certId}`,
+      type: "empty_state",
+      title: "studyNow.empty_state_no_history",
+      domain: null,
+      route: `./simulados.html?cert=${certId}`,
       icon: "fa-solid fa-play",
       style: "primary",
     };
@@ -113,10 +105,10 @@ export class RecommendationEngine {
 
   _buildReadyForExamAction(certId) {
     return {
-      type: "exam",
-      title: "Você está pronto para o exame!",
-      description: `Seu Readiness Score é alto. Considere agendar o exame oficial de ${certId.toUpperCase()}.`,
-      action: "https://aws.amazon.com/certification/",
+      type: "empty_state",
+      title: "studyNow.empty_state_doing_great",
+      domain: null,
+      route: `./simulados.html?cert=${certId}`,
       icon: "fa-solid fa-trophy",
       style: "primary",
     };
