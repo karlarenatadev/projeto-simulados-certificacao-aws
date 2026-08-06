@@ -2,7 +2,8 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -11,19 +12,20 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: github-pages
+  cancel-in-progress: true
+
 
 jobs:
-  build-and-deploy:
+
+  build:
+    name: Build Frontend
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
+
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
+
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -31,49 +33,100 @@ jobs:
           node-version: 22
           cache: npm
 
+
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
 
       - name: Build frontend
         run: npm run build
 
-      - name: Validate Pages artifact
+
+      - name: Validate generated artifact
         run: |
           set -euo pipefail
+
+          echo "Checking generated files..."
+
           test -f public/index.html
           test -f public/404.html
           test -f public/.nojekyll
+
           test -f public/js/app.js
           test -f public/css/style.css
+
           test -f public/data/questions/clf-c02.json
+
           test -f public/manifest.json
           test -f public/sw.js
 
-      - name: Upload artifact
+          echo "Artifact validation passed."
+
+
+      - name: Inspect artifact
+        run: |
+          echo "Number of files:"
+          find public -type f | wc -l
+
+          echo "Artifact size:"
+          du -sh public
+
+
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: ./public
 
-      - name: Deploy to GitHub Pages
+
+
+  deploy:
+    name: Deploy GitHub Pages
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+
+    steps:
+
+      - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
 
       - name: Smoke test deployed site
         env:
           SITE_URL: ${{ steps.deployment.outputs.page_url }}
+
         run: |
           set -euo pipefail
 
-          for path in "" "js/app.js" "css/style.css" "manifest.json" "sw.js"; do
-            url="${SITE_URL%/}/${path}"
-            echo "Checking ${url}"
-            curl \
-              --fail \
-              --silent \
-              --show-error \
-              --location \
-              --retry 5 \
-              --retry-delay 3 \
-              --retry-all-errors \
-              "${url}" > /dev/null
+          echo "Testing ${SITE_URL}"
+
+          for path in \
+            "" \
+            "js/app.js" \
+            "css/style.css" \
+            "manifest.json" \
+            "sw.js"; do
+
+              url="${SITE_URL%/}/${path}"
+
+              echo "Checking ${url}"
+
+              curl \
+                --fail \
+                --silent \
+                --show-error \
+                --location \
+                --retry 5 \
+                --retry-delay 3 \
+                --retry-all-errors \
+                "${url}" > /dev/null
+
           done
+
+          echo "Smoke test passed."

@@ -9,9 +9,17 @@
 
 import { logger } from "../utils/logger.js";
 import { userManager } from "../userManager.js";
+import { SessionManager } from "../core/sessionManager.js";
+import { PermissionService } from "./permissions.js";
 
-/** @type {{ id, email, nickname, role, full_name } | null} */
-let currentUser = null;
+/**
+ * authService.js — CloudAcademy A3
+ *
+ * Camada de autenticação e autorização abstrata para o Frontend.
+ * Delega persistência para o SessionManager e fluxo de identity para userManager.
+ *
+ * @module services/authService
+ */
 
 export const AuthService = {
   // ---------------------------------------------------------------------------
@@ -19,15 +27,20 @@ export const AuthService = {
   // ---------------------------------------------------------------------------
 
   /**
-   * Retorna o usuário autenticado ou null.
-   * Tenta restaurar da sessão local se a memória estiver vazia.
-   * @returns {{ id, email, nickname, role, full_name } | null}
+   * Retorna a sessão atual da plataforma.
+   * @returns {Object|null}
+   */
+  getSession() {
+    return SessionManager.restore();
+  },
+
+  /**
+   * Retorna o usuário autenticado atual ou null.
+   * @returns {Object|null}
    */
   getCurrentUser() {
-    if (currentUser) return currentUser;
-    const stored = userManager.getStoredUser();
-    if (stored) currentUser = stored;
-    return currentUser;
+    const session = this.getSession();
+    return session ? session.user : null;
   },
 
   /** @returns {boolean} */
@@ -36,18 +49,14 @@ export const AuthService = {
   },
 
   /**
-   * Verifica se o usuário possui o role informado.
-   * ADMIN sempre tem acesso a tudo.
-   *
-   * @param {'STUDENT'|'VALIDATOR'|'ADMIN'} roleOrPermission
+   * Verifica se o usuário possui a role informada ou superior.
+   * @param {string} roleOrPermission
    * @returns {boolean}
    */
   hasPermission(roleOrPermission) {
     const user = this.getCurrentUser();
     if (!user) return false;
-    const role = String(user.role || "").toUpperCase();
-    if (role === "ADMIN") return true;
-    return role === String(roleOrPermission || "").toUpperCase();
+    return PermissionService.hasAccess(user, roleOrPermission);
   },
 
   /**
@@ -57,8 +66,7 @@ export const AuthService = {
   canValidate() {
     const user = this.getCurrentUser();
     if (!user) return false;
-    const role = String(user.role || "").toUpperCase();
-    return role === "VALIDATOR" || role === "ADMIN";
+    return PermissionService.canValidate(user);
   },
 
   // ---------------------------------------------------------------------------
@@ -66,54 +74,39 @@ export const AuthService = {
   // ---------------------------------------------------------------------------
 
   /**
-   * Restaura a sessão a partir da chave cloudacademy_user no localStorage.
-   * Valida com o backend quando disponível.
-   * Chamado no boot do app (DOMContentLoaded), antes de exibir qualquer UI.
+   * Tenta restaurar a sessão no boot.
+   * Retorna apenas o User para retrocompatibilidade com scripts antigos (temporário).
    *
-   * @returns {Promise<{ id, email, nickname, role } | null>}
+   * @returns {Promise<Object|null>}
    */
   async restoreSession() {
-    const user = await userManager.getOrCreateUser();
-    if (user) {
-      currentUser = user;
-      logger.info(
-        `[AuthService] Sessão restaurada: ${user.email || user.id} (${user.role})`,
-      );
-    } else {
-      currentUser = null;
+    const session = this.getSession();
+    if (session) {
+      logger.info(`[AuthService] Sessão restaurada: ${session.user.email} (${session.user.role})`);
+      return session.user;
     }
-    return user;
+    return null;
   },
 
   /**
-   * Login corporativo via email @a3data.
-   * Persiste sessão em cloudacademy_user.
-   *
+   * Realiza login delegando ao UserManager (que cuidará da persistência via SessionManager).
    * @param {string} email
-   * @param {{ full_name?: string, nickname?: string }} [profile]
-   * @returns {Promise<{ id, email, nickname, role }>}
+   * @param {Object} [profile]
    */
   async login(email, profile = {}) {
     const user = await userManager.login(email, profile);
-    currentUser = user;
-    logger.info(`[AuthService] Login: ${user.email} (${user.role})`);
+    logger.info(`[AuthService] Login efetuado: ${user.email} (${user.role})`);
     return user;
   },
 
   /**
-   * Logout — limpa currentUser e cloudacademy_user no localStorage.
+   * Encerra a sessão atual.
    */
   async logout() {
-    logger.info("[AuthService] Logout:", currentUser?.email);
-    currentUser = null;
-    userManager.clearUser();
-  },
-
-  /**
-   * Injeção de usuário para modo showcase/demo.
-   * @param {{ id, email, nickname, role }} showcaseUser
-   */
-  setMockUser(showcaseUser) {
-    currentUser = showcaseUser;
-  },
+    const user = this.getCurrentUser();
+    if (user) {
+      logger.info(`[AuthService] Logout: ${user.email}`);
+    }
+    SessionManager.logout();
+  }
 };

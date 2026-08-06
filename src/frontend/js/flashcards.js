@@ -3,8 +3,10 @@ import { glossaryTerms, certificationPaths } from "./data.js";
 import { t } from "./i18n/useTranslation.js";
 import { storageManager } from "./storageManager.js";
 
+import { AuthService } from "./services/authService.js";
+
 function getCurrentLanguage() {
-  return localStorage.getItem("aws_sim_lang") || "pt";
+  return AuthService.getCurrentUser()?.language || "pt";
 }
 
 // ESTADO CENTRALIZADO DOS FLASHCARDS
@@ -265,7 +267,7 @@ export function exportToAnki() {
     return;
   }
 
-  const currentLang = localStorage.getItem("aws_sim_lang") || "pt";
+  const currentLang = AuthService.getCurrentUser()?.language || "pt";
 
   // Cabeçalho e conteúdo do CSV (Termo;Definição;Tags)
   // Ponto e vírgula como delimitador para evitar conflitos com vírgulas nas definições

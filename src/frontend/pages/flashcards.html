@@ -184,13 +184,11 @@
     <script src="./js/app.js" type="module"></script>
     <script type="module">
       import { initShell } from "./js/shell.js";
-      import { AuthService } from "./js/services/authService.js";
-      document.addEventListener("DOMContentLoaded", async () => {
-        const user = await AuthService.restoreSession();
-        if (!user) {
-          window.location.replace("./index.html");
-          return;
-        }
+      import { authGuard } from "./js/core/authGuard.js";
+      document.addEventListener("DOMContentLoaded", () => {
+        const session = authGuard();
+        if (!session) return;
+        const user = session.user;
         initShell(user);
         // Inicializa os flashcards após o app.js ter registrado as funções window.*
         setTimeout(() => {

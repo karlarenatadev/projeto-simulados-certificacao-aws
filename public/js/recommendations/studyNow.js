@@ -11,6 +11,7 @@ import { LearningAnalytics } from "../analytics/learningAnalytics.js";
 import { RecommendationEngine } from "./recommendationEngine.js";
 import { userManager } from "../userManager.js";
 import { t } from "../i18n/useTranslation.js";
+import { AuthService } from "../services/authService.js";
 
 const CONTENT_ID = "weak-domains-content";
 
@@ -113,7 +114,7 @@ export async function refreshStudyNow() {
   container.innerHTML = `<p class="study-now-loading">${t("studyNow.loading", lang)}</p>`;
 
   try {
-    const certId = localStorage.getItem("activeCertification") || "saa-c03";
+    const certId = AuthService.getCurrentUser()?.certification || "clf-c02";
     
     // Fallback instantiation if called before initApp (sanity check)
     if (!learningAnalytics) learningAnalytics = new LearningAnalytics(storageManager);

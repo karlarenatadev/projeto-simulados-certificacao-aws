@@ -1,5 +1,5 @@
-import { logger } from "../utils/logger.js";
 import { storageManager } from "../storageManager.js";
+import { AuthService } from "../services/authService.js";
 
 // 1. DICIONÁRIO DE TRILHAS (4 Certificações com suporte Bilingue)
 export const TRAILS_BY_CERT = {
@@ -126,8 +126,8 @@ export function renderTrail() {
   }
 
   // 2. Identifica a certificação e idioma atuais
-  const currentLang = localStorage.getItem("aws_sim_lang") || "pt";
-  const currentCertId = localStorage.getItem("aws_sim_cert") || "clf-c02";
+  const currentLang = AuthService.getCurrentUser()?.language || "pt";
+  const currentCertId = AuthService.getCurrentUser()?.certification || "clf-c02";
   const activeTrail =
     TRAILS_BY_CERT[currentCertId] || TRAILS_BY_CERT["clf-c02"];
 

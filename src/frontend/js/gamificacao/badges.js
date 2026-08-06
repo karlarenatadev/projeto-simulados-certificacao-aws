@@ -1,4 +1,5 @@
 import { storageManager } from "../storageManager.js";
+import { AuthService } from "../services/authService.js";
 
 // Catálogo de Insígnias (Mistura conquistas de performance com conquistas de módulos)
 const BADGE_CATALOG = [
@@ -277,10 +278,10 @@ export function renderBadges() {
   const gamification = storageManager.getGamification() || {};
   const earnedBadges = gamification.badges || [];
   const completedStages = gamification.completedStages || [];
-  const currentLang = localStorage.getItem("aws_sim_lang") || "pt";
+  const currentLang = AuthService.getCurrentUser()?.language || "pt";
 
   // Pegar a certificação que está ativa no momento
-  const currentCert = localStorage.getItem("aws_sim_cert") || "clf-c02";
+  const currentCert = AuthService.getCurrentUser()?.certification || "clf-c02";
 
   // Filtrar: Insígnias globais (performance) OU da certificação selecionada
   const badgesToShow = BADGE_CATALOG.filter((badge) => {
