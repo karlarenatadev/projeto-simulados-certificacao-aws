@@ -17,6 +17,10 @@ import { logger } from "../utils/logger.js";
  * Base configuration for the API service
  */
 function getConfiguredApiUrl() {
+  if (typeof window !== 'undefined' && window.sessionStorage?.getItem('force_offline') === 'true') {
+    return '';
+  }
+
   if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
