@@ -7,6 +7,12 @@
    ========================================================================== */
 
 :root {
+  /* Layout Tokens Sprint 4.2 */
+  --page-padding: 1.5rem;
+  --section-gap: 2rem;
+  --card-spacing: 1rem;
+  --sidebar-width: 280px;
+
   /* A3Data Brand Tokens */
   --a3-bg: #f5f5f5;
   --a3-surface: #ffffff;
@@ -897,8 +903,8 @@ Design System Grid, Container and Core Structures
 /* Padding mobile para páginas secundárias com sidebar */
 @media (max-width: 640px) {
   .main-content-container {
-    padding-left: var(--space-16) !important;
-    padding-right: var(--space-16) !important;
+    padding-left: var(--space-16);
+    padding-right: var(--space-16);
   }
 
   /* Tabelas e elementos com scroll horizontal controlado */
@@ -918,7 +924,7 @@ Design System Grid, Container and Core Structures
 
   h2.text-2xl,
   h2.text-3xl {
-    font-size: var(--text-xl) !important;
+    font-size: var(--text-xl);
   }
 }
 
@@ -926,7 +932,7 @@ Design System Grid, Container and Core Structures
 
 /* Aumenta o respiro do wrapper principal */
 #main-content-wrapper {
-  gap: var(--space-32) !important;
+  gap: var(--space-32);
   padding-top: var(--space-32);
   padding-bottom: var(--space-32);
 }
@@ -936,30 +942,30 @@ Design System Grid, Container and Core Structures
 #screen-diagnostic,
 #screen-flashcards,
 #screen-journey {
-  padding: var(--space-32) !important;
+  padding: var(--space-32);
 }
 
 /* Espaçamento da sidebar */
 #side-info {
-  gap: var(--space-32) !important;
+  gap: var(--space-32);
 }
 
 /* Ajustes nos grids internos dos módulos */
 #jornada-dashboard-grid {
-  gap: var(--space-24) !important;
+  gap: var(--space-24);
 }
 
 #jornada-dashboard-grid > div {
-  padding: var(--space-24) !important;
+  padding: var(--space-24);
 }
 
 /* Containers centrais para não colarem nas bordas (Raio X, Flashcards) */
 #diagnostic-report .a3-card {
-  padding: var(--space-32) !important;
+  padding: var(--space-32);
 }
 
 .flashcard-container {
-  padding: var(--space-24) !important;
+  padding: var(--space-24);
 }
 
 
@@ -971,7 +977,7 @@ Design System Grid, Container and Core Structures
 
 /* Substituí style="border-left: 4px solid var(--aws-orange);" em #study-insight-container */
 .insight-card-highlight {
-  border-left: 4px solid var(--aws-orange) !important;
+  border-left: 4px solid var(--aws-orange);
 }
 
 
@@ -1534,24 +1540,24 @@ Design System Badges
 
 /* Dark Mode overrides */
 .dark .option-card:hover:not(.disabled) {
-  background-color: var(--a3-surface-selected) !important;
-  border-color: var(--a3-tech-blue) !important;
+  background-color: var(--a3-surface-selected);
+  border-color: var(--a3-tech-blue);
 }
 
 .dark .option-card.selected {
-  background-color: var(--a3-surface-selected) !important;
-  border-color: var(--a3-tech-blue) !important;
+  background-color: var(--a3-surface-selected);
+  border-color: var(--a3-tech-blue);
   box-shadow: var(--a3-shadow-action);
 }
 
 .dark .option-card.correct {
-  background-color: var(--a3-surface-success) !important;
-  color: var(--a3-text-on-dark) !important;
+  background-color: var(--a3-surface-success);
+  color: var(--a3-text-on-dark);
 }
 
 .dark .option-card.incorrect {
-  background-color: var(--a3-surface-danger) !important;
-  color: var(--a3-text-on-dark) !important;
+  background-color: var(--a3-surface-danger);
+  color: var(--a3-text-on-dark);
 }
 
 /* ── Option Letter (A, B, C, D) ────────────────────────────────────────── */
@@ -1701,7 +1707,7 @@ Design System Badges
 }
 
 #timer-display.warning {
-  background-color: var(--a3-danger) !important;
+  background-color: var(--a3-danger);
   animation: pulse 1s infinite;
 }
 
@@ -1883,19 +1889,19 @@ Design System Badges
 }
 
 #side-info .bg-white {
-  box-shadow: var(--a3-shadow-card) !important;
-  border: 1px solid var(--border-theme) !important;
+  box-shadow: var(--a3-shadow-card);
+  border: 1px solid var(--border-theme);
 }
 
 .dark #side-info .bg-slate-800 {
-  border: 1px solid var(--border-theme) !important;
-  background-color: var(--a3-surface-raised) !important;
+  border: 1px solid var(--border-theme);
+  background-color: var(--a3-surface-raised);
 }
 
 .light #side-info h3,
 .light #side-info h4,
 .light #side-info p:not(.text-gray-400) {
-  color: var(--text-strong) !important;
+  color: var(--text-strong);
 }
 
 .dark #side-info h3 {
@@ -1908,23 +1914,23 @@ Design System Badges
   position: relative;
   height: 300px;
   width: 100%;
-  box-shadow: var(--a3-shadow-card) !important;
-  border: 1px solid var(--border-theme) !important;
+  box-shadow: var(--a3-shadow-card);
+  border: 1px solid var(--border-theme);
 }
 
 .dark #global-performance-dashboard {
-  border: 1px solid var(--border-theme) !important;
-  background-color: var(--a3-surface-raised) !important;
+  border: 1px solid var(--border-theme);
+  background-color: var(--a3-surface-raised);
 }
 
 #globalRadarChart {
-  max-width: 100% !important;
-  max-height: 100% !important;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 #global-performance-dashboard canvas {
-  max-width: 100% !important;
-  height: auto !important;
+  max-width: 100%;
+  height: auto;
 }
 
 @media (max-width: 768px) {
@@ -1947,7 +1953,7 @@ Design System Badges
 
 #dynamic-insight,
 #history-list {
-  border-top: none !important;
+  border-top: none;
 }
 
 /* ── Indicadores de melhora ────────────────────────────────────────────── */
@@ -3357,24 +3363,24 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
 /* ── Sprint de Estudos ─────────────────────────────────────────────────── */
 
 #sprint-module {
-  box-shadow: var(--a3-shadow-card) !important;
-  border: 1px solid var(--border-theme) !important;
+  box-shadow: var(--a3-shadow-card);
+  border: 1px solid var(--border-theme);
 }
 
 .dark #sprint-module {
-  border: 1px solid var(--border-theme) !important;
-  background-color: var(--a3-surface-raised) !important;
+  border: 1px solid var(--border-theme);
+  background-color: var(--a3-surface-raised);
 }
 
 #sprint-module button {
-  background-color: var(--a3-tech-blue) !important;
-  color: var(--a3-text-on-dark) !important;
-  border: none !important;
-  font-weight: 700 !important;
+  background-color: var(--a3-tech-blue);
+  color: var(--a3-text-on-dark);
+  border: none;
+  font-weight: 700;
 }
 
 #sprint-module button:hover {
-  background-color: var(--aws-orange-hover) !important;
+  background-color: var(--aws-orange-hover);
 }
 
 #sprint-days-grid {
@@ -3390,28 +3396,28 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
 }
 
 .sprint-day-current {
-  background-color: var(--a3-accent) !important;
-  border-color: color-mix(in srgb, var(--a3-accent) 70%, var(--a3-surface)) !important;
-  color: var(--a3-text-inverse) !important;
-  font-weight: 900 !important;
+  background-color: var(--a3-accent);
+  border-color: color-mix(in srgb, var(--a3-accent) 70%, var(--a3-surface));
+  color: var(--a3-text-inverse);
+  font-weight: 900;
   box-shadow: 0 8px 18px color-mix(in srgb, var(--a3-accent) 24%, transparent);
 }
 
 .light #sprint-days-grid .bg-gray-50 {
-  background-color: var(--a3-surface-soft) !important;
-  border-color: var(--a3-border-default) !important;
-  color: var(--text-muted) !important;
+  background-color: var(--a3-surface-soft);
+  border-color: var(--a3-border-default);
+  color: var(--text-muted);
 }
 
 #sprint-module .bg-gray-50 {
-  background-color: var(--a3-surface-soft) !important;
-  border: 1px solid var(--border-theme) !important;
+  background-color: var(--a3-surface-soft);
+  border: 1px solid var(--border-theme);
   transition: all 0.3s ease;
 }
 
 .dark #sprint-module .dark\:bg-slate-750 {
-  background-color: var(--a3-surface-soft) !important;
-  border: 1px solid var(--border-theme) !important;
+  background-color: var(--a3-surface-soft);
+  border: 1px solid var(--border-theme);
 }
 
 /* ── Trilha de Aprendizado (Ziguezague) ────────────────────────────────── */
@@ -4389,7 +4395,7 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
   border-radius: var(--radius-lg);
   box-shadow: var(--a3-shadow-card);
   padding: 0.5rem 1rem;
-  flex-direction: row !important;
+  flex-direction: row;
 }
 
 
@@ -4828,40 +4834,40 @@ header {
     color-mix(in srgb, var(--a3-text-inverse) 16%, transparent);
 }
 
-header .hover\:bg-gray-700:hover,
-header .hover\:bg-gray-800:hover {
+header.a3-header .hover\:bg-gray-700:hover,
+header.a3-header .hover\:bg-gray-800:hover {
   background-color: color-mix(
     in srgb,
     var(--a3-text-inverse) 12%,
     transparent
-  ) !important;
+  );
 }
 
-header #home-trigger i,
-header #home-trigger:hover h1 {
-  color: var(--a3-accent) !important;
+header.a3-header #home-trigger i,
+header.a3-header #home-trigger:hover h1 {
+  color: var(--a3-accent);
 }
 
-header #header-pomodoro-btn {
+header.a3-header #header-pomodoro-btn {
   background-color: color-mix(
     in srgb,
     var(--a3-accent) 16%,
     transparent
-  ) !important;
+  );
   border-color: color-mix(
     in srgb,
     var(--a3-accent) 52%,
     transparent
-  ) !important;
-  color: var(--a3-text-inverse) !important;
+  );
+  color: var(--a3-text-inverse);
 }
 
-header #score-container {
+header.a3-header #score-container {
   background-color: color-mix(
     in srgb,
     var(--a3-text-inverse) 12%,
     transparent
-  ) !important;
+  );
 }
 
 /* ── Screens base ──────────────────────────────────────────────────────── */
@@ -4870,15 +4876,15 @@ header #score-container {
 #screen-start,
 #screen-quiz,
 #screen-results {
-  background-color: var(--a3-surface) !important;
+  background-color: var(--a3-surface);
   color: var(--text-main);
 }
 
-.dark #main-section,
-.dark #screen-start,
-.dark #screen-quiz,
-.dark #screen-results {
-  background-color: var(--a3-surface-raised) !important;
+html.dark #main-section,
+html.dark #screen-start,
+html.dark #screen-quiz,
+html.dark #screen-results {
+  background-color: var(--a3-surface-raised);
 }
 
 #screen-start > .w-20.h-20 {
@@ -4888,12 +4894,12 @@ header #score-container {
       color-mix(in srgb, var(--a3-accent) 26%, transparent),
       transparent 34%
     ),
-    color-mix(in srgb, var(--a3-primary) 8%, var(--a3-surface)) !important;
-  box-shadow: inset 0 0 0 1px var(--a3-border-soft) !important;
+    color-mix(in srgb, var(--a3-primary) 8%, var(--a3-surface));
+  box-shadow: inset 0 0 0 1px var(--a3-border-soft);
 }
 
 #screen-start > .w-20.h-20 i {
-  color: var(--a3-primary) !important;
+  color: var(--a3-primary);
 }
 
 #screen-start .w-full.max-w-md,
@@ -4901,8 +4907,8 @@ header #score-container {
 #screen-quiz .bg-gray-50,
 #screen-quiz .dark\:bg-slate-700\/50,
 #screen-results .dark\:bg-slate-700\/50 {
-  background-color: var(--a3-surface-soft) !important;
-  border-color: var(--border-theme) !important;
+  background-color: var(--a3-surface-soft);
+  border-color: var(--border-theme);
 }
 
 /* ── Input overrides globais ───────────────────────────────────────────── */
@@ -4926,7 +4932,7 @@ textarea {
     in srgb,
     var(--a3-surface-soft) 86%,
     var(--a3-text-strong)
-  ) !important;
+  );
 }
 
 /* ── Utilitários gerais ────────────────────────────────────────────────── */
@@ -7458,10 +7464,10 @@ select {
 
 /* Botão ghost: transparente, sem borda, herda cor e tamanho de fonte */
 .a3-btn-ghost {
-  background: transparent !important;
-  color: inherit !important;
-  border: none !important;
-  font-size: inherit !important;
+  background: transparent;
+  color: inherit;
+  border: none;
+  font-size: inherit;
 }
 
 /* Chevrons e ícones minúsculos (ex: separadores do breadcrumb) */
@@ -7477,7 +7483,7 @@ select {
 
 /* Cor sky-frost para ícones e textos informativos */
 .text-sky-frost {
-  color: var(--a3-sky-frost) !important;
+  color: var(--a3-sky-frost);
 }
 
 /* Parágrafo de corpo reduzido (ex: explicação de arquitetura) */
@@ -7489,42 +7495,42 @@ select {
 
 /* Botão com cor amethyst-velvet (ex: "Praticar com Questões") */
 .btn-amethyst {
-  background: var(--a3-amethyst-velvet) !important;
-  color: var(--a3-text-inverse) !important;
-  border-color: var(--a3-amethyst-velvet) !important;
+  background: var(--a3-amethyst-velvet);
+  color: var(--a3-text-inverse);
+  border-color: var(--a3-amethyst-velvet);
 }
 
 .btn-amethyst:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--a3-amethyst-velvet) 85%, var(--a3-deep-sea)) !important;
-  border-color: color-mix(in srgb, var(--a3-amethyst-velvet) 85%, var(--a3-deep-sea)) !important;
+  background: color-mix(in srgb, var(--a3-amethyst-velvet) 85%, var(--a3-deep-sea));
+  border-color: color-mix(in srgb, var(--a3-amethyst-velvet) 85%, var(--a3-deep-sea));
   box-shadow: 0 4px 14px color-mix(in srgb, var(--a3-amethyst-velvet) 30%, transparent);
   transform: translateY(-1px);
 }
 
 /* Botão outline com cor tech-blue (ex: "Ver Arquitetura") */
 .btn-outline-primary {
-  background: transparent !important;
-  border-color: var(--a3-tech-blue) !important;
-  color: var(--a3-tech-blue) !important;
+  background: transparent;
+  border-color: var(--a3-tech-blue);
+  color: var(--a3-tech-blue);
 }
 
 .btn-outline-primary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--a3-tech-blue) 8%, transparent) !important;
+  background: color-mix(in srgb, var(--a3-tech-blue) 8%, transparent);
   box-shadow: 0 2px 8px color-mix(in srgb, var(--a3-tech-blue) 20%, transparent);
 }
 
 /* Estado "Concluído" do botão #complete-btn (usa .a3-btn + .completed via JS) */
 .a3-btn.completed,
 #complete-btn.completed {
-  background: var(--a3-success) !important;
-  border-color: var(--a3-success) !important;
-  color: var(--a3-text-inverse) !important;
+  background: var(--a3-success);
+  border-color: var(--a3-success);
+  color: var(--a3-text-inverse);
   cursor: default;
 }
 
 .a3-btn.completed:hover,
 #complete-btn.completed:hover {
-  background: var(--a3-success) !important;
+  background: var(--a3-success);
   transform: none;
   box-shadow: none;
 }

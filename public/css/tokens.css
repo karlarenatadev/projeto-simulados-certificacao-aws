@@ -4,6 +4,12 @@
    ========================================================================== */
 
 :root {
+  /* Layout Tokens Sprint 4.2 */
+  --page-padding: 1.5rem;
+  --section-gap: 2rem;
+  --card-spacing: 1rem;
+  --sidebar-width: 280px;
+
   /* A3Data Brand Tokens */
   --a3-bg: #f5f5f5;
   --a3-surface: #ffffff;

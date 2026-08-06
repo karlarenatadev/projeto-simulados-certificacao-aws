@@ -199,6 +199,12 @@ export function initThemeShell() {
   const theme = localStorage.getItem(THEME_KEY) || "light";
   document.documentElement.classList.toggle("dark", theme === "dark");
   _syncThemeIcon(theme === "dark");
+
+  const themeBtn = document.getElementById("theme-toggle");
+  if (themeBtn && !themeBtn.dataset.themeBound) {
+    themeBtn.addEventListener("click", toggleDarkModeShell);
+    themeBtn.dataset.themeBound = "true";
+  }
 }
 
 /**

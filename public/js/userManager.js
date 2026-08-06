@@ -104,6 +104,13 @@ export const userManager = {
    * 
    * @param {Object} preferences - Ex: { language: "en", certification: "saa-c03" }
    */
+  getUserId() {
+    return SessionManager.restore()?.user?.id || null;
+  },
+
+  /**
+   * Atualiza preferências globais do usuário
+   */
   updatePreferences(preferences) {
     SessionManager.update(preferences);
   }

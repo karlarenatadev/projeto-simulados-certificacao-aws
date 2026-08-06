@@ -1794,10 +1794,10 @@
 
 /* Botão ghost: transparente, sem borda, herda cor e tamanho de fonte */
 .a3-btn-ghost {
-  background: transparent !important;
-  color: inherit !important;
-  border: none !important;
-  font-size: inherit !important;
+  background: transparent;
+  color: inherit;
+  border: none;
+  font-size: inherit;
 }
 
 /* Chevrons e ícones minúsculos (ex: separadores do breadcrumb) */
@@ -1813,7 +1813,7 @@
 
 /* Cor sky-frost para ícones e textos informativos */
 .text-sky-frost {
-  color: var(--a3-sky-frost) !important;
+  color: var(--a3-sky-frost);
 }
 
 /* Parágrafo de corpo reduzido (ex: explicação de arquitetura) */
@@ -1825,42 +1825,42 @@
 
 /* Botão com cor amethyst-velvet (ex: "Praticar com Questões") */
 .btn-amethyst {
-  background: var(--a3-amethyst-velvet) !important;
-  color: var(--a3-text-inverse) !important;
-  border-color: var(--a3-amethyst-velvet) !important;
+  background: var(--a3-amethyst-velvet);
+  color: var(--a3-text-inverse);
+  border-color: var(--a3-amethyst-velvet);
 }
 
 .btn-amethyst:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--a3-amethyst-velvet) 85%, var(--a3-deep-sea)) !important;
-  border-color: color-mix(in srgb, var(--a3-amethyst-velvet) 85%, var(--a3-deep-sea)) !important;
+  background: color-mix(in srgb, var(--a3-amethyst-velvet) 85%, var(--a3-deep-sea));
+  border-color: color-mix(in srgb, var(--a3-amethyst-velvet) 85%, var(--a3-deep-sea));
   box-shadow: 0 4px 14px color-mix(in srgb, var(--a3-amethyst-velvet) 30%, transparent);
   transform: translateY(-1px);
 }
 
 /* Botão outline com cor tech-blue (ex: "Ver Arquitetura") */
 .btn-outline-primary {
-  background: transparent !important;
-  border-color: var(--a3-tech-blue) !important;
-  color: var(--a3-tech-blue) !important;
+  background: transparent;
+  border-color: var(--a3-tech-blue);
+  color: var(--a3-tech-blue);
 }
 
 .btn-outline-primary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--a3-tech-blue) 8%, transparent) !important;
+  background: color-mix(in srgb, var(--a3-tech-blue) 8%, transparent);
   box-shadow: 0 2px 8px color-mix(in srgb, var(--a3-tech-blue) 20%, transparent);
 }
 
 /* Estado "Concluído" do botão #complete-btn (usa .a3-btn + .completed via JS) */
 .a3-btn.completed,
 #complete-btn.completed {
-  background: var(--a3-success) !important;
-  border-color: var(--a3-success) !important;
-  color: var(--a3-text-inverse) !important;
+  background: var(--a3-success);
+  border-color: var(--a3-success);
+  color: var(--a3-text-inverse);
   cursor: default;
 }
 
 .a3-btn.completed:hover,
 #complete-btn.completed:hover {
-  background: var(--a3-success) !important;
+  background: var(--a3-success);
   transform: none;
   box-shadow: none;
 }

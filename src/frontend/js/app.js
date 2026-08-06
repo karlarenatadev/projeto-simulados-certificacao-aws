@@ -2552,13 +2552,12 @@ function getDiagnosticDomainName(domainId, certId) {
 }
 
 function initTheme() {
-  const theme = localStorage.getItem("aws_sim_theme") || "light";
-  document.documentElement.classList.toggle("dark", theme === "dark");
+  // Inicialização global de tema movida para shell.js (initThemeShell)
 }
 
 function toggleDarkMode() {
-  const isDark = document.documentElement.classList.toggle("dark");
-  localStorage.setItem("aws_sim_theme", isDark ? "dark" : "light");
+  // A classe dark e localStorage são gerenciados no shell.js (toggleDarkModeShell)
+  // Aqui apenas re-renderizamos os gráficos se necessário.
 
   if (window.radarChartInstance && typeof renderRadarChart === "function") {
     const results = engine.getFinalResults();
@@ -2810,9 +2809,9 @@ async function startMistakesQuiz() {
     let allQuestions = [];
     try {
       const fileSuffix = uiState.language === "en" ? "-en" : "";
-      let response = await fetch(`data/${certId}${fileSuffix}.json`);
+      let response = await fetch(`data/questions/${certId}${fileSuffix}.json`);
       if (!response.ok && uiState.language === "en") {
-        response = await fetch(`data/${certId}.json`);
+        response = await fetch(`data/questions/${certId}.json`);
       }
       if (response.ok) {
         allQuestions = await response.json();

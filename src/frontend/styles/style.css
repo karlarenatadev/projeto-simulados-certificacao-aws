@@ -26,40 +26,40 @@ header {
     color-mix(in srgb, var(--a3-text-inverse) 16%, transparent);
 }
 
-header .hover\:bg-gray-700:hover,
-header .hover\:bg-gray-800:hover {
+header.a3-header .hover\:bg-gray-700:hover,
+header.a3-header .hover\:bg-gray-800:hover {
   background-color: color-mix(
     in srgb,
     var(--a3-text-inverse) 12%,
     transparent
-  ) !important;
+  );
 }
 
-header #home-trigger i,
-header #home-trigger:hover h1 {
-  color: var(--a3-accent) !important;
+header.a3-header #home-trigger i,
+header.a3-header #home-trigger:hover h1 {
+  color: var(--a3-accent);
 }
 
-header #header-pomodoro-btn {
+header.a3-header #header-pomodoro-btn {
   background-color: color-mix(
     in srgb,
     var(--a3-accent) 16%,
     transparent
-  ) !important;
+  );
   border-color: color-mix(
     in srgb,
     var(--a3-accent) 52%,
     transparent
-  ) !important;
-  color: var(--a3-text-inverse) !important;
+  );
+  color: var(--a3-text-inverse);
 }
 
-header #score-container {
+header.a3-header #score-container {
   background-color: color-mix(
     in srgb,
     var(--a3-text-inverse) 12%,
     transparent
-  ) !important;
+  );
 }
 
 /* ── Screens base ──────────────────────────────────────────────────────── */
@@ -68,15 +68,15 @@ header #score-container {
 #screen-start,
 #screen-quiz,
 #screen-results {
-  background-color: var(--a3-surface) !important;
+  background-color: var(--a3-surface);
   color: var(--text-main);
 }
 
-.dark #main-section,
-.dark #screen-start,
-.dark #screen-quiz,
-.dark #screen-results {
-  background-color: var(--a3-surface-raised) !important;
+html.dark #main-section,
+html.dark #screen-start,
+html.dark #screen-quiz,
+html.dark #screen-results {
+  background-color: var(--a3-surface-raised);
 }
 
 #screen-start > .w-20.h-20 {
@@ -86,12 +86,12 @@ header #score-container {
       color-mix(in srgb, var(--a3-accent) 26%, transparent),
       transparent 34%
     ),
-    color-mix(in srgb, var(--a3-primary) 8%, var(--a3-surface)) !important;
-  box-shadow: inset 0 0 0 1px var(--a3-border-soft) !important;
+    color-mix(in srgb, var(--a3-primary) 8%, var(--a3-surface));
+  box-shadow: inset 0 0 0 1px var(--a3-border-soft);
 }
 
 #screen-start > .w-20.h-20 i {
-  color: var(--a3-primary) !important;
+  color: var(--a3-primary);
 }
 
 #screen-start .w-full.max-w-md,
@@ -99,8 +99,8 @@ header #score-container {
 #screen-quiz .bg-gray-50,
 #screen-quiz .dark\:bg-slate-700\/50,
 #screen-results .dark\:bg-slate-700\/50 {
-  background-color: var(--a3-surface-soft) !important;
-  border-color: var(--border-theme) !important;
+  background-color: var(--a3-surface-soft);
+  border-color: var(--border-theme);
 }
 
 /* ── Input overrides globais ───────────────────────────────────────────── */
@@ -124,7 +124,7 @@ textarea {
     in srgb,
     var(--a3-surface-soft) 86%,
     var(--a3-text-strong)
-  ) !important;
+  );
 }
 
 /* ── Utilitários gerais ────────────────────────────────────────────────── */

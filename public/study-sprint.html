@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Simulados AWS — Pratique com questões no estilo oficial dos exames AWS." />
+    <title>Sprint de Estudos — Cloud Academy A3</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "aws-dark": "#001863",
+              "aws-orange": "#0033FF",
+            },
+          },
+        },
+      };
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#001863" />
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
+<header class="a3-header">
+      <div class="flex items-center gap-2 md:gap-3">
+        <button
+          id="cloud-sidebar-toggle"
+          class="btn-sidebar-toggle flex items-center justify-center group/cloud"
+          title="Esconder menu lateral"
+          aria-label="Alternar menu lateral"
+          aria-expanded="true"
+        >
+          <i
+            id="cloud-logo-icon"
+            class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
+            aria-hidden="true"
+          ></i>
+        </button>
+        <a href="index.html" class="a3-header-link" title="Voltar ao início">
+          <div>
+            <h1 class="text-base md:text-xl font-bold leading-tight">
+              Cloud Academy A3
+            </h1>
+            <p class="text-[10px] md:text-xs text-gray-300">
+              Sua jornada para certificações AWS
+            </p>
+          </div>
+        </a>
+      </div>
+      <div class="a3-header-actions">
+        <button
+          id="btn-language"
+          class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
+          aria-label="Alternar idioma"
+          title="Alternar idioma"
+        >
+          <span class="text-[10px] md:text-xs font-bold"
+            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
+          >
+        </button>
+        <button
+          id="theme-toggle"
+          class="a3-btn a3-btn-secondary"
+          aria-label="Alternar modo escuro"
+        >
+          <i
+            id="theme-icon"
+            class="fa-solid fa-moon text-base md:text-xl"
+            aria-hidden="true"
+          ></i>
+        </button>
+        <button
+          id="install-app"
+          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
+        >
+          <i class="fa-solid fa-download"></i> Baixar App
+        </button>
+        <!-- User Menu — populado pelo shell.js -->
+        <div id="user-menu-container"></div>
+      </div>
+    </header>
+<nav id="left-sidebar" aria-label="Menu principal" role="navigation">
+  <!--
+    .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
+    no momento do boot. O botão abaixo é apenas um fallback visual
+    para Progressive Enhancement (evita flash de sidebar vazia).
+  -->
+  <div class="left-sidebar-nav">
+    <button
+      id="sidebar-btn-hub"
+      class="left-sidebar-item left-sidebar-item-primary"
+      aria-label="Learning Hub — Painel Principal"
+      title="Learning Hub — Painel Principal"
+    >
+      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <span class="left-sidebar-item-label">Hub</span>
+    </button>
+  </div>
+  <!--
+    .left-sidebar-footer é gerado dinamicamente por buildSidebar(user).
+    Contém: divisor, Perfil, Config, divisor, botão Recolher.
+  -->
+</nav>
+
+
+    <main id="main-section" class="flex flex-row gap-6 flex-1 a3-container py-6 main-content-container">
+
+      <!-- CONTENT AREA -->
+      <section class="flex-1 min-w-0 flex flex-col gap-6 overflow-y-auto p-4" id="study-sprint-content">
+        <div
+          id="sprint-module"
+          class="a3-card w-full"
+        >
+          <div class="a3-card-header">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-calendar-check text-aws-orange"></i>
+              <h3
+                id="sprint-module-title"
+                class="m-0"
+              >
+                Sprint de Estudos
+              </h3>
+            </div>
+            <span
+              id="sprint-current-cert-badge"
+              class="bg-aws-dark text-white text-[10px] font-bold px-2 py-1 rounded"
+              >AWS</span
+            >
+          </div>
+          <div class="a3-card-body">
+            <p id="sprint-module-subtitle" class="hidden"></p>
+            <div class="flex justify-between text-xs mb-3">
+              <span
+                id="sprint-progress-label"
+                class="font-semibold text-muted dark:text-gray-400"
+                >Progresso</span
+              >
+              <span id="sprint-progress-text" class="font-bold text-aws-orange"
+                >0%</span
+              >
+            </div>
+            <div id="sprint-days-grid" class="w-full"></div>
+            <div
+              class="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700 text-center"
+            >
+              <p
+                id="sprint-current-day-label"
+                class="text-sm font-bold text-gray-800 dark:text-gray-200 mb-2"
+              >
+                Dia 1
+              </p>
+              <button
+                id="sprint-start-btn"
+                class="a3-btn a3-btn-primary a3-btn-lg w-full"
+              >
+                Iniciar Sprint
+              </button>
+            </div>
+          </div>
+        </div>
+</section>
+<!-- /CONTENT AREA -->
+
+      
+      <!-- /SIDE INFO -->
+
+    </main>
+<footer
+      class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
+    >
+      Plataforma colaborativa de estudo para certificações AWS construída para a
+      comunidade da Guilda Z-Maguinhos | A3Data.
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      window.chartJsLoaded = new Promise((resolve) => {
+        if (typeof Chart !== "undefined") { resolve(); }
+        else {
+          const checkChart = setInterval(() => {
+            if (typeof Chart !== "undefined") { clearInterval(checkChart); resolve(); }
+          }, 50);
+        }
+      });
+    </script>
+    <script src="./js/sprintData.js" type="module"></script>
+    <script src="./js/pomodoroManager.js" type="module"></script>
+    <script src="./js/app.js" type="module"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script type="module">
+      import { initShell } from "./js/shell.js";
+      import { authGuard } from "./js/core/authGuard.js";
+      document.addEventListener("DOMContentLoaded", () => {
+        const session = authGuard();
+        if (!session) return;
+        const user = session.user;
+        initShell(user);
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeBtn = document.getElementById("theme-toggle");
+        const langBtn = document.getElementById("btn-language");
+        if (themeBtn)
+          themeBtn.addEventListener(
+            "click",
+            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
+          );
+        if (langBtn)
+          langBtn.addEventListener("click", () => {
+            const lang = localStorage.getItem("aws_sim_lang") || "pt";
+            const next = lang === "pt" ? "en" : "pt";
+            localStorage.setItem("aws_sim_lang", next);
+            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
+            window.location.reload();
+          });
+      });
+    </script>
+
+    <script type="module" src="js/gamificacao/sprintManager.js"></script>
+</body>
+</html>

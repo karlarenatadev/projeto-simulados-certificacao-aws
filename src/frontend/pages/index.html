@@ -143,7 +143,7 @@
           </div>
 
           <!-- Grade principal: indicadores + o que encontrar -->
-          <div class="lh-grid mb-6">
+          <div class="lh-grid mb-4">
             <!-- COLUNA ESQUERDA: Indicadores principais -->
             <div class="lh-panel">
               <p class="lh-section-label">INDICADORES PRINCIPAIS</p>
@@ -209,85 +209,83 @@
             <!-- COLUNA DIREITA: O que você encontra -->
             <div class="lh-panel">
               <p class="lh-section-label">GUIA DA PLATAFORMA</p>
-              <h3 class="lh-whats-here-title">O que você encontra</h3>
+              
+              <!-- ESTUDOS -->
+              <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 mt-4 mb-2 uppercase tracking-wide">Estudos</h3>
+              <div class="lh-features-list mb-4">
+                <button class="lh-feature-item" onclick="window.location.href='./study-now.html'">
+                  <span class="lh-feature-icon lh-feat-pink"><i class="fa-solid fa-lightbulb"></i></span>
+                  <div class="lh-feature-info">
+                    <p class="lh-feature-name">Study Now</p>
+                    <p class="lh-feature-desc">Insights IA e recomendações da próxima melhor ação de estudo</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+                </button>
+                <button class="lh-feature-item" onclick="window.location.href='./study-sprint.html'">
+                  <span class="lh-feature-icon lh-feat-purple"><i class="fa-solid fa-person-running"></i></span>
+                  <div class="lh-feature-info">
+                    <p class="lh-feature-name">Sprint de Estudos</p>
+                    <p class="lh-feature-desc">Seu plano de ação de 14 dias para dominar os tópicos pendentes</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+                </button>
+                <button class="lh-feature-item" onclick="window.location.href='./simulados.html'">
+                  <span class="lh-feature-icon lh-feat-blue"><i class="fa-solid fa-play"></i></span>
+                  <div class="lh-feature-info">
+                    <p class="lh-feature-name">Simulados</p>
+                    <p class="lh-feature-desc">Questões oficiais AWS geradas em tempo real pela IA</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+                </button>
+                <button class="lh-feature-item" onclick="window.location.href='./simulados.html#mistakes'">
+                  <span class="lh-feature-icon lh-feat-warning"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                  <div class="lh-feature-info">
+                    <p class="lh-feature-name">Revisão de Erros</p>
+                    <p class="lh-feature-desc">Ataque focado nas questões que você errou nos últimos testes</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+                </button>
+              </div>
 
+              <!-- PRÁTICA -->
+              <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 mt-4 mb-2 uppercase tracking-wide">Prática</h3>
+              <div class="lh-features-list mb-4">
+                <button class="lh-feature-item" onclick="window.location.href='./cases.html'">
+                  <span class="lh-feature-icon lh-feat-cyan"><i class="fa-solid fa-diagram-project"></i></span>
+                  <div class="lh-feature-info">
+                    <p class="lh-feature-name">Cases AWS</p>
+                    <p class="lh-feature-desc">Simulação prática de arquitetura e casos de uso reais</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+                </button>
+                <button class="lh-feature-item" onclick="window.location.href='./laboratorios.html'">
+                  <span class="lh-feature-icon lh-feat-green"><i class="fa-solid fa-flask"></i></span>
+                  <div class="lh-feature-info">
+                    <p class="lh-feature-name">Laboratórios</p>
+                    <p class="lh-feature-desc">Ambientes controlados para você botar a mão na massa</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+                </button>
+              </div>
+
+              <!-- RECURSOS -->
+              <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 mt-4 mb-2 uppercase tracking-wide">Recursos</h3>
               <div class="lh-features-list">
-                <button
-                  class="lh-feature-item"
-                  onclick="window.location.href='./simulados.html'"
-                >
-                  <span class="lh-feature-icon lh-feat-blue">
-                    <i class="fa-solid fa-play"></i>
-                  </span>
+                <button class="lh-feature-item" onclick="window.location.href='./resources.html'">
+                  <span class="lh-feature-icon lh-feat-blue"><i class="fa-brands fa-aws"></i></span>
                   <div class="lh-feature-info">
-                    <p class="lh-feature-name">Simulados com IA</p>
-                    <p class="lh-feature-desc">
-                      Questões no estilo oficial AWS, geradas e avaliadas por IA
-                      em tempo real
-                    </p>
+                    <p class="lh-feature-name">Serviços AWS</p>
+                    <p class="lh-feature-desc">Glossário completo e documentação essencial dos serviços</p>
                   </div>
                   <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
                 </button>
-
-                <button class="lh-feature-item" onclick="window.location.href='./jornada.html'">
-                  <span class="lh-feature-icon lh-feat-purple">
-                    <i class="fa-solid fa-route"></i>
-                  </span>
-                  <div class="lh-feature-info">
-                    <p class="lh-feature-name">Trilha de Jornada</p>
-                    <p class="lh-feature-desc">
-                      Progresso gamificado por módulos, fases e conquistas
-                      desbloqueáveis
-                    </p>
-                  </div>
-                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
-                </button>
-
-                <button class="lh-feature-item" onclick="window.location.href='./diagnostico.html'">
-                  <span class="lh-feature-icon lh-feat-cyan">
-                    <i class="fa-solid fa-stethoscope"></i>
-                  </span>
-                  <div class="lh-feature-info">
-                    <p class="lh-feature-name">Raio-X de Domínios</p>
-                    <p class="lh-feature-desc">
-                      Diagnóstico por área: veja onde você está forte e onde
-                      precisa evoluir
-                    </p>
-                  </div>
-                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
-                </button>
-
                 <button class="lh-feature-item" onclick="window.location.href='./flashcards.html'">
-                  <span class="lh-feature-icon lh-feat-green">
-                    <i class="fa-solid fa-layer-group"></i>
-                  </span>
+                  <span class="lh-feature-icon lh-feat-purple"><i class="fa-solid fa-layer-group"></i></span>
                   <div class="lh-feature-info">
                     <p class="lh-feature-name">Flashcards</p>
-                    <p class="lh-feature-desc">
-                      Revisão rápida por cartões — conceitos, serviços e siglas
-                      AWS
-                    </p>
+                    <p class="lh-feature-desc">Revisão rápida por cartões para absorção mnemônica</p>
                   </div>
                   <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
-                </button>
-
-                <button
-                  class="lh-feature-item lh-feature-item-highlight"
-                  onclick="window.location.href='./profile.html'"
-                >
-                  <span class="lh-feature-icon lh-feat-pink">
-                    <i class="fa-solid fa-lightbulb"></i>
-                  </span>
-                  <div class="lh-feature-info">
-                    <p class="lh-feature-name">Insights e Estatísticas</p>
-                    <p class="lh-feature-desc">
-                      Análise inteligente do seu histórico, pontos fracos e
-                      recomendações de estudo
-                    </p>
-                  </div>
-                  <span class="lh-feature-cta"
-                    >Ver painel <i class="fa-solid fa-arrow-right"></i
-                  ></span>
                 </button>
               </div>
             </div>
@@ -402,57 +400,7 @@
           </div>
         </div>
 
-        <div
-          id="sprint-module"
-          class="a3-card w-full"
-        >
-          <div class="a3-card-header">
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-calendar-check text-aws-orange"></i>
-              <h3
-                id="sprint-module-title"
-                class="m-0"
-              >
-                Sprint de Estudos
-              </h3>
-            </div>
-            <span
-              id="sprint-current-cert-badge"
-              class="bg-aws-dark text-white text-[10px] font-bold px-2 py-1 rounded"
-              >AWS</span
-            >
-          </div>
-          <div class="a3-card-body">
-            <p id="sprint-module-subtitle" class="hidden"></p>
-            <div class="flex justify-between text-xs mb-3">
-              <span
-                id="sprint-progress-label"
-                class="font-semibold text-muted dark:text-gray-400"
-                >Progresso</span
-              >
-              <span id="sprint-progress-text" class="font-bold text-aws-orange"
-                >0%</span
-              >
-            </div>
-            <div id="sprint-days-grid" class="w-full"></div>
-            <div
-              class="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700 text-center"
-            >
-              <p
-                id="sprint-current-day-label"
-                class="text-sm font-bold text-gray-800 dark:text-gray-200 mb-2"
-              >
-                Dia 1
-              </p>
-              <button
-                id="sprint-start-btn"
-                class="a3-btn a3-btn-primary a3-btn-lg w-full"
-              >
-                Iniciar Sprint
-              </button>
-            </div>
-          </div>
-        </div>
+
 
         <div
           id="weak-domains-card"
@@ -471,26 +419,7 @@
           </div>
         </div>
 
-        <div
-          id="study-insight-container"
-          class="a3-card bg-orange-50 dark:bg-orange-900/20 w-full insight-card-highlight"
-        >
-          <div class="a3-card-header border-orange-200 dark:border-orange-800/50">
-            <h3 class="flex items-center gap-2 text-orange-800 dark:text-orange-400 m-0">
-              <i class="fa-solid fa-lightbulb text-orange-600 dark:text-orange-400"></i>
-              <span id="insight-card-title">Insight de Estudo</span>
-            </h3>
-          </div>
-          <div class="a3-card-body">
-            <div
-              id="dynamic-insight"
-              class="text-sm text-gray-700 leading-relaxed break-words"
-              data-empty="true"
-            >
-              <span class="text-gray-400 italic">Aguardando dados...</span>
-            </div>
-          </div>
-        </div>
+
 
         <div class="a3-card w-full">
           <div class="a3-card-header">

@@ -79,24 +79,24 @@
 /* ── Sprint de Estudos ─────────────────────────────────────────────────── */
 
 #sprint-module {
-  box-shadow: var(--a3-shadow-card) !important;
-  border: 1px solid var(--border-theme) !important;
+  box-shadow: var(--a3-shadow-card);
+  border: 1px solid var(--border-theme);
 }
 
 .dark #sprint-module {
-  border: 1px solid var(--border-theme) !important;
-  background-color: var(--a3-surface-raised) !important;
+  border: 1px solid var(--border-theme);
+  background-color: var(--a3-surface-raised);
 }
 
 #sprint-module button {
-  background-color: var(--a3-tech-blue) !important;
-  color: var(--a3-text-on-dark) !important;
-  border: none !important;
-  font-weight: 700 !important;
+  background-color: var(--a3-tech-blue);
+  color: var(--a3-text-on-dark);
+  border: none;
+  font-weight: 700;
 }
 
 #sprint-module button:hover {
-  background-color: var(--aws-orange-hover) !important;
+  background-color: var(--aws-orange-hover);
 }
 
 #sprint-days-grid {
@@ -112,28 +112,28 @@
 }
 
 .sprint-day-current {
-  background-color: var(--a3-accent) !important;
-  border-color: color-mix(in srgb, var(--a3-accent) 70%, var(--a3-surface)) !important;
-  color: var(--a3-text-inverse) !important;
-  font-weight: 900 !important;
+  background-color: var(--a3-accent);
+  border-color: color-mix(in srgb, var(--a3-accent) 70%, var(--a3-surface));
+  color: var(--a3-text-inverse);
+  font-weight: 900;
   box-shadow: 0 8px 18px color-mix(in srgb, var(--a3-accent) 24%, transparent);
 }
 
 .light #sprint-days-grid .bg-gray-50 {
-  background-color: var(--a3-surface-soft) !important;
-  border-color: var(--a3-border-default) !important;
-  color: var(--text-muted) !important;
+  background-color: var(--a3-surface-soft);
+  border-color: var(--a3-border-default);
+  color: var(--text-muted);
 }
 
 #sprint-module .bg-gray-50 {
-  background-color: var(--a3-surface-soft) !important;
-  border: 1px solid var(--border-theme) !important;
+  background-color: var(--a3-surface-soft);
+  border: 1px solid var(--border-theme);
   transition: all 0.3s ease;
 }
 
 .dark #sprint-module .dark\:bg-slate-750 {
-  background-color: var(--a3-surface-soft) !important;
-  border: 1px solid var(--border-theme) !important;
+  background-color: var(--a3-surface-soft);
+  border: 1px solid var(--border-theme);
 }
 
 /* ── Trilha de Aprendizado (Ziguezague) ────────────────────────────────── */
@@ -1111,5 +1111,5 @@
   border-radius: var(--radius-lg);
   box-shadow: var(--a3-shadow-card);
   padding: 0.5rem 1rem;
-  flex-direction: row !important;
+  flex-direction: row;
 }
