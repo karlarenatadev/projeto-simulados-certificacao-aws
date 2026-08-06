@@ -44,9 +44,9 @@
 
       <!-- CONTENT AREA -->
       <section class="flex-1 min-w-0 flex flex-col gap-0 overflow-y-auto" id="simulados-content">
-        <div
-          id="screen-start"
-          class="p-8 md:p-12 flex flex-col items-center justify-center text-center h-full"
+        <section
+          id="screen-hub"
+          class="flex flex-col items-center justify-center text-center h-full"
         >
           <div
             class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6 shadow-inner"
@@ -66,15 +66,10 @@
           </p>
 
           <div class="a3-card w-full max-w-md mb-6">
-            <h3
-              class="text-lg font-bold text-strong mb-4 flex items-center gap-2"
-            >
-              <i
-                class="fa-solid fa-certificate text-a3-primary"
-                aria-hidden="true"
-              ></i>
-              Selecione sua Certificação
-            </h3>
+            <div class="a3-card-header text-lg font-bold text-strong flex items-center gap-2">
+              <h3 class="m-0"><i class="fa-solid fa-certificate text-a3-primary" aria-hidden="true"></i> Selecione sua Certificação</h3>
+            </div>
+            <div class="a3-card-body">
             <select
               id="certification-select"
               class="w-full px-4 py-3 border-2 border-gray-300 dark:border-slate-500 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all outline-none text-gray-700 dark:text-gray-200 font-medium bg-white cursor-pointer"
@@ -93,20 +88,15 @@
                 AWS Certified Developer Associate (DVA-C02)
               </option>
             </select>
+            </div>
           </div>
 
           <div class="a3-card w-full max-w-md mb-6">
-            <h3
-              class="text-lg font-bold text-strong mb-4 flex items-center gap-2"
-            >
-              <i
-                class="fa-solid fa-sliders text-a3-primary"
-                aria-hidden="true"
-              ></i>
-              Filtros e Configurações
-            </h3>
+            <div class="a3-card-header text-lg font-bold text-strong flex items-center gap-2">
+              <h3 class="m-0"><i class="fa-solid fa-sliders text-a3-primary" aria-hidden="true"></i> Filtros e Configurações</h3>
+            </div>
 
-            <div class="space-y-5">
+            <div class="a3-card-body space-y-5">
               <div>
                 <label
                   class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-3"

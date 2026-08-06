@@ -206,3 +206,15 @@ Design System Grid, Container and Core Structures
 .flashcard-container {
   padding: var(--space-24) !important;
 }
+
+
+/* ==========================================================================
+   CLASSES EXTRAÍDAS DE INLINE STYLES — Sprint 2.6
+   ========================================================================== */
+
+/* ── index.html — card de insight com destaque lateral ──────────────────── */
+
+/* Substituí style="border-left: 4px solid var(--aws-orange);" em #study-insight-container */
+.insight-card-highlight {
+  border-left: 4px solid var(--aws-orange) !important;
+}

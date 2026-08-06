@@ -212,8 +212,8 @@
 
           if (!cases || cases.length === 0) {
             grid.innerHTML = `
-              <div class="cases-empty" style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--a3-text-muted);">
-                <i class="fa-solid fa-diagram-project" style="font-size:2.5rem;opacity:0.3;display:block;margin-bottom:0.75rem;"></i>
+              <div class="cases-empty cases-empty-grid-span">
+                <i class="fa-solid fa-diagram-project cases-empty-icon"></i>
                 <p>Nenhum case encontrado para os filtros selecionados.</p>
               </div>`;
             if (countLabel) countLabel.textContent = "0 cases";
@@ -225,8 +225,8 @@
             countLabel.textContent = `${cases.length} case${cases.length !== 1 ? "s" : ""}`;
         } catch (err) {
           grid.innerHTML = `
-            <div class="cases-empty" style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--a3-text-muted);">
-              <i class="fa-solid fa-triangle-exclamation" style="font-size:2rem;display:block;margin-bottom:0.75rem;color:var(--a3-warning);"></i>
+            <div class="cases-empty cases-empty-grid-span">
+              <i class="fa-solid fa-triangle-exclamation cases-error-icon"></i>
               <p>Erro ao carregar cases. Tente recarregar a página.</p>
             </div>`;
           if (countLabel) countLabel.textContent = "";

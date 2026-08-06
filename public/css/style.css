@@ -916,11 +916,62 @@ Design System Grid, Container and Core Structures
     height: auto;
   }
 
-  /* Headers das páginas secundárias: fonte menor em mobile */
   h2.text-2xl,
   h2.text-3xl {
     font-size: var(--text-xl) !important;
   }
+}
+
+/* ── Ajustes de Espaçamento e Bordas (Commit 1) ────────────────────────── */
+
+/* Aumenta o respiro do wrapper principal */
+#main-content-wrapper {
+  gap: var(--space-32) !important;
+  padding-top: var(--space-32);
+  padding-bottom: var(--space-32);
+}
+
+/* Telas principais (Hub, Diagnóstico, etc) */
+#screen-hub,
+#screen-diagnostic,
+#screen-flashcards,
+#screen-journey {
+  padding: var(--space-32) !important;
+}
+
+/* Espaçamento da sidebar */
+#side-info {
+  gap: var(--space-32) !important;
+}
+
+/* Ajustes nos grids internos dos módulos */
+#jornada-dashboard-grid {
+  gap: var(--space-24) !important;
+}
+
+#jornada-dashboard-grid > div {
+  padding: var(--space-24) !important;
+}
+
+/* Containers centrais para não colarem nas bordas (Raio X, Flashcards) */
+#diagnostic-report .a3-card {
+  padding: var(--space-32) !important;
+}
+
+.flashcard-container {
+  padding: var(--space-24) !important;
+}
+
+
+/* ==========================================================================
+   CLASSES EXTRAÍDAS DE INLINE STYLES — Sprint 2.6
+   ========================================================================== */
+
+/* ── index.html — card de insight com destaque lateral ──────────────────── */
+
+/* Substituí style="border-left: 4px solid var(--aws-orange);" em #study-insight-container */
+.insight-card-highlight {
+  border-left: 4px solid var(--aws-orange) !important;
 }
 
 
@@ -1268,7 +1319,7 @@ button.a3-card:active {
 }
 
 .a3-card-header {
-  padding: var(--space-16) var(--space-16) var(--space-12);
+  padding: var(--space-24) var(--space-24) var(--space-16);
   border-bottom: 1px solid var(--border-theme);
   display: flex;
   justify-content: space-between;
@@ -1284,7 +1335,7 @@ button.a3-card:active {
 }
 
 .a3-card-body {
-  padding: var(--space-16);
+  padding: var(--space-24);
   flex-grow: 1;
   color: var(--text-main);
   font-size: var(--text-sm);
@@ -2865,6 +2916,59 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
   .profile-badges-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+
+/* ==========================================================================
+   CLASSES EXTRAÍDAS DE INLINE STYLES — Sprint 2.6
+   Geradas para eliminar style="" de profile.html (strings JS innerHTML)
+   ========================================================================== */
+
+/* ── Certificação — badge de identificação (ex: "CLF-C02") ─────────────── */
+
+.profile-cert-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--a3-tech-blue) 10%, transparent);
+  color: var(--a3-tech-blue);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Conquista (badge) — min-height padronizado ─────────────────────────── */
+
+/* Garante altura mínima para os cards de badge no grid */
+.profile-badge-card {
+  min-height: 110px;
+}
+
+/* ── Conquista — ícone de cadeado (badge não conquistado) ───────────────── */
+
+.profile-badge-lock {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.6rem;
+  color: var(--a3-text-muted);
+}
+
+/* ── Conquista — título e descrição ─────────────────────────────────────── */
+
+.profile-badge-title {
+  font-weight: 700;
+  font-size: 0.75rem;
+  margin: 0;
+  text-align: center;
+  color: var(--text-strong);
+}
+
+.profile-badge-desc {
+  font-size: 0.7rem;
+  color: var(--a3-text-muted);
+  margin-top: 0.25rem;
+  text-align: center;
 }
 
 
@@ -7469,6 +7573,127 @@ select {
   display: inline-flex;
   margin-top: 1rem;
   text-decoration: none;
+}
+
+
+/* ==========================================================================
+   CLASSES EXTRAÍDAS DE INLINE STYLES — Sprint 2.6
+   Geradas para eliminar style="" dos HTMLs de cases.html e case-view.html
+   ========================================================================== */
+
+/* ── cases.html — empty state e error state ─────────────────────────────── */
+
+/* Div de estado vazio/erro que ocupa toda a largura do grid */
+.cases-empty-grid-span {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  color: var(--a3-text-muted);
+}
+
+/* Ícone do estado vazio (diagram-project) */
+.cases-empty-icon {
+  font-size: 2.5rem;
+  opacity: 0.3;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+/* Ícone do estado de erro (triangle-exclamation) */
+.cases-error-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--a3-warning);
+}
+
+/* ── case-view.html — mensagem vazia de serviços ─────────────────────────── */
+
+/* Parágrafo exibido quando o case não tem serviços cadastrados */
+.case-services-empty-msg {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ── case-view.html — número da questão ─────────────────────────────────── */
+
+/* Span com o número ordinal da questão (ex: "1.") */
+.case-question-number {
+  color: var(--a3-tech-blue);
+  font-weight: 800;
+  margin-right: 0.4rem;
+}
+
+/* ── case-view.html — título da explicação ──────────────────────────────── */
+
+/* Strong que exibe o título "Explicação" dentro de .case-question-explanation */
+.case-explanation-title {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: var(--a3-tech-blue);
+}
+
+/* ── case-view.html — link de referência oficial ────────────────────────── */
+
+/* Link "Referência oficial" dentro do bloco de explicação da questão */
+.case-ref-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--a3-tech-blue);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.case-ref-link:hover {
+  text-decoration: underline;
+}
+
+/* ── case-view.html — mensagens de erro (loadCase) ──────────────────────── */
+
+/* Parágrafo de erro gerado dinamicamente quando o case não é encontrado */
+.cv-error-message {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+/* Ícone de aviso dentro da mensagem de erro */
+.cv-error-icon {
+  color: var(--a3-warning);
+}
+
+/* Link "Ver todos os cases" dentro da mensagem de erro */
+.cv-error-link {
+  color: var(--a3-sky-frost);
+}
+
+.cv-error-link:hover {
+  text-decoration: underline;
+}
+
+/* ── case-view.html — banner offline (fallback) ─────────────────────────── */
+
+/* Banner exibido quando a API não está disponível — mesmas regras de .cases-offline-banner */
+.cv-offline-banner {
+  background: var(--a3-surface-warning);
+  color: var(--text-main);
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  border: 1px solid var(--a3-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Ícone dentro do banner offline */
+.cv-offline-icon {
+  color: var(--a3-warning);
 }
 
 
