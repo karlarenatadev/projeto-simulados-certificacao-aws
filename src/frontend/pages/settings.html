@@ -326,8 +326,126 @@
 
 
     <script type="module">
+      import { storageManager } from "./js/storageManager.js";
       import { initShell } from "./js/shell.js";
       import { AuthService } from "./js/services/authService.js";
+
+      // ── Chaves de preferências ────────────────────────────────────────────
+      const LANG_KEY = "aws_sim_lang";
+      const THEME_KEY = "aws_sim_theme";
+      const SIDEBAR_KEY = "sidebar_closed";
+      const POMODORO_KEY = "aws_sim_pomodoro_duration";
+      const DAILY_GOAL_KEY = "aws_sim_daily_goal";
+
+      // ── Toast ──────────────────────────────────────────────────────────────
+      function showToast(msg = "Configurações salvas!", isError = false) {
+        const toast = document.getElementById("settings-toast");
+        const toastMsg = document.getElementById("settings-toast-msg");
+        const icon = toast?.querySelector("i");
+        if (!toast) return;
+        if (toastMsg) toastMsg.textContent = msg;
+        if (icon) {
+          icon.className = isError
+            ? "fa-solid fa-triangle-exclamation"
+            : "fa-solid fa-check";
+        }
+        toast.classList.add("is-visible");
+        setTimeout(() => toast.classList.remove("is-visible"), 3000);
+      }
+
+      // ── Carregar preferências salvas ───────────────────────────────────────
+      function loadPreferences(user) {
+        // Nome de exibição
+        const nameInput = document.getElementById("setting-display-name");
+        if (nameInput) {
+          nameInput.value =
+            user.nickname || user.full_name || user.email?.split("@")[0] || "";
+        }
+
+        // Idioma
+        const langSelect = document.getElementById("setting-lang");
+        if (langSelect) {
+          langSelect.value = localStorage.getItem(LANG_KEY) || "pt";
+        }
+
+        // Tema escuro
+        const darkToggle = document.getElementById("setting-dark-mode");
+        if (darkToggle) {
+          darkToggle.checked =
+            document.documentElement.classList.contains("dark") ||
+            localStorage.getItem(THEME_KEY) === "dark";
+        }
+
+        // Sidebar fechada
+        const sidebarToggle = document.getElementById("setting-sidebar-closed");
+        if (sidebarToggle) {
+          sidebarToggle.checked = localStorage.getItem(SIDEBAR_KEY) === "true";
+        }
+
+        // Pomodoro
+        const pomodoroSelect = document.getElementById("setting-pomodoro");
+        if (pomodoroSelect) {
+          pomodoroSelect.value =
+            localStorage.getItem(POMODORO_KEY) || "25";
+        }
+
+        // Meta diária
+        const dailyGoalSelect = document.getElementById("setting-daily-goal");
+        if (dailyGoalSelect) {
+          dailyGoalSelect.value =
+            localStorage.getItem(DAILY_GOAL_KEY) || "20";
+        }
+      }
+
+      // ── Aplicar e salvar preferências ──────────────────────────────────────
+      function savePreferences() {
+        const nameInput = document.getElementById("setting-display-name");
+        const langSelect = document.getElementById("setting-lang");
+        const darkToggle = document.getElementById("setting-dark-mode");
+        const sidebarToggle = document.getElementById("setting-sidebar-closed");
+        const pomodoroSelect = document.getElementById("setting-pomodoro");
+        const dailyGoalSelect = document.getElementById("setting-daily-goal");
+
+        // Idioma
+        if (langSelect) {
+          localStorage.setItem(LANG_KEY, langSelect.value);
+        }
+
+        // Tema escuro
+        if (darkToggle) {
+          const isDark = darkToggle.checked;
+          localStorage.setItem(THEME_KEY, isDark ? "dark" : "light");
+          document.documentElement.classList.toggle("dark", isDark);
+          if (window.toggleDarkModeShell) {
+            // Sincroniza o ícone do tema no header
+            const currentIsDark =
+              document.documentElement.classList.contains("dark");
+            if (currentIsDark !== isDark) window.toggleDarkModeShell();
+          }
+        }
+
+        // Sidebar
+        if (sidebarToggle) {
+          localStorage.setItem(SIDEBAR_KEY, String(sidebarToggle.checked));
+        }
+
+        // Pomodoro
+        if (pomodoroSelect) {
+          localStorage.setItem(POMODORO_KEY, pomodoroSelect.value);
+        }
+
+        // Meta diária
+        if (dailyGoalSelect) {
+          localStorage.setItem(DAILY_GOAL_KEY, dailyGoalSelect.value);
+        }
+
+        // Atualiza botão de idioma
+        if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
+
+        showToast("Configurações salvas!");
+      }
+
+      // ── Boot ──────────────────────────────────────────────────────────────
       document.addEventListener("DOMContentLoaded", async () => {
         const user = await AuthService.restoreSession();
         if (!user) {
@@ -335,6 +453,55 @@
           return;
         }
         initShell(user);
+        loadPreferences(user);
+
+        // Salvar
+        document
+          .getElementById("settings-btn-save")
+          ?.addEventListener("click", savePreferences);
+
+        // Limpar histórico (mantém progresso de gamificação)
+        document
+          .getElementById("setting-btn-clear-history")
+          ?.addEventListener("click", () => {
+            if (
+              !confirm(
+                "Tem certeza? O histórico de simulados será removido (XP e conquistas são mantidos).",
+              )
+            )
+              return;
+            storageManager.clearHistory();
+            showToast("Histórico de simulados removido.");
+          });
+
+        // Resetar tudo
+        document
+          .getElementById("setting-btn-reset-all")
+          ?.addEventListener("click", () => {
+            if (
+              !confirm(
+                "Tem certeza? Todo o progresso (histórico, XP, sequência e conquistas) será removido permanentemente.",
+              )
+            )
+              return;
+            storageManager.clearAll();
+            showToast("Progresso resetado com sucesso.");
+          });
+
+        // Logout
+        document
+          .getElementById("setting-btn-logout")
+          ?.addEventListener("click", async () => {
+            try {
+              const { AuthService: AS } = await import(
+                "./js/services/authService.js"
+              );
+              await AS.logout();
+            } catch (_) {
+              /* offline */
+            }
+            window.location.replace("./index.html");
+          });
       });
     </script>
     <script>

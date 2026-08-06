@@ -44,8 +44,24 @@
           grid.innerHTML = '';
 
           try {
-              // Fetch cases to see which levels have available cases
-              const response = await fetch('/api/cases?limit=100');
+              const response = await fetch('./api/cases?limit=100').catch(() => null);
+              if (!response || !response.ok) {
+                  // API indisponível — renderiza todos como "em breve"
+                  LEVELS.forEach(level => {
+                      const card = document.createElement('div');
+                      card.className = 'level-card';
+                      card.style.opacity = '0.5';
+                      card.style.cursor = 'default';
+                      card.innerHTML = `
+                          <span class="level-badge">${level.badge}</span>
+                          <h3>${level.title}</h3>
+                          <p>${level.desc}</p>
+                          <div class="start-btn">Em Breve</div>
+                      `;
+                      grid.appendChild(card);
+                  });
+                  return;
+              }
               const result = await response.json();
               const availableDifficulties = new Set(result.data.map(c => c.difficulty));
 
@@ -54,18 +70,18 @@
 
                   const card = document.createElement('a');
                   card.className = 'level-card';
-                  card.href = hasCases ? \`/simulator-room.html?level=\${level.id}\` : '#';
+                  card.href = hasCases ? `./simulator-room.html?level=${level.id}` : '#';
                   if (!hasCases) {
                       card.style.opacity = '0.5';
                       card.style.pointerEvents = 'none';
                   }
 
-                  card.innerHTML = \`
-                      <span class="level-badge">\${level.badge}</span>
-                      <h3>\${level.title}</h3>
-                      <p>\${level.desc}</p>
-                      <div class="start-btn">\${hasCases ? 'Iniciar Simulação' : 'Em Breve'}</div>
-                  \`;
+                  card.innerHTML = `
+                      <span class="level-badge">${level.badge}</span>
+                      <h3>${level.title}</h3>
+                      <p>${level.desc}</p>
+                      <div class="start-btn">${hasCases ? 'Iniciar Simulação' : 'Em Breve'}</div>
+                  `;
                   grid.appendChild(card);
               });
           } catch (err) {

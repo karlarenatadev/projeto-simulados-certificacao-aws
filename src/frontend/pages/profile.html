@@ -131,11 +131,127 @@
 
     <script type="module">
       import { storageManager } from "./js/storageManager.js";
-      import { userManager } from "./js/userManager.js";
-    </script>
-    <script type="module">
       import { initShell } from "./js/shell.js";
       import { AuthService } from "./js/services/authService.js";
+
+      // ── Helpers ───────────────────────────────────────────────────────────
+      const CERT_LABELS = {
+        "clf-c02": "Cloud Practitioner",
+        "saa-c03": "Solutions Architect",
+        "dva-c02": "Developer Associate",
+        "aif-c01": "AI Practitioner",
+      };
+      const ROLE_LABELS = {
+        STUDENT: "Estudante",
+        VALIDATOR: "Validador",
+        ADMIN: "Admin",
+      };
+      const ROLE_CLASSES = {
+        STUDENT: "a3-role-student",
+        VALIDATOR: "a3-role-validator",
+        ADMIN: "a3-role-admin",
+      };
+      const BADGE_CATALOG = [
+        { id: "perfect", icon: "fa-star", color: "text-yellow-400", bg: "bg-yellow-500/10", title: "100% Perfeita", desc: "Gabaritou um simulado inteiro." },
+        { id: "dedicated", icon: "fa-book-open", color: "text-blue-400", bg: "bg-blue-500/10", title: "Dedicada", desc: "Completou 10 simulados." },
+        { id: "streak", icon: "fa-fire", color: "text-orange-500", bg: "bg-orange-500/10", title: "No Foco", desc: "5 aprovações consecutivas." },
+        { id: "speed", icon: "fa-stopwatch", color: "text-rose-400", bg: "bg-rose-500/10", title: "The Flash", desc: "Terminou na metade do tempo." },
+      ];
+
+      function setText(id, val) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+      }
+
+      // ── Render user header ────────────────────────────────────────────────
+      function renderUserHeader(user) {
+        const displayName = user.nickname || user.full_name || user.email || "Usuário";
+        const initial = displayName.charAt(0).toUpperCase();
+        const role = (user.role || "STUDENT").toUpperCase();
+
+        setText("profile-display-name", displayName);
+        setText("profile-email", user.email || "");
+        setText("profile-avatar-initials", initial);
+
+        const roleBadge = document.getElementById("profile-role-badge");
+        if (roleBadge) {
+          roleBadge.textContent = ROLE_LABELS[role] || role;
+          roleBadge.className = `a3-badge ${ROLE_CLASSES[role] || "a3-role-student"}`;
+        }
+      }
+
+      // ── Render stats ──────────────────────────────────────────────────────
+      function renderStats() {
+        const gam = storageManager.getGamification() || {};
+        const history = storageManager.getHistory() || [];
+
+        const totalQuizzes = gam.totalQuizzes || history.length || 0;
+        const bestScore =
+          gam.bestScore != null && gam.bestScore > 0
+            ? `${Math.round(gam.bestScore)}%`
+            : "—";
+        const streak = gam.currentStreak || 0;
+        const xp = Math.round((gam.totalQuizzes || 0) * 10 + (gam.bestScore || 0) * 2);
+
+        setText("stat-total-quizzes", totalQuizzes);
+        setText("stat-best-score", bestScore);
+        setText("stat-streak", streak);
+        setText("stat-xp", xp);
+      }
+
+      // ── Render certifications ─────────────────────────────────────────────
+      function renderCerts() {
+        const container = document.getElementById("profile-certs-list");
+        if (!container) return;
+
+        const history = storageManager.getHistory() || [];
+        const certIds = [...new Set(history.map((h) => h.certId).filter(Boolean))];
+
+        if (certIds.length === 0) {
+          container.innerHTML = `<p class="text-sm text-muted" style="color:var(--a3-text-muted);">Nenhuma certificação iniciada ainda.</p>`;
+          return;
+        }
+
+        container.innerHTML = certIds
+          .map((certId) => {
+            const certSessions = history.filter((h) => h.certId === certId);
+            const bestPct = Math.max(...certSessions.map((h) => Number(h.percentage) || 0));
+            const label = CERT_LABELS[certId] || certId.toUpperCase();
+            return `
+              <div class="a3-card" style="padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;margin-bottom:0.5rem;">
+                <i class="fa-solid fa-certificate" style="color:var(--a3-tech-blue);font-size:1.25rem;" aria-hidden="true"></i>
+                <div style="flex:1;">
+                  <p style="font-weight:700;font-size:0.9rem;">${label}</p>
+                  <p style="font-size:0.75rem;color:var(--a3-text-muted);">${certSessions.length} simulado${certSessions.length !== 1 ? "s" : ""} · Melhor: ${bestPct > 0 ? Math.round(bestPct) + "%" : "—"}</p>
+                </div>
+                <span style="font-size:0.7rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:999px;background:color-mix(in srgb, var(--a3-tech-blue) 10%, transparent);color:var(--a3-tech-blue);">${certId.toUpperCase()}</span>
+              </div>`;
+          })
+          .join("");
+      }
+
+      // ── Render badges ─────────────────────────────────────────────────────
+      function renderBadgesGrid() {
+        const container = document.getElementById("profile-badges-grid");
+        if (!container) return;
+
+        const gam = storageManager.getGamification() || {};
+        const earnedBadges = new Set(gam.badges || []);
+
+        container.innerHTML = BADGE_CATALOG.map((badge) => {
+          const earned = earnedBadges.has(badge.id);
+          const opacity = earned ? "" : "opacity-40 grayscale cursor-not-allowed";
+          return `
+            <div class="a3-card relative ${opacity} ${badge.bg} p-4 flex flex-col items-center text-center" style="min-height:110px;">
+              ${!earned ? '<div style="position:absolute;top:0.5rem;right:0.5rem;font-size:0.6rem;color:var(--a3-text-muted);"><i class="fa-solid fa-lock"></i></div>' : ""}
+              <i class="fa-solid ${badge.icon} ${badge.color} text-2xl mb-2"></i>
+              <h4 style="font-weight:700;font-size:0.75rem;">${badge.title}</h4>
+              <p style="font-size:0.7rem;color:var(--a3-text-muted);margin-top:0.25rem;">${badge.desc}</p>
+            </div>`;
+        }).join("");
+      }
+
+      // ── Boot ──────────────────────────────────────────────────────────────
       document.addEventListener("DOMContentLoaded", async () => {
         const user = await AuthService.restoreSession();
         if (!user) {
@@ -143,6 +259,10 @@
           return;
         }
         initShell(user);
+        renderUserHeader(user);
+        renderStats();
+        renderCerts();
+        renderBadgesGrid();
       });
     </script>
     <script>

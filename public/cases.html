@@ -237,6 +237,95 @@
     <script type="module">
       import { initShell } from "./js/shell.js";
       import { AuthService } from "./js/services/authService.js";
+      import {
+        getCases,
+        getDifficultyInfo,
+        isCompleted,
+      } from "./js/cases/caseManager.js";
+
+      // ── Render card ───────────────────────────────────────────────────────
+      function buildCaseCard(c) {
+        const diffInfo = getDifficultyInfo(c.difficulty);
+        const done = isCompleted(c.id || c.slug);
+        const certs = Array.isArray(c.certifications)
+          ? c.certifications
+          : c.certification
+            ? [c.certification]
+            : [];
+        const certTagsHtml = certs
+          .map(
+            (cert) =>
+              `<span class="cert-tag">${cert.toUpperCase()}</span>`,
+          )
+          .join("");
+        const doneHtml = done
+          ? `<span class="case-done-badge"><i class="fa-solid fa-circle-check"></i> Concluído</span>`
+          : "";
+        const slug = c.slug || c.id;
+        return `
+          <a href="./case-view.html?id=${encodeURIComponent(slug)}"
+             class="case-card"
+             role="listitem"
+             aria-label="${c.title}">
+            <div class="case-card-accent"></div>
+            <div class="case-card-body">
+              <div class="case-card-header">
+                <h3 class="case-card-title">${c.title}</h3>
+                <span class="difficulty-badge ${diffInfo.cls}">${diffInfo.label}</span>
+              </div>
+              <p class="case-card-scenario">${c.scenario || ""}</p>
+              <div class="case-card-footer">
+                <div class="case-cert-tags">${certTagsHtml}</div>
+                ${doneHtml}
+              </div>
+            </div>
+          </a>`;
+      }
+
+      // ── Render grid ───────────────────────────────────────────────────────
+      async function renderCasesGrid(filters = {}) {
+        const grid = document.getElementById("cases-grid");
+        const countLabel = document.getElementById("cases-count-label");
+        if (!grid) return;
+
+        // Mantém skeletons enquanto carrega
+        try {
+          const cases = await getCases(filters);
+
+          if (!cases || cases.length === 0) {
+            grid.innerHTML = `
+              <div class="cases-empty" style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--a3-text-muted);">
+                <i class="fa-solid fa-diagram-project" style="font-size:2.5rem;opacity:0.3;display:block;margin-bottom:0.75rem;"></i>
+                <p>Nenhum case encontrado para os filtros selecionados.</p>
+              </div>`;
+            if (countLabel) countLabel.textContent = "0 cases";
+            return;
+          }
+
+          grid.innerHTML = cases.map(buildCaseCard).join("");
+          if (countLabel)
+            countLabel.textContent = `${cases.length} case${cases.length !== 1 ? "s" : ""}`;
+        } catch (err) {
+          grid.innerHTML = `
+            <div class="cases-empty" style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--a3-text-muted);">
+              <i class="fa-solid fa-triangle-exclamation" style="font-size:2rem;display:block;margin-bottom:0.75rem;color:var(--a3-warning);"></i>
+              <p>Erro ao carregar cases. Tente recarregar a página.</p>
+            </div>`;
+          if (countLabel) countLabel.textContent = "";
+        }
+      }
+
+      // ── Filtros ───────────────────────────────────────────────────────────
+      function getFilters() {
+        const cert = document.getElementById("filter-certification")?.value || "";
+        const diff = document.getElementById("filter-difficulty")?.value || "";
+        const filters = {};
+        if (cert) filters.certification = cert;
+        if (diff) filters.difficulty = diff;
+        return filters;
+      }
+
+      // ── Init ──────────────────────────────────────────────────────────────
       document.addEventListener("DOMContentLoaded", async () => {
         const user = await AuthService.restoreSession();
         if (!user) {
@@ -244,6 +333,17 @@
           return;
         }
         initShell(user);
+
+        // Carrega os cases inicialmente
+        await renderCasesGrid();
+
+        // Filtros reativos
+        document
+          .getElementById("filter-certification")
+          ?.addEventListener("change", () => renderCasesGrid(getFilters()));
+        document
+          .getElementById("filter-difficulty")
+          ?.addEventListener("change", () => renderCasesGrid(getFilters()));
       });
     </script>
     <script>

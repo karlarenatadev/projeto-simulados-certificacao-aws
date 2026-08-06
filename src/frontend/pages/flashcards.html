@@ -43,7 +43,7 @@
     <main class="flex-1 a3-container py-6 main-content-container">
         <div
           id="screen-flashcards"
-          class="hidden p-4 md:p-8 flex flex-col items-center justify-center text-center min-h-[80vh]"
+          class="p-4 md:p-8 flex flex-col items-center justify-center text-center min-h-[80vh]"
         >
           <div class="flex flex-col items-center mb-6 fade-in">
             <span
@@ -192,6 +192,12 @@
           return;
         }
         initShell(user);
+        // Inicializa os flashcards após o app.js ter registrado as funções window.*
+        setTimeout(() => {
+          if (typeof window.startFlashcards === "function") {
+            window.startFlashcards();
+          }
+        }, 0);
       });
     </script>
     <script>

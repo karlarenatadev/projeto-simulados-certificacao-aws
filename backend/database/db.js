@@ -163,6 +163,38 @@ export async function initializeDatabase(options = {}) {
         await database.close().catch(() => {});
       }
       db = null;
+
+      // RuntimeError: Aborted() — typically means another process has the same
+      // dataDir open (PGlite single-writer constraint). Retry once after a short
+      // delay to handle race conditions during concurrent startup (e.g. seed +
+      // api:start launched nearly simultaneously by npm run dev).
+      const isAbortError =
+        error.message &&
+        (error.message.includes('Aborted') || error.message.includes('RuntimeError'));
+
+      if (isAbortError && databaseOptions.mode === 'persistent') {
+        console.warn(
+          '[database] PGlite Aborted — another process may have the dataDir open. ' +
+          'Retrying in 2 s...',
+        );
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        try {
+          database = await PGlite.create({ dataDir: databaseOptions.dataDir });
+          console.log('[database] PGlite instance ready (retry)');
+          await database.exec(loadSchema());
+          console.log('[database] Schema applied successfully (retry)');
+          db = database;
+          return db;
+        } catch (retryError) {
+          if (database && !database.closed) {
+            await database.close().catch(() => {});
+          }
+          db = null;
+          console.error('[database] Retry also failed:', retryError.message);
+          throw retryError;
+        }
+      }
+
       console.error('[database] Initialization failed:', error.message);
       throw error;
     }

@@ -43,7 +43,7 @@
     <main class="flex-1 a3-container py-6 main-content-container">
         <div
           id="screen-jornada"
-          class="hidden p-8 md:p-12 flex flex-col items-center h-full overflow-y-auto custom-scroll fade-in"
+          class="p-8 md:p-12 flex flex-col items-center h-full overflow-y-auto custom-scroll fade-in"
         >
           <div class="w-full max-w-2xl text-center mb-10">
             <h2 class="text-3xl font-bold text-strong mb-2">
@@ -91,6 +91,13 @@
           return;
         }
         initShell(user);
+        // Inicializa a trilha/jornada após o app.js ter registrado as funções window.*
+        // Usa um pequeno delay para garantir que o app.js finalizou o DOMContentLoaded
+        setTimeout(() => {
+          if (typeof window.startJornada === "function") {
+            window.startJornada();
+          }
+        }, 0);
       });
     </script>
     <script>

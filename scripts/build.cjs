@@ -178,15 +178,10 @@ try {
 
   console.log('🧩 Copiando partials HTML...');
 
-  // Copiar partials HTML (sidebar.html, etc.) para public/
+  // Copiar partials HTML para public/partials/
   if (fs.existsSync('src/frontend/partials')) {
     copyDirectoryRecursive('src/frontend/partials', 'public/partials');
-    // sidebar.html fica na raiz de public/ para compatibilidade
-    const sidebarSrc = 'src/frontend/partials/sidebar.html';
-    if (fs.existsSync(sidebarSrc)) {
-      copyFile(sidebarSrc, 'public/sidebar.html');
-      console.log('  ✅ Copiado sidebar.html para public/');
-    }
+    console.log('  ✅ Copiado partials para public/partials/');
   }
 
   // ============================================================
