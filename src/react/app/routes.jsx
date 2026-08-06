@@ -9,6 +9,7 @@ const Dashboard = lazy(() => import('@/pages/Dashboard'));
 const StudyNow = lazy(() => import('@/pages/StudyNow'));
 const StudySprint = lazy(() => import('@/pages/StudySprint'));
 const Cases = lazy(() => import('@/pages/Cases'));
+const CaseView = lazy(() => import('@/pages/Cases/CaseView'));
 const Resources = lazy(() => import('@/pages/Resources'));
 const Simulados = lazy(() => import('@/pages/Simulados'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
@@ -44,6 +45,7 @@ export const router = createBrowserRouter(
         { path: 'study-now', element: withSuspense(StudyNow) },
         { path: 'study-sprint', element: withSuspense(StudySprint) },
         { path: 'cases', element: withSuspense(Cases) },
+        { path: 'cases/:id', element: withSuspense(CaseView) },
         { path: 'recursos', element: withSuspense(Resources) },
         { path: 'simulados', element: withSuspense(Simulados) },
         { path: '*', element: withSuspense(NotFound) },

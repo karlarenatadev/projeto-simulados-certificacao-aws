@@ -21,7 +21,7 @@ function quizReducer(state, action) {
       };
     case 'ANSWER':
       const currentQ = state.questions[state.currentIndex];
-      const isCorrect = action.payload.optionId === currentQ.correctAnswer;
+      const isCorrect = action.payload.optionId === currentQ.answer;
       const newAnswers = [...state.answers, { questionId: currentQ.id, domain: currentQ.domain, optionId: action.payload.optionId, isCorrect }];
       return { ...state, answers: newAnswers };
     case 'NEXT':
