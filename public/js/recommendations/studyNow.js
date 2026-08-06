@@ -7,7 +7,7 @@
  * @module recommendations/studyNow
  */
 
-import apiService from "../../services/api.js";
+import apiService from "../services/api.js";
 import { userManager } from "../userManager.js";
 import { storageManager } from "../storageManager.js";
 import { certificationPaths } from "../data.js";

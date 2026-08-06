@@ -1,0 +1,1573 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Detalhes do Case de Arquitetura AWS — Cenário, Diagrama, Serviços e Questões de Fixação."
+    />
+    <title id="page-title">Case de Arquitetura — Simulador AWS</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "aws-dark": "#001863",
+              "aws-orange": "#0033FF",
+            },
+          },
+        },
+      };
+    </script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
+    />
+
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/cases.css" />
+
+    <!-- Drawflow — node editor for Architecture Builder -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/drawflow@0.0.60/dist/drawflow.min.css"
+    />
+  </head>
+
+  <body class="case-view-page" id="case-view-body">
+    <!-- ======================================================
+         HEADER
+         ====================================================== -->
+    <header class="a3-header">
+      <a
+        href="index.html"
+        class="a3-header-link group"
+        title="Voltar ao início"
+      >
+        <i
+          class="fa-solid fa-cloud text-accent-pink text-xl md:text-2xl group-hover:scale-110 transition-transform"
+          aria-hidden="true"
+        ></i>
+        <div>
+          <h1
+            class="text-base md:text-xl font-bold leading-tight group-hover:text-primary transition-colors"
+          >
+            Cloud Academy A3
+          </h1>
+          <p class="text-[10px] md:text-xs text-gray-300">
+            Sua jornada para certificações AWS
+          </p>
+        </div>
+      </a>
+      <div class="a3-header-actions">
+        <button
+          id="btn-language"
+          class="a3-btn a3-btn-secondary a3-btn-ghost"
+          aria-label="Alternar idioma"
+          title="Alternar idioma"
+        >
+          <span class="text-[10px] md:text-xs font-bold"
+            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
+          >
+        </button>
+
+        <button
+          id="theme-toggle"
+          class="a3-btn a3-btn-secondary a3-btn-ghost"
+          aria-label="Alternar modo escuro"
+        >
+          <i
+            id="theme-icon"
+            class="fa-solid fa-moon text-base md:text-xl"
+            aria-hidden="true"
+          ></i>
+        </button>
+
+        <button id="header-pomodoro-btn" class="a3-btn a3-btn-secondary">
+          <i class="fa-solid fa-stopwatch group-hover:animate-pulse"></i>
+          <span id="header-pomodoro-timer" class="font-mono">15:00</span>
+        </button>
+
+        <button
+          id="install-app"
+          class="a3-btn a3-btn-secondary a3-btn-ghost hidden md:flex items-center gap-2"
+        >
+          <i class="fa-solid fa-download"></i> Baixar App
+        </button>
+
+        <div
+          id="score-container"
+          style="display: none"
+          class="a3-badge a3-badge-primary"
+        >
+          <i
+            class="fa-solid fa-bullseye text-green-400 text-xs md:text-base"
+            aria-hidden="true"
+          ></i>
+          <span id="score-display" class="text-xs md:text-sm" aria-live="polite"
+            >0 / 0</span
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- ======================================================
+         BREADCRUMB
+         ====================================================== -->
+    <nav class="case-breadcrumb" aria-label="Navegação">
+      <a href="./index.html"><i class="fa-solid fa-house"></i> Início</a>
+      <i class="fa-solid fa-chevron-right icon-xs"></i>
+      <a href="./cases.html">Cases</a>
+      <i class="fa-solid fa-chevron-right icon-xs"></i>
+      <span id="breadcrumb-title" aria-current="page">Carregando...</span>
+    </nav>
+
+    <!-- ======================================================
+         CASE HEADER (populated by JS)
+         ====================================================== -->
+    <section
+      class="case-view-header"
+      id="case-header"
+      aria-labelledby="case-main-title"
+    >
+      <div class="case-view-header-inner">
+        <div id="case-header-loading" class="cv-loading-state">
+          <i
+            class="fa-solid fa-spinner fa-spin cv-loading-spinner"
+            aria-hidden="true"
+          ></i>
+        </div>
+
+        <div id="case-header-content" style="display: none">
+          <h1 id="case-main-title"></h1>
+          <div class="case-view-meta" id="case-meta"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         TABS
+         ====================================================== -->
+    <div class="case-tabs" role="tablist" aria-label="Seções do case">
+      <button
+        class="a3-btn a3-btn-secondary case-tab-btn"
+        data-tab="scenario"
+        role="tab"
+        aria-selected="true"
+        aria-controls="tab-scenario"
+        id="tab-btn-scenario"
+      >
+        <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+        Cenário
+      </button>
+      <button
+        class="a3-btn a3-btn-secondary case-tab-btn"
+        data-tab="architecture"
+        role="tab"
+        aria-selected="false"
+        aria-controls="tab-architecture"
+        id="tab-btn-architecture"
+      >
+        <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+        Arquitetura
+      </button>
+      <button
+        class="a3-btn a3-btn-secondary case-tab-btn"
+        data-tab="questions"
+        role="tab"
+        aria-selected="false"
+        aria-controls="tab-questions"
+        id="tab-btn-questions"
+      >
+        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+        Questões
+        <span id="questions-badge" class="case-tab-badge"></span>
+      </button>
+      <button
+        class="a3-btn a3-btn-secondary case-tab-btn"
+        data-tab="resources"
+        role="tab"
+        aria-selected="false"
+        aria-controls="tab-resources"
+        id="tab-btn-resources"
+      >
+        <i class="fa-solid fa-link" aria-hidden="true"></i>
+        Recursos
+      </button>
+      <button
+        class="a3-btn a3-btn-secondary case-tab-btn"
+        data-tab="builder"
+        role="tab"
+        aria-selected="false"
+        aria-controls="tab-builder"
+        id="tab-btn-builder"
+      >
+        <i class="fa-solid fa-pencil-ruler" aria-hidden="true"></i>
+        Montar Arquitetura
+      </button>
+    </div>
+
+    <!-- ======================================================
+         TAB: CENÁRIO
+         ====================================================== -->
+    <section
+      id="tab-scenario"
+      class="case-tab-content active"
+      role="tabpanel"
+      aria-labelledby="tab-btn-scenario"
+    >
+      <div class="case-scenario-box">
+        <h2>
+          <i class="fa-solid fa-business-time text-aws-orange"></i>
+          Contexto do Problema
+        </h2>
+        <p id="scenario-text">Carregando...</p>
+      </div>
+
+      <div class="case-scenario-box">
+        <h3>
+          <i class="fa-solid fa-bullseye text-aws-orange"></i>
+          Objetivo de Aprendizado
+        </h3>
+        <p id="objective-text"></p>
+      </div>
+
+      <!-- Services Summary -->
+      <div class="case-scenario-box">
+        <h3>
+          <i class="fa-solid fa-cubes-stacked text-aws-orange"></i>
+          Serviços AWS Envolvidos
+        </h3>
+        <div id="services-grid" class="services-grid"></div>
+      </div>
+
+      <!-- Complete Button -->
+      <div class="mt-6 flex justify-end gap-4 flex-wrap items-center">
+        <button
+          id="study-arch-btn"
+          class="a3-btn a3-btn-secondary btn-outline-primary"
+          onclick="switchTab('architecture')"
+        >
+          <i class="fa-solid fa-diagram-project"></i>
+          Ver Arquitetura
+        </button>
+        <button id="complete-btn" class="a3-btn a3-btn-secondary">
+          <i class="fa-solid fa-circle-check"></i>
+          Marcar como Concluído
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         TAB: ARQUITETURA
+         ====================================================== -->
+    <section
+      id="tab-architecture"
+      class="case-tab-content"
+      role="tabpanel"
+      aria-labelledby="tab-btn-architecture"
+    >
+      <div class="architecture-container">
+        <div class="architecture-toolbar">
+          <h3>
+            <i class="fa-solid fa-diagram-project text-aws-orange"></i>
+            Diagrama de Arquitetura
+          </h3>
+          <span class="text-hint">
+            <i class="fa-brands fa-github"></i> Renderizado com Mermaid.js
+          </span>
+        </div>
+        <div id="arch-render-area" class="arch-render-area">
+          <!-- Mermaid renders here -->
+        </div>
+      </div>
+
+      <div class="case-scenario-box mt-6">
+        <h3>
+          <i class="fa-solid fa-circle-info text-aws-orange"></i>
+          Como Ler Este Diagrama
+        </h3>
+        <p id="arch-explanation-text" class="text-body-sm"></p>
+      </div>
+
+      <div class="mt-6 flex justify-end">
+        <button
+          class="a3-btn a3-btn-secondary btn-amethyst"
+          onclick="switchTab('questions')"
+        >
+          <i class="fa-solid fa-circle-question"></i>
+          Praticar com Questões
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         TAB: QUESTÕES
+         ====================================================== -->
+    <section
+      id="tab-questions"
+      class="case-tab-content"
+      role="tabpanel"
+      aria-labelledby="tab-btn-questions"
+    >
+      <p class="case-questions-intro">
+        <i class="fa-solid fa-circle-info text-sky-frost"></i>
+        Estas questões cobram os conceitos desta arquitetura nos exames de
+        certificação. Tente responder antes de revelar a explicação.
+      </p>
+
+      <div id="questions-list"></div>
+
+      <div id="questions-empty" style="display: none" class="cases-empty-state">
+        <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+        <p>Nenhuma questão associada a este case ainda.</p>
+        <p class="cv-empty-hint">
+          Use o simulador de questões para praticar tópicos relacionados.
+        </p>
+        <a href="./index.html" class="case-complete-btn cv-simulator-link">
+          <i class="fa-solid fa-brain"></i> Ir para o Simulador
+        </a>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         TAB: RECURSOS
+         ====================================================== -->
+    <section
+      id="tab-resources"
+      class="case-tab-content"
+      role="tabpanel"
+      aria-labelledby="tab-btn-resources"
+    >
+      <div id="resources-list" class="resources-list"></div>
+      <div id="resources-empty" style="display: none" class="cases-empty-state">
+        <i class="fa-solid fa-link" aria-hidden="true"></i>
+        <p>Nenhum recurso externo cadastrado para este case.</p>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         TAB: MONTAR ARQUITETURA (Builder — 3 fases)
+         ====================================================== -->
+    <section
+      id="tab-builder"
+      class="case-tab-content builder-tab-panel"
+      role="tabpanel"
+      aria-labelledby="tab-btn-builder"
+    >
+      <div id="builder-root" class="builder-root">
+        <!-- Phase Banner — Fase 1: Desafio -->
+        <div
+          class="builder-phase-banner builder-phase-banner--challenge"
+          id="builder-phase-banner"
+        >
+          <span class="builder-phase-badge builder-phase-badge--challenge">
+            <i class="fa-solid fa-pencil-ruler" aria-hidden="true"></i>
+            Desafio
+          </span>
+          <div class="builder-phase-text">
+            <strong>Monte a arquitetura deste case</strong>
+            Arraste os serviços AWS que você usaria para resolver o cenário
+            descrito. Depois clique em "Verificar".
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="builder-toolbar" id="builder-toolbar">
+          <span class="builder-toolbar-title">
+            <i class="fa-solid fa-cubes-stacked" aria-hidden="true"></i>
+            Paleta AWS
+          </span>
+
+          <div class="builder-divider" aria-hidden="true"></div>
+
+          <button
+            id="builder-btn-verify"
+            class="a3-btn a3-btn-secondary"
+            title="Verificar minha arquitetura"
+          >
+            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+            Verificar
+          </button>
+
+          <button
+            id="builder-btn-clear"
+            class="a3-btn a3-btn-secondary"
+            title="Limpar canvas"
+          >
+            <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+            Limpar
+          </button>
+
+          <button
+            id="builder-btn-export"
+            class="a3-btn a3-btn-secondary"
+            title="Exportar JSON da arquitetura"
+          >
+            <i class="fa-solid fa-download" aria-hidden="true"></i>
+            Exportar
+          </button>
+
+          <span
+            id="builder-status"
+            class="builder-status"
+            aria-live="polite"
+          ></span>
+        </div>
+
+        <!-- Builder Body: Sidebar + Canvas -->
+        <div class="builder-body">
+          <!-- Sidebar — Paleta de Serviços AWS -->
+          <aside
+            id="builder-sidebar"
+            class="builder-sidebar"
+            aria-label="Paleta de serviços AWS"
+          >
+            <p class="builder-sidebar-label">Arrastar para o canvas</p>
+            <div id="aws-service-palette"></div>
+          </aside>
+
+          <!-- Canvas (Drawflow) -->
+          <div class="builder-canvas-wrap">
+            <div
+              id="drawflow"
+              role="application"
+              aria-label="Canvas de arquitetura"
+            ></div>
+
+            <!-- Hint quando vazio -->
+            <div
+              id="builder-empty-hint"
+              class="builder-empty-hint"
+              aria-hidden="true"
+            >
+              <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+              <p>
+                Arraste serviços AWS da barra lateral e conecte-os para montar
+                sua arquitetura
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fase 2: Resultado da Verificação -->
+        <div
+          id="builder-result-panel"
+          class="builder-result-panel"
+          role="region"
+          aria-label="Resultado da verificação"
+        >
+          <div class="builder-score-row">
+            <div
+              id="builder-score-circle"
+              class="builder-score-circle"
+              aria-label="Pontuação"
+            >
+              <span class="builder-score-pct" id="builder-score-pct">0%</span>
+              <span class="builder-score-label">Score</span>
+            </div>
+            <div class="builder-score-meta">
+              <p class="builder-score-meta-title" id="builder-score-title">
+                Verificando...
+              </p>
+              <p class="builder-score-meta-sub" id="builder-score-sub"></p>
+            </div>
+          </div>
+
+          <div id="builder-result-lists" class="builder-result-lists"></div>
+
+          <div class="builder-result-actions">
+            <button id="builder-btn-gabarito" class="a3-btn a3-btn-secondary">
+              <i class="fa-solid fa-eye" aria-hidden="true"></i>
+              Ver arquitetura oficial
+            </button>
+            <button id="builder-btn-retry" class="a3-btn a3-btn-secondary">
+              <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+              Tentar novamente
+            </button>
+          </div>
+        </div>
+
+        <!-- Fase 3: Gabarito (diagrama oficial) -->
+        <div
+          id="builder-gabarito"
+          class="builder-gabarito"
+          role="region"
+          aria-label="Arquitetura oficial"
+        >
+          <p class="builder-gabarito-title">
+            <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+            Arquitetura Oficial do Case
+          </p>
+          <div id="builder-gabarito-diagram" class="arch-render-area"></div>
+        </div>
+
+        <!-- Tip bar -->
+        <div class="builder-tip-bar">
+          <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+          <span>
+            <strong>Dica:</strong> Arraste serviços da lateral • Conecte saídas
+            às entradas dos nós • Botão direito num nó para excluí-lo • Clique
+            em "Verificar" para ver seu score
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         SCRIPTS
+         ====================================================== -->
+    <script type="module">
+      import {
+        getCaseById,
+        getDifficultyInfo,
+        getResourceIcon,
+        isCompleted,
+        markCaseComplete,
+        getApiStatus,
+      } from "./js/cases/caseManager.js";
+      import { renderArchitecture } from "./js/cases/architectureRenderer.js";
+
+      // ---- Theme ----
+      const themeToggle = document.getElementById("theme-toggle");
+      const themeIcon = document.getElementById("theme-icon");
+      const pageBody = document.getElementById("case-view-body");
+
+      function applyTheme(dark) {
+        document.documentElement.classList.toggle("dark", dark);
+        pageBody.classList.toggle("dark", dark);
+        themeIcon.className = dark
+          ? "fa-solid fa-sun text-base md:text-xl"
+          : "fa-solid fa-moon text-base md:text-xl";
+      }
+
+      const savedDark = localStorage.getItem("aws_sim_theme") === "dark";
+      applyTheme(savedDark);
+
+      themeToggle.addEventListener("click", () => {
+        const isDark = document.documentElement.classList.contains("dark");
+        applyTheme(!isDark);
+        localStorage.setItem("aws_sim_theme", !isDark ? "dark" : "light");
+      });
+
+      // ---- Idioma ----
+      const langBtn = document.getElementById("btn-language");
+      if (langBtn) {
+        const lang = localStorage.getItem("aws_sim_lang") || "pt";
+        langBtn.innerHTML =
+          lang === "pt"
+            ? '<span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>'
+            : '<span class="text-[10px] md:text-xs font-bold">🇺🇸 <span class="hidden sm:inline">EN-US</span></span>';
+        langBtn.addEventListener("click", () => {
+          const cur = localStorage.getItem("aws_sim_lang") || "pt";
+          localStorage.setItem("aws_sim_lang", cur === "pt" ? "en" : "pt");
+          window.location.reload();
+        });
+      }
+
+      // ---- Pomodoro standalone (sem dependência do app.js) ----
+      (function () {
+        const DURATIONS = [15, 30, 60]; // minutos disponíveis
+        const DURATION_KEY = "cv_pomodoro_duration";
+        const timerDisplay = document.getElementById("header-pomodoro-timer");
+        const pomodoroBtn = document.getElementById("header-pomodoro-btn");
+        if (!pomodoroBtn || !timerDisplay) return;
+
+        let duration = parseInt(localStorage.getItem(DURATION_KEY) || "15", 10);
+        let seconds = duration * 60;
+        let intervalId = null;
+        let running = false;
+
+        function formatTime(s) {
+          const m = Math.floor(s / 60).toString().padStart(2, "0");
+          const sec = (s % 60).toString().padStart(2, "0");
+          return `${m}:${sec}`;
+        }
+
+        function updateDisplay() {
+          timerDisplay.textContent = formatTime(seconds);
+        }
+
+        function stopTimer() {
+          clearInterval(intervalId);
+          intervalId = null;
+          running = false;
+          pomodoroBtn.title = "Iniciar Pomodoro";
+          pomodoroBtn.querySelector("i").className = "fa-solid fa-stopwatch";
+        }
+
+        function startTimer() {
+          running = true;
+          pomodoroBtn.querySelector("i").className = "fa-solid fa-stopwatch fa-beat";
+          pomodoroBtn.title = "Pausar Pomodoro — clique para pausar ou segurar para resetar";
+          intervalId = setInterval(() => {
+            seconds--;
+            updateDisplay();
+            if (seconds <= 0) {
+              stopTimer();
+              seconds = 0;
+              updateDisplay();
+              // Notificação quando termina
+              if (Notification && Notification.permission === "granted") {
+                new Notification("⏱ Pomodoro concluído!", {
+                  body: "Hora de uma pausa. Ótimo trabalho!",
+                  icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⏱%3C/text%3E%3C/svg%3E",
+                });
+              }
+            }
+          }, 1000);
+        }
+
+        updateDisplay();
+
+        // Click: toggle start/pause; long-press: reset + cycle duration
+        let pressTimer = null;
+        pomodoroBtn.addEventListener("mousedown", () => {
+          pressTimer = setTimeout(() => {
+            pressTimer = null;
+            stopTimer();
+            const idx = (DURATIONS.indexOf(duration) + 1) % DURATIONS.length;
+            duration = DURATIONS[idx];
+            localStorage.setItem(DURATION_KEY, String(duration));
+            seconds = duration * 60;
+            updateDisplay();
+          }, 700);
+        });
+        pomodoroBtn.addEventListener("mouseup", () => {
+          if (!pressTimer) return; // long-press foi acionado
+          clearTimeout(pressTimer);
+          pressTimer = null;
+          if (running) { stopTimer(); } else { startTimer(); }
+        });
+        pomodoroBtn.addEventListener("mouseleave", () => {
+          clearTimeout(pressTimer);
+          pressTimer = null;
+        });
+
+        // Solicitar permissão de notificação na primeira interação
+        pomodoroBtn.addEventListener("click", () => {
+          if (Notification && Notification.permission === "default") {
+            Notification.requestPermission();
+          }
+        }, { once: true });
+      })();
+
+      // ---- Tabs ----
+      window.switchTab = function (tabId) {
+        document.querySelectorAll(".case-tab-btn").forEach((btn) => {
+          const active = btn.dataset.tab === tabId;
+          btn.classList.toggle("active", active);
+          btn.setAttribute("aria-selected", active);
+        });
+        document.querySelectorAll(".case-tab-content").forEach((panel) => {
+          panel.classList.toggle("active", panel.id === `tab-${tabId}`);
+        });
+
+        // Lazy-render architecture when tab becomes active
+        if (tabId === "architecture" && window._caseData) {
+          const container = document.getElementById("arch-render-area");
+          if (!container.dataset.rendered) {
+            renderArchitecture(container, window._caseData.architecture_graph);
+            container.dataset.rendered = "true";
+          }
+        }
+      };
+
+      document.querySelectorAll(".case-tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+      });
+
+      // ---- Helpers ----
+      function escapeHtml(str) {
+        if (!str) return "";
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function renderServices(services) {
+        const grid = document.getElementById("services-grid");
+        if (!services || services.length === 0) {
+          grid.innerHTML =
+            '<p style="font-size:0.85rem; color:var(--text-muted);">Nenhum serviço registrado.</p>';
+          return;
+        }
+
+        grid.innerHTML = services
+          .map(
+            (s) => `
+          <div class="service-chip">
+            ${
+              s.icon_url
+                ? `<img
+                  src="${escapeHtml(s.icon_url)}"
+                  alt="${escapeHtml(s.name)}"
+                  loading="lazy"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                />
+                <div class="service-chip-fallback" style="display:none;">
+                  <i class="fa-solid fa-cloud" style="color:var(--a3-tech-blue);"></i>
+                </div>`
+                : `<div class="service-chip-fallback">
+                  <i class="fa-solid fa-cloud" style="color:var(--a3-tech-blue);"></i>
+                </div>`
+            }
+            <div class="service-chip-info">
+              <div class="service-chip-name">${escapeHtml(s.name)}</div>
+              <div class="service-chip-category">${escapeHtml(s.category)}</div>
+              ${
+                s.role_note
+                  ? `<div class="service-chip-role">${escapeHtml(s.role_note)}</div>`
+                  : ""
+              }
+              ${
+                s.doc_url
+                  ? `<a
+                    href="${escapeHtml(s.doc_url)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="service-chip-doc"
+                  >
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Documentação
+                  </a>`
+                  : ""
+              }
+            </div>
+          </div>`,
+          )
+          .join("");
+      }
+
+      function renderResources(resources) {
+        const list = document.getElementById("resources-list");
+        const empty = document.getElementById("resources-empty");
+
+        if (!resources || resources.length === 0) {
+          empty.style.display = "block";
+          return;
+        }
+
+        list.innerHTML = resources
+          .map(
+            (r) => `
+          <a
+            href="${escapeHtml(r.url)}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="resource-item"
+            aria-label="${escapeHtml(r.title)} — ${escapeHtml(r.type)}"
+          >
+            <div class="resource-icon ${escapeHtml(r.type)}">
+              <i class="fa-solid ${getResourceIcon(r.type)}"></i>
+            </div>
+            <div>
+              <div class="resource-title">${escapeHtml(r.title)}</div>
+              <div class="resource-type-label">${escapeHtml(r.type)}</div>
+            </div>
+            <i class="fa-solid fa-arrow-up-right-from-square resource-arrow"></i>
+          </a>`,
+          )
+          .join("");
+      }
+
+      /**
+       * Normaliza uma questão para o schema esperado pelo renderer.
+       * Suporta dois schemas:
+       *  - Novo: { question_text, options:[{id,text}], correct_answer:[ids], explanation }
+       *  - Antigo (legado): { question, options:[strings], correct: number (índice) }
+       */
+      function normalizeQuestion(q) {
+        // Schema novo já está correto
+        if (q.question_text && Array.isArray(q.correct_answer)) return q;
+
+        // Normalizar schema antigo
+        const letters = "ABCDEFGHIJ";
+        const rawOptions = Array.isArray(q.options) ? q.options : [];
+        const normalizedOptions = rawOptions.map((opt, i) => ({
+          id: letters[i] || String(i),
+          text: typeof opt === "string" ? opt : (opt.text || String(opt)),
+        }));
+
+        // correct pode ser número (índice) ou string
+        let correctIds;
+        if (typeof q.correct === "number") {
+          const letter = letters[q.correct] || String(q.correct);
+          correctIds = [letter];
+        } else if (typeof q.correct === "string") {
+          correctIds = [q.correct];
+        } else if (Array.isArray(q.correct_answer)) {
+          correctIds = q.correct_answer;
+        } else {
+          correctIds = [];
+        }
+
+        return {
+          question_text: q.question_text || q.question || "",
+          options: normalizedOptions,
+          correct_answer: correctIds,
+          explanation: q.explanation || q.rationale || "",
+          reference_url: q.reference_url || null,
+        };
+      }
+
+      function renderQuestions(questions) {
+        const list = document.getElementById("questions-list");
+        const empty = document.getElementById("questions-empty");
+        const badge = document.getElementById("questions-badge");
+
+        if (!questions || questions.length === 0) {
+          empty.style.display = "block";
+          return;
+        }
+
+        badge.textContent = questions.length;
+        badge.style.display = "inline";
+
+        list.innerHTML = questions
+          .map((rawQ, idx) => {
+            const q = normalizeQuestion(rawQ);
+            const options = Array.isArray(q.options) ? q.options : [];
+            const correctIds = Array.isArray(q.correct_answer)
+              ? q.correct_answer
+              : [q.correct_answer];
+            const letters = "ABCDEFGHIJ";
+
+            return `
+            <div class="case-question-item" id="cq-${idx}">
+              <p class="case-question-text">
+                <span style="color:var(--a3-tech-blue); font-weight:800; margin-right:0.4rem;">${idx + 1}.</span>
+                ${escapeHtml(q.question_text)}
+              </p>
+              <ul class="case-question-options" role="listbox" aria-label="Opções da questão ${idx + 1}">
+                ${options
+                  .map((opt, oi) => {
+                    const id = typeof opt === "object" ? opt.id : String(oi);
+                    const text = typeof opt === "object" ? opt.text : opt;
+                    return `
+                    <li
+                      class="case-question-option"
+                      role="option"
+                      data-qidx="${idx}"
+                      data-optid="${escapeHtml(id)}"
+                      data-correct="${correctIds.includes(id)}"
+                      tabindex="0"
+                      onclick="selectOption(this)"
+                      onkeydown="if(event.key==='Enter'||event.key===' ')selectOption(this)"
+                      aria-label="Opção ${letters[oi] || id}: ${escapeHtml(text)}"
+                    >
+                      <span class="option-letter">${letters[oi] || id}</span>
+                      <span class="option-text">${escapeHtml(text)}</span>
+                    </li>`;
+                  })
+                  .join("")}
+              </ul>
+              <div class="case-question-explanation" id="cq-exp-${idx}">
+                <strong style="display:block; margin-bottom:0.3rem; color:var(--a3-tech-blue);">
+                  <i class="fa-solid fa-lightbulb"></i> Explicação
+                </strong>
+                ${escapeHtml(q.explanation || "Sem explicação disponível.")}
+                ${
+                  q.reference_url
+                    ? `<a href="${escapeHtml(q.reference_url)}" target="_blank" rel="noopener noreferrer"
+                       style="display:inline-flex;align-items:center;gap:0.3rem;margin-top:0.5rem;font-size:0.75rem;color:var(--a3-tech-blue);font-weight:600;">
+                       <i class="fa-solid fa-arrow-up-right-from-square"></i> Referência oficial
+                     </a>`
+                    : ""
+                }
+              </div>
+            </div>`;
+          })
+          .join("");
+      }
+
+      // ---- Answer Logic ----
+      window.selectOption = function (optionEl) {
+        const qIdx = optionEl.dataset.qidx;
+        const isCorrect = optionEl.dataset.correct === "true";
+
+        // Disable all options in this question
+        const questionItem = document.getElementById(`cq-${qIdx}`);
+        const allOptions = questionItem.querySelectorAll(
+          ".case-question-option",
+        );
+        allOptions.forEach((opt) => {
+          opt.style.pointerEvents = "none";
+          opt.removeAttribute("tabindex");
+          if (opt.dataset.correct === "true") {
+            opt.classList.add("correct");
+          }
+        });
+
+        optionEl.classList.add(isCorrect ? "correct" : "incorrect");
+
+        // Show explanation
+        const explanation = document.getElementById(`cq-exp-${qIdx}`);
+        explanation.classList.add("visible");
+        explanation.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      };
+
+      // ---- Complete ----
+      const completeBtn = document.getElementById("complete-btn");
+      let currentCaseId = null;
+
+      completeBtn.addEventListener("click", async () => {
+        if (!currentCaseId) return;
+
+        // Lê o usuário pelo mesmo schema usado pelo userManager (chave: cloudacademy_user)
+        let userId = "anonymous";
+        try {
+          const stored = localStorage.getItem("cloudacademy_user");
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            userId = parsed.id || parsed.userId || parsed.email || "anonymous";
+          }
+        } catch {
+          userId = "anonymous";
+        }
+
+        completeBtn.disabled = true;
+        completeBtn.innerHTML =
+          '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+
+        const ok = await markCaseComplete(currentCaseId, userId);
+        if (ok) {
+          completeBtn.classList.add("completed");
+          completeBtn.innerHTML =
+            '<i class="fa-solid fa-circle-check"></i> Concluído!';
+        } else {
+          completeBtn.disabled = false;
+          completeBtn.innerHTML =
+            '<i class="fa-solid fa-circle-check"></i> Marcar como Concluído';
+        }
+      });
+
+      // ---- Load Case ----
+      async function loadCase() {
+        const params = new URLSearchParams(window.location.search);
+        const idOrSlug = params.get("id") || params.get("slug");
+
+        if (!idOrSlug) {
+          document.getElementById("case-header-loading").innerHTML = `
+            <p style="color:rgba(255,255,255,0.7); font-size:0.9rem;">
+              <i class="fa-solid fa-triangle-exclamation" style="color:var(--a3-warning);"></i>
+              Nenhum case especificado. <a href="./cases.html" style="color:var(--a3-sky-frost);">Ver todos os cases</a>.
+            </p>`;
+          return;
+        }
+
+        const caseData = await getCaseById(idOrSlug);
+        const status = getApiStatus();
+
+        if (!caseData) {
+          let emptyMessage = "Case não encontrado.";
+          if (!status.apiAvailable && !status.fallbackUsed) {
+            emptyMessage =
+              "Serviço indisponível no momento. Tente novamente mais tarde.";
+          }
+          document.getElementById("case-header-loading").innerHTML = `
+            <p style="color:rgba(255,255,255,0.7); font-size:0.9rem;">
+              <i class="fa-solid fa-triangle-exclamation" style="color:var(--a3-warning);"></i>
+              ${emptyMessage} <a href="./cases.html" style="color:var(--a3-sky-frost);">Ver todos os cases</a>.
+            </p>`;
+          return;
+        }
+
+        if (status.fallbackUsed) {
+          const banner = document.createElement("div");
+          banner.style.cssText =
+            "background:var(--a3-surface-warning); color:var(--text-main); padding:0.75rem; border-radius:8px; margin-bottom:1rem; text-align:center; font-size:0.9rem; border: 1px solid var(--a3-accent); display:flex; align-items:center; justify-content:center; gap:0.5rem;";
+          banner.innerHTML =
+            '<i class="fa-solid fa-wifi-slash" style="color:var(--a3-warning);"></i> Não foi possível conectar ao servidor. Usando modo offline.';
+
+          const headerContent = document.getElementById("case-header-content");
+          headerContent.parentNode.insertBefore(banner, headerContent);
+        }
+
+        window._caseData = caseData;
+        currentCaseId = caseData.id;
+
+        // Update page meta
+        document.title = `${caseData.title} — Simulador AWS`;
+        document
+          .querySelector('meta[name="description"]')
+          .setAttribute(
+            "content",
+            caseData.scenario
+              ? caseData.scenario.slice(0, 160)
+              : caseData.title,
+          );
+
+        // Breadcrumb
+        document.getElementById("breadcrumb-title").textContent =
+          caseData.title;
+
+        // Header
+        const { label, cls } = getDifficultyInfo(caseData.difficulty);
+        const certBadges = Array.isArray(caseData.certifications)
+          ? caseData.certifications
+              .map((c) => `<span class="cert-tag">${c}</span>`)
+              .join("")
+          : "";
+
+        document.getElementById("case-main-title").textContent = caseData.title;
+        document.getElementById("case-meta").innerHTML = `
+          <span class="difficulty-badge ${cls}">${label}</span>
+          ${certBadges}`;
+
+        document.getElementById("case-header-loading").style.display = "none";
+        document.getElementById("case-header-content").style.display = "block";
+
+        // Scenario
+        document.getElementById("scenario-text").textContent =
+          caseData.scenario || "—";
+        document.getElementById("objective-text").textContent =
+          caseData.objective || "—";
+
+        // Explanation below architecture
+        document.getElementById("arch-explanation-text").textContent =
+          `Este diagrama mostra os componentes principais da arquitetura "${caseData.title}" ` +
+          `e como eles se conectam. Cada nó representa um serviço AWS. As setas indicam o fluxo ` +
+          `de dados ou a direção das chamadas entre os serviços.`;
+
+        // Services
+        renderServices(caseData.services);
+
+        // Questions
+        renderQuestions(caseData.questions);
+
+        // Resources
+        let resources = caseData.resources;
+        if (typeof resources === "string") {
+          try {
+            resources = JSON.parse(resources);
+          } catch {
+            resources = [];
+          }
+        }
+        renderResources(resources);
+
+        // Complete button state
+        if (isCompleted(caseData.id)) {
+          completeBtn.classList.add("completed");
+          completeBtn.innerHTML =
+            '<i class="fa-solid fa-circle-check"></i> Concluído!';
+          completeBtn.disabled = true;
+        }
+      }
+
+      loadCase();
+    </script>
+
+    <!-- ======================================================
+         ARCHITECTURE BUILDER — Drawflow + AWS Icons
+         ====================================================== -->
+    <script src="https://cdn.jsdelivr.net/npm/drawflow@0.0.60/dist/drawflow.min.js"></script>
+    <script>
+      // ================================================================
+      // Architecture Builder — AWS Service Catalog + Drawflow
+      // ================================================================
+
+      const AWS_PALETTE = [
+        // Compute
+        {
+          slug: "amazon-ec2",
+          name: "Amazon EC2",
+          category: "Compute",
+          icon: "https://icon.icepanel.io/AWS/svg/Compute/EC2.svg",
+        },
+        {
+          slug: "aws-lambda",
+          name: "AWS Lambda",
+          category: "Compute",
+          icon: "https://icon.icepanel.io/AWS/svg/Compute/Lambda.svg",
+        },
+        {
+          slug: "amazon-ecs",
+          name: "Amazon ECS",
+          category: "Compute",
+          icon: "https://icon.icepanel.io/AWS/svg/Containers/ECS.svg",
+        },
+        {
+          slug: "amazon-auto-scaling",
+          name: "Auto Scaling",
+          category: "Compute",
+          icon: "https://icon.icepanel.io/AWS/svg/Compute/Auto-Scaling.svg",
+        },
+        // Storage
+        {
+          slug: "amazon-s3",
+          name: "Amazon S3",
+          category: "Storage",
+          icon: "https://icon.icepanel.io/AWS/svg/Storage/S3.svg",
+        },
+        {
+          slug: "amazon-ebs",
+          name: "Amazon EBS",
+          category: "Storage",
+          icon: "https://icon.icepanel.io/AWS/svg/Storage/EBS.svg",
+        },
+        {
+          slug: "amazon-efs",
+          name: "Amazon EFS",
+          category: "Storage",
+          icon: "https://icon.icepanel.io/AWS/svg/Storage/EFS.svg",
+        },
+        // Database
+        {
+          slug: "amazon-rds",
+          name: "Amazon RDS",
+          category: "Database",
+          icon: "https://icon.icepanel.io/AWS/svg/Database/RDS.svg",
+        },
+        {
+          slug: "amazon-dynamodb",
+          name: "DynamoDB",
+          category: "Database",
+          icon: "https://icon.icepanel.io/AWS/svg/Database/DynamoDB.svg",
+        },
+        {
+          slug: "amazon-elasticache",
+          name: "ElastiCache",
+          category: "Database",
+          icon: "https://icon.icepanel.io/AWS/svg/Database/ElastiCache.svg",
+        },
+        // Networking
+        {
+          slug: "amazon-vpc",
+          name: "Amazon VPC",
+          category: "Networking",
+          icon: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/VPC.svg",
+        },
+        {
+          slug: "amazon-cloudfront",
+          name: "CloudFront",
+          category: "Networking",
+          icon: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/CloudFront.svg",
+        },
+        {
+          slug: "amazon-api-gateway",
+          name: "API Gateway",
+          category: "Networking",
+          icon: "https://icon.icepanel.io/AWS/svg/App-Integration/API-Gateway.svg",
+        },
+        {
+          slug: "elastic-load-balancing",
+          name: "Load Balancer",
+          category: "Networking",
+          icon: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/Elastic-Load-Balancing.svg",
+        },
+        {
+          slug: "amazon-route53",
+          name: "Route 53",
+          category: "Networking",
+          icon: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/Route-53.svg",
+        },
+        // Security
+        {
+          slug: "aws-iam",
+          name: "AWS IAM",
+          category: "Security",
+          icon: "https://icon.icepanel.io/AWS/svg/Security-Identity-Compliance/IAM.svg",
+        },
+        {
+          slug: "aws-kms",
+          name: "AWS KMS",
+          category: "Security",
+          icon: "https://icon.icepanel.io/AWS/svg/Security-Identity-Compliance/Key-Management-Service.svg",
+        },
+        {
+          slug: "aws-waf",
+          name: "AWS WAF",
+          category: "Security",
+          icon: "https://icon.icepanel.io/AWS/svg/Security-Identity-Compliance/WAF.svg",
+        },
+        // Messaging
+        {
+          slug: "amazon-sqs",
+          name: "Amazon SQS",
+          category: "Messaging",
+          icon: "https://icon.icepanel.io/AWS/svg/App-Integration/SQS.svg",
+        },
+        {
+          slug: "amazon-sns",
+          name: "Amazon SNS",
+          category: "Messaging",
+          icon: "https://icon.icepanel.io/AWS/svg/App-Integration/SNS.svg",
+        },
+        // Monitoring
+        {
+          slug: "amazon-cloudwatch",
+          name: "CloudWatch",
+          category: "Monitoring",
+          icon: "https://icon.icepanel.io/AWS/svg/Management-Governance/CloudWatch.svg",
+        },
+        {
+          slug: "aws-cloudtrail",
+          name: "CloudTrail",
+          category: "Monitoring",
+          icon: "https://icon.icepanel.io/AWS/svg/Management-Governance/CloudTrail.svg",
+        },
+        // Users / External
+        {
+          slug: "user",
+          name: "Usuário / Client",
+          category: "External",
+          icon: "https://icon.icepanel.io/AWS/svg/General/User.svg",
+        },
+        {
+          slug: "internet",
+          name: "Internet",
+          category: "External",
+          icon: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/Internet-Gateway.svg",
+        },
+      ];
+
+      // ----------------------------------------------------------------
+      // Build sidebar palette
+      // ----------------------------------------------------------------
+      function buildPalette() {
+        const container = document.getElementById("aws-service-palette");
+        if (!container) return;
+
+        const groups = {};
+        for (const svc of AWS_PALETTE) {
+          if (!groups[svc.category]) groups[svc.category] = [];
+          groups[svc.category].push(svc);
+        }
+
+        let html = "";
+        for (const [cat, items] of Object.entries(groups)) {
+          html += `<div class="palette-group-label">${cat}</div>`;
+          for (const item of items) {
+            html += `
+              <div
+                class="palette-item"
+                draggable="true"
+                data-slug="${item.slug}"
+                data-name="${item.name}"
+                data-category="${item.category}"
+                data-icon="${item.icon}"
+                title="Arrastar: ${item.name}"
+              >
+                <img class="palette-item-img" src="${item.icon}" alt="${item.name}" loading="lazy"
+                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><text y=%2232%22 font-size=%2228%22>☁️</text></svg>'" />
+                <span class="palette-item-text">${item.name}</span>
+              </div>`;
+          }
+        }
+        container.innerHTML = html;
+
+        // Drag events on palette items
+        container.querySelectorAll(".palette-item").forEach((el) => {
+          el.addEventListener("dragstart", (e) => {
+            e.dataTransfer.setData(
+              "application/aws-service",
+              JSON.stringify({
+                slug: el.dataset.slug,
+                name: el.dataset.name,
+                category: el.dataset.category,
+                icon: el.dataset.icon,
+              }),
+            );
+          });
+        });
+      }
+
+      // ----------------------------------------------------------------
+      // Drawflow initializer (lazy — only when builder tab first opens)
+      // ----------------------------------------------------------------
+      let drawflowEditor = null;
+      let builderInitialized = false;
+      let nodeCount = 0;
+
+      function nodeTemplate(svc) {
+        return `
+          <div class="aws-node-inner">
+            <img src="${svc.icon}" alt="${svc.name}"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><text y=%2232%22 font-size=%2228%22>☁️</text></svg>'" />
+            <div class="aws-node-name">${svc.name}</div>
+            <div class="aws-node-cat">${svc.category}</div>
+          </div>`;
+      }
+
+      function initBuilder() {
+        if (builderInitialized) return;
+        builderInitialized = true;
+
+        const el = document.getElementById("drawflow");
+        drawflowEditor = new Drawflow(el);
+        drawflowEditor.reroute = true;
+        drawflowEditor.reroute_fix_curvature = true;
+        drawflowEditor.start();
+
+        // Drop on canvas
+        el.addEventListener("dragover", (e) => e.preventDefault());
+        el.addEventListener("drop", (e) => {
+          e.preventDefault();
+          const raw = e.dataTransfer.getData("application/aws-service");
+          if (!raw) return;
+          const svc = JSON.parse(raw);
+
+          const rect = el.getBoundingClientRect();
+          const zoom = drawflowEditor.zoom;
+          const x =
+            (e.clientX - rect.left) / zoom - drawflowEditor.canvas_x / zoom;
+          const y =
+            (e.clientY - rect.top) / zoom - drawflowEditor.canvas_y / zoom;
+
+          drawflowEditor.addNode(
+            svc.slug,
+            1,
+            1, // inputs, outputs
+            x - 65,
+            y - 55,
+            svc.slug,
+            { svc },
+            nodeTemplate(svc),
+          );
+
+          nodeCount++;
+          updateHint();
+          setStatus(`Nó adicionado: ${svc.name}`);
+        });
+
+        // Right-click to delete node
+        el.addEventListener("contextmenu", (e) => {
+          const nodeEl = e.target.closest(".drawflow-node");
+          if (nodeEl) {
+            e.preventDefault();
+            const id = parseInt(nodeEl.id.replace("node-", ""), 10);
+            drawflowEditor.removeNodeId("node-" + id);
+            nodeCount = Math.max(0, nodeCount - 1);
+            updateHint();
+            setStatus("Nó removido.");
+          }
+        });
+      }
+
+      function updateHint() {
+        const hint = document.getElementById("builder-empty-hint");
+        if (hint) hint.style.display = nodeCount === 0 ? "flex" : "none";
+      }
+
+      function setStatus(msg) {
+        const el = document.getElementById("builder-status");
+        if (el) {
+          el.textContent = msg;
+          clearTimeout(el._t);
+          el._t = setTimeout(() => {
+            el.textContent = "";
+          }, 3000);
+        }
+      }
+
+      // ----------------------------------------------------------------
+      // Toolbar actions & Challenge Logic
+      // ----------------------------------------------------------------
+      document
+        .getElementById("builder-btn-clear")
+        .addEventListener("click", () => {
+          if (!drawflowEditor) return;
+          if (!confirm("Limpar todo o canvas?")) return;
+          drawflowEditor.clearModuleSelected();
+          nodeCount = 0;
+          updateHint();
+          setStatus("Canvas limpo.");
+          hideResult();
+        });
+
+      document
+        .getElementById("builder-btn-export")
+        .addEventListener("click", () => {
+          if (!drawflowEditor) {
+            alert("Abra o montador e adicione serviços primeiro.");
+            return;
+          }
+          const data = drawflowEditor.export();
+          const blob = new Blob([JSON.stringify(data, null, 2)], {
+            type: "application/json",
+          });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `arquitetura-${Date.now()}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+          setStatus("JSON exportado!");
+        });
+
+      // Verification Logic
+      document
+        .getElementById("builder-btn-verify")
+        .addEventListener("click", () => {
+          if (!drawflowEditor) return;
+          if (nodeCount === 0) {
+            alert("Adicione pelo menos um serviço ao canvas para verificar.");
+            return;
+          }
+
+          const data = drawflowEditor.export();
+          const nodesOnCanvas = Object.values(data.drawflow.Home.data);
+
+          // extrair slugs
+          const userSlugs = new Set(nodesOnCanvas.map((n) => n.name));
+          const correctSlugsMap = new Map();
+          if (window._caseData && window._caseData.services) {
+            window._caseData.services.forEach((s) => {
+              correctSlugsMap.set(s.slug, s);
+            });
+          }
+
+          const correct = [];
+          const missing = [];
+          const extra = [];
+
+          // Find correct and extra
+          for (const userSlug of userSlugs) {
+            // Find in palette to get nice names/icons
+            let svcInfo = AWS_PALETTE.find((p) => p.slug === userSlug) || {
+              name: userSlug,
+              icon: "",
+            };
+            if (correctSlugsMap.has(userSlug)) {
+              correct.push(svcInfo);
+            } else {
+              extra.push(svcInfo);
+            }
+          }
+
+          // Find missing
+          for (const [correctSlug, correctSvc] of correctSlugsMap.entries()) {
+            if (!userSlugs.has(correctSlug)) {
+              let svcInfo = AWS_PALETTE.find((p) => p.slug === correctSlug) || {
+                name: correctSvc.name,
+                icon: correctSvc.icon_url,
+              };
+              missing.push(svcInfo);
+            }
+          }
+
+          const totalExpected = correctSlugsMap.size;
+          const score =
+            totalExpected === 0
+              ? 100
+              : Math.round((correct.length / totalExpected) * 100);
+
+          showResult(score, correct, missing, extra);
+          setStatus("Verificação concluída!");
+        });
+
+      function showResult(score, correct, missing, extra) {
+        document.getElementById("builder-phase-banner").style.display = "none";
+        const resultPanel = document.getElementById("builder-result-panel");
+        resultPanel.classList.add("visible");
+
+        const circle = document.getElementById("builder-score-circle");
+        circle.className = "builder-score-circle"; // reset
+        if (score >= 70) {
+          circle.classList.add("builder-score-circle--pass");
+          document.getElementById("builder-score-title").textContent =
+            "Bom trabalho!";
+        } else {
+          circle.classList.add("builder-score-circle--fail");
+          document.getElementById("builder-score-title").textContent =
+            "Precisa melhorar";
+        }
+
+        document.getElementById("builder-score-pct").textContent = `${score}%`;
+        document.getElementById("builder-score-sub").textContent =
+          `Você acertou ${correct.length} de ${correct.length + missing.length} serviços essenciais.`;
+
+        let listsHtml = "";
+        if (correct.length > 0) {
+          listsHtml += `<div class="builder-result-group builder-result-group--correct">
+                <div class="builder-result-group-title"><i class="fa-solid fa-check"></i> Corretos (${correct.length})</div>
+                ${correct.map((s) => `<div class="builder-result-item"><img src="${s.icon}" alt="">${s.name}</div>`).join("")}
+            </div>`;
+        }
+        if (missing.length > 0) {
+          listsHtml += `<div class="builder-result-group builder-result-group--missing">
+                <div class="builder-result-group-title"><i class="fa-solid fa-xmark"></i> Faltando (${missing.length})</div>
+                ${missing.map((s) => `<div class="builder-result-item"><img src="${s.icon}" alt="">${s.name}</div>`).join("")}
+            </div>`;
+        }
+        if (extra.length > 0) {
+          listsHtml += `<div class="builder-result-group builder-result-group--extra">
+                <div class="builder-result-group-title"><i class="fa-solid fa-triangle-exclamation"></i> Desnecessários (${extra.length})</div>
+                ${extra.map((s) => `<div class="builder-result-item"><img src="${s.icon}" alt="">${s.name}</div>`).join("")}
+            </div>`;
+        }
+
+        document.getElementById("builder-result-lists").innerHTML = listsHtml;
+        resultPanel.scrollIntoView({ behavior: "smooth" });
+      }
+
+      function hideResult() {
+        document.getElementById("builder-phase-banner").style.display = "flex";
+        document
+          .getElementById("builder-result-panel")
+          .classList.remove("visible");
+        document.getElementById("builder-gabarito").classList.remove("visible");
+      }
+
+      document
+        .getElementById("builder-btn-retry")
+        .addEventListener("click", () => {
+          hideResult();
+        });
+
+      document
+        .getElementById("builder-btn-gabarito")
+        .addEventListener("click", () => {
+          const gabaritoPanel = document.getElementById("builder-gabarito");
+          gabaritoPanel.classList.add("visible");
+
+          // Renderiza o diagrama oficial no painel de gabarito se ainda não renderizou
+          if (window._caseData && window._caseData.architecture_graph) {
+            const container = document.getElementById(
+              "builder-gabarito-diagram",
+            );
+            if (!container.dataset.rendered) {
+              container.dataset.rendered = "true";
+              // Importa renderArchitecture dinamicamente para usar dentro deste bloco
+              import("./js/cases/architectureRenderer.js").then(
+                ({ renderArchitecture }) => {
+                  renderArchitecture(
+                    container,
+                    window._caseData.architecture_graph,
+                  );
+                },
+              );
+            }
+          }
+
+          gabaritoPanel.scrollIntoView({ behavior: "smooth" });
+        });
+
+      // ----------------------------------------------------------------
+      // Hook: activate builder when its tab is clicked
+      // ----------------------------------------------------------------
+      document
+        .getElementById("tab-btn-builder")
+        .addEventListener("click", () => {
+          setTimeout(() => {
+            initBuilder();
+          }, 50); // small delay so the tab panel is visible before drawflow measures it
+        });
+
+      // Build palette immediately
+      buildPalette();
+    </script>
+  </body>
+</html>

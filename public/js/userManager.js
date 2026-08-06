@@ -13,7 +13,7 @@ import { logger } from "./utils/logger.js";
  * @module userManager
  */
 
-import apiService from "../services/api.js";
+import apiService from "./services/api.js";
 
 /** @type {string} Chave única de sessão no localStorage */
 const SESSION_KEY = "cloudacademy_user";
