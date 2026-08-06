@@ -79,7 +79,7 @@ let uiState = {
   timeRemaining: 0,
   isPaused: false,
   tempSelectedAnswer: null,
-  language: localStorage.getItem("aws_sim_lang") || "pt",
+  language: "pt", // Será sobreposto logo no boot pela session
   flashcardIndex: 0,
   flashcardFlipped: false,
   currentMode: "exam", // 'exam', 'review', 'mission'
@@ -154,13 +154,8 @@ function showLoginUI() {
         return;
       }
 
-      const emailLower = email.toLowerCase();
-      const isA3data =
-        emailLower.endsWith("@a3data.com.br") ||
-        emailLower.endsWith("@a3data.com");
-
-      if (!isA3data) {
-        showError("Acesso restrito a emails @a3data.com.br.");
+      if (!userManager.isValidCorporateEmail(email)) {
+        showError("Acesso restrito a emails @a3data.com.br ou @a3data.com.");
         return;
       }
 
@@ -261,6 +256,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // inline authGuard de cada página.
     authenticatedUser = AuthService.getCurrentUser();
     if (authenticatedUser) {
+      uiState.language = authenticatedUser.language || "pt";
       await quizManager.initialize(authenticatedUser.id);
     }
   }
@@ -316,7 +312,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // após um reload — ex.: trilha desenha cards "saa-1" enquanto o select está
   // em "clf-c02", e startMission("saa-1") não encontra o módulo na trilha CLF.
   if (certSelect && certificationPaths) {
-    const savedCert = localStorage.getItem("aws_sim_cert");
+    const savedCert = authenticatedUser ? authenticatedUser.certification : null;
     const savedCertIsValid =
       savedCert &&
       certificationPaths[savedCert] &&
@@ -327,8 +323,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (certSelect.value !== savedCert) certSelect.value = savedCert;
     } else if (certificationPaths[certSelect.value]) {
       // Primeira visita (ou valor inválido): persiste a certificação que o
-      // select já exibe, mantendo select e aws_sim_cert consistentes.
-      localStorage.setItem("aws_sim_cert", certSelect.value);
+      // select já exibe.
+      userManager.updatePreferences({ certification: certSelect.value });
     }
   }
 
@@ -354,7 +350,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const certId = certSelect.value;
 
         // 1. Salva a certificação no cache para as outras telas saberem
-        localStorage.setItem("aws_sim_cert", certId);
+        userManager.updatePreferences({ certification: certId });
 
         updateTopicDropdown();
         loadLastScore();
@@ -432,7 +428,7 @@ function getActiveCertificationId() {
   return (
     engine.state?.certId ||
     document.getElementById("certification-select")?.value ||
-    localStorage.getItem("aws_sim_cert") ||
+    (AuthService.getCurrentUser()?.certification) ||
     ""
   );
 }
@@ -615,7 +611,7 @@ async function startWeakestDomainQuiz(domainId, certId) {
   if (certSelect && certId && certificationPaths[certId]) {
     if (certSelect.value !== certId) {
       certSelect.value = certId;
-      localStorage.setItem("aws_sim_cert", certId);
+      userManager.updatePreferences({ certification: certId });
       uiState.currentCertificationInfo = certificationPaths[certId];
       updateTopicDropdown();
       loadLastScore();
@@ -900,7 +896,7 @@ async function startPersonalizedDiagnosticQuiz() {
     const certSelect = document.getElementById("certification-select");
     if (certSelect && certSelect.value !== certId) {
       certSelect.value = certId;
-      localStorage.setItem("aws_sim_cert", certId);
+      userManager.updatePreferences({ certification: certId });
       uiState.currentCertificationInfo = currentCertInfo;
       updateTopicDropdown();
       loadLastScore();
@@ -2582,7 +2578,7 @@ function toggleLanguage() {
   // 1. Troca o idioma global
   // ══════════════════════════════════════════════════════════════
   uiState.language = uiState.language === "pt" ? "en" : "pt";
-  localStorage.setItem("aws_sim_lang", uiState.language);
+  userManager.updatePreferences({ language: uiState.language });
 
   // ══════════════════════════════════════════════════════════════
   // 2. Atualiza o botão de idioma
@@ -3045,7 +3041,7 @@ function updateSidebarProgress() {
   const gamification = storageManager.getGamification();
   const certSelect = document.getElementById("certification-select");
   const currentLang =
-    uiState.language || localStorage.getItem("aws_sim_lang") || "pt";
+    uiState.language || (AuthService.getCurrentUser()?.language) || "pt";
 
   // Tratamento absoluto contra undefined
   let currentCertId =

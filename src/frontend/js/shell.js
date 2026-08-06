@@ -16,6 +16,7 @@
  * UserMenu e a Sidebar sejam populados com os dados do usuário logado.
  */
 
+import { PermissionService } from "./services/permissions.js";
 import { logger } from "./utils/logger.js";
 import { userManager } from "./userManager.js";
 import { AuthService } from "./services/authService.js";
@@ -223,7 +224,7 @@ function _syncThemeIcon(isDark) {
  * Atualiza o visual do botão de idioma conforme o valor salvo.
  */
 export function syncLanguageButtonShell() {
-  const lang = localStorage.getItem(LANG_KEY) || "pt";
+  const lang = AuthService.getCurrentUser()?.language || "pt";
   const btn = document.getElementById("btn-language");
   if (!btn) return;
   btn.innerHTML =
@@ -419,14 +420,19 @@ export function buildSidebar(user) {
   const sidebar = document.getElementById("left-sidebar");
   if (!sidebar) return;
 
-  const role = (user?.role || "STUDENT").toUpperCase();
-  const isAdmin = role === "ADMIN";
+  const isAdmin = PermissionService.isAdmin(user);
 
   // Separa itens normais dos itens de rodapé
   const allVisible = SIDEBAR_ITEMS.filter((item) => {
     if (item.roles.includes("*")) return true;
-    if (item.roles.includes(role)) return true;
-    if (isAdmin) return true;
+    
+    // Se o item exigir papéis específicos, validamos usando o PermissionService
+    for (const requiredRole of item.roles) {
+      if (PermissionService.hasAccess(user, requiredRole.toLowerCase())) {
+        return true;
+      }
+    }
+    
     return false;
   });
 

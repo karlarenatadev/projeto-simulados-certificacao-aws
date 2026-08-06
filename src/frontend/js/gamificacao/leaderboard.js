@@ -1,12 +1,14 @@
 import { logger } from "../utils/logger.js";
 import apiService from "../services/api.js";
 import { storageManager } from "../storageManager.js";
+import { AuthService } from "../services/authService.js";
 
 export async function renderGuildDashboard() {
   const list = document.getElementById("guild-leaderboard");
   if (!list) return;
 
-  const currentLang = localStorage.getItem("aws_sim_lang") || "pt";
+  const currentUser = AuthService.getCurrentUser();
+  const currentLang = currentUser?.language || "pt";
 
   // Loading state
   list.innerHTML = `
@@ -16,19 +18,8 @@ export async function renderGuildDashboard() {
         </li>
     `;
 
-  // Identidade do usuário atual — lê da chave unificada cloudacademy_user
-  let myUserId = null;
-  let myNickname = null;
-  try {
-    const sessionRaw = localStorage.getItem("cloudacademy_user");
-    if (sessionRaw) {
-      const session = JSON.parse(sessionRaw);
-      myUserId = session.id || null;
-      myNickname = session.nickname || session.email?.split("@")[0] || null;
-    }
-  } catch {
-    // Sessão corrompida — ignora
-  }
+  let myUserId = currentUser?.id || null;
+  let myNickname = currentUser?.name || currentUser?.email?.split("@")[0] || null;
 
   const gamificationData = storageManager.getGamification();
   const myBestScore = gamificationData?.bestScore || 0;

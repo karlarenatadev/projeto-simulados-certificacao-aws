@@ -536,6 +536,7 @@
         getApiStatus,
       } from "./js/cases/caseManager.js";
       import { renderArchitecture } from "./js/cases/architectureRenderer.js";
+      import { AuthService } from "./js/services/authService.js";
 
       // ---- Theme ----
       const themeToggle = document.getElementById("theme-toggle");
@@ -924,17 +925,7 @@
       completeBtn.addEventListener("click", async () => {
         if (!currentCaseId) return;
 
-        // Lê o usuário pelo mesmo schema usado pelo userManager (chave: cloudacademy_user)
-        let userId = "anonymous";
-        try {
-          const stored = localStorage.getItem("cloudacademy_user");
-          if (stored) {
-            const parsed = JSON.parse(stored);
-            userId = parsed.id || parsed.userId || parsed.email || "anonymous";
-          }
-        } catch {
-          userId = "anonymous";
-        }
+        let userId = AuthService.getCurrentUser()?.id || "anonymous";
 
         completeBtn.disabled = true;
         completeBtn.innerHTML =

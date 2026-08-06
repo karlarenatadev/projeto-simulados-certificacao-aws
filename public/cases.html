@@ -236,7 +236,7 @@
 
     <script type="module">
       import { initShell } from "./js/shell.js";
-      import { AuthService } from "./js/services/authService.js";
+      import { authGuard } from "./js/core/authGuard.js";
       import {
         getCases,
         getDifficultyInfo,
@@ -327,11 +327,9 @@
 
       // ── Init ──────────────────────────────────────────────────────────────
       document.addEventListener("DOMContentLoaded", async () => {
-        const user = await AuthService.restoreSession();
-        if (!user) {
-          window.location.replace("./index.html");
-          return;
-        }
+        const session = authGuard();
+        if (!session) return;
+        const user = session.user;
         initShell(user);
 
         // Carrega os cases inicialmente
