@@ -161,9 +161,48 @@ Design System Grid, Container and Core Structures
     height: auto;
   }
 
-  /* Headers das páginas secundárias: fonte menor em mobile */
   h2.text-2xl,
   h2.text-3xl {
     font-size: var(--text-xl) !important;
   }
+}
+
+/* ── Ajustes de Espaçamento e Bordas (Commit 1) ────────────────────────── */
+
+/* Aumenta o respiro do wrapper principal */
+#main-content-wrapper {
+  gap: var(--space-32) !important;
+  padding-top: var(--space-32);
+  padding-bottom: var(--space-32);
+}
+
+/* Telas principais (Hub, Diagnóstico, etc) */
+#screen-hub,
+#screen-diagnostic,
+#screen-flashcards,
+#screen-journey {
+  padding: var(--space-32) !important;
+}
+
+/* Espaçamento da sidebar */
+#side-info {
+  gap: var(--space-32) !important;
+}
+
+/* Ajustes nos grids internos dos módulos */
+#jornada-dashboard-grid {
+  gap: var(--space-24) !important;
+}
+
+#jornada-dashboard-grid > div {
+  padding: var(--space-24) !important;
+}
+
+/* Containers centrais para não colarem nas bordas (Raio X, Flashcards) */
+#diagnostic-report .a3-card {
+  padding: var(--space-32) !important;
+}
+
+.flashcard-container {
+  padding: var(--space-24) !important;
 }
