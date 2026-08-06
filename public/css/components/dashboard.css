@@ -36,7 +36,24 @@
   height: 100%;
   background-color: var(--a3-tech-blue);
   border-radius: var(--radius-full);
-  transition: width 0.5s ease-in-out;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer na barra de progresso em movimento */
+.a3-progress-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, #fff 20%, transparent) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s linear infinite;
+  background-size: 200% 100%;
 }
 
 .a3-progress-bar.success {

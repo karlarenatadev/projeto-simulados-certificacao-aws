@@ -466,6 +466,296 @@ textarea {
   }
 }
 
+/* ── UX POLISH ─────────────────────────────────────────────────────────── */
+
+/* Scrollbar global refinada */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--a3-border-default) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--a3-border-default);
+  border-radius: var(--radius-full);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--a3-tech-blue) 50%, var(--a3-border-default));
+}
+
+/* Skeleton shimmer aprimorado */
+.case-card-skeleton,
+.skeleton-line,
+[class*="skeleton"] {
+  background: var(--a3-skeleton-bg) !important;
+  background-size: var(--a3-skeleton-size) !important;
+  animation: shimmer 1.6s linear infinite !important;
+  border-radius: var(--radius-md);
+}
+
+.dark .case-card-skeleton,
+.dark .skeleton-line,
+.dark [class*="skeleton"] {
+  --a3-skeleton-bg: linear-gradient(
+    90deg,
+    color-mix(in srgb, #ffffff 6%, transparent) 25%,
+    color-mix(in srgb, #ffffff 12%, transparent) 50%,
+    color-mix(in srgb, #ffffff 6%, transparent) 75%
+  );
+}
+
+/* Empty states uniformes */
+.a3-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-48) var(--space-32);
+  text-align: center;
+  color: var(--text-muted);
+  gap: var(--space-12);
+  animation: fadeIn 0.3s ease;
+}
+
+.a3-empty-state i {
+  font-size: 2.5rem;
+  opacity: 0.3;
+  margin-bottom: var(--space-8);
+}
+
+.a3-empty-state p {
+  font-size: var(--text-sm);
+  max-width: 280px;
+  line-height: 1.6;
+}
+
+/* Login overlay — melhor legibilidade */
+#login-overlay .bg-white {
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25) !important;
+}
+
+#login-email-input:focus {
+  box-shadow: var(--a3-focus-ring) !important;
+}
+
+/* Quiz option-card — active state e touch feedback */
+.option-card:active:not(.disabled) {
+  transform: translateX(3px) scale(0.99);
+}
+
+/* HUB — lh-feature-items: active state e foco */
+.lh-feature-item {
+  transition: background-color var(--a3-transition-base),
+              transform var(--a3-transition-fast),
+              box-shadow var(--a3-transition-base),
+              border-color var(--a3-transition-base) !important;
+}
+
+.lh-feature-item:focus-visible {
+  outline: none !important;
+  box-shadow: inset 0 0 0 2px var(--a3-tech-blue) !important;
+}
+
+.lh-feature-item:active {
+  transform: translateX(1px) scale(0.99) !important;
+}
+
+/* HUB — quick actions active e focus */
+.lh-quick-btn {
+  transition: background-color var(--a3-transition-base),
+              transform var(--a3-transition-fast),
+              box-shadow var(--a3-transition-base),
+              border-color var(--a3-transition-base) !important;
+}
+
+.lh-quick-btn:hover {
+  box-shadow: var(--a3-shadow-hover) !important;
+}
+
+.lh-quick-btn:active {
+  transform: translateY(0) !important;
+}
+
+.lh-quick-btn:focus-visible {
+  outline: none !important;
+  box-shadow: var(--a3-focus-ring) !important;
+}
+
+/* HUB — lh-metric-item hover */
+.lh-metric-item {
+  transition: transform var(--a3-transition-base),
+              box-shadow var(--a3-transition-base) !important;
+}
+
+.lh-metric-item:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: var(--a3-shadow-sm) !important;
+}
+
+/* Cases — case-card shimmer e done-badge */
+.case-done-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--a3-success);
+  background: color-mix(in srgb, var(--a3-success) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--a3-success) 25%, transparent);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+/* Sidebar widgets — hover refinado */
+#side-info .a3-card {
+  transition: transform var(--a3-transition-base),
+              box-shadow var(--a3-transition-base),
+              border-color var(--a3-transition-base) !important;
+}
+
+#side-info .a3-card:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: var(--a3-shadow-hover) !important;
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 20%, var(--border-theme)) !important;
+}
+
+/* Profile badges grid — entrada animada */
+#profile-badges-grid > div {
+  animation: scaleIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+#profile-badges-grid > div:nth-child(1) { animation-delay: 0.02s; }
+#profile-badges-grid > div:nth-child(2) { animation-delay: 0.06s; }
+#profile-badges-grid > div:nth-child(3) { animation-delay: 0.10s; }
+#profile-badges-grid > div:nth-child(4) { animation-delay: 0.14s; }
+
+/* History list items — hover sutil */
+#history-list > div,
+.feedback-item {
+  transition: background-color var(--a3-transition-fast) !important;
+  border-radius: var(--radius-md);
+}
+
+#history-list > div:hover {
+  background-color: var(--a3-surface-soft) !important;
+}
+
+/* Footer — linha divisória sutil */
+footer.w-full {
+  border-top: 1px solid var(--border-theme) !important;
+}
+
+/* Btn-language no header — width mínima para evitar CLS */
+#btn-language {
+  min-width: 60px;
+}
+
+/* Pomodoro widget — entrada animada */
+#pomodoro-widget {
+  transition: opacity var(--a3-transition-base),
+              transform var(--a3-transition-base);
+}
+
+#pomodoro-widget:not(.hidden) {
+  animation: slideUp 0.25s ease both;
+}
+
+/* Inputs focus globais refinados — consistência com tokens */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  box-shadow: var(--a3-focus-ring) !important;
+  border-color: var(--a3-tech-blue) !important;
+}
+
+/* Selects nativos com aparência consistente */
+select {
+  cursor: pointer;
+}
+
+/* Tags/badges — transição de hover */
+.cert-tag,
+.difficulty-badge {
+  transition: opacity var(--a3-transition-fast),
+              transform var(--a3-transition-fast);
+}
+
+/* Responsividade mobile 375px — ajustes de padding refinados */
+@media (max-width: 400px) {
+  .profile-main,
+  .settings-main {
+    padding-left: var(--space-12) !important;
+    padding-right: var(--space-12) !important;
+  }
+
+  .settings-toast {
+    bottom: var(--space-12);
+    right: var(--space-12);
+    left: var(--space-12);
+  }
+
+  .lh-banner {
+    padding: var(--space-16) !important;
+  }
+
+  .lh-banner-actions {
+    flex-direction: column;
+    gap: var(--space-8) !important;
+  }
+
+  .lh-banner-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Tablet 768px — grade de métricas do hub em 4 colunas */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .lh-metrics-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Tela grande — hub usa espaço melhor */
+@media (min-width: 1366px) {
+  .lh-grid {
+    gap: 1.75rem;
+  }
+
+  .lh-banner {
+    padding: 2rem 2.25rem;
+  }
+}
+
+/* Linha de progresso do sprint com gradiente */
+#sidebar-pct-bar {
+  background: linear-gradient(90deg, var(--a3-tech-blue), var(--a3-sky-frost)) !important;
+  border-radius: var(--radius-full) !important;
+}
+
+/* ── FIM UX POLISH ─────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ── Impressão (Print) ─────────────────────────────────────────────────── */
 
 @media print {

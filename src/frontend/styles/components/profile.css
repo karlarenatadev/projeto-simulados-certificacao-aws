@@ -103,10 +103,27 @@
   gap: var(--space-8);
   padding: var(--space-16);
   text-align: center;
+  transition: transform var(--a3-transition-base),
+              box-shadow var(--a3-transition-base);
+  animation: slideUp 0.35s ease both;
+}
+
+.profile-stat-card:nth-child(2) { animation-delay: 0.05s; }
+.profile-stat-card:nth-child(3) { animation-delay: 0.10s; }
+.profile-stat-card:nth-child(4) { animation-delay: 0.15s; }
+
+.profile-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--a3-shadow-hover);
 }
 
 .profile-stat-icon {
   font-size: var(--text-2xl);
+  transition: transform var(--a3-transition-base);
+}
+
+.profile-stat-card:hover .profile-stat-icon {
+  transform: scale(1.15);
 }
 
 .profile-stat-icon-quiz {
@@ -130,6 +147,7 @@
   font-weight: 800;
   color: var(--text-strong);
   margin: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 .profile-stat-label {

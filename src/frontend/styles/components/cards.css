@@ -7,18 +7,42 @@ Design System Cards
   background-color: var(--bg-card);
   border: 1px solid var(--border-theme);
   border-radius: var(--radius-lg);
-  box-shadow: var(--a3-shadow-card);
+  box-shadow: var(--a3-shadow-sm);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform var(--a3-transition-base),
+              box-shadow var(--a3-transition-base),
+              border-color var(--a3-transition-base);
 }
 
-.a3-card-interactive:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--a3-shadow-action);
-  border-color: var(--a3-tech-blue);
+/* Cards interativos com hover visual uniforme */
+.a3-card-interactive,
+a.a3-card,
+button.a3-card {
   cursor: pointer;
+}
+
+.a3-card-interactive:hover,
+a.a3-card:hover,
+button.a3-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--a3-shadow-hover);
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 35%, var(--border-theme));
+}
+
+.a3-card-interactive:focus-visible,
+a.a3-card:focus-visible,
+button.a3-card:focus-visible {
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
+}
+
+.a3-card-interactive:active,
+a.a3-card:active,
+button.a3-card:active {
+  transform: translateY(0);
+  box-shadow: var(--a3-shadow-sm);
 }
 
 .a3-card-header {

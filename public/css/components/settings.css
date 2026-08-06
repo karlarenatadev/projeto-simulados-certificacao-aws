@@ -72,10 +72,15 @@
   padding: var(--space-16) var(--space-16);
   border-bottom: 1px solid var(--a3-border-soft);
   min-height: 56px;
+  transition: background-color var(--a3-transition-fast);
 }
 
 .settings-item:last-child {
   border-bottom: none;
+}
+
+.settings-item:not(.settings-item-danger):hover {
+  background-color: var(--a3-surface-soft);
 }
 
 .settings-item-icon {
@@ -115,21 +120,24 @@
 
 .settings-input {
   padding: var(--space-8) var(--space-12);
-  border: 1px solid var(--a3-border-default);
+  border: 1.5px solid var(--a3-border-default);
   border-radius: var(--radius-md);
   font-size: var(--text-sm);
   background-color: var(--a3-surface);
   color: var(--text-strong);
   min-width: 160px;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: border-color var(--a3-transition-fast),
+              box-shadow var(--a3-transition-fast);
+}
+
+.settings-input:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 40%, var(--a3-border-default));
 }
 
 .settings-input:focus {
   outline: none;
   border-color: var(--a3-tech-blue);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--a3-tech-blue) 15%, transparent);
+  box-shadow: var(--a3-focus-ring);
 }
 
 .dark .settings-input {
@@ -144,19 +152,24 @@
 
 .settings-select {
   padding: var(--space-8) var(--space-12);
-  border: 1px solid var(--a3-border-default);
+  border: 1.5px solid var(--a3-border-default);
   border-radius: var(--radius-md);
   font-size: var(--text-sm);
   background-color: var(--a3-surface);
   color: var(--text-strong);
   cursor: pointer;
-  transition: border-color 0.15s ease;
+  transition: border-color var(--a3-transition-fast),
+              box-shadow var(--a3-transition-fast);
+}
+
+.settings-select:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 40%, var(--a3-border-default));
 }
 
 .settings-select:focus {
   outline: none;
   border-color: var(--a3-tech-blue);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--a3-tech-blue) 15%, transparent);
+  box-shadow: var(--a3-focus-ring);
 }
 
 .dark .settings-select {
@@ -252,23 +265,36 @@
   border-radius: var(--radius-lg);
   font-size: var(--text-sm);
   font-weight: 600;
-  box-shadow: var(--a3-shadow-card);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--a3-success) 30%, transparent),
+              var(--a3-shadow-card);
   display: flex;
   align-items: center;
   gap: var(--space-8);
   opacity: 0;
-  transform: translateY(var(--space-8));
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+  transform: translateY(var(--space-16)) scale(0.95);
+  transition: opacity 0.22s ease,
+              transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   pointer-events: none;
+  min-width: 200px;
+  max-width: min(320px, calc(100vw - 48px));
 }
 
 .settings-toast.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .settings-toast-danger {
   background-color: var(--a3-danger);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--a3-danger) 30%, transparent),
+              var(--a3-shadow-card);
+}
+
+@media (max-width: 480px) {
+  .settings-toast {
+    bottom: var(--space-16);
+    right: var(--space-16);
+    left: var(--space-16);
+    max-width: none;
+  }
 }

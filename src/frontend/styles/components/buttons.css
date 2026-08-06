@@ -15,9 +15,17 @@ Design System Buttons
   border-radius: var(--radius-md);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color var(--a3-transition-base),
+              box-shadow var(--a3-transition-base),
+              transform var(--a3-transition-fast),
+              opacity var(--a3-transition-fast);
   line-height: 1.5;
   text-decoration: none;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Tamanhos */
@@ -43,6 +51,11 @@ Design System Buttons
   box-shadow: var(--a3-shadow-action);
 }
 
+.a3-btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: var(--a3-shadow-sm);
+}
+
 .a3-btn-secondary {
   background-color: var(--a3-surface-soft);
   color: var(--text-strong);
@@ -51,6 +64,11 @@ Design System Buttons
 
 .a3-btn-secondary:hover:not(:disabled) {
   background-color: var(--border-theme);
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 30%, var(--border-theme));
+}
+
+.a3-btn-secondary:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .a3-btn-outline {
@@ -61,6 +79,11 @@ Design System Buttons
 
 .a3-btn-outline:hover:not(:disabled) {
   background-color: var(--a3-surface-info);
+  box-shadow: var(--a3-shadow-sm);
+}
+
+.a3-btn-outline:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .a3-btn-danger {
@@ -69,24 +92,56 @@ Design System Buttons
 }
 
 .a3-btn-danger:hover:not(:disabled) {
-  opacity: 0.9;
+  opacity: 0.88;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--a3-danger) 30%, transparent);
+}
+
+.a3-btn-danger:active:not(:disabled) {
+  transform: translateY(1px);
+  opacity: 0.95;
 }
 
 /* Estados unificados */
 .a3-btn:disabled,
 .a3-btn.disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
   box-shadow: none;
+  transform: none;
+  pointer-events: none;
 }
 
+/* Focus — ring consistente com os tokens */
 .a3-btn:focus-visible {
-  outline: 2px solid var(--a3-tech-blue);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
+}
+
+.a3-btn-danger:focus-visible {
+  box-shadow: var(--a3-focus-ring-danger);
+}
+
+/* Loading state */
+.a3-btn.is-loading {
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.a3-btn.is-loading::after {
+  content: "";
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  margin-left: var(--space-8);
 }
 
 /* Ícones nos botões */
 .a3-btn i,
 .a3-btn svg {
   font-size: 1em;
+  flex-shrink: 0;
 }

@@ -101,6 +101,23 @@
   --radius-xl: 1rem;
   --radius-full: 9999px;
 
+  /* ── UX Polish Tokens ──────────────────────────────────────────────── */
+  --a3-transition-fast:   0.12s ease;
+  --a3-transition-base:   0.2s ease;
+  --a3-transition-slow:   0.35s ease;
+  --a3-focus-ring:        0 0 0 3px color-mix(in srgb, var(--a3-tech-blue) 28%, transparent);
+  --a3-focus-ring-danger: 0 0 0 3px color-mix(in srgb, var(--a3-danger) 28%, transparent);
+  --a3-shadow-sm: 0 1px 3px color-mix(in srgb, var(--a3-deep-sea) 8%, transparent),
+                  0 1px 2px color-mix(in srgb, var(--a3-deep-sea) 6%, transparent);
+  --a3-shadow-hover: 0 8px 24px color-mix(in srgb, var(--a3-deep-sea) 14%, transparent);
+  --a3-skeleton-bg: linear-gradient(
+    90deg,
+    var(--a3-surface-soft) 25%,
+    color-mix(in srgb, var(--a3-border-default) 60%, var(--a3-surface)) 50%,
+    var(--a3-surface-soft) 75%
+  );
+  --a3-skeleton-size: 200% 100%;
+
 }
 
 
@@ -677,6 +694,63 @@ ALIASES VISUAIS A3 PARA UTILITÁRIOS EXISTENTES
   }
 }
 
+/* ── Novos keyframes de polish ─────────────────────────────────────────── */
+
+/* Entrada suave de baixo para cima — para cards e modais */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Escala com fade — para toasts, badges e chips */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Ripple para botões de ação destrutiva */
+@keyframes ripple {
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* Shake suave — para erros de formulário */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-4px); }
+  40%       { transform: translateX(4px); }
+  60%       { transform: translateX(-3px); }
+  80%       { transform: translateX(3px); }
+}
+
+/* ── Classes de animação novas ─────────────────────────────────────────── */
+
+.slide-up {
+  animation: slideUp 0.3s var(--a3-transition-base) both;
+}
+
+.scale-in {
+  animation: scaleIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.shake {
+  animation: shake 0.4s ease both;
+}
+
 
 /* --- components/layout.css --- */
 /* ==========================================================================
@@ -868,9 +942,17 @@ Design System Buttons
   border-radius: var(--radius-md);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color var(--a3-transition-base),
+              box-shadow var(--a3-transition-base),
+              transform var(--a3-transition-fast),
+              opacity var(--a3-transition-fast);
   line-height: 1.5;
   text-decoration: none;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Tamanhos */
@@ -896,6 +978,11 @@ Design System Buttons
   box-shadow: var(--a3-shadow-action);
 }
 
+.a3-btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: var(--a3-shadow-sm);
+}
+
 .a3-btn-secondary {
   background-color: var(--a3-surface-soft);
   color: var(--text-strong);
@@ -904,6 +991,11 @@ Design System Buttons
 
 .a3-btn-secondary:hover:not(:disabled) {
   background-color: var(--border-theme);
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 30%, var(--border-theme));
+}
+
+.a3-btn-secondary:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .a3-btn-outline {
@@ -914,6 +1006,11 @@ Design System Buttons
 
 .a3-btn-outline:hover:not(:disabled) {
   background-color: var(--a3-surface-info);
+  box-shadow: var(--a3-shadow-sm);
+}
+
+.a3-btn-outline:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .a3-btn-danger {
@@ -922,26 +1019,58 @@ Design System Buttons
 }
 
 .a3-btn-danger:hover:not(:disabled) {
-  opacity: 0.9;
+  opacity: 0.88;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--a3-danger) 30%, transparent);
+}
+
+.a3-btn-danger:active:not(:disabled) {
+  transform: translateY(1px);
+  opacity: 0.95;
 }
 
 /* Estados unificados */
 .a3-btn:disabled,
 .a3-btn.disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
   box-shadow: none;
+  transform: none;
+  pointer-events: none;
 }
 
+/* Focus — ring consistente com os tokens */
 .a3-btn:focus-visible {
-  outline: 2px solid var(--a3-tech-blue);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
+}
+
+.a3-btn-danger:focus-visible {
+  box-shadow: var(--a3-focus-ring-danger);
+}
+
+/* Loading state */
+.a3-btn.is-loading {
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.a3-btn.is-loading::after {
+  content: "";
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  margin-left: var(--space-8);
 }
 
 /* Ícones nos botões */
 .a3-btn i,
 .a3-btn svg {
   font-size: 1em;
+  flex-shrink: 0;
 }
 
 /* --- components/forms.css --- */
@@ -962,9 +1091,18 @@ Design System Inputs & Forms
   color: var(--text-main);
   background-color: var(--a3-surface-soft);
   background-clip: padding-box;
-  border: 1px solid var(--border-theme);
+  border: 1.5px solid var(--border-theme);
   border-radius: var(--radius-md);
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: border-color var(--a3-transition-fast),
+              box-shadow var(--a3-transition-fast),
+              background-color var(--a3-transition-fast);
+  -webkit-appearance: none;
+}
+
+.a3-input:hover:not(:disabled):not(:focus),
+.a3-select:hover:not(:disabled):not(:focus),
+.a3-textarea:hover:not(:disabled):not(:focus) {
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 40%, var(--border-theme));
 }
 
 .a3-input:focus,
@@ -973,8 +1111,8 @@ Design System Inputs & Forms
   color: var(--text-strong);
   background-color: var(--bg-card);
   border-color: var(--a3-tech-blue);
-  outline: 0;
-  box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--a3-tech-blue) 25%, transparent);
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
 }
 
 .a3-input::placeholder,
@@ -987,8 +1125,22 @@ Design System Inputs & Forms
 .a3-select:disabled,
 .a3-textarea:disabled {
   background-color: var(--bg-main);
-  opacity: 1;
+  opacity: 0.6;
   cursor: not-allowed;
+  border-color: var(--border-theme);
+}
+
+/* Estado de erro */
+.a3-input.is-invalid,
+.a3-select.is-invalid,
+.a3-textarea.is-invalid {
+  border-color: var(--a3-danger);
+}
+
+.a3-input.is-invalid:focus,
+.a3-select.is-invalid:focus,
+.a3-textarea.is-invalid:focus {
+  box-shadow: var(--a3-focus-ring-danger);
 }
 
 /* Checkboxes and Radios */
@@ -1002,9 +1154,11 @@ Design System Inputs & Forms
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-  border: 1px solid var(--border-theme);
+  border: 1.5px solid var(--border-theme);
   appearance: none;
   cursor: pointer;
+  transition: border-color var(--a3-transition-fast),
+              background-color var(--a3-transition-fast);
 }
 
 .a3-checkbox {
@@ -1015,10 +1169,21 @@ Design System Inputs & Forms
   border-radius: 50%;
 }
 
+.a3-checkbox:hover,
+.a3-radio:hover {
+  border-color: var(--a3-tech-blue);
+}
+
 .a3-checkbox:checked,
 .a3-radio:checked {
   background-color: var(--a3-tech-blue);
   border-color: var(--a3-tech-blue);
+}
+
+.a3-checkbox:focus-visible,
+.a3-radio:focus-visible {
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
 }
 
 .a3-checkbox:checked {
@@ -1027,6 +1192,30 @@ Design System Inputs & Forms
 
 .a3-radio:checked {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+/* Label helpers */
+.a3-form-label {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-strong);
+  margin-bottom: var(--space-4);
+}
+
+.a3-form-hint {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-4);
+}
+
+.a3-form-error {
+  font-size: var(--text-xs);
+  color: var(--a3-danger);
+  margin-top: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
 }
 
 
@@ -1040,18 +1229,42 @@ Design System Cards
   background-color: var(--bg-card);
   border: 1px solid var(--border-theme);
   border-radius: var(--radius-lg);
-  box-shadow: var(--a3-shadow-card);
+  box-shadow: var(--a3-shadow-sm);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform var(--a3-transition-base),
+              box-shadow var(--a3-transition-base),
+              border-color var(--a3-transition-base);
 }
 
-.a3-card-interactive:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--a3-shadow-action);
-  border-color: var(--a3-tech-blue);
+/* Cards interativos com hover visual uniforme */
+.a3-card-interactive,
+a.a3-card,
+button.a3-card {
   cursor: pointer;
+}
+
+.a3-card-interactive:hover,
+a.a3-card:hover,
+button.a3-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--a3-shadow-hover);
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 35%, var(--border-theme));
+}
+
+.a3-card-interactive:focus-visible,
+a.a3-card:focus-visible,
+button.a3-card:focus-visible {
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
+}
+
+.a3-card-interactive:active,
+a.a3-card:active,
+button.a3-card:active {
+  transform: translateY(0);
+  box-shadow: var(--a3-shadow-sm);
 }
 
 .a3-card-header {
@@ -1207,22 +1420,31 @@ Design System Badges
 /* ── Option Card (sistema legado app.js — .option-card) ────────────────── */
 
 .option-card {
-  transition: all 0.2s ease;
+  transition: border-color var(--a3-transition-base),
+              background-color var(--a3-transition-base),
+              transform var(--a3-transition-fast),
+              box-shadow var(--a3-transition-base);
   border: 2px solid var(--border-theme);
   border-radius: var(--radius-xl);
   cursor: pointer;
   background-color: var(--a3-surface-raised);
   color: var(--text-main);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .option-card:focus {
-  outline: 2px solid var(--a3-tech-blue);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
+}
+
+.option-card:focus-visible {
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
 }
 
 .option-card.disabled {
   pointer-events: none;
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 /* Hover */
@@ -1230,6 +1452,12 @@ Design System Badges
   border-color: var(--a3-tech-blue);
   background-color: var(--a3-surface-selected);
   transform: translateX(5px);
+  box-shadow: var(--a3-shadow-sm);
+}
+
+/* Active */
+.option-card:active:not(.disabled) {
+  transform: translateX(3px) scale(0.99);
 }
 
 /* Estado: selecionado */
@@ -1490,7 +1718,24 @@ Design System Badges
   height: 100%;
   background-color: var(--a3-tech-blue);
   border-radius: var(--radius-full);
-  transition: width 0.5s ease-in-out;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shimmer na barra de progresso em movimento */
+.a3-progress-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, #fff 20%, transparent) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s linear infinite;
+  background-size: 200% 100%;
 }
 
 .a3-progress-bar.success {
@@ -2460,10 +2705,27 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
   gap: var(--space-8);
   padding: var(--space-16);
   text-align: center;
+  transition: transform var(--a3-transition-base),
+              box-shadow var(--a3-transition-base);
+  animation: slideUp 0.35s ease both;
+}
+
+.profile-stat-card:nth-child(2) { animation-delay: 0.05s; }
+.profile-stat-card:nth-child(3) { animation-delay: 0.10s; }
+.profile-stat-card:nth-child(4) { animation-delay: 0.15s; }
+
+.profile-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--a3-shadow-hover);
 }
 
 .profile-stat-icon {
   font-size: var(--text-2xl);
+  transition: transform var(--a3-transition-base);
+}
+
+.profile-stat-card:hover .profile-stat-icon {
+  transform: scale(1.15);
 }
 
 .profile-stat-icon-quiz {
@@ -2487,6 +2749,7 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
   font-weight: 800;
   color: var(--text-strong);
   margin: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 .profile-stat-label {
@@ -2680,10 +2943,15 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
   padding: var(--space-16) var(--space-16);
   border-bottom: 1px solid var(--a3-border-soft);
   min-height: 56px;
+  transition: background-color var(--a3-transition-fast);
 }
 
 .settings-item:last-child {
   border-bottom: none;
+}
+
+.settings-item:not(.settings-item-danger):hover {
+  background-color: var(--a3-surface-soft);
 }
 
 .settings-item-icon {
@@ -2723,21 +2991,24 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
 
 .settings-input {
   padding: var(--space-8) var(--space-12);
-  border: 1px solid var(--a3-border-default);
+  border: 1.5px solid var(--a3-border-default);
   border-radius: var(--radius-md);
   font-size: var(--text-sm);
   background-color: var(--a3-surface);
   color: var(--text-strong);
   min-width: 160px;
-  transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: border-color var(--a3-transition-fast),
+              box-shadow var(--a3-transition-fast);
+}
+
+.settings-input:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 40%, var(--a3-border-default));
 }
 
 .settings-input:focus {
   outline: none;
   border-color: var(--a3-tech-blue);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--a3-tech-blue) 15%, transparent);
+  box-shadow: var(--a3-focus-ring);
 }
 
 .dark .settings-input {
@@ -2752,19 +3023,24 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
 
 .settings-select {
   padding: var(--space-8) var(--space-12);
-  border: 1px solid var(--a3-border-default);
+  border: 1.5px solid var(--a3-border-default);
   border-radius: var(--radius-md);
   font-size: var(--text-sm);
   background-color: var(--a3-surface);
   color: var(--text-strong);
   cursor: pointer;
-  transition: border-color 0.15s ease;
+  transition: border-color var(--a3-transition-fast),
+              box-shadow var(--a3-transition-fast);
+}
+
+.settings-select:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 40%, var(--a3-border-default));
 }
 
 .settings-select:focus {
   outline: none;
   border-color: var(--a3-tech-blue);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--a3-tech-blue) 15%, transparent);
+  box-shadow: var(--a3-focus-ring);
 }
 
 .dark .settings-select {
@@ -2860,25 +3136,38 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
   border-radius: var(--radius-lg);
   font-size: var(--text-sm);
   font-weight: 600;
-  box-shadow: var(--a3-shadow-card);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--a3-success) 30%, transparent),
+              var(--a3-shadow-card);
   display: flex;
   align-items: center;
   gap: var(--space-8);
   opacity: 0;
-  transform: translateY(var(--space-8));
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+  transform: translateY(var(--space-16)) scale(0.95);
+  transition: opacity 0.22s ease,
+              transform 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   pointer-events: none;
+  min-width: 200px;
+  max-width: min(320px, calc(100vw - 48px));
 }
 
 .settings-toast.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .settings-toast-danger {
   background-color: var(--a3-danger);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--a3-danger) 30%, transparent),
+              var(--a3-shadow-card);
+}
+
+@media (max-width: 480px) {
+  .settings-toast {
+    bottom: var(--space-16);
+    right: var(--space-16);
+    left: var(--space-16);
+    max-width: none;
+  }
 }
 
 
@@ -4864,6 +5153,296 @@ textarea {
 *:focus:not(:focus-visible) {
   outline: none;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── UX POLISH ─────────────────────────────────────────────────────────── */
+
+/* Scrollbar global refinada */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--a3-border-default) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--a3-border-default);
+  border-radius: var(--radius-full);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--a3-tech-blue) 50%, var(--a3-border-default));
+}
+
+/* Skeleton shimmer aprimorado */
+.case-card-skeleton,
+.skeleton-line,
+[class*="skeleton"] {
+  background: var(--a3-skeleton-bg) !important;
+  background-size: var(--a3-skeleton-size) !important;
+  animation: shimmer 1.6s linear infinite !important;
+  border-radius: var(--radius-md);
+}
+
+.dark .case-card-skeleton,
+.dark .skeleton-line,
+.dark [class*="skeleton"] {
+  --a3-skeleton-bg: linear-gradient(
+    90deg,
+    color-mix(in srgb, #ffffff 6%, transparent) 25%,
+    color-mix(in srgb, #ffffff 12%, transparent) 50%,
+    color-mix(in srgb, #ffffff 6%, transparent) 75%
+  );
+}
+
+/* Empty states uniformes */
+.a3-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-48) var(--space-32);
+  text-align: center;
+  color: var(--text-muted);
+  gap: var(--space-12);
+  animation: fadeIn 0.3s ease;
+}
+
+.a3-empty-state i {
+  font-size: 2.5rem;
+  opacity: 0.3;
+  margin-bottom: var(--space-8);
+}
+
+.a3-empty-state p {
+  font-size: var(--text-sm);
+  max-width: 280px;
+  line-height: 1.6;
+}
+
+/* Login overlay — melhor legibilidade */
+#login-overlay .bg-white {
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25) !important;
+}
+
+#login-email-input:focus {
+  box-shadow: var(--a3-focus-ring) !important;
+}
+
+/* Quiz option-card — active state e touch feedback */
+.option-card:active:not(.disabled) {
+  transform: translateX(3px) scale(0.99);
+}
+
+/* HUB — lh-feature-items: active state e foco */
+.lh-feature-item {
+  transition: background-color var(--a3-transition-base),
+              transform var(--a3-transition-fast),
+              box-shadow var(--a3-transition-base),
+              border-color var(--a3-transition-base) !important;
+}
+
+.lh-feature-item:focus-visible {
+  outline: none !important;
+  box-shadow: inset 0 0 0 2px var(--a3-tech-blue) !important;
+}
+
+.lh-feature-item:active {
+  transform: translateX(1px) scale(0.99) !important;
+}
+
+/* HUB — quick actions active e focus */
+.lh-quick-btn {
+  transition: background-color var(--a3-transition-base),
+              transform var(--a3-transition-fast),
+              box-shadow var(--a3-transition-base),
+              border-color var(--a3-transition-base) !important;
+}
+
+.lh-quick-btn:hover {
+  box-shadow: var(--a3-shadow-hover) !important;
+}
+
+.lh-quick-btn:active {
+  transform: translateY(0) !important;
+}
+
+.lh-quick-btn:focus-visible {
+  outline: none !important;
+  box-shadow: var(--a3-focus-ring) !important;
+}
+
+/* HUB — lh-metric-item hover */
+.lh-metric-item {
+  transition: transform var(--a3-transition-base),
+              box-shadow var(--a3-transition-base) !important;
+}
+
+.lh-metric-item:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: var(--a3-shadow-sm) !important;
+}
+
+/* Cases — case-card shimmer e done-badge */
+.case-done-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--a3-success);
+  background: color-mix(in srgb, var(--a3-success) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--a3-success) 25%, transparent);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+/* Sidebar widgets — hover refinado */
+#side-info .a3-card {
+  transition: transform var(--a3-transition-base),
+              box-shadow var(--a3-transition-base),
+              border-color var(--a3-transition-base) !important;
+}
+
+#side-info .a3-card:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: var(--a3-shadow-hover) !important;
+  border-color: color-mix(in srgb, var(--a3-tech-blue) 20%, var(--border-theme)) !important;
+}
+
+/* Profile badges grid — entrada animada */
+#profile-badges-grid > div {
+  animation: scaleIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+#profile-badges-grid > div:nth-child(1) { animation-delay: 0.02s; }
+#profile-badges-grid > div:nth-child(2) { animation-delay: 0.06s; }
+#profile-badges-grid > div:nth-child(3) { animation-delay: 0.10s; }
+#profile-badges-grid > div:nth-child(4) { animation-delay: 0.14s; }
+
+/* History list items — hover sutil */
+#history-list > div,
+.feedback-item {
+  transition: background-color var(--a3-transition-fast) !important;
+  border-radius: var(--radius-md);
+}
+
+#history-list > div:hover {
+  background-color: var(--a3-surface-soft) !important;
+}
+
+/* Footer — linha divisória sutil */
+footer.w-full {
+  border-top: 1px solid var(--border-theme) !important;
+}
+
+/* Btn-language no header — width mínima para evitar CLS */
+#btn-language {
+  min-width: 60px;
+}
+
+/* Pomodoro widget — entrada animada */
+#pomodoro-widget {
+  transition: opacity var(--a3-transition-base),
+              transform var(--a3-transition-base);
+}
+
+#pomodoro-widget:not(.hidden) {
+  animation: slideUp 0.25s ease both;
+}
+
+/* Inputs focus globais refinados — consistência com tokens */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  box-shadow: var(--a3-focus-ring) !important;
+  border-color: var(--a3-tech-blue) !important;
+}
+
+/* Selects nativos com aparência consistente */
+select {
+  cursor: pointer;
+}
+
+/* Tags/badges — transição de hover */
+.cert-tag,
+.difficulty-badge {
+  transition: opacity var(--a3-transition-fast),
+              transform var(--a3-transition-fast);
+}
+
+/* Responsividade mobile 375px — ajustes de padding refinados */
+@media (max-width: 400px) {
+  .profile-main,
+  .settings-main {
+    padding-left: var(--space-12) !important;
+    padding-right: var(--space-12) !important;
+  }
+
+  .settings-toast {
+    bottom: var(--space-12);
+    right: var(--space-12);
+    left: var(--space-12);
+  }
+
+  .lh-banner {
+    padding: var(--space-16) !important;
+  }
+
+  .lh-banner-actions {
+    flex-direction: column;
+    gap: var(--space-8) !important;
+  }
+
+  .lh-banner-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Tablet 768px — grade de métricas do hub em 4 colunas */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .lh-metrics-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Tela grande — hub usa espaço melhor */
+@media (min-width: 1366px) {
+  .lh-grid {
+    gap: 1.75rem;
+  }
+
+  .lh-banner {
+    padding: 2rem 2.25rem;
+  }
+}
+
+/* Linha de progresso do sprint com gradiente */
+#sidebar-pct-bar {
+  background: linear-gradient(90deg, var(--a3-tech-blue), var(--a3-sky-frost)) !important;
+  border-radius: var(--radius-full) !important;
+}
+
+/* ── FIM UX POLISH ─────────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
   *,

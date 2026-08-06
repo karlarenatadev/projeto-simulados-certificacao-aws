@@ -37,22 +37,31 @@
 /* ── Option Card (sistema legado app.js — .option-card) ────────────────── */
 
 .option-card {
-  transition: all 0.2s ease;
+  transition: border-color var(--a3-transition-base),
+              background-color var(--a3-transition-base),
+              transform var(--a3-transition-fast),
+              box-shadow var(--a3-transition-base);
   border: 2px solid var(--border-theme);
   border-radius: var(--radius-xl);
   cursor: pointer;
   background-color: var(--a3-surface-raised);
   color: var(--text-main);
+  -webkit-tap-highlight-color: transparent;
 }
 
 .option-card:focus {
-  outline: 2px solid var(--a3-tech-blue);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
+}
+
+.option-card:focus-visible {
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
 }
 
 .option-card.disabled {
   pointer-events: none;
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 /* Hover */
@@ -60,6 +69,12 @@
   border-color: var(--a3-tech-blue);
   background-color: var(--a3-surface-selected);
   transform: translateX(5px);
+  box-shadow: var(--a3-shadow-sm);
+}
+
+/* Active */
+.option-card:active:not(.disabled) {
+  transform: translateX(3px) scale(0.99);
 }
 
 /* Estado: selecionado */
