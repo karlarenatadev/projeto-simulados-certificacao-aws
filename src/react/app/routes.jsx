@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react';
+import '@/styles/components/page-loader.css';
 import { createBrowserRouter } from 'react-router-dom';
 import { AppLayout } from '@/layouts/AppLayout';
 
@@ -16,19 +17,9 @@ const NotFound = lazy(() => import('@/pages/NotFound'));
 
 function PageLoader() {
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '50vh',
-        color: 'var(--color-text-muted)',
-        fontSize: 'var(--text-sm)',
-      }}
-      role="status"
-      aria-label="Carregando página..."
-    >
-      ☁️ Carregando...
+    <div className="page-loader" role="status" aria-label="Carregando página...">
+      <span className="page-loader__icon" aria-hidden="true">☁️</span>
+      <span>Carregando...</span>
     </div>
   );
 }

@@ -1,0 +1,23 @@
+/* ==========================================================================
+   PAGE LOADER — spinner de carregamento para lazy pages
+   ========================================================================== */
+
+.page-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  min-height: 50vh;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.page-loader__icon {
+  font-size: var(--text-xl);
+  animation: page-loader-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes page-loader-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.9); }
+}

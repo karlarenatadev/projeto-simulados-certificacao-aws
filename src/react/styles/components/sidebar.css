@@ -155,3 +155,8 @@
     margin-left: 0;
   }
 }
+
+/* Garante que o ul do footer não interfira no flex da sidebar */
+.sidebar__footer-list {
+  display: contents;
+}

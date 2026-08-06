@@ -135,7 +135,7 @@ export function Sidebar({ isOpen }) {
       {/* ── Footer: perfil + config ── */}
       <div className="sidebar__footer">
         <hr className="sidebar__divider" aria-hidden="true" />
-        <ul role="list" style={{ display: 'contents' }}>
+        <ul role="list" className="sidebar__footer-list">
           {FOOTER_ITEMS.map((item) => (
             <SidebarItem key={item.id} {...item} />
           ))}
