@@ -1,19 +1,23 @@
+Ôªøimport { FaBolt } from 'react-icons/fa6';
 import { EmptyState } from '@/components/common/EmptyState';
+import { Button } from '@/components/common/Button';
 import './study-now.css';
 
 export default function StudyNow() {
   return (
     <div className="study-now">
       <div className="study-now__header">
-        <h1 className="study-now__title">Estudar Agora</h1>
-        <p className="study-now__subtitle">Sess„o de estudo focada com Pomodoro</p>
+        <h1 className="study-now__title">
+          <FaBolt style={{ color: 'var(--color-warning)', marginRight: 'var(--spacing-xs)' }} />
+          Estudar Agora
+        </h1>
+        <p className="study-now__subtitle">Sess√£o de estudo focada com Pomodoro</p>
       </div>
-      <EmptyState
-        icon="?"
-        title="Em construÁ„o"
-        description="A p·gina de estudo focado ser· migrada em breve. Use o frontend atual enquanto isso."
-        linkLabel="Abrir vers„o atual"
-        linkTo="/"
+      <EmptyState 
+        icon="‚ö°" 
+        title="Em constru√ß√£o" 
+        description="A p√°gina de estudo focado ser√° migrada em breve. Use o frontend atual enquanto isso."
+        action={<Button variant="outline" onClick={() => window.location.href = '/'}>Abrir vers√£o atual</Button>}
       />
     </div>
   );

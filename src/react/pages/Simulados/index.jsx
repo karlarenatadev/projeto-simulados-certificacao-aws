@@ -1,17 +1,23 @@
+Ôªøimport { FaPlay } from 'react-icons/fa6';
 import { EmptyState } from '@/components/common/EmptyState';
+import { Button } from '@/components/common/Button';
 import './simulados.css';
 
 export default function Simulados() {
   return (
     <div className="simulados">
       <div className="simulados__header">
-        <h1 className="simulados__title">Simulados</h1>
-        <p className="simulados__subtitle">Questıes no estilo do exame real AWS</p>
+        <h1 className="simulados__title">
+          <FaPlay style={{ color: 'var(--color-brand-primary)', marginRight: 'var(--spacing-xs)' }} />
+          Simulados
+        </h1>
+        <p className="simulados__subtitle">Quest√µes no estilo do exame real AWS</p>
       </div>
-      <EmptyState
-        icon="??"
-        title="Em construÁ„o"
-        description="O simulador est· sendo migrado para a nova arquitetura. Use o frontend atual enquanto isso."
+      <EmptyState 
+        icon="üéØ" 
+        title="Em constru√ß√£o" 
+        description="O simulador est√° sendo migrado para a nova arquitetura. Use o frontend atual enquanto isso."
+        action={<Button variant="outline" onClick={() => window.location.href = '/'}>Abrir vers√£o atual</Button>}
       />
     </div>
   );

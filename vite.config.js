@@ -5,7 +5,7 @@ import { resolve } from 'path';
 export default defineConfig({
   plugins: [react()],
 
-  // Vite serve a partir de src/react — mantém o vanilla em src/frontend intacto
+  // Vite serve a partir de src/react — arquitetura React Clean
   root: 'src/react',
 
   build: {

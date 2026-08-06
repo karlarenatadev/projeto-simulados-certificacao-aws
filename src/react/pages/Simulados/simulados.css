@@ -1,4 +1,4 @@
-﻿.simulados { padding: var(--spacing-xl); }
+.simulados { padding: var(--spacing-xl); }
 .simulados__header { margin-bottom: var(--spacing-xl); }
 .simulados__title { font-size: var(--text-2xl); font-weight: var(--font-weight-bold); color: var(--color-text-strong); margin-bottom: var(--spacing-xs); }
 .simulados__subtitle { color: var(--color-text-muted); font-size: var(--text-base); }
