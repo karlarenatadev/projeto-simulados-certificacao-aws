@@ -1,4 +1,4 @@
-/**
+﻿/**
  * api — cliente HTTP centralizado
  *
  * Camada entre componentes React e o backend Express.
@@ -10,11 +10,6 @@
 const BASE = '/api';
 
 class ApiError extends Error {
-  /**
-   * @param {string} message
-   * @param {number} status
-   * @param {*}      data
-   */
   constructor(message, status, data = null) {
     super(message);
     this.name = 'ApiError';
@@ -25,19 +20,26 @@ class ApiError extends Error {
 
 /**
  * Wrapper interno: executa fetch e normaliza erros.
- * @param {string}  path    - caminho relativo (ex: '/questions')
- * @param {RequestInit} options - opções do fetch
- * @returns {Promise<*>}
  */
 async function request(path, options = {}) {
   const url = `${BASE}${path}`;
 
+  // Pegamos o token (user_id) salvo
+  const userId = localStorage.getItem('aws_sim_user_id');
+
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  // Injetamos a autenticação se existir
+  if (userId) {
+    headers['X-User-Id'] = userId;
+  }
+
   const response = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
     ...options,
+    headers,
   });
 
   if (!response.ok) {
@@ -48,7 +50,7 @@ async function request(path, options = {}) {
       // resposta sem body JSON
     }
     throw new ApiError(
-      data?.message ?? `Erro HTTP ${response.status}`,
+      data?.error ?? data?.message ?? `Erro HTTP ${response.status}`,
       response.status,
       data,
     );
@@ -60,39 +62,12 @@ async function request(path, options = {}) {
   return response.json();
 }
 
-// ── Métodos públicos ─────────────────────────────────────────────────────────
-
 export const api = {
-  /**
-   * GET /api{path}
-   * @param {string} path
-   * @returns {Promise<*>}
-   */
   get: (path) => request(path, { method: 'GET' }),
-
-  /**
-   * POST /api{path}
-   * @param {string} path
-   * @param {*}      body - objeto serializável
-   * @returns {Promise<*>}
-   */
   post: (path, body) =>
     request(path, { method: 'POST', body: JSON.stringify(body) }),
-
-  /**
-   * PUT /api{path}
-   * @param {string} path
-   * @param {*}      body
-   * @returns {Promise<*>}
-   */
   put: (path, body) =>
     request(path, { method: 'PUT', body: JSON.stringify(body) }),
-
-  /**
-   * DELETE /api{path}
-   * @param {string} path
-   * @returns {Promise<*>}
-   */
   delete: (path) => request(path, { method: 'DELETE' }),
 };
 

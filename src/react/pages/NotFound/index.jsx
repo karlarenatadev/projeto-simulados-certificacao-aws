@@ -5,8 +5,8 @@ export default function NotFound() {
   return (
     <div className="not-found">
       <h1 className="not-found__code">404</h1>
-      <h2 className="not-found__title">P·gina n„o encontrada</h2>
-      <p className="not-found__description">A p·gina que vocÍ buscou n„o existe ou foi movida.</p>
+      <h2 className="not-found__title">P√°gina n√£o encontrada</h2>
+      <p className="not-found__description">A p√°gina que voc√™ buscou n√£o existe ou foi movida.</p>
       <Link to="/" className="not-found__link">? Voltar ao Hub</Link>
     </div>
   );

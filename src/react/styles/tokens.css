@@ -5,20 +5,20 @@
    ========================================================================== */
 
 :root {
-  /* ── Marca A3Data ────────────────────────────────────────────────────── */
+  /* ✨ Marca A3Data ✨ */
   --color-brand-deep:    #001863;
   --color-brand-primary: #0033ff;
   --color-brand-accent:  #f53199;
   --color-brand-sky:     #39d0ff;
   --color-brand-amethyst: #7b4aaf;
 
-  /* ── Cores semânticas ────────────────────────────────────────────────── */
+  /* ✨ Cores semânticas ✨ */
   --color-success: #35b769;
   --color-danger:  #f91c1c;
   --color-warning: #ff822e;
   --color-info:    var(--color-brand-sky);
 
-  /* ── Superfícies (tema claro — default) ──────────────────────────────── */
+  /* ✨ Superfícies (tema claro default) ✨ */
   --color-background: #f5f5f5;
   --color-surface:    #ffffff;
   --color-surface-alt: #f8fafc;
@@ -31,7 +31,7 @@
   --color-surface-danger:  color-mix(in srgb, var(--color-danger) 10%, var(--color-surface));
   --color-surface-warning: color-mix(in srgb, var(--color-warning) 12%, var(--color-surface));
 
-  /* ── Texto ───────────────────────────────────────────────────────────── */
+  /* ✨ Texto ✨ */
   --color-text:         #111111;
   --color-text-strong:  #00083d;
   --color-text-muted:   color-mix(in srgb, var(--color-text-strong) 58%, var(--color-surface));

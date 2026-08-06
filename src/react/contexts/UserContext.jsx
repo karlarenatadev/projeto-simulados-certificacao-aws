@@ -1,24 +1,12 @@
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState, useContext } from 'react';
+import { api } from '@/services/api';
 
-const SESSION_KEY = 'aws_sim_session';
+const SESSION_KEY = 'aws_sim_user_id'; // Mudamos a chave para guardar apenas o user ID
 
-/**
- * UserContext — gerencia sessão e dados do usuário logado
- *
- * Mantém compatibilidade com SessionManager do vanilla JS:
- * persiste sessão em localStorage com chave 'aws_sim_session'.
- *
- * Expõe:
- *   user         — objeto do usuário (ou null)
- *   isLoading    — aguardando leitura do storage
- *   login(user)  — salva a sessão
- *   logout()     — limpa a sessão
- *   updateUser() — atualiza campos do usuário sem novo login
- */
 export const UserContext = createContext({
   user: null,
   isLoading: true,
-  login: () => {},
+  login: async () => {},
   logout: () => {},
   updateUser: () => {},
 });
@@ -27,32 +15,36 @@ export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Lê a sessão do storage na montagem
+  // Lê a sessão do storage na montagem e valida com o backend
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(SESSION_KEY);
-      if (raw) {
-        const session = JSON.parse(raw);
-        setUser(session?.user ?? null);
+    async function loadUser() {
+      try {
+        const storedId = localStorage.getItem(SESSION_KEY);
+        if (storedId) {
+          // O api.js injeta automaticamente o X-User-Id a partir do localStorage
+          const res = await api.get('/auth/me');
+          setUser(res.data);
+        }
+      } catch (err) {
+        console.error('Sessão inválida:', err);
+        localStorage.removeItem(SESSION_KEY);
+      } finally {
+        setIsLoading(false);
       }
-    } catch {
-      // sessão corrompida — ignora
-    } finally {
-      setIsLoading(false);
     }
+    loadUser();
   }, []);
 
-  const login = useCallback((userData) => {
-    const session = {
-      user: userData,
-      loginAt: new Date().toISOString(),
-    };
+  const login = useCallback(async (email, full_name, nickname) => {
     try {
-      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    } catch {
-      // storage cheio — continua sem persistir
+      const res = await api.post('/auth/login', { email, full_name, nickname });
+      const userData = res.data;
+      localStorage.setItem(SESSION_KEY, userData.id);
+      setUser(userData);
+      return { success: true };
+    } catch (err) {
+      return { success: false, error: err.message };
     }
-    setUser(userData);
   }, []);
 
   const logout = useCallback(() => {
@@ -68,9 +60,9 @@ export function UserProvider({ children }) {
     (partial) => {
       if (!user) return;
       const updated = { ...user, ...partial };
-      login(updated);
+      setUser(updated); // Backend profile update not implemented yet, just local
     },
-    [user, login],
+    [user],
   );
 
   return (
@@ -78,4 +70,10 @@ export function UserProvider({ children }) {
       {children}
     </UserContext.Provider>
   );
+}
+
+export function useAuth() {
+  const context = useContext(UserContext);
+  if (!context) throw new Error("useAuth must be inside UserProvider");
+  return { ...context, isAuthenticated: !!context.user };
 }

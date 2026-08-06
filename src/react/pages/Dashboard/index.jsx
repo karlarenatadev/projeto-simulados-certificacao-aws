@@ -1,108 +1,120 @@
-import { useNavigate } from 'react-router-dom';
-import { FaBolt, FaCalendarCheck, FaPlay, FaDiagramProject, FaLayerGroup, FaBookOpenReader } from 'react-icons/fa6';
-import { FeatureCard } from '@/components/common/Card';
+Ôªøimport { useNavigate } from 'react-router-dom';
+import { 
+  FaBrain, 
+  FaRoute, 
+  FaStethoscope, 
+  FaLayerGroup, 
+  FaChevronRight, 
+  FaPlay, 
+  FaBookOpenReader 
+} from 'react-icons/fa6';
 import './dashboard.css';
-
-const studyCards = [
-  {
-    icon: FaBolt,
-    title: 'Estudar Agora',
-    description: 'Sess„o de estudo focada com timer Pomodoro',
-    route: '/study-now',
-  },
-  {
-    icon: FaCalendarCheck,
-    title: 'Sprint de Estudos',
-    description: 'Plano de 14 dias para certificaÁ„o',
-    route: '/study-sprint',
-  },
-];
-
-const practiceCards = [
-  {
-    icon: FaPlay,
-    title: 'Simulados',
-    description: 'Questıes no estilo do exame real AWS',
-    route: '/simulados',
-  },
-  {
-    icon: FaDiagramProject,
-    title: 'Cases AWS',
-    description: 'Cen·rios arquiteturais para praticar',
-    route: '/cases',
-  },
-];
-
-const resourceCards = [
-  {
-    icon: FaLayerGroup,
-    title: 'ServiÁos AWS',
-    description: 'Cat·logo de serviÁos e suas funÁıes',
-    route: '/recursos',
-  },
-  {
-    icon: FaBookOpenReader,
-    title: 'Materiais',
-    description: 'Guias, cheat sheets e referÍncias',
-    route: '/recursos',
-  },
-];
 
 export default function Dashboard() {
   const navigate = useNavigate();
 
   return (
     <div className="dashboard">
-      <div className="dashboard__welcome">
-        <p className="dashboard__welcome-tag">Cloud Academy A3</p>
-        <h1 className="dashboard__welcome-title">Sua jornada AWS comeÁa aqui</h1>
-        <p className="dashboard__welcome-subtitle">Escolha por onde deseja comeÁar hoje</p>
+      {/* Banner */}
+      <div className="lh-banner">
+        <p className="lh-banner-tag">SIMULADOR IA</p>
+        <h2 className="lh-banner-title">Comece por aqui</h2>
+        <p className="lh-banner-desc">
+          Seu painel central de estudos: acompanhe seu progresso, veja insights de IA, acesse simulados e muito mais ‚Äî tudo em um s√≥ lugar.
+        </p>
+        <div className="lh-banner-actions">
+          <button className="lh-banner-btn" onClick={() => navigate('/simulados')}>
+            <FaBrain /> Simulador
+          </button>
+          <button className="lh-banner-btn lh-banner-btn--outline" onClick={() => navigate('/jornada')}>
+            <FaRoute /> Minha Jornada
+          </button>
+          <button className="lh-banner-btn lh-banner-btn--outline" onClick={() => navigate('/diagnostico')}>
+            <FaStethoscope /> Diagn√≥stico
+          </button>
+        </div>
       </div>
 
-      <section className="dashboard__section">
-        <h2 className="dashboard__section-title">Estudar</h2>
-        <div className="dashboard__grid">
-          {studyCards.map(({ icon: Icon, title, description, route }) => (
-            <FeatureCard
-              key={route + title}
-              icon={<Icon />}
-              title={title}
-              description={description}
-              onClick={() => navigate(route)}
-            />
-          ))}
+      {/* DASHBOARD DA JORNADA INJETADO NO HUB */}
+      <div className="jornada-dashboard-grid">
+        <div className="stat-card">
+          <p className="stat-card-label">Progresso</p>
+          <p className="stat-card-value text-brand-primary">12%</p>
         </div>
-      </section>
+        <div className="stat-card">
+          <p className="stat-card-label">Taxa Acerto</p>
+          <p className="stat-card-value text-success">68%</p>
+        </div>
+        <div className="stat-card">
+          <p className="stat-card-label">Quest√µes</p>
+          <p className="stat-card-value text-brand-sky">42</p>
+        </div>
+        <div className="stat-card">
+          <p className="stat-card-label">Ponto Fraco</p>
+          <p className="stat-card-value text-danger text-lg">Security</p>
+        </div>
+      </div>
 
-      <section className="dashboard__section">
-        <h2 className="dashboard__section-title">Pr·tica</h2>
-        <div className="dashboard__grid">
-          {practiceCards.map(({ icon: Icon, title, description, route }) => (
-            <FeatureCard
-              key={route + title}
-              icon={<Icon />}
-              title={title}
-              description={description}
-              onClick={() => navigate(route)}
-            />
-          ))}
-        </div>
-      </section>
+      {/* Grade principal: indicadores + o que encontrar */}
+      <div className="lh-panel">
+        <p className="lh-section-label">O QUE VOC√ä VAI ENCONTRAR</p>
+        
+        <button className="lh-feature-item" onClick={() => navigate('/jornada')}>
+          <span className="lh-feature-icon lh-feat-purple">
+            <FaRoute />
+          </span>
+          <div className="lh-feature-info">
+            <p className="lh-feature-name">Trilha de Jornada</p>
+            <p className="lh-feature-desc">Progresso gamificado por m√≥dulos, fases e conquistas desbloque√°veis</p>
+          </div>
+          <FaChevronRight className="lh-feature-arrow" />
+        </button>
 
-      <section className="dashboard__section">
-        <h2 className="dashboard__section-title">Recursos</h2>
-        <div className="dashboard__grid">
-          {resourceCards.map(({ icon: Icon, title, description, route }) => (
-            <FeatureCard
-              key={route + title}
-              icon={<Icon />}
-              title={title}
-              description={description}
-              onClick={() => navigate(route)}
-            />
-          ))}
-        </div>
-      </section>
+        <button className="lh-feature-item" onClick={() => navigate('/diagnostico')}>
+          <span className="lh-feature-icon lh-feat-cyan">
+            <FaStethoscope />
+          </span>
+          <div className="lh-feature-info">
+            <p className="lh-feature-name">Raio-X de Dom√≠nios</p>
+            <p className="lh-feature-desc">Diagn√≥stico por √°rea: veja onde voc√™ est√° forte e onde precisa evoluir</p>
+          </div>
+          <FaChevronRight className="lh-feature-arrow" />
+        </button>
+
+        <button className="lh-feature-item" onClick={() => navigate('/simulados')}>
+          <span className="lh-feature-icon lh-feat-green">
+            <FaPlay />
+          </span>
+          <div className="lh-feature-info">
+            <p className="lh-feature-name">Simulados Oficiais</p>
+            <p className="lh-feature-desc">Quest√µes elaboradas para simular o ambiente de prova real</p>
+          </div>
+          <FaChevronRight className="lh-feature-arrow" />
+        </button>
+        
+        <button className="lh-feature-item" onClick={() => navigate('/cases')}>
+          <span className="lh-feature-icon lh-feat-orange">
+            <FaLayerGroup />
+          </span>
+          <div className="lh-feature-info">
+            <p className="lh-feature-name">Cases de Arquitetura</p>
+            <p className="lh-feature-desc">Estude com cen√°rios arquiteturais baseados no Well-Architected Framework</p>
+          </div>
+          <FaChevronRight className="lh-feature-arrow" />
+        </button>
+
+        <button className="lh-feature-item" onClick={() => navigate('/recursos')}>
+          <span className="lh-feature-icon lh-feat-blue">
+            <FaBookOpenReader />
+          </span>
+          <div className="lh-feature-info">
+            <p className="lh-feature-name">Materiais e Recursos</p>
+            <p className="lh-feature-desc">Documenta√ß√µes da AWS, whitepapers e guias pr√°ticos</p>
+          </div>
+          <FaChevronRight className="lh-feature-arrow" />
+        </button>
+      </div>
+
     </div>
   );
 }

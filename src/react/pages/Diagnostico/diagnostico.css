@@ -1,0 +1,40 @@
+.diagnostico {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  padding: var(--spacing-xl) 0;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.diagnostico__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.diagnostico__title {
+  color: var(--color-text-strong);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
+  line-height: var(--leading-tight);
+  margin: 0;
+}
+
+.diagnostico__subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--text-lg);
+  margin: 0;
+}
+
+.diagnostico__content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}

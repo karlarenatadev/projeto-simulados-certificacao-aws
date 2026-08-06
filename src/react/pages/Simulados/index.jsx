@@ -1,11 +1,13 @@
-﻿import { useState, useEffect } from 'react';
-import { FaPlay, FaCheck, FaXmark, FaArrowRight, FaRotateLeft } from 'react-icons/fa6';
+﻿import { useState, useEffect, useContext } from 'react';
+import { FaPlay, FaCheck, FaXmark, FaArrowRight, FaRotateLeft, FaBrain } from 'react-icons/fa6';
 import { useQuiz } from '@/hooks/useQuiz';
+import { UserContext } from '@/contexts/UserContext';
 import { fetchFilteredQuestions } from '@/services/questionService';
 import { CERTIFICATIONS, QUIZ_MODES, QUESTION_COUNTS, pickRandom, hasPassed } from '@/services/quizEngine';
 import './simulados.css';
 
 export default function Simulados() {
+  const { user } = useContext(UserContext);
   const quiz = useQuiz();
   const [cert, setCert] = useState(CERTIFICATIONS[0].id);
   const [mode, setMode] = useState(QUIZ_MODES[0].id);
@@ -15,11 +17,13 @@ export default function Simulados() {
   const [showReview, setShowReview] = useState(false);
 
   const handleStart = async () => {
+    if (!user) {
+      alert('Você precisa estar logado para iniciar o simulado.');
+      return;
+    }
     setLoading(true);
     try {
-      const allQuestions = await fetchFilteredQuestions({ certification: cert });
-      const selectedQuestions = pickRandom(allQuestions, count);
-      quiz.startQuiz(selectedQuestions, mode);
+      await quiz.startQuiz(user.id, cert, count, mode);
     } catch (e) {
       console.error(e);
       alert('Erro ao carregar questões');
@@ -147,7 +151,7 @@ export default function Simulados() {
             })}
           </div>
 
-          <div style={{ marginTop: '2rem' }}>
+          <div className="quiz-results__actions">
             <button className="quiz-btn" onClick={quiz.resetQuiz}>
               <FaRotateLeft /> Novo Simulado
             </button>
@@ -159,39 +163,49 @@ export default function Simulados() {
 
   return (
     <div className="simulados">
-      <div className="simulados__header">
-        <h1 className="simulados__title">
-          <FaPlay style={{ color: 'var(--color-brand-primary)' }} />
-          Simulados AWS
-        </h1>
-        <p className="simulados__subtitle">Configure seu simulado para treinar com questões reais do exame.</p>
+      
+      <div className="hub-ai-banner">
+        <div className="hub-ai-badge">
+          <div className="ai-pulse"></div>
+          MOTOR GERADOR DE QUESTÕES
+        </div>
+        <h1 className="hub-ai-title">Simulador IA</h1>
+        <p className="hub-ai-desc">
+          Configure seu simulado e deixe nosso motor selecionar as melhores questões para o seu momento de estudo, baseadas no padrão real das certificações AWS.
+        </p>
       </div>
 
       <div className="quiz-config">
-        <div className="quiz-config__group">
-          <label className="quiz-config__label">Certificação</label>
-          <select className="quiz-config__select" value={cert} onChange={e => setCert(e.target.value)}>
-            {CERTIFICATIONS.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
-          </select>
-        </div>
+        <div className="config-grid">
+          <div className="quiz-config__group">
+            <label className="quiz-config__label">Certificação Alvo</label>
+            <select className="quiz-config__select" value={cert} onChange={e => setCert(e.target.value)}>
+              {CERTIFICATIONS.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+            </select>
+          </div>
 
-        <div className="quiz-config__group">
-          <label className="quiz-config__label">Modo do Simulado</label>
-          <select className="quiz-config__select" value={mode} onChange={e => setMode(e.target.value)}>
-            {QUIZ_MODES.map(m => <option key={m.id} value={m.id}>{m.label} - {m.description}</option>)}
-          </select>
-        </div>
+          <div className="quiz-config__group">
+            <label className="quiz-config__label">Modo do Simulado</label>
+            <select className="quiz-config__select" value={mode} onChange={e => setMode(e.target.value)}>
+              {QUIZ_MODES.map(m => <option key={m.id} value={m.id}>{m.label} - {m.description}</option>)}
+            </select>
+          </div>
 
-        <div className="quiz-config__group">
-          <label className="quiz-config__label">Quantidade de Questões</label>
-          <select className="quiz-config__select" value={count} onChange={e => setCount(Number(e.target.value))}>
-            {QUESTION_COUNTS.map(c => <option key={c} value={c}>{c} questões</option>)}
-          </select>
+          <div className="quiz-config__group">
+            <label className="quiz-config__label">Quantidade de Questões</label>
+            <select className="quiz-config__select" value={count} onChange={e => setCount(Number(e.target.value))}>
+              {QUESTION_COUNTS.map(c => <option key={c} value={c}>{c} questões</option>)}
+            </select>
+          </div>
         </div>
 
         <div className="quiz-config__actions">
           <button className="quiz-config__btn" onClick={handleStart} disabled={loading}>
-            {loading ? 'Carregando...' : 'Iniciar Simulado'}
+            {loading ? 'Gerando Simulado...' : (
+              <>
+                <FaBrain /> Iniciar Simulado IA
+              </>
+            )}
           </button>
         </div>
       </div>

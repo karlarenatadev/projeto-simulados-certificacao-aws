@@ -1,7 +1,7 @@
-﻿import { useParams, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { FaArrowLeft, FaCheck, FaEye, FaEyeSlash } from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
-import { fetchCases, markCompleted, isCompleted } from '@/services/casesService';
+import { fetchCases, markCompleted } from '@/services/casesService';
 import './cases.css';
 
 export default function CaseView() {
@@ -16,7 +16,7 @@ export default function CaseView() {
       const cases = await fetchCases();
       const found = cases.find(c => c.id === id);
       setCaseData(found);
-      if (found && isCompleted(found.id)) setCompleted(true);
+      if (found && found.completed) setCompleted(true);
       setIsLoading(false);
     }
     load();

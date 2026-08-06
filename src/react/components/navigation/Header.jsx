@@ -20,7 +20,7 @@ import '@/styles/components/header.css';
  */
 export function Header({ sidebarOpen, onToggleSidebar }) {
   const { theme, toggleTheme } = useContext(ThemeContext);
-  const { user } = useContext(UserContext);
+  const { user, logout } = useContext(UserContext);
   const navigate = useNavigate();
 
   const initials = user?.full_name
@@ -102,8 +102,13 @@ export function Header({ sidebarOpen, onToggleSidebar }) {
         {user && (
           <button
             className="header__user-trigger"
-            aria-label={`Menu do usuário — ${user.full_name || user.email}`}
-            title={user.full_name || user.email}
+            aria-label={`Menu do usuário - ${user.full_name || user.email}`}
+            title="Sair (Logout)"
+            onClick={() => {
+              if(window.confirm('Deseja realmente sair?')) {
+                logout();
+              }
+            }}
           >
             <span className="header__avatar" aria-hidden="true">
               {initials}
