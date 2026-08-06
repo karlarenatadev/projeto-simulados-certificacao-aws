@@ -1,0 +1,138 @@
+/* ==========================================================================
+   BUTTON — componente reutilizável
+   Variantes: primary | secondary | outline | ghost | danger
+   Tamanhos:  sm | md (default) | lg
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+  text-decoration: none;
+  user-select: none;
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Ícone sozinho ────────────────────────────────────────────────────────── */
+.btn-icon-only {
+  padding: var(--spacing-sm);
+  aspect-ratio: 1;
+}
+
+/* ── Variante: primary ────────────────────────────────────────────────────── */
+.btn-primary {
+  background-color: var(--color-brand-primary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-brand-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--color-brand-primary) 84%, var(--color-brand-deep));
+  border-color: color-mix(in srgb, var(--color-brand-primary) 84%, var(--color-brand-deep));
+  box-shadow: var(--shadow-action);
+}
+
+/* ── Variante: secondary ──────────────────────────────────────────────────── */
+.btn-secondary {
+  background-color: color-mix(in srgb, var(--color-brand-primary) 10%, var(--color-surface));
+  color: var(--color-brand-primary);
+  border-color: color-mix(in srgb, var(--color-brand-primary) 30%, transparent);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--color-brand-primary) 15%, var(--color-surface));
+  border-color: var(--color-brand-primary);
+}
+
+/* ── Variante: outline ────────────────────────────────────────────────────── */
+.btn-outline {
+  background-color: transparent;
+  color: var(--color-text-strong);
+  border-color: var(--color-border);
+}
+
+.btn-outline:hover:not(:disabled) {
+  background-color: var(--color-surface-alt);
+  border-color: var(--color-text-muted);
+}
+
+/* ── Variante: ghost ──────────────────────────────────────────────────────── */
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-text-muted);
+  border-color: transparent;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background-color: var(--color-surface-alt);
+  color: var(--color-text-strong);
+}
+
+/* ── Variante: danger ─────────────────────────────────────────────────────── */
+.btn-danger {
+  background-color: var(--color-danger);
+  color: var(--color-text-inverse);
+  border-color: var(--color-danger);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--color-danger) 84%, #000);
+  box-shadow: var(--focus-ring-danger);
+}
+
+/* ── Tamanhos ─────────────────────────────────────────────────────────────── */
+.btn-sm {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--text-xs);
+}
+
+.btn-lg {
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--text-base);
+  border-radius: var(--radius-xl);
+}
+
+/* ── Loading state ────────────────────────────────────────────────────────── */
+.btn-loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.btn-loading svg {
+  animation: btn-spin 0.8s linear infinite;
+}
+
+@keyframes btn-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}

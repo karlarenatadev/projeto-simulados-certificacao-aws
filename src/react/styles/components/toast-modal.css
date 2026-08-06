@@ -1,0 +1,247 @@
+/* ==========================================================================
+   TOAST — notificações temporárias (feedback não-bloqueante)
+   ========================================================================== */
+
+.toast-container {
+  position: fixed;
+  bottom: var(--spacing-xl);
+  right: var(--spacing-xl);
+  z-index: 100;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--spacing-sm);
+  max-width: 24rem;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .toast-container {
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    left: var(--spacing-md);
+    max-width: none;
+  }
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-hover);
+  pointer-events: auto;
+  animation: toast-in var(--transition-base) ease both;
+}
+
+.toast--exiting {
+  animation: toast-out var(--transition-base) ease both;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toast-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+.toast__icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.toast__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast__title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-strong);
+  line-height: var(--leading-tight);
+}
+
+.toast__message {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--spacing-xs);
+  line-height: var(--leading-normal);
+}
+
+.toast__close {
+  color: var(--color-text-muted);
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-md);
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.toast__close:hover {
+  color: var(--color-text-strong);
+  background-color: var(--color-surface-alt);
+}
+
+/* Variantes */
+.toast--success { border-left: 3px solid var(--color-success); }
+.toast--success .toast__icon { color: var(--color-success); }
+
+.toast--error   { border-left: 3px solid var(--color-danger); }
+.toast--error .toast__icon { color: var(--color-danger); }
+
+.toast--warning { border-left: 3px solid var(--color-warning); }
+.toast--warning .toast__icon { color: var(--color-warning); }
+
+.toast--info    { border-left: 3px solid var(--color-brand-primary); }
+.toast--info .toast__icon { color: var(--color-brand-primary); }
+
+/* ==========================================================================
+   MODAL — diálogo bloqueante
+   ========================================================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+  animation: modal-backdrop-in var(--transition-base) ease both;
+}
+
+.modal-backdrop--closing {
+  animation: modal-backdrop-out var(--transition-base) ease both;
+}
+
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modal-backdrop-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.modal {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-hover);
+  width: 100%;
+  max-width: 32rem;
+  max-height: calc(100vh - var(--spacing-3xl));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modal-in var(--transition-base) ease both;
+}
+
+.modal-backdrop--closing .modal {
+  animation: modal-out var(--transition-fast) ease both;
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modal-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.98);
+  }
+}
+
+.modal--sm  { max-width: 24rem; }
+.modal--lg  { max-width: 48rem; }
+.modal--xl  { max-width: 64rem; }
+.modal--full { max-width: calc(100vw - var(--spacing-xl)); }
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border-soft);
+  flex-shrink: 0;
+}
+
+.modal__title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+.modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.modal__close:hover {
+  background-color: var(--color-surface-alt);
+  color: var(--color-text-strong);
+}
+
+.modal__body {
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--color-border-soft);
+  background-color: var(--color-surface-alt);
+  flex-shrink: 0;
+}

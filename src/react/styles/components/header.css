@@ -1,0 +1,201 @@
+/* ==========================================================================
+   HEADER — barra superior fixa do app shell
+   ========================================================================== */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--header-height);
+  background-color: var(--color-brand-deep);
+  color: var(--color-text-on-dark);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text-inverse) 12%, transparent);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-lg);
+  gap: var(--spacing-md);
+  transition: background-color var(--transition-base);
+}
+
+@media (min-width: 768px) {
+  .header {
+    padding: 0 var(--spacing-xl);
+  }
+}
+
+/* ── Lado esquerdo ────────────────────────────────────────────────────────── */
+
+.header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  min-width: 0;
+}
+
+/* Botão toggle da sidebar */
+.header__sidebar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-lg);
+  color: var(--color-text-on-dark);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.header__sidebar-toggle:hover {
+  background-color: color-mix(in srgb, var(--color-text-inverse) 12%, transparent);
+  color: var(--color-brand-accent);
+}
+
+.header__sidebar-toggle-icon {
+  font-size: 1.5rem;
+  transition: transform var(--transition-base);
+}
+
+/* Logo / Nome da app */
+.header__brand {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.header__brand-title {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-on-dark);
+  line-height: var(--leading-tight);
+  margin: 0;
+  transition: color var(--transition-fast);
+}
+
+.header__brand-subtitle {
+  font-size: var(--text-xs);
+  color: color-mix(in srgb, var(--color-text-on-dark) 70%, transparent);
+  line-height: 1;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .header__brand-title {
+    font-size: var(--text-xl);
+  }
+  .header__brand-subtitle {
+    display: block;
+  }
+}
+
+.header__brand:hover .header__brand-title {
+  color: var(--color-brand-accent);
+}
+
+/* ── Lado direito: ações ──────────────────────────────────────────────────── */
+
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .header__actions {
+    gap: var(--spacing-md);
+  }
+}
+
+/* Botão de ação dentro do header (tema, idioma, pomodoro) */
+.header__action-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-on-dark);
+  background-color: color-mix(in srgb, var(--color-text-inverse) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-text-inverse) 20%, transparent);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.header__action-btn:hover {
+  background-color: color-mix(in srgb, var(--color-text-inverse) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-text-inverse) 35%, transparent);
+}
+
+/* Botão Pomodoro com cor de destaque */
+.header__action-btn--pomodoro {
+  background-color: color-mix(in srgb, var(--color-brand-accent) 18%, transparent);
+  border-color: color-mix(in srgb, var(--color-brand-accent) 50%, transparent);
+}
+
+/* Texto somente em desktop */
+.header__action-label {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .header__action-label {
+    display: inline;
+  }
+}
+
+/* ── User menu ────────────────────────────────────────────────────────────── */
+
+.header__user-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  background: transparent;
+  border: none;
+  color: var(--color-text-on-dark);
+}
+
+.header__user-trigger:hover {
+  background-color: color-mix(in srgb, var(--color-text-inverse) 10%, transparent);
+}
+
+.header__avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-brand-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-inverse);
+  flex-shrink: 0;
+}
+
+.header__user-name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .header__user-name {
+    display: block;
+  }
+}

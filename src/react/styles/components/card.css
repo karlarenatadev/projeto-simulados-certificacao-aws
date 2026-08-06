@@ -1,0 +1,160 @@
+/* ==========================================================================
+   CARD — componente de superfície elevada
+   Variantes: default | interactive | accent | flat
+   ========================================================================== */
+
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.card-padding {
+  padding: var(--spacing-lg);
+}
+
+/* ── Variante: interactive (hover effect) ─────────────────────────────────── */
+.card-interactive {
+  cursor: pointer;
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+  border-color: color-mix(in srgb, var(--color-brand-primary) 40%, transparent);
+}
+
+.card-interactive:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Variante: accent (destaque de cor) ───────────────────────────────────── */
+.card-accent {
+  border-left: 3px solid var(--color-brand-primary);
+}
+
+.card-accent-success {
+  border-left: 3px solid var(--color-success);
+  background-color: var(--color-surface-success);
+}
+
+.card-accent-warning {
+  border-left: 3px solid var(--color-warning);
+  background-color: var(--color-surface-warning);
+}
+
+.card-accent-danger {
+  border-left: 3px solid var(--color-danger);
+  background-color: var(--color-surface-danger);
+}
+
+/* ── Variante: flat (sem sombra) ──────────────────────────────────────────── */
+.card-flat {
+  box-shadow: none;
+  border-color: var(--color-border-soft);
+}
+
+/* ── Header / Body / Footer do card ──────────────────────────────────────── */
+.card-header {
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border-soft);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-sm);
+}
+
+.card-body {
+  padding: var(--spacing-lg);
+}
+
+.card-footer {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--color-border-soft);
+  background-color: var(--color-surface-alt);
+}
+
+/* ── Feature Card (Dashboard) ─────────────────────────────────────────────── */
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+  text-decoration: none;
+  color: inherit;
+}
+
+.feature-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  border-color: color-mix(in srgb, var(--color-brand-primary) 40%, transparent);
+}
+
+.feature-card__icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-info);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xl);
+  color: var(--color-brand-primary);
+  flex-shrink: 0;
+}
+
+.feature-card__icon--accent {
+  background-color: var(--color-surface-accent);
+  color: var(--color-brand-accent);
+}
+
+.feature-card__icon--success {
+  background-color: var(--color-surface-success);
+  color: var(--color-success);
+}
+
+.feature-card__icon--warning {
+  background-color: var(--color-surface-warning);
+  color: var(--color-warning);
+}
+
+.feature-card__title {
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-strong);
+  margin: 0;
+}
+
+.feature-card__description {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  line-height: var(--leading-relaxed);
+  flex: 1;
+}
+
+.feature-card__arrow {
+  color: var(--color-text-muted);
+  transition: transform var(--transition-fast), color var(--transition-fast);
+  align-self: flex-end;
+}
+
+.feature-card:hover .feature-card__arrow {
+  transform: translateX(4px);
+  color: var(--color-brand-primary);
+}

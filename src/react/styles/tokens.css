@@ -1,0 +1,138 @@
+/* ==========================================================================
+   DESIGN TOKENS — Cloud Academy A3 React
+   Única fonte de verdade para cores, espaçamento, tipografia e radius.
+   Nenhum componente deve usar valores literais de cor ou espaçamento.
+   ========================================================================== */
+
+:root {
+  /* ── Marca A3Data ────────────────────────────────────────────────────── */
+  --color-brand-deep:    #001863;
+  --color-brand-primary: #0033ff;
+  --color-brand-accent:  #f53199;
+  --color-brand-sky:     #39d0ff;
+  --color-brand-amethyst: #7b4aaf;
+
+  /* ── Cores semânticas ────────────────────────────────────────────────── */
+  --color-success: #35b769;
+  --color-danger:  #f91c1c;
+  --color-warning: #ff822e;
+  --color-info:    var(--color-brand-sky);
+
+  /* ── Superfícies (tema claro — default) ──────────────────────────────── */
+  --color-background: #f5f5f5;
+  --color-surface:    #ffffff;
+  --color-surface-alt: #f8fafc;
+  --color-surface-raised: #ffffff;
+
+  /* Superfícies com tint de cor */
+  --color-surface-info:    color-mix(in srgb, var(--color-brand-primary) 5%, var(--color-surface));
+  --color-surface-accent:  color-mix(in srgb, var(--color-brand-accent) 8%, var(--color-surface));
+  --color-surface-success: color-mix(in srgb, var(--color-success) 12%, var(--color-surface));
+  --color-surface-danger:  color-mix(in srgb, var(--color-danger) 10%, var(--color-surface));
+  --color-surface-warning: color-mix(in srgb, var(--color-warning) 12%, var(--color-surface));
+
+  /* ── Texto ───────────────────────────────────────────────────────────── */
+  --color-text:         #111111;
+  --color-text-strong:  #00083d;
+  --color-text-muted:   color-mix(in srgb, var(--color-text-strong) 58%, var(--color-surface));
+  --color-text-inverse: #f5f7ff;
+  --color-text-on-dark: var(--color-text-inverse);
+
+  /* ── Bordas ──────────────────────────────────────────────────────────── */
+  --color-border:      #ebebeb;
+  --color-border-soft: color-mix(in srgb, var(--color-border) 70%, var(--color-surface));
+
+  /* ── Sombras ─────────────────────────────────────────────────────────── */
+  --shadow-sm:    0 1px 3px color-mix(in srgb, var(--color-brand-deep) 8%, transparent),
+                  0 1px 2px color-mix(in srgb, var(--color-brand-deep) 6%, transparent);
+  --shadow-card:  0 14px 32px color-mix(in srgb, var(--color-brand-deep) 10%, transparent);
+  --shadow-hover: 0 8px 24px color-mix(in srgb, var(--color-brand-deep) 14%, transparent);
+  --shadow-action: 0 12px 24px color-mix(in srgb, var(--color-brand-primary) 18%, transparent);
+
+  /* ── Espaçamento ─────────────────────────────────────────────────────── */
+  --spacing-xs:  0.25rem;   /* 4px  */
+  --spacing-sm:  0.5rem;    /* 8px  */
+  --spacing-md:  1rem;      /* 16px */
+  --spacing-lg:  1.5rem;    /* 24px */
+  --spacing-xl:  2rem;      /* 32px */
+  --spacing-2xl: 3rem;      /* 48px */
+  --spacing-3xl: 4rem;      /* 64px */
+
+  /* Alias numérico (mantém compatibilidade com vanilla) */
+  --space-4:  var(--spacing-xs);
+  --space-8:  var(--spacing-sm);
+  --space-12: 0.75rem;
+  --space-16: var(--spacing-md);
+  --space-24: var(--spacing-lg);
+  --space-32: var(--spacing-xl);
+  --space-48: var(--spacing-2xl);
+  --space-64: var(--spacing-3xl);
+
+  /* ── Tipografia ──────────────────────────────────────────────────────── */
+  --font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono:   "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+
+  --text-xs:   0.75rem;    /* 12px */
+  --text-sm:   0.875rem;   /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg:   1.125rem;   /* 18px */
+  --text-xl:   1.25rem;    /* 20px */
+  --text-2xl:  1.5rem;     /* 24px */
+  --text-3xl:  1.875rem;   /* 30px */
+
+  --font-weight-normal:   400;
+  --font-weight-medium:   500;
+  --font-weight-semibold: 600;
+  --font-weight-bold:     700;
+
+  --leading-tight:  1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+
+  /* ── Border Radius ───────────────────────────────────────────────────── */
+  --radius-sm:   0.25rem;
+  --radius-md:   0.375rem;
+  --radius-lg:   0.5rem;
+  --radius-xl:   1rem;
+  --radius-full: 9999px;
+
+  /* ── Transições ──────────────────────────────────────────────────────── */
+  --transition-fast: 0.12s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.35s ease;
+
+  /* ── Focus ───────────────────────────────────────────────────────────── */
+  --focus-ring:        0 0 0 3px color-mix(in srgb, var(--color-brand-primary) 28%, transparent);
+  --focus-ring-danger: 0 0 0 3px color-mix(in srgb, var(--color-danger) 28%, transparent);
+
+  /* ── Layout ──────────────────────────────────────────────────────────── */
+  --sidebar-width:  72px;
+  --header-height:  68px;
+  --container-max:  1366px;
+}
+
+/* ── Tema Escuro ─────────────────────────────────────────────────────────── */
+html[data-theme="dark"] {
+  --color-background:   #0d1117;
+  --color-surface:      #161b22;
+  --color-surface-alt:  #1c2128;
+  --color-surface-raised: #21262d;
+
+  --color-text:         #e6edf3;
+  --color-text-strong:  #f0f6fc;
+  --color-text-muted:   #8b949e;
+  --color-text-inverse: #0d1117;
+
+  --color-border:      #30363d;
+  --color-border-soft: #21262d;
+
+  --shadow-sm:    0 1px 3px rgba(0,0,0,0.4);
+  --shadow-card:  0 14px 32px rgba(0,0,0,0.4);
+  --shadow-hover: 0 8px 24px rgba(0,0,0,0.5);
+
+  --color-surface-info:    color-mix(in srgb, var(--color-brand-primary) 12%, var(--color-surface));
+  --color-surface-accent:  color-mix(in srgb, var(--color-brand-accent) 15%, var(--color-surface));
+  --color-surface-success: color-mix(in srgb, var(--color-success) 18%, var(--color-surface));
+  --color-surface-danger:  color-mix(in srgb, var(--color-danger) 15%, var(--color-surface));
+  --color-surface-warning: color-mix(in srgb, var(--color-warning) 15%, var(--color-surface));
+}
