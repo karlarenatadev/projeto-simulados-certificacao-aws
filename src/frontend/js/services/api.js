@@ -241,6 +241,8 @@ export const apiService = {
       if (options.limit) params.append('limit', options.limit);
       if (options.offset) params.append('offset', options.offset);
       if (options.search) params.append('search', options.search);
+      if (options.locale) params.append('locale', options.locale);
+      if (options.language) params.append('language', options.language);
 
       const response = await fetchWithRetry(`/api/questions?${params}`);
       return response;

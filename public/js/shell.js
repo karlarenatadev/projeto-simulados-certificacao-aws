@@ -143,6 +143,15 @@ const SIDEBAR_ITEMS = [
     title: "Recursos de Estudo",
   },
   {
+    id: "sidebar-btn-sprint",
+    label: "Sprint",
+    icon: "fa-solid fa-stopwatch",
+    href: "./study-sprint.html",
+    activePaths: ["/study-sprint.html"],
+    roles: ["*"],
+    title: "Sprint de Estudos",
+  },
+  {
     id: "sidebar-btn-mistakes",
     label: "Erros",
     icon: "fa-solid fa-triangle-exclamation",

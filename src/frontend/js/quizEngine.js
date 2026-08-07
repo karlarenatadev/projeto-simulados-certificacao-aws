@@ -181,7 +181,9 @@ export class QuizEngine {
           data = data.filter((q) => q.difficulty === filters.difficulty);
         }
         if (filters.topic) {
-          data = data.filter((q) => q.domain === filters.topic);
+          const domainObj = domainsConfig.find((d) => d.id === filters.topic);
+          const englishTopic = domainObj ? domainObj.englishName : filters.topic;
+          data = data.filter((q) => q.domain === filters.topic || q.domain === englishTopic);
         }
       }
 
@@ -310,6 +312,7 @@ export class QuizEngine {
           certification: certId,
           search: "diagnostic", // Attempt to filter for diagnostic questions
           limit: 50,
+          locale: language
         });
 
         if (response.success && response.data && response.data.length > 0) {
@@ -635,13 +638,32 @@ export class QuizEngine {
    * @returns {object} Normalized question
    */
   _normalizeQuestion(q) {
+    let correctRaw =
+      q.correct !== undefined
+        ? q.correct
+        : q.correct_answer !== undefined
+          ? q.correct_answer
+          : q.correctAnswer;
+
+    let correctNormalized = correctRaw;
+    if (typeof correctRaw === "string") {
+      correctNormalized = parseInt(correctRaw, 10);
+    } else if (Array.isArray(correctRaw)) {
+      correctNormalized = correctRaw.map((ans) =>
+        typeof ans === "string" ? parseInt(ans, 10) : ans,
+      );
+    }
+
     return {
-      id: q.id || q.question_id || generateQuestionId(q.question || q.question_text),
+      id:
+        q.id ||
+        q.questionId ||
+        generateQuestionId(q.question || q.question_text),
       domain: q.domain || q.domainId || "0",
       difficulty: q.difficulty || "medium",
       question: q.question || q.question_text || "",
       options: q.options || [],
-      correct: q.correct !== undefined ? q.correct : (q.correct_answer !== undefined ? q.correct_answer : q.correctAnswer),
+      correct: correctNormalized,
       explanation: q.explanation || "",
       reference_url: q.reference_url || q.referenceUrl || undefined,
       validated_by: q.validated_by || q.validatedBy || undefined,

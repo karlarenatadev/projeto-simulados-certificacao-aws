@@ -363,6 +363,10 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
     opacity: 1; /* mantém opaco — a transform controla visibilidade */
     box-shadow: none;
     z-index: 200; /* acima do overlay */
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    height: 100dvh; /* fallback para browsers modernos */
   }
 
   /* Itens expandidos no drawer mobile — exibe ícone + label lado a lado */

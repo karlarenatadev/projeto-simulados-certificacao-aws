@@ -2332,6 +2332,10 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
     opacity: 1; /* mantém opaco — a transform controla visibilidade */
     box-shadow: none;
     z-index: 200; /* acima do overlay */
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    height: 100dvh; /* fallback para browsers modernos */
   }
 
   /* Itens expandidos no drawer mobile — exibe ícone + label lado a lado */
@@ -6122,7 +6126,7 @@ select {
   border: 1.5px solid var(--border-theme);
   border-radius: 8px;
   font-size: 0.85rem;
-  background: var(--bg-card);
+  background: transparent;
   color: var(--text-strong);
   cursor: pointer;
   transition: border-color 0.15s;
@@ -6134,9 +6138,14 @@ select {
 }
 
 .dark .cases-filter-select {
-  background: var(--bg-card);
+  background: transparent;
   border-color: var(--border-theme);
-  color: var(--text-main);
+  color: var(--a3-text-inverse);
+}
+
+.dark .cases-filter-select option {
+  background: var(--bg-main);
+  color: var(--a3-text-inverse);
 }
 
 /* Grid de cards */
