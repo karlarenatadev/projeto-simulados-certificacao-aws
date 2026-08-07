@@ -188,6 +188,9 @@ try {
   // CSS
   // ============================================================
 
+  console.log('🎨 Compilando Tailwind CSS...');
+  execSync('npx @tailwindcss/cli -i src/frontend/styles/tailwind.source.css -o src/frontend/styles/tailwind.css', { stdio: 'inherit' });
+
   console.log('🎨 Copiando e Consolidando arquivos CSS...');
 
   copyDirectoryRecursive(
@@ -198,6 +201,7 @@ try {
   // Consolidação de CSS
   const stylesDir = 'src/frontend/styles';
   const cssOrder = [
+    'tailwind.css',
     'tokens.css',
     'themes.css',
     'base.css',

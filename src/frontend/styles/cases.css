@@ -171,8 +171,8 @@
   border: 1.5px solid var(--border-theme);
   border-radius: 8px;
   font-size: 0.85rem;
-  background: transparent;
-  color: var(--text-strong);
+  background-color: transparent !important;
+  color: var(--text-main) !important;
   cursor: pointer;
   transition: border-color 0.15s;
   outline: none;

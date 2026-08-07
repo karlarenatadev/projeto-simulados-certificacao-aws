@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme {
+  --color-aws-dark: #001863;
+  --color-aws-orange: #0033FF;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+@source "../js/**/*.js";

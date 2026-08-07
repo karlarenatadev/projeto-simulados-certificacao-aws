@@ -354,11 +354,11 @@ html.dark .fc-definition {
 }
 
 .sprint-day-current {
-  background-color: var(--a3-accent);
-  border-color: color-mix(in srgb, var(--a3-accent) 70%, var(--a3-surface));
+  background-color: var(--a3-primary);
+  border-color: color-mix(in srgb, var(--a3-primary) 70%, var(--a3-surface));
   color: var(--a3-text-inverse);
   font-weight: 900;
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--a3-accent) 24%, transparent);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--a3-primary) 24%, transparent);
 }
 
 .light #sprint-days-grid .bg-gray-50 {
