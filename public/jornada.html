@@ -131,11 +131,12 @@
               Complete os módulos para desbloquear novas certificações e ganhar
               insígnias.
             </p>
+            <p id="jornada-cert-title" class="text-lg font-semibold text-aws-orange mt-2"></p>
           </div>
 
           <div
             class="trail-container w-full mb-16"
-            id="trail-render-area"
+            id="gamificacao-trail"
           ></div>
 
           <div class="w-full max-w-4xl mb-12">
@@ -148,6 +149,28 @@
               id="gamificacao-badges-grid"
               class="grid grid-cols-2 md:grid-cols-4 gap-4"
             ></div>
+          </div>
+
+          <!-- NOVO: Guild Leaderboard -->
+          <div class="w-full max-w-4xl mb-12">
+            <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <i class="fa-solid fa-users text-blue-500"></i> Placar da Guilda
+            </h3>
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow border border-gray-200 dark:border-slate-700">
+              <div class="flex justify-around mb-6 border-b pb-4 border-gray-200 dark:border-slate-700">
+                <div class="text-center">
+                  <p class="text-sm text-gray-500 dark:text-gray-400">Questões Totais</p>
+                  <p id="guild-total-questions" class="text-2xl font-bold text-blue-600 dark:text-blue-400">0</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-gray-500 dark:text-gray-400">Média Semanal</p>
+                  <p id="guild-weekly-avg" class="text-2xl font-bold text-green-600 dark:text-green-400">0%</p>
+                </div>
+              </div>
+              <ul id="guild-leaderboard" class="space-y-3">
+                <li class="text-center text-gray-500 text-sm">Carregando placar...</li>
+              </ul>
+            </div>
           </div>
 
         </div>

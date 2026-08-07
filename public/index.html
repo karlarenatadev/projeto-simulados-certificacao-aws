@@ -339,7 +339,32 @@
             <div class="lh-panel">
               <p class="lh-section-label">INDICADORES PRINCIPAIS</p>
 
-              <div class="lh-metrics-card">
+              <!-- Bloco 1: Progresso da Certificação (Migrado da Sidebar) -->
+              <div class="lh-metrics-card mb-4">
+                <div class="lh-metrics-header">
+                  <div>
+                    <p class="lh-metrics-title">Progresso da Certificação</p>
+                    <p class="lh-metrics-sub" id="sidebar-cert-label">Carregando...</p>
+                  </div>
+                  <span class="a3-badge a3-badge-primary" id="sidebar-cert-badge">---</span>
+                </div>
+                <div class="mt-4 p-4 border rounded dark:border-slate-700">
+                  <div class="flex justify-between text-sm mb-2">
+                    <span class="font-semibold text-gray-700 dark:text-gray-300">Prontidão para o Exame</span>
+                    <span class="font-bold text-blue-600 dark:text-blue-400" id="sidebar-pct-text">0%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 mb-3 overflow-hidden">
+                    <div class="bg-blue-600 h-3 rounded-full transition-all duration-500" id="sidebar-pct-bar" style="width: 0%"></div>
+                  </div>
+                  <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    <span>Status: <strong id="sidebar-cert-status">Não iniciada</strong></span>
+                    <span>Ofensiva: <strong id="sidebar-streak-value">0 dias</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bloco 2: Performance Geral (Original) -->
+              <div class="lh-metrics-card mb-4">
                 <div class="lh-metrics-header">
                   <div>
                     <p class="lh-metrics-title">Sua performance geral</p>
@@ -405,11 +430,45 @@
                   </div>
                 </div>
                 </div>
-                <!-- Último simulado -->
-                <div class="lh-last-quiz" id="hub-last-quiz">
-                  <p class="lh-last-quiz-empty">
-                    Nenhum simulado realizado ainda. Que tal começar agora?
-                  </p>
+
+              <!-- Bloco 3: Análise de Domínios / Radar -->
+              <div class="lh-metrics-card mb-4">
+                <div class="lh-metrics-header">
+                  <div>
+                    <p class="lh-metrics-title">Análise de Domínios</p>
+                    <p class="lh-metrics-sub">Seu desempenho por área de conhecimento</p>
+                  </div>
+                </div>
+                
+                <div id="global-stats-summary" class="flex gap-4 mb-4 mt-2 justify-around text-center text-sm">
+                    <div><strong id="total-quizzes" class="text-lg text-blue-600 dark:text-blue-400">0</strong><br><span class="text-gray-500">Simulados</span></div>
+                    <div><strong id="avg-score" class="text-lg text-green-600 dark:text-green-400">0%</strong><br><span class="text-gray-500">Média</span></div>
+                    <div><strong id="total-questions" class="text-lg text-purple-600 dark:text-purple-400">0</strong><br><span class="text-gray-500">Questões</span></div>
+                </div>
+
+                <div id="global-chart-container" class="relative w-full aspect-square md:aspect-video flex items-center justify-center mt-4">
+                  <canvas id="globalRadarChart"></canvas>
+                  <div id="global-chart-empty" class="absolute inset-0 flex items-center justify-center bg-gray-50/90 dark:bg-slate-800/90 rounded" style="display: none;">
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Realize simulados para gerar o gráfico.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bloco 4: Atividades Recentes (Histórico) -->
+              <div class="lh-metrics-card mb-4">
+                <div class="lh-metrics-header flex justify-between items-center">
+                  <div>
+                    <p class="lh-metrics-title" id="history-card-title">Atividades Recentes</p>
+                    <p class="lh-metrics-sub">
+                      Ofensiva Atual: <strong id="streak-counter" class="text-orange-500">0</strong> dias
+                    </p>
+                  </div>
+                  <button id="btn-clear-history" class="text-xs text-red-500 hover:text-red-700 underline" onclick="window.clearHistory && window.clearHistory()">Limpar Histórico</button>
+                </div>
+                <div class="mt-4">
+                  <ul id="history-list" class="space-y-2 max-h-60 overflow-y-auto">
+                    <li class="text-gray-500 text-sm italic p-4 text-center">Nenhum simulado registrado no histórico.</li>
+                  </ul>
                 </div>
               </div>
             </div>

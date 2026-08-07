@@ -451,13 +451,13 @@ export function buildSidebar(user) {
   // Separa itens normais dos itens de rodapé
   const allVisible = SIDEBAR_ITEMS.filter((item) => {
     if (item.roles.includes("*")) return true;
-    
+
     for (const requiredRole of item.roles) {
       if (PermissionService.hasAccess(user, requiredRole.toLowerCase())) {
         return true;
       }
     }
-    
+
     return false;
   });
 
@@ -483,7 +483,7 @@ export function buildSidebar(user) {
   }
 
   // 3. Limpa e preenche o footer
-  footerEl.innerHTML = ""; 
+  footerEl.innerHTML = "";
 
   if (footerItems.length > 0) {
     const divider = document.createElement("div");
