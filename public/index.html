@@ -333,32 +333,6 @@
             </div>
           </div>
 
-          <!-- DASHBOARD DA JORNADA INJETADO NO HUB -->
-          <div class="w-full mb-6 mt-4">
-            <div class="grid grid-cols-2 md:grid-cols-4" id="jornada-dashboard-grid">
-              <!-- Card Progresso -->
-              <div class="a3-card a3-card-body text-center flex flex-col justify-center">
-                <p class="text-[10px] text-gray-500 uppercase tracking-wide font-bold mb-1">Progresso</p>
-                <p class="text-2xl font-black text-aws-orange" id="jornada-progress">0%</p>
-              </div>
-              <!-- Card Taxa de Acerto -->
-              <div class="a3-card a3-card-body text-center flex flex-col justify-center">
-                <p class="text-[10px] text-gray-500 uppercase tracking-wide font-bold mb-1">Taxa Acerto</p>
-                <p class="text-2xl font-black text-green-500" id="jornada-accuracy">0%</p>
-              </div>
-              <!-- Card Questões -->
-              <div class="a3-card a3-card-body text-center flex flex-col justify-center">
-                <p class="text-[10px] text-gray-500 uppercase tracking-wide font-bold mb-1">Questões</p>
-                <p class="text-2xl font-black text-blue-500" id="jornada-questions">0</p>
-              </div>
-              <!-- Card Ponto Fraco -->
-              <div class="a3-card a3-card-body text-center flex flex-col justify-center">
-                <p class="text-[10px] text-gray-500 uppercase tracking-wide font-bold mb-1">Ponto Fraco</p>
-                <p class="text-sm font-black text-red-500 mt-2 truncate" id="jornada-weak-domain">-</p>
-              </div>
-            </div>
-          </div>
-
           <!-- Grade principal: indicadores + o que encontrar -->
           <div class="lh-grid mb-4">
             <!-- COLUNA ESQUERDA: Indicadores principais -->
@@ -384,6 +358,10 @@
                         escala AWS
                       </p>
                     </div>
+                    <div class="lh-metric-item lh-metric-green">
+                      <p class="lh-metric-label">Taxa Acerto</p>
+                      <p class="lh-metric-value" id="jornada-accuracy">0%</p>
+                    </div>
                   </div>
                   <div class="lh-metric-item lh-metric-cyan">
                     <i class="fa-solid fa-bullseye lh-metric-icon"></i>
@@ -394,6 +372,10 @@
                         escala AWS
                       </p>
                     </div>
+                    <div class="lh-metric-item lh-metric-cyan">
+                      <p class="lh-metric-label">Questões</p>
+                      <p class="lh-metric-value" id="jornada-questions">0</p>
+                    </div>
                   </div>
                   <div class="lh-metric-item lh-metric-green">
                     <i class="fa-solid fa-fire-flame-curved lh-metric-icon"></i>
@@ -401,6 +383,10 @@
                       <p class="lh-metric-label">Sequência</p>
                       <p class="lh-metric-value" id="hub-streak">0</p>
                       <p class="lh-metric-hint">dias seguidos</p>
+                    </div>
+                    <div class="lh-metric-item lh-metric-blue">
+                      <p class="lh-metric-label">Progresso</p>
+                      <p class="lh-metric-value" id="jornada-progress">0%</p>
                     </div>
                   </div>
                   <div class="lh-metric-item lh-metric-warning">
@@ -412,7 +398,12 @@
                       <p class="lh-metric-value" id="hub-mistakes-count">0</p>
                       <p class="lh-metric-hint">para revisar</p>
                     </div>
+                    <div class="lh-metric-item lh-metric-warning">
+                      <p class="lh-metric-label">Ponto Fraco</p>
+                      <p class="lh-metric-value" id="jornada-weak-domain">-</p>
+                    </div>
                   </div>
+                </div>
                 </div>
                 <!-- Último simulado -->
                 <div class="lh-last-quiz" id="hub-last-quiz">

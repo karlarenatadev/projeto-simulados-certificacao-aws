@@ -53,18 +53,20 @@ export function isSPAPage() {
 
 /**
  * Mapa de itens da sidebar por role.
- * Cada entrada: { id, label, icon, href?, action?, roles, conditional? }
+ * Cada entrada: { id, label, icon, href?, action?, roles, conditional?, activePaths? }
  *
  * - roles: quais roles veem este item ('*' = todos)
  * - conditional: função opcional que recebe o user e retorna bool
+ * - activePaths: rotas para marcar o item como 'is-active'
  */
 const SIDEBAR_ITEMS = [
   {
     id: "sidebar-btn-hub",
-    label: "Hub",
+    label: "Home",
     icon: "fa-solid fa-house",
     action: "showLearningHub",
     href: "./index.html",
+    activePaths: ["/index.html", "/"],
     roles: ["*"],
     primary: true,
     title: "Learning Hub — Painel Principal",
@@ -74,6 +76,12 @@ const SIDEBAR_ITEMS = [
     label: "Simulados",
     icon: "fa-solid fa-play",
     href: "./simulados.html",
+    activePaths: [
+      "/simulados.html",
+      "/simulator-room.html",
+      "/study-now.html",
+      "/study-sprint.html"
+    ],
     roles: ["*"],
     i18n: "sidebar_start",
     title: "Simulados",
@@ -83,6 +91,10 @@ const SIDEBAR_ITEMS = [
     label: "Jornada",
     icon: "fa-solid fa-route",
     href: "./jornada.html",
+    activePaths: [
+      "/jornada.html",
+      "/study-sprint.html"
+    ],
     roles: ["*"],
     i18n: "sidebar_journey",
     title: "Minha Jornada",
@@ -92,6 +104,7 @@ const SIDEBAR_ITEMS = [
     label: "Raio-X",
     icon: "fa-solid fa-stethoscope",
     href: "./diagnostico.html",
+    activePaths: ["/diagnostico.html"],
     roles: ["*"],
     i18n: "sidebar_diagnostic",
     title: "Raio-X da Nuvem",
@@ -101,6 +114,7 @@ const SIDEBAR_ITEMS = [
     label: "Flashcards",
     icon: "fa-solid fa-layer-group",
     href: "./flashcards.html",
+    activePaths: ["/flashcards.html"],
     roles: ["*"],
     i18n: "sidebar_flashcards",
     title: "Flashcards",
@@ -110,6 +124,10 @@ const SIDEBAR_ITEMS = [
     label: "Prática",
     icon: "fa-solid fa-diagram-project",
     href: "./cases.html",
+    activePaths: [
+      "/cases.html",
+      "/case-view.html"
+    ],
     roles: ["*"],
     i18n: "sidebar_cases",
     title: "Aprenda na Prática",
@@ -119,6 +137,7 @@ const SIDEBAR_ITEMS = [
     label: "Recursos",
     icon: "fa-solid fa-book-open-reader",
     href: "./resources.html",
+    activePaths: ["/resources.html"],
     roles: ["*"],
     i18n: "sidebar_resources",
     title: "Recursos de Estudo",
@@ -141,6 +160,7 @@ const SIDEBAR_ITEMS = [
     label: "Validação",
     icon: "fa-solid fa-circle-check",
     href: "./validation/valid.html",
+    activePaths: ["/validation/valid.html"],
     roles: ["VALIDATOR", "ADMIN"],
     title: "Painel de Validação de Questões",
   },
@@ -175,6 +195,7 @@ const SIDEBAR_ITEMS = [
     label: "Perfil",
     icon: "fa-solid fa-circle-user",
     href: "./profile.html",
+    activePaths: ["/profile.html"],
     roles: ["*"],
     title: "Meu Perfil",
     footer: true,
@@ -184,6 +205,7 @@ const SIDEBAR_ITEMS = [
     label: "Config",
     icon: "fa-solid fa-sliders",
     href: "./settings.html",
+    activePaths: ["/settings.html"],
     roles: ["*"],
     title: "Configurações",
     footer: true,
@@ -426,13 +448,10 @@ export function buildSidebar(user) {
   const sidebar = document.getElementById("left-sidebar");
   if (!sidebar) return;
 
-  const isAdmin = PermissionService.isAdmin(user);
-
   // Separa itens normais dos itens de rodapé
   const allVisible = SIDEBAR_ITEMS.filter((item) => {
     if (item.roles.includes("*")) return true;
     
-    // Se o item exigir papéis específicos, validamos usando o PermissionService
     for (const requiredRole of item.roles) {
       if (PermissionService.hasAccess(user, requiredRole.toLowerCase())) {
         return true;
@@ -445,57 +464,57 @@ export function buildSidebar(user) {
   const mainItems = allVisible.filter((item) => !item.footer);
   const footerItems = allVisible.filter((item) => item.footer);
 
+  // 1. Renderiza os itens de navegação principais
   const navEl = sidebar.querySelector(".left-sidebar-nav");
-  if (!navEl) return;
-
-  navEl.innerHTML = "";
-
-  // Renderiza itens principais
-  for (const item of mainItems) {
-    const el = _createSidebarItem(item);
-    navEl.appendChild(el);
-  }
-
-  // Injeta o footer com divisor + itens de perfil/config + botão de recolher
-  if (!sidebar.querySelector(".left-sidebar-footer")) {
-    const footer = document.createElement("div");
-    footer.className = "left-sidebar-footer";
-
-    // Divisor e itens de footer (Perfil / Config)
-    if (footerItems.length > 0) {
-      const divider = document.createElement("div");
-      divider.className = "left-sidebar-divider";
-      divider.setAttribute("aria-hidden", "true");
-      footer.appendChild(divider);
-
-      for (const item of footerItems) {
-        const el = _createSidebarItem(item);
-        footer.appendChild(el);
-      }
+  if (navEl) {
+    navEl.innerHTML = "";
+    for (const item of mainItems) {
+      const el = _createSidebarItem(item);
+      navEl.appendChild(el);
     }
-
-    // Divisor antes do botão collapse
-    const divider2 = document.createElement("div");
-    divider2.className = "left-sidebar-divider";
-    divider2.setAttribute("aria-hidden", "true");
-    footer.appendChild(divider2);
-
-    // Botão de recolher/expandir
-    const collapseBtn = document.createElement("button");
-    collapseBtn.id = "sidebar-collapse-btn";
-    collapseBtn.className = "sidebar-collapse-btn";
-    collapseBtn.title = "Recolher menu lateral";
-    collapseBtn.setAttribute("aria-label", "Recolher menu lateral");
-    collapseBtn.setAttribute("aria-expanded", "true");
-    collapseBtn.innerHTML = `
-      <i class="fa-solid fa-angles-left sidebar-collapse-icon" aria-hidden="true"></i>
-      <span class="sidebar-collapse-label">Recolher</span>
-    `;
-    // Nota: o handler de click é gerenciado por event delegation em initLeftSidebarToggleShell
-    footer.appendChild(collapseBtn);
-
-    sidebar.appendChild(footer);
   }
+
+  // 2. Resolve o container do footer (Cria dinamicamente se o HTML não tiver)
+  let footerEl = sidebar.querySelector(".left-sidebar-footer");
+  if (!footerEl) {
+    footerEl = document.createElement("div");
+    footerEl.className = "left-sidebar-footer";
+    sidebar.appendChild(footerEl);
+  }
+
+  // 3. Limpa e preenche o footer
+  footerEl.innerHTML = ""; 
+
+  if (footerItems.length > 0) {
+    const divider = document.createElement("div");
+    divider.className = "left-sidebar-divider";
+    divider.setAttribute("aria-hidden", "true");
+    footerEl.appendChild(divider);
+
+    for (const item of footerItems) {
+      const el = _createSidebarItem(item);
+      footerEl.appendChild(el);
+    }
+  }
+
+  // Divisor antes do botão collapse
+  const divider2 = document.createElement("div");
+  divider2.className = "left-sidebar-divider";
+  divider2.setAttribute("aria-hidden", "true");
+  footerEl.appendChild(divider2);
+
+  // Botão de recolher/expandir
+  const collapseBtn = document.createElement("button");
+  collapseBtn.id = "sidebar-collapse-btn";
+  collapseBtn.className = "sidebar-collapse-btn";
+  collapseBtn.title = "Recolher menu lateral";
+  collapseBtn.setAttribute("aria-label", "Recolher menu lateral");
+  collapseBtn.setAttribute("aria-expanded", "true");
+  collapseBtn.innerHTML = `
+    <i class="fa-solid fa-angles-left sidebar-collapse-icon" aria-hidden="true"></i>
+    <span class="sidebar-collapse-label">Recolher</span>
+  `;
+  footerEl.appendChild(collapseBtn);
 
   // Sincroniza o estado visual após construir a sidebar
   const isClosed = localStorage.getItem("sidebar_closed") === "true";
@@ -722,24 +741,17 @@ export async function initShell(user) {
   renderUserMenu(resolvedUser);
   buildSidebar(resolvedUser);
 
-  // Marcar item ativo baseado na URL atual
+  // Marcar item ativo baseado na URL atual usando a configuração activePaths do SIDEBAR_ITEMS
   const currentPath = window.location.pathname;
-  const pathToId = {
-    "/simulados.html": "sidebar-btn-quiz",
-    "/jornada.html": "sidebar-btn-journey",
-    "/flashcards.html": "sidebar-btn-flashcards",
-    "/diagnostico.html": "sidebar-btn-diagnostic",
-    "/cases.html": "sidebar-btn-cases",
-    "/resources.html": "sidebar-btn-resources",
-    "/profile.html": "sidebar-btn-profile",
-    "/settings.html": "sidebar-btn-settings",
-  };
-  const activeId = Object.entries(pathToId).find(([path]) =>
-    currentPath.endsWith(path),
-  )?.[1];
-  if (activeId) {
-    const activeEl = document.getElementById(activeId);
-    if (activeEl) activeEl.classList.add("is-active");
+  const activeItem = SIDEBAR_ITEMS.find((item) =>
+    item.activePaths?.some((path) => currentPath.endsWith(path))
+  );
+
+  if (activeItem) {
+    const activeEl = document.getElementById(activeItem.id);
+    if (activeEl) {
+      activeEl.classList.add("is-active");
+    }
   }
 }
 

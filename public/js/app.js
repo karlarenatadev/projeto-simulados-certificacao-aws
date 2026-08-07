@@ -262,7 +262,32 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // FASE 1: Inicialização Central do App Shell
-  await initShell(authenticatedUser);
+  initThemeShell();
+  initLeftSidebarToggleShell();
+  renderUserMenu(authenticatedUser);
+  buildSidebar(authenticatedUser);
+
+  // Executa as inicializações complementares caso existam no shell global
+  if (typeof window.syncLanguageButtonShell === "function") window.syncLanguageButtonShell();
+  if (typeof window.initPWAInstallShell === "function") window.initPWAInstallShell();
+
+  // Marca item ativo baseado na URL atual (replicando lógica do initShell)
+  const currentPath = window.location.pathname;
+  const pathToId = {
+    "/simulados.html": "sidebar-btn-quiz",
+    "/jornada.html": "sidebar-btn-journey",
+    "/flashcards.html": "sidebar-btn-flashcards",
+    "/diagnostico.html": "sidebar-btn-diagnostic",
+    "/cases.html": "sidebar-btn-cases",
+    "/resources.html": "sidebar-btn-resources",
+    "/profile.html": "sidebar-btn-profile",
+    "/settings.html": "sidebar-btn-settings",
+  };
+  const activeId = Object.entries(pathToId).find(([path]) => currentPath.endsWith(path))?.[1];
+  if (activeId) {
+    const activeEl = document.getElementById(activeId);
+    if (activeEl) activeEl.classList.add("is-active");
+  }
 
   // FASE 2: Configuração de UI e Traduções Locais do Hub
   initializeUI(uiState.language);
