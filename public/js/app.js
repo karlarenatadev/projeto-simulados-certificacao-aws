@@ -261,30 +261,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // FASE 1: Configurações Base (Sincronizadas)
-  initThemeShell();
+  // FASE 1: Inicialização Central do App Shell
+  await initShell(authenticatedUser);
+
+  // FASE 2: Configuração de UI e Traduções Locais do Hub
   initializeUI(uiState.language);
-
-  // FASE 1.5: App Shell — UserMenu e Sidebar dinâmica por role
-  renderUserMenu(authenticatedUser);
-  buildSidebar(authenticatedUser);
-
-  // FASE 2: Traduções (Só títulos estáticos, sem destruir conteúdo)
   updateSidebarTexts();
 
   // FASE 3: Injeção de Dados Dinâmicos (ORDEM GARANTIDA)
   await renderSidebarContent();
 
-  // FASE 4: Inicializações Secundárias
+  // FASE 4: Inicializações Secundárias (Eventos e Gamificação)
   renderGamification();
-  updateLanguageButtonUI();
-  initPWAInstall();
   wireUIActions();
   initStudyNow({ startFilteredQuiz: startWeakestDomainQuiz });
   refreshStudyNow();
-
-  // Inicializa a sidebar esquerda (toggle via shell.js)
-  initLeftSidebarToggleShell();
 
   // FASE 6: Learning Hub é a Home — exibe como tela inicial
   // Exclusivo do SPA (index.html): em páginas secundárias as screens já estão
@@ -297,8 +288,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // O boot overlay só existe em index.html; em páginas secundárias não há nada a remover.
   const bootOverlay = document.getElementById("app-boot-overlay");
   if (bootOverlay) {
-    bootOverlay.style.transition = "opacity 0.3s ease";
-    bootOverlay.style.opacity = "0";
+    bootOverlay.classList.add("fade-out");
     setTimeout(() => bootOverlay.remove(), 320);
   }
 
@@ -660,18 +650,22 @@ async function startQuiz() {
     // Verificar Resume de Sessão
     const activeSession = storageManager.loadActiveSession(certId);
     let isResuming = false;
+    let resumeAgreed = false;
 
-    const resumeAgreed = await ModalService.confirm({
-      title: "Sessão Ativa Encontrada",
-      message:
-        t("resume_session_prompt", uiState.language) ||
-        "Você possui um simulado em andamento. Deseja retomá-lo de onde parou?",
-      confirmText: "Retomar",
-      cancelText: "Descartar",
-    });
+    if (activeSession) {
+      resumeAgreed = await ModalService.confirm({
+        title: "Sessão Ativa Encontrada",
+        message:
+          t("resume_session_prompt", uiState.language) ||
+          "Você possui um simulado em andamento. Deseja retomá-lo de onde parou?",
+        confirmText: "Retomar",
+        cancelText: "Descartar",
+      });
+    }
 
     if (activeSession && resumeAgreed) {
       isResuming = true;
+      quizManager.currentQuizId = activeSession.quizId; // RESTORE QUIZ ID
       engine.state.certId = activeSession.certId;
       engine.state.mode = activeSession.mode || "exam";
       engine.state.questions = activeSession.questions;
@@ -691,24 +685,24 @@ async function startQuiz() {
       uiState.currentMode = modeInput;
     }
 
-    // START QUIZ ON BACKEND
-    const userId = userManager.getUserId();
-    if (userId) {
+    let preloadedQuestions = null;
+
+    if (!isResuming) {
+      // START QUIZ ON BACKEND OR LOCALLY
       try {
         const quizResponse = await quizManager.startQuiz(
           certId,
-          parseInt(quantityInput),
+          parseInt(quantityInput)
         );
+        preloadedQuestions = quizResponse.questions;
+        
         if (!quizResponse.fromAPI) {
-          logger.info("⚠ Quiz started in local mode (API unavailable)");
+          logger.info("⚠ Quiz started in local mode (API unavailable or offline)");
         }
       } catch (error) {
-        logger.warn("Could not start quiz on backend:", error);
-        // Continue anyway - frontend will work in local mode
+        logger.warn("Could not start quiz:", error);
       }
-    }
 
-    if (!isResuming) {
       dispatchBusinessEvent("QuizStarted", {
         certId,
         mode: modeInput,
@@ -726,6 +720,7 @@ async function startQuiz() {
         currentCertInfo.domains,
         filters,
         uiState.language,
+        preloadedQuestions
       );
 
       if (!result.success) {
@@ -1356,6 +1351,7 @@ function applyStyleToOptionCard(optionIdx, styleType) {
 function saveCurrentSession() {
   if (!engine.state.certId) return;
   storageManager.saveActiveSession({
+    quizId: quizManager.currentQuizId,
     certId: engine.state.certId,
     mode: engine.state.mode,
     questions: engine.state.questions,
@@ -2654,15 +2650,7 @@ function updateValidationBadgeLanguage() {
   initValidationBadgeTooltip(badge, tooltipText);
 }
 
-function updateLanguageButtonUI() {
-  const langBtn = document.getElementById("btn-language");
-  if (langBtn) {
-    langBtn.innerHTML =
-      uiState.language === "pt"
-        ? '<span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>'
-        : '<span class="text-[10px] md:text-xs font-bold">🇺🇸 <span class="hidden sm:inline">EN-US</span></span>';
-  }
-}
+
 
 function goHome() {
   // ========================================================================
@@ -2925,32 +2913,7 @@ function prevFlashcard() {
   prevFlashcardModule();
 }
 
-// PWA INSTALL BUTTON
-let deferredPrompt = null;
 
-function initPWAInstall() {
-  const installButton = document.getElementById("install-app");
-  if (!installButton) return;
-
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installButton.classList.remove("hidden");
-  });
-
-  installButton.addEventListener("click", async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    installButton.classList.add("hidden");
-  });
-
-  window.addEventListener("appinstalled", () => {
-    installButton.classList.add("hidden");
-    deferredPrompt = null;
-  });
-}
 
 // TEXTOS ESTÁTICOS DOS CARDS DA SIDEBAR (i18n)
 function updateSidebarTexts() {

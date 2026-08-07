@@ -11,6 +11,9 @@
   background-color: var(--a3-primary-dark);
   transition: opacity 0.3s ease;
 }
+#app-boot-overlay.fade-out {
+  opacity: 0;
+}
 
 /* ── Screen Transitions ────────────────────────────────────────────────── */
 
@@ -110,9 +113,9 @@ input[type="text"],
 input[type="number"],
 input[type="email"],
 textarea {
-  background-color: var(--a3-surface);
-  border-color: var(--a3-border-default);
-  color: var(--text-main);
+  background-color: var(--a3-surface) !important;
+  border-color: var(--a3-border-default) !important;
+  color: var(--text-main) !important;
 }
 
 .dark select,

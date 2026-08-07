@@ -14,6 +14,7 @@ import { logger } from "./utils/logger.js";
 import apiService from "./services/api.js";
 import { createDataRepository } from "./dataRepository.js";
 import { storageManager } from "./storageManager.js";
+import { generateQuestionId } from "./utils/questionIdentity.js";
 
 const dataRepo = createDataRepository(storageManager);
 
@@ -145,36 +146,22 @@ export class QuizEngine {
     }
   }
 
-  async loadQuestions(certId, domainsConfig, filters, language = "pt") {
+  async loadQuestions(certId, domainsConfig, filters, language = "pt", preloadedQuestions = null) {
     this.resetState();
     this.state.attemptId = this._generateAttemptId();
     this.state.certId = certId;
     this.state.mode = filters.mode || "exam";
 
     try {
-      // Try loading from API first
       let data = null;
+      let source = null;
 
-      try {
-        const response = await apiService.loadQuestions({
-          certification: certId,
-          difficulty:
-            filters.difficulty !== "all" ? filters.difficulty : undefined,
-          domain: filters.topic || undefined,
-          limit: filters.quantity,
-        });
-
-        if (response.success && response.data && response.data.length > 0) {
-          data = response.data;
-          logger.info(`✓ Loaded ${data.length} questions from API`);
-        }
-      } catch (apiError) {
-        logger.warn("API request failed, falling back to JSON:", apiError);
-        // Continue to fallback
-      }
-
-      // Fallback to JSON if API fails
-      if (!data || data.length === 0) {
+      if (preloadedQuestions && preloadedQuestions.length > 0) {
+        data = preloadedQuestions;
+        source = "api";
+        logger.info(`✓ Loaded ${data.length} preloaded questions from QuizManager (API)`);
+      } else {
+        // Fallback para arquivo local JSON caso o QuizManager não tenha conseguido fornecer
         const fileSuffix = language === "en" ? "-en" : "";
         const response = await fetch(
           `data/questions/${certId}${fileSuffix}.json`,
@@ -183,28 +170,32 @@ export class QuizEngine {
           throw new Error("Arquivo de questões não encontrado.");
 
         data = await response.json();
-        logger.info(`✓ Loaded ${data.length} questions from JSON file`);
+        source = "local";
+        logger.info(`✓ Loaded ${data.length} questions from JSON file fallback (Local)`);
       }
 
-      // Apply filters only if from JSON (API already filters)
-      if (filters.difficulty !== "all") {
-        data = data.filter((q) => q.difficulty === filters.difficulty);
-      }
-      if (filters.topic) {
-        data = data.filter((q) => q.domain === filters.topic);
+      // Aplica filtros locais (dificuldade/tópico) SOMENTE se os dados vieram do JSON
+      // Se vieram da API, não deve ser filtrado (API já mandou as N questões corretas)
+      if (source === "local") {
+        if (filters.difficulty !== "all") {
+          data = data.filter((q) => q.difficulty === filters.difficulty);
+        }
+        if (filters.topic) {
+          data = data.filter((q) => q.domain === filters.topic);
+        }
       }
 
       if (data.length === 0)
         throw new Error("Nenhuma questão encontrada com esses filtros.");
 
+      // Normalize question structure to match internal format FIRST
+      // API may return different field names, so we map them
+      data = data.map((q) => this._normalizeQuestion(q));
+
       // Aplica a sanitização do manifesto (Blindagem)
       data = await this._sanitizeQuestions(data, certId);
       if (data.length === 0)
         throw new Error("Nenhuma questão válida restou após a sanitização.");
-
-      // Normalize question structure to match internal format
-      // API may return different field names, so we map them
-      data = data.map((q) => this._normalizeQuestion(q));
 
       // Embaralha as questões e as alternativas
       this.state.questions = this._shuffleArray(data)
@@ -645,17 +636,15 @@ export class QuizEngine {
    */
   _normalizeQuestion(q) {
     return {
-      id: q.id || q.question_id || undefined,
+      id: q.id || q.question_id || generateQuestionId(q.question || q.question_text),
       domain: q.domain || q.domainId || "0",
       difficulty: q.difficulty || "medium",
       question: q.question || q.question_text || "",
       options: q.options || [],
-      correct: q.correct || q.correct_answer || q.correctAnswer || 0,
+      correct: q.correct !== undefined ? q.correct : (q.correct_answer !== undefined ? q.correct_answer : q.correctAnswer),
       explanation: q.explanation || "",
       reference_url: q.reference_url || q.referenceUrl || undefined,
       validated_by: q.validated_by || q.validatedBy || undefined,
-      // Keep original fields as fallback
-      ...q,
     };
   }
 

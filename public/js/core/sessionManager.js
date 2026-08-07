@@ -138,8 +138,14 @@ export class SessionManager {
 
       this.persist(session);
 
-      // Soft-Delete: Manteremos as chaves antigas por enquanto, mas marcamos que já foi migrado.
-      console.info("Migração para cloudacademy_session concluída. Mantendo chaves legadas para fallback de auditoria.");
+      // Limpeza das chaves de preferências migradas (Expurgo FASE 2)
+      localStorage.removeItem("language");
+      localStorage.removeItem("aws_sim_lang");
+      localStorage.removeItem("activeCertification");
+      localStorage.removeItem("aws_sim_cert");
+
+      // Soft-Delete: Manteremos as chaves antigas de usuário por enquanto (fallback de auditoria).
+      console.info("Migração para cloudacademy_session concluída. Chaves de UI legadas expurgadas.");
 
       return session;
     } catch (err) {

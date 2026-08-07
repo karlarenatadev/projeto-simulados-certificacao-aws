@@ -78,7 +78,9 @@ router.post('/start', async (req, res, next) => {
           difficulty: q.difficulty,
           question_text: q.question_text,
           options: q.options,
-          // Don't send correct_answer to client
+          correct_answer: q.correct_answer,
+          explanation: q.explanation,
+          reference_url: q.reference_url
         })),
         total_questions: questions.length,
       },
