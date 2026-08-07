@@ -176,7 +176,7 @@ CREATE INDEX IF NOT EXISTS idx_questions_domain        ON questions(domain);
 CREATE INDEX IF NOT EXISTS idx_questions_domain_id     ON questions(domain_id);
 CREATE INDEX IF NOT EXISTS idx_questions_difficulty    ON questions(difficulty);
 CREATE INDEX IF NOT EXISTS idx_questions_validation_status ON questions(validation_status);
-CREATE INDEX IF NOT EXISTS idx_questions_validated     ON questions(validated_by);
+CREATE INDEX IF NOT EXISTS idx_questions_validated_by_id     ON questions(validated_by_id);
 CREATE INDEX IF NOT EXISTS idx_questions_active        ON questions(is_active) WHERE is_active = TRUE;
 CREATE INDEX IF NOT EXISTS idx_questions_tags          ON questions USING GIN(tags);
 -- Busca full-text no enunciado

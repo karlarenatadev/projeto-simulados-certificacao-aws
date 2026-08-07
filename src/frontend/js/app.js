@@ -262,7 +262,32 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // FASE 1: Inicialização Central do App Shell
-  await initShell(authenticatedUser);
+  initThemeShell();
+  initLeftSidebarToggleShell();
+  renderUserMenu(authenticatedUser);
+  buildSidebar(authenticatedUser);
+
+  // Executa as inicializações complementares caso existam no shell global
+  if (typeof window.syncLanguageButtonShell === "function") window.syncLanguageButtonShell();
+  if (typeof window.initPWAInstallShell === "function") window.initPWAInstallShell();
+
+  // Marca item ativo baseado na URL atual (replicando lógica do initShell)
+  const currentPath = window.location.pathname;
+  const pathToId = {
+    "/simulados.html": "sidebar-btn-quiz",
+    "/jornada.html": "sidebar-btn-journey",
+    "/flashcards.html": "sidebar-btn-flashcards",
+    "/diagnostico.html": "sidebar-btn-diagnostic",
+    "/cases.html": "sidebar-btn-cases",
+    "/resources.html": "sidebar-btn-resources",
+    "/profile.html": "sidebar-btn-profile",
+    "/settings.html": "sidebar-btn-settings",
+  };
+  const activeId = Object.entries(pathToId).find(([path]) => currentPath.endsWith(path))?.[1];
+  if (activeId) {
+    const activeEl = document.getElementById(activeId);
+    if (activeEl) activeEl.classList.add("is-active");
+  }
 
   // FASE 2: Configuração de UI e Traduções Locais do Hub
   initializeUI(uiState.language);
@@ -366,6 +391,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }
     });
+  }
+
+  // Se for simulados.html e estiver em modo diagnóstico, inicia automaticamente
+  if (!isSPAPage() && urlParams.get("mode") === "diagnostic") {
+    const cert = urlParams.get("cert");
+    if (cert) {
+      const certSelect = document.getElementById("certification-select");
+      if (certSelect) certSelect.value = cert;
+    }
+    setTimeout(() => {
+      startDiagnostic();
+    }, 100);
   }
 });
 
@@ -795,6 +832,11 @@ async function startDiagnostic() {
 
   const certSelect = document.getElementById("certification-select");
   if (!certSelect) return;
+  
+  if (isSPAPage()) {
+    window.location.href = `simulados.html?mode=diagnostic&cert=${certSelect.value}`;
+    return;
+  }
 
   const btn = document.getElementById("btn-start-diagnostic");
   let hideLoading = null;
@@ -1637,9 +1679,9 @@ function renderLearningHubData() {
   const insightEl = document.getElementById("hub-insight-text");
   if (insightEl) {
     if (safeHistory.length > 0) {
-      const insight = computeSmartInsight(safeHistory);
+      const insight = generateSmartInsight(safeHistory);
       insightEl.textContent =
-        insight || "Continue praticando para obter insights personalizados.";
+        insight.message || "Continue praticando para obter insights personalizados.";
     } else {
       insightEl.textContent =
         "Realize seu primeiro simulado para receber análises personalizadas de IA sobre seus pontos fortes e áreas de melhoria.";

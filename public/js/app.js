@@ -367,6 +367,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
+
+  // Se for simulados.html e estiver em modo diagnóstico, inicia automaticamente
+  if (!isSPAPage() && urlParams.get("mode") === "diagnostic") {
+    const cert = urlParams.get("cert");
+    if (cert) {
+      const certSelect = document.getElementById("certification-select");
+      if (certSelect) certSelect.value = cert;
+    }
+    setTimeout(() => {
+      startDiagnostic();
+    }, 100);
+  }
 });
 
 // RENDERIZAÇÃO ORDENADA E SEQUENCIAL DA SIDEBAR
@@ -795,6 +807,11 @@ async function startDiagnostic() {
 
   const certSelect = document.getElementById("certification-select");
   if (!certSelect) return;
+  
+  if (isSPAPage()) {
+    window.location.href = `simulados.html?mode=diagnostic&cert=${certSelect.value}`;
+    return;
+  }
 
   const btn = document.getElementById("btn-start-diagnostic");
   let hideLoading = null;
@@ -1637,9 +1654,9 @@ function renderLearningHubData() {
   const insightEl = document.getElementById("hub-insight-text");
   if (insightEl) {
     if (safeHistory.length > 0) {
-      const insight = computeSmartInsight(safeHistory);
+      const insight = generateSmartInsight(safeHistory);
       insightEl.textContent =
-        insight || "Continue praticando para obter insights personalizados.";
+        insight.message || "Continue praticando para obter insights personalizados.";
     } else {
       insightEl.textContent =
         "Realize seu primeiro simulado para receber análises personalizadas de IA sobre seus pontos fortes e áreas de melhoria.";
