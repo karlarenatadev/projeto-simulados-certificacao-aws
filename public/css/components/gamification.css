@@ -136,71 +136,112 @@
   border: 1px solid var(--border-theme);
 }
 
-/* ── Trilha de Aprendizado (Ziguezague) ────────────────────────────────── */
+/* ── Trilha de Aprendizado (Curvada e Espaçada) ────────────────────────── */
 
 .trail-container {
-  position: relative;
-  padding: 2rem 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3rem;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between; /* Espalha as bolinhas para preencher o espaço */
   width: 100%;
-  max-width: 400px;
-  min-width: 280px;
-  margin: 0 auto;
+  max-width: 1024px;
+  min-height: 240px; /* Dá altura suficiente para a onda acontecer */
+  margin: 0 auto 4rem auto;
+  padding: 2rem;
+  overflow-x: auto;
+  background-color: var(--a3-surface-raised, #001863);
+  border-radius: 1rem;
+  box-shadow: var(--a3-shadow-card, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+  
+  /* Estilo da barra de rolagem (aparece só se não couber) */
+  scrollbar-width: thin;
+  scrollbar-color: var(--a3-tech-blue) transparent;
 }
 
-.trail-container::before {
-  content: "";
-  position: absolute;
-  top: 2rem;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  border-left: 4px dashed var(--border-theme);
-  z-index: 0;
+html.dark .trail-container {
+  background-color: var(--a3-surface-soft, #1e293b);
+  border: 1px solid var(--border-theme, #334155);
 }
 
+/* As caixas de cada módulo crescem juntas para preencher a tela */
 .trail-node-wrapper {
   position: relative;
-  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  width: 120px;
-  min-width: 100px;
+  gap: 0.75rem;
+  flex: 1; /* É isso que faz eles se afastarem! */
+  min-width: 140px; /* Garante que não fiquem esmagados no mobile */
 }
 
-.trail-node-wrapper:nth-child(odd) {
-  transform: translateX(-30%);
-}
-
+/* ── O Efeito Winding Road (A Onda) ── */
+/* Empurra os módulos pares (2, 4, etc) para baixo */
 .trail-node-wrapper:nth-child(even) {
-  transform: translateX(30%);
+  margin-top: 80px; 
 }
 
+/* Garante que as bolinhas e o Boss fiquem por cima das linhas */
+.trail-node-wrapper .trail-node,
+.trail-node-wrapper .trail-node.boss-node {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── As Linhas Curvas ── */
+.trail-node-wrapper:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 100%; /* Estica perfeitamente até o centro da próxima bolinha */
+  z-index: 0;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  transition: all 0.4s ease;
+}
+
+/* 1. Curva Descendo: Do módulo Ímpar (Alto) para o Par (Baixo) */
+.trail-node-wrapper:nth-child(odd):not(:last-child)::after {
+  top: 35px; /* Nasce no centro da bolinha */
+  height: 80px; /* Desce exatamente os 80px do margin-top */
+  /* Desenha uma curva S usando SVG */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 100 100'%3E%3Cpath d='M 0,0 C 50,0 50,100 100,100' fill='none' stroke='%2364748b' stroke-width='4' stroke-dasharray='8 8'/%3E%3C/svg%3E");
+}
+
+/* 2. Curva Subindo: Do módulo Par (Baixo) para o Ímpar (Alto) */
+.trail-node-wrapper:nth-child(even):not(:last-child)::after {
+  top: -45px; /* Sobe a caixa da linha para encostar na bolinha alta */
+  height: 80px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 100 100'%3E%3Cpath d='M 0,100 C 50,100 50,0 100,0' fill='none' stroke='%2364748b' stroke-width='4' stroke-dasharray='8 8'/%3E%3C/svg%3E");
+}
+
+/* 🌟 BÔNUS: A Estrada Acende quando o módulo for concluído! 🌟 */
+/* Transformamos a linha tracejada cinza numa linha sólida colorida e brilhante */
+
+.trail-node-wrapper:nth-child(odd):has(.completed):not(:last-child)::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 100 100'%3E%3Cpath d='M 0,0 C 50,0 50,100 100,100' fill='none' stroke='%230033FF' stroke-width='6'/%3E%3C/svg%3E");
+  filter: drop-shadow(0 0 5px rgba(0, 51, 255, 0.4));
+}
+
+.trail-node-wrapper:nth-child(even):has(.completed):not(:last-child)::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='none' viewBox='0 0 100 100'%3E%3Cpath d='M 0,100 C 50,100 50,0 100,0' fill='none' stroke='%230033FF' stroke-width='6'/%3E%3C/svg%3E");
+  filter: drop-shadow(0 0 5px rgba(0, 51, 255, 0.4));
+}
+
+/* ── Responsividade: Adapta a onda para telas menores ── */
 @media (max-width: 640px) {
-  .trail-node-wrapper:nth-child(odd) {
-    transform: translateX(-20%);
-  }
-  .trail-node-wrapper:nth-child(even) {
-    transform: translateX(20%);
-  }
-}
-
-@media (max-width: 380px) {
   .trail-node-wrapper {
-    width: 100px;
-    min-width: 80px;
-  }
-  .trail-node-wrapper:nth-child(odd) {
-    transform: translateX(-15%);
+    min-width: 110px;
   }
   .trail-node-wrapper:nth-child(even) {
-    transform: translateX(15%);
+    margin-top: 60px; /* Onda mais suave no celular */
+  }
+  .trail-node-wrapper:nth-child(odd):not(:last-child)::after {
+    top: 32px;
+    height: 60px;
+  }
+  .trail-node-wrapper:nth-child(even):not(:last-child)::after {
+    top: -28px;
+    height: 60px;
   }
 }
 

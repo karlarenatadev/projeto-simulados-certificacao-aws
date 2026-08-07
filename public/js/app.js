@@ -661,44 +661,48 @@ async function startQuiz() {
 
   const certSelect = document.getElementById("certification-select");
   const quantityInput =
-    document.querySelector('input[name="question-quantity"]:checked')?.value ||
-    10;
+    document.querySelector('input[name="question-quantity"]:checked')?.value || 10;
   const difficultyInput =
-    document.querySelector('input[name="difficulty-level"]:checked')?.value ||
-    "all";
+    document.querySelector('input[name="difficulty-level"]:checked')?.value || "all";
   const modeInput =
     document.querySelector('input[name="quiz-mode"]:checked')?.value || "exam";
   const topicSelect = document.getElementById("topic-filter")?.value || "";
+  
   if (!certSelect) return;
 
   const btn = document.getElementById("btn-start-quiz");
   let hideLoading = null;
 
   try {
-    if (btn) btn.disabled = true;
-    hideLoading = ModalService.showLoading(
-      t("loading", uiState.language) || "Carregando simulado...",
-    );
-
     const certId = certSelect.value;
     const currentCertInfo = certificationPaths[certId];
     uiState.currentCertificationInfo = currentCertInfo;
 
-    // Verificar Resume de Sessão
+    // 1. VERIFICAR SESSÃO ATIVA (E PERGUNTAR) ANTES DE TRAVAR A TELA COM O LOADING
     const activeSession = storageManager.loadActiveSession(certId);
     let isResuming = false;
     let resumeAgreed = false;
 
     if (activeSession) {
+      // Correção rápida para o texto não ficar aparecendo "resume_session_prompt"
+      let promptMsg = t("resume_session_prompt", uiState.language);
+      if (!promptMsg || promptMsg === "resume_session_prompt") {
+         promptMsg = "Você possui um simulado em andamento. Deseja retomá-lo de onde parou?";
+      }
+
       resumeAgreed = await ModalService.confirm({
         title: "Sessão Ativa Encontrada",
-        message:
-          t("resume_session_prompt", uiState.language) ||
-          "Você possui um simulado em andamento. Deseja retomá-lo de onde parou?",
+        message: promptMsg,
         confirmText: "Retomar",
         cancelText: "Descartar",
       });
     }
+
+    // 2. AGORA SIM, O USUÁRIO JÁ RESPONDEU! PODEMOS ATIVAR O LOADING E TRAVAR O BOTÃO
+    if (btn) btn.disabled = true;
+    hideLoading = ModalService.showLoading(
+      t("loading", uiState.language) || "Carregando simulado...",
+    );
 
     if (activeSession && resumeAgreed) {
       isResuming = true;
