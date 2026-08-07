@@ -40,141 +40,93 @@
 
     <!-- {{SIDEBAR}} -->
 
-    <main class="flex-1 a3-container py-6 main-content-container">
-        <div
-          id="screen-flashcards"
-          class="flex flex-col items-center justify-center text-center min-h-[80vh]"
-        >
-          <div class="flex flex-col items-center mb-6 fade-in">
-            <span
-              id="flashcards-cert-badge"
-              class="bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 border border-orange-300 dark:border-orange-700 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-widest mb-4 shadow-sm"
-            >
-              CLF-C02
-            </span>
-
-            <h2 class="text-3xl font-bold mb-2 text-strong">
-              <i class="fa-solid fa-layer-group text-a3-primary mr-2"></i> Modo
-              Flashcards
+    <main class="a3-container main-content-container">
+        <div id="screen-flashcards" class="fc-screen fade-in">
+          
+          <!-- Cabeçalho -->
+          <div class="fc-header">
+            <span id="flashcards-cert-badge" class="fc-badge">CLF-C02</span>
+            <h2 class="fc-title">
+              <i class="fa-solid fa-layer-group"></i> Modo Flashcards
             </h2>
-            <p class="text-muted dark:text-gray-400 text-center">
+            <p class="fc-subtitle">
               Revise termos essenciais da AWS de forma rápida e eficiente
             </p>
           </div>
 
-          <div
-            class="a3-card w-full max-w-2xl mb-6 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-sm"
-          >
-            <div class="flex-1 w-full text-left">
-              <label
-                for="flashcard-category"
-                class="block text-xs font-bold text-muted dark:text-gray-400 uppercase tracking-wider mb-1"
-              >
-                <i class="fa-solid fa-filter mr-1"></i> Focar em:
+          <!-- Barra de Ferramentas (Filtro e Contador) -->
+          <div class="a3-card fc-toolbar">
+            <div class="fc-toolbar-group">
+              <label for="flashcard-category" class="fc-label">
+                <i class="fa-solid fa-filter"></i> Focar em:
               </label>
-              <select
-                id="flashcard-category"
-                class="w-full bg-gray-50 border border-gray-300 dark:border-slate-600 text-gray-800 rounded-lg p-2.5 outline-none focus:border-orange-500 transition-colors cursor-pointer"
-              >
+              <select id="flashcard-category" class="fc-select">
                 <option value="all">Todos os Domínios (Misturado)</option>
-                <option value="review-deck" class="font-bold text-orange-600">
+                <option value="review-deck" class="fc-opt-review">
                   🚩 Meu Deck de Revisão
                 </option>
               </select>
             </div>
 
-            <div
-              class="text-sm font-bold text-muted whitespace-nowrap bg-gray-100 /50 py-2.5 px-4 rounded-lg border border-gray-200 dark:border-slate-600"
-            >
-              Cartão
-              <span id="flashcard-counter" class="text-aws-orange ml-1 text-lg"
-                >1 / 96</span
-              >
+            <div class="fc-counter">
+              Cartão <span id="flashcard-counter" class="fc-counter-highlight">1 / 96</span>
             </div>
           </div>
 
-          <div class="w-full max-w-2xl mb-8">
+          <!-- Container do Flashcard -->
+          <div class="fc-wrapper">
             <div
               id="flashcard-container"
-              class="flashcard-container mx-auto"
+              class="flashcard-container"
               role="button"
               tabindex="0"
               aria-label="Cartão de estudo. Clique para virar e ver a definição"
             >
-              <div class="flashcard shadow-lg rounded-2xl">
-                <div
-                  class="flashcard-front bg-white border-2 border-gray-100 dark:border-slate-700 rounded-2xl"
-                >
-                  <div
-                    class="text-sm uppercase tracking-wider text-muted dark:text-gray-400 mb-4 font-bold"
-                    id="flashcard-domain-badge"
-                  >
+              <div class="flashcard">
+                <!-- Frente (Termo) -->
+                <div class="flashcard-front">
+                  <div id="flashcard-domain-badge" class="fc-domain">
                     Termo AWS
                   </div>
-                  <h3
-                    id="flashcard-term"
-                    class="text-2xl md:text-3xl font-bold text-strong mb-4"
-                  >
+                  <h3 id="flashcard-term" class="fc-term">
                     Região AWS
                   </h3>
-                  <div
-                    class="text-sm text-gray-400 dark:text-muted italic mt-8 animate-pulse"
-                  >
-                    <i class="fa-solid fa-hand-pointer mr-2"></i> Clique para
-                    ver a definição
+                  <div class="fc-hint animate-pulse">
+                    <i class="fa-solid fa-hand-pointer"></i> Clique para ver a definição
                   </div>
                 </div>
 
-                <div
-                  class="flashcard-back bg-orange-50 border-2 border-orange-200 dark:border-slate-600 rounded-2xl"
-                >
-                  <div
-                    class="text-sm uppercase tracking-wider text-orange-600 dark:text-orange-400 mb-4 font-bold"
-                  >
+                <!-- Verso (Definição) -->
+                <div class="flashcard-back">
+                  <div class="fc-domain fc-domain--back">
                     Definição Oficial
                   </div>
-                  <p
-                    id="flashcard-definition"
-                    class="text-lg text-gray-800 dark:text-gray-200 leading-relaxed font-medium"
-                  >
-                    Área geográfica que contém múltiplas Zonas de
-                    Disponibilidade isoladas...
+                  <p id="flashcard-definition" class="fc-definition">
+                    Área geográfica que contém múltiplas Zonas de Disponibilidade isoladas...
                   </p>
-                  <div
-                    class="text-sm text-gray-400 dark:text-muted italic mt-8"
-                  >
-                    <i class="fa-solid fa-rotate-left mr-2"></i> Clique para
-                    voltar
+                  <div class="fc-hint">
+                    <i class="fa-solid fa-rotate-left"></i> Clique para voltar
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="flex gap-4 mb-8 w-full max-w-2xl justify-center">
-            <button
-              id="btn-prev-flashcard"
-              class="a3-btn a3-btn-secondary flex-1 max-w-[200px] shadow-sm"
-              aria-label="Cartão anterior"
-            >
-              <i class="fa-solid fa-arrow-left mr-2"></i> Anterior
+          <!-- Controles de Navegação -->
+          <div class="fc-controls">
+            <button id="btn-prev-flashcard" class="a3-btn a3-btn-secondary fc-btn-prev" aria-label="Cartão anterior">
+              <i class="fa-solid fa-arrow-left"></i> Anterior
             </button>
-
-            <button
-              id="btn-next-flashcard"
-              class="a3-btn a3-btn-primary a3-btn-lg flex-1 max-w-[200px] shadow-md"
-              aria-label="Próximo cartão"
-            >
-              Próximo <i class="fa-solid fa-arrow-right ml-2"></i>
+            <button id="btn-next-flashcard" class="a3-btn a3-btn-primary a3-btn-lg fc-btn-next" aria-label="Próximo cartão">
+              Próximo <i class="fa-solid fa-arrow-right"></i>
             </button>
           </div>
 
-          <button
-            onclick="exportToAnki()"
-            class="a3-btn a3-btn-secondary flex items-center gap-2"
-          >
+          <!-- Ação Extra -->
+          <button onclick="exportToAnki()" class="a3-btn a3-btn-secondary fc-btn-export">
             <i class="fa-solid fa-file-export"></i> Exportar para Anki
           </button>
+          
         </div>
     </main>
 
