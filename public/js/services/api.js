@@ -1,4 +1,5 @@
 import { logger } from "../utils/logger.js";
+import { normalizeCertificationId } from "../utils/certUtils.js";
 /**
  * API Service Layer
  * Centralized HTTP client for all backend API calls
@@ -232,6 +233,9 @@ export const apiService = {
    * @returns {Promise<object>} { success, data: [], count, pagination }
    */
   async loadQuestions(options = {}) {
+    if (options.certification) {
+      options.certification = normalizeCertificationId(options.certification);
+    }
     try {
       const params = new URLSearchParams();
       
@@ -397,6 +401,9 @@ export const apiService = {
    * @returns {Promise<object>} { success, data: { quiz_id, questions: [], total_questions } }
    */
   async startQuiz(options = {}) {
+    if (options.certification) {
+      options.certification = normalizeCertificationId(options.certification);
+    }
     try {
       if (!options.user_id || !options.certification) {
         throw createError('user_id and certification are required', 400);

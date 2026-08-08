@@ -15,6 +15,8 @@ import apiService from "./services/api.js";
 import { createDataRepository } from "./dataRepository.js";
 import { storageManager } from "./storageManager.js";
 import { generateQuestionId } from "./utils/questionIdentity.js";
+import { normalizeCertificationId } from "./utils/certUtils.js";
+import { certificationPaths } from "./data.js";
 
 const dataRepo = createDataRepository(storageManager);
 
@@ -125,9 +127,22 @@ export class QuizEngine {
 
       let sanitized = data.filter((q) => {
         if (!q.id && !q.questionId) return false;
-        if (q.certId && q.certId !== certId) return false;
-        if (!config.allowedDomains.includes(q.domain || q.domainId))
-          return false;
+        if (q.certId && normalizeCertificationId(q.certId) !== normalizeCertificationId(certId)) return false;
+        
+        const qDomain = q.domain || q.domainId;
+        const certPath = certificationPaths[certId];
+        
+        // Verifica se é um allowedDomain (nome em inglês, ex: "Security and Compliance")
+        const isAllowedDomainName = config.allowedDomains.includes(qDomain);
+        
+        // Verifica se é um ID interno de domínio (ex: "seguranca")
+        let isAllowedDomainId = false;
+        if (certPath && certPath.domains) {
+          isAllowedDomainId = certPath.domains.some(d => d.id === qDomain || d.englishName === qDomain);
+        }
+        
+        if (!isAllowedDomainName && !isAllowedDomainId) return false;
+
         if (q.validation?.status && q.validation.status !== "validated")
           return false;
         return true;
@@ -149,7 +164,7 @@ export class QuizEngine {
   async loadQuestions(certId, domainsConfig, filters, language = "pt", preloadedQuestions = null) {
     this.resetState();
     this.state.attemptId = this._generateAttemptId();
-    this.state.certId = certId;
+    this.state.certId = normalizeCertificationId(certId);
     this.state.mode = filters.mode || "exam";
 
     try {
@@ -224,7 +239,7 @@ export class QuizEngine {
   ) {
     this.resetState();
     this.state.attemptId = this._generateAttemptId();
-    this.state.certId = certId;
+    this.state.certId = normalizeCertificationId(certId);
     this.state.mode = "review";
 
     try {
@@ -300,7 +315,7 @@ export class QuizEngine {
   async loadDiagnostic(certId, domainsConfig, language = "pt") {
     this.resetState();
     this.state.attemptId = this._generateAttemptId();
-    this.state.certId = certId;
+    this.state.certId = normalizeCertificationId(certId);
     this.state.mode = "diagnostic"; // Isola o estado do simulado real
 
     try {
@@ -492,8 +507,9 @@ export class QuizEngine {
   loadFromMistakes(questions, certId, domainsConfig, mode = "mistakes-review") {
     this.resetState();
     this.state.attemptId = this._generateAttemptId();
-    this.state.certId = certId;
+    this.state.certId = normalizeCertificationId(certId);
     this.state.mode = mode;
+    this.state.isReviewMode = mode === "mistakes-review";
 
     if (!questions || questions.length === 0) {
       return { success: false, message: "no_mistakes" };
@@ -554,6 +570,7 @@ export class QuizEngine {
     questionsPerDomain = 3,
     mode = "mistakes-review",
   ) {
+    certId = normalizeCertificationId(certId);
     this.resetState();
     this.state.attemptId = this._generateAttemptId();
     this.state.certId = certId;
@@ -655,6 +672,7 @@ export class QuizEngine {
     }
 
     return {
+      ...q, // Preserve all original metadata for sanitization/validation
       id:
         q.id ||
         q.questionId ||

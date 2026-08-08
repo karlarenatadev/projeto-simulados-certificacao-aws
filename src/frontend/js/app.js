@@ -1,5 +1,6 @@
 import { logger, dispatchBusinessEvent, recordMetric } from "./utils/logger.js";
 import { sanitizeHTML } from "./utils/sanitize.js";
+import { normalizeCertificationId } from "./utils/certUtils.js";
 
 import { identifyWeakDomains, QuizEngine } from "./quizEngine.js";
 import { certificationPaths } from "./data.js";
@@ -206,7 +207,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const showcaseMode = urlParams.get("mode");
   if (showcaseMode === "showcase") {
     const persona = urlParams.get("persona") || "advanced";
-    const cert = urlParams.get("cert") || "clf-c02";
+    const cert = normalizeCertificationId(urlParams.get("cert")) || "clf-c02";
     // O offline/theme parameter poderiam ser salvos no uiState
     if (urlParams.get("offline") === "true") {
       window.sessionStorage.setItem("force_offline", "true");
@@ -395,7 +396,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Se for simulados.html e estiver em modo diagnóstico, inicia automaticamente
   if (!isSPAPage() && urlParams.get("mode") === "diagnostic") {
-    const cert = urlParams.get("cert");
+    const cert = normalizeCertificationId(urlParams.get("cert"));
     if (cert) {
       const certSelect = document.getElementById("certification-select");
       if (certSelect) certSelect.value = cert;
@@ -403,6 +404,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     setTimeout(() => {
       startDiagnostic();
     }, 100);
+  }
+
+  // Se vier de jornada.html com ?mode=mission&stageId=..., inicia a missão automaticamente
+  if (!isSPAPage() && urlParams.get("mode") === "mission") {
+    const stageId = urlParams.get("stageId");
+    const cert = normalizeCertificationId(urlParams.get("cert"));
+    if (stageId) {
+      if (cert) {
+        const certSelect = document.getElementById("certification-select");
+        if (certSelect) certSelect.value = cert;
+      }
+      setTimeout(() => {
+        // Chama diretamente a lógica interna sem o redirecionamento de contexto
+        startMissionInternal(stageId);
+      }, 150);
+    }
   }
 });
 
@@ -452,12 +469,14 @@ function setFinishButtonLoading(isLoading) {
 }
 
 function getActiveCertificationId() {
-  return (
+  const certSelect = document.getElementById("certification-select");
+  const certValue =
     engine.state?.certId ||
-    document.getElementById("certification-select")?.value ||
+    (certSelect && certSelect.value) ||
     (AuthService.getCurrentUser()?.certification) ||
-    ""
-  );
+    "clf-c02";
+
+  return normalizeCertificationId(certValue);
 }
 
 function getMistakeSource() {
@@ -773,6 +792,22 @@ async function startQuiz() {
         return;
       }
 
+      // --- INÍCIO DAS MODIFICAÇÕES DE LAYOUT ---
+      showScreen("quiz");
+
+      const sidebar = document.getElementById("side-info");
+      const mainSection = document.getElementById("main-section");
+
+      if (sidebar) sidebar.classList.add("hidden"); // Esconde a lateral
+      if (mainSection) {
+        mainSection.classList.remove("lg:w-2/3"); // Remove a largura parcial
+        mainSection.classList.add("w-full"); // Faz ocupar a tela cheia
+      }
+
+      const scoreContainer = document.getElementById("score-container");
+      if (scoreContainer) scoreContainer.style.display = "flex";
+      // --- FIM DAS MODIFICAÇÕES DE LAYOUT ---
+
       let tempoPorQuestao = 90;
       if (certId === "saa-c03" || certId === "dva-c02") {
         tempoPorQuestao = 120;
@@ -788,22 +823,6 @@ async function startQuiz() {
 
     const oldReport = document.getElementById("detailed-report");
     if (oldReport) oldReport.remove();
-
-    // --- INÍCIO DAS MODIFICAÇÕES DE LAYOUT ---
-    showScreen("quiz");
-
-    const sidebar = document.getElementById("side-info");
-    const mainSection = document.getElementById("main-section");
-
-    if (sidebar) sidebar.classList.add("hidden"); // Esconde a lateral
-    if (mainSection) {
-      mainSection.classList.remove("lg:w-2/3"); // Remove a largura parcial
-      mainSection.classList.add("w-full"); // Faz ocupar a tela cheia
-    }
-
-    const scoreContainer = document.getElementById("score-container");
-    if (scoreContainer) scoreContainer.style.display = "flex";
-    // --- FIM DAS MODIFICAÇÕES DE LAYOUT ---
 
     const timerContainer = document.getElementById("timer-container");
     if (uiState.currentMode === "exam") {
@@ -3192,6 +3211,27 @@ window.startDiagnostic = startDiagnostic;
  * window.startMission('clf-1'); // Inicia o módulo "Conceitos Cloud" do CLF-C02
  */
 window.startMission = async function (stageId) {
+  // ========================================================================
+  // FASE 0: VERIFICAÇÃO DE CONTEXTO DE PÁGINA
+  // ========================================================================
+  // startMission requer os elementos DOM do screen-quiz (question-text,
+  // options-container, etc.) que só existem em simulados.html.
+  // Se estivermos em jornada.html ou outra página sem esses elementos,
+  // redirecionamos para simulados.html com os parâmetros necessários.
+  if (!document.getElementById("question-text")) {
+    const certSelect = document.getElementById("certification-select");
+    const certId = certSelect ? certSelect.value : (storageManager.getActiveCertification?.() || "clf-c02");
+    const params = new URLSearchParams({ mode: "mission", stageId, cert: certId });
+    window.location.href = `simulados.html?${params.toString()}`;
+    return;
+  }
+  
+  // Se já temos o contexto (simulados.html), chamamos a função interna
+  return startMissionInternal(stageId);
+};
+
+async function startMissionInternal(stageId) {
+
   resetFinishState();
 
   // ========================================================================
