@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Simulados AWS — Pratique com questões no estilo oficial dos exames AWS." />
+    <title>Study Now — Cloud Academy A3</title>
+
+    
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#001863" />
+  </head>
+
+  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
+
+    <!-- {{HEADER_PAGE}} -->
+
+    <!-- {{SIDEBAR}} -->
+
+    <main id="main-section" class="flex flex-row gap-6 flex-1 a3-container py-6 main-content-container">
+
+      <!-- CONTENT AREA -->
+      <section class="flex-1 min-w-0 flex flex-col gap-6 overflow-y-auto p-4" id="study-now-content">
+        <div
+          id="study-insight-container"
+          class="a3-card bg-orange-50 dark:bg-orange-900/20 w-full insight-card-highlight"
+        >
+          <div class="a3-card-header border-orange-200 dark:border-orange-800/50">
+            <h3 class="flex items-center gap-2 text-orange-800 dark:text-orange-400 m-0">
+              <i class="fa-solid fa-lightbulb text-orange-600 dark:text-orange-400"></i>
+              <span id="insight-card-title">Insight de Estudo</span>
+            </h3>
+          </div>
+          <div class="a3-card-body">
+            <div
+              id="dynamic-insight"
+              class="text-sm text-gray-700 leading-relaxed break-words"
+              data-empty="true"
+            >
+              <span class="text-gray-400 italic">Aguardando dados...</span>
+            </div>
+          </div>
+        </div>
+</section>
+<!-- /CONTENT AREA -->
+
+      
+      <!-- /SIDE INFO -->
+
+    </main>
+
+    <!-- {{FOOTER}} -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      window.chartJsLoaded = new Promise((resolve) => {
+        if (typeof Chart !== "undefined") { resolve(); }
+        else {
+          const checkChart = setInterval(() => {
+            if (typeof Chart !== "undefined") { clearInterval(checkChart); resolve(); }
+          }, 50);
+        }
+      });
+    </script>
+    <script src="./js/sprintData.js" type="module"></script>
+    <script src="./js/pomodoroManager.js" type="module"></script>
+    <script src="./js/app.js" type="module"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script type="module">
+      import { initShell } from "./js/shell.js";
+      import { authGuard } from "./js/core/authGuard.js";
+      document.addEventListener("DOMContentLoaded", () => {
+        const session = authGuard();
+        if (!session) return;
+        const user = session.user;
+        initShell(user);
+      });
+    </script>
+    
+
+    <script type="module" src="js/recommendations/studyNow.js"></script>
+</body>
+</html>

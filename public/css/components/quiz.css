@@ -100,24 +100,24 @@
 
 /* Dark Mode overrides */
 .dark .option-card:hover:not(.disabled) {
-  background-color: var(--a3-surface-selected) !important;
-  border-color: var(--a3-tech-blue) !important;
+  background-color: var(--a3-surface-selected);
+  border-color: var(--a3-tech-blue);
 }
 
 .dark .option-card.selected {
-  background-color: var(--a3-surface-selected) !important;
-  border-color: var(--a3-tech-blue) !important;
+  background-color: var(--a3-surface-selected);
+  border-color: var(--a3-tech-blue);
   box-shadow: var(--a3-shadow-action);
 }
 
 .dark .option-card.correct {
-  background-color: var(--a3-surface-success) !important;
-  color: var(--a3-text-on-dark) !important;
+  background-color: var(--a3-surface-success);
+  color: var(--a3-text-on-dark);
 }
 
 .dark .option-card.incorrect {
-  background-color: var(--a3-surface-danger) !important;
-  color: var(--a3-text-on-dark) !important;
+  background-color: var(--a3-surface-danger);
+  color: var(--a3-text-on-dark);
 }
 
 /* ── Option Letter (A, B, C, D) ────────────────────────────────────────── */
@@ -267,7 +267,7 @@
 }
 
 #timer-display.warning {
-  background-color: var(--a3-danger) !important;
+  background-color: var(--a3-danger);
   animation: pulse 1s infinite;
 }
 

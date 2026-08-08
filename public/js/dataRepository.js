@@ -255,7 +255,7 @@ export function createDataRepository(storage, _api = null) {
 
       return questions.filter((q) => {
         // Validação das propriedades obrigatórias segundo o modelo
-        const hasId = q.id !== undefined && q.id !== null;
+        const hasId = (q.id !== undefined && q.id !== null) || (q.questionId !== undefined && q.questionId !== null);
         const hasText =
           typeof q.question === "string" && q.question.trim().length > 0;
         const hasOptions = Array.isArray(q.options) && q.options.length > 1;

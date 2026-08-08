@@ -9,20 +9,7 @@
     />
     <title id="page-title">Case de Arquitetura — Simulador AWS</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "aws-dark": "#001863",
-              "aws-orange": "#0033FF",
-            },
-          },
-        },
-      };
-    </script>
+    
 
     <link
       rel="stylesheet"
@@ -106,8 +93,7 @@
 
         <div
           id="score-container"
-          style="display: none"
-          class="a3-badge a3-badge-primary"
+          class="hidden a3-badge a3-badge-primary"
         >
           <i
             class="fa-solid fa-bullseye text-green-400 text-xs md:text-base"
@@ -147,7 +133,7 @@
           ></i>
         </div>
 
-        <div id="case-header-content" style="display: none">
+        <div id="case-header-content" class="hidden">
           <h1 id="case-main-title"></h1>
           <div class="case-view-meta" id="case-meta"></div>
         </div>
@@ -327,7 +313,7 @@
 
       <div id="questions-list"></div>
 
-      <div id="questions-empty" style="display: none" class="cases-empty-state">
+      <div id="questions-empty" class="hidden cases-empty-state">
         <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
         <p>Nenhuma questão associada a este case ainda.</p>
         <p class="cv-empty-hint">
@@ -349,7 +335,7 @@
       aria-labelledby="tab-btn-resources"
     >
       <div id="resources-list" class="resources-list"></div>
-      <div id="resources-empty" style="display: none" class="cases-empty-state">
+      <div id="resources-empty" class="hidden cases-empty-state">
         <i class="fa-solid fa-link" aria-hidden="true"></i>
         <p>Nenhum recurso externo cadastrado para este case.</p>
       </div>
@@ -701,7 +687,7 @@
         const grid = document.getElementById("services-grid");
         if (!services || services.length === 0) {
           grid.innerHTML =
-            '<p style="font-size:0.85rem; color:var(--text-muted);">Nenhum serviço registrado.</p>';
+            '<p class="case-services-empty-msg">Nenhum serviço registrado.</p>';
           return;
         }
 
@@ -717,11 +703,11 @@
                   loading="lazy"
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                 />
-                <div class="service-chip-fallback" style="display:none;">
-                  <i class="fa-solid fa-cloud" style="color:var(--a3-tech-blue);"></i>
+                <div class="service-chip-fallback hidden">
+                  <i class="fa-solid fa-cloud text-primary"></i>
                 </div>`
                 : `<div class="service-chip-fallback">
-                  <i class="fa-solid fa-cloud" style="color:var(--a3-tech-blue);"></i>
+                  <i class="fa-solid fa-cloud text-primary"></i>
                 </div>`
             }
             <div class="service-chip-info">
@@ -847,7 +833,7 @@
             return `
             <div class="case-question-item" id="cq-${idx}">
               <p class="case-question-text">
-                <span style="color:var(--a3-tech-blue); font-weight:800; margin-right:0.4rem;">${idx + 1}.</span>
+                <span class="case-question-number">${idx + 1}.</span>
                 ${escapeHtml(q.question_text)}
               </p>
               <ul class="case-question-options" role="listbox" aria-label="Opções da questão ${idx + 1}">
@@ -874,14 +860,14 @@
                   .join("")}
               </ul>
               <div class="case-question-explanation" id="cq-exp-${idx}">
-                <strong style="display:block; margin-bottom:0.3rem; color:var(--a3-tech-blue);">
+                <strong class="case-explanation-title">
                   <i class="fa-solid fa-lightbulb"></i> Explicação
                 </strong>
                 ${escapeHtml(q.explanation || "Sem explicação disponível.")}
                 ${
                   q.reference_url
                     ? `<a href="${escapeHtml(q.reference_url)}" target="_blank" rel="noopener noreferrer"
-                       style="display:inline-flex;align-items:center;gap:0.3rem;margin-top:0.5rem;font-size:0.75rem;color:var(--a3-tech-blue);font-weight:600;">
+                       class="case-ref-link">
                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Referência oficial
                      </a>`
                     : ""
@@ -950,9 +936,9 @@
 
         if (!idOrSlug) {
           document.getElementById("case-header-loading").innerHTML = `
-            <p style="color:rgba(255,255,255,0.7); font-size:0.9rem;">
-              <i class="fa-solid fa-triangle-exclamation" style="color:var(--a3-warning);"></i>
-              Nenhum case especificado. <a href="./cases.html" style="color:var(--a3-sky-frost);">Ver todos os cases</a>.
+            <p class="cv-error-message">
+              <i class="fa-solid fa-triangle-exclamation cv-error-icon"></i>
+              Nenhum case especificado. <a href="./cases.html" class="cv-error-link">Ver todos os cases</a>.
             </p>`;
           return;
         }
@@ -967,19 +953,18 @@
               "Serviço indisponível no momento. Tente novamente mais tarde.";
           }
           document.getElementById("case-header-loading").innerHTML = `
-            <p style="color:rgba(255,255,255,0.7); font-size:0.9rem;">
-              <i class="fa-solid fa-triangle-exclamation" style="color:var(--a3-warning);"></i>
-              ${emptyMessage} <a href="./cases.html" style="color:var(--a3-sky-frost);">Ver todos os cases</a>.
+            <p class="cv-error-message">
+              <i class="fa-solid fa-triangle-exclamation cv-error-icon"></i>
+              ${emptyMessage} <a href="./cases.html" class="cv-error-link">Ver todos os cases</a>.
             </p>`;
           return;
         }
 
         if (status.fallbackUsed) {
           const banner = document.createElement("div");
-          banner.style.cssText =
-            "background:var(--a3-surface-warning); color:var(--text-main); padding:0.75rem; border-radius:8px; margin-bottom:1rem; text-align:center; font-size:0.9rem; border: 1px solid var(--a3-accent); display:flex; align-items:center; justify-content:center; gap:0.5rem;";
+          banner.className = "cv-offline-banner";
           banner.innerHTML =
-            '<i class="fa-solid fa-wifi-slash" style="color:var(--a3-warning);"></i> Não foi possível conectar ao servidor. Usando modo offline.';
+            '<i class="fa-solid fa-wifi-slash cv-offline-icon"></i> Não foi possível conectar ao servidor. Usando modo offline.';
 
           const headerContent = document.getElementById("case-header-content");
           headerContent.parentNode.insertBefore(banner, headerContent);

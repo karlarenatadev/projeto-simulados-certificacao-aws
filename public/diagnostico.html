@@ -6,20 +6,7 @@
     <meta name="description" content="Diagnóstico de nivelamento AWS — identifique pontos fortes e fracos." />
     <title>Raio-X da Nuvem — Cloud Academy A3</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "aws-dark": "#001863",
-              "aws-orange": "#0033FF",
-            },
-          },
-        },
-      };
-    </script>
+    
 
     <link
       rel="stylesheet"
@@ -119,9 +106,11 @@
 
     <main class="flex-1 a3-container py-6 main-content-container">
 
+      <!-- 1. TELA INICIAL (Filtro e Botão de Iniciar) -->
+      <!-- Mudei o ID para screen-start para o app.js conseguir escondê-la automaticamente -->
       <section
-        id="screen-diagnostic"
-        class="p-8 md:p-12 flex flex-col items-center justify-center text-center"
+        id="screen-start"
+        class="flex flex-col items-center justify-center text-center"
       >
         <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
           <i class="fa-solid fa-stethoscope text-a3-primary text-4xl" aria-hidden="true"></i>
@@ -134,11 +123,12 @@
 
         <!-- Seleção de certificação -->
         <div class="a3-card w-full max-w-md mb-6">
-          <h3 class="text-lg font-bold text-strong mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-certificate text-a3-primary" aria-hidden="true"></i>
-            Selecione sua Certificação
-          </h3>
-          <select
+          <div class="a3-card-header text-lg font-bold text-strong mb-4 flex items-center gap-2">
+            <h3 class="m-0"><i class="fa-solid fa-certificate text-a3-primary" aria-hidden="true"></i>
+            Selecione sua Certificação</h3>
+          </div>
+          <div class="a3-card-body">
+            <select
             id="certification-select"
             class="w-full px-4 py-3 border-2 border-gray-300 dark:border-slate-500 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all outline-none text-gray-700 dark:text-gray-200 font-medium bg-white cursor-pointer"
             aria-label="Selecionar certificação AWS para o diagnóstico"
@@ -147,7 +137,8 @@
             <option value="saa-c03">AWS Certified Solutions Architect (SAA-C03)</option>
             <option value="aif-c01">AWS Certified AI Practitioner (AIF-C01)</option>
             <option value="dva-c02">AWS Certified Developer Associate (DVA-C02)</option>
-          </select>
+            </select>
+          </div>
         </div>
 
         <!-- Botão de iniciar diagnóstico -->
@@ -160,24 +151,51 @@
             <i class="fa-solid fa-microscope mr-2" aria-hidden="true"></i> Iniciar Diagnóstico
           </button>
         </div>
+      </section>
 
-        <!-- Área de resultado do diagnóstico -->
-        <div id="diagnostic-report" class="w-full max-w-2xl hidden">
-          <div class="a3-card mb-6 shadow-sm">
-            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <i class="fa-solid fa-chart-radar text-aws-orange"></i> Análise por Domínio
-            </h3>
-            <div class="relative h-[300px] w-full">
-              <canvas id="radarChart"></canvas>
-            </div>
-          </div>
+      <!-- 2. TELA DO QUIZ (Onde o diagnóstico acontece) -->
+      <div id="screen-quiz" class="hidden flex-col h-full relative p-6 md:p-8">
+        <div class="absolute top-0 left-0 h-2 w-full bg-gray-200">
+          <div id="progress-bar" class="h-2 aws-bg-orange transition-all duration-500" style="width: 0%"></div>
+        </div>
 
-          <div id="diagnostic-details" class="w-full">
-            <!-- Preenchido por renderDiagnosticReport() no app.js -->
+        <div class="flex flex-wrap justify-between items-center mb-6 mt-4 gap-3">
+          <span id="question-category" class="text-xs font-bold uppercase tracking-wider text-muted bg-gray-100 border border-gray-200 px-4 py-1.5 rounded-full shadow-sm">
+            Categoria
+          </span>
+          <div class="a3-card flex items-center gap-4 shadow-sm">
+            <span class="text-sm font-semibold text-muted">
+              Questão <span id="current-q-num" class="text-aws-dark text-base mx-1">1</span>
+              de <span id="total-q-num" class="ml-1">10</span>
+            </span>
           </div>
         </div>
 
-      </section>
+        <h3 id="question-text" class="text-xl md:text-2xl font-semibold text-strong mb-8 leading-snug">
+          Carregando questão...
+        </h3>
+        <div id="options-container" class="flex flex-col gap-3 mb-8"></div>
+
+        <div class="mt-auto pt-6 flex flex-wrap justify-end gap-3 items-center w-full border-t border-gray-100">
+          <button id="btn-cancel" class="a3-btn a3-btn-secondary shadow-sm">
+            <i class="fa-solid fa-xmark mr-2" aria-hidden="true"></i> Cancelar
+          </button>
+          <button id="btn-submit" disabled class="a3-btn a3-btn-secondary a3-btn-lg shadow-md">
+            Confirmar Resposta
+          </button>
+          <button id="btn-next" class="a3-btn a3-btn-primary a3-btn-lg hidden shadow-md">
+            Próxima <i class="fa-solid fa-arrow-right ml-2"></i>
+          </button>
+          <button id="btn-finish" class="a3-btn a3-btn-secondary hidden shadow-md">
+            Ver Resultado <i class="fa-solid fa-flag-checkered ml-2"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. TELA DE RESULTADOS (Onde o gráfico radar aparece no final) -->
+      <div id="screen-results" class="hidden p-8 md:p-12 flex flex-col items-center justify-center text-center h-full overflow-y-auto custom-scroll">
+        <!-- O app.js vai injetar o relatório de domínios aqui automaticamente -->
+      </div>
 
     </main>
 <footer
@@ -200,25 +218,7 @@
         initShell(user);
       });
     </script>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const themeBtn = document.getElementById("theme-toggle");
-        const langBtn = document.getElementById("btn-language");
-        if (themeBtn)
-          themeBtn.addEventListener(
-            "click",
-            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
-          );
-        if (langBtn)
-          langBtn.addEventListener("click", () => {
-            const lang = localStorage.getItem("aws_sim_lang") || "pt";
-            const next = lang === "pt" ? "en" : "pt";
-            localStorage.setItem("aws_sim_lang", next);
-            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
-            window.location.reload();
-          });
-      });
-    </script>
+    
 
   </body>
 </html>

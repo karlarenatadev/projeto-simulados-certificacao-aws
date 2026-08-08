@@ -6,20 +6,7 @@
     <meta name="description" content="Simulados AWS — Pratique com questões no estilo oficial dos exames AWS." />
     <title>Simulados — Cloud Academy A3</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "aws-dark": "#001863",
-              "aws-orange": "#0033FF",
-            },
-          },
-        },
-      };
-    </script>
+    
 
     <link
       rel="stylesheet"
@@ -121,9 +108,9 @@
 
       <!-- CONTENT AREA -->
       <section class="flex-1 min-w-0 flex flex-col gap-0 overflow-y-auto" id="simulados-content">
-        <div
+        <section
           id="screen-start"
-          class="p-8 md:p-12 flex flex-col items-center justify-center text-center h-full"
+          class="flex flex-col items-center justify-center text-center h-full"
         >
           <div
             class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6 shadow-inner"
@@ -143,15 +130,10 @@
           </p>
 
           <div class="a3-card w-full max-w-md mb-6">
-            <h3
-              class="text-lg font-bold text-strong mb-4 flex items-center gap-2"
-            >
-              <i
-                class="fa-solid fa-certificate text-a3-primary"
-                aria-hidden="true"
-              ></i>
-              Selecione sua Certificação
-            </h3>
+            <div class="a3-card-header text-lg font-bold text-strong flex items-center gap-2">
+              <h3 class="m-0"><i class="fa-solid fa-certificate text-a3-primary" aria-hidden="true"></i> Selecione sua Certificação</h3>
+            </div>
+            <div class="a3-card-body">
             <select
               id="certification-select"
               class="w-full px-4 py-3 border-2 border-gray-300 dark:border-slate-500 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all outline-none text-gray-700 dark:text-gray-200 font-medium bg-white cursor-pointer"
@@ -170,20 +152,15 @@
                 AWS Certified Developer Associate (DVA-C02)
               </option>
             </select>
+            </div>
           </div>
 
           <div class="a3-card w-full max-w-md mb-6">
-            <h3
-              class="text-lg font-bold text-strong mb-4 flex items-center gap-2"
-            >
-              <i
-                class="fa-solid fa-sliders text-a3-primary"
-                aria-hidden="true"
-              ></i>
-              Filtros e Configurações
-            </h3>
+            <div class="a3-card-header text-lg font-bold text-strong flex items-center gap-2">
+              <h3 class="m-0"><i class="fa-solid fa-sliders text-a3-primary" aria-hidden="true"></i> Filtros e Configurações</h3>
+            </div>
 
-            <div class="space-y-5">
+            <div class="a3-card-body space-y-5">
               <div>
                 <label
                   class="block text-sm font-bold text-gray-700 dark:text-gray-200 mb-3"
@@ -743,48 +720,6 @@
 
       </section>
       <!-- /CONTENT AREA -->
-
-      <!-- SIDE INFO -->
-      <aside id="side-info" class="lg:w-80 flex flex-col gap-6 w-full shrink-0 hidden lg:flex">
-
-        <!-- Últimos Simulados -->
-        <div class="a3-card w-full shadow-sm overflow-hidden flex flex-col">
-          <div class="bg-gray-50 /50 px-5 py-3 border-b border-gray-200 dark:border-slate-700 flex items-center gap-2">
-            <i class="fa-solid fa-clock-rotate-left text-aws-orange"></i>
-            <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 m-0">Últimos Simulados</h3>
-          </div>
-          <div id="history-container" class="p-5">
-            <p class="text-xs text-muted italic">Nenhum simulado realizado ainda.</p>
-          </div>
-        </div>
-
-        <!-- Tempo Médio -->
-        <div class="a3-card w-full shadow-sm overflow-hidden flex flex-col">
-          <div class="bg-gray-50 /50 px-5 py-3 border-b border-gray-200 dark:border-slate-700 flex items-center gap-2">
-            <i class="fa-solid fa-stopwatch text-aws-orange"></i>
-            <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 m-0">Tempo Médio</h3>
-          </div>
-          <div class="p-5">
-            <p id="avg-time-display" class="text-2xl font-black text-aws-orange">—</p>
-            <p class="text-xs text-muted mt-1">por simulado</p>
-          </div>
-        </div>
-
-        <!-- Melhor Nota -->
-        <div class="a3-card w-full shadow-sm overflow-hidden flex flex-col">
-          <div class="bg-gray-50 /50 px-5 py-3 border-b border-gray-200 dark:border-slate-700 flex items-center gap-2">
-            <i class="fa-solid fa-trophy text-yellow-500"></i>
-            <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 m-0">Melhor Nota</h3>
-          </div>
-          <div class="p-5">
-            <p id="best-score-display" class="text-2xl font-black text-aws-orange">—</p>
-            <p class="text-xs text-muted mt-1">escala AWS (100–1000)</p>
-          </div>
-        </div>
-
-      </aside>
-      <!-- /SIDE INFO -->
-
     </main>
 <footer
       class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
@@ -820,25 +755,7 @@
         initShell(user);
       });
     </script>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const themeBtn = document.getElementById("theme-toggle");
-        const langBtn = document.getElementById("btn-language");
-        if (themeBtn)
-          themeBtn.addEventListener(
-            "click",
-            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
-          );
-        if (langBtn)
-          langBtn.addEventListener("click", () => {
-            const lang = localStorage.getItem("aws_sim_lang") || "pt";
-            const next = lang === "pt" ? "en" : "pt";
-            localStorage.setItem("aws_sim_lang", next);
-            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
-            window.location.reload();
-          });
-      });
-    </script>
+    
 
   </body>
 </html>

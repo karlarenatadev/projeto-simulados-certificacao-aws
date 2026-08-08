@@ -6,20 +6,7 @@
     <meta name="description" content="Perfil do usuário — histórico, certificações e conquistas." />
     <title>Meu Perfil — Cloud Academy A3</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "aws-dark": "#001863",
-              "aws-orange": "#0033FF",
-            },
-          },
-        },
-      };
-    </script>
+    
 
     <link
       rel="stylesheet"
@@ -290,7 +277,7 @@
         const certIds = [...new Set(history.map((h) => h.certId).filter(Boolean))];
 
         if (certIds.length === 0) {
-          container.innerHTML = `<p class="text-sm text-muted" style="color:var(--a3-text-muted);">Nenhuma certificação iniciada ainda.</p>`;
+          container.innerHTML = `<p class="profile-empty-hint">Nenhuma certificação iniciada ainda.</p>`;
           return;
         }
 
@@ -300,13 +287,13 @@
             const bestPct = Math.max(...certSessions.map((h) => Number(h.percentage) || 0));
             const label = CERT_LABELS[certId] || certId.toUpperCase();
             return `
-              <div class="a3-card" style="padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;margin-bottom:0.5rem;">
-                <i class="fa-solid fa-certificate" style="color:var(--a3-tech-blue);font-size:1.25rem;" aria-hidden="true"></i>
-                <div style="flex:1;">
-                  <p style="font-weight:700;font-size:0.9rem;">${label}</p>
-                  <p style="font-size:0.75rem;color:var(--a3-text-muted);">${certSessions.length} simulado${certSessions.length !== 1 ? "s" : ""} · Melhor: ${bestPct > 0 ? Math.round(bestPct) + "%" : "—"}</p>
+              <div class="a3-card profile-cert-card">
+                <i class="fa-solid fa-certificate profile-cert-icon" aria-hidden="true"></i>
+                <div class="profile-cert-info">
+                  <p class="profile-cert-name">${label}</p>
+                  <p class="profile-cert-meta">${certSessions.length} simulado${certSessions.length !== 1 ? "s" : ""} · Melhor: ${bestPct > 0 ? Math.round(bestPct) + "%" : "—"}</p>
                 </div>
-                <span style="font-size:0.7rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:999px;background:color-mix(in srgb, var(--a3-tech-blue) 10%, transparent);color:var(--a3-tech-blue);">${certId.toUpperCase()}</span>
+                <span class="profile-cert-badge">${certId.toUpperCase()}</span>
               </div>`;
           })
           .join("");
@@ -324,11 +311,11 @@
           const earned = earnedBadges.has(badge.id);
           const opacity = earned ? "" : "opacity-40 grayscale cursor-not-allowed";
           return `
-            <div class="a3-card relative ${opacity} ${badge.bg} p-4 flex flex-col items-center text-center" style="min-height:110px;">
-              ${!earned ? '<div style="position:absolute;top:0.5rem;right:0.5rem;font-size:0.6rem;color:var(--a3-text-muted);"><i class="fa-solid fa-lock"></i></div>' : ""}
+            <div class="a3-card relative ${opacity} ${badge.bg} p-4 flex flex-col items-center text-center profile-badge-card">
+              ${!earned ? '<div class="profile-badge-lock"><i class="fa-solid fa-lock"></i></div>' : ""}
               <i class="fa-solid ${badge.icon} ${badge.color} text-2xl mb-2"></i>
-              <h4 style="font-weight:700;font-size:0.75rem;">${badge.title}</h4>
-              <p style="font-size:0.7rem;color:var(--a3-text-muted);margin-top:0.25rem;">${badge.desc}</p>
+              <h4 class="profile-badge-title">${badge.title}</h4>
+              <p class="profile-badge-desc">${badge.desc}</p>
             </div>`;
         }).join("");
       }
@@ -345,25 +332,7 @@
         renderBadgesGrid();
       });
     </script>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const themeBtn = document.getElementById("theme-toggle");
-        const langBtn = document.getElementById("btn-language");
-        if (themeBtn)
-          themeBtn.addEventListener(
-            "click",
-            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
-          );
-        if (langBtn)
-          langBtn.addEventListener("click", () => {
-            const lang = localStorage.getItem("aws_sim_lang") || "pt";
-            const next = lang === "pt" ? "en" : "pt";
-            localStorage.setItem("aws_sim_lang", next);
-            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
-            window.location.reload();
-          });
-      });
-    </script>
+    
 
   </body>
 </html>

@@ -6,20 +6,7 @@
     <meta name="description" content="Biblioteca de materiais de estudo para certificações AWS." />
     <title>Recursos de Estudo — Cloud Academy A3</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "aws-dark": "#001863",
-              "aws-orange": "#0033FF",
-            },
-          },
-        },
-      };
-    </script>
+    
 
     <link
       rel="stylesheet"
@@ -687,25 +674,7 @@
         initShell(user);
       });
     </script>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const themeBtn = document.getElementById("theme-toggle");
-        const langBtn = document.getElementById("btn-language");
-        if (themeBtn)
-          themeBtn.addEventListener(
-            "click",
-            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
-          );
-        if (langBtn)
-          langBtn.addEventListener("click", () => {
-            const lang = localStorage.getItem("aws_sim_lang") || "pt";
-            const next = lang === "pt" ? "en" : "pt";
-            localStorage.setItem("aws_sim_lang", next);
-            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
-            window.location.reload();
-          });
-      });
-    </script>
+    
 
   </body>
 </html>

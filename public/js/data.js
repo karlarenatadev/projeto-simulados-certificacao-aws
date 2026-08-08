@@ -534,37 +534,39 @@ export const certificationPaths = {
     name: "AWS Certified Cloud Practitioner",
     code: "CLF-C02",
     domains: [
-      { id: "conceitos-cloud", name: "Conceitos de Cloud" },
-      { id: "seguranca", name: "Segurança e Conformidade" },
-      { id: "tecnologia", name: "Tecnologia" },
-      { id: "faturamento", name: "Faturamento e Preços" },
+      { id: "conceitos-cloud", name: "Conceitos de Cloud", englishName: "Cloud Concepts" },
+      { id: "seguranca", name: "Segurança e Conformidade", englishName: "Security and Compliance" },
+      { id: "tecnologia", name: "Tecnologia", englishName: "Cloud Technology and Services" },
+      { id: "faturamento", name: "Faturamento e Preços", englishName: "Billing and Pricing" },
     ],
   },
   "saa-c03": {
     name: "AWS Certified Solutions Architect - Associate",
     code: "SAA-C03",
     domains: [
-      { id: "design-resiliente", name: "Design de Arquiteturas Resilientes" },
-      { id: "design-performance", name: "Design de Alto Desempenho" },
-      { id: "seguranca-aplicacoes", name: "Design de Aplicações Seguras" },
-      { id: "design-custo", name: "Design Otimizado para Custos" },
+      { id: "design-resiliente", name: "Design de Arquiteturas Resilientes", englishName: "Design Resilient Architectures" },
+      { id: "design-performance", name: "Design de Alto Desempenho", englishName: "Design High-Performing Architectures" },
+      { id: "seguranca-aplicacoes", name: "Design de Aplicações Seguras", englishName: "Design Secure Architectures" },
+      { id: "design-custo", name: "Design Otimizado para Custos", englishName: "Design Cost-Optimized Architectures" },
     ],
   },
   "aif-c01": {
     name: "AWS Certified AI Practitioner",
     code: "AIF-C01",
     domains: [
-      { id: "fundamentals-ai-ml", name: "Fundamentos de IA e ML" },
-      { id: "fundamentals-genai", name: "Fundamentos de IA Generativa" },
+      { id: "fundamentals-ai-ml", name: "Fundamentos de IA e ML", englishName: "Fundamentals of AI and ML" },
+      { id: "fundamentals-genai", name: "Fundamentos de IA Generativa", englishName: "Fundamentals of Generative AI" },
       {
         id: "applications-foundation-models",
         name: "Aplicações e Modelos de Fundação",
+        englishName: "Applications of Foundation Models"
       },
       {
         id: "guidelines-responsible-ai",
         name: "Diretrizes para IA Responsável",
+        englishName: "Guidelines for Responsible AI"
       },
-      { id: "security-compliance-governance", name: "Segurança e Governança" },
+      { id: "security-compliance-governance", name: "Segurança e Governança", englishName: "Security, Compliance, and Governance for AI Solutions" },
     ],
   },
   "dva-c02": {
@@ -574,12 +576,14 @@ export const certificationPaths = {
       {
         id: "desenvolvimento-servicos",
         name: "Desenvolvimento com Serviços AWS",
+        englishName: "Development with AWS Services"
       },
-      { id: "seguranca-app", name: "Segurança" },
-      { id: "implementacao", name: "Deployment e Implementação" },
+      { id: "seguranca-app", name: "Segurança", englishName: "Security" },
+      { id: "implementacao", name: "Deployment e Implementação", englishName: "Deployment" },
       {
         id: "resolucao-problemas",
         name: "Troubleshooting e Resolução de Problemas",
+        englishName: "Troubleshooting and Optimization"
       },
     ],
   },

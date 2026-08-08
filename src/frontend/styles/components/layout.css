@@ -142,8 +142,8 @@ Design System Grid, Container and Core Structures
 /* Padding mobile para páginas secundárias com sidebar */
 @media (max-width: 640px) {
   .main-content-container {
-    padding-left: var(--space-16) !important;
-    padding-right: var(--space-16) !important;
+    padding-left: var(--space-16);
+    padding-right: var(--space-16);
   }
 
   /* Tabelas e elementos com scroll horizontal controlado */
@@ -161,9 +161,60 @@ Design System Grid, Container and Core Structures
     height: auto;
   }
 
-  /* Headers das páginas secundárias: fonte menor em mobile */
   h2.text-2xl,
   h2.text-3xl {
-    font-size: var(--text-xl) !important;
+    font-size: var(--text-xl);
   }
+}
+
+/* ── Ajustes de Espaçamento e Bordas (Commit 1) ────────────────────────── */
+
+/* Aumenta o respiro do wrapper principal */
+#main-content-wrapper {
+  gap: var(--space-32);
+  padding-top: var(--space-32);
+  padding-bottom: var(--space-32);
+}
+
+/* Telas principais (Hub, Diagnóstico, etc) */
+#screen-hub,
+#screen-diagnostic,
+#screen-flashcards,
+#screen-journey {
+  padding: var(--space-32);
+}
+
+/* Espaçamento da sidebar */
+#side-info {
+  gap: var(--space-32);
+}
+
+/* Ajustes nos grids internos dos módulos */
+#jornada-dashboard-grid {
+  gap: var(--space-24);
+}
+
+#jornada-dashboard-grid > div {
+  padding: var(--space-24);
+}
+
+/* Containers centrais para não colarem nas bordas (Raio X, Flashcards) */
+#diagnostic-report .a3-card {
+  padding: var(--space-32);
+}
+
+.flashcard-container {
+  padding: var(--space-24);
+}
+
+
+/* ==========================================================================
+   CLASSES EXTRAÍDAS DE INLINE STYLES — Sprint 2.6
+   ========================================================================== */
+
+/* ── index.html — card de insight com destaque lateral ──────────────────── */
+
+/* Substituí style="border-left: 4px solid var(--aws-orange);" em #study-insight-container */
+.insight-card-highlight {
+  border-left: 4px solid var(--aws-orange);
 }

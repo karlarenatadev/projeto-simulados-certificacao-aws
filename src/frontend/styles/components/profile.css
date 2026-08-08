@@ -264,3 +264,56 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+
+/* ==========================================================================
+   CLASSES EXTRAÍDAS DE INLINE STYLES — Sprint 2.6
+   Geradas para eliminar style="" de profile.html (strings JS innerHTML)
+   ========================================================================== */
+
+/* ── Certificação — badge de identificação (ex: "CLF-C02") ─────────────── */
+
+.profile-cert-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--a3-tech-blue) 10%, transparent);
+  color: var(--a3-tech-blue);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Conquista (badge) — min-height padronizado ─────────────────────────── */
+
+/* Garante altura mínima para os cards de badge no grid */
+.profile-badge-card {
+  min-height: 110px;
+}
+
+/* ── Conquista — ícone de cadeado (badge não conquistado) ───────────────── */
+
+.profile-badge-lock {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.6rem;
+  color: var(--a3-text-muted);
+}
+
+/* ── Conquista — título e descrição ─────────────────────────────────────── */
+
+.profile-badge-title {
+  font-weight: 700;
+  font-size: 0.75rem;
+  margin: 0;
+  text-align: center;
+  color: var(--text-strong);
+}
+
+.profile-badge-desc {
+  font-size: 0.7rem;
+  color: var(--a3-text-muted);
+  margin-top: 0.25rem;
+  text-align: center;
+}

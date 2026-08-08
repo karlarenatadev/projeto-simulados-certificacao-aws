@@ -220,12 +220,7 @@ ALIASES VISUAIS A3 PARA UTILITÁRIOS EXISTENTES
   background-image: none !important;
   background-color: var(--a3-tech-blue) !important;
 }
-.focus\:border-orange-500:focus,
-.focus\:ring-aws-orange:focus,
-.focus\:ring-orange-200:focus {
-  border-color: var(--a3-tech-blue) !important;
-  --tw-ring-color: color-mix(in srgb, var(--a3-tech-blue) 24%, transparent) !important;
-}
+
 
 /* Cor sky-frost — utilitário global */
 .text-sky-frost {

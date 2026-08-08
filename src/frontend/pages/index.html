@@ -23,20 +23,7 @@
       gtag("config", "G-9Z3ZEGD2JC");
     </script>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "aws-dark": "#001863",
-              "aws-orange": "#0033FF",
-            },
-          },
-        },
-      };
-    </script>
+    
 
     <link
       rel="stylesheet"
@@ -116,39 +103,38 @@
             </div>
           </div>
 
-          <!-- DASHBOARD DA JORNADA INJETADO NO HUB -->
-          <div class="w-full mb-6 mt-4">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="jornada-dashboard-grid">
-              <!-- Card Progresso -->
-              <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 text-center">
-                <p class="text-[10px] text-gray-500 uppercase tracking-wide font-bold mb-1">Progresso</p>
-                <p class="text-2xl font-black text-aws-orange" id="jornada-progress">0%</p>
-              </div>
-              <!-- Card Taxa de Acerto -->
-              <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 text-center">
-                <p class="text-[10px] text-gray-500 uppercase tracking-wide font-bold mb-1">Taxa Acerto</p>
-                <p class="text-2xl font-black text-green-500" id="jornada-accuracy">0%</p>
-              </div>
-              <!-- Card Questões -->
-              <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 text-center">
-                <p class="text-[10px] text-gray-500 uppercase tracking-wide font-bold mb-1">Questões</p>
-                <p class="text-2xl font-black text-blue-500" id="jornada-questions">0</p>
-              </div>
-              <!-- Card Ponto Fraco -->
-              <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm border border-gray-100 dark:border-slate-700 text-center">
-                <p class="text-[10px] text-gray-500 uppercase tracking-wide font-bold mb-1">Ponto Fraco</p>
-                <p class="text-sm font-black text-red-500 mt-2 truncate" id="jornada-weak-domain">-</p>
-              </div>
-            </div>
-          </div>
-
           <!-- Grade principal: indicadores + o que encontrar -->
-          <div class="lh-grid mb-6">
+          <div class="lh-grid mb-4">
             <!-- COLUNA ESQUERDA: Indicadores principais -->
             <div class="lh-panel">
               <p class="lh-section-label">INDICADORES PRINCIPAIS</p>
 
-              <div class="lh-metrics-card">
+              <!-- Bloco 1: Progresso da Certificação (Migrado da Sidebar) -->
+              <div class="lh-metrics-card mb-4">
+                <div class="lh-metrics-header">
+                  <div>
+                    <p class="lh-metrics-title">Progresso da Certificação</p>
+                    <p class="lh-metrics-sub" id="sidebar-cert-label">Carregando...</p>
+                  </div>
+                  <span class="a3-badge a3-badge-primary" id="sidebar-cert-badge">---</span>
+                </div>
+                <div class="mt-4 p-4 border rounded dark:border-slate-700">
+                  <div class="flex justify-between text-sm mb-2">
+                    <span class="font-semibold text-gray-700 dark:text-gray-300">Prontidão para o Exame</span>
+                    <span class="font-bold text-blue-600 dark:text-blue-400" id="sidebar-pct-text">0%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 mb-3 overflow-hidden">
+                    <div class="bg-blue-600 h-3 rounded-full transition-all duration-500" id="sidebar-pct-bar" style="width: 0%"></div>
+                  </div>
+                  <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    <span>Status: <strong id="sidebar-cert-status">Não iniciada</strong></span>
+                    <span>Ofensiva: <strong id="sidebar-streak-value">0 dias</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bloco 2: Performance Geral (Original) -->
+              <div class="lh-metrics-card mb-4">
                 <div class="lh-metrics-header">
                   <div>
                     <p class="lh-metrics-title">Sua performance geral</p>
@@ -167,6 +153,10 @@
                         escala AWS
                       </p>
                     </div>
+                    <div class="lh-metric-item lh-metric-green">
+                      <p class="lh-metric-label">Taxa Acerto</p>
+                      <p class="lh-metric-value" id="jornada-accuracy">0%</p>
+                    </div>
                   </div>
                   <div class="lh-metric-item lh-metric-cyan">
                     <i class="fa-solid fa-bullseye lh-metric-icon"></i>
@@ -177,6 +167,10 @@
                         escala AWS
                       </p>
                     </div>
+                    <div class="lh-metric-item lh-metric-cyan">
+                      <p class="lh-metric-label">Questões</p>
+                      <p class="lh-metric-value" id="jornada-questions">0</p>
+                    </div>
                   </div>
                   <div class="lh-metric-item lh-metric-green">
                     <i class="fa-solid fa-fire-flame-curved lh-metric-icon"></i>
@@ -184,6 +178,10 @@
                       <p class="lh-metric-label">Sequência</p>
                       <p class="lh-metric-value" id="hub-streak">0</p>
                       <p class="lh-metric-hint">dias seguidos</p>
+                    </div>
+                    <div class="lh-metric-item lh-metric-blue">
+                      <p class="lh-metric-label">Progresso</p>
+                      <p class="lh-metric-value" id="jornada-progress">0%</p>
                     </div>
                   </div>
                   <div class="lh-metric-item lh-metric-warning">
@@ -195,13 +193,52 @@
                       <p class="lh-metric-value" id="hub-mistakes-count">0</p>
                       <p class="lh-metric-hint">para revisar</p>
                     </div>
+                    <div class="lh-metric-item lh-metric-warning">
+                      <p class="lh-metric-label">Ponto Fraco</p>
+                      <p class="lh-metric-value" id="jornada-weak-domain">-</p>
+                    </div>
                   </div>
                 </div>
-                <!-- Último simulado -->
-                <div class="lh-last-quiz" id="hub-last-quiz">
-                  <p class="lh-last-quiz-empty">
-                    Nenhum simulado realizado ainda. Que tal começar agora?
-                  </p>
+                </div>
+
+              <!-- Bloco 3: Análise de Domínios / Radar -->
+              <div class="lh-metrics-card mb-4">
+                <div class="lh-metrics-header">
+                  <div>
+                    <p class="lh-metrics-title">Análise de Domínios</p>
+                    <p class="lh-metrics-sub">Seu desempenho por área de conhecimento</p>
+                  </div>
+                </div>
+                
+                <div id="global-stats-summary" class="flex gap-4 mb-4 mt-2 justify-around text-center text-sm">
+                    <div><strong id="total-quizzes" class="text-lg text-blue-600 dark:text-blue-400">0</strong><br><span class="text-gray-500">Simulados</span></div>
+                    <div><strong id="avg-score" class="text-lg text-green-600 dark:text-green-400">0%</strong><br><span class="text-gray-500">Média</span></div>
+                    <div><strong id="total-questions" class="text-lg text-purple-600 dark:text-purple-400">0</strong><br><span class="text-gray-500">Questões</span></div>
+                </div>
+
+                <div id="global-chart-container" class="relative w-full aspect-square md:aspect-video flex items-center justify-center mt-4">
+                  <canvas id="globalRadarChart"></canvas>
+                  <div id="global-chart-empty" class="absolute inset-0 flex items-center justify-center bg-gray-50/90 dark:bg-slate-800/90 rounded" style="display: none;">
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Realize simulados para gerar o gráfico.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bloco 4: Atividades Recentes (Histórico) -->
+              <div class="lh-metrics-card mb-4">
+                <div class="lh-metrics-header flex justify-between items-center">
+                  <div>
+                    <p class="lh-metrics-title" id="history-card-title">Atividades Recentes</p>
+                    <p class="lh-metrics-sub">
+                      Ofensiva Atual: <strong id="streak-counter" class="text-orange-500">0</strong> dias
+                    </p>
+                  </div>
+                  <button id="btn-clear-history" class="text-xs text-red-500 hover:text-red-700 underline" onclick="window.clearHistory && window.clearHistory()">Limpar Histórico</button>
+                </div>
+                <div class="mt-4">
+                  <ul id="history-list" class="space-y-2 max-h-60 overflow-y-auto">
+                    <li class="text-gray-500 text-sm italic p-4 text-center">Nenhum simulado registrado no histórico.</li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -209,85 +246,83 @@
             <!-- COLUNA DIREITA: O que você encontra -->
             <div class="lh-panel">
               <p class="lh-section-label">GUIA DA PLATAFORMA</p>
-              <h3 class="lh-whats-here-title">O que você encontra</h3>
+              
+              <!-- ESTUDOS -->
+              <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 mt-4 mb-2 uppercase tracking-wide">Estudos</h3>
+              <div class="lh-features-list mb-4">
+                <button class="lh-feature-item" onclick="window.location.href='./study-now.html'">
+                  <span class="lh-feature-icon lh-feat-pink"><i class="fa-solid fa-lightbulb"></i></span>
+                  <div class="lh-feature-info">
+                    <p class="lh-feature-name">Study Now</p>
+                    <p class="lh-feature-desc">Insights IA e recomendações da próxima melhor ação de estudo</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+                </button>
+                <button class="lh-feature-item" onclick="window.location.href='./study-sprint.html'">
+                  <span class="lh-feature-icon lh-feat-purple"><i class="fa-solid fa-person-running"></i></span>
+                  <div class="lh-feature-info">
+                    <p class="lh-feature-name">Sprint de Estudos</p>
+                    <p class="lh-feature-desc">Seu plano de ação de 14 dias para dominar os tópicos pendentes</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+                </button>
+                <button class="lh-feature-item" onclick="window.location.href='./simulados.html'">
+                  <span class="lh-feature-icon lh-feat-blue"><i class="fa-solid fa-play"></i></span>
+                  <div class="lh-feature-info">
+                    <p class="lh-feature-name">Simulados</p>
+                    <p class="lh-feature-desc">Questões oficiais AWS geradas em tempo real pela IA</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+                </button>
+                <button class="lh-feature-item" onclick="window.location.href='./simulados.html#mistakes'">
+                  <span class="lh-feature-icon lh-feat-warning"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                  <div class="lh-feature-info">
+                    <p class="lh-feature-name">Revisão de Erros</p>
+                    <p class="lh-feature-desc">Ataque focado nas questões que você errou nos últimos testes</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+                </button>
+              </div>
 
+              <!-- PRÁTICA -->
+              <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 mt-4 mb-2 uppercase tracking-wide">Prática</h3>
+              <div class="lh-features-list mb-4">
+                <button class="lh-feature-item" onclick="window.location.href='./cases.html'">
+                  <span class="lh-feature-icon lh-feat-cyan"><i class="fa-solid fa-diagram-project"></i></span>
+                  <div class="lh-feature-info">
+                    <p class="lh-feature-name">Cases AWS</p>
+                    <p class="lh-feature-desc">Simulação prática de arquitetura e casos de uso reais</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+                </button>
+                <button class="lh-feature-item" onclick="window.location.href='./laboratorios.html'">
+                  <span class="lh-feature-icon lh-feat-green"><i class="fa-solid fa-flask"></i></span>
+                  <div class="lh-feature-info">
+                    <p class="lh-feature-name">Laboratórios</p>
+                    <p class="lh-feature-desc">Ambientes controlados para você botar a mão na massa</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+                </button>
+              </div>
+
+              <!-- RECURSOS -->
+              <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 mt-4 mb-2 uppercase tracking-wide">Recursos</h3>
               <div class="lh-features-list">
-                <button
-                  class="lh-feature-item"
-                  onclick="window.location.href='./simulados.html'"
-                >
-                  <span class="lh-feature-icon lh-feat-blue">
-                    <i class="fa-solid fa-play"></i>
-                  </span>
+                <button class="lh-feature-item" onclick="window.location.href='./resources.html'">
+                  <span class="lh-feature-icon lh-feat-blue"><i class="fa-brands fa-aws"></i></span>
                   <div class="lh-feature-info">
-                    <p class="lh-feature-name">Simulados com IA</p>
-                    <p class="lh-feature-desc">
-                      Questões no estilo oficial AWS, geradas e avaliadas por IA
-                      em tempo real
-                    </p>
+                    <p class="lh-feature-name">Serviços AWS</p>
+                    <p class="lh-feature-desc">Glossário completo e documentação essencial dos serviços</p>
                   </div>
                   <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
                 </button>
-
-                <button class="lh-feature-item" onclick="window.location.href='./jornada.html'">
-                  <span class="lh-feature-icon lh-feat-purple">
-                    <i class="fa-solid fa-route"></i>
-                  </span>
-                  <div class="lh-feature-info">
-                    <p class="lh-feature-name">Trilha de Jornada</p>
-                    <p class="lh-feature-desc">
-                      Progresso gamificado por módulos, fases e conquistas
-                      desbloqueáveis
-                    </p>
-                  </div>
-                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
-                </button>
-
-                <button class="lh-feature-item" onclick="window.location.href='./diagnostico.html'">
-                  <span class="lh-feature-icon lh-feat-cyan">
-                    <i class="fa-solid fa-stethoscope"></i>
-                  </span>
-                  <div class="lh-feature-info">
-                    <p class="lh-feature-name">Raio-X de Domínios</p>
-                    <p class="lh-feature-desc">
-                      Diagnóstico por área: veja onde você está forte e onde
-                      precisa evoluir
-                    </p>
-                  </div>
-                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
-                </button>
-
                 <button class="lh-feature-item" onclick="window.location.href='./flashcards.html'">
-                  <span class="lh-feature-icon lh-feat-green">
-                    <i class="fa-solid fa-layer-group"></i>
-                  </span>
+                  <span class="lh-feature-icon lh-feat-purple"><i class="fa-solid fa-layer-group"></i></span>
                   <div class="lh-feature-info">
                     <p class="lh-feature-name">Flashcards</p>
-                    <p class="lh-feature-desc">
-                      Revisão rápida por cartões — conceitos, serviços e siglas
-                      AWS
-                    </p>
+                    <p class="lh-feature-desc">Revisão rápida por cartões para absorção mnemônica</p>
                   </div>
                   <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
-                </button>
-
-                <button
-                  class="lh-feature-item lh-feature-item-highlight"
-                  onclick="window.location.href='./profile.html'"
-                >
-                  <span class="lh-feature-icon lh-feat-pink">
-                    <i class="fa-solid fa-lightbulb"></i>
-                  </span>
-                  <div class="lh-feature-info">
-                    <p class="lh-feature-name">Insights e Estatísticas</p>
-                    <p class="lh-feature-desc">
-                      Análise inteligente do seu histórico, pontos fracos e
-                      recomendações de estudo
-                    </p>
-                  </div>
-                  <span class="lh-feature-cta"
-                    >Ver painel <i class="fa-solid fa-arrow-right"></i
-                  ></span>
                 </button>
               </div>
             </div>
@@ -344,212 +379,6 @@
         <!-- ===== FIM LEARNING HUB ===== -->
 
       </section>
-
-      <aside
-        id="side-info"
-        class="lg:w-1/3 flex flex-col gap-6 w-full shrink-0"
-      >
-        <div
-          id="user-progress-container"
-          class="a3-card w-full shadow-sm overflow-hidden flex flex-col"
-        >
-          <div
-            class="bg-gray-50 /50 px-5 py-3 border-b border-gray-200 dark:border-slate-700 flex items-center justify-between gap-2 flex-wrap"
-          >
-            <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 m-0">
-              <span id="sidebar-my-progress-title">O Meu Progresso</span>
-            </h3>
-            <div class="flex items-center gap-2">
-              <span
-                id="sidebar-cert-badge"
-                class="text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300 px-2 py-0.5 rounded-full"
-              ></span>
-              <span
-                id="sidebar-cert-status"
-                class="text-[10px] font-semibold text-muted dark:text-gray-400"
-              ></span>
-            </div>
-          </div>
-          <div class="p-5">
-            <div class="flex justify-between items-center mb-2">
-              <span
-                id="sidebar-progress-total-label"
-                class="text-sm font-bold text-gray-700"
-                >Progresso Total</span
-              >
-              <span
-                id="sidebar-pct-text"
-                class="text-sm font-bold text-aws-orange"
-                >0%</span
-              >
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-              <div
-                id="sidebar-pct-bar"
-                class="bg-aws-orange h-2.5 rounded-full"
-                style="width: 0%"
-              ></div>
-            </div>
-            <div class="flex justify-between items-center text-sm">
-              <span
-                id="sidebar-streak-label"
-                class="text-muted dark:text-gray-400"
-                >Ofensiva:</span
-              >
-              <span class="font-bold text-orange-600 flex items-center gap-1">
-                <i class="fa-solid fa-fire"></i>
-                <span id="sidebar-streak-value">0 dias</span>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div
-          id="sprint-module"
-          class="a3-card w-full shadow-sm overflow-hidden flex flex-col"
-        >
-          <div
-            class="bg-gray-50 /50 px-5 py-3 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center"
-          >
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-calendar-check text-aws-orange"></i>
-              <h3
-                id="sprint-module-title"
-                class="text-sm font-bold text-gray-800 dark:text-gray-200 m-0"
-              >
-                Sprint de Estudos
-              </h3>
-            </div>
-            <span
-              id="sprint-current-cert-badge"
-              class="bg-aws-dark text-white text-[10px] font-bold px-2 py-1 rounded"
-              >AWS</span
-            >
-          </div>
-          <div class="p-5">
-            <p id="sprint-module-subtitle" class="hidden"></p>
-            <div class="flex justify-between text-xs mb-3">
-              <span
-                id="sprint-progress-label"
-                class="font-semibold text-muted dark:text-gray-400"
-                >Progresso</span
-              >
-              <span id="sprint-progress-text" class="font-bold text-aws-orange"
-                >0%</span
-              >
-            </div>
-            <div id="sprint-days-grid" class="w-full"></div>
-            <div
-              class="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700 text-center"
-            >
-              <p
-                id="sprint-current-day-label"
-                class="text-sm font-bold text-gray-800 dark:text-gray-200 mb-2"
-              >
-                Dia 1
-              </p>
-              <button
-                id="sprint-start-btn"
-                class="a3-btn a3-btn-primary a3-btn-lg w-full"
-              >
-                Iniciar Sprint
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div
-          id="weak-domains-card"
-          class="a3-card w-full shadow-sm overflow-hidden flex flex-col"
-        >
-          <div
-            class="bg-gray-50 /50 px-5 py-3 border-b border-gray-200 dark:border-slate-700 flex items-center gap-2"
-          >
-            <i class="fa-solid fa-book-open-reader text-aws-orange"></i>
-            <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 m-0">
-              O Que Estudar Agora
-            </h3>
-          </div>
-          <div id="weak-domains-content" class="p-5">
-            <p class="study-now-empty">
-              Complete um quiz para ver suas áreas de foco.
-            </p>
-          </div>
-        </div>
-
-        <div
-          id="study-insight-container"
-          class="bg-orange-50 dark:bg-orange-900/20 rounded-xl border-l-4 border-aws-orange border border-orange-200 dark:border-orange-800/50 w-full shadow-sm overflow-hidden flex flex-col"
-        >
-          <div
-            class="bg-orange-100/50 dark:bg-orange-900/40 px-5 py-3 border-b border-orange-200 dark:border-orange-800/50 flex items-center gap-2"
-          >
-            <i
-              class="fa-solid fa-lightbulb text-orange-600 dark:text-orange-400"
-            ></i>
-            <h3
-              class="text-sm font-bold text-orange-800 dark:text-orange-400 m-0"
-            >
-              <span id="insight-card-title">Insight de Estudo</span>
-            </h3>
-          </div>
-          <div class="p-5">
-            <div
-              id="dynamic-insight"
-              class="text-sm text-gray-700 leading-relaxed break-words"
-              data-empty="true"
-            >
-              <span class="text-gray-400 italic">Aguardando dados...</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="a3-card w-full shadow-sm overflow-hidden flex flex-col">
-          <div
-            class="bg-gray-50 /50 px-5 py-3 border-b border-gray-200 dark:border-slate-700 flex items-center gap-2"
-          >
-            <i class="fa-solid fa-radar-chart text-aws-orange"></i>
-            <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 m-0">
-              <span id="cert-stats-title">Estatísticas da Certificação</span>
-            </h3>
-          </div>
-          <div
-            id="global-performance-dashboard"
-            class="p-5 w-full min-h-[250px] flex items-center justify-center"
-          >
-            <canvas id="globalRadarChart"></canvas>
-          </div>
-        </div>
-
-        <div
-          id="history-container"
-          class="a3-card w-full shadow-sm overflow-hidden flex flex-col"
-        >
-          <div
-            class="bg-gray-50 /50 px-5 py-3 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center"
-          >
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-clock-rotate-left text-aws-orange"></i>
-              <h3
-                class="text-sm font-bold text-gray-800 dark:text-gray-200 m-0"
-              >
-                <span id="history-card-title">Últimas Sessões</span>
-              </h3>
-            </div>
-            <button
-              id="btn-clear-history"
-              onclick="clearHistory()"
-              class="a3-btn a3-btn-danger"
-              title="Limpar Histórico"
-            >
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          </div>
-          <div class="p-5">
-            <div id="history-list" class="space-y-3 w-full"></div>
-          </div>
-        </div>
-      </aside>
     </main>
 
     <!-- {{FOOTER}} -->

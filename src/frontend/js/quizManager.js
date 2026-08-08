@@ -8,6 +8,7 @@ import { logger } from "./utils/logger.js";
  */
 
 import apiService from "./services/api.js";
+import { normalizeCertificationId } from "./utils/certUtils.js";
 
 /**
  * Quiz Manager Object
@@ -51,6 +52,7 @@ export const quizManager = {
    * @returns {Promise<object>} { quizId, questions, totalQuestions }
    */
   async startQuiz(certId, numQuestions = 10) {
+    certId = normalizeCertificationId(certId);
     try {
       if (this.isAPIAvailable && this.currentUserId) {
         try {

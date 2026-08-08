@@ -1,5 +1,6 @@
 import { logger, dispatchBusinessEvent, recordMetric } from "./utils/logger.js";
 import { sanitizeHTML } from "./utils/sanitize.js";
+import { normalizeCertificationId } from "./utils/certUtils.js";
 
 import { identifyWeakDomains, QuizEngine } from "./quizEngine.js";
 import { certificationPaths } from "./data.js";
@@ -206,7 +207,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const showcaseMode = urlParams.get("mode");
   if (showcaseMode === "showcase") {
     const persona = urlParams.get("persona") || "advanced";
-    const cert = urlParams.get("cert") || "clf-c02";
+    const cert = normalizeCertificationId(urlParams.get("cert")) || "clf-c02";
     // O offline/theme parameter poderiam ser salvos no uiState
     if (urlParams.get("offline") === "true") {
       window.sessionStorage.setItem("force_offline", "true");
@@ -261,30 +262,46 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // FASE 1: Configurações Base (Sincronizadas)
+  // FASE 1: Inicialização Central do App Shell
   initThemeShell();
-  initializeUI(uiState.language);
-
-  // FASE 1.5: App Shell — UserMenu e Sidebar dinâmica por role
+  initLeftSidebarToggleShell();
   renderUserMenu(authenticatedUser);
   buildSidebar(authenticatedUser);
 
-  // FASE 2: Traduções (Só títulos estáticos, sem destruir conteúdo)
+  // Executa as inicializações complementares caso existam no shell global
+  if (typeof window.syncLanguageButtonShell === "function") window.syncLanguageButtonShell();
+  if (typeof window.initPWAInstallShell === "function") window.initPWAInstallShell();
+
+  // Marca item ativo baseado na URL atual (replicando lógica do initShell)
+  const currentPath = window.location.pathname;
+  const pathToId = {
+    "/simulados.html": "sidebar-btn-quiz",
+    "/jornada.html": "sidebar-btn-journey",
+    "/flashcards.html": "sidebar-btn-flashcards",
+    "/diagnostico.html": "sidebar-btn-diagnostic",
+    "/cases.html": "sidebar-btn-cases",
+    "/resources.html": "sidebar-btn-resources",
+    "/profile.html": "sidebar-btn-profile",
+    "/settings.html": "sidebar-btn-settings",
+  };
+  const activeId = Object.entries(pathToId).find(([path]) => currentPath.endsWith(path))?.[1];
+  if (activeId) {
+    const activeEl = document.getElementById(activeId);
+    if (activeEl) activeEl.classList.add("is-active");
+  }
+
+  // FASE 2: Configuração de UI e Traduções Locais do Hub
+  initializeUI(uiState.language);
   updateSidebarTexts();
 
   // FASE 3: Injeção de Dados Dinâmicos (ORDEM GARANTIDA)
   await renderSidebarContent();
 
-  // FASE 4: Inicializações Secundárias
+  // FASE 4: Inicializações Secundárias (Eventos e Gamificação)
   renderGamification();
-  updateLanguageButtonUI();
-  initPWAInstall();
   wireUIActions();
   initStudyNow({ startFilteredQuiz: startWeakestDomainQuiz });
   refreshStudyNow();
-
-  // Inicializa a sidebar esquerda (toggle via shell.js)
-  initLeftSidebarToggleShell();
 
   // FASE 6: Learning Hub é a Home — exibe como tela inicial
   // Exclusivo do SPA (index.html): em páginas secundárias as screens já estão
@@ -297,8 +314,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // O boot overlay só existe em index.html; em páginas secundárias não há nada a remover.
   const bootOverlay = document.getElementById("app-boot-overlay");
   if (bootOverlay) {
-    bootOverlay.style.transition = "opacity 0.3s ease";
-    bootOverlay.style.opacity = "0";
+    bootOverlay.classList.add("fade-out");
     setTimeout(() => bootOverlay.remove(), 320);
   }
 
@@ -377,6 +393,34 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
+
+  // Se for simulados.html e estiver em modo diagnóstico, inicia automaticamente
+  if (!isSPAPage() && urlParams.get("mode") === "diagnostic") {
+    const cert = normalizeCertificationId(urlParams.get("cert"));
+    if (cert) {
+      const certSelect = document.getElementById("certification-select");
+      if (certSelect) certSelect.value = cert;
+    }
+    setTimeout(() => {
+      startDiagnostic();
+    }, 100);
+  }
+
+  // Se vier de jornada.html com ?mode=mission&stageId=..., inicia a missão automaticamente
+  if (!isSPAPage() && urlParams.get("mode") === "mission") {
+    const stageId = urlParams.get("stageId");
+    const cert = normalizeCertificationId(urlParams.get("cert"));
+    if (stageId) {
+      if (cert) {
+        const certSelect = document.getElementById("certification-select");
+        if (certSelect) certSelect.value = cert;
+      }
+      setTimeout(() => {
+        // Chama diretamente a lógica interna sem o redirecionamento de contexto
+        startMissionInternal(stageId);
+      }, 150);
+    }
+  }
 });
 
 // RENDERIZAÇÃO ORDENADA E SEQUENCIAL DA SIDEBAR
@@ -425,12 +469,14 @@ function setFinishButtonLoading(isLoading) {
 }
 
 function getActiveCertificationId() {
-  return (
+  const certSelect = document.getElementById("certification-select");
+  const certValue =
     engine.state?.certId ||
-    document.getElementById("certification-select")?.value ||
+    (certSelect && certSelect.value) ||
     (AuthService.getCurrentUser()?.certification) ||
-    ""
-  );
+    "clf-c02";
+
+  return normalizeCertificationId(certValue);
 }
 
 function getMistakeSource() {
@@ -634,44 +680,52 @@ async function startQuiz() {
 
   const certSelect = document.getElementById("certification-select");
   const quantityInput =
-    document.querySelector('input[name="question-quantity"]:checked')?.value ||
-    10;
+    document.querySelector('input[name="question-quantity"]:checked')?.value || 10;
   const difficultyInput =
-    document.querySelector('input[name="difficulty-level"]:checked')?.value ||
-    "all";
+    document.querySelector('input[name="difficulty-level"]:checked')?.value || "all";
   const modeInput =
     document.querySelector('input[name="quiz-mode"]:checked')?.value || "exam";
   const topicSelect = document.getElementById("topic-filter")?.value || "";
+  
   if (!certSelect) return;
 
   const btn = document.getElementById("btn-start-quiz");
   let hideLoading = null;
 
   try {
+    const certId = certSelect.value;
+    const currentCertInfo = certificationPaths[certId];
+    uiState.currentCertificationInfo = currentCertInfo;
+
+    // 1. VERIFICAR SESSÃO ATIVA (E PERGUNTAR) ANTES DE TRAVAR A TELA COM O LOADING
+    const activeSession = storageManager.loadActiveSession(certId);
+    let isResuming = false;
+    let resumeAgreed = false;
+
+    if (activeSession) {
+      // Correção rápida para o texto não ficar aparecendo "resume_session_prompt"
+      let promptMsg = t("resume_session_prompt", uiState.language);
+      if (!promptMsg || promptMsg === "resume_session_prompt") {
+         promptMsg = "Você possui um simulado em andamento. Deseja retomá-lo de onde parou?";
+      }
+
+      resumeAgreed = await ModalService.confirm({
+        title: "Sessão Ativa Encontrada",
+        message: promptMsg,
+        confirmText: "Retomar",
+        cancelText: "Descartar",
+      });
+    }
+
+    // 2. AGORA SIM, O USUÁRIO JÁ RESPONDEU! PODEMOS ATIVAR O LOADING E TRAVAR O BOTÃO
     if (btn) btn.disabled = true;
     hideLoading = ModalService.showLoading(
       t("loading", uiState.language) || "Carregando simulado...",
     );
 
-    const certId = certSelect.value;
-    const currentCertInfo = certificationPaths[certId];
-    uiState.currentCertificationInfo = currentCertInfo;
-
-    // Verificar Resume de Sessão
-    const activeSession = storageManager.loadActiveSession(certId);
-    let isResuming = false;
-
-    const resumeAgreed = await ModalService.confirm({
-      title: "Sessão Ativa Encontrada",
-      message:
-        t("resume_session_prompt", uiState.language) ||
-        "Você possui um simulado em andamento. Deseja retomá-lo de onde parou?",
-      confirmText: "Retomar",
-      cancelText: "Descartar",
-    });
-
     if (activeSession && resumeAgreed) {
       isResuming = true;
+      quizManager.currentQuizId = activeSession.quizId; // RESTORE QUIZ ID
       engine.state.certId = activeSession.certId;
       engine.state.mode = activeSession.mode || "exam";
       engine.state.questions = activeSession.questions;
@@ -691,24 +745,24 @@ async function startQuiz() {
       uiState.currentMode = modeInput;
     }
 
-    // START QUIZ ON BACKEND
-    const userId = userManager.getUserId();
-    if (userId) {
+    let preloadedQuestions = null;
+
+    if (!isResuming) {
+      // START QUIZ ON BACKEND OR LOCALLY
       try {
         const quizResponse = await quizManager.startQuiz(
           certId,
-          parseInt(quantityInput),
+          parseInt(quantityInput)
         );
+        preloadedQuestions = quizResponse.questions;
+        
         if (!quizResponse.fromAPI) {
-          logger.info("⚠ Quiz started in local mode (API unavailable)");
+          logger.info("⚠ Quiz started in local mode (API unavailable or offline)");
         }
       } catch (error) {
-        logger.warn("Could not start quiz on backend:", error);
-        // Continue anyway - frontend will work in local mode
+        logger.warn("Could not start quiz:", error);
       }
-    }
 
-    if (!isResuming) {
       dispatchBusinessEvent("QuizStarted", {
         certId,
         mode: modeInput,
@@ -726,6 +780,7 @@ async function startQuiz() {
         currentCertInfo.domains,
         filters,
         uiState.language,
+        preloadedQuestions
       );
 
       if (!result.success) {
@@ -736,6 +791,22 @@ async function startQuiz() {
         );
         return;
       }
+
+      // --- INÍCIO DAS MODIFICAÇÕES DE LAYOUT ---
+      showScreen("quiz");
+
+      const sidebar = document.getElementById("side-info");
+      const mainSection = document.getElementById("main-section");
+
+      if (sidebar) sidebar.classList.add("hidden"); // Esconde a lateral
+      if (mainSection) {
+        mainSection.classList.remove("lg:w-2/3"); // Remove a largura parcial
+        mainSection.classList.add("w-full"); // Faz ocupar a tela cheia
+      }
+
+      const scoreContainer = document.getElementById("score-container");
+      if (scoreContainer) scoreContainer.style.display = "flex";
+      // --- FIM DAS MODIFICAÇÕES DE LAYOUT ---
 
       let tempoPorQuestao = 90;
       if (certId === "saa-c03" || certId === "dva-c02") {
@@ -752,22 +823,6 @@ async function startQuiz() {
 
     const oldReport = document.getElementById("detailed-report");
     if (oldReport) oldReport.remove();
-
-    // --- INÍCIO DAS MODIFICAÇÕES DE LAYOUT ---
-    showScreen("quiz");
-
-    const sidebar = document.getElementById("side-info");
-    const mainSection = document.getElementById("main-section");
-
-    if (sidebar) sidebar.classList.add("hidden"); // Esconde a lateral
-    if (mainSection) {
-      mainSection.classList.remove("lg:w-2/3"); // Remove a largura parcial
-      mainSection.classList.add("w-full"); // Faz ocupar a tela cheia
-    }
-
-    const scoreContainer = document.getElementById("score-container");
-    if (scoreContainer) scoreContainer.style.display = "flex";
-    // --- FIM DAS MODIFICAÇÕES DE LAYOUT ---
 
     const timerContainer = document.getElementById("timer-container");
     if (uiState.currentMode === "exam") {
@@ -800,6 +855,11 @@ async function startDiagnostic() {
 
   const certSelect = document.getElementById("certification-select");
   if (!certSelect) return;
+  
+  if (isSPAPage()) {
+    window.location.href = `simulados.html?mode=diagnostic&cert=${certSelect.value}`;
+    return;
+  }
 
   const btn = document.getElementById("btn-start-diagnostic");
   let hideLoading = null;
@@ -1356,6 +1416,7 @@ function applyStyleToOptionCard(optionIdx, styleType) {
 function saveCurrentSession() {
   if (!engine.state.certId) return;
   storageManager.saveActiveSession({
+    quizId: quizManager.currentQuizId,
     certId: engine.state.certId,
     mode: engine.state.mode,
     questions: engine.state.questions,
@@ -1641,9 +1702,9 @@ function renderLearningHubData() {
   const insightEl = document.getElementById("hub-insight-text");
   if (insightEl) {
     if (safeHistory.length > 0) {
-      const insight = computeSmartInsight(safeHistory);
+      const insight = generateSmartInsight(safeHistory);
       insightEl.textContent =
-        insight || "Continue praticando para obter insights personalizados.";
+        insight.message || "Continue praticando para obter insights personalizados.";
     } else {
       insightEl.textContent =
         "Realize seu primeiro simulado para receber análises personalizadas de IA sobre seus pontos fortes e áreas de melhoria.";
@@ -2552,13 +2613,12 @@ function getDiagnosticDomainName(domainId, certId) {
 }
 
 function initTheme() {
-  const theme = localStorage.getItem("aws_sim_theme") || "light";
-  document.documentElement.classList.toggle("dark", theme === "dark");
+  // Inicialização global de tema movida para shell.js (initThemeShell)
 }
 
 function toggleDarkMode() {
-  const isDark = document.documentElement.classList.toggle("dark");
-  localStorage.setItem("aws_sim_theme", isDark ? "dark" : "light");
+  // A classe dark e localStorage são gerenciados no shell.js (toggleDarkModeShell)
+  // Aqui apenas re-renderizamos os gráficos se necessário.
 
   if (window.radarChartInstance && typeof renderRadarChart === "function") {
     const results = engine.getFinalResults();
@@ -2655,15 +2715,7 @@ function updateValidationBadgeLanguage() {
   initValidationBadgeTooltip(badge, tooltipText);
 }
 
-function updateLanguageButtonUI() {
-  const langBtn = document.getElementById("btn-language");
-  if (langBtn) {
-    langBtn.innerHTML =
-      uiState.language === "pt"
-        ? '<span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>'
-        : '<span class="text-[10px] md:text-xs font-bold">🇺🇸 <span class="hidden sm:inline">EN-US</span></span>';
-  }
-}
+
 
 function goHome() {
   // ========================================================================
@@ -2810,9 +2862,9 @@ async function startMistakesQuiz() {
     let allQuestions = [];
     try {
       const fileSuffix = uiState.language === "en" ? "-en" : "";
-      let response = await fetch(`data/${certId}${fileSuffix}.json`);
+      let response = await fetch(`data/questions/${certId}${fileSuffix}.json`);
       if (!response.ok && uiState.language === "en") {
-        response = await fetch(`data/${certId}.json`);
+        response = await fetch(`data/questions/${certId}.json`);
       }
       if (response.ok) {
         allQuestions = await response.json();
@@ -2926,32 +2978,7 @@ function prevFlashcard() {
   prevFlashcardModule();
 }
 
-// PWA INSTALL BUTTON
-let deferredPrompt = null;
 
-function initPWAInstall() {
-  const installButton = document.getElementById("install-app");
-  if (!installButton) return;
-
-  window.addEventListener("beforeinstallprompt", (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installButton.classList.remove("hidden");
-  });
-
-  installButton.addEventListener("click", async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    installButton.classList.add("hidden");
-  });
-
-  window.addEventListener("appinstalled", () => {
-    installButton.classList.add("hidden");
-    deferredPrompt = null;
-  });
-}
 
 // TEXTOS ESTÁTICOS DOS CARDS DA SIDEBAR (i18n)
 function updateSidebarTexts() {
@@ -3184,6 +3211,27 @@ window.startDiagnostic = startDiagnostic;
  * window.startMission('clf-1'); // Inicia o módulo "Conceitos Cloud" do CLF-C02
  */
 window.startMission = async function (stageId) {
+  // ========================================================================
+  // FASE 0: VERIFICAÇÃO DE CONTEXTO DE PÁGINA
+  // ========================================================================
+  // startMission requer os elementos DOM do screen-quiz (question-text,
+  // options-container, etc.) que só existem em simulados.html.
+  // Se estivermos em jornada.html ou outra página sem esses elementos,
+  // redirecionamos para simulados.html com os parâmetros necessários.
+  if (!document.getElementById("question-text")) {
+    const certSelect = document.getElementById("certification-select");
+    const certId = certSelect ? certSelect.value : (storageManager.getActiveCertification?.() || "clf-c02");
+    const params = new URLSearchParams({ mode: "mission", stageId, cert: certId });
+    window.location.href = `simulados.html?${params.toString()}`;
+    return;
+  }
+  
+  // Se já temos o contexto (simulados.html), chamamos a função interna
+  return startMissionInternal(stageId);
+};
+
+async function startMissionInternal(stageId) {
+
   resetFinishState();
 
   // ========================================================================

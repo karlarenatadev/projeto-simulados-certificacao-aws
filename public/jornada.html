@@ -6,20 +6,7 @@
     <meta name="description" content="Trilha de aprendizado AWS — acompanhe sua jornada, conquistas e progresso." />
     <title>Minha Jornada — Cloud Academy A3</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "aws-dark": "#001863",
-              "aws-orange": "#0033FF",
-            },
-          },
-        },
-      };
-    </script>
+    
 
     <link
       rel="stylesheet"
@@ -131,23 +118,46 @@
               Complete os módulos para desbloquear novas certificações e ganhar
               insígnias.
             </p>
+            <p id="jornada-cert-title" class="text-lg font-semibold text-aws-orange mt-2"></p>
           </div>
 
+          <!-- AQUI OCORREU A MUDANÇA: LIMPEZA DAS CLASSES -->
           <div
-            class="trail-container w-full mb-16"
-            id="trail-render-area"
+            class="trail-container custom-scroll"
+            id="gamificacao-trail"
           ></div>
 
-          <div class="w-full max-w-4xl mb-12">
-            <h3
-              class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2"
-            >
+          <div class="w-full max-w-5xl mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+  
+          <!-- CARD 1: SUAS CONQUISTAS -->
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow border border-gray-200 dark:border-slate-700 w-full">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2">
               <i class="fa-solid fa-medal text-yellow-500"></i> Suas Conquistas
             </h3>
             <div
               id="gamificacao-badges-grid"
-              class="grid grid-cols-2 md:grid-cols-4 gap-4"
+              class="grid grid-cols-3 gap-4"
             ></div>
+          </div>
+
+          <!-- CARD 2: PLACAR DA GUILDA -->
+          <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow border border-gray-200 dark:border-slate-700 w-full">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2">
+              <i class="fa-solid fa-users text-blue-500"></i> Placar da Guilda
+            </h3>
+            <div class="flex justify-around mb-6 border-b pb-4 border-gray-200 dark:border-slate-700">
+              <div class="text-center">
+                <p class="text-sm text-gray-500 dark:text-gray-400">Questões Totais</p>
+                <p id="guild-total-questions" class="text-2xl font-bold text-blue-600 dark:text-blue-400">0</p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-gray-500 dark:text-gray-400">Média Semanal</p>
+                <p id="guild-weekly-avg" class="text-2xl font-bold text-green-600 dark:text-green-400">0%</p>
+              </div>
+            </div>
+            <ul id="guild-leaderboard" class="space-y-3">
+              <li class="text-center text-gray-500 text-sm">Carregando placar...</li>
+            </ul>
           </div>
 
         </div>
@@ -180,25 +190,7 @@
         }, 0);
       });
     </script>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const themeBtn = document.getElementById("theme-toggle");
-        const langBtn = document.getElementById("btn-language");
-        if (themeBtn)
-          themeBtn.addEventListener(
-            "click",
-            () => window.toggleDarkModeShell && window.toggleDarkModeShell(),
-          );
-        if (langBtn)
-          langBtn.addEventListener("click", () => {
-            const lang = localStorage.getItem("aws_sim_lang") || "pt";
-            const next = lang === "pt" ? "en" : "pt";
-            localStorage.setItem("aws_sim_lang", next);
-            if (window.syncLanguageButtonShell) window.syncLanguageButtonShell();
-            window.location.reload();
-          });
-      });
-    </script>
+    
 
   </body>
 </html>
