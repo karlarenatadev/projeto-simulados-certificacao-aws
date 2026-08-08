@@ -7,3 +7,6 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 @source "../js/**/*.js";
+@source "../pages/**/*.html";
+@source "../partials/**/*.html";
+@source "../*.html";
