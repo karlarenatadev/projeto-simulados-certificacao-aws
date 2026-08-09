@@ -60,6 +60,10 @@ class InteractiveEngine {
         `;
 
     const listElement = document.getElementById("sortable-list");
+    if (!listElement) {
+      console.warn("[InteractiveEngine] sortable-list element not found");
+      return;
+    }
 
     // Baralhar os blocos para garantir que o utilizador tem de pensar na ordem
     const shuffledItems = this.shuffleArray([...this.currentChallenge.items]);
@@ -81,18 +85,28 @@ class InteractiveEngine {
     });
 
     // Event Listener para o botão de validação
-    document
-      .getElementById("btn-validate-interactive")
-      .addEventListener("click", () => this.validate());
+    const validateBtn = document.getElementById("btn-validate-interactive");
+    if (validateBtn) {
+      validateBtn.addEventListener("click", () => this.validate());
+    }
   }
 
   // 4. Lógica de Validação de Negócio
   validate() {
     const listItems = document.querySelectorAll("#sortable-list li");
+    if (!listItems || listItems.length === 0) {
+      console.warn("[InteractiveEngine] No sortable list items found");
+      return;
+    }
 
     // Extrai a ordem atual que o utilizador deixou no ecrã
     const userOrder = Array.from(listItems).map((li) => li.dataset.id);
     const feedbackArea = document.getElementById("interactive-feedback");
+    
+    if (!feedbackArea) {
+      console.warn("[InteractiveEngine] feedback area not found");
+      return;
+    }
 
     // Compara a ordem do utilizador com o gabarito do JSON
     const isCorrect =
@@ -109,7 +123,9 @@ class InteractiveEngine {
                 </div>`;
 
       // Congela a lista após o utilizador acertar (evita interações indesejadas)
-      this.sortableInstance.option("disabled", true);
+      if (this.sortableInstance) {
+        this.sortableInstance.option("disabled", true);
+      }
     } else {
       feedbackArea.innerHTML = `
                 <div style="color: var(--a3-danger); margin-top: 15px; font-weight: bold;">
@@ -119,8 +135,19 @@ class InteractiveEngine {
   }
 
   checkOrder() {
+    if (!this.sortableInstance) {
+      console.warn("[InteractiveEngine] sortableInstance not initialized");
+      return;
+    }
+    
     const userOrder = this.sortableInstance.toArray();
     const feedbackArea = document.getElementById("interactive-feedback");
+    
+    if (!feedbackArea) {
+      console.warn("[InteractiveEngine] feedback area not found in checkOrder");
+      return;
+    }
+    
     const isCorrect =
       JSON.stringify(userOrder) ===
       JSON.stringify(this.currentChallenge.correct_order);
