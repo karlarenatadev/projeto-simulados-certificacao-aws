@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt">
   <head>
     <meta charset="UTF-8" />
@@ -44,7 +44,6 @@
             <p id="jornada-cert-title" class="text-lg font-semibold text-aws-orange mt-2"></p>
           </div>
 
-          <!-- AQUI OCORREU A MUDANÇA: LIMPEZA DAS CLASSES -->
           <div
             class="trail-container custom-scroll"
             id="gamificacao-trail"
@@ -84,31 +83,28 @@
           </div>
 
         </div>
-
-    </main>
-
     <!-- {{FOOTER}} -->
 
     <script src="./js/sprintData.js" type="module"></script>
     <script src="./js/app.js" type="module"></script>
     <script type="module">
-      import { initShell } from "./js/shell.js";
       import { authGuard } from "./js/core/authGuard.js";
       document.addEventListener("DOMContentLoaded", () => {
-        const session = authGuard();
-        if (!session) return;
-        const user = session.user;
-        initShell(user);
-        // Inicializa a trilha/jornada após o app.js ter registrado as funções window.*
-        // Usa um pequeno delay para garantir que o app.js finalizou o DOMContentLoaded
+        authGuard();
+        
+        // Inicia a jornada apenas se estivermos na página correta
         setTimeout(() => {
           if (typeof window.startJornada === "function") {
             window.startJornada();
           }
-        }, 0);
+        }, 100);
       });
     </script>
     
 
-  </body>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
 </html>

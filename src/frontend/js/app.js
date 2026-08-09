@@ -752,7 +752,8 @@ async function startQuiz() {
       try {
         const quizResponse = await quizManager.startQuiz(
           certId,
-          parseInt(quantityInput)
+          parseInt(quantityInput),
+          uiState.language
         );
         preloadedQuestions = quizResponse.questions;
         
@@ -792,22 +793,6 @@ async function startQuiz() {
         return;
       }
 
-      // --- INÍCIO DAS MODIFICAÇÕES DE LAYOUT ---
-      showScreen("quiz");
-
-      const sidebar = document.getElementById("side-info");
-      const mainSection = document.getElementById("main-section");
-
-      if (sidebar) sidebar.classList.add("hidden"); // Esconde a lateral
-      if (mainSection) {
-        mainSection.classList.remove("lg:w-2/3"); // Remove a largura parcial
-        mainSection.classList.add("w-full"); // Faz ocupar a tela cheia
-      }
-
-      const scoreContainer = document.getElementById("score-container");
-      if (scoreContainer) scoreContainer.style.display = "flex";
-      // --- FIM DAS MODIFICAÇÕES DE LAYOUT ---
-
       let tempoPorQuestao = 90;
       if (certId === "saa-c03" || certId === "dva-c02") {
         tempoPorQuestao = 120;
@@ -824,11 +809,41 @@ async function startQuiz() {
     const oldReport = document.getElementById("detailed-report");
     if (oldReport) oldReport.remove();
 
+    // --- INÍCIO DAS MODIFICAÇÕES DE LAYOUT ---
+    showScreen("quiz");
+
+    const sidebar = document.getElementById("side-info");
+    const mainSection = document.getElementById("main-section");
+    const missionHud = document.getElementById("mission-hud");
     const timerContainer = document.getElementById("timer-container");
-    if (uiState.currentMode === "exam") {
+
+    if (sidebar) sidebar.classList.add("hidden"); // Esconde a lateral
+    if (mainSection) {
+      mainSection.classList.remove("lg:w-2/3"); // Remove a largura parcial
+      mainSection.classList.add("w-full"); // Faz ocupar a tela cheia
+    }
+
+    const scoreContainer = document.getElementById("score-container");
+    if (scoreContainer) scoreContainer.style.display = "flex";
+    // --- FIM DAS MODIFICAÇÕES DE LAYOUT ---
+
+    // Controle Estrito de HUDs (Timer Global vs HUD de Missão)
+    if (uiState.currentMode === "mission" || uiState.currentMode === "boss") {
+      // Se for uma missão recuperada
+      if (timerContainer) timerContainer.classList.add("hidden");
+      if (missionHud) {
+        missionHud.classList.remove("hidden");
+        updateHeartsUI(); 
+      }
+      startQuestionTimer(); 
+    } else if (uiState.currentMode === "exam") {
+      // Se for um Simulado Normal (Exame)
+      if (missionHud) missionHud.classList.add("hidden"); // Força o HUD da missão a sumir
       if (timerContainer) timerContainer.classList.remove("hidden");
       startTimer();
     } else {
+      // Modo revisão (Sem tempo e sem vidas)
+      if (missionHud) missionHud.classList.add("hidden");
       if (timerContainer) timerContainer.classList.add("hidden");
     }
 
@@ -1132,6 +1147,21 @@ function loadQuestionUI() {
   const q = engine.getCurrentQuestion();
   const progress = engine.getProgress();
   const isMulti = Array.isArray(q.correct);
+
+  // ==========================================
+  // TRAVA DE SEGURANÇA DO HUD DE MISSÃO
+  // ==========================================
+  const missionHud = document.getElementById("mission-hud");
+  if (missionHud) {
+    // Só exibe a meta de 80% e a barra vermelha se for estritamente uma Missão da Jornada.
+    // Simulado normal (exam), Diagnóstico e Boss Fight ficarão com a tela limpa.
+    if (uiState.currentMode === "mission") {
+      missionHud.style.setProperty("display", "flex", "important");
+    } else {
+      missionHud.style.setProperty("display", "none", "important");
+    }
+  }
+  // ==========================================
 
   const categoryElement = document.getElementById("question-category");
   if (categoryElement) {
@@ -2849,7 +2879,7 @@ async function startMistakesQuiz() {
 
     // Inicia sessão local (sem backend — erros são locais por definição)
     try {
-      const quizResponse = await quizManager.startQuiz(certId, mistakes.length);
+      const quizResponse = await quizManager.startQuiz(certId, mistakes.length, uiState.language, "mistakes-review");
       if (!quizResponse.fromAPI) {
         logger.info("⚠ Mistakes quiz rodando em modo local (API indisponível)");
       }
