@@ -83,72 +83,28 @@
           </div>
 
         </div>
-
-    
-
-
-<!doctype html>
-<html lang="pt">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Simulados AWS — Pratique com questões no estilo oficial dos exames AWS." />
-    <title>Simulados — Cloud Academy A3</title>
-
-    
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
-    />
-    <link rel="stylesheet" href="./css/style.css" />
-    <link rel="manifest" href="./manifest.json" />
-    <meta name="theme-color" content="#001863" />
-  </head>
-
-  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
-
-    <!-- {{HEADER_PAGE}} -->
-
-    <!-- {{SIDEBAR}} -->
-
-    <main id="main-section" class="flex flex-row gap-6 flex-1 a3-container py-6 main-content-container">
-
-      <!-- CONTENT AREA -->
-      <section class="flex-1 min-w-0 flex flex-col gap-0 overflow-y-auto" id="simulados-content">
-        
-</main>
-
     <!-- {{FOOTER}} -->
 
     <script src="./js/sprintData.js" type="module"></script>
     <script src="./js/app.js" type="module"></script>
     <script type="module">
-      import { initShell } from "./js/shell.js";
       import { authGuard } from "./js/core/authGuard.js";
       document.addEventListener("DOMContentLoaded", () => {
-        const session = authGuard();
-        if (!session) return;
-        const user = session.user;
-        initShell(user);
-        // Inicializa a trilha/jornada após o app.js ter registrado as funções window.*
-        // Usa um pequeno delay para garantir que o app.js finalizou o DOMContentLoaded
+        authGuard();
+        
+        // Inicia a jornada apenas se estivermos na página correta
         setTimeout(() => {
           if (typeof window.startJornada === "function") {
             window.startJornada();
           }
-        }, 0);
+        }, 100);
       });
     </script>
     
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>

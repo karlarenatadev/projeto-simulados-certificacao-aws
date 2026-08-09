@@ -315,7 +315,7 @@
             </div>
           </div>
 
-          <div id="mission-hud" class="a3-card hidden w-full flex justify-between items-center mb-6 shadow-sm">
+          <div id="mission-hud" class="a3-card hidden w-full justify-between items-center mb-6 shadow-sm">
             <div class="flex gap-1.5" id="mission-hearts" title="Vidas Restantes"></div>
 
             <div class="flex-1 mx-4 sm:mx-8">
@@ -449,6 +449,7 @@
     <script type="module">
       import { authGuard } from "./js/core/authGuard.js";
       document.addEventListener("DOMContentLoaded", () => {
+        // Apenas protege a rota. O app.js cuida do resto!
         authGuard();
       });
     </script>

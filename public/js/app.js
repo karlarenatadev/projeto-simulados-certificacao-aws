@@ -752,7 +752,8 @@ async function startQuiz() {
       try {
         const quizResponse = await quizManager.startQuiz(
           certId,
-          parseInt(quantityInput)
+          parseInt(quantityInput),
+          uiState.language
         );
         preloadedQuestions = quizResponse.questions;
         
@@ -1146,6 +1147,21 @@ function loadQuestionUI() {
   const q = engine.getCurrentQuestion();
   const progress = engine.getProgress();
   const isMulti = Array.isArray(q.correct);
+
+  // ==========================================
+  // TRAVA DE SEGURANÇA DO HUD DE MISSÃO
+  // ==========================================
+  const missionHud = document.getElementById("mission-hud");
+  if (missionHud) {
+    // Só exibe a meta de 80% e a barra vermelha se for estritamente uma Missão da Jornada.
+    // Simulado normal (exam), Diagnóstico e Boss Fight ficarão com a tela limpa.
+    if (uiState.currentMode === "mission") {
+      missionHud.style.setProperty("display", "flex", "important");
+    } else {
+      missionHud.style.setProperty("display", "none", "important");
+    }
+  }
+  // ==========================================
 
   const categoryElement = document.getElementById("question-category");
   if (categoryElement) {
@@ -2863,7 +2879,7 @@ async function startMistakesQuiz() {
 
     // Inicia sessão local (sem backend — erros são locais por definição)
     try {
-      const quizResponse = await quizManager.startQuiz(certId, mistakes.length);
+      const quizResponse = await quizManager.startQuiz(certId, mistakes.length, uiState.language, "mistakes-review");
       if (!quizResponse.fromAPI) {
         logger.info("⚠ Mistakes quiz rodando em modo local (API indisponível)");
       }

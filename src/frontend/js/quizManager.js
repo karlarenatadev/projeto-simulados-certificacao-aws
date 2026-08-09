@@ -51,7 +51,7 @@ export const quizManager = {
    * @param {number} numQuestions - Number of questions
    * @returns {Promise<object>} { quizId, questions, totalQuestions }
    */
-  async startQuiz(certId, numQuestions = 10) {
+  async startQuiz(certId, numQuestions = 10, locale = "pt") {
     certId = normalizeCertificationId(certId);
     try {
       if (this.isAPIAvailable && this.currentUserId) {
@@ -60,6 +60,7 @@ export const quizManager = {
             user_id: this.currentUserId,
             certification: certId,
             num_questions: numQuestions,
+            locale: locale
           });
 
           if (response.success && response.data) {
