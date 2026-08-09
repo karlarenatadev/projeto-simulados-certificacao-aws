@@ -813,6 +813,8 @@ async function startQuiz() {
 
     const sidebar = document.getElementById("side-info");
     const mainSection = document.getElementById("main-section");
+    const missionHud = document.getElementById("mission-hud");
+    const timerContainer = document.getElementById("timer-container");
 
     if (sidebar) sidebar.classList.add("hidden"); // Esconde a lateral
     if (mainSection) {
@@ -824,11 +826,23 @@ async function startQuiz() {
     if (scoreContainer) scoreContainer.style.display = "flex";
     // --- FIM DAS MODIFICAÇÕES DE LAYOUT ---
 
-    const timerContainer = document.getElementById("timer-container");
-    if (uiState.currentMode === "exam") {
+    // Controle Estrito de HUDs (Timer Global vs HUD de Missão)
+    if (uiState.currentMode === "mission" || uiState.currentMode === "boss") {
+      // Se for uma missão recuperada
+      if (timerContainer) timerContainer.classList.add("hidden");
+      if (missionHud) {
+        missionHud.classList.remove("hidden");
+        updateHeartsUI(); 
+      }
+      startQuestionTimer(); 
+    } else if (uiState.currentMode === "exam") {
+      // Se for um Simulado Normal (Exame)
+      if (missionHud) missionHud.classList.add("hidden"); // Força o HUD da missão a sumir
       if (timerContainer) timerContainer.classList.remove("hidden");
       startTimer();
     } else {
+      // Modo revisão (Sem tempo e sem vidas)
+      if (missionHud) missionHud.classList.add("hidden");
       if (timerContainer) timerContainer.classList.add("hidden");
     }
 
