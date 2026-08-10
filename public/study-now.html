@@ -94,7 +94,7 @@
       title="Learning Hub — Painel Principal"
     >
       <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
-      <span class="left-sidebar-item-label">Hub</span>
+      <span class="left-sidebar-item-label">Home</span>
     </button>
   </div>
   <!--
@@ -128,10 +128,11 @@
             </div>
           </div>
         </div>
-</section>
-<!-- /CONTENT AREA -->
 
-      
+        <div id="study-now-recommendations" class="flex flex-col gap-6"></div>
+
+        <div id="weak-domains-content" class="a3-card mt-6"></div>
+      </section>
       <!-- /SIDE INFO -->
 
     </main>
@@ -159,18 +160,23 @@
     <script src="./js/app.js" type="module"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
     <script type="module">
       import { initShell } from "./js/shell.js";
       import { authGuard } from "./js/core/authGuard.js";
-      document.addEventListener("DOMContentLoaded", () => {
+      import { initStudyNow, refreshStudyNow } from "./js/recommendations/studyNow.js";
+
+      document.addEventListener("DOMContentLoaded", async () => {
         const session = authGuard();
         if (!session) return;
         const user = session.user;
+        
         initShell(user);
+        initStudyNow();
+        
+        await refreshStudyNow();
       });
     </script>
     
-
-    <script type="module" src="js/recommendations/studyNow.js"></script>
 </body>
 </html>

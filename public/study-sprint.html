@@ -94,7 +94,7 @@
       title="Learning Hub — Painel Principal"
     >
       <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
-      <span class="left-sidebar-item-label">Hub</span>
+      <span class="left-sidebar-item-label">Home</span>
     </button>
   </div>
   <!--
@@ -166,6 +166,18 @@
       <!-- /SIDE INFO -->
 
     </main>
+    
+    <!-- Sprint Reader Overlay -->
+    <div id="sprint-reader-overlay" class="hidden fixed inset-0 z-[9999] bg-black/95 overflow-y-auto">
+      <div class="container mx-auto px-4 py-8">
+        <button id="close-sprint-reader" class="fixed top-4 right-4 a3-btn a3-btn-secondary z-[10000]">
+          <i class="fa-solid fa-xmark mr-2"></i> Fechar
+        </button>
+        <div id="sprint-reader-content" class="max-w-3xl mx-auto bg-white dark:bg-slate-800 rounded-lg p-8 mt-16">
+          <!-- Conteúdo do dia será carregado aqui dinamicamente -->
+        </div>
+      </div>
+    </div>
 <footer
       class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
     >
