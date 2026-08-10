@@ -173,6 +173,17 @@ function showLoginUI() {
       } catch (error) {
         const rawMsg = error?.message || "";
         let msg;
+
+        // API desativada (deploy estático / GitHub Pages) — cria sessão offline
+        // automaticamente sem exibir mensagem de erro ao usuário.
+        if (error?.apiDisabled) {
+          overlay.classList.add("hidden");
+          form.removeEventListener("submit", handleSubmit);
+          const offlineUser = await userManager.createOfflineUser(email, {});
+          resolve(offlineUser);
+          return;
+        }
+
         if (rawMsg.includes("403") || rawMsg.includes("não autorizado")) {
           msg = "Email não autorizado. Use seu email @a3data.com.br.";
         } else if (
