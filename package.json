@@ -40,7 +40,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.3.1",
     "express": "^4.18.2",
-    "express-rate-limit": "^8.5.2",
+    "express-rate-limit": "^8.6.2",
     "helmet": "^8.2.0",
     "html2canvas": "^1.4.1",
     "jsdom": "^29.1.1",
