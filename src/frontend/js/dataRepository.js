@@ -71,6 +71,10 @@ export function createDataRepository(storage, _api = null) {
       return storage.getHistory();
     },
 
+    getDiagnosticHistory(certId) {
+      return storage.getDiagnosticHistory(certId);
+    },
+
     saveHistory(history) {
       return storage.saveHistory(history);
     },
