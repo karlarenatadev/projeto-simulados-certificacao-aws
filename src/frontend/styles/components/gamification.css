@@ -42,6 +42,7 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--a3-shadow-card);
   border: 2px solid var(--border-theme);
+  overflow-y: auto;
 }
 
 .flashcard-front {

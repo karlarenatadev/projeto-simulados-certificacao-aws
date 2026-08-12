@@ -139,18 +139,31 @@ self.addEventListener('fetch', event => {
       return;
   }
 
-  // --- Cache First Strategy for Static Assets ---
-  // For HTML, CSS, JS, etc., check cache first to load instantly.
-  // Fallback to network if not in cache.
+  // --- Stale-While-Revalidate Strategy for Static Assets ---
+  // For HTML, CSS, JS, etc., check cache first to load instantly,
+  // but always fetch from network in background to update the cache for next time.
   event.respondWith(
     caches.match(event.request)
-      .then(response => {
-        if (response) return response;
-        return fetch(event.request).catch(err => {
-            console.warn('Erro ao buscar recurso:', event.request.url, err);
-            // Retorna uma resposta vazia em caso de erro
-            return new Response('', { status: 404, statusText: 'Not Found' });
+      .then(cachedResponse => {
+        const fetchPromise = fetch(event.request).then(networkResponse => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseClone).catch(err => console.warn('Erro ao cachear recurso estático:', err));
+            });
+          }
+          return networkResponse;
+        }).catch(err => {
+            console.warn('Erro ao buscar recurso no background:', event.request.url, err);
+            // Retorna uma resposta vazia em caso de erro se não houver cache
+            if (!cachedResponse) {
+                return new Response('', { status: 404, statusText: 'Not Found' });
+            }
         });
+
+        // Retorna a resposta em cache imediatamente se existir, 
+        // caso contrário aguarda o fetch
+        return cachedResponse || fetchPromise;
       })
   );
 });
