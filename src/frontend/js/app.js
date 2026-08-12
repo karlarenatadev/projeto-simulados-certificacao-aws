@@ -13,7 +13,7 @@ import { storageManager } from "./storageManager.js";
 import { userManager } from "./userManager.js";
 import { AuthService } from "./services/authService.js";
 import { quizManager } from "./quizManager.js";
-import { renderRadarChart, renderGlobalRadarChart } from "./chartManager.js";
+import { renderRadarChart, renderGlobalRadarChart, renderPerformanceLineChart } from "./chartManager.js";
 import { t } from "./i18n/useTranslation.js";
 import { initializeUI } from "./i18n/initUI.js";
 import { renderTrail } from "./gamificacao/trailManager.js";
@@ -291,6 +291,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     "/flashcards.html": "sidebar-btn-flashcards",
     "/diagnostico.html": "sidebar-btn-diagnostic",
     "/cases.html": "sidebar-btn-cases",
+      "/laboratorios.html": "sidebar-btn-labs",
     "/resources.html": "sidebar-btn-resources",
     "/profile.html": "sidebar-btn-profile",
     "/settings.html": "sidebar-btn-settings",
@@ -2382,6 +2383,10 @@ function updateHistoryDisplay() {
   html += "</ul>";
   historyList.innerHTML = html;
   updateDynamicInsight(history);
+
+  if (typeof renderPerformanceLineChart === 'function') {
+    renderPerformanceLineChart(history);
+  }
 }
 
 async function removeHistoryItem(event, index) {

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "aws-s3-basics",
+    "title": "Introdução ao Amazon S3",
+    "description": "Pratique conceitos fundamentais de armazenamento de objetos com Amazon S3, criando buckets e configurando permissões básicas.",
+    "service": "Amazon S3",
+    "certification": "CLF-C02",
+    "difficulty": "beginner",
+    "duration": 20,
+    "provider": "AWS Skill Builder",
+    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "active": true
+  },
+  {
+    "id": "aws-ec2-linux",
+    "title": "Launch a Linux Virtual Machine",
+    "description": "Aprenda a provisionar, configurar e conectar-se a uma instância EC2 rodando Linux utilizando chaves SSH.",
+    "service": "Amazon EC2",
+    "certification": "CLF-C02",
+    "difficulty": "beginner",
+    "duration": 30,
+    "provider": "AWS Skill Builder",
+    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "active": true
+  },
+  {
+    "id": "aws-vpc-basics",
+    "title": "VPC Fundamentals and Subnets",
+    "description": "Construa sua própria VPC, configure sub-redes públicas e privadas, e estabeleça acesso à internet via Internet Gateway.",
+    "service": "Amazon VPC",
+    "certification": "SAA-C03",
+    "difficulty": "intermediate",
+    "duration": 45,
+    "provider": "AWS Skill Builder",
+    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "active": true
+  },
+  {
+    "id": "aws-iam-roles",
+    "title": "Configuração de IAM Roles para EC2",
+    "description": "Configure acesso seguro aos recursos da AWS atribuindo IAM Roles a instâncias do EC2, em vez de usar credenciais estáticas.",
+    "service": "AWS IAM",
+    "certification": "SAA-C03",
+    "difficulty": "intermediate",
+    "duration": 30,
+    "provider": "AWS Skill Builder",
+    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "active": true
+  },
+  {
+    "id": "aws-lambda-api",
+    "title": "Build a Serverless API",
+    "description": "Integre o Amazon API Gateway com o AWS Lambda para criar e implantar uma API RESTful 100% serverless.",
+    "service": "AWS Lambda",
+    "certification": "DVA-C02",
+    "difficulty": "intermediate",
+    "duration": 40,
+    "provider": "AWS Skill Builder",
+    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "active": true
+  },
+  {
+    "id": "aws-dynamodb-crud",
+    "title": "Amazon DynamoDB CRUD Operations",
+    "description": "Pratique a criação de tabelas, inserção, leitura e atualização de itens no DynamoDB utilizando a AWS CLI e SDK.",
+    "service": "Amazon DynamoDB",
+    "certification": "DVA-C02",
+    "difficulty": "advanced",
+    "duration": 45,
+    "provider": "AWS Skill Builder",
+    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "active": true
+  },
+  {
+    "id": "aws-bedrock-intro",
+    "title": "Introduction to Amazon Bedrock",
+    "description": "Acesse modelos de fundação pré-treinados (FMs) e pratique a interação com IA Generativa através do console do Bedrock.",
+    "service": "Amazon Bedrock",
+    "certification": "AIF-C01",
+    "difficulty": "beginner",
+    "duration": 35,
+    "provider": "AWS Skill Builder",
+    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "active": true
+  }
+]

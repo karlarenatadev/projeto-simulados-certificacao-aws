@@ -132,6 +132,16 @@ const SIDEBAR_ITEMS = [
     i18n: "sidebar_cases",
     title: "Aprenda na Prática",
   },
+    {
+      id: "sidebar-btn-labs",
+      label: "Labs",
+      icon: "fa-solid fa-flask",
+      href: "./laboratorios.html",
+      activePaths: ["/laboratorios.html"],
+      roles: ["*"],
+      title: "Laboratórios AWS",
+      i18n: "aws_labs",
+    },
   {
     id: "sidebar-btn-resources",
     label: "Recursos",

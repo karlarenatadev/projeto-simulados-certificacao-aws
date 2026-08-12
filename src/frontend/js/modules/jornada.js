@@ -33,7 +33,6 @@ export function renderJornadaDashboard(certId) {
   const questionsEl = document.getElementById("jornada-questions");
   const weakDomainEl = document.getElementById("jornada-weak-domain");
 
-  if (!titleEl) return;
 
   // Atualizar título da certificação
   const certName = certId ? certId.toUpperCase() : "AWS";
