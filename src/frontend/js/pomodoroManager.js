@@ -10,7 +10,7 @@ let isActive = false;
 
 export function togglePomodoroWidget() {
   const widget = document.getElementById("pomodoro-widget");
-  widget.classList.toggle("hidden");
+  if (widget) widget.classList.toggle("hidden");
 }
 
 export function togglePomodoro() {

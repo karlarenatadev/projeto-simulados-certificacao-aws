@@ -136,6 +136,31 @@ function processHTMLTemplates() {
       html = html.replace(simplePlaceholder,  content);
     }
 
+    // --- START CACHE BUSTING ---
+    const buildHash = Date.now().toString(36);
+
+    const metaTags = `
+    <!-- Cache Busting Meta Tags -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+`;
+    if (html.includes('</head>')) {
+      html = html.replace('</head>', metaTags + '</head>');
+    }
+
+    // Adicionar hash em arquivos locais (css, js) para evitar cache agressivo no Github Pages
+    html = html.replace(/(src|href)="([^"]+\.(js|css))"/g, (match, attr, filePath) => {
+        if (filePath.startsWith('http') || filePath.startsWith('blob:') || filePath.startsWith('data:')) {
+            return match;
+        }
+        if (filePath.includes('?')) {
+            return `${attr}="${filePath}&v=${buildHash}"`;
+        }
+        return `${attr}="${filePath}?v=${buildHash}"`;
+    });
+    // --- END CACHE BUSTING ---
+
     // Gravar o artefato final em public/
     const outputPath = path.join(outputDir, templateFile);
     fs.writeFileSync(outputPath, html, 'utf8');

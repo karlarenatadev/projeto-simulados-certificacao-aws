@@ -38,10 +38,15 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
 
-    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/style.css?v=mspd7s6f" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
-  </head>
+  
+    <!-- Cache Busting Meta Tags -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
 
   <body
     class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
@@ -288,7 +293,7 @@
           <div class="lh-banner mb-6">
             <div class="lh-banner-left">
               <p class="lh-banner-tag">SIMULADOR IA</p>
-              <h2 class="lh-banner-title">Comece por aqui</h2>
+              <h2 class="lh-banner-title" data-i18n="start_here">Comece por aqui</h2>
             </div>
             <div class="lh-banner-icon-wrap" aria-hidden="true">
               <i class="fa-solid fa-brain"></i>
@@ -324,20 +329,20 @@
           <div class="lh-grid mb-4">
             <!-- COLUNA ESQUERDA: Indicadores principais -->
             <div class="lh-panel">
-              <p class="lh-section-label">INDICADORES PRINCIPAIS</p>
+              <p class="lh-section-label" data-i18n="main_indicators">INDICADORES PRINCIPAIS</p>
 
               <!-- Bloco 1: Progresso da Certificação (Migrado da Sidebar) -->
               <div class="lh-metrics-card mb-4">
                 <div class="lh-metrics-header">
                   <div>
-                    <p class="lh-metrics-title">Progresso da Certificação</p>
-                    <p class="lh-metrics-sub" id="sidebar-cert-label">Carregando...</p>
+                    <p class="lh-metrics-title" data-i18n="cert_progress">Progresso da Certificação</p>
+                    <p class="lh-metrics-sub" id="sidebar-cert-label" data-i18n="loading">Carregando...</p>
                   </div>
                   <span class="a3-badge a3-badge-primary" id="sidebar-cert-badge">---</span>
                 </div>
                 <div class="mt-4 p-4 border rounded dark:border-slate-700">
                   <div class="flex justify-between text-sm mb-2">
-                    <span class="font-semibold text-gray-700 dark:text-gray-300">Prontidão para o Exame</span>
+                    <span class="font-semibold text-gray-700 dark:text-gray-300" data-i18n="exam_readiness">Prontidão para o Exame</span>
                     <span class="font-bold text-blue-600 dark:text-blue-400" id="sidebar-pct-text">0%</span>
                   </div>
                   <div class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 mb-3 overflow-hidden">
@@ -354,7 +359,7 @@
               <div class="lh-metrics-card mb-4">
                 <div class="lh-metrics-header">
                   <div>
-                    <p class="lh-metrics-title">Sua performance geral</p>
+                    <p class="lh-metrics-title" data-i18n="general_performance">Sua performance geral</p>
                     <p class="lh-metrics-sub">
                       Leitura consolidada dos seus simulados
                     </p>
@@ -364,40 +369,40 @@
                   <div class="lh-metric-item lh-metric-blue">
                     <i class="fa-solid fa-chart-line lh-metric-icon"></i>
                     <div>
-                      <p class="lh-metric-label">Melhor Nota</p>
+                      <p class="lh-metric-label" data-i18n="best_score">Melhor Nota</p>
                       <p class="lh-metric-value" id="hub-best-score">—</p>
                       <p class="lh-metric-hint" id="hub-best-score-hint">
                         escala AWS
                       </p>
                     </div>
                     <div class="lh-metric-item lh-metric-green">
-                      <p class="lh-metric-label">Taxa Acerto</p>
+                      <p class="lh-metric-label" data-i18n="accuracy_rate">Taxa Acerto</p>
                       <p class="lh-metric-value" id="jornada-accuracy">0%</p>
                     </div>
                   </div>
                   <div class="lh-metric-item lh-metric-cyan">
                     <i class="fa-solid fa-bullseye lh-metric-icon"></i>
                     <div>
-                      <p class="lh-metric-label">Média Geral</p>
+                      <p class="lh-metric-label" data-i18n="general_average">Média Geral</p>
                       <p class="lh-metric-value" id="hub-avg-score">—</p>
                       <p class="lh-metric-hint" id="hub-avg-score-hint">
                         escala AWS
                       </p>
                     </div>
                     <div class="lh-metric-item lh-metric-cyan">
-                      <p class="lh-metric-label">Questões</p>
+                      <p class="lh-metric-label" data-i18n="questions">Questões</p>
                       <p class="lh-metric-value" id="jornada-questions">0</p>
                     </div>
                   </div>
                   <div class="lh-metric-item lh-metric-green">
                     <i class="fa-solid fa-fire-flame-curved lh-metric-icon"></i>
                     <div>
-                      <p class="lh-metric-label">Sequência</p>
+                      <p class="lh-metric-label" data-i18n="streak">Sequência</p>
                       <p class="lh-metric-value" id="hub-streak">0</p>
-                      <p class="lh-metric-hint">dias seguidos</p>
+                      <p class="lh-metric-hint" data-i18n="consecutive_days">dias seguidos</p>
                     </div>
                     <div class="lh-metric-item lh-metric-blue">
-                      <p class="lh-metric-label">Progresso</p>
+                      <p class="lh-metric-label" data-i18n="progress">Progresso</p>
                       <p class="lh-metric-value" id="jornada-progress">0%</p>
                     </div>
                   </div>
@@ -406,12 +411,12 @@
                       class="fa-solid fa-triangle-exclamation lh-metric-icon"
                     ></i>
                     <div>
-                      <p class="lh-metric-label">Erros Pendentes</p>
+                      <p class="lh-metric-label" data-i18n="pending_errors">Erros Pendentes</p>
                       <p class="lh-metric-value" id="hub-mistakes-count">0</p>
-                      <p class="lh-metric-hint">para revisar</p>
+                      <p class="lh-metric-hint" data-i18n="to_review">para revisar</p>
                     </div>
                     <div class="lh-metric-item lh-metric-warning">
-                      <p class="lh-metric-label">Ponto Fraco</p>
+                      <p class="lh-metric-label" data-i18n="weak_point">Ponto Fraco</p>
                       <p class="lh-metric-value" id="jornada-weak-domain">-</p>
                     </div>
                   </div>
@@ -428,9 +433,9 @@
                 </div>
                 
                 <div id="global-stats-summary" class="flex gap-4 mb-4 mt-2 justify-around text-center text-sm">
-                    <div><strong id="total-quizzes" class="text-lg text-blue-600 dark:text-blue-400">0</strong><br><span class="text-gray-500">Simulados</span></div>
-                    <div><strong id="avg-score" class="text-lg text-green-600 dark:text-green-400">0%</strong><br><span class="text-gray-500">Média</span></div>
-                    <div><strong id="total-questions" class="text-lg text-purple-600 dark:text-purple-400">0</strong><br><span class="text-gray-500">Questões</span></div>
+                    <div><strong id="total-quizzes" class="text-lg text-blue-600 dark:text-blue-400">0</strong><br><span class="text-gray-500" data-i18n="simulations">Simulados</span></div>
+                    <div><strong id="avg-score" class="text-lg text-green-600 dark:text-green-400">0%</strong><br><span class="text-gray-500" data-i18n="average">Média</span></div>
+                    <div><strong id="total-questions" class="text-lg text-purple-600 dark:text-purple-400">0</strong><br><span class="text-gray-500" data-i18n="questions">Questões</span></div>
                 </div>
 
                 <div id="global-chart-container" class="relative w-full aspect-square md:aspect-video flex items-center justify-center mt-4">
@@ -445,12 +450,12 @@
               <div class="lh-metrics-card mb-4">
                 <div class="lh-metrics-header flex justify-between items-center">
                   <div>
-                    <p class="lh-metrics-title" id="history-card-title">Atividades Recentes</p>
+                    <p class="lh-metrics-title" id="history-card-title" data-i18n="recent_activities">Atividades Recentes</p>
                     <p class="lh-metrics-sub">
                       Ofensiva Atual: <strong id="streak-counter" class="text-orange-500">0</strong> dias
                     </p>
                   </div>
-                  <button id="btn-clear-history" class="text-xs text-red-500 hover:text-red-700 underline" onclick="window.clearHistory && window.clearHistory()">Limpar Histórico</button>
+                  <button id="btn-clear-history" class="text-xs text-red-500 hover:text-red-700 underline" onclick="window.clearHistory && window.clearHistory()" data-i18n="clear_history">Limpar Histórico</button>
                 </div>
                 <div class="mt-4">
                   <ul id="history-list" class="space-y-2 max-h-60 overflow-y-auto">
@@ -486,7 +491,7 @@
                 <button class="lh-feature-item" onclick="window.location.href='./simulados.html'">
                   <span class="lh-feature-icon lh-feat-blue"><i class="fa-solid fa-play"></i></span>
                   <div class="lh-feature-info">
-                    <p class="lh-feature-name">Simulados</p>
+                    <p class="lh-feature-name" data-i18n="simulations">Simulados</p>
                     <p class="lh-feature-desc">Questões oficiais AWS geradas em tempo real pela IA</p>
                   </div>
                   <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
@@ -512,14 +517,14 @@
                   </div>
                   <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
                 </button>
-                <button class="lh-feature-item" onclick="window.location.href='./laboratorios.html'">
-                  <span class="lh-feature-icon lh-feat-green"><i class="fa-solid fa-flask"></i></span>
-                  <div class="lh-feature-info">
-                    <p class="lh-feature-name">Laboratórios</p>
-                    <p class="lh-feature-desc">Ambientes controlados para você botar a mão na massa</p>
-                  </div>
-                  <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
-                </button>
+                  <button class="lh-feature-item" onclick="window.location.href='./laboratorios.html'">
+                    <span class="lh-feature-icon lh-feat-green"><i class="fa-solid fa-flask"></i></span>
+                    <div class="lh-feature-info">
+                      <p class="lh-feature-name" data-i18n="aws_labs">Laboratórios AWS</p>
+                      <p class="lh-feature-desc" data-i18n="aws_labs_desc">Pratique AWS com laboratórios hands-on e ambientes guiados.</p>
+                    </div>
+                    <i class="fa-solid fa-chevron-right lh-feature-arrow"></i>
+                  </button>
               </div>
 
               <!-- RECURSOS -->
@@ -555,9 +560,7 @@
                   <i class="fa-solid fa-wand-magic-sparkles"></i> Insight IA
                 </span>
               </div>
-              <p class="lh-insight-text" id="hub-insight-text">
-                Carregando análise personalizada...
-              </p>
+              <p class="lh-insight-text" id="hub-insight-text" data-i18n="loading_analysis">Carregando análise personalizada...</p>
             </div>
 
             <!-- Ações rápidas -->
@@ -633,9 +636,9 @@
         }
       });
     </script>
-    <script src="./js/sprintData.js" type="module"></script>
-    <script src="./js/pomodoroManager.js" type="module"></script>
-    <script src="./js/app.js" type="module"></script>
+    <script src="./js/sprintData.js?v=mspd7s6f" type="module"></script>
+    <script src="./js/pomodoroManager.js?v=mspd7s6f" type="module"></script>
+    <script src="./js/app.js?v=mspd7s6f" type="module"></script>
     <script>
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
