@@ -120,6 +120,7 @@
     --text-5xl--line-height: 1;
     --text-6xl: 3.75rem;
     --text-6xl--line-height: 1;
+    --font-weight-normal: 400;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
@@ -868,6 +869,9 @@
   .border-orange-200 {
     border-color: var(--color-orange-200);
   }
+  .border-orange-300 {
+    border-color: var(--color-orange-300);
+  }
   .border-orange-500 {
     border-color: var(--color-orange-500);
   }
@@ -1264,6 +1268,10 @@
     --tw-font-weight: var(--font-weight-medium);
     font-weight: var(--font-weight-medium);
   }
+  .font-normal {
+    --tw-font-weight: var(--font-weight-normal);
+    font-weight: var(--font-weight-normal);
+  }
   .font-semibold {
     --tw-font-weight: var(--font-weight-semibold);
     font-weight: var(--font-weight-semibold);
@@ -1285,6 +1293,9 @@
   }
   .whitespace-normal {
     white-space: normal;
+  }
+  .whitespace-nowrap {
+    white-space: nowrap;
   }
   .text-\[\#F53199\] {
     color: #F53199;
@@ -1787,6 +1798,9 @@
     }
     .md\:grid-cols-4 {
       grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .md\:flex-row {
+      flex-direction: row;
     }
     .md\:gap-2 {
       gap: calc(var(--spacing) * 2);
@@ -4416,9 +4430,6 @@ body.has-left-sidebar {
     color-mix(in srgb, var(--a3-text-inverse) 12%, transparent);
   box-shadow: 2px 0 16px color-mix(in srgb, var(--a3-deep-sea) 40%, transparent);
   overflow-x: hidden;
-  overflow-y: auto;
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
   transition:
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     opacity 0.3s ease;
@@ -4483,9 +4494,9 @@ body.sidebar-closed .cases-filters {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-4);
+  gap: 2px;
   width: 100%;
-  padding: var(--space-16) 0 var(--space-8);
+  padding: var(--space-8) 0;
 }
 
 /* ── Itens ─────────────────────────────────────────────────────────────── */
@@ -4497,8 +4508,8 @@ body.sidebar-closed .cases-filters {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.2rem;
-  padding: 0.65rem var(--space-8);
+  gap: 0.15rem;
+  padding: 0.35rem var(--space-8);
   background: transparent;
   border: none;
   border-radius: 0;
@@ -4506,7 +4517,7 @@ body.sidebar-closed .cases-filters {
   text-decoration: none;
   color: color-mix(in srgb, var(--a3-text-inverse) 75%, transparent);
   transition: all 0.2s ease;
-  min-height: 56px;
+  min-height: 48px;
 }
 
 .left-sidebar-item:hover {
@@ -4553,7 +4564,7 @@ body.sidebar-closed .cases-filters {
 /* ── Ícone ─────────────────────────────────────────────────────────────── */
 
 .left-sidebar-item-icon {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   transition:
     transform 0.2s ease,
     color 0.2s ease;
@@ -5660,6 +5671,7 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
   border-radius: var(--radius-xl);
   box-shadow: var(--a3-shadow-card);
   border: 2px solid var(--border-theme);
+  overflow-y: auto;
 }
 
 .flashcard-front {

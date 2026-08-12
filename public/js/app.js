@@ -433,6 +433,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       }, 150);
     }
   }
+
+  // LÓGICA DO DIAGNÓSTICO (Task 6.2): Auto-start quiz personalizado em simulados.html
+  if (!isSPAPage() && window.location.pathname.includes("simulados.html")) {
+    const diagnosticCtxStr = sessionStorage.getItem("aws_sim_diagnostic_context");
+    if (diagnosticCtxStr) {
+      try {
+        const diagCtx = JSON.parse(diagnosticCtxStr);
+        lastDiagnosticRecommendation = diagCtx; 
+        
+        const certSelect = document.getElementById("certification-select");
+        if (certSelect && diagCtx.certificationId) {
+          certSelect.value = diagCtx.certificationId;
+        }
+        
+        setTimeout(() => {
+          startPersonalizedDiagnosticQuiz();
+        }, 150);
+      } catch (e) {
+        logger.error(e);
+        sessionStorage.removeItem("aws_sim_diagnostic_context");
+      }
+    }
+  }
 });
 
 // RENDERIZAÇÃO ORDENADA E SEQUENCIAL DA SIDEBAR
@@ -1695,9 +1718,61 @@ function renderLearningHubData() {
     streakEl.textContent = String(gamification?.currentStreak || 0);
   }
 
-  // ── Erros pendentes ──
+  // ── Accuracy e Questões Globais ──
+  const accEl = document.getElementById("jornada-accuracy");
+  const qCountEl = document.getElementById("jornada-questions");
+  if (safeHistory.length > 0) {
+    const totalQ = safeHistory.reduce((acc, h) => acc + (h.total || 0), 0);
+    const totalS = safeHistory.reduce((acc, h) => acc + (h.score || 0), 0);
+    const acc = totalQ > 0 ? Math.round((totalS / totalQ) * 100) : 0;
+    if (accEl) accEl.textContent = `${acc}%`;
+    if (qCountEl) qCountEl.textContent = String(totalQ);
+  } else {
+    if (accEl) accEl.textContent = "0%";
+    if (qCountEl) qCountEl.textContent = "0";
+  }
+
+  // ── Progresso Global (Sprint) ──
+  const progEl = document.getElementById("jornada-progress");
+  if (progEl) {
+    // Media de progresso dos sprints de todas as certificações ou da última
+    const lastCert = safeHistory.length > 0 ? safeHistory[safeHistory.length - 1].certId : "clf-c02";
+    const sprintState = storageManager.getSprintState(lastCert);
+    const sprintProgress = sprintState ? Math.round((sprintState.completedStages.length / 14) * 100) : 0;
+    progEl.textContent = `${sprintProgress}%`;
+  }
+  if (streakEl) {
+    streakEl.textContent = String(gamification?.currentStreak || 0);
+  }
+
+  // ── Erros pendentes e Ponto Fraco ──
   const mistakesEl = document.getElementById("hub-mistakes-count");
   if (mistakesEl) mistakesEl.textContent = String(mistakes.length);
+  
+  const weakDomainEl = document.getElementById("jornada-weak-domain");
+  if (weakDomainEl) {
+    if (mistakes.length === 0) {
+      weakDomainEl.textContent = "-";
+    } else {
+      const domainErrors = {};
+      mistakes.forEach(m => {
+        const dom = m.domain || "Desconhecido";
+        domainErrors[dom] = (domainErrors[dom] || 0) + 1;
+      });
+      let worstDomain = "-";
+      let maxErrors = -1;
+      for (const [dom, count] of Object.entries(domainErrors)) {
+        if (count > maxErrors) {
+          maxErrors = count;
+          worstDomain = dom;
+        }
+      }
+      // Truncate worst domain if it's too long
+      const truncated = worstDomain.length > 25 ? worstDomain.substring(0, 25) + "..." : worstDomain;
+      weakDomainEl.textContent = truncated;
+      weakDomainEl.title = worstDomain;
+    }
+  }
 
   // ── Botão revisar erros ── desabilita se não houver erros
   const quickMistakes = document.getElementById("hub-quick-mistakes");
@@ -2167,25 +2242,40 @@ function renderDiagnosticReport(results) {
   // CTA para transformar o diagnóstico em prática focada.
   html += `
         </div>
-        <div class="mt-10 text-center flex justify-center gap-4 fade-in">
-            <button onclick="goHome()" class="a3-button-secondary py-3 px-8 text-lg w-auto">
-                Voltar ao Início
-            </button>
+        <div class="mt-10 text-center flex flex-col md:flex-row justify-center gap-4 fade-in">
             ${
               weakDomains.length > 0
-                ? `<button id="btn-start-personalized-diagnostic-quiz" class="a3-button-primary py-3 px-8 text-lg w-auto">
-                    ${t("practice_weak_domains", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>
+                ? `<button id="btn-diagnostic-to-flashcards" class="a3-button-secondary py-3 px-6 text-base w-auto">
+                    <i class="fa-solid fa-layer-group mr-2"></i> Estudar com Flashcards
+                </button>
+                <button id="btn-diagnostic-to-questions" class="a3-button-primary py-3 px-6 text-base w-auto">
+                    <i class="fa-solid fa-play mr-2"></i> Praticar Questões
                 </button>`
                 : ""
             }
+            <button onclick="window.location.href='./jornada.html'" class="a3-button-secondary py-3 px-6 text-base w-auto">
+                <i class="fa-solid fa-map mr-2"></i> Ver minha Jornada
+            </button>
         </div>
     `;
 
   resultsScreen.innerHTML = html;
-  bindClick(
-    "btn-start-personalized-diagnostic-quiz",
-    startPersonalizedDiagnosticQuiz,
-  );
+  
+  if (weakDomains.length > 0) {
+    bindClick("btn-diagnostic-to-flashcards", () => {
+      if (lastDiagnosticRecommendation) {
+        sessionStorage.setItem("aws_sim_diagnostic_context", JSON.stringify(lastDiagnosticRecommendation));
+      }
+      window.location.href = "./flashcards.html";
+    });
+    bindClick("btn-diagnostic-to-questions", () => {
+      if (lastDiagnosticRecommendation) {
+        sessionStorage.setItem("aws_sim_diagnostic_context", JSON.stringify(lastDiagnosticRecommendation));
+      }
+      window.location.href = "./simulados.html";
+    });
+  }
+
   showScreen("results");
 
   // Força a renderização do gráfico
@@ -2764,6 +2854,9 @@ function updateValidationBadgeLanguage() {
 
 
 function goHome() {
+  // Limpa o contexto de diagnóstico ao voltar para a home
+  sessionStorage.removeItem("aws_sim_diagnostic_context");
+  
   // ========================================================================
   // LIMPEZA COMPLETA DE TIMERS
   // ========================================================================

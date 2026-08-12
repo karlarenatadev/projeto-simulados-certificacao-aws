@@ -286,6 +286,21 @@ export function initializeUI(language) {
     const linkHTML = link ? link.outerHTML : "";
     footerText.innerHTML = `${t("developed_by", lang)} ${linkHTML} | ${t("aws_study_project", lang)}`;
   }
+
+  // Universal data-i18n translation
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (!key) return;
+    const translated = t(key, lang);
+    if (translated && translated !== key) {
+      // Allow HTML in translation only if it's safe or explicitly handled
+      if (el.tagName === 'INPUT' && el.type === 'placeholder') {
+        el.placeholder = translated;
+      } else {
+        el.innerHTML = translated;
+      }
+    }
+  });
 }
 
 // Helper functions

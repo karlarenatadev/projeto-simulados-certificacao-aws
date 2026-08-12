@@ -39,6 +39,41 @@ export function startFlashcards(showScreenFn) {
     categorySelect.dataset.listenerAdded = "true";
   }
 
+  // --- NOVO: Lógica do Diagnóstico ---
+  const diagnosticCtxStr = sessionStorage.getItem("aws_sim_diagnostic_context");
+  const banner = document.getElementById("flashcards-diagnostic-banner");
+  
+  if (diagnosticCtxStr) {
+    try {
+      const diagCtx = JSON.parse(diagnosticCtxStr);
+      flashcardState.diagnosticDomainIds = diagCtx.weakDomains.map(d => d.id);
+      
+      if (banner) banner.classList.remove("hidden");
+      if (categorySelect) {
+        categorySelect.disabled = true;
+        categorySelect.value = "all"; // Force visual selection
+      }
+      
+      const backBtn = document.getElementById("btn-flashcards-back-diagnostic");
+      if(backBtn) {
+        backBtn.onclick = () => {
+          sessionStorage.removeItem("aws_sim_diagnostic_context");
+          window.location.href = "./index.html"; 
+        };
+      }
+    } catch(e) {
+      console.error(e);
+      sessionStorage.removeItem("aws_sim_diagnostic_context");
+      flashcardState.diagnosticDomainIds = null;
+      if (banner) banner.classList.add("hidden");
+      if (categorySelect) categorySelect.disabled = false;
+    }
+  } else {
+    flashcardState.diagnosticDomainIds = null;
+    if (banner) banner.classList.add("hidden");
+    if (categorySelect) categorySelect.disabled = false;
+  }
+
   setupFlashcardListeners();
   filterFlashcards();
 }
@@ -61,7 +96,13 @@ export function filterFlashcards() {
 
   flashcardState.currentDomainFilter = selectedDomain;
 
-  if (selectedDomain === "review-deck") {
+  if (flashcardState.diagnosticDomainIds && flashcardState.diagnosticDomainIds.length > 0) {
+    flashcardState.filteredTerms = glossaryTerms.filter((card) => {
+      const matchCert = card.cert === "all" || card.cert === selectedCert;
+      const matchDomain = flashcardState.diagnosticDomainIds.includes(card.domain);
+      return matchCert && matchDomain;
+    });
+  } else if (selectedDomain === "review-deck") {
     const savedDeck = storageManager.getReviewDeck(selectedCert);
     flashcardState.filteredTerms = savedDeck.map((q) => {
       const isMulti = Array.isArray(q.correct);
@@ -73,8 +114,8 @@ export function filterFlashcards() {
         cert: selectedCert,
         domain: "review-deck",
         term: {
-          pt: q.question,
-          en: q.question
+          pt: `<span class="text-base font-normal leading-relaxed block">${q.question}</span>`,
+          en: `<span class="text-base font-normal leading-relaxed block">${q.question}</span>`
         },
         definition: {
           pt: `<strong>Resposta:</strong><br>• ${correctText}<br><br><strong>Explicação:</strong><br>${q.explanation}`,
@@ -127,8 +168,8 @@ export function renderCurrentFlashcard() {
   const defEl = document.getElementById("flashcard-definition");
   const badgeEl = document.getElementById("flashcard-domain-badge");
 
-  if (termEl) termEl.textContent = card.term[currentLang];
-  if (defEl) defEl.textContent = card.definition[currentLang];
+  if (termEl) termEl.innerHTML = card.term[currentLang];
+  if (defEl) defEl.innerHTML = card.definition[currentLang];
 
   if (badgeEl) {
     const certId =

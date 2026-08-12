@@ -20,8 +20,9 @@ import { PermissionService } from "./services/permissions.js";
 import { logger } from "./utils/logger.js";
 import { userManager } from "./userManager.js";
 import { AuthService } from "./services/authService.js";
+import { initializeUI } from "./i18n/initUI.js";
 
-// ─── CONSTANTES ──────────────────────────────────────────────────────────────
+// 🔹 CONSTANTES 🔹──────────────────────────────────────────────────────────────
 
 const THEME_KEY = "aws_sim_theme";
 const LANG_KEY = "aws_sim_lang";
@@ -273,11 +274,41 @@ function _syncThemeIcon(isDark) {
 export function syncLanguageButtonShell() {
   const lang = AuthService.getCurrentUser()?.language || "pt";
   const btn = document.getElementById("btn-language");
+  
+  // Applica tradução para páginas que não carregam app.js diretamente
+  try {
+    initializeUI(lang);
+  } catch(e) {
+    console.error("Erro na tradução em shell.js:", e);
+  }
+
   if (!btn) return;
   btn.innerHTML =
     lang === "pt"
       ? '<span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>'
       : '<span class="text-[10px] md:text-xs font-bold">🇺🇸 <span class="hidden sm:inline">EN-US</span></span>';
+
+  if (!btn.dataset.boundLangToggle) {
+    btn.dataset.boundLangToggle = "true";
+    btn.addEventListener("click", () => {
+        if (window.toggleLanguage) {
+            // Se o app.js carregou, o botão já tem um onClick bindado para `toggleLanguage` global (em app.js).
+            // Apenas ignore aqui para evitar concorrência se ele gerenciar estado lá.
+            // Mas o app.js usa bindClick que remove eventListeners? Na verdade o app.js só chama toggleLanguage no onClick inline ou addEventListener.
+            // O app.js também chama syncLanguageButtonShell(). 
+            return;
+        }
+        
+        // Comportamento standalone para cases.html, laboratorios.html, etc.
+        const user = AuthService.getCurrentUser();
+        if (user) {
+            user.language = user.language === "pt" ? "en" : "pt";
+            AuthService.setCurrentUser(user);
+            userManager.updatePreferences({ language: user.language });
+            window.location.reload();
+        }
+    });
+  }
 }
 
 // ─── PWA INSTALL ─────────────────────────────────────────────────────────────

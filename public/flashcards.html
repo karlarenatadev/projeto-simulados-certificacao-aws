@@ -16,7 +16,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=mspd7s6a" />
+    <link rel="stylesheet" href="./css/style.css?v=msqfhemg" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -123,6 +123,17 @@
             </p>
           </div>
 
+          <!-- Banner de Diagnóstico -->
+          <div id="flashcards-diagnostic-banner" class="hidden mb-4 p-4 bg-orange-100 border border-orange-300 text-orange-800 rounded-lg flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm">
+            <div>
+              <h3 class="font-bold mb-1"><i class="fa-solid fa-bullseye"></i> Plano de Estudo Personalizado</h3>
+              <p class="text-sm">Filtrando apenas os seus pontos fracos identificados no Diagnóstico.</p>
+            </div>
+            <button id="btn-flashcards-back-diagnostic" class="a3-button-secondary py-2 px-4 text-sm whitespace-nowrap">
+               Concluir Revisão
+            </button>
+          </div>
+
           <!-- Barra de Ferramentas (Filtro e Contador) -->
           <div class="a3-card fc-toolbar">
             <div class="fc-toolbar-group">
@@ -206,8 +217,8 @@
     </footer>
 
 
-    <script src="./js/pomodoroManager.js?v=mspd7s6a" type="module"></script>
-    <script src="./js/app.js?v=mspd7s6a" type="module"></script>
+    <script src="./js/pomodoroManager.js?v=msqfhemg" type="module"></script>
+    <script src="./js/app.js?v=msqfhemg" type="module"></script>
     <script type="module">
       import { initShell } from "./js/shell.js";
       import { authGuard } from "./js/core/authGuard.js";
