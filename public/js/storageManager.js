@@ -64,6 +64,7 @@ export class StorageManager {
       if (!session || !session.certId || session.percentage === undefined) {
         return false;
       }
+      if (session.mode === "diagnostic") return false;
       if (certId && session.certId !== certId) return false;
 
       const identity = this._getResultIdentity(session);
@@ -545,6 +546,17 @@ export class StorageManager {
       this.clearHistory();
       return [];
     }
+  }
+
+  getDiagnosticHistory(certId) {
+    const normalizedCertId = this._normalizeCertId(certId);
+
+    return this.getHistory().filter((result) => {
+      if (!result || result.mode !== "diagnostic") return false;
+      if (!normalizedCertId) return true;
+
+      return this._normalizeCertId(result.certId) === normalizedCertId;
+    });
   }
 
   /**

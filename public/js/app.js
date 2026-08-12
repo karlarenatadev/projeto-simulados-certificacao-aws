@@ -2197,12 +2197,11 @@ function renderDiagnosticReport(results) {
 
 // PERSISTÊNCIA E HISTÓRICO
 function saveQuizResult() {
-  if (uiState.currentMode === "diagnostic") return;
-
   const results = engine.getFinalResults();
   const saved = storageManager.saveQuizResult({
     ...results,
     quizId: results.quizId || quizManager?.currentQuizId,
+    mode: uiState.currentMode,
   });
 
   // Confirm backend sync if quiz was started via API
@@ -2212,10 +2211,12 @@ function saveQuizResult() {
     );
   }
 
-  if (saved) {
-    updateGamification(results.percentage);
-  } else {
+  if (!saved) {
     logger.warn("Resultado duplicado ignorado no histÃ³rico.");
+  }
+
+  if (saved && uiState.currentMode !== "diagnostic") {
+    updateGamification(results.percentage);
   }
 
   return saved;
