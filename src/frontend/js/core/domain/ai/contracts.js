@@ -13,7 +13,7 @@ export class IRecommendationService {
    * @param {string} userId
    * @returns {Promise<Recommendation[]>}
    */
-  async getNextBestActions(userId) {
+  async getNextBestActions(_userId) {
     throw new Error("Not implemented");
   }
 }
@@ -27,7 +27,7 @@ export class IStudyPlanService {
    * @param {StudyPlanContext} context
    * @returns {Promise<Object>} Plano de estudo diário estruturado
    */
-  async generateAdaptivePlan(context) {
+  async generateAdaptivePlan(_context) {
     throw new Error("Not implemented");
   }
 }
@@ -42,7 +42,7 @@ export class IAdaptiveLearningService {
    * @param {Object} currentPerformance
    * @returns {Promise<string>} O ID da próxima questão recomendada
    */
-  async getNextAdaptiveQuestion(sessionId, currentPerformance) {
+  async getNextAdaptiveQuestion(_sessionId, _currentPerformance) {
     throw new Error("Not implemented");
   }
 }
@@ -57,7 +57,7 @@ export class IExplanationService {
    * @param {ExplanationContext} context
    * @returns {Promise<string>} O texto explicativo adaptado gerado pela IA
    */
-  async generateCustomExplanation(context) {
+  async generateCustomExplanation(_context) {
     throw new Error("Not implemented");
   }
 }

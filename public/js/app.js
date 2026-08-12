@@ -26,6 +26,7 @@ import {
   initThemeShell,
   initLeftSidebarToggleShell,
   isSPAPage,
+  syncLanguageButtonShell,
 } from "./shell.js";
 import {
   togglePomodoroWidget,
@@ -249,12 +250,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       authenticatedUser = user;
       await quizManager.initialize(user.id);
 
-      const session = AuthService.getSession();
-      const activeCert = session?.user?.certification || "clf-c02";
-      if (typeof renderJornadaDashboard === "function") {
-          await renderJornadaDashboard(activeCert);
-      }
-
       logger.info(`✓ Sessão ativa: ${user.email || user.id} (${user.role})`);
     } catch (error) {
       logger.error("Falha crítica na autenticação:", error);
@@ -264,11 +259,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         authenticatedUser = user;
         await quizManager.initialize(user.id);
 
-        const session = AuthService.getSession();
-        const activeCert = session?.user?.certification || "clf-c02";
-        if (typeof renderJornadaDashboard === "function") {
-            await renderJornadaDashboard(activeCert);
-        }
       } catch (_e) {
         logger.error("Impossível inicializar sem autenticação.");
         return; // Aborta o boot — não há como continuar
@@ -1636,16 +1626,16 @@ function showScreen(screenName) {
 // ── LEARNING HUB ───────────────────────────────────────────────────────────
 
 function showLearningHub() {
-  // O Hub permite que a sidebar continue visível
+  // O Hub usa toda a largura disponível; o painel contextual é exclusivo de quiz/resultados.
   const sidebar = document.getElementById("side-info");
   const mainSection = document.getElementById("main-section");
   const scoreContainer = document.getElementById("score-container");
   const missionHud = document.getElementById("mission-hud");
 
-  if (sidebar) sidebar.classList.remove("hidden");
+  if (sidebar) sidebar.classList.add("hidden");
   if (mainSection) {
-    mainSection.classList.remove("w-full");
-    mainSection.classList.add("lg:w-2/3");
+    mainSection.classList.remove("lg:w-2/3");
+    mainSection.classList.add("w-full", "flex-1");
   }
   if (scoreContainer) scoreContainer.style.display = "none";
   if (missionHud) missionHud?.classList.add("hidden");
@@ -2796,7 +2786,7 @@ function toggleLanguage() {
   // ══════════════════════════════════════════════════════════════
   // 2. Atualiza o botão de idioma
   // ══════════════════════════════════════════════════════════════
-  updateLanguageButtonUI();
+  syncLanguageButtonShell();
 
   // ══════════════════════════════════════════════════════════════
   // 3. Re-traduz SOMENTE os textos estáticos (sem destruir dados)

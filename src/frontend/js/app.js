@@ -1,4 +1,4 @@
-import { logger, dispatchBusinessEvent, recordMetric } from "./utils/logger.js";
+import { logger, dispatchBusinessEvent } from "./utils/logger.js";
 import { sanitizeHTML } from "./utils/sanitize.js";
 import { normalizeCertificationId } from "./utils/certUtils.js";
 
@@ -26,6 +26,7 @@ import {
   initThemeShell,
   initLeftSidebarToggleShell,
   isSPAPage,
+  syncLanguageButtonShell,
 } from "./shell.js";
 import {
   togglePomodoroWidget,
@@ -235,7 +236,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // e o Hub são responsabilidade exclusiva do index.html.
   // O authGuard dessas páginas é feito pelo inline module via AuthService +
   // window.location.replace('./index.html') — sem depender do app.js.
-  let authenticatedUser = null;
+  let authenticatedUser;
   if (isSPAPage()) {
     try {
       let user = await AuthService.restoreSession();
@@ -249,12 +250,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       authenticatedUser = user;
       await quizManager.initialize(user.id);
 
-      const session = AuthService.getSession();
-      const activeCert = session?.user?.certification || "clf-c02";
-      if (typeof renderJornadaDashboard === "function") {
-          await renderJornadaDashboard(activeCert);
-      }
-
       logger.info(`✓ Sessão ativa: ${user.email || user.id} (${user.role})`);
     } catch (error) {
       logger.error("Falha crítica na autenticação:", error);
@@ -264,12 +259,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         authenticatedUser = user;
         await quizManager.initialize(user.id);
 
-        const session = AuthService.getSession();
-        const activeCert = session?.user?.certification || "clf-c02";
-        if (typeof renderJornadaDashboard === "function") {
-            await renderJornadaDashboard(activeCert);
-        }
-      } catch (_e) {
+      } catch {
         logger.error("Impossível inicializar sem autenticação.");
         return; // Aborta o boot — não há como continuar
       }
@@ -928,10 +918,8 @@ async function startDiagnostic() {
   }
 
   const btn = document.getElementById("btn-start-diagnostic");
-  let hideLoading = null;
-
   if (btn) btn.disabled = true;
-  hideLoading = ModalService.showLoading(
+  const hideLoading = ModalService.showLoading(
     t("loading", uiState.language) || "Carregando diagnóstico...",
   );
 
@@ -1636,16 +1624,16 @@ function showScreen(screenName) {
 // ── LEARNING HUB ───────────────────────────────────────────────────────────
 
 function showLearningHub() {
-  // O Hub permite que a sidebar continue visível
+  // O Hub usa toda a largura disponível; o painel contextual é exclusivo de quiz/resultados.
   const sidebar = document.getElementById("side-info");
   const mainSection = document.getElementById("main-section");
   const scoreContainer = document.getElementById("score-container");
   const missionHud = document.getElementById("mission-hud");
 
-  if (sidebar) sidebar.classList.remove("hidden");
+  if (sidebar) sidebar.classList.add("hidden");
   if (mainSection) {
-    mainSection.classList.remove("w-full");
-    mainSection.classList.add("lg:w-2/3");
+    mainSection.classList.remove("lg:w-2/3");
+    mainSection.classList.add("w-full", "flex-1");
   }
   if (scoreContainer) scoreContainer.style.display = "none";
   if (missionHud) missionHud?.classList.add("hidden");
@@ -2796,7 +2784,7 @@ function toggleLanguage() {
   // ══════════════════════════════════════════════════════════════
   // 2. Atualiza o botão de idioma
   // ══════════════════════════════════════════════════════════════
-  updateLanguageButtonUI();
+  syncLanguageButtonShell();
 
   // ══════════════════════════════════════════════════════════════
   // 3. Re-traduz SOMENTE os textos estáticos (sem destruir dados)
@@ -3026,7 +3014,7 @@ async function startMistakesQuiz() {
         allQuestions = await response.json();
       }
     } catch (err) {
-      console.warn(
+      logger.warn(
         "Não foi possível carregar banco de questões, usando questões exatas:",
         err,
       );
@@ -3313,6 +3301,7 @@ function updateSidebarProgress() {
 // EXPOSIÇÃO GLOBAL
 
 window.startQuiz = startQuiz;
+window.showLearningHubQuickStart = showLearningHubQuickStart;
 window.showQuizConfig = showQuizConfig;
 window.submitAnswer = submitAnswer;
 window.nextQuestion = nextQuestion;
@@ -3321,6 +3310,7 @@ window.cancelQuiz = cancelQuiz;
 window.goHome = goHome;
 window.retakeQuiz = retakeQuiz;
 window.toggleDarkMode = toggleDarkMode;
+window.initTheme = initTheme;
 window.toggleLanguage = toggleLanguage;
 window.clearHistory = clearHistory;
 window.removeHistoryItem = removeHistoryItem;

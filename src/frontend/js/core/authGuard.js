@@ -1,5 +1,6 @@
 import { SessionManager } from "./sessionManager.js";
 import { PermissionService } from "../services/permissions.js";
+import { logger } from "../utils/logger.js";
 
 /**
  * AuthGuard Central
@@ -22,7 +23,7 @@ export function authGuard(config = {}) {
 
   // 1. Verificação de Autenticação Básica
   if (!session || !session.user) {
-    console.warn("AuthGuard: Sessão não encontrada ou expirada. Redirecionando...");
+    logger.warn("AuthGuard: Sessão não encontrada ou expirada. Redirecionando...");
     window.location.replace(redirectTo);
     return null;
   }
@@ -33,7 +34,7 @@ export function authGuard(config = {}) {
   // 3. Verificação de RBAC (se especificado)
   if (requiredRole) {
     if (!PermissionService.hasAccess(session.user, requiredRole)) {
-      console.warn(`AuthGuard: Acesso negado. Requisitado: ${requiredRole}, Possui: ${session.user.role}`);
+      logger.warn(`AuthGuard: Acesso negado. Requisitado: ${requiredRole}, Possui: ${session.user.role}`);
       window.location.replace(redirectTo); // Idealmente poderia redirecionar para uma rota "Forbidden/403"
       return null;
     }

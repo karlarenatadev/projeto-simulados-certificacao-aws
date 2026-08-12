@@ -61,7 +61,7 @@ class InteractiveEngine {
 
     const listElement = document.getElementById("sortable-list");
     if (!listElement) {
-      console.warn("[InteractiveEngine] sortable-list element not found");
+      logger.warn("[InteractiveEngine] sortable-list element not found");
       return;
     }
 
@@ -95,7 +95,7 @@ class InteractiveEngine {
   validate() {
     const listItems = document.querySelectorAll("#sortable-list li");
     if (!listItems || listItems.length === 0) {
-      console.warn("[InteractiveEngine] No sortable list items found");
+      logger.warn("[InteractiveEngine] No sortable list items found");
       return;
     }
 
@@ -104,7 +104,7 @@ class InteractiveEngine {
     const feedbackArea = document.getElementById("interactive-feedback");
     
     if (!feedbackArea) {
-      console.warn("[InteractiveEngine] feedback area not found");
+      logger.warn("[InteractiveEngine] feedback area not found");
       return;
     }
 
@@ -136,7 +136,7 @@ class InteractiveEngine {
 
   checkOrder() {
     if (!this.sortableInstance) {
-      console.warn("[InteractiveEngine] sortableInstance not initialized");
+      logger.warn("[InteractiveEngine] sortableInstance not initialized");
       return;
     }
     
@@ -144,7 +144,7 @@ class InteractiveEngine {
     const feedbackArea = document.getElementById("interactive-feedback");
     
     if (!feedbackArea) {
-      console.warn("[InteractiveEngine] feedback area not found in checkOrder");
+      logger.warn("[InteractiveEngine] feedback area not found in checkOrder");
       return;
     }
     

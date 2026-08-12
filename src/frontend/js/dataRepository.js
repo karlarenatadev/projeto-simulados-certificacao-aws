@@ -11,6 +11,8 @@
  * @module dataRepository
  */
 
+import { logger } from "./utils/logger.js";
+
 /**
  * Cria um repositório de dados que combina storage local e API.
  *
@@ -29,7 +31,7 @@ export function createDataRepository(storage, _api = null) {
     try {
       return await apiFn();
     } catch (e) {
-      console.warn(
+      logger.warn(
         "[DataRepository] API call failed, falling back to local:",
         e.message,
       );
@@ -277,7 +279,7 @@ export function createDataRepository(storage, _api = null) {
             ));
 
         if (!hasId || !hasText || !hasOptions || !hasCorrectAnswers) {
-          console.warn(
+          logger.warn(
             "[DataRepository] Questão inválida ou corrompida descartada:",
             q,
           );

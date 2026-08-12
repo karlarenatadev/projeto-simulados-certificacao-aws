@@ -9,9 +9,9 @@
 import { storageManager } from "../storageManager.js";
 import { LearningAnalytics } from "../analytics/learningAnalytics.js";
 import { RecommendationEngine } from "./recommendationEngine.js";
-import { userManager } from "../userManager.js";
 import { t } from "../i18n/useTranslation.js";
 import { AuthService } from "../services/authService.js";
+import { logger } from "../utils/logger.js";
 
 const CONTENT_ID = "weak-domains-content";
 
@@ -125,7 +125,7 @@ export async function refreshStudyNow() {
 
     renderActions(plan.nextActions);
   } catch (error) {
-    console.error("[StudyNow] Erro ao gerar recomendacoes:", error);
+    logger.error("[StudyNow] Erro ao gerar recomendacoes:", error);
     renderEmpty("studyNow.empty_state_no_history");
   }
 }

@@ -1,5 +1,25 @@
 /* Consolidated CSS */
 
+/* Immediate Learning Hub layout overrides. Source rules live in components/gamification.css. */
+#screen-hub > section { margin-bottom: 1.25rem; }
+#screen-hub .lh-metrics-card { padding: 1rem; }
+#screen-hub .lh-metrics-header { margin-bottom: 0.75rem; }
+#screen-hub .lh-feature-item { min-height: 3.25rem; padding-block: 0.55rem; }
+#screen-hub .lh-feature-desc { line-height: 1.35; }
+@media (min-width: 1280px) {
+  #hub-start, #hub-performance { display: grid; grid-template-columns: minmax(0, 1fr) minmax(19rem, 0.85fr); align-items: stretch; gap: 1rem; }
+  #hub-start .lh-banner, #hub-performance > .lh-metrics-header { grid-column: 1 / -1; }
+  #hub-performance > .lh-metrics-card { margin-bottom: 0; }
+}
+@media (max-width: 640px) {
+  #screen-hub { padding: 0.75rem; }
+  #screen-hub > section { margin-bottom: 0.9rem; }
+  .lh-banner { padding: 1rem; }
+  .lh-banner-title { white-space: normal; }
+  .lh-banner-actions { gap: 0.4rem; margin-top: 0.75rem; }
+  .lh-banner-btn { flex: 1 1 8.5rem; }
+}
+
 /* --- tailwind.css --- */
 /*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @layer properties;
@@ -10446,5 +10466,4 @@ select {
 .cv-offline-icon {
   color: var(--a3-warning);
 }
-
 
