@@ -57,6 +57,72 @@ describe('StorageManager - Persistência de Dados', () => {
         expect(history[1].certId).toBe('clf-c02');
     });
 
+    test('Deve persistir diagnósticos com desempenho por domínio para comparação temporal', () => {
+        storage.saveQuizResult({
+            attemptId: 'diagnostic-1',
+            certId: 'clf-c02',
+            mode: 'diagnostic',
+            score: 1,
+            total: 2,
+            percentage: 50,
+            domainScores: {
+                security: { total: 2, correct: 1 },
+            },
+            weakDomains: ['security'],
+            date: '2026-06-24T10:00:00.000Z',
+        });
+        storage.saveQuizResult({
+            attemptId: 'diagnostic-2',
+            certId: 'clf-c02',
+            mode: 'diagnostic',
+            score: 2,
+            total: 2,
+            percentage: 100,
+            domainScores: {
+                security: { total: 2, correct: 2 },
+            },
+            weakDomains: [],
+            date: '2026-06-25T10:00:00.000Z',
+        });
+        storage.saveQuizResult({
+            attemptId: 'diagnostic-other-cert',
+            certId: 'saa-c03',
+            mode: 'diagnostic',
+            score: 1,
+            total: 2,
+            percentage: 50,
+            domainScores: { architecture: { total: 2, correct: 1 } },
+            weakDomains: ['architecture'],
+        });
+
+        const diagnostics = storage.getDiagnosticHistory('CLF-C02');
+
+        expect(diagnostics).toHaveLength(2);
+        expect(diagnostics.map((result) => result.attemptId)).toEqual([
+            'diagnostic-2',
+            'diagnostic-1',
+        ]);
+        expect(diagnostics[0].domainScores).toEqual({
+            security: { total: 2, correct: 2 },
+        });
+        expect(diagnostics[0].weakDomains).toEqual([]);
+        expect(diagnostics[1].weakDomains).toEqual(['security']);
+    });
+
+    test('Diagnósticos não devem contar como simulados concluídos', () => {
+        storage.saveQuizResult({
+            attemptId: 'diagnostic-1',
+            certId: 'clf-c02',
+            mode: 'diagnostic',
+            percentage: 80,
+            domainScores: { security: { total: 5, correct: 4 } },
+            weakDomains: [],
+        });
+
+        expect(storage.getCompletedQuizCount('clf-c02')).toBe(0);
+        expect(storage.getGamification().totalQuizzes).toBe(0);
+    });
+
     test('Deve ignorar salvamento duplicado da mesma tentativa', () => {
         const result = {
             attemptId: 'attempt-duplicado',
