@@ -18,12 +18,16 @@ export async function initLaboratorios() {
 
 async function fetchLabs() {
   try {
-    // Tenta buscar localmente no public/data
-    const res = await fetch("./data/labs/labs.json");
-    if (res.ok) {
+    // Tenta buscar usando um caminho absoluto para evitar erros dependendo da rota atual
+    const url = window.location.pathname.includes('/public/') 
+      ? "/public/data/labs/labs.json"
+      : "/data/labs/labs.json";
+      
+    const res = await fetch(url).catch(() => fetch("./data/labs/labs.json"));
+    if (res && res.ok) {
       allLabs = await res.json();
     } else {
-      console.warn("Failed to fetch labs from ./data/labs/labs.json");
+      console.warn("Failed to fetch labs from /data/labs/labs.json");
       allLabs = [];
     }
   } catch (error) {
@@ -86,18 +90,19 @@ function renderLabs() {
 
   // Update count
   if (countLabel) {
-    countLabel.textContent = `\${filtered.length} laboratório(s) encontrado(s)`;
+    countLabel.textContent = `${filtered.length} laboratório(s) encontrado(s)`;
   }
 
   // Clear grid
-  grid.innerHTML = "";
-
+  // Check empty state
   if (filtered.length === 0) {
     grid.innerHTML = `
-      <div class="col-span-full text-center py-12">
-        <div class="text-4xl mb-4 text-gray-300"><i class="fa-solid fa-flask"></i></div>
-        <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300" data-i18n="no_labs_title">Nenhum laboratório encontrado.</h3>
-        <p class="text-gray-500 mt-2" data-i18n="no_labs_desc">Altere os filtros para encontrar outras opções.</p>
+      <div class="col-span-1 md:col-span-2 lg:col-span-3 py-16 text-center bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-dashed border-gray-300 dark:border-slate-700">
+        <div class="w-16 h-16 bg-gray-100 dark:bg-slate-700 text-gray-400 dark:text-gray-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+          <i class="fa-solid fa-flask"></i>
+        </div>
+        <h3 class="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2" data-i18n="labs_not_found">Nenhum laboratório encontrado</h3>
+        <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto" data-i18n="labs_empty_desc">Tente ajustar os filtros ou selecionar outra certificação. Os laboratórios disponíveis aqui são referências externas oficiais da AWS.</p>
       </div>
     `;
     // Re-trigger translation for the empty state

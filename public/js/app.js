@@ -1735,14 +1735,14 @@ function renderLearningHubData() {
   // ── Progresso Global (Sprint) ──
   const progEl = document.getElementById("jornada-progress");
   if (progEl) {
-    // Media de progresso dos sprints de todas as certificações ou da última
     const lastCert = safeHistory.length > 0 ? safeHistory[safeHistory.length - 1].certId : "clf-c02";
     const sprintState = storageManager.getSprintState(lastCert);
     const sprintProgress = sprintState ? Math.round((sprintState.completedStages.length / 14) * 100) : 0;
     progEl.textContent = `${sprintProgress}%`;
   }
-  if (streakEl) {
-    streakEl.textContent = String(gamification?.currentStreak || 0);
+  
+  if (typeof renderPerformanceLineChart === "function") {
+    renderPerformanceLineChart(safeHistory);
   }
 
   // ── Erros pendentes e Ponto Fraco ──

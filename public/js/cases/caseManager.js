@@ -135,19 +135,21 @@ export async function getCaseById(idOrSlug) {
  * @returns {Promise<boolean>}
  */
 export async function markCaseComplete(caseId, userId) {
+  // Persiste sempre localmente primeiro
+  const completed = getLocalCompletedCases();
+  completed.add(caseId);
+  saveLocalCompletedCases(completed);
+
   try {
     await apiService.markCaseComplete(caseId, userId);
-    // Persist completion locally so the UI works even without a re-fetch
-    const completed = getLocalCompletedCases();
-    completed.add(caseId);
-    saveLocalCompletedCases(completed);
     return true;
   } catch (error) {
     logger.warn(
-      "[caseManager] Could not mark case as complete:",
+      "[caseManager] API call failed (ignoring for local mode):",
       error.message,
     );
-    return false;
+    // Retorna true mesmo assim para que o UI reflita a conclusão
+    return true;
   }
 }
 

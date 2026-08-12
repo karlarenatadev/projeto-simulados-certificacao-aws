@@ -140,8 +140,7 @@ const SIDEBAR_ITEMS = [
       href: "./laboratorios.html",
       activePaths: ["/laboratorios.html"],
       roles: ["*"],
-      title: "Laboratórios AWS",
-      i18n: "aws_labs",
+      title: "Laboratórios AWS"
     },
   {
     id: "sidebar-btn-resources",
