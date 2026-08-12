@@ -248,6 +248,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Sessão garantida a partir daqui
       authenticatedUser = user;
       await quizManager.initialize(user.id);
+
+      const session = AuthService.getSession();
+      const activeCert = session?.user?.certification || "clf-c02";
+      if (typeof renderJornadaDashboard === "function") {
+          await renderJornadaDashboard(activeCert);
+      }
+
       logger.info(`✓ Sessão ativa: ${user.email || user.id} (${user.role})`);
     } catch (error) {
       logger.error("Falha crítica na autenticação:", error);
@@ -256,6 +263,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         const user = await showLoginUI();
         authenticatedUser = user;
         await quizManager.initialize(user.id);
+
+        const session = AuthService.getSession();
+        const activeCert = session?.user?.certification || "clf-c02";
+        if (typeof renderJornadaDashboard === "function") {
+            await renderJornadaDashboard(activeCert);
+        }
       } catch (_e) {
         logger.error("Impossível inicializar sem autenticação.");
         return; // Aborta o boot — não há como continuar
@@ -671,13 +684,16 @@ function wireUIActions() {
 function checkActiveSession(certId) {
   const btn = document.getElementById("btn-start-quiz");
   if (!btn) return;
+
+  const language = AuthService.getSession()?.user?.language || "pt";
   const activeSession = storageManager.loadActiveSession(certId);
+
   if (activeSession) {
-    btn.innerHTML = `${t("resume_simulation", uiState.language) || "Retomar Simulado"} <i class="fa-solid fa-play ml-2"></i>`;
+    btn.innerHTML = `${t("resume_simulation", language) || "Retomar Simulado"} <i class="fa-solid fa-play ml-2"></i>`;
     btn.classList.add("bg-orange-500");
     btn.classList.remove("bg-aws-orange");
   } else {
-    btn.innerHTML = `${t("start_simulation", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>`;
+    btn.innerHTML = `${t("start_simulation", language) || "Iniciar Simulado"} <i class="fa-solid fa-arrow-right ml-2"></i>`;
     btn.classList.add("bg-aws-orange");
     btn.classList.remove("bg-orange-500");
   }
@@ -1620,16 +1636,16 @@ function showScreen(screenName) {
 // ── LEARNING HUB ───────────────────────────────────────────────────────────
 
 function showLearningHub() {
-  // Esconde a sidebar direita — o hub ocupa toda a área principal
+  // O Hub permite que a sidebar continue visível
   const sidebar = document.getElementById("side-info");
   const mainSection = document.getElementById("main-section");
   const scoreContainer = document.getElementById("score-container");
   const missionHud = document.getElementById("mission-hud");
 
-  if (sidebar) sidebar.classList.add("hidden");
+  if (sidebar) sidebar.classList.remove("hidden");
   if (mainSection) {
-    mainSection.classList.remove("lg:w-2/3");
-    mainSection.classList.add("w-full");
+    mainSection.classList.remove("w-full");
+    mainSection.classList.add("lg:w-2/3");
   }
   if (scoreContainer) scoreContainer.style.display = "none";
   if (missionHud) missionHud?.classList.add("hidden");
