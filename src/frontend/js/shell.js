@@ -25,8 +25,6 @@ import { initializeUI } from "./i18n/initUI.js";
 // 🔹 CONSTANTES 🔹──────────────────────────────────────────────────────────────
 
 const THEME_KEY = "aws_sim_theme";
-const LANG_KEY = "aws_sim_lang";
-
 // ─── DETECÇÃO DE CONTEXTO ─────────────────────────────────────────────────────
 
 /**
@@ -140,8 +138,7 @@ const SIDEBAR_ITEMS = [
       href: "./laboratorios.html",
       activePaths: ["/laboratorios.html"],
       roles: ["*"],
-      title: "Laboratórios AWS",
-      i18n: "aws_labs",
+      title: "Laboratórios AWS"
     },
   {
     id: "sidebar-btn-resources",
@@ -279,7 +276,7 @@ export function syncLanguageButtonShell() {
   try {
     initializeUI(lang);
   } catch(e) {
-    console.error("Erro na tradução em shell.js:", e);
+    logger.error("Erro na tradução em shell.js:", e);
   }
 
   if (!btn) return;

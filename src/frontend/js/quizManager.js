@@ -223,7 +223,7 @@ export const quizManager = {
         parsed.syncedAt = new Date().toISOString();
         localStorage.setItem(key, JSON.stringify(parsed));
       }
-    } catch (error) {
+    } catch {
       // não-crítico
     }
   },
@@ -242,7 +242,9 @@ export const quizManager = {
         if (key && key.startsWith(prefix)) {
           try {
             answers.push(JSON.parse(localStorage.getItem(key)));
-          } catch (e) {}
+          } catch {
+            // Ignore malformed local answer records.
+          }
         }
       }
 

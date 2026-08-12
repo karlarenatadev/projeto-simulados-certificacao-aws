@@ -33,10 +33,13 @@ export function renderJornadaDashboard(certId) {
   const questionsEl = document.getElementById("jornada-questions");
   const weakDomainEl = document.getElementById("jornada-weak-domain");
 
+  if (!titleEl && !progressEl && !accuracyEl && !questionsEl && !weakDomainEl) {
+    return;
+  }
 
   // Atualizar título da certificação
   const certName = certId ? certId.toUpperCase() : "AWS";
-  titleEl.textContent = `Jornada ${certName}`;
+  if (titleEl) titleEl.textContent = `Jornada ${certName}`;
 
   // Obter histórico
   const history = storageManager.getHistory();

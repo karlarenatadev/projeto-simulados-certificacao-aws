@@ -34,9 +34,39 @@ export function startFlashcards(showScreenFn) {
   }
 
   const categorySelect = document.getElementById("flashcard-category");
-  if (categorySelect && !categorySelect.dataset.listenerAdded) {
-    categorySelect.addEventListener("change", filterFlashcards);
-    categorySelect.dataset.listenerAdded = "true";
+  const certSelect = document.getElementById("certification-select");
+  const selectedCert = certSelect ? certSelect.value : "clf-c02";
+
+  // --- Popula as opções do Dropdown dinamicamente ---
+  if (categorySelect) {
+    const certInfo = certificationPaths[selectedCert];
+    
+    // Salva opção anterior (para não perder o deck de revisão se selecionado)
+    const currentVal = categorySelect.value;
+    
+    // Limpa mantendo o padrão "all" e o "review-deck"
+    categorySelect.innerHTML = `
+      <option value="all">Todos os Domínios (Misturado)</option>
+      <option value="review-deck" class="fc-opt-review">💡 Meu Deck de Revisão</option>
+    `;
+    
+    if (certInfo && certInfo.domains) {
+      certInfo.domains.forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d.id;
+        opt.textContent = d.name;
+        categorySelect.appendChild(opt);
+      });
+    }
+    
+    // Restaura a seleção se ainda existir, ou cai pra all
+    const exists = Array.from(categorySelect.options).some(o => o.value === currentVal);
+    categorySelect.value = exists ? currentVal : "all";
+
+    if (!categorySelect.dataset.listenerAdded) {
+      categorySelect.addEventListener("change", filterFlashcards);
+      categorySelect.dataset.listenerAdded = "true";
+    }
   }
 
   // --- NOVO: Lógica do Diagnóstico ---
@@ -62,7 +92,7 @@ export function startFlashcards(showScreenFn) {
         };
       }
     } catch(e) {
-      console.error(e);
+      logger.error(e);
       sessionStorage.removeItem("aws_sim_diagnostic_context");
       flashcardState.diagnosticDomainIds = null;
       if (banner) banner.classList.add("hidden");

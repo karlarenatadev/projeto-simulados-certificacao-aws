@@ -3,8 +3,7 @@
  * Handles fetching, filtering, and rendering of the AWS Labs catalog.
  */
 
-import { storageManager } from "../storageManager.js";
-import apiService from "../services/api.js";
+import { AuthService } from "../services/authService.js";
 
 let allLabs = [];
 
@@ -18,12 +17,16 @@ export async function initLaboratorios() {
 
 async function fetchLabs() {
   try {
-    // Tenta buscar localmente no public/data
-    const res = await fetch("./data/labs/labs.json");
-    if (res.ok) {
+    // Tenta buscar usando um caminho absoluto para evitar erros dependendo da rota atual
+    const url = window.location.pathname.includes('/public/') 
+      ? "/public/data/labs/labs.json"
+      : "/data/labs/labs.json";
+      
+    const res = await fetch(url).catch(() => fetch("./data/labs/labs.json"));
+    if (res && res.ok) {
       allLabs = await res.json();
     } else {
-      console.warn("Failed to fetch labs from ./data/labs/labs.json");
+      console.warn("Failed to fetch labs from /data/labs/labs.json");
       allLabs = [];
     }
   } catch (error) {
@@ -55,7 +58,7 @@ function populateServiceFilter() {
 }
 
 function preselectCertification() {
-  const currentCert = storageManager.getCurrentCert();
+  const currentCert = AuthService.getCurrentUser()?.certification;
   const certSelect = document.getElementById("filter-certification");
   if (currentCert && certSelect) {
     // If the select has an option for the current cert, select it
@@ -86,18 +89,21 @@ function renderLabs() {
 
   // Update count
   if (countLabel) {
-    countLabel.textContent = `\${filtered.length} laboratório(s) encontrado(s)`;
+    countLabel.textContent = `${filtered.length} laboratório(s) encontrado(s)`;
   }
 
-  // Clear grid
+  // Remove loading skeletons or cards from the previous render.
   grid.innerHTML = "";
 
+  // Check empty state
   if (filtered.length === 0) {
     grid.innerHTML = `
-      <div class="col-span-full text-center py-12">
-        <div class="text-4xl mb-4 text-gray-300"><i class="fa-solid fa-flask"></i></div>
-        <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300" data-i18n="no_labs_title">Nenhum laboratório encontrado.</h3>
-        <p class="text-gray-500 mt-2" data-i18n="no_labs_desc">Altere os filtros para encontrar outras opções.</p>
+      <div class="col-span-1 md:col-span-2 lg:col-span-3 py-16 text-center bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-dashed border-gray-300 dark:border-slate-700">
+        <div class="w-16 h-16 bg-gray-100 dark:bg-slate-700 text-gray-400 dark:text-gray-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+          <i class="fa-solid fa-flask"></i>
+        </div>
+        <h3 class="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2" data-i18n="labs_not_found">Nenhum laboratório encontrado</h3>
+        <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto" data-i18n="labs_empty_desc">Tente ajustar os filtros ou selecionar outra certificação. Os laboratórios disponíveis aqui são referências externas oficiais da AWS.</p>
       </div>
     `;
     // Re-trigger translation for the empty state
@@ -112,8 +118,7 @@ function renderLabs() {
   }
 
   // Obter labs completados do storage (se existir)
-  const profile = storageManager.getProfile();
-  const completedLabs = profile.completedLabs || [];
+  const completedLabs = getCompletedLabs();
 
   // Render cards
   filtered.forEach(lab => {
@@ -144,29 +149,29 @@ function renderLabs() {
           <i class="fa-solid fa-flask"></i>
         </div>
         <div>
-          <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">\${lab.service}</span>
-          <h3 class="font-bold text-gray-800 dark:text-white leading-tight mt-1">\${lab.title}</h3>
+          <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">${lab.service}</span>
+          <h3 class="font-bold text-gray-800 dark:text-white leading-tight mt-1">${lab.title}</h3>
         </div>
       </div>
       
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">\${lab.description}</p>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">${lab.description}</p>
       
       <div class="flex items-center gap-4 text-xs font-medium text-gray-500 dark:text-gray-400 mb-6 bg-gray-50 dark:bg-slate-700/50 p-3 rounded-lg">
         <div class="flex items-center gap-1.5" title="Nível">
-          <span>\${difficultyIcon}</span>
-          <span class="capitalize">\${difficultyText}</span>
+          <span>${difficultyIcon}</span>
+          <span class="capitalize">${difficultyText}</span>
         </div>
         <div class="w-1 h-1 bg-gray-300 rounded-full"></div>
         <div class="flex items-center gap-1.5" title="Duração estimada">
           <i class="fa-regular fa-clock"></i>
-          <span>\${lab.duration} min</span>
+          <span>${lab.duration} min</span>
         </div>
       </div>
 
       <div class="flex flex-col gap-2 mt-auto">
-        <div class="text-xs text-center text-gray-400 mb-1">Provider: \${lab.provider}</div>
+        <div class="text-xs text-center text-gray-400 mb-1">Provider: ${lab.provider}</div>
         <a 
-          href="\${lab.externalUrl}" 
+          href="${lab.externalUrl}"
           target="_blank" 
           rel="noopener noreferrer" 
           class="w-full text-center py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900"
@@ -174,10 +179,10 @@ function renderLabs() {
           <span data-i18n="open_lab">Abrir laboratório</span> <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-xs"></i>
         </a>
         <button 
-          class="btn-mark-completed w-full text-center py-2 px-4 text-sm font-medium \${isCompleted ? 'text-green-600 hover:text-green-700 bg-green-50' : 'text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200'} rounded-lg transition-colors"
-          data-id="\${lab.id}"
+          class="btn-mark-completed w-full text-center py-2 px-4 text-sm font-medium ${isCompleted ? 'text-green-600 hover:text-green-700 bg-green-50' : 'text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200'} rounded-lg transition-colors"
+          data-id="${lab.id}"
         >
-          \${isCompleted ? '<i class="fa-solid fa-check"></i> ' + (window.t ? window.t("marked_completed", window.currentLang) : "Marcado como concluído") : (window.t ? window.t("mark_completed", window.currentLang) : "Marcar como concluído")}
+          ${isCompleted ? '<i class="fa-solid fa-check"></i> ' + (window.t ? window.t("marked_completed", window.currentLang) : "Marcado como concluído") : (window.t ? window.t("mark_completed", window.currentLang) : "Marcar como concluído")}
         </button>
       </div>
     `;
@@ -204,18 +209,32 @@ function renderLabs() {
 }
 
 function toggleCompleted(labId) {
-  const profile = storageManager.getProfile();
-  if (!profile.completedLabs) {
-    profile.completedLabs = [];
-  }
-  
-  const index = profile.completedLabs.indexOf(labId);
+  const completedLabs = getCompletedLabs();
+  const index = completedLabs.indexOf(labId);
   if (index === -1) {
-    profile.completedLabs.push(labId);
+    completedLabs.push(labId);
   } else {
-    profile.completedLabs.splice(index, 1);
+    completedLabs.splice(index, 1);
   }
-  
-  storageManager.saveProfile(profile);
+
+  saveCompletedLabs(completedLabs);
   renderLabs();
+}
+
+function getCompletedLabsStorageKey() {
+  const userId = AuthService.getCurrentUser()?.id || "guest";
+  return `aws_sim_completed_labs_${userId}`;
+}
+
+function getCompletedLabs() {
+  try {
+    const savedLabs = JSON.parse(localStorage.getItem(getCompletedLabsStorageKey()));
+    return Array.isArray(savedLabs) ? savedLabs : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCompletedLabs(completedLabs) {
+  localStorage.setItem(getCompletedLabsStorageKey(), JSON.stringify(completedLabs));
 }

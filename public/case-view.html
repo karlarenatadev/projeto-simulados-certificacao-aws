@@ -20,8 +20,8 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
 
-    <link rel="stylesheet" href="./css/style.css?v=msqfhekk" />
-    <link rel="stylesheet" href="./css/cases.css?v=msqfhekk" />
+    <link rel="stylesheet" href="./css/style.css?v=msqo1nlq" />
+    <link rel="stylesheet" href="./css/cases.css?v=msqo1nlq" />
 
     <!-- Drawflow — node editor for Architecture Builder -->
     <link
@@ -1065,19 +1065,19 @@
           slug: "amazon-ec2",
           name: "Amazon EC2",
           category: "Compute",
-          icon: "https://icon.icepanel.io/AWS/svg/Compute/EC2.svg",
+          icon: "fa-solid fa-server",
         },
         {
           slug: "aws-lambda",
           name: "AWS Lambda",
           category: "Compute",
-          icon: "https://icon.icepanel.io/AWS/svg/Compute/Lambda.svg",
+          icon: "fa-solid fa-bolt",
         },
         {
           slug: "amazon-ecs",
           name: "Amazon ECS",
           category: "Compute",
-          icon: "https://icon.icepanel.io/AWS/svg/Containers/ECS.svg",
+          icon: "fa-solid fa-box",
         },
         {
           slug: "amazon-auto-scaling",
@@ -1090,32 +1090,32 @@
           slug: "amazon-s3",
           name: "Amazon S3",
           category: "Storage",
-          icon: "https://icon.icepanel.io/AWS/svg/Storage/S3.svg",
+          icon: "fa-solid fa-bucket",
         },
         {
           slug: "amazon-ebs",
           name: "Amazon EBS",
           category: "Storage",
-          icon: "https://icon.icepanel.io/AWS/svg/Storage/EBS.svg",
+          icon: "fa-solid fa-hard-drive",
         },
         {
           slug: "amazon-efs",
           name: "Amazon EFS",
           category: "Storage",
-          icon: "https://icon.icepanel.io/AWS/svg/Storage/EFS.svg",
+          icon: "fa-solid fa-folder-tree",
         },
         // Database
         {
           slug: "amazon-rds",
           name: "Amazon RDS",
           category: "Database",
-          icon: "https://icon.icepanel.io/AWS/svg/Database/RDS.svg",
+          icon: "fa-solid fa-database",
         },
         {
           slug: "amazon-dynamodb",
           name: "DynamoDB",
           category: "Database",
-          icon: "https://icon.icepanel.io/AWS/svg/Database/DynamoDB.svg",
+          icon: "fa-solid fa-table-list",
         },
         {
           slug: "amazon-elasticache",
@@ -1128,7 +1128,7 @@
           slug: "amazon-vpc",
           name: "Amazon VPC",
           category: "Networking",
-          icon: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/VPC.svg",
+          icon: "fa-solid fa-network-wired",
         },
         {
           slug: "amazon-cloudfront",
@@ -1152,39 +1152,39 @@
           slug: "amazon-route53",
           name: "Route 53",
           category: "Networking",
-          icon: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/Route-53.svg",
+          icon: "fa-solid fa-route",
         },
         // Security
         {
           slug: "aws-iam",
           name: "AWS IAM",
           category: "Security",
-          icon: "https://icon.icepanel.io/AWS/svg/Security-Identity-Compliance/IAM.svg",
+          icon: "fa-solid fa-id-card",
         },
         {
           slug: "aws-kms",
           name: "AWS KMS",
           category: "Security",
-          icon: "https://icon.icepanel.io/AWS/svg/Security-Identity-Compliance/Key-Management-Service.svg",
+          icon: "fa-solid fa-key",
         },
         {
           slug: "aws-waf",
           name: "AWS WAF",
           category: "Security",
-          icon: "https://icon.icepanel.io/AWS/svg/Security-Identity-Compliance/WAF.svg",
+          icon: "fa-solid fa-shield-halved",
         },
         // Messaging
         {
           slug: "amazon-sqs",
           name: "Amazon SQS",
           category: "Messaging",
-          icon: "https://icon.icepanel.io/AWS/svg/App-Integration/SQS.svg",
+          icon: "fa-solid fa-envelope",
         },
         {
           slug: "amazon-sns",
           name: "Amazon SNS",
           category: "Messaging",
-          icon: "https://icon.icepanel.io/AWS/svg/App-Integration/SNS.svg",
+          icon: "fa-solid fa-bell",
         },
         // Monitoring
         {
@@ -1197,20 +1197,20 @@
           slug: "aws-cloudtrail",
           name: "CloudTrail",
           category: "Monitoring",
-          icon: "https://icon.icepanel.io/AWS/svg/Management-Governance/CloudTrail.svg",
+          icon: "fa-solid fa-shoe-prints",
         },
         // Users / External
         {
           slug: "user",
           name: "Usuário / Client",
           category: "External",
-          icon: "https://icon.icepanel.io/AWS/svg/General/User.svg",
+          icon: "fa-solid fa-user",
         },
         {
           slug: "internet",
           name: "Internet",
           category: "External",
-          icon: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/Internet-Gateway.svg",
+          icon: "fa-solid fa-cloud",
         },
       ];
 
@@ -1241,8 +1241,7 @@
                 data-icon="${item.icon}"
                 title="Arrastar: ${item.name}"
               >
-                <img class="palette-item-img" src="${item.icon}" alt="${item.name}" loading="lazy"
-                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><text y=%2232%22 font-size=%2228%22>☁️</text></svg>'" />
+                <i class="${item.icon} text-3xl mb-2 text-gray-500"></i>
                 <span class="palette-item-text">${item.name}</span>
               </div>`;
           }
@@ -1275,8 +1274,7 @@
       function nodeTemplate(svc) {
         return `
           <div class="aws-node-inner">
-            <img src="${svc.icon}" alt="${svc.name}"
-                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><text y=%2232%22 font-size=%2228%22>☁️</text></svg>'" />
+            <i class="${svc.icon} text-[32px] text-blue-500 mb-1"></i>
             <div class="aws-node-name">${svc.name}</div>
             <div class="aws-node-cat">${svc.category}</div>
           </div>`;

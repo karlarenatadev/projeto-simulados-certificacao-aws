@@ -26,6 +26,7 @@ import {
   initThemeShell,
   initLeftSidebarToggleShell,
   isSPAPage,
+  syncLanguageButtonShell,
 } from "./shell.js";
 import {
   togglePomodoroWidget,
@@ -248,6 +249,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Sessão garantida a partir daqui
       authenticatedUser = user;
       await quizManager.initialize(user.id);
+
       logger.info(`✓ Sessão ativa: ${user.email || user.id} (${user.role})`);
     } catch (error) {
       logger.error("Falha crítica na autenticação:", error);
@@ -256,6 +258,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const user = await showLoginUI();
         authenticatedUser = user;
         await quizManager.initialize(user.id);
+
       } catch (_e) {
         logger.error("Impossível inicializar sem autenticação.");
         return; // Aborta o boot — não há como continuar
@@ -671,13 +674,16 @@ function wireUIActions() {
 function checkActiveSession(certId) {
   const btn = document.getElementById("btn-start-quiz");
   if (!btn) return;
+
+  const language = AuthService.getSession()?.user?.language || "pt";
   const activeSession = storageManager.loadActiveSession(certId);
+
   if (activeSession) {
-    btn.innerHTML = `${t("resume_simulation", uiState.language) || "Retomar Simulado"} <i class="fa-solid fa-play ml-2"></i>`;
+    btn.innerHTML = `${t("resume_simulation", language) || "Retomar Simulado"} <i class="fa-solid fa-play ml-2"></i>`;
     btn.classList.add("bg-orange-500");
     btn.classList.remove("bg-aws-orange");
   } else {
-    btn.innerHTML = `${t("start_simulation", uiState.language)} <i class="fa-solid fa-arrow-right ml-2"></i>`;
+    btn.innerHTML = `${t("start_simulation", language) || "Iniciar Simulado"} <i class="fa-solid fa-arrow-right ml-2"></i>`;
     btn.classList.add("bg-aws-orange");
     btn.classList.remove("bg-orange-500");
   }
@@ -1620,7 +1626,7 @@ function showScreen(screenName) {
 // ── LEARNING HUB ───────────────────────────────────────────────────────────
 
 function showLearningHub() {
-  // Esconde a sidebar direita — o hub ocupa toda a área principal
+  // O Hub usa toda a largura disponível; o painel contextual é exclusivo de quiz/resultados.
   const sidebar = document.getElementById("side-info");
   const mainSection = document.getElementById("main-section");
   const scoreContainer = document.getElementById("score-container");
@@ -1629,7 +1635,7 @@ function showLearningHub() {
   if (sidebar) sidebar.classList.add("hidden");
   if (mainSection) {
     mainSection.classList.remove("lg:w-2/3");
-    mainSection.classList.add("w-full");
+    mainSection.classList.add("w-full", "flex-1");
   }
   if (scoreContainer) scoreContainer.style.display = "none";
   if (missionHud) missionHud?.classList.add("hidden");
@@ -1735,14 +1741,14 @@ function renderLearningHubData() {
   // ── Progresso Global (Sprint) ──
   const progEl = document.getElementById("jornada-progress");
   if (progEl) {
-    // Media de progresso dos sprints de todas as certificações ou da última
     const lastCert = safeHistory.length > 0 ? safeHistory[safeHistory.length - 1].certId : "clf-c02";
     const sprintState = storageManager.getSprintState(lastCert);
     const sprintProgress = sprintState ? Math.round((sprintState.completedStages.length / 14) * 100) : 0;
     progEl.textContent = `${sprintProgress}%`;
   }
-  if (streakEl) {
-    streakEl.textContent = String(gamification?.currentStreak || 0);
+  
+  if (typeof renderPerformanceLineChart === "function") {
+    renderPerformanceLineChart(safeHistory);
   }
 
   // ── Erros pendentes e Ponto Fraco ──
@@ -2780,7 +2786,7 @@ function toggleLanguage() {
   // ══════════════════════════════════════════════════════════════
   // 2. Atualiza o botão de idioma
   // ══════════════════════════════════════════════════════════════
-  updateLanguageButtonUI();
+  syncLanguageButtonShell();
 
   // ══════════════════════════════════════════════════════════════
   // 3. Re-traduz SOMENTE os textos estáticos (sem destruir dados)
