@@ -8,6 +8,10 @@ import {
 } from "./quizEngine.js";
 import { certificationPaths } from "./data.js";
 import { getDomainDefinition, normalizeDomain } from "./domainTaxonomy.js";
+import {
+  buildTargetedPracticeContext,
+  TARGETED_PRACTICE_QUESTION_COUNT,
+} from "./targetedQuestionSelector.js";
 import { ModalService } from "./services/modalService.js";
 import { NotificationService } from "./services/notificationService.js";
 import { initUIRenderer } from "./uiRenderer.js";
@@ -975,7 +979,9 @@ async function startPersonalizedDiagnosticQuiz() {
     return;
   }
 
-  const certId = lastDiagnosticRecommendation.certificationId;
+  const certId = normalizeCertificationId(
+    lastDiagnosticRecommendation.certificationId,
+  );
   const currentCertInfo = certificationPaths[certId];
 
   if (!currentCertInfo || !Array.isArray(currentCertInfo.domains)) {
@@ -1001,7 +1007,7 @@ async function startPersonalizedDiagnosticQuiz() {
     }
 
     uiState.currentCertificationInfo = currentCertInfo;
-    uiState.currentMode = "review";
+    uiState.currentMode = "targeted-practice";
 
     const weakDomainIds = getQuizDomainIdsForDiagnosticDomains(
       lastDiagnosticRecommendation.weakDomains.map((domain) =>
@@ -1010,12 +1016,13 @@ async function startPersonalizedDiagnosticQuiz() {
       certId,
     );
 
-    const result = await engine.loadPersonalizedQuestions(
+    const result = await engine.loadTargetedQuestions(
       certId,
       currentCertInfo.domains,
       weakDomainIds,
-      10,
+      TARGETED_PRACTICE_QUESTION_COUNT,
       uiState.language,
+      lastDiagnosticRecommendation.questionIds || [],
     );
 
     if (!result.success || result.totalQuestions === 0) {
@@ -2155,6 +2162,10 @@ function renderDiagnosticReport(results) {
       ? {
           certificationId: results.certId,
           weakDomains: weakDomains.map((domain) => domain.id),
+          domains: weakDomains.map((domain) => domain.domainId),
+          questionIds: (results.answers || [])
+            .map((answer) => answer.id || answer.questionId)
+            .filter(Boolean),
           generatedAt: new Date().toISOString(),
           source: "diagnostic",
         }
@@ -2257,17 +2268,41 @@ function renderDiagnosticReport(results) {
     `;
 
   resultsScreen.innerHTML = html;
+  const targetedQuestionsButton = document.getElementById(
+    "btn-diagnostic-to-questions",
+  );
+  if (targetedQuestionsButton) {
+    targetedQuestionsButton.innerHTML = `<i class="fa-solid fa-play mr-2"></i> ${t("practice_recommended_questions", uiState.language)}`;
+  }
   
   if (weakDomains.length > 0) {
     bindClick("btn-diagnostic-to-flashcards", () => {
       if (lastDiagnosticRecommendation) {
-        sessionStorage.setItem("aws_sim_diagnostic_context", JSON.stringify(lastDiagnosticRecommendation));
+        sessionStorage.setItem(
+          "aws_sim_diagnostic_context",
+          JSON.stringify(
+            buildTargetedPracticeContext(
+              lastDiagnosticRecommendation.certificationId,
+              lastDiagnosticRecommendation.weakDomains,
+              lastDiagnosticRecommendation.questionIds,
+            ),
+          ),
+        );
       }
       window.location.href = "./flashcards.html";
     });
     bindClick("btn-diagnostic-to-questions", () => {
       if (lastDiagnosticRecommendation) {
-        sessionStorage.setItem("aws_sim_diagnostic_context", JSON.stringify(lastDiagnosticRecommendation));
+        sessionStorage.setItem(
+          "aws_sim_diagnostic_context",
+          JSON.stringify(
+            buildTargetedPracticeContext(
+              lastDiagnosticRecommendation.certificationId,
+              lastDiagnosticRecommendation.weakDomains,
+              lastDiagnosticRecommendation.questionIds,
+            ),
+          ),
+        );
       }
       window.location.href = "./simulados.html";
     });

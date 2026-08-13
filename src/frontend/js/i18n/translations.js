@@ -130,6 +130,7 @@ export const translations = {
     diagnostic_flashcards_fallback:
       "Não há flashcards específicos suficientes para estes domínios. Exibindo o conteúdo disponível desta certificação.",
     diagnostic_flashcards_continue: "Continuar revisão",
+    practice_recommended_questions: "Praticar questões recomendadas",
     personalized_quiz_unavailable:
       "Não foi possível iniciar o simulado personalizado. {{message}}",
 
@@ -420,6 +421,7 @@ export const translations = {
     diagnostic_flashcards_fallback:
       "There are not enough specific flashcards for these domains. Showing the content available for this certification.",
     diagnostic_flashcards_continue: "Continue review",
+    practice_recommended_questions: "Practice recommended questions",
     personalized_quiz_unavailable:
       "Could not start the personalized quiz. {{message}}",
 

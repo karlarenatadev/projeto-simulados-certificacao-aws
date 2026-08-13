@@ -19,6 +19,10 @@ import { normalizeCertificationId } from "./utils/certUtils.js";
 import { certificationPaths } from "./data.js";
 import { selectDiagnosticQuestions } from "./diagnosticQuestionSelector.js";
 import { normalizeDomain } from "./domainTaxonomy.js";
+import {
+  selectTargetedQuestions,
+  TARGETED_PRACTICE_QUESTION_COUNT,
+} from "./targetedQuestionSelector.js";
 
 const dataRepo = createDataRepository(storageManager);
 
@@ -313,6 +317,63 @@ export class QuizEngine {
     }
   }
 
+  async loadTargetedQuestions(
+    certId,
+    domainsConfig,
+    weakDomainIds,
+    quantity = TARGETED_PRACTICE_QUESTION_COUNT,
+    language = "pt",
+    excludedQuestionIds = [],
+  ) {
+    this.resetState();
+    this.state.attemptId = this._generateAttemptId();
+    this.state.certId = normalizeCertificationId(certId);
+    this.state.mode = "targeted-practice";
+
+    try {
+      const fileSuffix = language === "en" ? "-en" : "";
+      let response = await fetch(
+        `data/questions/${this.state.certId}${fileSuffix}.json`,
+      );
+
+      if (!response.ok && language === "en") {
+        response = await fetch(`data/questions/${this.state.certId}.json`);
+      }
+
+      if (!response.ok) {
+        throw new Error("Arquivo de questÃµes nÃ£o encontrado.");
+      }
+
+      let data = await response.json();
+      data = await this._sanitizeQuestions(data, this.state.certId);
+      data = data.map((question) => this._normalizeQuestion(question));
+
+      const selectedQuestions = selectTargetedQuestions(
+        data,
+        this.state.certId,
+        weakDomainIds,
+        quantity,
+        excludedQuestionIds,
+      );
+
+      if (selectedQuestions.length === 0) {
+        throw new Error("Nenhuma questÃ£o disponÃ­vel para esta prÃ¡tica.");
+      }
+
+      this.state.questions = selectedQuestions.map((question) =>
+        this._shuffleOptions(question),
+      );
+
+      domainsConfig.forEach((domain) => {
+        this.state.domainScores[domain.id] = { total: 0, correct: 0 };
+      });
+
+      return { success: true, totalQuestions: this.state.questions.length };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
   // 1.5 CARREGAMENTO DO DIAGNÓSTICO DE NIVELAMENTO
   async loadDiagnostic(certId, domainsConfig, language = "pt") {
     this.resetState();
@@ -449,7 +510,10 @@ export class QuizEngine {
 
     // --- CORREÇÃO DE BUG DO GRÁFICO (Normalização de Domínios) ---
     let qDomain = String(q.domain).trim();
-    if (this.state.mode === "diagnostic") {
+    if (
+      this.state.mode === "diagnostic" ||
+      this.state.mode === "targeted-practice"
+    ) {
       qDomain = normalizeDomain(this.state.certId, qDomain) || qDomain;
     }
 
@@ -515,7 +579,7 @@ export class QuizEngine {
 
         return {
           domainId:
-            isDiagnostic
+            isDiagnostic || this.state.mode === "targeted-practice"
               ? normalizeDomain(this.state.certId, domainId) || domainId
               : domainId,
           id: domainId,

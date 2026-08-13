@@ -123,6 +123,33 @@ describe('QuizEngine - Testes Base', () => {
 });
 
 describe('QuizEngine - Diagnóstico Personalizado', () => {
+    test('prática direcionada mantém o domínio canônico no placar', () => {
+        const targetedEngine = new QuizEngine(70);
+        targetedEngine.state.mode = 'targeted-practice';
+        targetedEngine.state.certId = 'clf-c02';
+        targetedEngine.state.questions = [
+            {
+                id: 'targeted-1',
+                domain: 'Security and Compliance',
+                options: ['A', 'B'],
+                correct: 0,
+            },
+        ];
+        targetedEngine.state.domainScores = {
+            seguranca: { total: 0, correct: 0 },
+        };
+
+        targetedEngine.submitAnswer(0);
+
+        expect(targetedEngine.state.domainScores).toEqual({
+            seguranca: { total: 1, correct: 1 },
+        });
+        expect(targetedEngine.getFinalResults().domainResults[0]).toMatchObject({
+            domainId: 'seguranca',
+            correctAnswers: 1,
+        });
+    });
+
     const domainsConfig = [
         { id: 'storage', name: 'Storage' },
         { id: 'compute', name: 'Compute' },
