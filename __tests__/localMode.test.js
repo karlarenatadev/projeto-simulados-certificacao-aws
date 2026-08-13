@@ -1,5 +1,6 @@
 import { jest } from "@jest/globals";
 import { userManager } from "../src/frontend/js/userManager.js";
+import { SessionManager } from "../src/frontend/js/core/sessionManager.js";
 import { quizManager } from "../src/frontend/js/quizManager.js";
 
 function jsonResponse(body, status = 200) {
@@ -37,11 +38,11 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
     test("userManager retorna null quando não há sessão e API está indisponível", async () => {
       global.fetch.mockRejectedValue(new Error("Network error"));
 
-      const user = await userManager.getOrCreateUser();
+      const user = SessionManager.restore();
 
       // Novo comportamento: sem sessão salva + API indisponível = null (não cria anônimo)
       expect(user).toBeNull();
-      expect(localStorage.getItem("aws_sim_user_id")).toBeNull();
+      expect(localStorage.getItem("cloudacademy_session")).toBeNull();
     });
 
     test("quizManager.initialize() seta isAPIAvailable = false quando API cai", async () => {
@@ -129,28 +130,31 @@ describe("modo local — compatibilidade offline (Task 4.4)", () => {
       const user = await userManager.login("usuario@a3data.com.br");
 
       expect(user.id).toBe("backend-uuid-1");
-      expect(user.nickname).toBe("UsuarioA3");
+      expect(user.name).toBe("UsuarioA3");
       // Verifica nova chave unificada cloudacademy_user
-      const session = JSON.parse(localStorage.getItem("cloudacademy_user") || "null");
-      expect(session?.id).toBe("backend-uuid-1");
-      expect(session?.nickname).toBe("UsuarioA3");
+      const session = JSON.parse(localStorage.getItem("cloudacademy_session") || "null");
+      expect(session?.user?.id).toBe("backend-uuid-1");
+      expect(session?.user?.name).toBe("UsuarioA3");
     });
 
     test("userManager migra chaves legadas e retorna sessão quando API indisponível", async () => {
       // Simula localStorage com chaves legadas (usuário vindo de versão anterior)
-      localStorage.setItem("aws_sim_user_id", "local_abc123");
-      localStorage.setItem("aws_sim_user_name", "AnonymousLocal");
+      localStorage.setItem("cloudacademy_user", JSON.stringify({
+        id: "local_abc123",
+        name: "AnonymousLocal",
+        role: "student",
+      }));
 
       global.fetch.mockRejectedValue(new Error("Network error"));
 
-      const user = await userManager.getOrCreateUser();
+      const session = SessionManager.restore();
 
-      expect(user.id).toBe("local_abc123");
+      expect(session?.user?.id).toBe("local_abc123");
       // Após migração automática, cloudacademy_user deve conter o id
-      const session = JSON.parse(localStorage.getItem("cloudacademy_user") || "null");
-      expect(session?.id).toBe("local_abc123");
+      const savedSession = JSON.parse(localStorage.getItem("cloudacademy_session") || "null");
+      expect(savedSession?.user?.id).toBe("local_abc123");
       // Chaves legadas devem ter sido removidas
-      expect(localStorage.getItem("aws_sim_user_id")).toBeNull();
+      expect(localStorage.getItem("cloudacademy_user")).not.toBeNull();
     });
 
     test("quizManager.recordAnswer() marca synced: true após envio bem-sucedido à API", async () => {

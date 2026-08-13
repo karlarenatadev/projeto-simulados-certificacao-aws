@@ -1,5 +1,6 @@
 import { storageManager } from "../storageManager.js";
 import { AuthService } from "../services/authService.js";
+import { logger } from "../utils/logger.js";
 
 // 1. DICIONÁRIO DE TRILHAS (4 Certificações com suporte Bilingue)
 export const TRAILS_BY_CERT = {

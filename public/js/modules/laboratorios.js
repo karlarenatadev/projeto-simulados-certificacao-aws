@@ -3,6 +3,7 @@
  * Handles fetching, filtering, and rendering of the AWS Labs catalog.
  */
 
+import { logger } from "../utils/logger.js";
 import { AuthService } from "../services/authService.js";
 
 let allLabs = [];
@@ -26,11 +27,11 @@ async function fetchLabs() {
     if (res && res.ok) {
       allLabs = await res.json();
     } else {
-      console.warn("Failed to fetch labs from /data/labs/labs.json");
+      logger.warn("Failed to fetch labs from /data/labs/labs.json");
       allLabs = [];
     }
   } catch (error) {
-    console.error("Error fetching labs:", error);
+    logger.error("Error fetching labs:", error);
     allLabs = [];
   }
 }

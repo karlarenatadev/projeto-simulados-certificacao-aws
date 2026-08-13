@@ -92,7 +92,7 @@ export function startFlashcards(showScreenFn) {
         };
       }
     } catch(e) {
-      console.error(e);
+      logger.error(e);
       sessionStorage.removeItem("aws_sim_diagnostic_context");
       flashcardState.diagnosticDomainIds = null;
       if (banner) banner.classList.add("hidden");

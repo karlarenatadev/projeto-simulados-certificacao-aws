@@ -15,7 +15,7 @@ export class UseCase {
    * @param {Object} input - DTO de entrada (Data Transfer Object)
    * @returns {Promise<Object>} Output DTO
    */
-  async execute(input) {
+  async execute(_input) {
     throw new Error("Not implemented");
   }
 }
@@ -39,7 +39,7 @@ export class StartExamUseCase extends UseCase {
    * @param {string} input.mode - 'exam', 'practice', 'study'
    * @param {Object} input.filters
    */
-  async execute(input) {
+  async execute(_input) {
     throw new Error("Not implemented");
   }
 }
@@ -52,7 +52,7 @@ export class ResumeExamUseCase extends UseCase {
    * @param {Object} input
    * @param {string} input.sessionId
    */
-  async execute(input) {
+  async execute(_input) {
     throw new Error("Not implemented");
   }
 }
@@ -71,7 +71,7 @@ export class FinishExamUseCase extends UseCase {
    * @param {string} input.sessionId
    * @param {Object} input.answers
    */
-  async execute(input) {
+  async execute(_input) {
     throw new Error("Not implemented");
   }
 }
@@ -86,7 +86,7 @@ export class SubmitAnswerUseCase extends UseCase {
    * @param {string} input.questionId
    * @param {string[]} input.selectedOptionIds
    */
-  async execute(input) {
+  async execute(_input) {
     throw new Error("Not implemented");
   }
 }
@@ -100,7 +100,7 @@ export class FinishCaseUseCase extends UseCase {
    * @param {string} input.caseId
    * @param {string[]} input.selectedServiceIds
    */
-  async execute(input) {
+  async execute(_input) {
     throw new Error("Not implemented");
   }
 }
@@ -115,7 +115,7 @@ export class CompleteSprintUseCase extends UseCase {
    * @param {string} input.sprintId
    * @param {number} input.dayNumber
    */
-  async execute(input) {
+  async execute(_input) {
     throw new Error("Not implemented");
   }
 }

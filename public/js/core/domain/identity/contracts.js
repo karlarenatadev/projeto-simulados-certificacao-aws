@@ -15,7 +15,7 @@ export class IAuthService {
    * @param {string} password
    * @returns {Promise<Session>}
    */
-  async login(email, password) {
+  async login(_email, _password) {
     throw new Error("Not implemented");
   }
 
@@ -56,7 +56,7 @@ export class IAuthorizationService {
    * @param {string} [scopeId] - Opcional. O ID do escopo (ex: Certification ID)
    * @returns {boolean}
    */
-  hasPermission(permissionId, scopeId) {
+  hasPermission(_permissionId, _scopeId) {
     throw new Error("Not implemented");
   }
 
@@ -65,7 +65,7 @@ export class IAuthorizationService {
    * @param {string} scopeId
    * @returns {boolean}
    */
-  hasScope(scopeId) {
+  hasScope(_scopeId) {
     throw new Error("Not implemented");
   }
 
@@ -74,7 +74,7 @@ export class IAuthorizationService {
    * @param {string} [scopeId]
    * @returns {Permission[]}
    */
-  getEffectivePermissions(scopeId) {
+  getEffectivePermissions(_scopeId) {
     throw new Error("Not implemented");
   }
 }

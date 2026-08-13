@@ -1,4 +1,5 @@
 import { UserMapper } from "./contracts/userMapper.js";
+import { logger } from "../utils/logger.js";
 
 /**
  * SessionManager
@@ -30,7 +31,7 @@ export class SessionManager {
         this.touch(); // Atualiza a atividade
         return session;
       } catch (err) {
-        console.warn("Falha ao parsear cloudacademy_session:", err);
+        logger.warn("Falha ao parsear cloudacademy_session:", err);
         return null;
       }
     }
@@ -80,7 +81,7 @@ export class SessionManager {
       const session = JSON.parse(raw);
       session.lastActivity = new Date().toISOString();
       localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-    } catch (e) {
+    } catch {
       // Ignora erros no touch
     }
   }
@@ -100,7 +101,7 @@ export class SessionManager {
    * @param {Object} session 
    * @returns {boolean}
    */
-  static isExpired(session) {
+  static isExpired(_session) {
     // Para a Sprint 0.1, assumimos que sessões offline locais não expiram de forma dura,
     // apenas quando deslogadas. Expiração dura poderá ser atrelada ao token depois.
     return false;
@@ -145,11 +146,11 @@ export class SessionManager {
       localStorage.removeItem("aws_sim_cert");
 
       // Soft-Delete: Manteremos as chaves antigas de usuário por enquanto (fallback de auditoria).
-      console.info("Migração para cloudacademy_session concluída. Chaves de UI legadas expurgadas.");
+      logger.info("Migração para cloudacademy_session concluída. Chaves de UI legadas expurgadas.");
 
       return session;
     } catch (err) {
-      console.warn("Erro durante a migração da sessão legada:", err);
+      logger.warn("Erro durante a migração da sessão legada:", err);
       return null;
     }
   }

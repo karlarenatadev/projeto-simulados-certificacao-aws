@@ -150,14 +150,11 @@ export const translations = {
     start_quiz_for_ai_mapping:
       "Comece o simulado para que a IA mapeie seu perfil de conhecimento.",
     history: "Histórico",
-    clear_history: "Limpar histórico",
     no_quizzes_yet: "Nenhum simulado realizado ainda.",
     certification_statistics: "Estatísticas da Certificação",
     first_quiz_for_stats:
       "Faça seu primeiro simulado para ver suas estatísticas aqui!",
     quizzes: "Simulados",
-    average: "Média",
-    questions: "Questões",
 
     // Footer
     developed_by: "Desenvolvido por",
@@ -167,7 +164,6 @@ export const translations = {
     time_up:
       "⏰ O tempo esgotou! O seu simulado será finalizado automaticamente e as questões em branco serão dadas como erradas.",
     exit_quiz_confirm: "Sair do simulado?",
-    loading: "A carregar...",
     error_loading_questions:
       "❌ Erro ao carregar o banco de questões: {{message}}\n\nVerifique se o ficheiro de dados existe e tente novamente.",
     error_starting_quiz:
@@ -432,13 +428,10 @@ export const translations = {
     start_quiz_for_ai_mapping:
       "Start the quiz so AI can map your knowledge profile.",
     history: "History",
-    clear_history: "Clear history",
     no_quizzes_yet: "No quizzes taken yet.",
     certification_statistics: "Certification Statistics",
     first_quiz_for_stats: "Take your first quiz to see your statistics here!",
     quizzes: "Quizzes",
-    average: "Average",
-    questions: "Questions",
 
     // Footer
     developed_by: "Developed by",
@@ -448,7 +441,6 @@ export const translations = {
     time_up:
       "⏰ Time's up! Your simulation will be automatically finished and blank questions will be marked as wrong.",
     exit_quiz_confirm: "Exit the quiz?",
-    loading: "Loading...",
     error_loading_questions:
       "❌ Error loading question bank: {{message}}\n\nCheck if the data file exists and try again.",
     error_starting_quiz:

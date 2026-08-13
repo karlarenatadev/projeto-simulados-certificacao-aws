@@ -12,8 +12,6 @@ import { normalizeCertificationId } from "../utils/certUtils.js";
  * @author AWS Exam Simulator Team
  */
 
-/* global window, fetch, AbortController, setTimeout, clearTimeout, URLSearchParams, AbortSignal */
-
 /**
  * Base configuration for the API service
  */
@@ -535,7 +533,7 @@ export const apiService = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: userId }),
-        signal: AbortSignal.timeout(8000)
+        signal: globalThis.AbortSignal.timeout(8000)
       });
       if (!response.ok) {
         const body = await response.json().catch(() => ({}));

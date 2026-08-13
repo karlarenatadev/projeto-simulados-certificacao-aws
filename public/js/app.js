@@ -1,4 +1,4 @@
-import { logger, dispatchBusinessEvent, recordMetric } from "./utils/logger.js";
+import { logger, dispatchBusinessEvent } from "./utils/logger.js";
 import { sanitizeHTML } from "./utils/sanitize.js";
 import { normalizeCertificationId } from "./utils/certUtils.js";
 
@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // e o Hub são responsabilidade exclusiva do index.html.
   // O authGuard dessas páginas é feito pelo inline module via AuthService +
   // window.location.replace('./index.html') — sem depender do app.js.
-  let authenticatedUser = null;
+  let authenticatedUser;
   if (isSPAPage()) {
     try {
       let user = await AuthService.restoreSession();
@@ -259,7 +259,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         authenticatedUser = user;
         await quizManager.initialize(user.id);
 
-      } catch (_e) {
+      } catch {
         logger.error("Impossível inicializar sem autenticação.");
         return; // Aborta o boot — não há como continuar
       }
@@ -918,10 +918,8 @@ async function startDiagnostic() {
   }
 
   const btn = document.getElementById("btn-start-diagnostic");
-  let hideLoading = null;
-
   if (btn) btn.disabled = true;
-  hideLoading = ModalService.showLoading(
+  const hideLoading = ModalService.showLoading(
     t("loading", uiState.language) || "Carregando diagnóstico...",
   );
 
@@ -3016,7 +3014,7 @@ async function startMistakesQuiz() {
         allQuestions = await response.json();
       }
     } catch (err) {
-      console.warn(
+      logger.warn(
         "Não foi possível carregar banco de questões, usando questões exatas:",
         err,
       );
@@ -3303,6 +3301,7 @@ function updateSidebarProgress() {
 // EXPOSIÇÃO GLOBAL
 
 window.startQuiz = startQuiz;
+window.showLearningHubQuickStart = showLearningHubQuickStart;
 window.showQuizConfig = showQuizConfig;
 window.submitAnswer = submitAnswer;
 window.nextQuestion = nextQuestion;
@@ -3311,6 +3310,7 @@ window.cancelQuiz = cancelQuiz;
 window.goHome = goHome;
 window.retakeQuiz = retakeQuiz;
 window.toggleDarkMode = toggleDarkMode;
+window.initTheme = initTheme;
 window.toggleLanguage = toggleLanguage;
 window.clearHistory = clearHistory;
 window.removeHistoryItem = removeHistoryItem;
