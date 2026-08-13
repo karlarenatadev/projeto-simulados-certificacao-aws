@@ -5,6 +5,7 @@
 
 import {
     buildPersonalizedQuestionSet,
+    DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD,
     identifyWeakDomains,
     QuizEngine,
 } from '../src/frontend/js/quizEngine.js';
@@ -68,6 +69,56 @@ describe('QuizEngine - Testes Base', () => {
         expect(engine.state.score).toBe(0);
         expect(engine.state.domainScores.compute.correct).toBe(0);
         expect(engine.state.domainScores.compute.total).toBe(1);
+    });
+
+    test('resultado do diagnóstico expõe score geral e resultado por domínio', () => {
+        const diagnosticEngine = new QuizEngine(70);
+        diagnosticEngine.state.mode = 'diagnostic';
+        diagnosticEngine.state.certId = 'clf-c02';
+        diagnosticEngine.state.questions = Array.from({ length: 12 }, () => ({}));
+        diagnosticEngine.state.score = 9;
+        diagnosticEngine.state.domainScores = {
+            cloud: { total: 3, correct: 2 },
+            security: { total: 3, correct: 1 },
+            technology: { total: 3, correct: 3 },
+            billing: { total: 3, correct: 3 },
+        };
+
+        const result = diagnosticEngine.getFinalResults();
+
+        expect(result).toMatchObject({
+            certification: 'clf-c02',
+            totalQuestions: 12,
+            correctAnswers: 9,
+            overallScore: 75,
+            weakDomains: ['security'],
+            strongDomains: ['cloud', 'technology', 'billing'],
+        });
+        expect(result.domainResults).toHaveLength(4);
+        expect(result.domainResults.find((domain) => domain.id === 'cloud')).toMatchObject({
+            domainId: 'cloud',
+            totalQuestions: 3,
+            correctAnswers: 2,
+            isWeak: false,
+            isStrong: true,
+        });
+    });
+
+    test('o limiar de domínio fraco é único e inclusivo no limite', () => {
+        expect(DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD).toBe(60);
+
+        const diagnosticEngine = new QuizEngine(70);
+        diagnosticEngine.state.mode = 'diagnostic';
+        diagnosticEngine.state.questions = [{}, {}];
+        diagnosticEngine.state.domainScores = {
+            weak: { total: 5, correct: 2 },
+            boundary: { total: 5, correct: 3 },
+        };
+
+        const result = diagnosticEngine.getFinalResults();
+
+        expect(result.weakDomains).toEqual(['weak']);
+        expect(result.strongDomains).toEqual(['boundary']);
     });
 });
 

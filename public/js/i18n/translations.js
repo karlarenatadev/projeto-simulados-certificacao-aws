@@ -119,6 +119,17 @@ export const translations = {
     practice_weak_domains: "Praticar domínios fracos",
     diagnostic_not_enough_data:
       "Ainda não há dados suficientes para gerar uma recomendação personalizada.",
+    diagnostic_domain_performance: "{{score}}% de desempenho",
+    diagnostic_review_priority: "Prioridade de revisão",
+    review_recommended_flashcards: "Revisar Flashcards recomendados",
+    diagnostic_flashcards_title: "Recomendado pelo seu Raio-X",
+    diagnostic_flashcards_desc:
+      "Seu diagnóstico identificou pontos para reforçar em:",
+    diagnostic_flashcards_selected:
+      "{{count}} flashcards selecionados para sua revisão.",
+    diagnostic_flashcards_fallback:
+      "Não há flashcards específicos suficientes para estes domínios. Exibindo o conteúdo disponível desta certificação.",
+    diagnostic_flashcards_continue: "Continuar revisão",
     personalized_quiz_unavailable:
       "Não foi possível iniciar o simulado personalizado. {{message}}",
 
@@ -398,6 +409,17 @@ export const translations = {
     practice_weak_domains: "Practice weak domains",
     diagnostic_not_enough_data:
       "There is not enough data yet to generate a personalized recommendation.",
+    diagnostic_domain_performance: "{{score}}% performance",
+    diagnostic_review_priority: "Review priority",
+    review_recommended_flashcards: "Review recommended Flashcards",
+    diagnostic_flashcards_title: "Recommended by your X-Ray",
+    diagnostic_flashcards_desc:
+      "Your diagnosis identified topics to reinforce in:",
+    diagnostic_flashcards_selected:
+      "{{count}} flashcards selected for your review.",
+    diagnostic_flashcards_fallback:
+      "There are not enough specific flashcards for these domains. Showing the content available for this certification.",
+    diagnostic_flashcards_continue: "Continue review",
     personalized_quiz_unavailable:
       "Could not start the personalized quiz. {{message}}",
 

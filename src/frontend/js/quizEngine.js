@@ -17,16 +17,18 @@ import { storageManager } from "./storageManager.js";
 import { generateQuestionId } from "./utils/questionIdentity.js";
 import { normalizeCertificationId } from "./utils/certUtils.js";
 import { certificationPaths } from "./data.js";
+import { selectDiagnosticQuestions } from "./diagnosticQuestionSelector.js";
+import { normalizeDomain } from "./domainTaxonomy.js";
 
 const dataRepo = createDataRepository(storageManager);
 
 const DEFAULT_PERSONALIZED_QUESTION_COUNT = 10;
-const WEAK_DOMAIN_THRESHOLD = 60;
+export const DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD = 60;
 
 export function identifyWeakDomains(
   domainScores,
   domainsConfig = [],
-  threshold = WEAK_DOMAIN_THRESHOLD,
+  threshold = DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD,
 ) {
   if (!domainScores || typeof domainScores !== "object") return [];
 
@@ -321,8 +323,9 @@ export class QuizEngine {
     try {
       let data = null;
 
-      // Try API first
-      try {
+      // O diagnóstico é local-first e usa somente o banco principal.
+      if (apiService.getConfiguredApiUrl()?.trim()) {
+        try {
         const response = await apiService.loadQuestions({
           certification: certId,
           search: "diagnostic", // Attempt to filter for diagnostic questions
@@ -340,11 +343,14 @@ export class QuizEngine {
           apiError,
         );
       }
+      }
+
+      data = null;
 
       // Fallback to JSON
       if (!data || data.length === 0) {
         const fileSuffix = language === "en" ? "-en" : "";
-        let filePath = `data/nivelamento/diagnostic-${certId}${fileSuffix}.json`;
+        let filePath = `data/questions/${certId}${fileSuffix}.json`;
 
         let response = await fetch(filePath);
 
@@ -353,7 +359,7 @@ export class QuizEngine {
           logger.warn(
             `Diagnóstico EN não encontrado para ${certId}. Tentando versão PT...`,
           );
-          filePath = `data/nivelamento/diagnostic-${certId}.json`;
+          filePath = `data/questions/${certId}.json`;
           response = await fetch(filePath);
         }
 
@@ -365,6 +371,19 @@ export class QuizEngine {
         data = await response.json();
         logger.info(
           `✓ Loaded ${data.length} diagnostic questions from JSON file`,
+        );
+      }
+
+      // Seleciona a amostra do banco principal sem criar uma segunda fonte.
+      data = selectDiagnosticQuestions(data, domainsConfig, {
+        certId,
+        language,
+        quantity: 12,
+      });
+
+      if (data.length === 0) {
+        throw new Error(
+          `Nenhuma questÃ£o de diagnÃ³stico encontrada para ${certId}.`,
         );
       }
 
@@ -430,6 +449,9 @@ export class QuizEngine {
 
     // --- CORREÇÃO DE BUG DO GRÁFICO (Normalização de Domínios) ---
     let qDomain = String(q.domain).trim();
+    if (this.state.mode === "diagnostic") {
+      qDomain = normalizeDomain(this.state.certId, qDomain) || qDomain;
+    }
 
     // 1. Tenta o match exato
     if (this.state.domainScores[qDomain]) {
@@ -465,10 +487,10 @@ export class QuizEngine {
   // 4. RESULTADOS FINAIS
   getFinalResults() {
     const total = this.state.questions.length;
-    const percentage = (this.state.score / total) * 100;
+    const percentage = total > 0 ? (this.state.score / total) * 100 : 0;
 
     // Calcula todos os domínios fracos (accuracy < 70%)
-    const weakDomains = [];
+    let weakDomains = [];
 
     for (const [domainId, scoreData] of Object.entries(
       this.state.domainScores,
@@ -481,16 +503,53 @@ export class QuizEngine {
       }
     }
 
+    const isDiagnostic = this.state.mode === "diagnostic";
+    const weakThreshold = isDiagnostic
+      ? DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD
+      : 70;
+    const domainResults = Object.entries(this.state.domainScores).map(
+      ([domainId, scoreData]) => {
+        const domainScore = scoreData.total
+          ? (scoreData.correct / scoreData.total) * 100
+          : null;
+
+        return {
+          domainId:
+            isDiagnostic
+              ? normalizeDomain(this.state.certId, domainId) || domainId
+              : domainId,
+          id: domainId,
+          totalQuestions: scoreData.total,
+          correctAnswers: scoreData.correct,
+          score: domainScore,
+          isWeak: scoreData.total > 0 && domainScore < weakThreshold,
+          isStrong: scoreData.total > 0 && domainScore >= weakThreshold,
+        };
+      },
+    );
+    weakDomains = domainResults
+      .filter((domain) => domain.isWeak)
+      .map((domain) => domain.id);
+    const strongDomains = domainResults
+      .filter((domain) => domain.isStrong)
+      .map((domain) => domain.id);
+
     return {
       attemptId: this.state.attemptId,
       quizId: this.state.quizId,
       certId: this.state.certId,
+      certification: this.state.certId,
       score: this.state.score,
       total: total,
+      totalQuestions: total,
+      correctAnswers: this.state.score,
       percentage: percentage,
+      overallScore: percentage,
       passed: percentage >= this.PASSING_SCORE,
       domainScores: this.state.domainScores,
+      domainResults,
       weakDomains: weakDomains,
+      strongDomains,
       answers: this.state.answers,
     };
   }

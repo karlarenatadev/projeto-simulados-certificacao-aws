@@ -2,8 +2,12 @@ import { logger, dispatchBusinessEvent } from "./utils/logger.js";
 import { sanitizeHTML } from "./utils/sanitize.js";
 import { normalizeCertificationId } from "./utils/certUtils.js";
 
-import { identifyWeakDomains, QuizEngine } from "./quizEngine.js";
+import {
+  DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD,
+  QuizEngine,
+} from "./quizEngine.js";
 import { certificationPaths } from "./data.js";
+import { getDomainDefinition, normalizeDomain } from "./domainTaxonomy.js";
 import { ModalService } from "./services/modalService.js";
 import { NotificationService } from "./services/notificationService.js";
 import { initUIRenderer } from "./uiRenderer.js";
@@ -50,27 +54,6 @@ import {
 const APP_CONFIG = {
   PASSING_SCORE: 70,
   STORAGE_KEY: "aws_sim_",
-};
-
-const DIAGNOSTIC_DOMAIN_ALIASES = {
-  "clf-c02": {
-    "cloud-concepts": "conceitos-cloud",
-    "security-compliance": "seguranca",
-    "cloud-storage": "tecnologia",
-    "billing-cost-management": "faturamento",
-  },
-  "saa-c03": {
-    "design-secure-architectures": "seguranca-aplicacoes",
-    "design-resilient-architectures": "design-resiliente",
-    "design-high-performing-architectures": "design-performance",
-    "design-cost-optimized-architectures": "design-custo",
-  },
-  "dva-c02": {
-    development: "desenvolvimento-servicos",
-    security: "seguranca-app",
-    deployment: "implementacao",
-    "troubleshooting-performance": "resolucao-problemas",
-  },
 };
 
 const engine = new QuizEngine(APP_CONFIG.PASSING_SCORE);
@@ -1021,7 +1004,9 @@ async function startPersonalizedDiagnosticQuiz() {
     uiState.currentMode = "review";
 
     const weakDomainIds = getQuizDomainIdsForDiagnosticDomains(
-      lastDiagnosticRecommendation.weakDomains.map((domain) => domain.id),
+      lastDiagnosticRecommendation.weakDomains.map((domain) =>
+        typeof domain === "string" ? domain : domain.id,
+      ),
       certId,
     );
 
@@ -2151,19 +2136,25 @@ function renderDiagnosticReport(results) {
   const resultsScreen = document.getElementById("screen-results");
   resultsScreen.innerHTML = "";
 
-  const weakDomains = identifyWeakDomains(
-    results.domainScores,
-    uiState.currentCertificationInfo?.domains || [],
-  ).map((domain) => ({
-    ...domain,
-    name: getDiagnosticDomainName(domain.id, results.certId),
-  }));
+  const weakDomainIds = new Set(results.weakDomains || []);
+  const weakDomains = (results.domainResults || [])
+    .filter((domain) => weakDomainIds.has(domain.domainId || domain.id))
+    .map((domain) => {
+    const domainId = domain.domainId || domain.id;
+    return {
+      id: domainId,
+      domainId,
+      name: getDomainDefinition(results.certId, domainId)?.labelPt || domainId,
+      score: domain.score,
+      percentage: domain.score,
+    };
+  });
 
   lastDiagnosticRecommendation =
     weakDomains.length > 0
       ? {
           certificationId: results.certId,
-          weakDomains,
+          weakDomains: weakDomains.map((domain) => domain.id),
           generatedAt: new Date().toISOString(),
           source: "diagnostic",
         }
@@ -2176,13 +2167,15 @@ function renderDiagnosticReport(results) {
             <h3 class="font-black mb-3 flex items-center gap-2">
                 <i class="fa-solid fa-bullseye"></i> ${t("weak_domains_title", uiState.language)}
             </h3>
-            <div class="flex flex-wrap gap-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 ${weakDomains
                   .map(
                     (domain) => `
-                    <span class="a3-skill-badge a3-skill-badge-danger">
-                        ${domain.name} - ${domain.percentage.toFixed(0)}%
-                    </span>
+                    <div class="a3-stat-card a3-stat-card-warning text-left">
+                        <strong class="block text-main">${domain.name}</strong>
+                        <span class="block text-sm text-muted">${t("diagnostic_domain_performance", uiState.language, { score: domain.score.toFixed(0) })}</span>
+                        <span class="block text-xs font-bold text-orange-600 mt-1">${t("diagnostic_review_priority", uiState.language)}</span>
+                    </div>
                 `,
                   )
                   .join("")}
@@ -2214,7 +2207,7 @@ function renderDiagnosticReport(results) {
     const scoreData = results.domainScores[domain.id];
     if (scoreData && scoreData.total > 0) {
       const pct = (scoreData.correct / scoreData.total) * 100;
-      const isWeak = pct < 60;
+      const isWeak = pct < DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD;
 
       const cardColor = isWeak
         ? "a3-stat-card a3-stat-card-warning"
@@ -2250,7 +2243,7 @@ function renderDiagnosticReport(results) {
             ${
               weakDomains.length > 0
                 ? `<button id="btn-diagnostic-to-flashcards" class="a3-button-secondary py-3 px-6 text-base w-auto">
-                    <i class="fa-solid fa-layer-group mr-2"></i> Estudar com Flashcards
+                    <i class="fa-solid fa-layer-group mr-2"></i> ${t("review_recommended_flashcards", uiState.language)}
                 </button>
                 <button id="btn-diagnostic-to-questions" class="a3-button-primary py-3 px-6 text-base w-auto">
                     <i class="fa-solid fa-play mr-2"></i> Praticar Questões
@@ -2731,26 +2724,15 @@ function getDomainName(id) {
 }
 
 function getQuizDomainIdsForDiagnosticDomains(domainIds, certId) {
-  const aliases = DIAGNOSTIC_DOMAIN_ALIASES[certId] || {};
   const resolvedIds = [];
 
   domainIds.forEach((domainId) => {
     if (!domainId) return;
-    resolvedIds.push(domainId);
-    if (aliases[domainId]) resolvedIds.push(aliases[domainId]);
+    const canonicalId = normalizeDomain(certId, domainId);
+    if (canonicalId) resolvedIds.push(canonicalId);
   });
 
   return [...new Set(resolvedIds)];
-}
-
-function getDiagnosticDomainName(domainId, certId) {
-  const quizDomainId =
-    DIAGNOSTIC_DOMAIN_ALIASES[certId]?.[domainId] || domainId;
-  const domain = certificationPaths[certId]?.domains?.find(
-    (item) => item.id === quizDomainId,
-  );
-
-  return domain?.name || domainId;
 }
 
 function initTheme() {
