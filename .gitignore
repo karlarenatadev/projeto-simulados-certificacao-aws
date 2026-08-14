@@ -21,7 +21,5 @@ env/
 .DS_Store
 Thumbs.db
 .vscode/
-.pglite-data
-.pglite-data-backup
+.pglite-*
 /archive/
-.pglite-data-new

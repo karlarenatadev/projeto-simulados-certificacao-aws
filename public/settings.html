@@ -16,7 +16,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=mst19oia" />
+    <link rel="stylesheet" href="./css/style.css?v=mst5wzxb" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -364,6 +364,30 @@
         </div>
       </div>
 
+      <div id="validator-request-group" class="settings-group hidden">
+        <p class="settings-group-title">Acesso de Validator</p>
+        <div class="settings-card">
+          <div class="settings-item">
+            <div class="settings-item-body">
+              <p class="settings-item-label">Solicitar acesso por certificação</p>
+              <p class="settings-item-hint">Envie Credential ID ou URL para análise de um Admin.</p>
+            </div>
+          </div>
+          <div class="settings-item">
+            <select id="validator-request-certification" class="settings-select" aria-label="Certificação">
+              <option value="CLF-C02">CLF-C02</option>
+              <option value="SAA-C03">SAA-C03</option>
+              <option value="DVA-C02">DVA-C02</option>
+              <option value="AIF-C01">AIF-C01</option>
+            </select>
+            <input id="validator-request-credential-id" class="settings-input" placeholder="Credential ID (opcional)" />
+            <input id="validator-request-credential-url" class="settings-input" placeholder="URL da credencial (opcional)" />
+            <button id="validator-request-submit" class="a3-btn a3-btn-outline">Solicitar</button>
+          </div>
+          <p id="validator-request-status" class="settings-item-hint"></p>
+        </div>
+      </div>
+
       <!-- Barra de salvar -->
       <div class="settings-save-bar">
         <button
@@ -404,6 +428,7 @@
       import { initShell } from "./js/shell.js";
       import { authGuard } from "./js/core/authGuard.js";
       import { getCurrentLanguage, setCurrentLanguage } from "./js/core/languageManager.js";
+      import apiService from "./js/services/api.js";
 
       // ── Chaves de preferências ────────────────────────────────────────────
       const THEME_KEY = "aws_sim_theme";
@@ -526,6 +551,32 @@
         const user = session.user;
         initShell(user);
         loadPreferences(user);
+        const requestGroup = document.getElementById("validator-request-group");
+        const requestStatus = document.getElementById("validator-request-status");
+        if (user.role === "student") {
+          requestGroup?.classList.remove("hidden");
+          try {
+            const response = await apiService.getValidatorRequests();
+            const ownRequests = response.data || [];
+            requestStatus.textContent = ownRequests.length
+              ? ownRequests.map((item) => `${item.certification_id}: ${item.status}`).join(" · ")
+              : "Nenhuma solicitação enviada.";
+          } catch {
+            requestStatus.textContent = "Solicitações disponíveis somente com o backend ativo.";
+          }
+        }
+        document.getElementById("validator-request-submit")?.addEventListener("click", async () => {
+          try {
+            await apiService.createValidatorRequest({
+              certification_id: document.getElementById("validator-request-certification").value,
+              credential_id: document.getElementById("validator-request-credential-id").value,
+              credential_url: document.getElementById("validator-request-credential-url").value,
+            });
+            requestStatus.textContent = "Solicitação enviada: PENDING";
+          } catch (error) {
+            requestStatus.textContent = error.message || "Não foi possível enviar a solicitação.";
+          }
+        });
 
         // Salvar
         document

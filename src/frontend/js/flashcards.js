@@ -150,7 +150,9 @@ function renderDiagnosticContext(context, count = 0, fallback = false) {
 function clearDiagnosticRecommendation() {
   if (!flashcardState.diagnosticContext) return;
 
-  sessionStorage.removeItem("aws_sim_diagnostic_context");
+  sessionStorage.removeItem(
+    storageManager.getUserScopedKey("diagnostic_context"),
+  );
   flashcardState.diagnosticContext = null;
   flashcardState.diagnosticDomainIds = null;
   flashcardState.diagnosticFallback = false;
@@ -181,7 +183,7 @@ export function startFlashcards(showScreenFn) {
   const categorySelect = document.getElementById("flashcard-category");
   const certSelect = document.getElementById("certification-select");
   const diagnosticCtx = parseDiagnosticContext(
-    sessionStorage.getItem("aws_sim_diagnostic_context"),
+    sessionStorage.getItem(storageManager.getUserScopedKey("diagnostic_context")),
   );
 
   if (diagnosticCtx && certSelect) {
@@ -240,13 +242,17 @@ export function startFlashcards(showScreenFn) {
       const backBtn = document.getElementById("btn-flashcards-back-diagnostic");
       if(backBtn) {
         backBtn.onclick = () => {
-          sessionStorage.removeItem("aws_sim_diagnostic_context");
+          sessionStorage.removeItem(
+            storageManager.getUserScopedKey("diagnostic_context"),
+          );
           window.location.href = "./index.html"; 
         };
       }
     } catch(e) {
       logger.error(e);
-      sessionStorage.removeItem("aws_sim_diagnostic_context");
+      sessionStorage.removeItem(
+        storageManager.getUserScopedKey("diagnostic_context"),
+      );
       flashcardState.diagnosticContext = null;
       flashcardState.diagnosticDomainIds = null;
       if (banner) banner.classList.add("hidden");

@@ -123,6 +123,35 @@ function loadSchema() {
   return schemaSql;
 }
 
+const REQUIRED_SCHEMA_TABLES = [
+  'users',
+  'domains',
+  'questions',
+  'quiz_history',
+  'answers',
+  'gamification',
+  'focus_sessions',
+  'aws_services',
+  'cases',
+  'case_progress',
+  'validator_requests',
+  'validator_certifications',
+  'role_audit_log',
+];
+
+async function hasCurrentSchema(database) {
+  const placeholders = REQUIRED_SCHEMA_TABLES.map((_, index) => `$${index + 1}`).join(', ');
+  const result = await database.query(
+    `SELECT COUNT(*)::int AS count
+       FROM information_schema.tables
+      WHERE table_schema = 'public'
+        AND table_name IN (${placeholders})`,
+    REQUIRED_SCHEMA_TABLES,
+  );
+
+  return Number(result.rows[0]?.count || 0) === REQUIRED_SCHEMA_TABLES.length;
+}
+
 /**
  * Initialize database connection
  * @param {Object} options - Configuration options
@@ -153,8 +182,12 @@ export async function initializeDatabase(options = {}) {
       database = await PGlite.create({ dataDir: databaseOptions.dataDir });
       console.log('[database] PGlite instance ready');
 
-      await database.exec(loadSchema());
-      console.log('[database] Schema applied successfully');
+      if (await hasCurrentSchema(database)) {
+        console.log('[database] Current schema detected; skipped full schema re-application');
+      } else {
+        await database.exec(loadSchema());
+        console.log('[database] Schema applied successfully');
+      }
 
       db = database;
       return db;
@@ -1144,6 +1177,212 @@ export async function updateUser(userId, data) {
   }
 }
 
+const ACCESS_CERTIFICATIONS = new Set(['CLF-C02', 'SAA-C03', 'DVA-C02', 'AIF-C01']);
+const ACCESS_ROLES = new Set(['STUDENT', 'VALIDATOR', 'ADMIN']);
+
+function normalizeAccessCertification(certificationId) {
+  const normalized = normalizeCertificationId(certificationId);
+  if (!ACCESS_CERTIFICATIONS.has(normalized)) {
+    const error = new Error(`Unsupported validator certification: ${certificationId}`);
+    error.statusCode = 400;
+    throw error;
+  }
+  return normalized;
+}
+
+function normalizeAccessRole(role) {
+  const normalized = String(role || '').toUpperCase().trim();
+  if (!ACCESS_ROLES.has(normalized)) throw new Error(`role must be one of: ${[...ACCESS_ROLES].join(', ')}`);
+  return normalized;
+}
+
+export async function listUsers({ search = '', limit = 50, offset = 0 } = {}) {
+  const normalizedLimit = Math.min(Math.max(Number.parseInt(limit, 10) || 50, 1), 100);
+  const normalizedOffset = Math.max(Number.parseInt(offset, 10) || 0, 0);
+  const term = String(search || '').trim();
+  return executeQuery(`
+    SELECT u.id, u.email, u.full_name, u.nickname, u.role, u.is_active,
+           u.last_login, u.created_at, u.updated_at,
+           COALESCE(json_agg(json_build_object(
+             'certification_id', vc.certification_id,
+             'is_active', vc.is_active,
+             'verified_at', vc.verified_at
+           ) ORDER BY vc.certification_id) FILTER (WHERE vc.user_id IS NOT NULL), '[]') AS validator_certifications
+    FROM users u
+    LEFT JOIN validator_certifications vc ON vc.user_id = u.id AND vc.is_active = TRUE
+    WHERE ($1 = '' OR LOWER(COALESCE(u.email, '')) LIKE LOWER('%' || $1 || '%')
+       OR LOWER(COALESCE(u.full_name, '')) LIKE LOWER('%' || $1 || '%')
+       OR LOWER(COALESCE(u.nickname, '')) LIKE LOWER('%' || $1 || '%'))
+    GROUP BY u.id
+    ORDER BY u.created_at DESC
+    LIMIT $2 OFFSET $3
+  `, [term, normalizedLimit, normalizedOffset]);
+}
+
+export async function getValidatorCertifications(userId, activeOnly = true) {
+  const normalizedUserId = normalizeUserId(userId);
+  return executeQuery(`
+    SELECT user_id, certification_id, verified_by, verified_at, source_request_id, is_active
+    FROM validator_certifications
+    WHERE user_id = $1 ${activeOnly ? 'AND is_active = TRUE' : ''}
+    ORDER BY certification_id
+  `, [normalizedUserId]);
+}
+
+export async function removeValidatorCertification(actorUserId, targetUserId, certificationId) {
+  const actor = await getUserById(actorUserId);
+  if (!actor || actor.role !== 'ADMIN') throw new Error('ADMIN access required');
+  const normalizedCertification = normalizeAccessCertification(certificationId);
+  const result = await executeQuery(`
+    UPDATE validator_certifications
+    SET is_active = FALSE
+    WHERE user_id = $1 AND certification_id = $2 AND is_active = TRUE
+    RETURNING *
+  `, [normalizeUserId(targetUserId), normalizedCertification]);
+  if (result[0]) {
+    await recordRoleAudit(actorUserId, targetUserId, 'VALIDATOR_CERTIFICATION_REMOVED', null, null, normalizedCertification);
+  }
+  return result[0] || null;
+}
+
+export async function canUserValidateCertification(userId, certificationId) {
+  const normalizedCertification = normalizeAccessCertification(certificationId);
+  const user = await getUserById(userId);
+  if (!user || user.is_active === false) return false;
+  if (user.role === 'ADMIN') return true;
+  if (user.role !== 'VALIDATOR') return false;
+  const rows = await executeQuery(
+    'SELECT 1 FROM validator_certifications WHERE user_id = $1 AND certification_id = $2 AND is_active = TRUE LIMIT 1',
+    [normalizeUserId(userId), normalizedCertification],
+  );
+  return rows.length > 0;
+}
+
+export async function createValidatorRequest(userId, data = {}) {
+  const normalizedUserId = normalizeUserId(userId);
+  const certificationId = normalizeAccessCertification(data.certification_id ?? data.certificationId);
+  const user = await getUserById(normalizedUserId);
+  if (!user || user.is_active === false) {
+    const error = new Error('Active user is required');
+    error.statusCode = 403;
+    throw error;
+  }
+  if (user.role !== 'STUDENT') {
+    const error = new Error('Only STUDENT users can request validator access');
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const existing = await executeQuery(
+    'SELECT id FROM validator_requests WHERE user_id = $1 AND certification_id = $2 AND status = \'PENDING\' LIMIT 1',
+    [normalizedUserId, certificationId],
+  );
+  if (existing.length > 0) {
+    const error = new Error('A pending request already exists for this certification');
+    error.statusCode = 409;
+    throw error;
+  }
+
+  const result = await executeQuery(`
+    INSERT INTO validator_requests (user_id, certification_id, credential_id, credential_url, notes)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING *
+  `, [
+    normalizedUserId,
+    certificationId,
+    data.credential_id ? String(data.credential_id).trim().slice(0, 200) : null,
+    data.credential_url ? String(data.credential_url).trim() : null,
+    data.notes ? String(data.notes).trim() : null,
+  ]);
+  return result[0] || null;
+}
+
+export async function listValidatorRequests({ userId = null, status = null } = {}) {
+  const params = [];
+  const filters = [];
+  if (userId) { params.push(normalizeUserId(userId)); filters.push(`vr.user_id = $${params.length}`); }
+  if (status) { params.push(String(status).toUpperCase()); filters.push(`vr.status = $${params.length}`); }
+  return executeQuery(`
+    SELECT vr.*, u.email, u.full_name, u.nickname, u.role
+    FROM validator_requests vr
+    JOIN users u ON u.id = vr.user_id
+    ${filters.length ? `WHERE ${filters.join(' AND ')}` : ''}
+    ORDER BY vr.requested_at DESC
+  `, params);
+}
+
+export async function reviewValidatorRequest(requestId, reviewerId, status, reviewNotes = null) {
+  const normalizedStatus = String(status || '').toUpperCase();
+  if (!['APPROVED', 'REJECTED'].includes(normalizedStatus)) {
+    const error = new Error('status must be APPROVED or REJECTED');
+    error.statusCode = 400;
+    throw error;
+  }
+  const requestRows = await executeQuery('SELECT * FROM validator_requests WHERE id = $1 LIMIT 1', [normalizeRequiredString(requestId, 'requestId')]);
+  const request = requestRows[0];
+  if (!request) { const error = new Error('Validator request not found'); error.statusCode = 404; throw error; }
+  if (request.status !== 'PENDING') { const error = new Error('Only PENDING requests can be reviewed'); error.statusCode = 409; throw error; }
+
+  const reviewer = await getUserById(reviewerId);
+  if (!reviewer || reviewer.role !== 'ADMIN') throw new Error('ADMIN reviewer required');
+  const updatedRows = await executeQuery(`
+    UPDATE validator_requests
+    SET status = $1, reviewed_at = CURRENT_TIMESTAMP, reviewed_by = $2, review_notes = $3
+    WHERE id = $4 AND status = 'PENDING'
+    RETURNING *
+  `, [normalizedStatus, normalizeUserId(reviewerId), reviewNotes ? String(reviewNotes).trim() : null, request.id]);
+  const updated = updatedRows[0];
+
+  if (normalizedStatus === 'APPROVED') {
+    await executeQuery(`
+      INSERT INTO validator_certifications (user_id, certification_id, verified_by, source_request_id, is_active)
+      VALUES ($1, $2, $3, $4, TRUE)
+      ON CONFLICT (user_id, certification_id)
+      DO UPDATE SET verified_by = EXCLUDED.verified_by, verified_at = CURRENT_TIMESTAMP,
+                    source_request_id = EXCLUDED.source_request_id, is_active = TRUE
+    `, [request.user_id, request.certification_id, normalizeUserId(reviewerId), request.id]);
+    const target = await getUserById(request.user_id);
+    if (target?.role === 'STUDENT') {
+      await updateUser(target.id, { role: 'VALIDATOR' });
+      await recordRoleAudit(reviewerId, target.id, 'VALIDATOR_REQUEST_APPROVED', 'STUDENT', 'VALIDATOR', request.certification_id, { requestId: request.id });
+    }
+    await recordRoleAudit(reviewerId, request.user_id, 'VALIDATOR_CERTIFICATION_ADDED', target?.role || null, target?.role || null, request.certification_id, { requestId: request.id });
+  } else {
+    await recordRoleAudit(reviewerId, request.user_id, 'VALIDATOR_REQUEST_REJECTED', null, null, request.certification_id, { requestId: request.id });
+  }
+  return updated;
+}
+
+export async function recordRoleAudit(actorUserId, targetUserId, action, oldRole = null, newRole = null, certificationId = null, metadata = {}) {
+  const result = await executeQuery(`
+    INSERT INTO role_audit_log (actor_user_id, target_user_id, action, old_role, new_role, certification_id, metadata)
+    VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
+    RETURNING *
+  `, [normalizeUserId(actorUserId), normalizeUserId(targetUserId), String(action), oldRole, newRole, certificationId, JSON.stringify(metadata)]);
+  return result[0] || null;
+}
+
+export async function changeUserAccess(actorUserId, targetUserId, { role, is_active } = {}) {
+  const actor = await getUserById(actorUserId);
+  const target = await getUserById(targetUserId);
+  if (!actor || actor.role !== 'ADMIN') throw new Error('ADMIN access required');
+  if (!target) { const error = new Error('Target user not found'); error.statusCode = 404; throw error; }
+  const nextRole = role === undefined ? target.role : normalizeAccessRole(role);
+  const nextActive = is_active === undefined ? target.is_active : Boolean(is_active);
+  if (target.role === 'ADMIN' && target.is_active && (nextRole !== 'ADMIN' || !nextActive)) {
+    const admins = await executeQuery("SELECT COUNT(*)::int AS count FROM users WHERE role = 'ADMIN' AND is_active = TRUE");
+    if (Number(admins[0]?.count || 0) <= 1) {
+      const error = new Error('The last active ADMIN cannot be demoted or disabled');
+      error.statusCode = 409;
+      throw error;
+    }
+  }
+  const updated = await updateUser(target.id, { role: nextRole, is_active: nextActive });
+  if (target.role !== nextRole) await recordRoleAudit(actor.id, target.id, 'ROLE_CHANGED', target.role, nextRole);
+  if (target.is_active !== nextActive) await recordRoleAudit(actor.id, target.id, nextActive ? 'USER_ENABLED' : 'USER_DISABLED', target.role, target.role);
+  return updated;
+}
+
 // ============================================================================
 // GAMIFICATION - CRUD Operations
 // ============================================================================
@@ -1914,6 +2153,9 @@ export async function getWeakDomains(userId, threshold = DEFAULT_WEAK_DOMAIN_THR
 export async function getPendingQuestions(options = {}) {
   const limit = normalizeLimit(options.limit, DEFAULT_QUESTION_LIMIT);
   const offset = normalizeOffset(options.offset);
+  const certification = options.certification
+    ? normalizeCertificationId(options.certification)
+    : null;
 
   try {
     return await executeQuery(`
@@ -1921,9 +2163,10 @@ export async function getPendingQuestions(options = {}) {
       FROM questions
       WHERE is_active = TRUE
         AND validation_status = 'PENDING'
+        AND ($3::text IS NULL OR certification::text = $3)
       ORDER BY created_at ASC
       LIMIT $1 OFFSET $2
-    `, [limit, offset]);
+    `, [limit, offset, certification]);
   } catch (error) {
     console.error("Erro ao buscar questões pendentes:", error);
     throw error;

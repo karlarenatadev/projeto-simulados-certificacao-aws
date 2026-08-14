@@ -2,6 +2,7 @@ import { logger } from "./utils/logger.js";
 import apiService from "./services/api.js";
 import { createDataRepository } from "./dataRepository.js";
 import { generateQuestionId } from "./utils/questionIdentity.js";
+import { SessionManager } from "./core/sessionManager.js";
 
 /**
  * StorageManager - Gerencia toda a persistência de dados do simulador
@@ -31,7 +32,43 @@ export class StorageManager {
    * @returns {string} Chave completa com prefixo
    */
   _getKey(suffix) {
-    return `${this.prefix}${suffix}`;
+    const userId = this.getCurrentUserId();
+    const scope = userId ? `user:${encodeURIComponent(userId)}:` : "";
+    return `${this.prefix}${scope}${suffix}`;
+  }
+
+  /**
+   * Retorna exclusivamente o id da sessão oficial atual.
+   * Sem sessão, o armazenamento permanece no contexto guest legado.
+   */
+  getCurrentUserId() {
+    return SessionManager.restore()?.user?.id || null;
+  }
+
+  getStorageContext() {
+    const userId = this.getCurrentUserId();
+    return userId ? `user:${userId}` : "guest";
+  }
+
+  getUserScopedKey(key) {
+    return this._getKey(key);
+  }
+
+  getUserData(key, storage = globalThis.localStorage) {
+    if (!storage) return null;
+    return storage.getItem(this.getUserScopedKey(key));
+  }
+
+  setUserData(key, value, storage = globalThis.localStorage) {
+    if (!storage) return false;
+    storage.setItem(this.getUserScopedKey(key), value);
+    return true;
+  }
+
+  removeUserData(key, storage = globalThis.localStorage) {
+    if (!storage) return false;
+    storage.removeItem(this.getUserScopedKey(key));
+    return true;
   }
 
   _getResultIdentity(result) {
@@ -302,7 +339,7 @@ export class StorageManager {
       logger.error("Erro ao carregar SprintState:", error);
     }
     return {
-      userId: this.getUserId ? this.getUserId() : "local",
+      userId: this.getCurrentUserId() || "guest",
       activePathId: certId,
       completedStages: [],
       unlockedStages: ["1"],
@@ -1005,9 +1042,10 @@ export class StorageManager {
    */
   clearAll() {
     try {
+      const scopedPrefix = this._getKey("");
       const keys = Object.keys(localStorage);
       keys.forEach((key) => {
-        if (key.startsWith(this.prefix)) {
+        if (key.startsWith(scopedPrefix)) {
           localStorage.removeItem(key);
         }
       });
@@ -1030,10 +1068,11 @@ export class StorageManager {
   exportData() {
     try {
       const data = {};
+      const scopedPrefix = this._getKey("");
       const keys = Object.keys(localStorage);
 
       keys.forEach((key) => {
-        if (key.startsWith(this.prefix)) {
+        if (key.startsWith(scopedPrefix)) {
           data[key] = localStorage.getItem(key);
         }
       });
@@ -1231,8 +1270,9 @@ export class StorageManager {
    */
   importData(data) {
     try {
+      const scopedPrefix = this._getKey("");
       Object.entries(data).forEach(([key, value]) => {
-        if (key.startsWith(this.prefix)) {
+        if (key.startsWith(scopedPrefix)) {
           localStorage.setItem(key, value);
         }
       });

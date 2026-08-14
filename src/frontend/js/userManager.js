@@ -44,6 +44,8 @@ export const userManager = {
         const user = UserMapper.fromDTO(response.data);
         const session = {
           user,
+          accessToken: response.data.access_token || null,
+          tokenExpiresIn: response.data.expires_in || null,
           authenticationMode: "online",
           provider: "backend",
         };
@@ -117,4 +119,3 @@ export const userManager = {
 };
 
 export default userManager;
-

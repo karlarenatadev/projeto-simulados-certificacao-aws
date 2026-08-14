@@ -7,6 +7,7 @@ import { logger } from "../utils/logger.js";
 import { AuthService } from "../services/authService.js";
 import { normalizeCertificationId } from "../utils/certUtils.js";
 import { normalizeLabIdentity, normalizeServiceId } from "../utils/serviceIdentity.js";
+import { storageManager } from "../storageManager.js";
 
 let allLabs = [];
 let diagnosticContextActive = false;
@@ -14,7 +15,10 @@ let diagnosticRecommendedLabIds = null;
 
 export function readLabsRecommendation(storage = globalThis.localStorage) {
   try {
-    const raw = storage?.getItem("aws_sim_last_diagnostic_recommendation");
+    const key = storage === globalThis.localStorage
+      ? storageManager.getUserScopedKey("last_diagnostic_recommendation")
+      : "aws_sim_last_diagnostic_recommendation";
+    const raw = storage?.getItem(key);
     const recommendation = raw ? JSON.parse(raw) : null;
     const context = recommendation?.recommendations?.labs?.context;
     if (
@@ -309,8 +313,7 @@ function toggleCompleted(labId) {
 }
 
 function getCompletedLabsStorageKey() {
-  const userId = AuthService.getCurrentUser()?.id || "guest";
-  return `aws_sim_completed_labs_${userId}`;
+  return storageManager.getUserScopedKey("completed_labs");
 }
 
 function getCompletedLabs() {

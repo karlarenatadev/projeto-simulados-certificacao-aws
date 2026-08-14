@@ -9,6 +9,7 @@ import { logger } from "./utils/logger.js";
 
 import apiService from "./services/api.js";
 import { normalizeCertificationId } from "./utils/certUtils.js";
+import { storageManager } from "./storageManager.js";
 
 /**
  * Quiz Manager Object
@@ -202,7 +203,9 @@ export const quizManager = {
    */
   _saveAnswerLocally(record) {
     try {
-      const key = `aws_sim_ans_${this.currentQuizId}_${record.question_id}`;
+      const key = storageManager.getUserScopedKey(
+        `ans_${this.currentQuizId}_${record.question_id}`,
+      );
       localStorage.setItem(key, JSON.stringify(record));
     } catch (error) {
       logger.error("Error saving answer locally:", error);
@@ -215,7 +218,7 @@ export const quizManager = {
    */
   _markAnswerSynced(quizId, questionId) {
     try {
-      const key = `aws_sim_ans_${quizId}_${questionId}`;
+      const key = storageManager.getUserScopedKey(`ans_${quizId}_${questionId}`);
       const data = localStorage.getItem(key);
       if (data) {
         const parsed = JSON.parse(data);
@@ -234,7 +237,7 @@ export const quizManager = {
    */
   _getLocalResults() {
     try {
-      const prefix = `aws_sim_ans_${this.currentQuizId}_`;
+      const prefix = storageManager.getUserScopedKey(`ans_${this.currentQuizId}_`);
       const answers = [];
 
       for (let i = 0; i < localStorage.length; i++) {

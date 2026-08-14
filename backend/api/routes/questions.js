@@ -17,6 +17,8 @@ import {
   searchQuestions,
   getPendingQuestions,
   validateQuestion,
+  canUserValidateCertification,
+  getValidatorCertifications,
 } from '../../database/db.js';
 import { requireAuth, requireRole } from '../middleware/requireRole.js';
 
@@ -90,10 +92,6 @@ function validateValidationPayload(payload = {}) {
     errors.push('status must be one of: APPROVED, REJECTED');
   }
 
-  if (!validator) {
-    errors.push('validated_by is required');
-  }
-
   if (status === 'REJECTED' && rejectionReason.length < 10) {
     errors.push('rejection_reason with at least 10 characters is required when rejecting');
   }
@@ -103,7 +101,7 @@ function validateValidationPayload(payload = {}) {
     data: {
       status,
       rejection_reason: status === 'REJECTED' ? rejectionReason : null,
-      validated_by: validator,
+      validated_by: validator || null,
     },
   };
 }
@@ -115,7 +113,18 @@ function validateValidationPayload(payload = {}) {
 router.get('/pending', requireRole('VALIDATOR', 'ADMIN'), async (req, res, next) => {
   try {
     const { limit = 50, offset = 0 } = req.query;
-    const questions = await getPendingQuestions({ limit, offset });
+    let questions = await getPendingQuestions({ limit, offset });
+    if (req.user.role === 'VALIDATOR') {
+      const certifications = await getValidatorCertifications(req.user.id);
+      questions = [];
+      for (const certification of certifications) {
+        questions.push(...await getPendingQuestions({
+          limit,
+          offset,
+          certification: certification.certification_id,
+        }));
+      }
+    }
 
     res.status(200).json({
       success: true,
@@ -149,7 +158,15 @@ router.post('/:id/validate', requireRole('VALIDATOR', 'ADMIN'), async (req, res,
       throw createHttpError(400, errors.join('; '));
     }
 
-    const question = await validateQuestion(id, data.validated_by, data.status, data.rejection_reason);
+    const existingQuestion = await getQuestionById(id);
+    if (!existingQuestion) {
+      throw createHttpError(404, `Question with ID ${id} not found`);
+    }
+    if (!(await canUserValidateCertification(req.user.id, existingQuestion.certification))) {
+      throw createHttpError(403, 'Validator is not authorized for this certification');
+    }
+
+    const question = await validateQuestion(id, req.user.id, data.status, data.rejection_reason);
     if (!question) {
       throw createHttpError(404, `Question with ID ${id} not found`);
     }
@@ -248,7 +265,7 @@ router.get('/:id', async (req, res, next) => {
 // POST /api/questions - Create new question
 // ============================================================================
 
-router.post('/', requireAuth, async (req, res, next) => {
+router.post('/', requireRole('VALIDATOR', 'ADMIN'), async (req, res, next) => {
   try {
     const payload = req.body;
 
@@ -286,7 +303,7 @@ router.post('/', requireAuth, async (req, res, next) => {
 // PUT /api/questions/:id - Update question
 // ============================================================================
 
-router.put('/:id', requireAuth, async (req, res, next) => {
+router.put('/:id', requireRole('VALIDATOR', 'ADMIN'), async (req, res, next) => {
   try {
     const { id } = req.params;
     const updates = req.body;

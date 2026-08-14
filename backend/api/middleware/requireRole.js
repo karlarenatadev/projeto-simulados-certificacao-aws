@@ -20,6 +20,7 @@
  */
 
 import { getUserById } from '../../../backend/database/db.js';
+import { verifySessionToken } from '../services/sessionToken.js';
 
 /**
  * Carrega o usuário a partir do header X-User-Id e anexa a req.user.
@@ -44,17 +45,21 @@ export async function requireAuth(req, res, next) {
     return next();
   }
 
-  const userId = req.headers['x-user-id'];
+  const authorization = req.headers.authorization || '';
+  const token = authorization.startsWith('Bearer ')
+    ? authorization.slice('Bearer '.length).trim()
+    : null;
+  const claims = verifySessionToken(token);
 
-  if (!userId) {
+  if (!claims?.sub) {
     return res.status(401).json({
-      error: 'Autenticação necessária. Faça login em POST /api/auth/login.',
+      error: 'Credencial ausente, inválida ou expirada.',
       status: 401,
     });
   }
 
   try {
-    const user = await getUserById(userId);
+    const user = await getUserById(claims.sub);
 
     if (!user || user.is_active === false) {
       return res.status(401).json({

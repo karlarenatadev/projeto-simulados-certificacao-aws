@@ -18,6 +18,7 @@ import quizzesRoutes from './routes/quizzes.js';
 import usersRoutes from './routes/users.js';
 import authRoutes from './routes/auth.js';
 import casesRoutes, { servicesRouter } from './routes/cases.js';
+import accessRoutes from './routes/access.js';
 
 const app = express();
 const API_PORT = Number.parseInt(process.env.PORT, 10) || 3001;
@@ -91,6 +92,7 @@ app.use('/api/questions', questionsRoutes);
 app.use('/api/quiz', quizzesRoutes);
 app.use('/api/quizzes', quizzesRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/access', accessRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/cases', casesRoutes);
 app.use('/api/services', servicesRouter);

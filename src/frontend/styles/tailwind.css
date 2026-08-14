@@ -1104,9 +1104,6 @@
     --tw-gradient-to: var(--color-yellow-500);
     --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
   }
-  .p-2 {
-    padding: calc(var(--spacing) * 2);
-  }
   .p-3 {
     padding: calc(var(--spacing) * 3);
   }
@@ -1301,9 +1298,6 @@
   }
   .whitespace-nowrap {
     white-space: nowrap;
-  }
-  .text-\[\#F53199\] {
-    color: #F53199;
   }
   .text-aws-dark {
     color: var(--color-aws-dark);
@@ -1694,14 +1688,6 @@
     .hover\:bg-slate-800:hover {
       background-color: var(--color-slate-800);
     }
-    .hover\:bg-white\/10:hover {
-      background-color: color-mix(in srgb, #fff 10%, transparent);
-    }
-    @supports (color: color-mix(in lab, red, red)) {
-      .hover\:bg-white\/10:hover {
-        background-color: color-mix(in oklab, var(--color-white) 10%, transparent);
-      }
-    }
     .hover\:to-yellow-600:hover {
       --tw-gradient-to: var(--color-yellow-600);
       --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
@@ -1755,9 +1741,6 @@
     --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
-  .focus\:ring-\[\#F53199\]\/50:focus {
-    --tw-ring-color: color-mix(in oklab, #F53199 50%, transparent);
-  }
   .focus\:ring-aws-orange:focus {
     --tw-ring-color: var(--color-aws-orange);
   }
@@ -1773,12 +1756,6 @@
   .focus\:outline-none:focus {
     --tw-outline-style: none;
     outline-style: none;
-  }
-  .active\:scale-95:active {
-    --tw-scale-x: 95%;
-    --tw-scale-y: 95%;
-    --tw-scale-z: 95%;
-    scale: var(--tw-scale-x) var(--tw-scale-y);
   }
   .disabled\:opacity-60:disabled {
     opacity: 60%;

@@ -15,11 +15,7 @@ import { ModalService } from "./services/modalService.js";
 import { NotificationService } from "./services/notificationService.js";
 import { initUIRenderer } from "./uiRenderer.js";
 import { ShowcaseService } from "./services/showcaseService.js";
-import {
-  DIAGNOSTIC_RECOMMENDATION_STORAGE_KEY,
-  initStudyNow,
-  refreshStudyNow,
-} from "./recommendations/studyNow.js";
+import { initStudyNow, refreshStudyNow } from "./recommendations/studyNow.js";
 import { RecommendationEngine } from "./recommendations/recommendationEngine.js";
 import { storageManager } from "./storageManager.js";
 import { userManager } from "./userManager.js";
@@ -432,7 +428,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // LÓGICA DO DIAGNÓSTICO (Task 6.2): Auto-start quiz personalizado em simulados.html
   if (!isSPAPage() && window.location.pathname.includes("simulados.html")) {
-    const diagnosticCtxStr = sessionStorage.getItem("aws_sim_diagnostic_context");
+    const diagnosticCtxStr = sessionStorage.getItem(
+      storageManager.getUserScopedKey("diagnostic_context"),
+    );
     if (diagnosticCtxStr) {
       try {
         const diagCtx = JSON.parse(diagnosticCtxStr);
@@ -448,7 +446,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         }, 150);
       } catch (e) {
         logger.error(e);
-        sessionStorage.removeItem("aws_sim_diagnostic_context");
+      sessionStorage.removeItem(
+        storageManager.getUserScopedKey("diagnostic_context"),
+      );
       }
     }
   }
@@ -2172,7 +2172,7 @@ function renderDiagnosticReport(results) {
 
   if (lastDiagnosticRecommendation) {
     localStorage.setItem(
-      DIAGNOSTIC_RECOMMENDATION_STORAGE_KEY,
+      storageManager.getUserScopedKey("last_diagnostic_recommendation"),
       JSON.stringify(lastDiagnosticRecommendation),
     );
   }
@@ -2285,7 +2285,7 @@ function renderDiagnosticReport(results) {
     bindClick("btn-diagnostic-to-flashcards", () => {
       if (lastDiagnosticRecommendation) {
         sessionStorage.setItem(
-          "aws_sim_diagnostic_context",
+          storageManager.getUserScopedKey("diagnostic_context"),
           JSON.stringify(
             lastDiagnosticRecommendation.recommendations.flashcards.context,
           ),
@@ -2296,7 +2296,7 @@ function renderDiagnosticReport(results) {
     bindClick("btn-diagnostic-to-questions", () => {
       if (lastDiagnosticRecommendation) {
         sessionStorage.setItem(
-          "aws_sim_diagnostic_context",
+          storageManager.getUserScopedKey("diagnostic_context"),
           JSON.stringify(
             lastDiagnosticRecommendation.recommendations.questions.context,
           ),
@@ -2874,7 +2874,9 @@ function updateValidationBadgeLanguage() {
 
 function goHome() {
   // Limpa o contexto de diagnóstico ao voltar para a home
-  sessionStorage.removeItem("aws_sim_diagnostic_context");
+  sessionStorage.removeItem(
+    storageManager.getUserScopedKey("diagnostic_context"),
+  );
   
   // ========================================================================
   // LIMPEZA COMPLETA DE TIMERS
@@ -3581,7 +3583,7 @@ window.startSmartFlashcards = function (weakDomainsStr) {
   // 1. Salva os domínios fracos temporariamente para consulta na outra tela
   const weakDomainsArray = weakDomainsStr.split(",").filter((d) => d !== "");
   sessionStorage.setItem(
-    "current_study_plan",
+    storageManager.getUserScopedKey("current_study_plan"),
     JSON.stringify(weakDomainsArray),
   );
 
@@ -3604,7 +3606,8 @@ window.startSmartFlashcards = function (weakDomainsStr) {
 };
 
 function renderStudyPlanBanner() {
-  const studyPlanRaw = sessionStorage.getItem("current_study_plan");
+  const studyPlanKey = storageManager.getUserScopedKey("current_study_plan");
+  const studyPlanRaw = sessionStorage.getItem(studyPlanKey);
   if (!studyPlanRaw) return;
 
   const weakDomainsIds = JSON.parse(studyPlanRaw);
@@ -3652,7 +3655,7 @@ function renderStudyPlanBanner() {
                 </div>
             </div>
         </div>
-        <button onclick="this.parentElement.remove(); sessionStorage.removeItem('current_study_plan');" class="absolute top-2 right-2 text-orange-300 hover:text-orange-500">
+        <button onclick="this.parentElement.remove(); sessionStorage.removeItem('${studyPlanKey}');" class="absolute top-2 right-2 text-orange-300 hover:text-orange-500">
             <i class="fa-solid fa-xmark"></i>
         </button>
     `;

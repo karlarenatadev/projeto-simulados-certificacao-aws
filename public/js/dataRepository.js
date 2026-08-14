@@ -141,8 +141,8 @@ export function createDataRepository(storage, _api = null) {
     // Gamificação
     // -------------------------------------------------------------------------
 
-    getGamification() {
-      return storage.getGamification();
+    getGamification(certId = null) {
+      return storage.getGamification(certId);
     },
 
     async updateGamification(percentage) {
@@ -154,8 +154,8 @@ export function createDataRepository(storage, _api = null) {
       return result;
     },
 
-    saveGamification(gamification) {
-      return storage.saveGamification(gamification);
+    saveGamification(gamification, certId = null) {
+      return storage.saveGamification(gamification, certId);
     },
 
     recalculateGamificationFromHistory() {
@@ -229,6 +229,30 @@ export function createDataRepository(storage, _api = null) {
 
     clearFocusHistory() {
       return storage.clearFocusHistory();
+    },
+
+    getCurrentUserId() {
+      return storage.getCurrentUserId();
+    },
+
+    getStorageContext() {
+      return storage.getStorageContext();
+    },
+
+    getUserScopedKey(key) {
+      return storage.getUserScopedKey(key);
+    },
+
+    getUserData(key, storageBackend) {
+      return storage.getUserData(key, storageBackend);
+    },
+
+    setUserData(key, value, storageBackend) {
+      return storage.setUserData(key, value, storageBackend);
+    },
+
+    removeUserData(key, storageBackend) {
+      return storage.removeUserData(key, storageBackend);
     },
 
     // -------------------------------------------------------------------------

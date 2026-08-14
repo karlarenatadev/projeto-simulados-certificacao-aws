@@ -15,6 +15,7 @@
 import { Router } from 'express';
 import { upsertUserByEmail, getGamification } from '../../database/db.js';
 import { requireAuth } from '../middleware/requireRole.js';
+import { createSessionToken, SESSION_TTL_SECONDS } from '../services/sessionToken.js';
 
 const router = Router();
 
@@ -54,6 +55,10 @@ router.post('/login', async (req, res, next) => {
       nickname: nickname || null,
     });
 
+    if (user.is_active === false) {
+      return res.status(403).json({ error: 'Usuário desativado.', status: 403 });
+    }
+
     // Inicializa gamification se ainda não existir (ignora erro de "não encontrado")
     try {
       await getGamification(user.id);
@@ -65,6 +70,9 @@ router.post('/login', async (req, res, next) => {
       success: true,
       message: created ? 'Usuário criado com sucesso.' : 'Login realizado com sucesso.',
       data: {
+        access_token: createSessionToken(user.id),
+        token_type: 'Bearer',
+        expires_in: SESSION_TTL_SECONDS,
         id: user.id,
         email: user.email,
         full_name: user.full_name,

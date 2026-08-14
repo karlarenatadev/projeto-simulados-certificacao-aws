@@ -4,9 +4,16 @@ const VALIDATION_API_BASE_URL = window.VALIDATION_API_BASE_URL
     : '');
 
 async function validationFetch(path, options = {}) {
+  let authHeaders = {};
+  try {
+    const session = JSON.parse(localStorage.getItem('cloudacademy_session') || 'null');
+    if (session?.accessToken) authHeaders = { Authorization: `Bearer ${session.accessToken}` };
+  } catch {
+    // Sessão inválida será rejeitada pela API.
+  }
   const response = await fetch(`${VALIDATION_API_BASE_URL}${path}`, {
     ...options,
-    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+    headers: { 'Content-Type': 'application/json', ...authHeaders, ...(options.headers || {}) },
   });
   const body = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -24,16 +31,33 @@ window.ValidationAPI = {
       body: JSON.stringify({ email }),
     });
   },
-  async fetchPendingQuestions(userId) {
+  async fetchPendingQuestions() {
     const response = await validationFetch('/api/questions/pending', {
-      headers: { 'X-User-Id': userId },
     });
     return { success: response.success !== false, data: response.data || [] };
   },
-  async validateQuestion(id, payload, userId) {
+  async validateQuestion(id, payload) {
     return validationFetch(`/api/questions/${encodeURIComponent(id)}/validate`, {
       method: 'POST',
-      headers: { 'X-User-Id': userId },
+      body: JSON.stringify(payload),
+    });
+  },
+  async listValidatorRequests(status = '') {
+    const query = status ? `?status=${encodeURIComponent(status)}` : '';
+    return validationFetch(`/api/access/validator-requests${query}`);
+  },
+  async reviewValidatorRequest(id, status, review_notes = '') {
+    return validationFetch(`/api/access/validator-requests/${encodeURIComponent(id)}/review`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status, review_notes }),
+    });
+  },
+  async listUsers(search = '') {
+    return validationFetch(`/api/access/admin/users?search=${encodeURIComponent(search)}`);
+  },
+  async updateUserAccess(id, payload) {
+    return validationFetch(`/api/access/admin/users/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
       body: JSON.stringify(payload),
     });
   },

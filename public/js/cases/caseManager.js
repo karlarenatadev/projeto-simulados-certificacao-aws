@@ -8,6 +8,7 @@ import { logger } from "../utils/logger.js";
 import apiService from "../services/api.js";
 import { normalizeCertificationId } from "../utils/certUtils.js";
 import { normalizeServiceId } from "../utils/serviceIdentity.js";
+import { storageManager } from "../storageManager.js";
 
 let apiStatus = {
   apiAvailable: true,
@@ -16,7 +17,10 @@ let apiStatus = {
 
 export function readCasesRecommendation(storage = globalThis.localStorage) {
   try {
-    const raw = storage?.getItem("aws_sim_last_diagnostic_recommendation");
+    const key = storage === globalThis.localStorage
+      ? storageManager.getUserScopedKey("last_diagnostic_recommendation")
+      : "aws_sim_last_diagnostic_recommendation";
+    const raw = storage?.getItem(key);
     const recommendation = raw ? JSON.parse(raw) : null;
     const context = recommendation?.recommendations?.cases?.context;
     if (
@@ -252,9 +256,13 @@ export async function getAwsServices(category) {
 
 const COMPLETED_KEY = "cases:completed";
 
+function getCompletedCasesKey() {
+  return storageManager.getUserScopedKey(COMPLETED_KEY);
+}
+
 export function getLocalCompletedCases() {
   try {
-    const raw = localStorage.getItem(COMPLETED_KEY);
+    const raw = localStorage.getItem(getCompletedCasesKey());
     return new Set(JSON.parse(raw || "[]"));
   } catch {
     return new Set();
@@ -263,7 +271,7 @@ export function getLocalCompletedCases() {
 
 function saveLocalCompletedCases(set) {
   try {
-    localStorage.setItem(COMPLETED_KEY, JSON.stringify([...set]));
+    localStorage.setItem(getCompletedCasesKey(), JSON.stringify([...set]));
   } catch {
     /* quota exceeded – ignore */
   }

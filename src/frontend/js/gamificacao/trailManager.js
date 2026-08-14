@@ -151,7 +151,10 @@ export function getTrailState(certId) {
 
 export function readJourneyRecommendation(certId, storage = globalThis.localStorage) {
   try {
-    const raw = storage?.getItem("aws_sim_last_diagnostic_recommendation");
+    const key = storage === globalThis.localStorage
+      ? storageManager.getUserScopedKey("last_diagnostic_recommendation")
+      : "aws_sim_last_diagnostic_recommendation";
+    const raw = storage?.getItem(key);
     const recommendation = raw ? JSON.parse(raw) : null;
     if (
       recommendation?.source !== "diagnostic" ||

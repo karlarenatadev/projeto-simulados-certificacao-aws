@@ -17,9 +17,9 @@
     "db:seed-cases": "node scripts/seed/seed-cases.mjs",
     "db:seed-users": "node scripts/seed/seed-users.mjs",
     "db:start": "node backend/server.js",
-    "db:dev": "NODE_ENV=development node backend/server.js",
+    "db:dev": "node backend/server.js",
     "api:start": "node backend/api/server.js",
-    "api:dev": "NODE_ENV=development node backend/api/server.js"
+    "api:dev": "node backend/api/server.js"
   },
   "repository": {
     "type": "git",

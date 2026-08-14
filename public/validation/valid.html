@@ -41,6 +41,15 @@
         <h2>Questões aguardando validação</h2>
         <div id="questions-list" class="questions-list"><p class="loading-msg">Carregando questões...</p></div>
       </section>
+      <section id="admin-access-section" class="questions-section hidden">
+        <h2>Gestão de acessos</h2>
+        <div class="input-group">
+          <button id="btn-load-requests" class="btn-secondary">Solicitações de Validator</button>
+          <button id="btn-load-users" class="btn-secondary">Usuários</button>
+          <input id="access-search" placeholder="Buscar usuário" aria-label="Buscar usuário" />
+        </div>
+        <div id="access-list" class="questions-list"></div>
+      </section>
     </main>
     <div id="modal-reject" class="modal hidden">
       <div class="modal-content">

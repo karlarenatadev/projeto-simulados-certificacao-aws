@@ -13,6 +13,7 @@ import {
   getWeakDomains,
   getGamification,
 } from '../../database/db.js';
+import { requireAuth } from '../middleware/requireRole.js';
 
 const router = Router();
 
@@ -81,9 +82,12 @@ router.post('/', async (req, res, next) => {
 // GET /api/users/:id/stats - Get user statistics
 // ============================================================================
 
-router.get('/:id/stats', async (req, res, next) => {
+router.get('/:id/stats', requireAuth, async (req, res, next) => {
   try {
     const { id: user_id } = req.params;
+    if (req.user.role !== 'ADMIN' && req.user.id !== user_id) {
+      return res.status(403).json({ success: false, error: 'Você só pode consultar suas próprias estatísticas.', status: 403 });
+    }
 
     // Verify user exists
     const user = await getUserById(user_id);
@@ -136,9 +140,12 @@ router.get('/:id/stats', async (req, res, next) => {
 // GET /api/users/:id/weak-domains - Get weak domains for user
 // ============================================================================
 
-router.get('/:id/weak-domains', async (req, res, next) => {
+router.get('/:id/weak-domains', requireAuth, async (req, res, next) => {
   try {
     const { id: user_id } = req.params;
+    if (req.user.role !== 'ADMIN' && req.user.id !== user_id) {
+      return res.status(403).json({ success: false, error: 'Você só pode consultar seus próprios domínios.', status: 403 });
+    }
     const { threshold = 70 } = req.query;
 
     // Verify user exists

@@ -1,5 +1,6 @@
 import { logger } from "../utils/logger.js";
 import { normalizeCertificationId } from "../utils/certUtils.js";
+import { SessionManager } from "../core/sessionManager.js";
 /**
  * API Service Layer
  * Centralized HTTP client for all backend API calls
@@ -118,6 +119,7 @@ async function fetchWithRetry(endpoint, options = {}) {
   const requestOptions = {
     headers: {
       'Content-Type': 'application/json',
+      ...getSessionHeaders(),
       ...fetchOptions.headers,
     },
     ...fetchOptions,
@@ -150,6 +152,9 @@ async function fetchWithRetry(endpoint, options = {}) {
       if (!response.ok) {
         const errorMessage = data?.message || `HTTP ${response.status}`;
         lastError = createError(errorMessage, response.status, data ?? {});
+        if (response.status === 401 && !endpoint.includes('/auth/login')) {
+          SessionManager.logout();
+        }
         
         // Don't retry on client errors (4xx)
         if (response.status >= 400 && response.status < 500) {
@@ -190,6 +195,15 @@ async function fetchWithRetry(endpoint, options = {}) {
   }
 
   throw lastError || createError('Unknown error');
+}
+
+function getSessionHeaders() {
+  try {
+    const token = SessionManager.restore()?.accessToken;
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  } catch {
+    return {};
+  }
 }
 
 /**
@@ -309,16 +323,26 @@ export const apiService = {
    * @param {string} userId - UUID do usuário
    * @returns {Promise<object>} { success, data: { id, email, nickname, role, ... } }
    */
-  async getMe(userId) {
+  async getMe(_userId) {
     try {
       const response = await fetchWithRetry('/api/auth/me', {
-        headers: { 'X-User-Id': userId },
       });
       return response;
     } catch (error) {
       if (!error || !error.apiDisabled) logger.error('getMe failed:', error);
       throw error;
     }
+  },
+
+  async createValidatorRequest(payload) {
+    return fetchWithRetry('/api/access/validator-requests', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+  },
+
+  async getValidatorRequests() {
+    return fetchWithRetry('/api/access/validator-requests');
   },
 
   /**

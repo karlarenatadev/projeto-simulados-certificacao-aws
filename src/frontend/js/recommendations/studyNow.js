@@ -29,7 +29,10 @@ export function readDiagnosticRecommendations(storage = globalThis.localStorage)
   if (!storage) return null;
 
   try {
-    const raw = storage.getItem(DIAGNOSTIC_RECOMMENDATION_STORAGE_KEY);
+    const key = storage === globalThis.localStorage
+      ? storageManager.getUserScopedKey("last_diagnostic_recommendation")
+      : DIAGNOSTIC_RECOMMENDATION_STORAGE_KEY;
+    const raw = storage.getItem(key);
     if (!raw) return null;
 
     const recommendation = JSON.parse(raw);
@@ -249,14 +252,14 @@ export function renderDiagnosticRecommendations(recommendation) {
 
   container.querySelector('[data-diagnostic-action="flashcards"]')?.addEventListener("click", () => {
     sessionStorage.setItem(
-      "aws_sim_diagnostic_context",
+      storageManager.getUserScopedKey("diagnostic_context"),
       JSON.stringify(model.flashcardsContext),
     );
     window.location.href = "./flashcards.html";
   });
   container.querySelector('[data-diagnostic-action="questions"]')?.addEventListener("click", () => {
     sessionStorage.setItem(
-      "aws_sim_diagnostic_context",
+      storageManager.getUserScopedKey("diagnostic_context"),
       JSON.stringify(model.questionsContext),
     );
     window.location.href = "./simulados.html";

@@ -12,6 +12,9 @@ import { logger } from "../utils/logger.js";
 import { userManager } from "../userManager.js";
 import { SessionManager } from "../core/sessionManager.js";
 import { PermissionService } from "./permissions.js";
+import { storageManager } from "../storageManager.js";
+import apiService from "./api.js";
+import { UserMapper } from "../core/contracts/userMapper.js";
 
 /**
  * authService.js — CloudAcademy A3
@@ -83,6 +86,26 @@ export const AuthService = {
   async restoreSession() {
     const session = this.getSession();
     if (session) {
+      if (session.accessToken && session.authenticationMode === "online") {
+        try {
+          const response = await apiService.getMe(session.user.id);
+          if (response?.data?.id) {
+            const user = UserMapper.fromDTO({
+              ...response.data,
+              language: session.user.language,
+              certification: session.user.certification,
+            });
+            SessionManager.persist({ ...session, user });
+            return user;
+          }
+        } catch (error) {
+          if (error.statusCode === 401 || error.status === 401) {
+            SessionManager.logout();
+            return null;
+          }
+          if (!error.apiDisabled && !error.message?.includes("Network")) throw error;
+        }
+      }
       logger.info(`[AuthService] Sessão restaurada: ${session.user.email} (${session.user.role})`);
       return session.user;
     }
@@ -107,6 +130,13 @@ export const AuthService = {
     const user = this.getCurrentUser();
     if (user) {
       logger.info(`[AuthService] Logout: ${user.email}`);
+    }
+    if (user && globalThis.sessionStorage) {
+      ["diagnostic_context", "current_study_plan"].forEach((key) => {
+        globalThis.sessionStorage.removeItem(
+          storageManager.getUserScopedKey(key),
+        );
+      });
     }
     SessionManager.logout();
   }

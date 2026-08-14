@@ -84,6 +84,54 @@ COMMENT ON COLUMN users.last_login     IS 'Data e hora do último login';
 COMMENT ON COLUMN users.created_at     IS 'Data de criação do registro';
 COMMENT ON COLUMN users.updated_at     IS 'Data da última atualização';
 
+-- ============================================================================
+-- IDENTIDADE E GESTÃO DE ACESSOS
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS validator_requests (
+    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id           UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    certification_id  certification_type NOT NULL,
+    credential_id     VARCHAR(200),
+    credential_url    TEXT,
+    notes             TEXT,
+    status            VARCHAR(20) NOT NULL DEFAULT 'PENDING'
+                      CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED')),
+    requested_at      TIMESTAMP NOT NULL DEFAULT NOW(),
+    reviewed_at       TIMESTAMP,
+    reviewed_by       UUID REFERENCES users(id) ON DELETE SET NULL,
+    review_notes      TEXT
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_validator_requests_pending
+    ON validator_requests(user_id, certification_id)
+    WHERE status = 'PENDING';
+CREATE INDEX IF NOT EXISTS idx_validator_requests_status
+    ON validator_requests(status, requested_at);
+
+CREATE TABLE IF NOT EXISTS validator_certifications (
+    user_id          UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    certification_id certification_type NOT NULL,
+    verified_by      UUID REFERENCES users(id) ON DELETE SET NULL,
+    verified_at      TIMESTAMP NOT NULL DEFAULT NOW(),
+    source_request_id UUID REFERENCES validator_requests(id) ON DELETE SET NULL,
+    is_active        BOOLEAN NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (user_id, certification_id)
+);
+
+CREATE TABLE IF NOT EXISTS role_audit_log (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    actor_user_id    UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+    target_user_id   UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
+    action           VARCHAR(80) NOT NULL,
+    old_role         VARCHAR(20),
+    new_role         VARCHAR(20),
+    certification_id certification_type,
+    metadata         JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at       TIMESTAMP NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_role_audit_target ON role_audit_log(target_user_id, created_at);
+
 -- Trigger para atualizar updated_at automaticamente
 CREATE OR REPLACE FUNCTION update_updated_at()
 RETURNS TRIGGER AS $$

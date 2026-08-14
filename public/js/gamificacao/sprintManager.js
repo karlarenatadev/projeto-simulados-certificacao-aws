@@ -74,7 +74,10 @@ export const SPRINT_MAPS = {
 
 export function readSprintRecommendation(certId, storage = globalThis.localStorage) {
   try {
-    const raw = storage?.getItem("aws_sim_last_diagnostic_recommendation");
+    const key = storage === globalThis.localStorage
+      ? storageManager.getUserScopedKey("last_diagnostic_recommendation")
+      : "aws_sim_last_diagnostic_recommendation";
+    const raw = storage?.getItem(key);
     const recommendation = raw ? JSON.parse(raw) : null;
     if (
       recommendation?.source !== "diagnostic" ||
@@ -237,7 +240,10 @@ export function renderSprintUI(lang, certId) {
           const key = link.dataset.sprintRecommendation;
           const context = actions[key]?.context;
           if (context && (key === "flashcards" || key === "questions")) {
-            sessionStorage.setItem("aws_sim_diagnostic_context", JSON.stringify(context));
+            sessionStorage.setItem(
+              storageManager.getUserScopedKey("diagnostic_context"),
+              JSON.stringify(context),
+            );
           }
         });
       });

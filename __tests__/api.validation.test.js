@@ -68,6 +68,14 @@ jest.unstable_mockModule('../backend/database/db.js', () => ({
   closeDatabase: jest.fn(),
   getQuestions: jest.fn(),
   getQuestionById: jest.fn(async (id) => mockQuestions.get(id) || null),
+  canUserValidateCertification: jest.fn(async () => true),
+  changeUserAccess: jest.fn(),
+  createValidatorRequest: jest.fn(),
+  getValidatorCertifications: jest.fn(async () => [{ certification_id: 'CLF-C02' }]),
+  listUsers: jest.fn(async () => []),
+  listValidatorRequests: jest.fn(async () => []),
+  removeValidatorCertification: jest.fn(),
+  reviewValidatorRequest: jest.fn(),
   insertQuestion: jest.fn(),
   updateQuestion: jest.fn(),
   deleteQuestion: jest.fn(),
@@ -188,10 +196,10 @@ describe('question validation API', () => {
     expect(response.status).toBe(200);
     expect(body.success).toBe(true);
     expect(body.data.validation_status).toBe('APPROVED');
-    expect(body.data.validated_by).toBe('Senior Reviewer');
+    expect(body.data.validated_by).toBe('test-user-id');
     expect(validateQuestionMock).toHaveBeenCalledWith(
       'question-1',
-      'Senior Reviewer',
+      'test-user-id',
       'APPROVED',
       null,
     );

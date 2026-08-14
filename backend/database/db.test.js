@@ -37,6 +37,9 @@ import {
 async function resetTestData() {
   const database = getDatabase();
   await database.exec(`
+    DELETE FROM role_audit_log;
+    DELETE FROM validator_certifications;
+    DELETE FROM validator_requests;
     DELETE FROM answers;
     DELETE FROM quiz_history;
     DELETE FROM focus_sessions;
