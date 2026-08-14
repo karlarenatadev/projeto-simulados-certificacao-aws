@@ -140,6 +140,7 @@ export class RecommendationEngine {
       .filter((signal) => signal.evidence !== "strong")
       .map((signal) => normalizeServiceId(signal.id))
       .filter(Boolean);
+    const hasCaseSignals = weakServices.length > 0 || weakDomains.length > 0;
 
     return {
       source: "diagnostic",
@@ -182,6 +183,19 @@ export class RecommendationEngine {
             strongServices: [...new Set(strongServices)],
             secondaryServices: [...new Set(secondaryServices)],
             weakDomains,
+          },
+        },
+        cases: {
+          enabled: hasCaseSignals,
+          type: "cases",
+          context: {
+            source: "diagnostic",
+            certificationId,
+            services: [...new Set([...strongServices, ...secondaryServices])],
+            strongServices: [...new Set(strongServices)],
+            secondaryServices: [...new Set(secondaryServices)],
+            weakDomains,
+            weakTopics,
           },
         },
       },

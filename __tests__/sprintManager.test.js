@@ -1,4 +1,10 @@
-import { SPRINT_MAPS, completeSprintDay, closeSprintReader } from '../src/frontend/js/gamificacao/sprintManager.js';
+import {
+    SPRINT_MAPS,
+    completeSprintDay,
+    closeSprintReader,
+    getSprintProgress,
+    readSprintRecommendation,
+} from '../src/frontend/js/gamificacao/sprintManager.js';
 
 describe('sprintManager', () => {
     beforeEach(() => {
@@ -41,5 +47,29 @@ describe('sprintManager', () => {
 
         closeSprintReader();
         expect(document.getElementById('sprint-reader-overlay')).toBeNull();
+    });
+
+    test('normaliza o progresso do Sprint e limita o percentual a 100%', () => {
+        localStorage.setItem('aws_sim_sprint_state_clf-c02', JSON.stringify({
+            completedStages: ['1', '2', '2', '15', '14'],
+        }));
+
+        expect(getSprintProgress('CLF-C02')).toEqual({
+            completedStages: [1, 2, 14],
+            currentDay: 4,
+            percentage: 21,
+            completed: false,
+        });
+    });
+
+    test('aceita recomendação do diagnóstico somente da certificação ativa', () => {
+        localStorage.setItem('aws_sim_last_diagnostic_recommendation', JSON.stringify({
+            source: 'diagnostic',
+            certificationId: 'CLF-C02',
+            weakDomains: ['cloud-concepts'],
+        }));
+
+        expect(readSprintRecommendation('clf-c02')).not.toBeNull();
+        expect(readSprintRecommendation('saa-c03')).toBeNull();
     });
 });

@@ -295,7 +295,11 @@ export const translations = {
     "studyNow.priority_low": "Prioridade baixa",
     "studyNow.diagnostic_flashcards": "Revisar Flashcards",
     "studyNow.diagnostic_questions": "Praticar Questões",
-    "studyNow.diagnostic_labs": "Ver Laboratórios recomendados"
+    "studyNow.diagnostic_labs": "Ver Laboratórios recomendados",
+    "studyNow.diagnostic_cases": "Ver Cases recomendados",
+    "cases_diagnostic_title": "Recomendado pelo seu Raio-X",
+    "cases_diagnostic_services": "Cases selecionados pelos serviços identificados no diagnóstico.",
+    "cases_diagnostic_fallback": "Não encontramos um Case específico para esse ponto. Exibindo Cases disponíveis para sua certificação."
     ,"labs_diagnostic_title": "Recomendado com base no seu Raio-X"
     ,"labs_diagnostic_service": "Foco em: {{service}}"
     ,"labs_diagnostic_fallback": "Não há um Lab específico para este serviço. Exibindo o conteúdo disponível desta certificação."
@@ -588,7 +592,11 @@ export const translations = {
     "studyNow.priority_low": "Low priority",
     "studyNow.diagnostic_flashcards": "Review Flashcards",
     "studyNow.diagnostic_questions": "Practice Questions",
-    "studyNow.diagnostic_labs": "View recommended Labs"
+    "studyNow.diagnostic_labs": "View recommended Labs",
+    "studyNow.diagnostic_cases": "View recommended Cases",
+    "cases_diagnostic_title": "Recommended by your X-Ray",
+    "cases_diagnostic_services": "Cases selected from the services identified by your diagnosis.",
+    "cases_diagnostic_fallback": "No specific Case was found for this point. Showing Cases available for your certification."
     ,"labs_diagnostic_title": "Recommended based on your X-Ray"
     ,"labs_diagnostic_service": "Focus: {{service}}"
     ,"labs_diagnostic_fallback": "There is no Lab specific to this service. Showing the content available for this certification."

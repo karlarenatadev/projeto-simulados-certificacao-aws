@@ -91,6 +91,15 @@ export function buildDiagnosticStudyNowModel(recommendation, language = "pt") {
     labsRecommendation.context.services.length > 0
       ? labsRecommendation.context
       : null;
+  const casesRecommendation = recommendation.recommendations?.cases;
+  const casesContext =
+    casesRecommendation?.enabled &&
+    casesRecommendation.context?.source === "diagnostic" &&
+    casesRecommendation.context.certificationId &&
+    Array.isArray(casesRecommendation.context.services) &&
+    Array.isArray(casesRecommendation.context.weakDomains)
+      ? casesRecommendation.context
+      : null;
 
   return {
     certificationId: recommendation.certificationId,
@@ -101,6 +110,7 @@ export function buildDiagnosticStudyNowModel(recommendation, language = "pt") {
     flashcardsContext: recommendation.recommendations.flashcards.context,
     questionsContext: recommendation.recommendations.questions.context,
     labsContext,
+    casesContext,
   };
 }
 
@@ -230,6 +240,9 @@ export function renderDiagnosticRecommendations(recommendation) {
         ${model.labsContext ? `<button type="button" class="study-now-btn" data-diagnostic-action="labs">
           <i class="fa-solid fa-flask"></i> ${t("studyNow.diagnostic_labs", lang)}
         </button>` : ""}
+        ${model.casesContext ? `<button type="button" class="study-now-btn" data-diagnostic-action="cases">
+          <i class="fa-solid fa-diagram-project"></i> ${t("studyNow.diagnostic_cases", lang)}
+        </button>` : ""}
       </div>
     </div>`;
 
@@ -249,6 +262,9 @@ export function renderDiagnosticRecommendations(recommendation) {
   });
   container.querySelector('[data-diagnostic-action="labs"]')?.addEventListener("click", () => {
     window.location.href = "./laboratorios.html";
+  });
+  container.querySelector('[data-diagnostic-action="cases"]')?.addEventListener("click", () => {
+    window.location.href = "./cases.html";
   });
 }
 
