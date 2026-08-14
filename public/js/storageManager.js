@@ -753,7 +753,7 @@ export class StorageManager {
    * const gamification = storageManager.getGamification();
    * // Retorna: { totalQuizzes: 10, bestScore: 85, currentStreak: 3, badges: ['perfect'] }
    */
-  getGamification() {
+  getGamification(certId = null) {
     const fallback = {
       totalQuizzes: 0,
       bestScore: 0,
@@ -765,7 +765,9 @@ export class StorageManager {
     };
 
     try {
-      const gamificationKey = this._getKey("gamification");
+      const gamificationKey = this._getKey(
+        certId ? `gamification_${String(certId).toLowerCase()}` : "gamification",
+      );
       const data = localStorage.getItem(gamificationKey);
 
       if (!data) {
@@ -879,9 +881,11 @@ export class StorageManager {
    * gam.completedStages.push('clf-1');
    * storageManager.saveGamification(gam);
    */
-  saveGamification(gamification) {
+  saveGamification(gamification, certId = null) {
     try {
-      const key = this._getKey("gamification");
+      const key = this._getKey(
+        certId ? `gamification_${String(certId).toLowerCase()}` : "gamification",
+      );
       localStorage.setItem(key, JSON.stringify(gamification));
       return true;
     } catch (error) {

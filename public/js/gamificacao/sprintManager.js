@@ -3,6 +3,7 @@
  */
 import { storageManager } from "../storageManager.js";
 import { NotificationService } from "../services/notificationService.js";
+import { normalizeCertificationId } from "../utils/certUtils.js";
 
 export const SPRINT_MAPS = {
   "clf-c02": {
@@ -71,6 +72,59 @@ export const SPRINT_MAPS = {
   },
 };
 
+export function readSprintRecommendation(certId, storage = globalThis.localStorage) {
+  try {
+    const raw = storage?.getItem("aws_sim_last_diagnostic_recommendation");
+    const recommendation = raw ? JSON.parse(raw) : null;
+    if (
+      recommendation?.source !== "diagnostic" ||
+      normalizeCertificationId(recommendation.certificationId) !==
+        normalizeCertificationId(certId)
+    ) {
+      return null;
+    }
+    return recommendation;
+  } catch {
+    return null;
+  }
+}
+
+export function getSprintProgress(certId) {
+  const state = storageManager.getSprintState(normalizeCertificationId(certId));
+  const completedStages = [
+    ...new Set(
+      (state.completedStages || [])
+        .map((day) => Number.parseInt(day, 10))
+        .filter((day) => day >= 1 && day <= 14),
+    ),
+  ];
+  return {
+    completedStages,
+    currentDay: Math.min(completedStages.length + 1, 14),
+    percentage: Math.min(Math.round((completedStages.length / 14) * 100), 100),
+    completed: completedStages.length >= 14,
+  };
+}
+
+function getFallbackPill(day, lang, certId) {
+  const labels = SPRINT_MAPS[certId]?.[day];
+  if (!labels) return null;
+  const title = labels[lang] || labels.pt;
+  return {
+    title,
+    topic: title,
+    readTime: "5 min",
+    content:
+      lang === "en"
+        ? `<p>Review the study focus for day ${day}: <strong>${title}</strong>. Use the recommended practice actions after this reading to reinforce the topic.</p>`
+        : `<p>Revise o foco de estudo do dia ${day}: <strong>${title}</strong>. Use as ações recomendadas após esta leitura para reforçar o tema.</p>`,
+    keyTakeaway:
+      lang === "en"
+        ? `Keep ${title} as the focus of this Sprint day.`
+        : `Mantenha ${title} como foco deste dia do Sprint.`,
+  };
+}
+
 /**
  * Renderiza a UI do Sprint de 14 dias.
  * @param {string} lang - 'pt' ou 'en'
@@ -82,9 +136,9 @@ export function renderSprintUI(lang, certId) {
 
   const currentSprintMap = SPRINT_MAPS[certId] || SPRINT_MAPS["clf-c02"];
 
-  const sprintState = storageManager.getSprintState(certId);
-  let currentSprintDay = sprintState.completedStages.length + 1;
-  if (currentSprintDay > 14) currentSprintDay = 14;
+  const progress = getSprintProgress(certId);
+  const currentSprintDay = progress.currentDay;
+  const recommendation = readSprintRecommendation(certId);
 
   const labels = {
     pt: {
@@ -107,8 +161,7 @@ export function renderSprintUI(lang, certId) {
 
   const progressText = document.getElementById("sprint-progress-text");
   if (progressText) {
-    const pct = Math.round(((currentSprintDay - 1) / 14) * 100);
-    progressText.textContent = `${pct}%`;
+    progressText.textContent = `${progress.percentage}%`;
   }
 
   const sprintTitleEl = document.getElementById("sprint-module-title");
@@ -117,10 +170,19 @@ export function renderSprintUI(lang, certId) {
   const sprintStartBtn = document.getElementById("sprint-start-btn");
 
   if (sprintTitleEl) sprintTitleEl.textContent = labels[lang].title;
-  if (sprintSubtitleEl) sprintSubtitleEl.textContent = labels[lang].subtitle;
+  if (sprintSubtitleEl) {
+    const hasFocus = recommendation?.weakDomains?.length || recommendation?.weakServices?.length;
+    sprintSubtitleEl.textContent = hasFocus
+      ? `${labels[lang].subtitle} ${lang === "en" ? "Personalized from your latest X-Ray." : "Personalizado pelo seu último Raio-X."}`
+      : labels[lang].subtitle;
+  }
   if (sprintProgressLabel)
     sprintProgressLabel.textContent = labels[lang].progress;
   if (sprintStartBtn) sprintStartBtn.textContent = labels[lang].startBtn;
+  if (sprintStartBtn && progress.completed) {
+    sprintStartBtn.textContent = lang === "en" ? "Sprint completed" : "Sprint concluído";
+    sprintStartBtn.disabled = true;
+  }
 
   const dayLabel = document.getElementById("sprint-current-day-label");
   const metaLabel = dayLabel?.nextElementSibling;
@@ -155,6 +217,32 @@ export function renderSprintUI(lang, certId) {
       : `${labels[lang].day} ${i}`;
     grid.appendChild(dayDiv);
   }
+
+  const actionContainer = document.getElementById("sprint-recommendation-actions");
+  if (actionContainer) {
+    actionContainer.innerHTML = "";
+    const actions = recommendation?.recommendations;
+    if (recommendation?.source === "diagnostic" && actions) {
+      const links = [
+        ["flashcards", "./flashcards.html", "fa-layer-group", lang === "en" ? "Review Flashcards" : "Revisar Flashcards"],
+        ["questions", "./simulados.html", "fa-play", lang === "en" ? "Practice Questions" : "Praticar Questões"],
+        ["labs", "./laboratorios.html", "fa-flask", lang === "en" ? "View recommended Labs" : "Ver Laboratórios recomendados"],
+        ["cases", "./cases.html", "fa-diagram-project", lang === "en" ? "View recommended Cases" : "Ver Cases recomendados"],
+      ].filter(([key]) => actions[key]?.enabled);
+      actionContainer.innerHTML = links
+        .map(([key, route, icon, label]) => `<a class="a3-btn a3-btn-secondary" data-sprint-recommendation="${key}" href="${route}"><i class="fa-solid ${icon}"></i> ${label}</a>`)
+        .join("");
+      actionContainer.querySelectorAll("[data-sprint-recommendation]").forEach((link) => {
+        link.addEventListener("click", () => {
+          const key = link.dataset.sprintRecommendation;
+          const context = actions[key]?.context;
+          if (context && (key === "flashcards" || key === "questions")) {
+            sessionStorage.setItem("aws_sim_diagnostic_context", JSON.stringify(context));
+          }
+        });
+      });
+    }
+  }
 }
 
 /**
@@ -165,7 +253,17 @@ export function renderSprintUI(lang, certId) {
  */
 export function startMicroSprint(lang, certId, getPillFn) {
   const sprintState = storageManager.getSprintState(certId);
-  let currentSprintDay = sprintState.completedStages.length + 1;
+  const progress = getSprintProgress(certId);
+  let currentSprintDay = progress.currentDay;
+
+  if (progress.completed) {
+    NotificationService.success(
+      lang === "en"
+        ? "Congratulations! You have completed all 14 Sprint days."
+        : "Parabéns! Você já dominou os 14 dias de Sprint.",
+    );
+    return;
+  }
 
   const lastCompletedDate = sprintState.lastCompletedDate;
   if (lastCompletedDate === new Date().toDateString()) {
@@ -186,7 +284,9 @@ export function startMicroSprint(lang, certId, getPillFn) {
     return;
   }
 
-  const pillData = getPillFn(currentSprintDay, lang, certId);
+  const pillData =
+    getPillFn(currentSprintDay, lang, certId) ||
+    getFallbackPill(currentSprintDay, lang, normalizeCertificationId(certId));
   if (!pillData) {
     NotificationService.info(
       lang === "en"
@@ -254,9 +354,17 @@ export function closeSprintReader() {
 
 export function completeSprintDay(completedDay, certId, lang, onComplete) {
   const sprintState = storageManager.getSprintState(certId);
-  if (!sprintState.completedStages.includes(completedDay.toString())) {
-    sprintState.completedStages.push(completedDay.toString());
+  const day = Number.parseInt(completedDay, 10);
+  if (!Number.isInteger(day) || day < 1 || day > 14) return;
+  const completedStages = new Set(
+    (sprintState.completedStages || [])
+      .map((stage) => Number.parseInt(stage, 10))
+      .filter((stage) => stage >= 1 && stage <= 14),
+  );
+  if (!completedStages.has(day)) {
+    completedStages.add(day);
   }
+  sprintState.completedStages = [...completedStages].sort((left, right) => left - right).map(String).slice(0, 14);
   sprintState.lastCompletedDate = new Date().toDateString();
   sprintState.streakDays += 1;
   storageManager.saveSprintState(certId, sprintState);

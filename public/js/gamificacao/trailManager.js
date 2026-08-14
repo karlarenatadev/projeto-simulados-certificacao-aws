@@ -1,6 +1,7 @@
 import { storageManager } from "../storageManager.js";
 import { AuthService } from "../services/authService.js";
 import { logger } from "../utils/logger.js";
+import { normalizeCertificationId } from "../utils/certUtils.js";
 
 // 1. DICIONÁRIO DE TRILHAS (4 Certificações com suporte Bilingue)
 export const TRAILS_BY_CERT = {
@@ -114,6 +115,95 @@ export const TRAILS_BY_CERT = {
   ],
 };
 
+export function getTrailState(certId) {
+  const normalizedCertId = normalizeCertificationId(certId) || "clf-c02";
+  const activeTrail = TRAILS_BY_CERT[normalizedCertId] || TRAILS_BY_CERT["clf-c02"];
+  const stored = storageManager.getGamification(normalizedCertId) || {};
+  const validIds = new Set(activeTrail.map((stage) => stage.id));
+  const completedStages = [...new Set(
+    (Array.isArray(stored.completedStages) ? stored.completedStages : [])
+      .filter((stageId) => validIds.has(stageId)),
+  )];
+  const unlockedStages = [...new Set(
+    (Array.isArray(stored.unlockedStages) ? stored.unlockedStages : [])
+      .filter((stageId) => validIds.has(stageId)),
+  )];
+
+  return {
+    certificationId: normalizedCertId,
+    completedStages,
+    unlockedStages,
+    totalStages: activeTrail.length,
+    percentage: activeTrail.length
+      ? Math.min(Math.round((completedStages.length / activeTrail.length) * 100), 100)
+      : 0,
+  };
+}
+
+export function readJourneyRecommendation(certId, storage = globalThis.localStorage) {
+  try {
+    const raw = storage?.getItem("aws_sim_last_diagnostic_recommendation");
+    const recommendation = raw ? JSON.parse(raw) : null;
+    if (
+      recommendation?.source !== "diagnostic" ||
+      normalizeCertificationId(recommendation.certificationId) !==
+        (normalizeCertificationId(certId) || "clf-c02")
+    ) {
+      return null;
+    }
+    return recommendation;
+  } catch {
+    return null;
+  }
+}
+
+export function renderJourneyRecommendation(certId, lang = "pt") {
+  const container = document.getElementById("jornada-recommendation");
+  if (!container) return;
+
+  const normalizedCertId = normalizeCertificationId(certId) || "clf-c02";
+  const recommendation = readJourneyRecommendation(normalizedCertId);
+  const progress = storageManager.getSprintState(normalizedCertId);
+  const completedDays = [...new Set(
+    (Array.isArray(progress.completedStages) ? progress.completedStages : [])
+      .map((day) => Number.parseInt(day, 10))
+      .filter((day) => day >= 1 && day <= 14),
+  )].length;
+  const currentDay = Math.min(completedDays + 1, 14);
+  const hasActiveSprint = completedDays > 0 && completedDays < 14;
+  const actions = recommendation?.recommendations || {};
+  const availableActions = [
+    ["flashcards", "./flashcards.html", lang === "en" ? "Review flashcards" : "Revisar Flashcards"],
+    ["questions", "./simulados.html", lang === "en" ? "Practice questions" : "Praticar Questões"],
+    ["labs", "./laboratorios.html", lang === "en" ? "View recommended Labs" : "Ver Labs recomendados"],
+    ["cases", "./cases.html", lang === "en" ? "View recommended Cases" : "Ver Cases recomendados"],
+  ].filter(([key]) => actions[key]);
+
+  const cards = [];
+  if (recommendation && availableActions.length) {
+    const title = lang === "en" ? "Based on your latest X-Ray" : "Baseado no seu último Raio-X";
+    const description = lang === "en"
+      ? "Continue your journey with the recommended actions."
+      : "Continue sua jornada com as ações recomendadas.";
+    cards.push(`<section class="a3-card p-4 mb-4" data-testid="journey-recommendation">
+      <h3 class="font-bold">${title}</h3>
+      <p class="text-sm text-muted mt-1">${description}</p>
+      <div class="flex flex-wrap gap-2 mt-3">${availableActions.map(([key, href, label]) =>
+        `<a class="a3-btn a3-btn-secondary" data-recommendation-action="${key}" href="${href}">${label}</a>`).join("")}</div>
+    </section>`);
+  }
+
+  if (hasActiveSprint) {
+    const title = lang === "en" ? `Continue Sprint — Day ${currentDay}/14` : `Continuar Sprint — Dia ${currentDay}/14`;
+    cards.push(`<section class="a3-card p-4 mb-4" data-testid="journey-sprint-status">
+      <strong>${title}</strong>
+      <a class="a3-btn a3-btn-secondary ml-2" href="./study-sprint.html">${lang === "en" ? "Open Sprint" : "Abrir Sprint"}</a>
+    </section>`);
+  }
+
+  container.innerHTML = cards.join("");
+}
+
 export function renderTrail() {
   // 1. Busca o container de forma à prova de falhas (tenta vários IDs/Classes comuns)
   const container =
@@ -128,12 +218,14 @@ export function renderTrail() {
 
   // 2. Identifica a certificação e idioma atuais
   const currentLang = AuthService.getCurrentUser()?.language || "pt";
-  const currentCertId = AuthService.getCurrentUser()?.certification || "clf-c02";
+  const currentCertId = normalizeCertificationId(
+    AuthService.getCurrentUser()?.certification,
+  ) || "clf-c02";
   const activeTrail =
     TRAILS_BY_CERT[currentCertId] || TRAILS_BY_CERT["clf-c02"];
 
   // 3. Carrega os dados de gamificação de forma segura
-  let gamification = storageManager.getGamification() || {};
+  let gamification = storageManager.getGamification(currentCertId) || {};
   if (!gamification.completedStages) gamification.completedStages = [];
   if (!gamification.unlockedStages) gamification.unlockedStages = [];
 
@@ -143,7 +235,7 @@ export function renderTrail() {
     if (!gamification.unlockedStages.includes(firstStageId)) {
       gamification.unlockedStages.push(firstStageId);
 
-      storageManager.saveGamification(gamification);
+      storageManager.saveGamification(gamification, currentCertId);
     }
   }
 
@@ -180,12 +272,14 @@ export function renderTrail() {
   });
 
   container.innerHTML = html;
+  renderJourneyRecommendation(currentCertId, currentLang);
 }
 
 export function unlockNextModule(currentLevelId) {
-  let gamification = storageManager.getGamification();
-  const certSelect = document.getElementById("certification-select");
-  const currentCertId = certSelect ? certSelect.value : "clf-c02";
+  const rawCertId = document.getElementById("certification-select")?.value ||
+    AuthService.getCurrentUser()?.certification || "clf-c02";
+  const currentCertId = normalizeCertificationId(rawCertId) || "clf-c02";
+  let gamification = storageManager.getGamification(currentCertId);
   const activeTrail =
     TRAILS_BY_CERT[currentCertId] || TRAILS_BY_CERT["clf-c02"];
 
@@ -205,7 +299,7 @@ export function unlockNextModule(currentLevelId) {
     }
   }
 
-  storageManager.saveGamification(gamification);
+  storageManager.saveGamification(gamification, currentCertId);
 
   renderTrail();
 }

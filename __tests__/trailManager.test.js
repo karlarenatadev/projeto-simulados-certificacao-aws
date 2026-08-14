@@ -4,6 +4,7 @@ import {
     readJourneyRecommendation,
     renderJourneyRecommendation,
 } from '../src/frontend/js/gamificacao/trailManager.js';
+import { storageManager } from '../src/frontend/js/storageManager.js';
 
 describe('trailManager e integração da Jornada', () => {
     beforeEach(() => {
@@ -17,10 +18,10 @@ describe('trailManager e integração da Jornada', () => {
     });
 
     test('isola o estado da Jornada por certificação', () => {
-        localStorage.setItem('aws_sim_gamification_clf-c02', JSON.stringify({
+        storageManager.saveGamification({
             completedStages: ['clf-1'],
             unlockedStages: ['clf-1', 'clf-2'],
-        }));
+        }, 'clf-c02');
 
         expect(getTrailState('CLF-C02')).toMatchObject({
             certificationId: 'clf-c02',
