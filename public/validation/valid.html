@@ -3,15 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <title>Validação de Questões - Cloud Academy A3</title>
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="css/valid.css" />
   </head>
   <body class="has-left-sidebar">
     <header class="a3-header">
-      <a href="../index.html" class="a3-header-link">Cloud Academy A3</a>
+      <div class="flex items-center gap-2 md:gap-3">
+        <button id="cloud-sidebar-toggle" class="btn-sidebar-toggle" title="Esconder menu lateral" aria-label="Alternar menu lateral" aria-expanded="true">
+          <i id="cloud-logo-icon" class="fa-solid fa-cloud text-2xl md:text-3xl" aria-hidden="true"></i>
+        </button>
+        <a href="../index.html" class="a3-header-link" title="Voltar ao início">
+          <div>
+            <h1 class="text-base md:text-xl font-bold leading-tight">Cloud Academy A3</h1>
+            <p class="text-[10px] md:text-xs text-gray-300">Sua jornada para certificações AWS</p>
+          </div>
+        </a>
+      </div>
       <div class="a3-header-actions">
-        <button id="theme-toggle" class="a3-btn a3-btn-secondary" aria-label="Alternar modo escuro">Tema</button>
+        <button id="btn-language" class="a3-btn a3-btn-secondary" aria-label="Alternar idioma" title="Alternar idioma"></button>
+        <button id="theme-toggle" class="a3-btn a3-btn-secondary" aria-label="Alternar modo escuro">
+          <i id="theme-icon" class="fa-solid fa-moon" aria-hidden="true"></i>
+        </button>
+        <button id="install-app" class="a3-btn a3-btn-secondary hidden md:flex" aria-label="Baixar App">
+          <i class="fa-solid fa-download" aria-hidden="true"></i>
+        </button>
         <div id="user-menu-container"></div>
       </div>
     </header>
@@ -28,7 +48,7 @@
             <input type="email" id="login-email" placeholder="seu.nome@a3data.com.br" autocomplete="email" />
             <button id="btn-login" class="btn-primary">Entrar</button>
           </div>
-          <p id="login-error" class="status-text hidden" style="color:#ef4444"></p>
+          <p id="login-error" class="status-text validation-error hidden"></p>
         </div>
       </section>
       <div id="screen-message" class="screen-message hidden" role="status" aria-live="polite"></div>
@@ -40,15 +60,6 @@
       <section class="questions-section">
         <h2>Questões aguardando validação</h2>
         <div id="questions-list" class="questions-list"><p class="loading-msg">Carregando questões...</p></div>
-      </section>
-      <section id="admin-access-section" class="questions-section hidden">
-        <h2>Gestão de acessos</h2>
-        <div class="input-group">
-          <button id="btn-load-requests" class="btn-secondary">Solicitações de Validator</button>
-          <button id="btn-load-users" class="btn-secondary">Usuários</button>
-          <input id="access-search" placeholder="Buscar usuário" aria-label="Buscar usuário" />
-        </div>
-        <div id="access-list" class="questions-list"></div>
       </section>
     </main>
     <div id="modal-reject" class="modal hidden">
@@ -70,6 +81,10 @@
       import { initShell } from '../../js/shell.js';
       document.addEventListener('DOMContentLoaded', async () => {
         const user = await AuthService.restoreSession();
+        if (user?.role === 'ADMIN' && window.location.hash === '#users') {
+          window.location.replace('users.html');
+          return;
+        }
         if (user) initShell(user);
       });
     </script>

@@ -13,6 +13,7 @@ class ValidationUI {
     ].map((id) => [id, document.getElementById(id)]));
     this.bindEvents();
     this.restoreOfficialSession();
+    window.addEventListener('hashchange', () => this.applyAdminHash());
   }
 
   readOfficialSession() {
@@ -48,6 +49,7 @@ class ValidationUI {
       this.elements['validator-status'].textContent = `Validador: ${user.name || user.email} (${role})`;
     }
     this.loadQuestions();
+    this.applyAdminHash();
   }
 
   bindEvents() {
@@ -60,6 +62,21 @@ class ValidationUI {
     this.elements['btn-confirm-reject']?.addEventListener('click', () => this.reject());
     this.elements['btn-load-requests']?.addEventListener('click', () => this.loadRequests());
     this.elements['btn-load-users']?.addEventListener('click', () => this.loadUsers());
+    this.elements['access-search']?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && this.user?.role === 'ADMIN') this.loadUsers();
+    });
+  }
+
+  applyAdminHash() {
+    if (String(this.user?.role || '').toUpperCase() !== 'ADMIN') return;
+    const tab = window.location.hash.replace('#', '') || 'requests';
+    const isUsers = tab === 'users';
+    this.elements['admin-access-section']?.classList.remove('hidden');
+    document.querySelectorAll('[data-validation-tab]').forEach((link) => {
+      link.classList.toggle('is-active', link.dataset.validationTab === (isUsers ? 'users' : 'requests'));
+    });
+    if (isUsers) this.loadUsers();
+    else this.loadRequests();
   }
 
   async login() {

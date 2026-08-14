@@ -39,7 +39,7 @@ END $$;
 CREATE TABLE IF NOT EXISTS users (
     id              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     anonymous_name  VARCHAR(100) UNIQUE,                          -- mantido para compatibilidade; nullable após migração
-    email           VARCHAR(120) UNIQUE,                          -- email corporativo @a3data
+    email           VARCHAR(120),                                 -- email corporativo @a3data
     full_name       VARCHAR(150),                                 -- nome completo real
     nickname        VARCHAR(60),                                  -- apelido público (leaderboard, gamificação)
     role            VARCHAR(20)  NOT NULL DEFAULT 'STUDENT'
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Índices para os novos campos
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email    ON users(email)    WHERE email    IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email    ON users(lower(trim(email))) WHERE email IS NOT NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_nickname ON users(nickname) WHERE nickname IS NOT NULL;
 CREATE INDEX        IF NOT EXISTS idx_users_role     ON users(role);
 CREATE INDEX        IF NOT EXISTS idx_users_active   ON users(is_active) WHERE is_active = TRUE;

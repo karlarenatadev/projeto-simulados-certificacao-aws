@@ -1111,7 +1111,10 @@ export async function upsertUserByEmail(email, profile = {}) {
  */
 export async function getUserById(userId) {
   const normalizedUserId = normalizeUserId(userId);
-  const query = 'SELECT * FROM users WHERE id = $1';
+  // PGlite can expose UUID columns created by a persistent/migrated schema as
+  // text for parameter binding. Comparing their canonical text form keeps
+  // token `sub` lookups stable across fresh and existing databases.
+  const query = 'SELECT * FROM users WHERE id::text = $1';
 
   try {
     const result = await executeQuery(query, [normalizedUserId]);
@@ -2189,6 +2192,38 @@ export async function getPendingQuestions(options = {}) {
   }
 }
 
+export async function getValidationHistory({ status = null, validatorId = null } = {}) {
+  const normalizedStatus = status ? String(status).toUpperCase() : null;
+  if (normalizedStatus && !['APPROVED', 'REJECTED'].includes(normalizedStatus)) {
+    const error = new Error('status must be APPROVED or REJECTED');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const params = [normalizedStatus];
+  let validatorFilter = '';
+  if (validatorId) {
+    params.push(normalizeUserId(validatorId));
+    validatorFilter = `AND COALESCE(q.validated_by_id::text, q.validated_by) = $${params.length}`;
+  }
+
+  return executeQuery(`
+    SELECT q.id, q.certification, q.domain, q.question_text,
+           q.validation_status, q.rejection_reason, q.validated_at,
+           COALESCE(u.full_name, u.nickname, u.email, q.validated_by) AS validator_name,
+           u.email AS validator_email
+      FROM questions q
+      LEFT JOIN users u
+        ON u.id::text = COALESCE(q.validated_by_id::text, q.validated_by)
+     WHERE q.is_active = TRUE
+       AND q.validation_status IN ('APPROVED', 'REJECTED')
+       AND ($1::text IS NULL OR q.validation_status = $1)
+       ${validatorFilter}
+     ORDER BY q.validated_at DESC NULLS LAST, q.updated_at DESC
+     LIMIT 200
+  `, params);
+}
+
 // Atualiza o status da questão (Aprova ou Rejeita)
 function normalizeValidationInput(questionIdOrData, validatorId, status, rejectionReason) {
   const source = isPlainObject(questionIdOrData)
@@ -2303,6 +2338,7 @@ export default {
   getUserStats,
   getWeakDomains,
   getPendingQuestions,
+  getValidationHistory,
   validateQuestion,
   // Practice Domain
   getCases,

@@ -3,6 +3,8 @@ import apiService from '../src/frontend/js/services/api.js';
 import { QuizEngine } from '../src/frontend/js/quizEngine.js';
 import { quizManager } from '../src/frontend/js/quizManager.js';
 import { userManager } from '../src/frontend/js/userManager.js';
+import { SessionManager } from '../src/frontend/js/core/sessionManager.js';
+import { storageManager } from '../src/frontend/js/storageManager.js';
 
 function jsonResponse(body, status = 200) {
   return {
@@ -85,6 +87,31 @@ describe('apiService response normalization', () => {
     expect(user.name).toBe('UsuarioA3');
     const session = JSON.parse(localStorage.getItem('cloudacademy_session') || 'null');
     expect(session?.user?.id).toBe('user-1');
+  });
+
+  test('invalidates a stale online session without deleting user-scoped data', async () => {
+    SessionManager.persist({
+      user: { id: 'stale-user', email: 'stale@a3data.com.br', role: 'ADMIN' },
+      accessToken: 'stale-token',
+      authenticationMode: 'online',
+    });
+    storageManager.saveQuizResult({
+      certId: 'clf-c02',
+      score: 8,
+      total: 10,
+      percentage: 80,
+    });
+    const historyKey = storageManager.getUserScopedKey('history');
+    global.fetch.mockResolvedValue(jsonResponse({
+      error: 'Usuário não encontrado ou desativado.',
+      status: 401,
+    }, 401));
+
+    await expect(apiService.getMe('stale-user')).rejects.toMatchObject({ statusCode: 401 });
+
+    expect(SessionManager.restore()).toBeNull();
+    expect(localStorage.getItem(historyKey)).not.toBeNull();
+    expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
   test('preserves a direct list response', async () => {

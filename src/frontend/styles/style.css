@@ -203,6 +203,34 @@ textarea {
 
 /* ── Validation badge & tooltip ────────────────────────────────────────── */
 
+.validation-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin: var(--space-12) 0 var(--space-16);
+  border-bottom: 1px solid var(--a3-border-soft);
+}
+
+.validation-subnav a {
+  padding: var(--space-8) var(--space-12);
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+
+.validation-subnav a:hover,
+.validation-subnav a:focus-visible,
+.validation-subnav a.is-active {
+  color: var(--a3-tech-blue);
+  border-bottom-color: var(--a3-tech-blue);
+}
+
+.validation-error {
+  color: var(--a3-danger);
+}
+
 .validation-badge {
   display: inline-flex;
   align-items: center;

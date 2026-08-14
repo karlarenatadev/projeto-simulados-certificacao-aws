@@ -64,6 +64,36 @@ describe('identity and access management', () => {
     expect(me.body.data.id).toBe(student.id);
   });
 
+  test('PATCH user access supports CORS preflight and remains ADMIN-only', async () => {
+    const preflight = await fetch(`${baseUrl}/api/access/admin/users/${student.id}`, {
+      method: 'OPTIONS',
+      headers: {
+        Origin: 'http://localhost:8080',
+        'Access-Control-Request-Method': 'PATCH',
+        'Access-Control-Request-Headers': 'authorization,content-type',
+      },
+    });
+    expect([200, 204]).toContain(preflight.status);
+    expect(preflight.headers.get('access-control-allow-methods')).toContain('PATCH');
+
+    const validatorLogin = await request(baseUrl, '/api/auth/login', {
+      method: 'POST', body: JSON.stringify({ email: `validator-${suffix}@a3data.com.br` }),
+    });
+    const validator = await upsertUserByEmail(`validator-${suffix}@a3data.com.br`, { full_name: 'Validator A' });
+    await updateUser(validator.user.id, { role: 'VALIDATOR' });
+    const forbiddenValidator = await request(baseUrl, `/api/access/admin/users/${student.id}`, {
+      method: 'PATCH', headers: { Authorization: `Bearer ${validatorLogin.body.data.access_token}` },
+      body: JSON.stringify({ role: 'VALIDATOR' }),
+    });
+    expect(forbiddenValidator.response.status).toBe(403);
+
+    const adminUsers = await request(baseUrl, '/api/access/admin/users', {
+      headers: { Authorization: `Bearer ${adminToken || (await request(baseUrl, '/api/auth/login', { method: 'POST', body: JSON.stringify({ email: adminEmail }) })).body.data.access_token}` },
+    });
+    expect(adminUsers.response.status).toBe(200);
+    expect(adminUsers.body.data.some((user) => user.id === student.id)).toBe(true);
+  });
+
   test('X-User-Id alone is not authentication', async () => {
     const result = await request(baseUrl, '/api/access/validator-requests', {
       headers: { 'X-User-Id': admin.id },

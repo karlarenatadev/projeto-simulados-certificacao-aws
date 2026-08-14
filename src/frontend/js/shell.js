@@ -21,10 +21,12 @@ import { logger } from "./utils/logger.js";
 import { AuthService } from "./services/authService.js";
 import { initializeUI } from "./i18n/initUI.js";
 import { getCurrentLanguage, setCurrentLanguage } from "./core/languageManager.js";
+import { resolveAppUrl } from "./core/navigation.js";
 
 // 🔹 CONSTANTES 🔹──────────────────────────────────────────────────────────────
 
 const THEME_KEY = "aws_sim_theme";
+export const ADMIN_MENU_STORAGE_KEY = "adminMenuCollapsed";
 // ─── DETECÇÃO DE CONTEXTO ─────────────────────────────────────────────────────
 
 /**
@@ -58,7 +60,7 @@ export function isSPAPage() {
  * - conditional: função opcional que recebe o user e retorna bool
  * - activePaths: rotas para marcar o item como 'is-active'
  */
-const SIDEBAR_ITEMS = [
+export const SIDEBAR_ITEMS = [
   {
     id: "sidebar-btn-hub",
     label: "Home",
@@ -176,9 +178,11 @@ const SIDEBAR_ITEMS = [
     id: "sidebar-btn-validation",
     label: "Validação",
     icon: "fa-solid fa-circle-check",
-    href: "./validation/valid.html",
+    href: "validation/valid.html",
     activePaths: ["/validation/valid.html"],
     roles: ["VALIDATOR", "ADMIN"],
+    adminGroup: true,
+    activeHashes: ["", "#questions", "#requests"],
     title: "Painel de Validação de Questões",
   },
   // ── Itens exclusivos para ADMIN ──────────────────────────────────────────
@@ -186,32 +190,30 @@ const SIDEBAR_ITEMS = [
     id: "sidebar-btn-users",
     label: "Usuários",
     icon: "fa-solid fa-users",
-    href: "#",
+    href: "validation/users.html",
+    activePaths: ["/validation/users.html"],
     roles: ["ADMIN"],
-    title: "Gerenciar Usuários (em breve)",
+    adminGroup: true,
+    adminOnly: true,
+    title: "Gerenciar Usuários",
   },
   {
-    id: "sidebar-btn-metrics",
-    label: "Métricas",
-    icon: "fa-solid fa-chart-bar",
-    href: "#",
-    roles: ["ADMIN"],
-    title: "Métricas da Plataforma (em breve)",
-  },
-  {
-    id: "sidebar-btn-config",
-    label: "Config",
-    icon: "fa-solid fa-gear",
-    href: "#",
-    roles: ["ADMIN"],
-    title: "Configurações (em breve)",
+    id: "sidebar-btn-history",
+    label: "Histórico",
+    icon: "fa-solid fa-clock-rotate-left",
+    href: "validation/history.html",
+    activePaths: ["/validation/history.html"],
+    roles: ["VALIDATOR", "ADMIN"],
+    adminGroup: true,
+    adminOnly: false,
+    title: "Histórico de validações",
   },
   // ── Itens de rodapé (visíveis a todos, posicionados antes do collapse) ──
   {
     id: "sidebar-btn-profile",
     label: "Perfil",
     icon: "fa-solid fa-circle-user",
-    href: "./profile.html",
+    href: "profile.html",
     activePaths: ["/profile.html"],
     roles: ["*"],
     title: "Meu Perfil",
@@ -221,7 +223,7 @@ const SIDEBAR_ITEMS = [
     id: "sidebar-btn-settings",
     label: "Config",
     icon: "fa-solid fa-sliders",
-    href: "./settings.html",
+    href: "settings.html",
     activePaths: ["/settings.html"],
     roles: ["*"],
     title: "Configurações",
@@ -463,7 +465,7 @@ function _bindUserMenuEvents() {
   if (profileBtn) {
     profileBtn.addEventListener("click", () => {
       dropdown.classList.remove("is-open");
-      window.location.href = "./profile.html";
+      window.location.href = resolveAppUrl("profile.html");
     });
   }
 
@@ -472,7 +474,7 @@ function _bindUserMenuEvents() {
   if (settingsBtn) {
     settingsBtn.addEventListener("click", () => {
       dropdown.classList.remove("is-open");
-      window.location.href = "./settings.html";
+      window.location.href = resolveAppUrl("settings.html");
     });
   }
 }
@@ -506,7 +508,11 @@ export function buildSidebar(user) {
     return false;
   });
 
-  const mainItems = allVisible.filter((item) => !item.footer);
+  const isAdmin = PermissionService.isAdmin(user);
+  const mainItems = allVisible.filter((item) => (
+    !item.footer && (!item.adminGroup || (!isAdmin && !item.adminOnly))
+  ));
+  const adminItems = allVisible.filter((item) => item.adminGroup && isAdmin);
   const footerItems = allVisible.filter((item) => item.footer);
 
   // 1. Renderiza os itens de navegação principais
@@ -517,6 +523,7 @@ export function buildSidebar(user) {
       const el = _createSidebarItem(item);
       navEl.appendChild(el);
     }
+    if (adminItems.length > 0) navEl.appendChild(_createAdminMenu(adminItems));
   }
 
   // 2. Resolve o container do footer (Cria dinamicamente se o HTML não tiver)
@@ -566,6 +573,56 @@ export function buildSidebar(user) {
   _syncSidebarToggleState(isClosed);
 }
 
+function _isSidebarItemActive(item) {
+  const pathMatches = item.activePaths?.some((path) => window.location.pathname.endsWith(path));
+  if (!pathMatches) return false;
+  return !item.activeHashes || item.activeHashes.includes(window.location.hash || "");
+}
+
+function _createAdminMenu(items) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "left-sidebar-admin-group";
+
+  const toggle = document.createElement("button");
+  toggle.id = "sidebar-admin-toggle";
+  toggle.type = "button";
+  toggle.className = "left-sidebar-admin-toggle";
+  toggle.setAttribute("aria-controls", "sidebar-admin-menu");
+  toggle.innerHTML = `
+    <i class="fa-solid fa-shield-halved left-sidebar-item-icon" aria-hidden="true"></i>
+    <span class="left-sidebar-item-label">Admin</span>
+    <i class="fa-solid fa-chevron-down left-sidebar-admin-chevron" aria-hidden="true"></i>
+  `;
+
+  const menu = document.createElement("div");
+  menu.id = "sidebar-admin-menu";
+  menu.className = "left-sidebar-admin-menu";
+  menu.setAttribute("role", "group");
+  items.forEach((item) => menu.appendChild(_createSidebarItem(item)));
+  wrapper.append(toggle, menu);
+
+  const hasActiveItem = items.some(_isSidebarItemActive);
+  const savedCollapsed = localStorage.getItem(ADMIN_MENU_STORAGE_KEY) === "true";
+  _syncAdminMenuState(wrapper, !hasActiveItem && savedCollapsed);
+  toggle.addEventListener("click", () => {
+    const collapsed = wrapper.classList.toggle("is-collapsed");
+    localStorage.setItem(ADMIN_MENU_STORAGE_KEY, String(collapsed));
+    _syncAdminMenuState(wrapper, collapsed);
+  });
+  return wrapper;
+}
+
+function _syncAdminMenuState(wrapper, collapsed) {
+  const toggle = wrapper.querySelector("#sidebar-admin-toggle");
+  const menu = wrapper.querySelector("#sidebar-admin-menu");
+  if (!toggle || !menu) return;
+  wrapper.classList.toggle("is-collapsed", collapsed);
+  toggle.setAttribute("aria-expanded", String(!collapsed));
+  toggle.setAttribute("aria-label", collapsed ? "Expandir menu Admin" : "Recolher menu Admin");
+  toggle.title = collapsed ? "Expandir menu Admin" : "Recolher menu Admin";
+  menu.hidden = collapsed;
+}
+
 function _createSidebarItem(item) {
   const tag = item.href ? "a" : "button";
   const el = document.createElement(tag);
@@ -581,8 +638,17 @@ function _createSidebarItem(item) {
   el.className = classes;
 
   if (item.href) {
-    el.href = item.href;
+    const resolvedHref = resolveAppUrl(item.href);
+    el.href = resolvedHref;
+    el.addEventListener("click", (event) => {
+      const targetUrl = new URL(resolvedHref, window.location.origin);
+      if (targetUrl.pathname !== window.location.pathname || !targetUrl.hash) return;
+      event.preventDefault();
+      window.location.hash = targetUrl.hash;
+    });
   }
+
+  if (_isSidebarItemActive(item)) el.classList.add("is-active");
 
   if (item.action) {
     el.addEventListener("click", () => {
@@ -595,7 +661,7 @@ function _createSidebarItem(item) {
         fn();
       } else {
         // Em página secundária: volta para o Hub (index.html)
-        window.location.href = "./index.html";
+        window.location.href = resolveAppUrl("index.html");
       }
     });
   }
@@ -786,18 +852,6 @@ export async function initShell(user) {
   renderUserMenu(resolvedUser);
   buildSidebar(resolvedUser);
 
-  // Marcar item ativo baseado na URL atual usando a configuração activePaths do SIDEBAR_ITEMS
-  const currentPath = window.location.pathname;
-  const activeItem = SIDEBAR_ITEMS.find((item) =>
-    item.activePaths?.some((path) => currentPath.endsWith(path))
-  );
-
-  if (activeItem) {
-    const activeEl = document.getElementById(activeItem.id);
-    if (activeEl) {
-      activeEl.classList.add("is-active");
-    }
-  }
 }
 
 async function _tryRestoreSession() {

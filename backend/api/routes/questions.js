@@ -16,6 +16,7 @@ import {
   deleteQuestion,
   searchQuestions,
   getPendingQuestions,
+  getValidationHistory,
   validateQuestion,
   canUserValidateCertification,
   getValidatorCertifications,
@@ -135,6 +136,19 @@ router.get('/pending', requireRole('VALIDATOR', 'ADMIN'), async (req, res, next)
         offset: Number.parseInt(offset, 10) || 0,
       },
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET /api/questions/history - Validation history scoped by role
+router.get('/history', requireRole('VALIDATOR', 'ADMIN'), async (req, res, next) => {
+  try {
+    const history = await getValidationHistory({
+      status: req.query.status,
+      validatorId: req.user.role === 'ADMIN' ? null : req.user.id,
+    });
+    res.status(200).json({ success: true, data: history, count: history.length });
   } catch (error) {
     next(error);
   }

@@ -36,6 +36,10 @@ window.ValidationAPI = {
     });
     return { success: response.success !== false, data: response.data || [] };
   },
+  async fetchValidationHistory(status = '') {
+    const query = status ? `?status=${encodeURIComponent(status)}` : '';
+    return validationFetch(`/api/questions/history${query}`);
+  },
   async validateQuestion(id, payload) {
     return validationFetch(`/api/questions/${encodeURIComponent(id)}/validate`, {
       method: 'POST',

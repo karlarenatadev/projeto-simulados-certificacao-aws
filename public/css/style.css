@@ -4515,6 +4515,67 @@ body.sidebar-closed .cases-filters {
   gap: 2px;
   width: 100%;
   padding: var(--space-8) 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.left-sidebar-admin-group {
+  width: 100%;
+  flex-shrink: 0;
+  border-top: 1px solid color-mix(in srgb, var(--a3-text-inverse) 12%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--a3-text-inverse) 12%, transparent);
+  padding: var(--space-4) 0;
+}
+
+.left-sidebar-admin-toggle {
+  position: relative;
+  width: 100%;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  padding: 0.35rem var(--space-8);
+  color: var(--a3-accent);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.left-sidebar-admin-toggle:hover {
+  background: color-mix(in srgb, var(--a3-accent) 12%, transparent);
+}
+
+.left-sidebar-admin-toggle:focus-visible {
+  outline: 2px solid var(--a3-accent);
+  outline-offset: -2px;
+}
+
+.left-sidebar-admin-toggle .left-sidebar-item-label {
+  color: currentColor;
+}
+
+.left-sidebar-admin-chevron {
+  position: absolute;
+  right: 0.45rem;
+  font-size: 0.55rem;
+  transition: transform var(--a3-transition-base);
+}
+
+.left-sidebar-admin-group:not(.is-collapsed) .left-sidebar-admin-chevron {
+  transform: rotate(180deg);
+}
+
+.left-sidebar-admin-menu {
+  width: 100%;
+}
+
+.left-sidebar-admin-menu[hidden] {
+  display: none;
+}
+
+.left-sidebar-admin-menu .left-sidebar-item {
+  min-height: 44px;
 }
 
 /* ── Itens ─────────────────────────────────────────────────────────────── */
@@ -7726,6 +7787,34 @@ textarea {
 
 /* ── Validation badge & tooltip ────────────────────────────────────────── */
 
+.validation-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin: var(--space-12) 0 var(--space-16);
+  border-bottom: 1px solid var(--a3-border-soft);
+}
+
+.validation-subnav a {
+  padding: var(--space-8) var(--space-12);
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+
+.validation-subnav a:hover,
+.validation-subnav a:focus-visible,
+.validation-subnav a.is-active {
+  color: var(--a3-tech-blue);
+  border-bottom-color: var(--a3-tech-blue);
+}
+
+.validation-error {
+  color: var(--a3-danger);
+}
+
 .validation-badge {
   display: inline-flex;
   align-items: center;
@@ -8446,6 +8535,7 @@ select {
   border-radius: 4px;
   cursor: pointer;
 }
+
 
 /* --- cases.css --- */
 /* ==========================================================================

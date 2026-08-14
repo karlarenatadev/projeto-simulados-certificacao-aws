@@ -81,6 +81,7 @@ jest.unstable_mockModule('../backend/database/db.js', () => ({
   deleteQuestion: jest.fn(),
   searchQuestions: jest.fn(),
   getPendingQuestions: getPendingQuestionsMock,
+  getValidationHistory: jest.fn(async () => []),
   validateQuestion: validateQuestionMock,
   getLeaderboard: jest.fn(async () => []),
   createUser: jest.fn(),
@@ -182,6 +183,20 @@ describe('question validation API', () => {
     expect(body.data).toHaveLength(1);
     expect(body.data[0].validation_status).toBe('PENDING');
     expect(getPendingQuestionsMock).toHaveBeenCalledWith({ limit: 50, offset: 0 });
+  });
+
+  test('GET /api/questions/history is available to Validator and Admin only', async () => {
+    const historyMock = (await import('../backend/database/db.js')).getValidationHistory;
+    historyMock.mockResolvedValue([{ id: 'processed-1', validation_status: 'APPROVED' }]);
+    const validator = await request(baseUrl, '/api/questions/history?status=APPROVED');
+    expect(validator.response.status).toBe(200);
+    expect(validator.body.data).toHaveLength(1);
+    expect(historyMock).toHaveBeenCalledWith({ status: 'APPROVED', validatorId: 'test-user-id' });
+
+    const student = await request(baseUrl, '/api/questions/history', {
+      headers: { 'X-Test-Role': 'STUDENT' },
+    });
+    expect(student.response.status).toBe(403);
   });
 
   test('POST /api/questions/:id/validate approves a question', async () => {

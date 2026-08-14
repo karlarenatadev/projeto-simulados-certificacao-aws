@@ -16,6 +16,7 @@
     "db:seed": "node scripts/seed/seed-pglite.mjs",
     "db:seed-cases": "node scripts/seed/seed-cases.mjs",
     "db:seed-users": "node scripts/seed/seed-users.mjs",
+    "db:merge-duplicate-users": "node scripts/migrate/merge-duplicate-users.mjs",
     "db:start": "node backend/server.js",
     "db:dev": "node backend/server.js",
     "api:start": "node backend/api/server.js",

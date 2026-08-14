@@ -1,0 +1,109 @@
+.admin-page {
+  max-width: 1180px;
+}
+
+.admin-page-header {
+  margin-bottom: 1rem;
+}
+
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.admin-toolbar input,
+.admin-toolbar select {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-color, #d1d5db);
+  border-radius: 0.5rem;
+  background: var(--card-bg, #fff);
+  color: inherit;
+}
+
+.admin-table-wrap {
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+  text-align: left;
+  vertical-align: top;
+}
+
+.admin-table th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin-table select {
+  min-height: 2rem;
+  padding: 0.25rem;
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-status {
+  display: inline-flex;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.admin-status-active,
+.admin-status-approved {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.admin-status-inactive,
+.admin-status-rejected {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.admin-feedback {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.admin-feedback.success { background: #dcfce7; color: #166534; }
+.admin-feedback.error { background: #fee2e2; color: #991b1b; }
+.admin-empty { padding: 1.25rem; color: var(--text-muted, #6b7280); }
+
+.admin-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-list-card {
+  padding: 1rem;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 0.75rem;
+  background: var(--card-bg, #fff);
+}
+
+.admin-list-card h3 { margin: 0 0 0.35rem; }
+.admin-list-card p { margin: 0.25rem 0; }
+
+@media (max-width: 700px) {
+  .admin-table th,
+  .admin-table td { padding: 0.55rem; }
+}
