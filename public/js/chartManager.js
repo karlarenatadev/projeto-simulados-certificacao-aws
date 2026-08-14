@@ -1,5 +1,6 @@
 import { certificationPaths } from "./data.js";
 import { storageManager } from "./storageManager.js";
+import { logger } from "./utils/logger.js";
 
 const A3_CHART_COLORS = {
   deepSea: "#001863",
@@ -425,7 +426,7 @@ export async function renderGlobalRadarChart() {
 export function renderPerformanceLineChart(history, domainFilter = 'geral') {
   const canvas = document.getElementById("performanceLineChart");
   if (!canvas) {
-    console.error("Canvas element 'performanceLineChart' not found.");
+    logger.error("Canvas element 'performanceLineChart' not found.");
     return;
   }
 
@@ -453,16 +454,12 @@ export function renderPerformanceLineChart(history, domainFilter = 'geral') {
   const ctx = canvas.getContext("2d");
 
   const labels = history.map((_, index) => `Simulado ${index + 1}`);
-  let dataPoints = [];
-
-  if (domainFilter === 'geral') {
-    dataPoints = history.map(h => h.percentage || 0);
-  } else {
-    dataPoints = history.map(h => {
+  const dataPoints = domainFilter === 'geral'
+    ? history.map(h => h.percentage || 0)
+    : history.map(h => {
       if (!h.domainScores || !h.domainScores[domainFilter]) return 0;
       return h.domainScores[domainFilter].percentage || 0;
     });
-  }
 
   let gradient = ctx.createLinearGradient(0, 0, 0, 300);
   gradient.addColorStop(0, chartColors.fill);

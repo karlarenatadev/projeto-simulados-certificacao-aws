@@ -21,7 +21,7 @@ export class IQuestionBankService {
    * @param {number} [filters.offset]
    * @returns {Promise<Question[]>}
    */
-  async getQuestions(filters) {
+  async getQuestions(_filters) {
     throw new Error("Not implemented");
   }
 
@@ -30,7 +30,7 @@ export class IQuestionBankService {
    * @param {string} questionId
    * @returns {Promise<Question|null>}
    */
-  async getQuestionById(questionId) {
+  async getQuestionById(_questionId) {
     throw new Error("Not implemented");
   }
 }
@@ -45,7 +45,7 @@ export class ITaxonomyService {
    * @param {string} certId
    * @returns {Promise<Certification>}
    */
-  async getCertificationTree(certId) {
+  async getCertificationTree(_certId) {
     throw new Error("Not implemented");
   }
 
@@ -54,7 +54,7 @@ export class ITaxonomyService {
    * @param {string} certId
    * @returns {Promise<Competency[]>}
    */
-  async getCompetencies(certId) {
+  async getCompetencies(_certId) {
     throw new Error("Not implemented");
   }
 }
@@ -69,7 +69,7 @@ export class IContentDeliveryService {
    * @param {string} sprintId
    * @returns {Promise<Sprint>}
    */
-  async getSprint(sprintId) {
+  async getSprint(_sprintId) {
     throw new Error("Not implemented");
   }
 
@@ -78,7 +78,7 @@ export class IContentDeliveryService {
    * @param {string} caseId
    * @returns {Promise<Case>}
    */
-  async getCase(caseId) {
+  async getCase(_caseId) {
     throw new Error("Not implemented");
   }
 
@@ -87,7 +87,7 @@ export class IContentDeliveryService {
    * @param {string} trailId
    * @returns {Promise<Trail>}
    */
-  async getTrail(trailId) {
+  async getTrail(_trailId) {
     throw new Error("Not implemented");
   }
 }

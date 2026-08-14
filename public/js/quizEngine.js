@@ -17,16 +17,76 @@ import { storageManager } from "./storageManager.js";
 import { generateQuestionId } from "./utils/questionIdentity.js";
 import { normalizeCertificationId } from "./utils/certUtils.js";
 import { certificationPaths } from "./data.js";
+import { selectDiagnosticQuestions } from "./diagnosticQuestionSelector.js";
+import { normalizeDomain } from "./domainTaxonomy.js";
+import {
+  selectTargetedQuestions,
+  TARGETED_PRACTICE_QUESTION_COUNT,
+} from "./targetedQuestionSelector.js";
 
 const dataRepo = createDataRepository(storageManager);
 
 const DEFAULT_PERSONALIZED_QUESTION_COUNT = 10;
-const WEAK_DOMAIN_THRESHOLD = 60;
+export const DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD = 60;
+export const WEAK_METADATA_STRONG_EVIDENCE_OCCURRENCES = 2;
+
+export function normalizeMetadataId(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLocaleLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function getServiceMetadataId(service) {
+  if (typeof service === "string") return service;
+  return service?.service_slug || service?.service_id || service?.service_name;
+}
+
+function countMetadataSignals(answers, readValues) {
+  const counts = new Map();
+
+  (answers || [])
+    .filter((answer) => answer && answer.isCorrect === false)
+    .forEach((answer) => {
+      const rawValues = readValues(answer);
+      const values = Array.isArray(rawValues) ? rawValues : [rawValues];
+      const uniqueValues = new Set(
+        values.map(normalizeMetadataId).filter(Boolean),
+      );
+
+      uniqueValues.forEach((id) => {
+        counts.set(id, (counts.get(id) || 0) + 1);
+      });
+    });
+
+  return [...counts.entries()]
+    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+    .map(([id, occurrences]) => ({
+      id,
+      occurrences,
+      evidence:
+        occurrences >= WEAK_METADATA_STRONG_EVIDENCE_OCCURRENCES
+          ? "strong"
+          : "secondary",
+    }));
+}
+
+export function buildWeakMetadataSignals(answers) {
+  return {
+    weakServices: countMetadataSignals(answers, (answer) =>
+      (answer.services || []).map(getServiceMetadataId),
+    ),
+    weakTopics: countMetadataSignals(answers, (answer) => answer.tags || []),
+  };
+}
 
 export function identifyWeakDomains(
   domainScores,
   domainsConfig = [],
-  threshold = WEAK_DOMAIN_THRESHOLD,
+  threshold = DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD,
 ) {
   if (!domainScores || typeof domainScores !== "object") return [];
 
@@ -311,6 +371,63 @@ export class QuizEngine {
     }
   }
 
+  async loadTargetedQuestions(
+    certId,
+    domainsConfig,
+    weakDomainIds,
+    quantity = TARGETED_PRACTICE_QUESTION_COUNT,
+    language = "pt",
+    excludedQuestionIds = [],
+  ) {
+    this.resetState();
+    this.state.attemptId = this._generateAttemptId();
+    this.state.certId = normalizeCertificationId(certId);
+    this.state.mode = "targeted-practice";
+
+    try {
+      const fileSuffix = language === "en" ? "-en" : "";
+      let response = await fetch(
+        `data/questions/${this.state.certId}${fileSuffix}.json`,
+      );
+
+      if (!response.ok && language === "en") {
+        response = await fetch(`data/questions/${this.state.certId}.json`);
+      }
+
+      if (!response.ok) {
+        throw new Error("Arquivo de questÃµes nÃ£o encontrado.");
+      }
+
+      let data = await response.json();
+      data = await this._sanitizeQuestions(data, this.state.certId);
+      data = data.map((question) => this._normalizeQuestion(question));
+
+      const selectedQuestions = selectTargetedQuestions(
+        data,
+        this.state.certId,
+        weakDomainIds,
+        quantity,
+        excludedQuestionIds,
+      );
+
+      if (selectedQuestions.length === 0) {
+        throw new Error("Nenhuma questÃ£o disponÃ­vel para esta prÃ¡tica.");
+      }
+
+      this.state.questions = selectedQuestions.map((question) =>
+        this._shuffleOptions(question),
+      );
+
+      domainsConfig.forEach((domain) => {
+        this.state.domainScores[domain.id] = { total: 0, correct: 0 };
+      });
+
+      return { success: true, totalQuestions: this.state.questions.length };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
+  }
+
   // 1.5 CARREGAMENTO DO DIAGNÓSTICO DE NIVELAMENTO
   async loadDiagnostic(certId, domainsConfig, language = "pt") {
     this.resetState();
@@ -321,8 +438,9 @@ export class QuizEngine {
     try {
       let data = null;
 
-      // Try API first
-      try {
+      // O diagnóstico é local-first e usa somente o banco principal.
+      if (apiService.getConfiguredApiUrl()?.trim()) {
+        try {
         const response = await apiService.loadQuestions({
           certification: certId,
           search: "diagnostic", // Attempt to filter for diagnostic questions
@@ -340,11 +458,14 @@ export class QuizEngine {
           apiError,
         );
       }
+      }
+
+      data = null;
 
       // Fallback to JSON
       if (!data || data.length === 0) {
         const fileSuffix = language === "en" ? "-en" : "";
-        let filePath = `data/nivelamento/diagnostic-${certId}${fileSuffix}.json`;
+        let filePath = `data/questions/${certId}${fileSuffix}.json`;
 
         let response = await fetch(filePath);
 
@@ -353,7 +474,7 @@ export class QuizEngine {
           logger.warn(
             `Diagnóstico EN não encontrado para ${certId}. Tentando versão PT...`,
           );
-          filePath = `data/nivelamento/diagnostic-${certId}.json`;
+          filePath = `data/questions/${certId}.json`;
           response = await fetch(filePath);
         }
 
@@ -365,6 +486,19 @@ export class QuizEngine {
         data = await response.json();
         logger.info(
           `✓ Loaded ${data.length} diagnostic questions from JSON file`,
+        );
+      }
+
+      // Seleciona a amostra do banco principal sem criar uma segunda fonte.
+      data = selectDiagnosticQuestions(data, domainsConfig, {
+        certId,
+        language,
+        quantity: 12,
+      });
+
+      if (data.length === 0) {
+        throw new Error(
+          `Nenhuma questÃ£o de diagnÃ³stico encontrada para ${certId}.`,
         );
       }
 
@@ -430,6 +564,12 @@ export class QuizEngine {
 
     // --- CORREÇÃO DE BUG DO GRÁFICO (Normalização de Domínios) ---
     let qDomain = String(q.domain).trim();
+    if (
+      this.state.mode === "diagnostic" ||
+      this.state.mode === "targeted-practice"
+    ) {
+      qDomain = normalizeDomain(this.state.certId, qDomain) || qDomain;
+    }
 
     // 1. Tenta o match exato
     if (this.state.domainScores[qDomain]) {
@@ -465,10 +605,10 @@ export class QuizEngine {
   // 4. RESULTADOS FINAIS
   getFinalResults() {
     const total = this.state.questions.length;
-    const percentage = (this.state.score / total) * 100;
+    const percentage = total > 0 ? (this.state.score / total) * 100 : 0;
 
     // Calcula todos os domínios fracos (accuracy < 70%)
-    const weakDomains = [];
+    let weakDomains = [];
 
     for (const [domainId, scoreData] of Object.entries(
       this.state.domainScores,
@@ -481,16 +621,58 @@ export class QuizEngine {
       }
     }
 
+    const isDiagnostic = this.state.mode === "diagnostic";
+    const weakThreshold = isDiagnostic
+      ? DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD
+      : 70;
+    const domainResults = Object.entries(this.state.domainScores).map(
+      ([domainId, scoreData]) => {
+        const domainScore = scoreData.total
+          ? (scoreData.correct / scoreData.total) * 100
+          : null;
+
+        return {
+          domainId:
+            isDiagnostic || this.state.mode === "targeted-practice"
+              ? normalizeDomain(this.state.certId, domainId) || domainId
+              : domainId,
+          id: domainId,
+          totalQuestions: scoreData.total,
+          correctAnswers: scoreData.correct,
+          score: domainScore,
+          isWeak: scoreData.total > 0 && domainScore < weakThreshold,
+          isStrong: scoreData.total > 0 && domainScore >= weakThreshold,
+        };
+      },
+    );
+    weakDomains = domainResults
+      .filter((domain) => domain.isWeak)
+      .map((domain) => domain.id);
+    const strongDomains = domainResults
+      .filter((domain) => domain.isStrong)
+      .map((domain) => domain.id);
+    const weakMetadata = isDiagnostic
+      ? buildWeakMetadataSignals(this.state.answers)
+      : { weakServices: [], weakTopics: [] };
+
     return {
       attemptId: this.state.attemptId,
       quizId: this.state.quizId,
       certId: this.state.certId,
+      certificationId: this.state.certId,
+      certification: this.state.certId,
       score: this.state.score,
       total: total,
+      totalQuestions: total,
+      correctAnswers: this.state.score,
       percentage: percentage,
+      overallScore: percentage,
       passed: percentage >= this.PASSING_SCORE,
       domainScores: this.state.domainScores,
+      domainResults,
       weakDomains: weakDomains,
+      strongDomains,
+      ...weakMetadata,
       answers: this.state.answers,
     };
   }

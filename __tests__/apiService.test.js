@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import apiService from '../src/services/api.js';
+import apiService from '../src/frontend/js/services/api.js';
 import { QuizEngine } from '../src/frontend/js/quizEngine.js';
 import { quizManager } from '../src/frontend/js/quizManager.js';
 import { userManager } from '../src/frontend/js/userManager.js';
@@ -82,9 +82,9 @@ describe('apiService response normalization', () => {
 
     expect(apiResponse.data.id).toBe('user-1');
     expect(user.id).toBe('user-1');
-    expect(user.nickname).toBe('UsuarioA3');
-    const session = JSON.parse(localStorage.getItem('cloudacademy_user') || 'null');
-    expect(session?.id).toBe('user-1');
+    expect(user.name).toBe('UsuarioA3');
+    const session = JSON.parse(localStorage.getItem('cloudacademy_session') || 'null');
+    expect(session?.user?.id).toBe('user-1');
   });
 
   test('preserves a direct list response', async () => {
@@ -158,9 +158,7 @@ describe('apiService response normalization', () => {
       explanation: 'Amazon S3 provides object storage.',
     }];
 
-    global.fetch
-      .mockRejectedValueOnce(new Error('API unavailable'))
-      .mockResolvedValueOnce(jsonResponse(fallbackQuestions));
+    global.fetch.mockResolvedValueOnce(jsonResponse(fallbackQuestions));
 
     const engine = new QuizEngine();
     const result = await engine.loadQuestions(
@@ -173,7 +171,7 @@ describe('apiService response normalization', () => {
     expect(result).toEqual({ success: true, totalQuestions: 1 });
     expect(engine.state.questions).toHaveLength(1);
     expect(global.fetch).toHaveBeenNthCalledWith(
-      2,
+      1,
       'data/questions/clf-c02.json',
     );
   });

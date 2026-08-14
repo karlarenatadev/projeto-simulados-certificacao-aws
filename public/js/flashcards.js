@@ -1,5 +1,7 @@
 import { logger } from "./utils/logger.js";
 import { glossaryTerms, certificationPaths } from "./data.js";
+import { getDomainDefinition, normalizeDomain } from "./domainTaxonomy.js";
+import { normalizeCertificationId } from "./utils/certUtils.js";
 import { t } from "./i18n/useTranslation.js";
 import { storageManager } from "./storageManager.js";
 
@@ -15,7 +17,150 @@ let flashcardState = {
   flipped: false,
   filteredTerms: [],
   currentDomainFilter: "all",
+  diagnosticContext: null,
+  diagnosticDomainIds: null,
+  diagnosticFallback: false,
 };
+
+export function parseDiagnosticContext(value) {
+  try {
+    const context = typeof value === "string" ? JSON.parse(value) : value;
+    const certificationId = normalizeCertificationId(
+      context?.certificationId,
+    );
+
+    if (context?.source !== "diagnostic" || !certificationPaths[certificationId]) {
+      return null;
+    }
+
+    const weakDomains = Array.isArray(context.weakDomains)
+      ? context.weakDomains
+          .map((domain) =>
+            typeof domain === "string"
+              ? domain
+              : domain?.domainId || domain?.id,
+          )
+          .map((domain) => normalizeDomain(certificationId, domain))
+          .filter(Boolean)
+      : [];
+
+    const uniqueWeakDomains = [...new Set(weakDomains)];
+    if (uniqueWeakDomains.length === 0) return null;
+
+    return {
+      source: "diagnostic",
+      certificationId,
+      weakDomains: uniqueWeakDomains,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function filterTermsByCertification(terms, certificationId) {
+  const certId = normalizeCertificationId(certificationId);
+  return terms.filter(
+    (card) => card.cert === "all" || normalizeCertificationId(card.cert) === certId,
+  );
+}
+
+export function filterTermsByDiagnosticContext(terms, context) {
+  if (!context || context.source !== "diagnostic") return [];
+
+  return filterTermsByCertification(terms, context.certificationId).filter(
+    (card) =>
+      card.cert === "all" ||
+      context.weakDomains.includes(
+        normalizeDomain(context.certificationId, card.domain),
+      ),
+  );
+}
+
+export function getDiagnosticContextLabels(context, language = "pt") {
+  if (!context) return [];
+
+  return context.weakDomains
+    .map((domainId) => getDomainDefinition(context.certificationId, domainId))
+    .filter(Boolean)
+    .map((domain) => (language === "en" ? domain.labelEn : domain.labelPt));
+}
+
+export function getDiagnosticContextViewModel(
+  context,
+  count = 0,
+  fallback = false,
+  language = "pt",
+) {
+  if (!context) return null;
+
+  return {
+    title: t("diagnostic_flashcards_title", language),
+    description: t("diagnostic_flashcards_desc", language),
+    labels: getDiagnosticContextLabels(context, language),
+    count: t("diagnostic_flashcards_selected", language, { count }),
+    fallback: fallback
+      ? t("diagnostic_flashcards_fallback", language)
+      : "",
+  };
+}
+
+function renderDiagnosticContext(context, count = 0, fallback = false) {
+  const banner = document.getElementById("flashcards-diagnostic-banner");
+  if (!banner) return;
+
+  const title = banner.querySelector("h3");
+  const description = banner.querySelector("div > p");
+  const domains = document.getElementById("flashcards-diagnostic-domains");
+  const countElement = document.getElementById("flashcards-diagnostic-count");
+  const fallbackElement = document.getElementById("flashcards-diagnostic-fallback");
+  const language = getCurrentLanguage();
+
+  if (!context) {
+    banner.classList.add("hidden");
+    return;
+  }
+
+  const viewModel = getDiagnosticContextViewModel(
+    context,
+    count,
+    fallback,
+    language,
+  );
+  banner.classList.remove("hidden");
+  if (title) {
+    title.innerHTML = `<i class="fa-solid fa-bullseye"></i> ${viewModel.title}`;
+  }
+  if (description) {
+    description.textContent = viewModel.description;
+  }
+  if (domains) {
+    domains.innerHTML = viewModel.labels
+      .map((label) => `<div>• ${label}</div>`)
+      .join("");
+  }
+  if (countElement) {
+    countElement.textContent = viewModel.count;
+  }
+  if (fallbackElement) {
+    fallbackElement.textContent = viewModel.fallback;
+    fallbackElement.classList.toggle("hidden", !fallback);
+  }
+}
+
+function clearDiagnosticRecommendation() {
+  if (!flashcardState.diagnosticContext) return;
+
+  sessionStorage.removeItem("aws_sim_diagnostic_context");
+  flashcardState.diagnosticContext = null;
+  flashcardState.diagnosticDomainIds = null;
+  flashcardState.diagnosticFallback = false;
+  renderDiagnosticContext(null);
+}
+
+function handleManualFlashcardFilter() {
+  clearDiagnosticRecommendation();
+  filterFlashcards();
+}
 
 // ==========================================
 // INICIALIZAÇÃO
@@ -35,6 +180,14 @@ export function startFlashcards(showScreenFn) {
 
   const categorySelect = document.getElementById("flashcard-category");
   const certSelect = document.getElementById("certification-select");
+  const diagnosticCtx = parseDiagnosticContext(
+    sessionStorage.getItem("aws_sim_diagnostic_context"),
+  );
+
+  if (diagnosticCtx && certSelect) {
+    certSelect.value = diagnosticCtx.certificationId;
+  }
+
   const selectedCert = certSelect ? certSelect.value : "clf-c02";
 
   // --- Popula as opções do Dropdown dinamicamente ---
@@ -64,23 +217,23 @@ export function startFlashcards(showScreenFn) {
     categorySelect.value = exists ? currentVal : "all";
 
     if (!categorySelect.dataset.listenerAdded) {
-      categorySelect.addEventListener("change", filterFlashcards);
+      categorySelect.addEventListener("change", handleManualFlashcardFilter);
       categorySelect.dataset.listenerAdded = "true";
     }
   }
 
-  // --- NOVO: Lógica do Diagnóstico ---
-  const diagnosticCtxStr = sessionStorage.getItem("aws_sim_diagnostic_context");
+  // --- Lógica do Diagnóstico ---
   const banner = document.getElementById("flashcards-diagnostic-banner");
   
-  if (diagnosticCtxStr) {
+  if (diagnosticCtx) {
     try {
-      const diagCtx = JSON.parse(diagnosticCtxStr);
-      flashcardState.diagnosticDomainIds = diagCtx.weakDomains.map(d => d.id);
+      flashcardState.diagnosticContext = diagnosticCtx;
+      flashcardState.diagnosticDomainIds = diagnosticCtx.weakDomains;
+      flashcardState.diagnosticFallback = false;
       
       if (banner) banner.classList.remove("hidden");
       if (categorySelect) {
-        categorySelect.disabled = true;
+        categorySelect.disabled = false;
         categorySelect.value = "all"; // Force visual selection
       }
       
@@ -92,19 +245,27 @@ export function startFlashcards(showScreenFn) {
         };
       }
     } catch(e) {
-      console.error(e);
+      logger.error(e);
       sessionStorage.removeItem("aws_sim_diagnostic_context");
+      flashcardState.diagnosticContext = null;
       flashcardState.diagnosticDomainIds = null;
       if (banner) banner.classList.add("hidden");
       if (categorySelect) categorySelect.disabled = false;
     }
   } else {
+    flashcardState.diagnosticContext = null;
     flashcardState.diagnosticDomainIds = null;
+    flashcardState.diagnosticFallback = false;
     if (banner) banner.classList.add("hidden");
     if (categorySelect) categorySelect.disabled = false;
   }
 
   setupFlashcardListeners();
+  if (certSelect && !certSelect.dataset.diagnosticListenerAdded) {
+    certSelect.addEventListener("change", handleManualFlashcardFilter);
+    certSelect.dataset.diagnosticListenerAdded = "true";
+  }
+  renderDiagnosticContext(flashcardState.diagnosticContext);
   filterFlashcards();
 }
 
@@ -118,7 +279,7 @@ export function filterFlashcards() {
   const selectedCert = certSelect ? certSelect.value : "clf-c02";
   const selectedDomain = categorySelect ? categorySelect.value : "all";
 
-  // --- NOVO: Atualiza a Badge visual no topo da tela ---
+  // --- Atualiza a Badge visual no topo da tela ---
   const certBadge = document.getElementById("flashcards-cert-badge");
   if (certBadge) {
     certBadge.textContent = selectedCert.toUpperCase();
@@ -126,12 +287,21 @@ export function filterFlashcards() {
 
   flashcardState.currentDomainFilter = selectedDomain;
 
-  if (flashcardState.diagnosticDomainIds && flashcardState.diagnosticDomainIds.length > 0) {
-    flashcardState.filteredTerms = glossaryTerms.filter((card) => {
-      const matchCert = card.cert === "all" || card.cert === selectedCert;
-      const matchDomain = flashcardState.diagnosticDomainIds.includes(card.domain);
-      return matchCert && matchDomain;
-    });
+  if (
+    flashcardState.diagnosticContext &&
+    flashcardState.diagnosticDomainIds?.length > 0
+  ) {
+    flashcardState.filteredTerms = filterTermsByDiagnosticContext(
+      glossaryTerms,
+      flashcardState.diagnosticContext,
+    );
+    if (flashcardState.filteredTerms.length === 0) {
+      flashcardState.diagnosticFallback = true;
+      flashcardState.filteredTerms = filterTermsByCertification(
+        glossaryTerms,
+        flashcardState.diagnosticContext.certificationId,
+      );
+    }
   } else if (selectedDomain === "review-deck") {
     const savedDeck = storageManager.getReviewDeck(selectedCert);
     flashcardState.filteredTerms = savedDeck.map((q) => {
@@ -154,12 +324,14 @@ export function filterFlashcards() {
       };
     });
   } else {
-    flashcardState.filteredTerms = glossaryTerms.filter((card) => {
-      const matchCert = card.cert === "all" || card.cert === selectedCert;
-      const matchDomain =
-        selectedDomain === "all" || card.domain === selectedDomain;
-      return matchCert && matchDomain;
-    });
+    flashcardState.filteredTerms = filterTermsByCertification(
+      glossaryTerms,
+      selectedCert,
+    ).filter(
+      (card) =>
+        selectedDomain === "all" ||
+        normalizeDomain(selectedCert, card.domain) === selectedDomain,
+    );
   }
 
   flashcardState.filteredTerms.sort(() => Math.random() - 0.5);
@@ -174,11 +346,21 @@ export function filterFlashcards() {
         : "Nenhum cartão encontrado para esta categoria.";
     alert(errorMsg);
 
-    if (categorySelect) {
-      categorySelect.value = "all";
-      filterFlashcards();
-    }
-    return;
+    flashcardState.filteredTerms = filterTermsByCertification(
+      glossaryTerms,
+      selectedCert,
+    );
+    flashcardState.currentDomainFilter = "all";
+    if (categorySelect) categorySelect.value = "all";
+    if (flashcardState.filteredTerms.length === 0) return;
+  }
+
+  if (flashcardState.diagnosticContext) {
+    renderDiagnosticContext(
+      flashcardState.diagnosticContext,
+      flashcardState.filteredTerms.length,
+      flashcardState.diagnosticFallback,
+    );
   }
 
   renderCurrentFlashcard();
@@ -310,9 +492,6 @@ function setupFlashcardListeners() {
     prevBtn.addEventListener("click", prevFlashcard);
     prevBtn.dataset.bound = "true";
   }
-
-  // 🚨 ATENÇÃO: O bloco de código que ouvia o 'cardContainer' foi removido daqui!
-  // O seu arquivo app.js (na linha 110) já faz isso de forma perfeita, incluindo atalhos de teclado!
 
   if (homeBtn && !homeBtn.dataset.bound) {
     homeBtn.addEventListener("click", () => {

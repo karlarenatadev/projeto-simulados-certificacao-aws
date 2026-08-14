@@ -1,7 +1,11 @@
 import { readFileSync } from 'node:fs';
 
-const indexHtml = readFileSync(
+const homeHtml = readFileSync(
   new URL('../public/index.html', import.meta.url),
+  'utf8',
+);
+const sprintHtml = readFileSync(
+  new URL('../src/frontend/pages/study-sprint.html', import.meta.url),
   'utf8',
 );
 const appSource = readFileSync(
@@ -11,15 +15,15 @@ const appSource = readFileSync(
 
 describe('primary button handlers', () => {
   test.each([
-    ['btn-start-journey', 'startJornada'],
-    ['btn-start-diagnostic', 'startDiagnostic'],
-    ['sprint-start-btn', 'startMicroSprint'],
-  ])('%s uses one module listener without legacy onclick', (id, handler) => {
+    ['btn-start-journey', 'startJornada', homeHtml],
+    ['btn-start-diagnostic', 'startDiagnostic', homeHtml],
+    ['sprint-start-btn', 'startMicroSprint', sprintHtml],
+  ])('%s uses one module listener without legacy onclick', (id, handler, pageHtml) => {
     const buttonPattern = new RegExp(
       `<button[^>]*id="${id}"[^>]*>`,
       's',
     );
-    const button = indexHtml.match(buttonPattern)?.[0];
+    const button = pageHtml.match(buttonPattern)?.[0];
     const binding = `bindClick("${id}", ${handler});`;
 
     expect(button).toBeDefined();

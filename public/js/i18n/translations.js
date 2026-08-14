@@ -119,6 +119,18 @@ export const translations = {
     practice_weak_domains: "Praticar domínios fracos",
     diagnostic_not_enough_data:
       "Ainda não há dados suficientes para gerar uma recomendação personalizada.",
+    diagnostic_domain_performance: "{{score}}% de desempenho",
+    diagnostic_review_priority: "Prioridade de revisão",
+    review_recommended_flashcards: "Revisar Flashcards recomendados",
+    diagnostic_flashcards_title: "Recomendado pelo seu Raio-X",
+    diagnostic_flashcards_desc:
+      "Seu diagnóstico identificou pontos para reforçar em:",
+    diagnostic_flashcards_selected:
+      "{{count}} flashcards selecionados para sua revisão.",
+    diagnostic_flashcards_fallback:
+      "Não há flashcards específicos suficientes para estes domínios. Exibindo o conteúdo disponível desta certificação.",
+    diagnostic_flashcards_continue: "Continuar revisão",
+    practice_recommended_questions: "Praticar questões recomendadas",
     personalized_quiz_unavailable:
       "Não foi possível iniciar o simulado personalizado. {{message}}",
 
@@ -150,14 +162,11 @@ export const translations = {
     start_quiz_for_ai_mapping:
       "Comece o simulado para que a IA mapeie seu perfil de conhecimento.",
     history: "Histórico",
-    clear_history: "Limpar histórico",
     no_quizzes_yet: "Nenhum simulado realizado ainda.",
     certification_statistics: "Estatísticas da Certificação",
     first_quiz_for_stats:
       "Faça seu primeiro simulado para ver suas estatísticas aqui!",
     quizzes: "Simulados",
-    average: "Média",
-    questions: "Questões",
 
     // Footer
     developed_by: "Desenvolvido por",
@@ -167,7 +176,6 @@ export const translations = {
     time_up:
       "⏰ O tempo esgotou! O seu simulado será finalizado automaticamente e as questões em branco serão dadas como erradas.",
     exit_quiz_confirm: "Sair do simulado?",
-    loading: "A carregar...",
     error_loading_questions:
       "❌ Erro ao carregar o banco de questões: {{message}}\n\nVerifique se o ficheiro de dados existe e tente novamente.",
     error_starting_quiz:
@@ -279,7 +287,22 @@ export const translations = {
     "studyNow.review_domain": "Revisar {{domain}}",
     "studyNow.review_domain_desc": "Seu desempenho está abaixo de {{threshold}}%",
     "studyNow.start_quiz_action": "Estudar Pontos Fracos",
-    "studyNow.study_docs_action": "Estudar Documentação"
+    "studyNow.study_docs_action": "Estudar Documentação",
+    "studyNow.diagnostic_title": "Baseado no seu último Raio-X",
+    "studyNow.diagnostic_subtitle": "Principais domínios para reforçar agora",
+    "studyNow.priority_high": "Prioridade alta",
+    "studyNow.priority_medium": "Prioridade média",
+    "studyNow.priority_low": "Prioridade baixa",
+    "studyNow.diagnostic_flashcards": "Revisar Flashcards",
+    "studyNow.diagnostic_questions": "Praticar Questões",
+    "studyNow.diagnostic_labs": "Ver Laboratórios recomendados",
+    "studyNow.diagnostic_cases": "Ver Cases recomendados",
+    "cases_diagnostic_title": "Recomendado pelo seu Raio-X",
+    "cases_diagnostic_services": "Cases selecionados pelos serviços identificados no diagnóstico.",
+    "cases_diagnostic_fallback": "Não encontramos um Case específico para esse ponto. Exibindo Cases disponíveis para sua certificação."
+    ,"labs_diagnostic_title": "Recomendado com base no seu Raio-X"
+    ,"labs_diagnostic_service": "Foco em: {{service}}"
+    ,"labs_diagnostic_fallback": "Não há um Lab específico para este serviço. Exibindo o conteúdo disponível desta certificação."
   },
 
   en: {
@@ -402,6 +425,18 @@ export const translations = {
     practice_weak_domains: "Practice weak domains",
     diagnostic_not_enough_data:
       "There is not enough data yet to generate a personalized recommendation.",
+    diagnostic_domain_performance: "{{score}}% performance",
+    diagnostic_review_priority: "Review priority",
+    review_recommended_flashcards: "Review recommended Flashcards",
+    diagnostic_flashcards_title: "Recommended by your X-Ray",
+    diagnostic_flashcards_desc:
+      "Your diagnosis identified topics to reinforce in:",
+    diagnostic_flashcards_selected:
+      "{{count}} flashcards selected for your review.",
+    diagnostic_flashcards_fallback:
+      "There are not enough specific flashcards for these domains. Showing the content available for this certification.",
+    diagnostic_flashcards_continue: "Continue review",
+    practice_recommended_questions: "Practice recommended questions",
     personalized_quiz_unavailable:
       "Could not start the personalized quiz. {{message}}",
 
@@ -432,13 +467,10 @@ export const translations = {
     start_quiz_for_ai_mapping:
       "Start the quiz so AI can map your knowledge profile.",
     history: "History",
-    clear_history: "Clear history",
     no_quizzes_yet: "No quizzes taken yet.",
     certification_statistics: "Certification Statistics",
     first_quiz_for_stats: "Take your first quiz to see your statistics here!",
     quizzes: "Quizzes",
-    average: "Average",
-    questions: "Questions",
 
     // Footer
     developed_by: "Developed by",
@@ -448,7 +480,6 @@ export const translations = {
     time_up:
       "⏰ Time's up! Your simulation will be automatically finished and blank questions will be marked as wrong.",
     exit_quiz_confirm: "Exit the quiz?",
-    loading: "Loading...",
     error_loading_questions:
       "❌ Error loading question bank: {{message}}\n\nCheck if the data file exists and try again.",
     error_starting_quiz:
@@ -553,6 +584,21 @@ export const translations = {
     "studyNow.review_domain": "Review {{domain}}",
     "studyNow.review_domain_desc": "Your performance is below {{threshold}}%",
     "studyNow.start_quiz_action": "Study Weak Points",
-    "studyNow.study_docs_action": "Study Documentation"
+    "studyNow.study_docs_action": "Study Documentation",
+    "studyNow.diagnostic_title": "Based on your latest X-Ray",
+    "studyNow.diagnostic_subtitle": "Top domains to reinforce now",
+    "studyNow.priority_high": "High priority",
+    "studyNow.priority_medium": "Medium priority",
+    "studyNow.priority_low": "Low priority",
+    "studyNow.diagnostic_flashcards": "Review Flashcards",
+    "studyNow.diagnostic_questions": "Practice Questions",
+    "studyNow.diagnostic_labs": "View recommended Labs",
+    "studyNow.diagnostic_cases": "View recommended Cases",
+    "cases_diagnostic_title": "Recommended by your X-Ray",
+    "cases_diagnostic_services": "Cases selected from the services identified by your diagnosis.",
+    "cases_diagnostic_fallback": "No specific Case was found for this point. Showing Cases available for your certification."
+    ,"labs_diagnostic_title": "Recommended based on your X-Ray"
+    ,"labs_diagnostic_service": "Focus: {{service}}"
+    ,"labs_diagnostic_fallback": "There is no Lab specific to this service. Showing the content available for this certification."
   },
 };

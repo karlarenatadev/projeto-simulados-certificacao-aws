@@ -12,12 +12,107 @@ import { RecommendationEngine } from "./recommendationEngine.js";
 import { t } from "../i18n/useTranslation.js";
 import { AuthService } from "../services/authService.js";
 import { logger } from "../utils/logger.js";
+import { getDomainDefinition } from "../domainTaxonomy.js";
 
 const CONTENT_ID = "weak-domains-content";
+export const DIAGNOSTIC_RECOMMENDATION_STORAGE_KEY =
+  "aws_sim_last_diagnostic_recommendation";
 
 let onStudyWeakest = null;
 let learningAnalytics = null;
 let recommendationEngine = null;
+
+const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
+
+export function readDiagnosticRecommendations(storage = globalThis.localStorage) {
+  if (!storage) return null;
+
+  try {
+    const raw = storage.getItem(DIAGNOSTIC_RECOMMENDATION_STORAGE_KEY);
+    if (!raw) return null;
+
+    const recommendation = JSON.parse(raw);
+    if (
+      recommendation?.source !== "diagnostic" ||
+      !recommendation.certificationId ||
+      !Array.isArray(recommendation.priorities) ||
+      !recommendation.recommendations?.flashcards?.context ||
+      !recommendation.recommendations?.questions?.context
+    ) {
+      return null;
+    }
+
+    return recommendation;
+  } catch {
+    return null;
+  }
+}
+
+export function getDiagnosticPriorities(recommendation, limit = 3) {
+  if (!recommendation?.certificationId || !Array.isArray(recommendation.priorities)) {
+    return [];
+  }
+
+  return [...recommendation.priorities]
+    .filter((priority) => priority?.domainId && typeof priority.score === "number")
+    .sort(
+      (left, right) =>
+        (PRIORITY_ORDER[left.priority] ?? PRIORITY_ORDER.low) -
+          (PRIORITY_ORDER[right.priority] ?? PRIORITY_ORDER.low) ||
+        left.score - right.score,
+    )
+    .slice(0, limit)
+    .map((priority) => {
+      const definition = getDomainDefinition(
+        recommendation.certificationId,
+        priority.domainId,
+      );
+      return {
+        ...priority,
+        labelPt: definition?.labelPt || priority.domainId,
+        labelEn: definition?.labelEn || priority.domainId,
+      };
+    });
+}
+
+export function buildDiagnosticStudyNowModel(recommendation, language = "pt") {
+  if (!Array.isArray(recommendation?.weakDomains) || recommendation.weakDomains.length === 0) {
+    return null;
+  }
+  const priorities = getDiagnosticPriorities(recommendation);
+  if (!recommendation || priorities.length === 0) return null;
+
+  const labsRecommendation = recommendation.recommendations?.labs;
+  const labsContext =
+    labsRecommendation?.enabled &&
+    labsRecommendation.context?.source === "diagnostic" &&
+    labsRecommendation.context.certificationId &&
+    Array.isArray(labsRecommendation.context.services) &&
+    labsRecommendation.context.services.length > 0
+      ? labsRecommendation.context
+      : null;
+  const casesRecommendation = recommendation.recommendations?.cases;
+  const casesContext =
+    casesRecommendation?.enabled &&
+    casesRecommendation.context?.source === "diagnostic" &&
+    casesRecommendation.context.certificationId &&
+    Array.isArray(casesRecommendation.context.services) &&
+    Array.isArray(casesRecommendation.context.weakDomains)
+      ? casesRecommendation.context
+      : null;
+
+  return {
+    certificationId: recommendation.certificationId,
+    priorities: priorities.map((priority) => ({
+      ...priority,
+      label: language === "en" ? priority.labelEn : priority.labelPt,
+    })),
+    flashcardsContext: recommendation.recommendations.flashcards.context,
+    questionsContext: recommendation.recommendations.questions.context,
+    labsContext,
+    casesContext,
+  };
+}
 
 /**
  * Inicializa o componente, registrando o callback que inicia um quiz filtrado.
@@ -103,6 +198,76 @@ function renderActions(actions) {
   }
 }
 
+export function renderDiagnosticRecommendations(recommendation) {
+  const container = document.getElementById("study-now-recommendations");
+  if (!container) return;
+
+  const lang = localStorage.getItem("language") || "pt";
+  const model = buildDiagnosticStudyNowModel(recommendation, lang);
+  if (!model) {
+    container.innerHTML = "";
+    return;
+  }
+
+  const priorityLabel = (priority) =>
+    t(`studyNow.priority_${priority}`, lang);
+  const priorityItems = model.priorities
+    .map(
+      (priority) => `
+        <div class="study-now-item">
+          <span class="study-now-rank">${priority.label}</span>
+          <span class="study-now-badge study-now-badge--${priority.priority}">
+            ${priority.score.toFixed(0)}% — ${priorityLabel(priority.priority)}
+          </span>
+        </div>`,
+    )
+    .join("");
+
+  container.innerHTML = `
+    <div class="a3-card p-4 border-l-4 border-orange-500" data-source="diagnostic">
+      <div class="a3-card-header mb-3">
+        <h3 class="text-main m-0">${t("studyNow.diagnostic_title", lang)}</h3>
+        <p class="text-muted text-sm mt-1">${t("studyNow.diagnostic_subtitle", lang)}</p>
+      </div>
+      <div class="study-now-list">${priorityItems}</div>
+      <div class="flex flex-wrap gap-3 mt-4">
+        <button type="button" class="study-now-btn" data-diagnostic-action="flashcards">
+          <i class="fa-solid fa-layer-group"></i> ${t("studyNow.diagnostic_flashcards", lang)}
+        </button>
+        <button type="button" class="study-now-btn" data-diagnostic-action="questions">
+          <i class="fa-solid fa-play"></i> ${t("studyNow.diagnostic_questions", lang)}
+        </button>
+        ${model.labsContext ? `<button type="button" class="study-now-btn" data-diagnostic-action="labs">
+          <i class="fa-solid fa-flask"></i> ${t("studyNow.diagnostic_labs", lang)}
+        </button>` : ""}
+        ${model.casesContext ? `<button type="button" class="study-now-btn" data-diagnostic-action="cases">
+          <i class="fa-solid fa-diagram-project"></i> ${t("studyNow.diagnostic_cases", lang)}
+        </button>` : ""}
+      </div>
+    </div>`;
+
+  container.querySelector('[data-diagnostic-action="flashcards"]')?.addEventListener("click", () => {
+    sessionStorage.setItem(
+      "aws_sim_diagnostic_context",
+      JSON.stringify(model.flashcardsContext),
+    );
+    window.location.href = "./flashcards.html";
+  });
+  container.querySelector('[data-diagnostic-action="questions"]')?.addEventListener("click", () => {
+    sessionStorage.setItem(
+      "aws_sim_diagnostic_context",
+      JSON.stringify(model.questionsContext),
+    );
+    window.location.href = "./simulados.html";
+  });
+  container.querySelector('[data-diagnostic-action="labs"]')?.addEventListener("click", () => {
+    window.location.href = "./laboratorios.html";
+  });
+  container.querySelector('[data-diagnostic-action="cases"]')?.addEventListener("click", () => {
+    window.location.href = "./cases.html";
+  });
+}
+
 /**
  * Busca os dominios fracos offline via Analytics Engine e re-renderiza o card.
  */
@@ -124,6 +289,7 @@ export async function refreshStudyNow() {
     const plan = recommendationEngine.generateStudyPlan(profile);
 
     renderActions(plan.nextActions);
+    renderDiagnosticRecommendations(readDiagnosticRecommendations());
   } catch (error) {
     logger.error("[StudyNow] Erro ao gerar recomendacoes:", error);
     renderEmpty("studyNow.empty_state_no_history");
