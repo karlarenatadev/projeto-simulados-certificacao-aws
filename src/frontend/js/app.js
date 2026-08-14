@@ -9,14 +9,18 @@ import {
 import { certificationPaths } from "./data.js";
 import { getDomainDefinition, normalizeDomain } from "./domainTaxonomy.js";
 import {
-  buildTargetedPracticeContext,
   TARGETED_PRACTICE_QUESTION_COUNT,
 } from "./targetedQuestionSelector.js";
 import { ModalService } from "./services/modalService.js";
 import { NotificationService } from "./services/notificationService.js";
 import { initUIRenderer } from "./uiRenderer.js";
 import { ShowcaseService } from "./services/showcaseService.js";
-import { initStudyNow, refreshStudyNow } from "./recommendations/studyNow.js";
+import {
+  DIAGNOSTIC_RECOMMENDATION_STORAGE_KEY,
+  initStudyNow,
+  refreshStudyNow,
+} from "./recommendations/studyNow.js";
+import { RecommendationEngine } from "./recommendations/recommendationEngine.js";
 import { storageManager } from "./storageManager.js";
 import { userManager } from "./userManager.js";
 import { AuthService } from "./services/authService.js";
@@ -61,6 +65,7 @@ const APP_CONFIG = {
 };
 
 const engine = new QuizEngine(APP_CONFIG.PASSING_SCORE);
+const recommendationEngine = new RecommendationEngine();
 
 let uiState = {
   currentCertificationInfo: null,
@@ -2155,21 +2160,23 @@ function renderDiagnosticReport(results) {
       score: domain.score,
       percentage: domain.score,
     };
-  });
+    });
 
-  lastDiagnosticRecommendation =
-    weakDomains.length > 0
-      ? {
-          certificationId: results.certId,
-          weakDomains: weakDomains.map((domain) => domain.id),
-          domains: weakDomains.map((domain) => domain.domainId),
-          questionIds: (results.answers || [])
-            .map((answer) => answer.id || answer.questionId)
-            .filter(Boolean),
-          generatedAt: new Date().toISOString(),
-          source: "diagnostic",
-        }
-      : null;
+  const diagnosticRecommendations =
+    recommendationEngine.generateDiagnosticRecommendations(results);
+  lastDiagnosticRecommendation = diagnosticRecommendations
+    ? {
+        ...diagnosticRecommendations,
+        generatedAt: new Date().toISOString(),
+      }
+    : null;
+
+  if (lastDiagnosticRecommendation) {
+    localStorage.setItem(
+      DIAGNOSTIC_RECOMMENDATION_STORAGE_KEY,
+      JSON.stringify(lastDiagnosticRecommendation),
+    );
+  }
 
   const weakDomainsHtml =
     weakDomains.length > 0
@@ -2281,11 +2288,7 @@ function renderDiagnosticReport(results) {
         sessionStorage.setItem(
           "aws_sim_diagnostic_context",
           JSON.stringify(
-            buildTargetedPracticeContext(
-              lastDiagnosticRecommendation.certificationId,
-              lastDiagnosticRecommendation.weakDomains,
-              lastDiagnosticRecommendation.questionIds,
-            ),
+            lastDiagnosticRecommendation.recommendations.flashcards.context,
           ),
         );
       }
@@ -2296,11 +2299,7 @@ function renderDiagnosticReport(results) {
         sessionStorage.setItem(
           "aws_sim_diagnostic_context",
           JSON.stringify(
-            buildTargetedPracticeContext(
-              lastDiagnosticRecommendation.certificationId,
-              lastDiagnosticRecommendation.weakDomains,
-              lastDiagnosticRecommendation.questionIds,
-            ),
+            lastDiagnosticRecommendation.recommendations.questions.context,
           ),
         );
       }

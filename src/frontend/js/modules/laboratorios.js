@@ -5,14 +5,63 @@
 
 import { logger } from "../utils/logger.js";
 import { AuthService } from "../services/authService.js";
+import { normalizeCertificationId } from "../utils/certUtils.js";
+import { normalizeLabIdentity, normalizeServiceId } from "../utils/serviceIdentity.js";
 
 let allLabs = [];
+let diagnosticContextActive = false;
+let diagnosticRecommendedLabIds = null;
+
+export function readLabsRecommendation(storage = globalThis.localStorage) {
+  try {
+    const raw = storage?.getItem("aws_sim_last_diagnostic_recommendation");
+    const recommendation = raw ? JSON.parse(raw) : null;
+    const context = recommendation?.recommendations?.labs?.context;
+    if (
+      recommendation?.source !== "diagnostic" ||
+      !context?.certificationId ||
+      !Array.isArray(context.services)
+    ) {
+      return null;
+    }
+    return context;
+  } catch {
+    return null;
+  }
+}
+
+export function selectRecommendedLabs(labs, context) {
+  if (!Array.isArray(labs) || !context?.certificationId) {
+    return { labs: [], fallback: false };
+  }
+
+  const certificationId = normalizeCertificationId(context.certificationId);
+  const services = new Set((context.services || []).map(normalizeServiceId).filter(Boolean));
+  const strongServices = new Set(
+    (context.strongServices || []).map(normalizeServiceId).filter(Boolean),
+  );
+  const sameCertification = labs.filter(
+    (lab) => normalizeLabIdentity(lab).certificationId === certificationId && lab.active,
+  );
+  const matched = sameCertification
+    .filter((lab) => services.has(normalizeLabIdentity(lab).serviceId))
+    .sort((left, right) => {
+      const leftStrong = strongServices.has(normalizeLabIdentity(left).serviceId) ? 0 : 1;
+      const rightStrong = strongServices.has(normalizeLabIdentity(right).serviceId) ? 0 : 1;
+      return leftStrong - rightStrong;
+    });
+
+  return matched.length > 0
+    ? { labs: matched, fallback: false }
+    : { labs: sameCertification, fallback: true };
+}
 
 export async function initLaboratorios() {
   await fetchLabs();
   setupFilters();
   populateServiceFilter();
   preselectCertification();
+  applyDiagnosticRecommendation();
   renderLabs();
 }
 
@@ -37,9 +86,45 @@ async function fetchLabs() {
 }
 
 function setupFilters() {
-  document.getElementById("filter-certification")?.addEventListener("change", renderLabs);
-  document.getElementById("filter-service")?.addEventListener("change", renderLabs);
-  document.getElementById("filter-difficulty")?.addEventListener("change", renderLabs);
+  ["filter-certification", "filter-service", "filter-difficulty"].forEach((id) => {
+    document.getElementById(id)?.addEventListener("change", () => {
+      diagnosticContextActive = false;
+      diagnosticRecommendedLabIds = null;
+      document.getElementById("labs-diagnostic-context")?.replaceChildren();
+      renderLabs();
+    });
+  });
+}
+
+function applyDiagnosticRecommendation() {
+  const context = readLabsRecommendation();
+  const result = selectRecommendedLabs(allLabs, context);
+  if (!context) return;
+
+  diagnosticContextActive = true;
+  const certSelect = document.getElementById("filter-certification");
+  if (certSelect) {
+    const option = Array.from(certSelect.options).find(
+      (optionItem) => normalizeCertificationId(optionItem.value) === context.certificationId,
+    );
+    if (option) certSelect.value = option.value;
+  }
+  diagnosticRecommendedLabIds = result.fallback
+    ? null
+    : new Set(result.labs.map((lab) => lab.id));
+  renderDiagnosticContext(context, result);
+}
+
+function renderDiagnosticContext(context, result) {
+  const container = document.getElementById("labs-diagnostic-context");
+  if (!container) return;
+  const lang = window.currentLang || "pt";
+  const title = window.t ? window.t("labs_diagnostic_title", lang) : "Recomendado com base no seu Raio-X";
+  const serviceLabels = [...new Set(result.labs.map((lab) => lab.service))].join(", ");
+  const message = result.fallback
+    ? (window.t ? window.t("labs_diagnostic_fallback", lang) : "Exibindo Labs disponíveis desta certificação.")
+    : (window.t ? window.t("labs_diagnostic_service", lang, { service: serviceLabels }) : `Foco em: ${serviceLabels}`);
+  container.innerHTML = `<div class="a3-card p-4 mb-4"><strong>${title}</strong><p class="text-sm text-muted mt-1">${message}</p></div>`;
 }
 
 function populateServiceFilter() {
@@ -82,6 +167,7 @@ function renderLabs() {
   // Apply filters
   const filtered = allLabs.filter(lab => {
     if (!lab.active) return false;
+    if (diagnosticContextActive && diagnosticRecommendedLabIds && !diagnosticRecommendedLabIds.has(lab.id)) return false;
     if (certFilter && lab.certification !== certFilter) return false;
     if (serviceFilter && lab.service !== serviceFilter) return false;
     if (difficultyFilter && lab.difficulty !== difficultyFilter) return false;

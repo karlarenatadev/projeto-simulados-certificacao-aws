@@ -13,6 +13,9 @@
  */
 
 import { ResourceMapper } from "./resourceMapper.js";
+import { normalizeDomain } from "../domainTaxonomy.js";
+import { normalizeCertificationId } from "../utils/certUtils.js";
+import { normalizeServiceId } from "../utils/serviceIdentity.js";
 
 export class RecommendationEngine {
   constructor() {
@@ -51,6 +54,138 @@ export class RecommendationEngine {
     );
 
     return profile;
+  }
+
+  /**
+   * Converte um DiagnosticResult em contextos de recomendação.
+   * O resultado do diagnóstico continua sendo a fonte dos scores e domínios.
+   * Este método não seleciona cards ou questões.
+   *
+   * @param {object} diagnosticResult Resultado estruturado do diagnóstico.
+   * @returns {object|null} Contrato de recomendações ou null para entrada inválida.
+   */
+  generateDiagnosticRecommendations(diagnosticResult) {
+    if (
+      !diagnosticResult ||
+      !diagnosticResult.certificationId ||
+      !Array.isArray(diagnosticResult.domainResults)
+    ) {
+      return null;
+    }
+
+    const certificationId = normalizeCertificationId(
+      diagnosticResult.certificationId,
+    );
+    const weakDomainIds = new Set(
+      (diagnosticResult.weakDomains || [])
+        .map((domain) =>
+          typeof domain === "string" ? domain : domain?.domainId || domain?.id,
+        )
+        .map((domain) => normalizeDomain(certificationId, domain))
+        .filter(Boolean),
+    );
+    const strongDomainIds = new Set(
+      (diagnosticResult.strongDomains || [])
+        .map((domain) =>
+          typeof domain === "string" ? domain : domain?.domainId || domain?.id,
+        )
+        .map((domain) => normalizeDomain(certificationId, domain))
+        .filter(Boolean),
+    );
+
+    const priorities = diagnosticResult.domainResults
+      .map((domain) => {
+        const domainId = normalizeDomain(
+          certificationId,
+          domain.domainId || domain.id,
+        );
+        if (!domainId || typeof domain.score !== "number") return null;
+
+        const isWeak = weakDomainIds.has(domainId);
+        const isStrong = strongDomainIds.has(domainId);
+
+        return {
+          domainId,
+          score: domain.score,
+          priority: isWeak
+            ? domain.score < 50
+              ? "high"
+              : "medium"
+            : "low",
+          status: isWeak ? "weak" : isStrong ? "strong" : "unclassified",
+        };
+      })
+      .filter(Boolean);
+
+    const weakDomains = [...weakDomainIds];
+    const questionIds = (diagnosticResult.answers || [])
+      .map((answer) => answer.id || answer.questionId)
+      .filter(Boolean);
+    const hasWeakDomains = weakDomains.length > 0;
+    const normalizeSignals = (signals) =>
+      (Array.isArray(signals) ? signals : [])
+        .filter((signal) => signal?.id && Number.isFinite(signal.occurrences))
+        .map((signal) => ({
+          id: signal.id,
+          occurrences: signal.occurrences,
+          ...(signal.evidence ? { evidence: signal.evidence } : {}),
+        }));
+    const weakServices = normalizeSignals(diagnosticResult.weakServices);
+    const weakTopics = normalizeSignals(diagnosticResult.weakTopics);
+    const strongServices = weakServices
+      .filter((signal) => signal.evidence === "strong")
+      .map((signal) => normalizeServiceId(signal.id))
+      .filter(Boolean);
+    const secondaryServices = weakServices
+      .filter((signal) => signal.evidence !== "strong")
+      .map((signal) => normalizeServiceId(signal.id))
+      .filter(Boolean);
+
+    return {
+      source: "diagnostic",
+      certificationId,
+      overallScore: diagnosticResult.overallScore,
+      weakDomains,
+      strongDomains: [...strongDomainIds],
+      weakServices,
+      weakTopics,
+      priorities,
+      recommendations: {
+        flashcards: {
+          enabled: hasWeakDomains,
+          type: "flashcards",
+          context: {
+            source: "diagnostic",
+            certificationId,
+            weakDomains,
+          },
+        },
+        questions: {
+          enabled: hasWeakDomains,
+          type: "targeted-practice",
+          context: {
+            source: "diagnostic",
+            mode: "targeted-practice",
+            certificationId,
+            domains: weakDomains,
+            weakDomains,
+            questionIds,
+          },
+        },
+        labs: {
+          enabled: weakServices.length > 0,
+          type: "labs",
+          context: {
+            source: "diagnostic",
+            certificationId,
+            services: [...new Set([...strongServices, ...secondaryServices])],
+            strongServices: [...new Set(strongServices)],
+            secondaryServices: [...new Set(secondaryServices)],
+            weakDomains,
+          },
+        },
+      },
+    };
   }
 
   // ---------------------------------------------------------------------------

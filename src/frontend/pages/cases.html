@@ -103,6 +103,10 @@
       <span id="cases-count-label" class="cases-count-text"></span>
     </div>
 
+    <div id="cases-diagnostic-context" class="a3-container" aria-live="polite"></div>
+
+    <div id="cases-diagnostic-context" class="a3-container" aria-live="polite"></div>
+
     <!-- ======================================================
          GRID DE CASES
          ====================================================== -->
@@ -146,7 +150,13 @@
         getCases,
         getDifficultyInfo,
         isCompleted,
+        rankRecommendedCases,
+        readCasesRecommendation,
       } from "./js/cases/caseManager.js";
+
+      let diagnosticContextActive = false;
+      let diagnosticRecommendationContext = null;
+      let recommendedCaseIds = null;
 
       // ── Render card ───────────────────────────────────────────────────────
       function buildCaseCard(c) {
@@ -188,7 +198,7 @@
       }
 
       // ── Render grid ───────────────────────────────────────────────────────
-      async function renderCasesGrid(filters = {}) {
+      async function renderCasesGrid(filters = {}, recommendationContext = null) {
         const grid = document.getElementById("cases-grid");
         const countLabel = document.getElementById("cases-count-label");
         if (!grid) return;
@@ -196,8 +206,23 @@
         // Mantém skeletons enquanto carrega
         try {
           const cases = await getCases(filters);
+          const ranked = recommendationContext
+            ? rankRecommendedCases(cases, recommendationContext)
+            : { cases, fallback: false };
+          if (diagnosticContextActive && recommendationContext && !ranked.fallback) {
+            recommendedCaseIds = new Set(
+              ranked.cases.map((caseItem) => caseItem.id || caseItem.slug),
+            );
+          }
+          const visibleCases =
+            diagnosticContextActive && recommendedCaseIds
+              ? ranked.cases.filter((caseItem) =>
+                  recommendedCaseIds.has(caseItem.id || caseItem.slug),
+                )
+              : ranked.cases;
+          renderDiagnosticContext(recommendationContext, ranked);
 
-          if (!cases || cases.length === 0) {
+          if (!visibleCases || visibleCases.length === 0) {
             grid.innerHTML = `
               <div class="cases-empty cases-empty-grid-span">
                 <i class="fa-solid fa-diagram-project cases-empty-icon"></i>
@@ -207,9 +232,9 @@
             return;
           }
 
-          grid.innerHTML = cases.map(buildCaseCard).join("");
+          grid.innerHTML = visibleCases.map(buildCaseCard).join("");
           if (countLabel)
-            countLabel.textContent = `${cases.length} case${cases.length !== 1 ? "s" : ""}`;
+            countLabel.textContent = `${visibleCases.length} case${visibleCases.length !== 1 ? "s" : ""}`;
         } catch (err) {
           grid.innerHTML = `
             <div class="cases-empty cases-empty-grid-span">
@@ -218,6 +243,25 @@
             </div>`;
           if (countLabel) countLabel.textContent = "";
         }
+      }
+
+      function renderDiagnosticContext(context, ranked) {
+        const container = document.getElementById("cases-diagnostic-context");
+        if (!container) return;
+        if (!context) {
+          container.innerHTML = "";
+          return;
+        }
+        const lang = window.currentLang || "pt";
+        const title = window.t
+          ? window.t("cases_diagnostic_title", lang)
+          : "Recomendado pelo seu Raio-X";
+        const message = ranked.fallback
+          ? window.t?.("cases_diagnostic_fallback", lang) ||
+            "Exibindo Cases disponíveis para sua certificação."
+          : window.t?.("cases_diagnostic_services", lang) ||
+            "Cases selecionados pelos serviços identificados no diagnóstico.";
+        container.innerHTML = `<div class="a3-card p-4 mb-4"><strong>${title}</strong><p class="text-sm text-muted mt-1">${message}</p></div>`;
       }
 
       // ── Filtros ───────────────────────────────────────────────────────────
@@ -237,16 +281,40 @@
         const user = session.user;
         initShell(user);
 
-        // Carrega os cases inicialmente
-        await renderCasesGrid();
+        // Carrega os cases inicialmente, aplicando somente o contexto válido do diagnóstico.
+        diagnosticRecommendationContext = readCasesRecommendation();
+        if (diagnosticRecommendationContext) {
+          diagnosticContextActive = true;
+          const certSelect = document.getElementById("filter-certification");
+          const certOption = Array.from(certSelect?.options || []).find(
+            (option) => option.value.toLowerCase() === diagnosticRecommendationContext.certificationId,
+          );
+          if (certOption) certSelect.value = certOption.value;
+        }
+        await renderCasesGrid(
+          getFilters(),
+          diagnosticRecommendationContext,
+        );
 
         // Filtros reativos
         document
           .getElementById("filter-certification")
-          ?.addEventListener("change", () => renderCasesGrid(getFilters()));
+          ?.addEventListener("change", () => {
+            diagnosticContextActive = false;
+            diagnosticRecommendationContext = null;
+            recommendedCaseIds = null;
+            document.getElementById("cases-diagnostic-context").innerHTML = "";
+            renderCasesGrid(getFilters());
+          });
         document
           .getElementById("filter-difficulty")
-          ?.addEventListener("change", () => renderCasesGrid(getFilters()));
+          ?.addEventListener("change", () => {
+            diagnosticContextActive = false;
+            diagnosticRecommendationContext = null;
+            recommendedCaseIds = null;
+            document.getElementById("cases-diagnostic-context").innerHTML = "";
+            renderCasesGrid(getFilters());
+          });
       });
     </script>
     

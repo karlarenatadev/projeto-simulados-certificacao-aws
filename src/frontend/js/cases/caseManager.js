@@ -6,11 +6,89 @@ import { logger } from "../utils/logger.js";
  */
 
 import apiService from "../services/api.js";
+import { normalizeCertificationId } from "../utils/certUtils.js";
+import { normalizeServiceId } from "../utils/serviceIdentity.js";
 
 let apiStatus = {
   apiAvailable: true,
   fallbackUsed: false,
 };
+
+export function readCasesRecommendation(storage = globalThis.localStorage) {
+  try {
+    const raw = storage?.getItem("aws_sim_last_diagnostic_recommendation");
+    const recommendation = raw ? JSON.parse(raw) : null;
+    const context = recommendation?.recommendations?.cases?.context;
+    if (
+      recommendation?.source !== "diagnostic" ||
+      recommendation?.recommendations?.cases?.enabled !== true ||
+      !context?.certificationId ||
+      !Array.isArray(context.services) ||
+      !Array.isArray(context.weakDomains)
+    ) {
+      return null;
+    }
+    return context;
+  } catch {
+    return null;
+  }
+}
+
+function getCaseCertifications(caseItem) {
+  return Array.isArray(caseItem?.certifications)
+    ? caseItem.certifications
+    : caseItem?.certification
+      ? [caseItem.certification]
+      : [];
+}
+
+function getCaseServiceIds(caseItem) {
+  return (caseItem?.services || [])
+    .map((service) =>
+      normalizeServiceId(
+        typeof service === "string"
+          ? service
+          : service?.service_slug || service?.slug || service?.service_name || service?.name,
+      ),
+    )
+    .filter(Boolean);
+}
+
+export function rankRecommendedCases(cases, context, limit = 3) {
+  if (!Array.isArray(cases) || !context?.certificationId) {
+    return { cases: [], fallback: false };
+  }
+
+  const certificationId = normalizeCertificationId(context.certificationId);
+  const services = new Set((context.services || []).map(normalizeServiceId).filter(Boolean));
+  const strongServices = new Set(
+    (context.strongServices || []).map(normalizeServiceId).filter(Boolean),
+  );
+  const sameCertification = cases.filter((caseItem) =>
+    getCaseCertifications(caseItem).some(
+      (certification) => normalizeCertificationId(certification) === certificationId,
+    ),
+  );
+  const matches = sameCertification
+    .filter((caseItem) => getCaseServiceIds(caseItem).some((service) => services.has(service)))
+    .map((caseItem) => ({
+      caseItem,
+      strong: getCaseServiceIds(caseItem).some((service) => strongServices.has(service)),
+    }))
+    .sort(
+      (left, right) =>
+        Number(right.strong) - Number(left.strong) ||
+        String(left.caseItem.id || left.caseItem.slug).localeCompare(
+          String(right.caseItem.id || right.caseItem.slug),
+        ),
+    )
+    .slice(0, limit)
+    .map(({ caseItem }) => caseItem);
+
+  return matches.length > 0
+    ? { cases: matches, fallback: false }
+    : { cases: sameCertification.slice(0, limit), fallback: true };
+}
 
 export function getApiStatus() {
   return apiStatus;

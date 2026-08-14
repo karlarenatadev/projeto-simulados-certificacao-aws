@@ -28,6 +28,60 @@ const dataRepo = createDataRepository(storageManager);
 
 const DEFAULT_PERSONALIZED_QUESTION_COUNT = 10;
 export const DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD = 60;
+export const WEAK_METADATA_STRONG_EVIDENCE_OCCURRENCES = 2;
+
+export function normalizeMetadataId(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLocaleLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function getServiceMetadataId(service) {
+  if (typeof service === "string") return service;
+  return service?.service_slug || service?.service_id || service?.service_name;
+}
+
+function countMetadataSignals(answers, readValues) {
+  const counts = new Map();
+
+  (answers || [])
+    .filter((answer) => answer && answer.isCorrect === false)
+    .forEach((answer) => {
+      const rawValues = readValues(answer);
+      const values = Array.isArray(rawValues) ? rawValues : [rawValues];
+      const uniqueValues = new Set(
+        values.map(normalizeMetadataId).filter(Boolean),
+      );
+
+      uniqueValues.forEach((id) => {
+        counts.set(id, (counts.get(id) || 0) + 1);
+      });
+    });
+
+  return [...counts.entries()]
+    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+    .map(([id, occurrences]) => ({
+      id,
+      occurrences,
+      evidence:
+        occurrences >= WEAK_METADATA_STRONG_EVIDENCE_OCCURRENCES
+          ? "strong"
+          : "secondary",
+    }));
+}
+
+export function buildWeakMetadataSignals(answers) {
+  return {
+    weakServices: countMetadataSignals(answers, (answer) =>
+      (answer.services || []).map(getServiceMetadataId),
+    ),
+    weakTopics: countMetadataSignals(answers, (answer) => answer.tags || []),
+  };
+}
 
 export function identifyWeakDomains(
   domainScores,
@@ -597,11 +651,15 @@ export class QuizEngine {
     const strongDomains = domainResults
       .filter((domain) => domain.isStrong)
       .map((domain) => domain.id);
+    const weakMetadata = isDiagnostic
+      ? buildWeakMetadataSignals(this.state.answers)
+      : { weakServices: [], weakTopics: [] };
 
     return {
       attemptId: this.state.attemptId,
       quizId: this.state.quizId,
       certId: this.state.certId,
+      certificationId: this.state.certId,
       certification: this.state.certId,
       score: this.state.score,
       total: total,
@@ -614,6 +672,7 @@ export class QuizEngine {
       domainResults,
       weakDomains: weakDomains,
       strongDomains,
+      ...weakMetadata,
       answers: this.state.answers,
     };
   }
