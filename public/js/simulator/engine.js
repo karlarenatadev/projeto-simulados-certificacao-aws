@@ -39,9 +39,11 @@ export class SimulatorEngineClient {
       this.renderBriefing();
       this.renderInterviewOptions();
       this.renderDesignBuilder();
-      this.updateStepper(); // Garante o restore visual do stepper
+      this.setStage(this.currentStage);
     } catch (err) {
       logger.error("Failed to init simulator", err);
+      const status = document.getElementById("simulatorStatus");
+      if (status) status.textContent = `Simulator unavailable: ${err.message}`;
       NotificationService.error("Erro ao carregar simulação: " + err.message);
     }
   }
@@ -51,8 +53,14 @@ export class SimulatorEngineClient {
     if (!response || !response.ok) {
         response = await fetch('./data/cases/architecture_cases.json').catch(() => null);
     }
+    if (!response || !response.ok) {
+      throw new Error("Case catalog unavailable");
+    }
     const data = await response.json();
-    const cases = data.data || data;
+    const cases = Array.isArray(data) ? data : data?.data;
+    if (!Array.isArray(cases)) {
+      throw new Error("Invalid case catalog format");
+    }
 
     if (this.caseId) {
       this.caseData = cases.find(c => c.id === this.caseId);
@@ -99,7 +107,8 @@ export class SimulatorEngineClient {
   }
 
   saveState(evaluation = null) {
-    storageManager.saveActiveCase(this.caseId, {
+    storageManager.saveActiveCase({
+      caseId: this.caseId,
       currentStage: this.currentStage,
       selectedServices: Array.from(this.selectedServices),
       evaluation,
@@ -110,11 +119,19 @@ export class SimulatorEngineClient {
     this.currentStage = stageNum;
     this.updateStepper();
 
-    document.querySelectorAll(".stage-content").forEach((el) => {
-      el.classList.add("hidden");
+    document.querySelectorAll(".stage-panel").forEach((el) => {
+      el.classList.remove("active");
     });
-    document.getElementById(`stage-${stageNum}`).classList.remove("hidden");
+    document.getElementById(`panel-${stageNum}`)?.classList.add("active");
     this.saveState();
+  }
+
+  nextStage() {
+    if (this.currentStage < 4) this.setStage(this.currentStage + 1);
+  }
+
+  prevStage() {
+    if (this.currentStage > 1) this.setStage(this.currentStage - 1);
   }
 
   updateStepper() {
@@ -297,8 +314,8 @@ export class SimulatorEngineClient {
   }
 
   renderEvaluation(data) {
-    const container = document.getElementById("evaluationResult");
-    container.classList.remove("hidden");
+    const container = document.getElementById("evaluationContent");
+    if (!container) return;
 
     let html = `
             <h3 class="${data.passed ? "text-green-600" : "text-red-600"}">

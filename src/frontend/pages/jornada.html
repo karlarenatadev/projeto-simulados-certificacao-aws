@@ -92,7 +92,8 @@
     <script type="module">
       import { authGuard } from "./js/core/authGuard.js";
       document.addEventListener("DOMContentLoaded", () => {
-        authGuard();
+        const session = authGuard();
+        if (!session) return;
         
         // Inicia a jornada apenas se estivermos na página correta
         setTimeout(() => {
