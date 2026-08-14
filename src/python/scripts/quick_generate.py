@@ -10,14 +10,15 @@ USO:
 
 import json
 import sys
+import shutil
 from pathlib import Path
 from generator import fabricar_questoes
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-DATA_DIR = PROJECT_ROOT / "data"
+DATA_DIR = PROJECT_ROOT / "data" / "questions"
 
 
-def quick_generate(cert_id, difficulty, quantity):
+def quick_generate(cert_id, difficulty, quantity, dry_run=False):
     """
     Gera questões rapidamente e adiciona ao arquivo.
     """
@@ -50,7 +51,14 @@ def quick_generate(cert_id, difficulty, quantity):
     # Adiciona novas questões
     existing.extend(questions)
     
+    if dry_run:
+        print(f"🔍 DRY-RUN: seriam adicionadas {len(questions)} questões a {file_path}")
+        return True
+
     # Salva
+    backup_dir = PROJECT_ROOT / "data" / "backups"
+    backup_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(file_path, backup_dir / f"{cert_id}_quick_generate_backup.json")
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(existing, f, ensure_ascii=False, indent=2)
     
@@ -70,7 +78,9 @@ def quick_generate(cert_id, difficulty, quantity):
 
 
 def main():
-    if len(sys.argv) != 4:
+    dry_run = "--dry-run" in sys.argv
+    args = [arg for arg in sys.argv[1:] if arg != "--dry-run"]
+    if len(args) != 3:
         print("\n❌ Uso incorreto!")
         print("\nFormato:")
         print("   python src/python/scripts/quick_generate.py <cert_id> <difficulty> <quantity>")
@@ -81,9 +91,9 @@ def main():
         print("\nDificuldades válidas: easy, medium, hard")
         sys.exit(1)
     
-    cert_id = sys.argv[1].lower()
-    difficulty = sys.argv[2].lower()
-    quantity = int(sys.argv[3])
+    cert_id = args[0].lower()
+    difficulty = args[1].lower()
+    quantity = int(args[2])
     
     if difficulty not in ['easy', 'medium', 'hard']:
         print(f"❌ Dificuldade inválida: {difficulty}")
@@ -95,7 +105,7 @@ def main():
         print("   Use um valor entre 1 e 50")
         sys.exit(1)
     
-    success = quick_generate(cert_id, difficulty, quantity)
+    success = quick_generate(cert_id, difficulty, quantity, dry_run=dry_run)
     
     if success:
         print(f"\n✅ Geração concluída com sucesso!\n")

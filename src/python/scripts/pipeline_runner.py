@@ -1,14 +1,15 @@
 import json
 import os
 import time
+import shutil
 from generator import fabricar_questoes, BASE_DIR, EXAMES_CONFIG
 from sanity_check import filter_valid_schema
 from aws_semantic_validator import validate_semantics
 from duplicate_detector import remove_duplicates
 
-def executar_pipeline_etl(exame_id: str, nivel: str, qtd: int):
+def executar_pipeline_etl(exame_id: str, nivel: str, qtd: int, dry_run: bool = False):
     print(f"\n=== INICIANDO PIPELINE DE DADOS PARA {exame_id.upper()} ===")
-    caminho_json = os.path.join(BASE_DIR, "data", f"{exame_id}.json")
+    caminho_json = os.path.join(BASE_DIR, "data", "questions", f"{exame_id}.json")
     
     # Carrega banco existente para verificar duplicatas
     banco_existente = []
@@ -44,6 +45,13 @@ def executar_pipeline_etl(exame_id: str, nivel: str, qtd: int):
             q['id'] = ultimo_id
             banco_existente.append(q)
             
+        if dry_run:
+            print(f"🔍 DRY-RUN: seriam gravadas {len(final_questions)} questões em {caminho_json}")
+            return
+
+        backup_dir = os.path.join(BASE_DIR, "data", "backups")
+        os.makedirs(backup_dir, exist_ok=True)
+        shutil.copy2(caminho_json, os.path.join(backup_dir, f"{exame_id}_pipeline_backup.json"))
         with open(caminho_json, 'w', encoding='utf-8') as f:
             json.dump(banco_existente, f, indent=2, ensure_ascii=False)
         print("✅ Pipeline executado com sucesso!")
@@ -60,12 +68,13 @@ if __name__ == "__main__":
     nivel_desejado = "medium" # Pode trocar para 'hard' ou 'easy' quando quiser
     qtd_por_exame = 2 # Mantendo em 2 por vez para proteger a cota da API
     
+    dry_run = "--dry-run" in os.sys.argv
     for exame in exames_ativos:
         print(f"\n{'-'*50}")
         print(f"🎯 Iniciando processamento para: {exame.upper()}")
         print(f"{'-'*50}")
         
-        executar_pipeline_etl(exame, nivel_desejado, qtd_por_exame)
+        executar_pipeline_etl(exame, nivel_desejado, qtd_por_exame, dry_run=dry_run)
         
         # Pausa de segurança para não tomar bloqueio (Rate Limit) do Gemini
         print("\n⏳ Pausando por 15 segundos para esfriar a API do Google...")

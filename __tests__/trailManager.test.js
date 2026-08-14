@@ -1,5 +1,6 @@
 import {
     TRAILS_BY_CERT,
+    getCertificationProgress,
     getTrailState,
     readJourneyRecommendation,
     renderJourneyRecommendation,
@@ -29,6 +30,57 @@ describe('trailManager e integração da Jornada', () => {
             percentage: 20,
         });
         expect(getTrailState('saa-c03').completedStages).toEqual([]);
+    });
+
+    test.each([
+        ['clf-c02', 'clf-1'],
+        ['saa-c03', 'saa-1'],
+        ['dva-c02', 'dva-1'],
+        ['aif-c01', 'aif-1'],
+    ])('calcula progresso isolado para %s', (certId, stageId) => {
+        storageManager.saveGamification({ completedStages: [stageId] }, certId);
+
+        expect(getCertificationProgress(certId)).toMatchObject({
+            certificationId: certId,
+            completedStages: [stageId],
+            totalStages: TRAILS_BY_CERT[certId].length,
+            percentage: 20,
+        });
+
+        for (const otherCertId of Object.keys(TRAILS_BY_CERT).filter((id) => id !== certId)) {
+            expect(getCertificationProgress(otherCertId).percentage).toBe(0);
+        }
+    });
+
+    test('retorna zero sem Jornada e ignora gamificacao global e historico de simulados', () => {
+        storageManager.saveGamification({ completedStages: ['clf-1'] });
+        storageManager.saveQuizResult({
+            attemptId: 'quiz-1',
+            certId: 'saa-c03',
+            score: 10,
+            total: 10,
+            percentage: 100,
+        });
+
+        expect(getCertificationProgress('saa-c03')).toMatchObject({
+            completedStages: [],
+            percentage: 0,
+        });
+    });
+
+    test('calcula estados intermediarios e limita o percentual a 100', () => {
+        storageManager.saveGamification({
+            completedStages: ['clf-1', 'clf-2', 'clf-3'],
+        }, 'clf-c02');
+        expect(getCertificationProgress('clf-c02').percentage).toBe(60);
+
+        storageManager.saveGamification({
+            completedStages: ['clf-1', 'clf-2', 'clf-3', 'clf-4', 'clf-final', 'unknown'],
+        }, 'clf-c02');
+        expect(getCertificationProgress('clf-c02')).toMatchObject({
+            completedStages: ['clf-1', 'clf-2', 'clf-3', 'clf-4', 'clf-final'],
+            percentage: 100,
+        });
     });
 
     test('renderiza recomendação do diagnóstico e estado ativo do Sprint', () => {

@@ -4,11 +4,11 @@ import { getDomainDefinition, normalizeDomain } from "./domainTaxonomy.js";
 import { normalizeCertificationId } from "./utils/certUtils.js";
 import { t } from "./i18n/useTranslation.js";
 import { storageManager } from "./storageManager.js";
+import { getCurrentLanguage as getOfficialLanguage } from "./core/languageManager.js";
 
-import { AuthService } from "./services/authService.js";
 
 function getCurrentLanguage() {
-  return AuthService.getCurrentUser()?.language || "pt";
+  return getOfficialLanguage();
 }
 
 // ESTADO CENTRALIZADO DOS FLASHCARDS
@@ -517,7 +517,7 @@ export function exportToAnki() {
     return;
   }
 
-  const currentLang = AuthService.getCurrentUser()?.language || "pt";
+  const currentLang = getOfficialLanguage();
 
   // Cabeçalho e conteúdo do CSV (Termo;Definição;Tags)
   // Ponto e vírgula como delimitador para evitar conflitos com vírgulas nas definições

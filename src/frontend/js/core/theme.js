@@ -15,7 +15,7 @@
  *
  * Estado persistido:
  *   localStorage: aws_sim_theme ('light' | 'dark')
- *   localStorage: aws_sim_lang  ('pt' | 'en')
+ *   cloudacademy_session.user.language ('pt' | 'en') via languageManager
  *
  * @module core/theme
  */

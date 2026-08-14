@@ -24,11 +24,12 @@ import { RecommendationEngine } from "./recommendations/recommendationEngine.js"
 import { storageManager } from "./storageManager.js";
 import { userManager } from "./userManager.js";
 import { AuthService } from "./services/authService.js";
+import { getCurrentLanguage, setCurrentLanguage } from "./core/languageManager.js";
 import { quizManager } from "./quizManager.js";
 import { renderRadarChart, renderGlobalRadarChart, renderPerformanceLineChart } from "./chartManager.js";
 import { t } from "./i18n/useTranslation.js";
 import { initializeUI } from "./i18n/initUI.js";
-import { renderTrail } from "./gamificacao/trailManager.js";
+import { getCertificationProgress, renderTrail } from "./gamificacao/trailManager.js";
 import { renderGuildDashboard } from "./gamificacao/leaderboard.js";
 import { renderJornadaDashboard } from "./modules/jornada.js";
 import { renderBadges } from "./gamificacao/badges.js";
@@ -263,7 +264,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // inline authGuard de cada página.
     authenticatedUser = AuthService.getCurrentUser();
     if (authenticatedUser) {
-      uiState.language = authenticatedUser.language || "pt";
+      uiState.language = getCurrentLanguage();
       await quizManager.initialize(authenticatedUser.id);
     }
   }
@@ -1736,10 +1737,8 @@ function renderLearningHubData() {
   // ── Progresso Global (Sprint) ──
   const progEl = document.getElementById("jornada-progress");
   if (progEl) {
-    const lastCert = safeHistory.length > 0 ? safeHistory[safeHistory.length - 1].certId : "clf-c02";
-    const sprintState = storageManager.getSprintState(lastCert);
-    const sprintProgress = sprintState ? Math.round((sprintState.completedStages.length / 14) * 100) : 0;
-    progEl.textContent = `${sprintProgress}%`;
+    const certificationProgress = getCertificationProgress(getActiveCertificationId());
+    progEl.textContent = `${certificationProgress.percentage}%`;
   }
   
   if (typeof renderPerformanceLineChart === "function") {
@@ -2794,8 +2793,7 @@ function toggleLanguage() {
   // ══════════════════════════════════════════════════════════════
   // 1. Troca o idioma global
   // ══════════════════════════════════════════════════════════════
-  uiState.language = uiState.language === "pt" ? "en" : "pt";
-  userManager.updatePreferences({ language: uiState.language });
+  uiState.language = setCurrentLanguage(uiState.language === "pt" ? "en" : "pt");
 
   // ══════════════════════════════════════════════════════════════
   // 2. Atualiza o botão de idioma
@@ -3228,13 +3226,13 @@ function updateSidebarProgress() {
   const gamification = storageManager.getGamification();
   const certSelect = document.getElementById("certification-select");
   const currentLang =
-    uiState.language || (AuthService.getCurrentUser()?.language) || "pt";
+    uiState.language || getCurrentLanguage();
 
   // Tratamento absoluto contra undefined
   let currentCertId =
     certSelect && certSelect.value
       ? String(certSelect.value).toLowerCase().trim()
-      : "clf-c02";
+      : normalizeCertificationId(AuthService.getCurrentUser()?.certification) || "clf-c02";
 
   const certNames = {
     pt: {
@@ -3264,24 +3262,12 @@ function updateSidebarProgress() {
     badgeEl.textContent = currentCertId.toUpperCase();
   }
 
-  const certPrefix = currentCertId.split("-")[0];
-  const completedStagesCount = (gamification.completedStages || []).filter(
-    (id) => id.startsWith(certPrefix),
-  ).length;
-  const historyProgress = storageManager.getProgressFromHistory(
-    currentCertId,
-    5,
-  );
-  const completedCount = Math.max(
-    completedStagesCount,
-    historyProgress.completedCount,
-  );
-
-  const totalModules = 5;
-  const percentage = Math.min(
-    Math.round((completedCount / totalModules) * 100),
-    100,
-  );
+  const certificationProgress = getCertificationProgress(currentCertId);
+  const {
+    completedStages: completedCount,
+    totalStages: totalModules,
+    percentage,
+  } = certificationProgress;
 
   // Status da trilha calculado a partir do progresso real disponível (local).
   // Fallback seguro: sem etapas concluídas -> "Não iniciada".

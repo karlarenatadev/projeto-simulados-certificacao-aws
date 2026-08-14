@@ -2,13 +2,14 @@ import { logger } from "../utils/logger.js";
 import apiService from "../services/api.js";
 import { storageManager } from "../storageManager.js";
 import { AuthService } from "../services/authService.js";
+import { getCurrentLanguage } from "../core/languageManager.js";
 
 export async function renderGuildDashboard() {
   const list = document.getElementById("guild-leaderboard");
   if (!list) return;
 
+  const currentLang = getCurrentLanguage();
   const currentUser = AuthService.getCurrentUser();
-  const currentLang = currentUser?.language || "pt";
 
   // Loading state
   list.innerHTML = `

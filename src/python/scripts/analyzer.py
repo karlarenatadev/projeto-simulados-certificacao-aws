@@ -5,7 +5,7 @@ from pathlib import Path
 
 # Pega o caminho da pasta onde este script está e sobe um nível para achar a raiz do projeto
 BASE_DIR = Path(__file__).resolve().parents[3]
-PASTA_DATA = BASE_DIR / "data"
+PASTA_DATA = BASE_DIR / "data" / "questions"
 
 def gerar_relatorio(caminho_arquivo):
     nome_arquivo = os.path.basename(caminho_arquivo)
@@ -44,7 +44,7 @@ if __name__ == "__main__":
     
     print("\n🚀 INICIANDO CONTAGEM DO BANCO DE DADOS...")
     
-    # Percorre todos os arquivos da pasta 'data' automaticamente
+    # Percorre apenas o banco oficial de questoes.
     if not PASTA_DATA.exists():
         print(f"Aviso: pasta de dados nao encontrada: {PASTA_DATA}")
     elif not PASTA_DATA.is_dir():

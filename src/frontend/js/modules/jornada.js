@@ -21,6 +21,8 @@
  */
 
 import { storageManager } from "../storageManager.js";
+import { getCertificationProgress } from "../gamificacao/trailManager.js";
+import { normalizeCertificationId } from "../utils/certUtils.js";
 
 /**
  * Renderiza o Dashboard da Jornada (Progresso, Acertos, etc)
@@ -38,15 +40,18 @@ export function renderJornadaDashboard(certId) {
   }
 
   // Atualizar título da certificação
-  const certName = certId ? certId.toUpperCase() : "AWS";
+  const normalizedCertId = normalizeCertificationId(certId) || "clf-c02";
+  const certName = normalizedCertId.toUpperCase();
   if (titleEl) titleEl.textContent = `Jornada ${certName}`;
+
+  const certificationProgress = getCertificationProgress(normalizedCertId);
+  if (progressEl) progressEl.textContent = `${certificationProgress.percentage}%`;
 
   // Obter histórico
   const history = storageManager.getHistory();
-  const certHistory = history.filter(h => h.certId === certId);
+  const certHistory = history.filter(h => h.certId === normalizedCertId);
 
   if (certHistory.length === 0) {
-    if (progressEl) progressEl.textContent = "0%";
     if (accuracyEl) accuracyEl.textContent = "0%";
     if (questionsEl) questionsEl.textContent = "0";
     if (weakDomainEl) weakDomainEl.textContent = "-";
@@ -64,11 +69,6 @@ export function renderJornadaDashboard(certId) {
   });
   const accuracy = totalQuestions > 0 ? Math.round((totalScore / totalQuestions) * 100) : 0;
   if (accuracyEl) accuracyEl.textContent = `${accuracy}%`;
-
-  // Percentual de progresso (baseado no Sprint ou simulados feitos)
-  const sprintState = storageManager.getSprintState(certId);
-  const sprintProgress = Math.round((sprintState.completedStages.length / 14) * 100);
-  if (progressEl) progressEl.textContent = `${sprintProgress}%`;
 
   // Domínio mais fraco (agregando erros por domínio usando os mistakes)
   const mistakes = storageManager.getMistakes(certId);

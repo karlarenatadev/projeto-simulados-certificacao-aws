@@ -3,6 +3,7 @@ import {
   getDiagnosticPriorities,
   renderDiagnosticRecommendations,
 } from "../src/frontend/js/recommendations/studyNow.js";
+import { SessionManager } from "../src/frontend/js/core/sessionManager.js";
 
 function recommendation(overrides = {}) {
   return {
@@ -131,6 +132,26 @@ describe("Study Now — recomendações do Raio-X", () => {
 
   test("usa o texto do CTA de Labs em EN", () => {
     localStorage.setItem("language", "en");
+    renderDiagnosticRecommendations(recommendation());
+
+    expect(document.querySelector('[data-diagnostic-action="labs"]')?.textContent).toContain(
+      "View recommended Labs",
+    );
+  });
+
+  test("usa o idioma oficial da sessão antes das chaves legadas", () => {
+    SessionManager.persist({
+      user: {
+        id: "study-now-user",
+        email: "user@a3data.com.br",
+        language: "en",
+        role: "STUDENT",
+        certification: "clf-c02",
+      },
+    });
+    localStorage.setItem("language", "pt");
+    localStorage.setItem("aws_sim_lang", "pt");
+
     renderDiagnosticRecommendations(recommendation());
 
     expect(document.querySelector('[data-diagnostic-action="labs"]')?.textContent).toContain(

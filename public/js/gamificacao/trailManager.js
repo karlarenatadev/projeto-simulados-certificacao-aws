@@ -2,6 +2,7 @@ import { storageManager } from "../storageManager.js";
 import { AuthService } from "../services/authService.js";
 import { logger } from "../utils/logger.js";
 import { normalizeCertificationId } from "../utils/certUtils.js";
+import { getCurrentLanguage } from "../core/languageManager.js";
 
 // 1. DICIONÁRIO DE TRILHAS (4 Certificações com suporte Bilingue)
 export const TRAILS_BY_CERT = {
@@ -115,7 +116,7 @@ export const TRAILS_BY_CERT = {
   ],
 };
 
-export function getTrailState(certId) {
+export function getCertificationProgress(certId) {
   const normalizedCertId = normalizeCertificationId(certId) || "clf-c02";
   const activeTrail = TRAILS_BY_CERT[normalizedCertId] || TRAILS_BY_CERT["clf-c02"];
   const stored = storageManager.getGamification(normalizedCertId) || {};
@@ -138,6 +139,14 @@ export function getTrailState(certId) {
       ? Math.min(Math.round((completedStages.length / activeTrail.length) * 100), 100)
       : 0,
   };
+}
+
+/**
+ * Maintains the historical Journey contract while exposing the canonical calculation.
+ * Progress considers only completed stages for the requested certification.
+ */
+export function getTrailState(certId) {
+  return getCertificationProgress(certId);
 }
 
 export function readJourneyRecommendation(certId, storage = globalThis.localStorage) {
@@ -217,7 +226,7 @@ export function renderTrail() {
   }
 
   // 2. Identifica a certificação e idioma atuais
-  const currentLang = AuthService.getCurrentUser()?.language || "pt";
+  const currentLang = getCurrentLanguage();
   const currentCertId = normalizeCertificationId(
     AuthService.getCurrentUser()?.certification,
   ) || "clf-c02";

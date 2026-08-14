@@ -1,5 +1,6 @@
 import { storageManager } from "../storageManager.js";
 import { AuthService } from "../services/authService.js";
+import { getCurrentLanguage } from "../core/languageManager.js";
 
 // Catálogo de Insígnias (Mistura conquistas de performance com conquistas de módulos)
 const BADGE_CATALOG = [
@@ -278,7 +279,7 @@ export function renderBadges() {
   const gamification = storageManager.getGamification() || {};
   const earnedBadges = gamification.badges || [];
   const completedStages = gamification.completedStages || [];
-  const currentLang = AuthService.getCurrentUser()?.language || "pt";
+  const currentLang = getCurrentLanguage();
 
   // Pegar a certificação que está ativa no momento
   const currentCert = AuthService.getCurrentUser()?.certification || "clf-c02";

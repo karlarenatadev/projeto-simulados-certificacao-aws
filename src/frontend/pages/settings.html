@@ -316,9 +316,9 @@
       import { storageManager } from "./js/storageManager.js";
       import { initShell } from "./js/shell.js";
       import { authGuard } from "./js/core/authGuard.js";
+      import { getCurrentLanguage, setCurrentLanguage } from "./js/core/languageManager.js";
 
       // ── Chaves de preferências ────────────────────────────────────────────
-      const LANG_KEY = "aws_sim_lang";
       const THEME_KEY = "aws_sim_theme";
       const SIDEBAR_KEY = "sidebar_closed";
       const POMODORO_KEY = "aws_sim_pomodoro_duration";
@@ -352,7 +352,7 @@
         // Idioma
         const langSelect = document.getElementById("setting-lang");
         if (langSelect) {
-          langSelect.value = localStorage.getItem(LANG_KEY) || "pt";
+          langSelect.value = getCurrentLanguage();
         }
 
         // Tema escuro
@@ -395,7 +395,7 @@
 
         // Idioma
         if (langSelect) {
-          localStorage.setItem(LANG_KEY, langSelect.value);
+          setCurrentLanguage(langSelect.value);
         }
 
         // Tema escuro

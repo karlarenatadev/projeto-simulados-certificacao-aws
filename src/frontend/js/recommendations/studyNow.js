@@ -13,6 +13,7 @@ import { t } from "../i18n/useTranslation.js";
 import { AuthService } from "../services/authService.js";
 import { logger } from "../utils/logger.js";
 import { getDomainDefinition } from "../domainTaxonomy.js";
+import { getCurrentLanguage } from "../core/languageManager.js";
 
 const CONTENT_ID = "weak-domains-content";
 export const DIAGNOSTIC_RECOMMENDATION_STORAGE_KEY =
@@ -133,7 +134,7 @@ function getContainer() {
 function renderEmpty(messageKey, success = false) {
   const container = getContainer();
   if (!container) return;
-  const lang = localStorage.getItem("language") || "pt";
+  const lang = getCurrentLanguage();
   const message = t(messageKey, lang);
   const cls = success ? "study-now-success" : "study-now-empty";
   const icon = success ? '<i class="fa-solid fa-circle-check"></i> ' : "";
@@ -144,7 +145,7 @@ function renderActions(actions) {
   const container = getContainer();
   if (!container) return;
   
-  const lang = localStorage.getItem("language") || "pt";
+  const lang = getCurrentLanguage();
 
   if (!actions || actions.length === 0) {
     renderEmpty("studyNow.empty_state_doing_great", true);
@@ -202,7 +203,7 @@ export function renderDiagnosticRecommendations(recommendation) {
   const container = document.getElementById("study-now-recommendations");
   if (!container) return;
 
-  const lang = localStorage.getItem("language") || "pt";
+  const lang = getCurrentLanguage();
   const model = buildDiagnosticStudyNowModel(recommendation, lang);
   if (!model) {
     container.innerHTML = "";
@@ -275,7 +276,7 @@ export async function refreshStudyNow() {
   const container = getContainer();
   if (!container) return;
 
-  const lang = localStorage.getItem("language") || "pt";
+  const lang = getCurrentLanguage();
   container.innerHTML = `<p class="study-now-loading">${t("studyNow.loading", lang)}</p>`;
 
   try {

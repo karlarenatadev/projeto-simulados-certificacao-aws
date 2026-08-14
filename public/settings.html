@@ -16,7 +16,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=mss8a0wh" />
+    <link rel="stylesheet" href="./css/style.css?v=mst0oo8h" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -403,9 +403,9 @@
       import { storageManager } from "./js/storageManager.js";
       import { initShell } from "./js/shell.js";
       import { authGuard } from "./js/core/authGuard.js";
+      import { getCurrentLanguage, setCurrentLanguage } from "./js/core/languageManager.js";
 
       // ── Chaves de preferências ────────────────────────────────────────────
-      const LANG_KEY = "aws_sim_lang";
       const THEME_KEY = "aws_sim_theme";
       const SIDEBAR_KEY = "sidebar_closed";
       const POMODORO_KEY = "aws_sim_pomodoro_duration";
@@ -439,7 +439,7 @@
         // Idioma
         const langSelect = document.getElementById("setting-lang");
         if (langSelect) {
-          langSelect.value = localStorage.getItem(LANG_KEY) || "pt";
+          langSelect.value = getCurrentLanguage();
         }
 
         // Tema escuro
@@ -482,7 +482,7 @@
 
         // Idioma
         if (langSelect) {
-          localStorage.setItem(LANG_KEY, langSelect.value);
+          setCurrentLanguage(langSelect.value);
         }
 
         // Tema escuro

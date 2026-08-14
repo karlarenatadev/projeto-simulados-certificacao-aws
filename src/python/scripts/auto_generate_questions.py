@@ -16,7 +16,7 @@ from pathlib import Path
 from generator import fabricar_questoes, EXAMES_CONFIG
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-DATA_DIR = PROJECT_ROOT / "data"
+DATA_DIR = PROJECT_ROOT / "data" / "questions"
 
 # Número máximo de falhas consecutivas antes de abortar um lote
 MAX_CONSECUTIVE_FAILURES = 3
@@ -157,7 +157,7 @@ def generate_questions_for_level(cert_id, difficulty, quantity):
     return all_generated
 
 
-def save_questions(cert_id, new_questions):
+def save_questions(cert_id, new_questions, dry_run=False):
     """
     Adiciona novas questões ao arquivo existente.
     """
@@ -170,6 +170,10 @@ def save_questions(cert_id, new_questions):
     # Adiciona novas questões
     existing_questions.extend(new_questions)
     
+    if dry_run:
+        print(f"\n🔍 DRY-RUN: seriam adicionadas {len(new_questions)} questões a {file_path}")
+        return True
+
     # Salva arquivo atualizado
     with open(file_path, 'w', encoding='utf-8') as f:
         json.dump(existing_questions, f, ensure_ascii=False, indent=2)
@@ -178,7 +182,7 @@ def save_questions(cert_id, new_questions):
     print(f"   Total de questões: {len(existing_questions)}")
 
 
-def balance_certification(cert_id):
+def balance_certification(cert_id, dry_run=False):
     """
     Balanceia a distribuição de questões de uma certificação.
     """
@@ -225,7 +229,7 @@ def balance_certification(cert_id):
     
     # Salva questões
     if all_new_questions:
-        save_questions(cert_id, all_new_questions)
+        save_questions(cert_id, all_new_questions, dry_run=dry_run)
         
         # Exibe resumo final
         final_dist = analyze_current_distribution(cert_id)
@@ -261,7 +265,9 @@ def main():
         print("   python src/python/scripts/auto_generate_questions.py --balance-all")
         sys.exit(1)
     
-    arg = sys.argv[1].lower()
+    dry_run = "--dry-run" in sys.argv
+    args = [arg for arg in sys.argv[1:] if arg != "--dry-run"]
+    arg = args[0].lower()
     
     # Define certificações a processar
     if arg == "all" or arg == "--balance-all":
@@ -272,7 +278,7 @@ def main():
     # Processa cada certificação
     success_count = 0
     for cert_id in cert_ids:
-        if balance_certification(cert_id):
+        if balance_certification(cert_id, dry_run=dry_run):
             success_count += 1
     
     # Resumo final

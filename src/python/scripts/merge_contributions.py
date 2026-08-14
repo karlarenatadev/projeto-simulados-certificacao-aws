@@ -72,7 +72,8 @@ class ContributionMerger:
         if not self.contributions_dir.exists():
             print(f"ℹ️  Pasta de contribuições não existe: {self.contributions_dir}")
             print(f"   Criando pasta...")
-            self.contributions_dir.mkdir(parents=True, exist_ok=True)
+            if not self.dry_run:
+                self.contributions_dir.mkdir(parents=True, exist_ok=True)
         
         return True
     
@@ -137,6 +138,20 @@ class ContributionMerger:
             print()
             return
         
+        question_cert = str(
+            question.get('certId') or question.get('certification') or self.cert_id
+        ).lower()
+        if question_cert != self.cert_id.lower():
+            self.errors.append(f"Certification mismatch: {question_cert}")
+            self.skipped_count += 1
+            return
+
+        question_language = str(question.get('language') or 'pt').lower()
+        if question_language not in {'pt', 'pt-br', 'portuguese'}:
+            self.errors.append(f"Language mismatch: {question_language}")
+            self.skipped_count += 1
+            return
+
         # Verifica duplicatas
         if self._is_duplicate(question, main_questions):
             print(f"   ⚠️  Questão duplicada detectada. Pulando...")

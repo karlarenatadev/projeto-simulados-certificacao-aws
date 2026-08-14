@@ -523,6 +523,7 @@
       } from "./js/cases/caseManager.js";
       import { renderArchitecture } from "./js/cases/architectureRenderer.js";
       import { AuthService } from "./js/services/authService.js";
+      import { getCurrentLanguage, setCurrentLanguage } from "./js/core/languageManager.js";
 
       // ---- Theme ----
       const themeToggle = document.getElementById("theme-toggle");
@@ -549,14 +550,13 @@
       // ---- Idioma ----
       const langBtn = document.getElementById("btn-language");
       if (langBtn) {
-        const lang = localStorage.getItem("aws_sim_lang") || "pt";
+        const lang = getCurrentLanguage();
         langBtn.innerHTML =
           lang === "pt"
             ? '<span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>'
             : '<span class="text-[10px] md:text-xs font-bold">🇺🇸 <span class="hidden sm:inline">EN-US</span></span>';
         langBtn.addEventListener("click", () => {
-          const cur = localStorage.getItem("aws_sim_lang") || "pt";
-          localStorage.setItem("aws_sim_lang", cur === "pt" ? "en" : "pt");
+          setCurrentLanguage(getCurrentLanguage() === "pt" ? "en" : "pt");
           window.location.reload();
         });
       }

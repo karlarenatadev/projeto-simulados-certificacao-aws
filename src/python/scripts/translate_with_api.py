@@ -17,10 +17,11 @@ import sys
 import re
 import time
 import os
+import shutil
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-DATA_DIR = PROJECT_ROOT / "data"
+DATA_DIR = PROJECT_ROOT / "data" / "questions"
 
 try:
     from deep_translator import GoogleTranslator
@@ -125,7 +126,7 @@ def translate_question_obj(question, translator):
     
     return translated
 
-def process_file(input_file, output_file, task_name):
+def process_file(input_file, output_file, task_name, dry_run=False):
     """
     Processa um arquivo JSON específico de forma incremental.
     """
@@ -155,8 +156,9 @@ def process_file(input_file, output_file, task_name):
                 try:
                     existing_en = json.load(f)
                     for q in existing_en:
-                        if 'id' in q:
-                            translated_map_by_id[q['id']] = q
+                        question_id = q.get('questionId') or q.get('id')
+                        if question_id:
+                            translated_map_by_id[question_id] = q
                 except json.JSONDecodeError:
                     print(f"   ⚠️ Aviso: Arquivo {output_file} corrompido. Traduzindo do zero.")
         
@@ -172,7 +174,7 @@ def process_file(input_file, output_file, task_name):
         
         # 3. Processa cada questão
         for i, q in enumerate(questions_pt):
-            q_id = q.get('id')
+            q_id = q.get('questionId') or q.get('id')
             
             # ESTRATÉGIA 1: Match por ID explícito
             if q_id and q_id in translated_map_by_id:
@@ -186,14 +188,14 @@ def process_file(input_file, output_file, task_name):
                 en_q = existing_en[i]
                 
                 # Coleta metadados estruturais para garantir que é a mesma questão
-                pt_meta = (q.get('service'), q.get('difficulty'), q.get('correct'), len(q.get('options', [])))
-                en_meta = (en_q.get('service'), en_q.get('difficulty'), en_q.get('correct'), len(en_q.get('options', [])))
+                pt_meta = (q.get('certId'), q.get('domain'), q.get('difficulty'), q.get('correct'), len(q.get('options', [])))
+                en_meta = (en_q.get('certId'), en_q.get('domain'), en_q.get('difficulty'), en_q.get('correct'), len(en_q.get('options', [])))
                 
                 if pt_meta == en_meta:
                     # Se PT-BR recebeu um ID recentemente, garante que a cópia em inglês o herde
                     en_q_copy = en_q.copy()
                     if q_id:
-                        en_q_copy['id'] = q_id
+                        en_q_copy['questionId'] = q_id
                         
                     translated_questions.append(en_q_copy)
                     used_en_indices.add(i)
@@ -211,6 +213,12 @@ def process_file(input_file, output_file, task_name):
                 
         print(f"\n   ✅ Processo concluído: {novas_traducoes} novas questões traduzidas.")
         
+        if dry_run:
+            print(f"   🔍 DRY-RUN: não gravaria {output_file}")
+            return True
+
+        if output_file.exists():
+            shutil.copy2(output_file, output_file.with_suffix(output_file.suffix + ".backup"))
         # Salva o arquivo traduzido consolidado
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(translated_questions, f, ensure_ascii=False, indent=2)
@@ -254,16 +262,17 @@ def main():
         })
         # Arquivos de nivelamento
         tasks.append({
-            "in_file": DATA_DIR / "nivelamento" / f"diagnostic-{cert}.json",
-            "out_file": DATA_DIR / "nivelamento" / f"diagnostic-{cert}-en.json",
+            "in_file": PROJECT_ROOT / "data" / "nivelamento" / f"diagnostic-{cert}.json",
+            "out_file": PROJECT_ROOT / "data" / "nivelamento" / f"diagnostic-{cert}-en.json",
             "name": f"{cert.upper()} (Nivelamento/Diagnóstico)"
         })
     
+    dry_run = "--dry-run" in sys.argv
     success_count = 0
     for task in tasks:
         # Só processa se o arquivo original existir para evitar erros sujos na tela
         if os.path.exists(task["in_file"]):
-            if process_file(task["in_file"], task["out_file"], task["name"]):
+            if process_file(task["in_file"], task["out_file"], task["name"], dry_run=dry_run):
                 success_count += 1
         else:
             print(f"\n⚠️ Pulando {task['name']}: Arquivo de origem não encontrado ({task['in_file']})")

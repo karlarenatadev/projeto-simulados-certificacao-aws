@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 # Caminhos
 ROOT_DIR = Path(__file__).resolve().parents[3]
-DATA_DIR = ROOT_DIR / "data"
+DATA_DIR = ROOT_DIR / "data" / "questions"
 load_dotenv(ROOT_DIR / ".env")
 
 # Mapeamento: (arquivo, certification_enum, language)

@@ -18,9 +18,9 @@
 
 import { PermissionService } from "./services/permissions.js";
 import { logger } from "./utils/logger.js";
-import { userManager } from "./userManager.js";
 import { AuthService } from "./services/authService.js";
 import { initializeUI } from "./i18n/initUI.js";
+import { getCurrentLanguage, setCurrentLanguage } from "./core/languageManager.js";
 
 // 🔹 CONSTANTES 🔹──────────────────────────────────────────────────────────────
 
@@ -269,7 +269,7 @@ function _syncThemeIcon(isDark) {
  * Atualiza o visual do botão de idioma conforme o valor salvo.
  */
 export function syncLanguageButtonShell() {
-  const lang = AuthService.getCurrentUser()?.language || "pt";
+  const lang = getCurrentLanguage();
   const btn = document.getElementById("btn-language");
   
   // Applica tradução para páginas que não carregam app.js diretamente
@@ -297,13 +297,8 @@ export function syncLanguageButtonShell() {
         }
         
         // Comportamento standalone para cases.html, laboratorios.html, etc.
-        const user = AuthService.getCurrentUser();
-        if (user) {
-            user.language = user.language === "pt" ? "en" : "pt";
-            AuthService.setCurrentUser(user);
-            userManager.updatePreferences({ language: user.language });
-            window.location.reload();
-        }
+        setCurrentLanguage(lang === "pt" ? "en" : "pt");
+        window.location.reload();
     });
   }
 }

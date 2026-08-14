@@ -140,7 +140,7 @@ def validate_advanced_semantics(questions: list, exame_id: str) -> list:
 # Função auxiliar para rodar isso em todos os JSONs da pasta data/
 def auditar_qualidade_banco():
     base_dir = Path(__file__).resolve().parents[3]
-    pasta_data = base_dir / "data"
+    pasta_data = base_dir / "data" / "questions"
     if not pasta_data.exists():
         print(f"Aviso: pasta de dados nao encontrada: {pasta_data}")
         return True

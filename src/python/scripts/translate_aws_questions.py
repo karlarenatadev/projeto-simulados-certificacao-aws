@@ -13,10 +13,11 @@ USO:
 import json
 import sys
 import re
+import shutil
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
-DATA_DIR = PROJECT_ROOT / "data"
+DATA_DIR = PROJECT_ROOT / "data" / "questions"
 
 # Mapeamento de traduções contextuais
 CONTEXT_TRANSLATIONS = {
@@ -183,7 +184,7 @@ def translate_question_obj(question):
     return translated
 
 
-def process_file(cert_id):
+def process_file(cert_id, dry_run=False):
     """
     Processa um arquivo de certificação específico.
     """
@@ -212,6 +213,12 @@ def process_file(cert_id):
         
         print(f"\n   ✅ Tradução concluída: {len(translated_questions)} questões")
         
+        if dry_run:
+            print(f"   🔍 DRY-RUN: não gravaria {output_file}")
+            return True
+
+        if output_file.exists():
+            shutil.copy2(output_file, output_file.with_suffix(output_file.suffix + ".backup"))
         # Salva o arquivo traduzido
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(translated_questions, f, ensure_ascii=False, indent=2)
@@ -257,9 +264,10 @@ def main():
     print(f"\n📋 Arquivos a processar: {', '.join([c.upper() for c in cert_ids])}")
     
     # Processa cada arquivo
+    dry_run = "--dry-run" in sys.argv
     success_count = 0
     for cert_id in cert_ids:
-        if process_file(cert_id):
+        if process_file(cert_id, dry_run=dry_run):
             success_count += 1
     
     # Resumo final

@@ -46,44 +46,82 @@ def filter_valid_schema(raw_questions: list) -> list:
             )
     return valid_questions
 
-def validar_banco_existente():
+def validate_question_record(item: object) -> list[str]:
+    """Retorna erros estruturais sem modificar o registro recebido."""
+    if not isinstance(item, dict):
+        return ["question item must be an object"]
+
+    required_fields = {
+        "questionId", "certId", "examCode", "question", "options",
+        "correct", "domain", "difficulty",
+    }
+    missing_fields = sorted(required_fields - item.keys())
+    if missing_fields:
+        return [f"missing fields: {', '.join(missing_fields)}"]
+
+    try:
+        SanitizedAWSQuestion(**item)
+    except ValidationError as error:
+        return [entry["msg"] for entry in error.errors()]
+    return []
+
+
+def validate_json_content(content: str) -> list[str]:
+    """Valida JSON, formato de lista e todos os registros de um conteúdo."""
+    try:
+        data = json.loads(content)
+    except json.JSONDecodeError as error:
+        return [f"invalid JSON: {error.msg}"]
+
+    if not isinstance(data, list):
+        return ["root value must be a list of questions"]
+    if not data:
+        return ["question list must not be empty"]
+
+    errors = []
+    for index, item in enumerate(data):
+        errors.extend(f"index {index}: {message}" for message in validate_question_record(item))
+    return errors
+
+
+def validate_json_file(filepath: Path) -> list[str]:
+    """Valida JSON, formato de lista e todos os registros de um arquivo."""
+    try:
+        content = filepath.read_text(encoding="utf-8")
+    except OSError as error:
+        return [f"cannot read file: {error}"]
+    return validate_json_content(content)
+
+
+def validar_banco_existente(data_dir: Path = PASTA_DATA):
     """Auditoria manual dos JSONs salvos na pasta data/questions/ da raiz do projeto."""
-    if not PASTA_DATA.exists():
-        print(f"Erro: pasta de dados obrigatoria nao encontrada: {PASTA_DATA}")
+    if not data_dir.exists():
+        print(f"Erro: pasta de dados obrigatoria nao encontrada: {data_dir}")
         return False
 
-    if not PASTA_DATA.is_dir():
-        print(f"Erro: o caminho de dados existe, mas nao e uma pasta: {PASTA_DATA}")
+    if not data_dir.is_dir():
+        print(f"Erro: o caminho de dados existe, mas nao e uma pasta: {data_dir}")
         return False
 
-    arquivos_json = sorted(PASTA_DATA.glob("*.json"))
+    arquivos_json = sorted(data_dir.glob("*.json"))
     if not arquivos_json:
-        print(f"Erro: nenhum arquivo JSON encontrado em: {PASTA_DATA}")
+        print(f"Erro: nenhum arquivo JSON encontrado em: {data_dir}")
         return False
 
+    banco_valido = True
     for caminho in arquivos_json:
         print(f"\nAuditando {caminho.name}...")
-        with open(caminho, "r", encoding="utf-8") as f:
-            dados = json.load(f)
+        errors = validate_json_file(caminho)
 
-        erros = 0
-        for item in dados:
-            if not isinstance(item, dict) or "question" not in item or "options" not in item:
-                print(f"  Erro no ID {item.get('questionId', 'N/A')}: Estrutura invalida")
-                erros += 1
-                continue
-            try:
-                SanitizedAWSQuestion(**item)
-            except Exception as e:
-                print(f"  Erro no ID {item.get('id', 'N/A')}: {e}")
-                erros += 1
-
-        if erros == 0:
+        if not errors:
             print(f"  OK: {caminho.name} esta valido.")
         else:
-            print(f"  Aviso: {caminho.name} contem {erros} erros estruturais.")
+            banco_valido = False
+            print(f"  Aviso: {caminho.name} contem {len(errors)} erros estruturais.")
+            for error in errors[:10]:
+                print(f"    - {error}")
 
-    return True
+    return banco_valido
 
 
 if __name__ == "__main__":
