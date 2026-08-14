@@ -131,7 +131,11 @@ class ValidationUI {
 
   renderRequest(request) {
     return `<article class="question-card"><h3>${this.escape(request.full_name || request.email)} — ${this.escape(request.certification_id)}</h3>
-      <p>Credential ID: ${this.escape(request.credential_id || '—')}</p><p>Status: ${this.escape(request.status)}</p>
+      <p>${this.escape(request.email || '')}</p>
+      <p>Credential ID: ${this.escape(request.credential_id || '—')}</p>
+      <p>Credential URL: ${this.escape(request.credential_url || '—')}</p>
+      <p>Solicitada em: ${this.escape(request.requested_at || '—')}</p>
+      <p>Status: ${this.escape(request.status)}</p>
       ${request.status === 'PENDING' ? `<button class="btn-primary" data-request-action="APPROVED" data-id="${this.escape(request.id)}">Aprovar</button>
       <button class="btn-danger" data-request-action="REJECTED" data-id="${this.escape(request.id)}">Rejeitar</button>` : ''}</article>`;
   }

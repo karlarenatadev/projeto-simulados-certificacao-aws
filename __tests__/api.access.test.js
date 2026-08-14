@@ -75,9 +75,16 @@ describe('identity and access management', () => {
     const created = await request(baseUrl, '/api/access/validator-requests', {
       method: 'POST',
       headers: { Authorization: `Bearer ${studentToken}` },
-      body: JSON.stringify({ certification_id: 'CLF-C02', credential_id: 'cred-1' }),
+      body: JSON.stringify({
+        certification_id: 'CLF-C02',
+        credential_id: 'cred-1',
+        credential_url: 'https://example.test/credential/1',
+        notes: 'Credential submitted for review',
+      }),
     });
     expect(created.response.status).toBe(201);
+    expect(created.body.data.credential_url).toBe('https://example.test/credential/1');
+    expect(created.body.data.notes).toBe('Credential submitted for review');
 
     const adminLogin = await request(baseUrl, '/api/auth/login', {
       method: 'POST',

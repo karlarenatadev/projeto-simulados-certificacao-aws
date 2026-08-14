@@ -16,7 +16,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=mst5wzxb" />
+    <link rel="stylesheet" href="./css/style.css?v=mst8b7eh" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -382,6 +382,7 @@
             </select>
             <input id="validator-request-credential-id" class="settings-input" placeholder="Credential ID (opcional)" />
             <input id="validator-request-credential-url" class="settings-input" placeholder="URL da credencial (opcional)" />
+            <textarea id="validator-request-notes" class="settings-input" rows="2" placeholder="Observação (opcional)"></textarea>
             <button id="validator-request-submit" class="a3-btn a3-btn-outline">Solicitar</button>
           </div>
           <p id="validator-request-status" class="settings-item-hint"></p>
@@ -571,6 +572,7 @@
               certification_id: document.getElementById("validator-request-certification").value,
               credential_id: document.getElementById("validator-request-credential-id").value,
               credential_url: document.getElementById("validator-request-credential-url").value,
+              notes: document.getElementById("validator-request-notes").value,
             });
             requestStatus.textContent = "Solicitação enviada: PENDING";
           } catch (error) {

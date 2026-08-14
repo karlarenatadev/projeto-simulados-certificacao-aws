@@ -300,6 +300,7 @@
             </select>
             <input id="validator-request-credential-id" class="settings-input" placeholder="Credential ID (opcional)" />
             <input id="validator-request-credential-url" class="settings-input" placeholder="URL da credencial (opcional)" />
+            <textarea id="validator-request-notes" class="settings-input" rows="2" placeholder="Observação (opcional)"></textarea>
             <button id="validator-request-submit" class="a3-btn a3-btn-outline">Solicitar</button>
           </div>
           <p id="validator-request-status" class="settings-item-hint"></p>
@@ -484,6 +485,7 @@
               certification_id: document.getElementById("validator-request-certification").value,
               credential_id: document.getElementById("validator-request-credential-id").value,
               credential_url: document.getElementById("validator-request-credential-url").value,
+              notes: document.getElementById("validator-request-notes").value,
             });
             requestStatus.textContent = "Solicitação enviada: PENDING";
           } catch (error) {

@@ -20,8 +20,10 @@ import {
   updateUser,
   getUserByEmail,
 } from '../../backend/database/db.js';
+import { resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-const INITIAL_USERS = [
+export const INITIAL_USERS = [
   {
     email: 'admin@a3data.com.br',
     full_name: 'Admin CloudAcademy',
@@ -60,7 +62,7 @@ Idempotente — seguro para executar múltiplas vezes.
 `);
 }
 
-async function seedUser(userConfig) {
+export async function seedUser(userConfig) {
   const { email, full_name, nickname, role } = userConfig;
 
   // upsertUserByEmail cria como STUDENT por padrão — ajusta o role na sequência
@@ -78,10 +80,11 @@ async function seedUser(userConfig) {
     );
   }
 
-  return { user, created };
+  const currentUser = await getUserByEmail(email);
+  return { user: currentUser, created };
 }
 
-async function main() {
+export async function main() {
   const args = parseArgs(process.argv.slice(2));
 
   if (args.help) {
@@ -130,8 +133,13 @@ async function main() {
   }
 }
 
-main().catch(async (error) => {
-  console.error(`[seed-users] Falha: ${error.message}`);
-  await closeDatabase().catch(() => {});
-  process.exit(1);
-});
+const isDirectExecution = process.argv[1]
+  && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isDirectExecution) {
+  main().catch(async (error) => {
+    console.error(`[seed-users] Falha: ${error.message}`);
+    await closeDatabase().catch(() => {});
+    process.exit(1);
+  });
+}

@@ -1048,7 +1048,14 @@ export async function upsertUserByEmail(email, profile = {}) {
   try {
     // Tenta localizar usuário existente
     const existing = await executeQuery(
-      'SELECT * FROM users WHERE email = $1 LIMIT 1',
+      `SELECT * FROM users
+        WHERE LOWER(email) = LOWER($1)
+        ORDER BY CASE role
+          WHEN 'ADMIN' THEN 1
+          WHEN 'VALIDATOR' THEN 2
+          ELSE 3
+        END, created_at ASC
+        LIMIT 1`,
       [normalizedEmail],
     );
 
@@ -1066,9 +1073,11 @@ export async function upsertUserByEmail(email, profile = {}) {
         updateFields.push(`nickname = $${params.length}`);
       }
 
-      params.push(normalizedEmail);
+      params.push(existing[0].id);
       const updated = await executeQuery(
-        `UPDATE users SET ${updateFields.join(', ')} WHERE email = $${params.length} RETURNING *`,
+        `UPDATE users SET ${updateFields.join(', ')}
+          WHERE id = $${params.length}
+          RETURNING *`,
         params,
       );
       return { user: updated[0] ?? existing[0], created: false };
@@ -1120,7 +1129,14 @@ export async function getUserById(userId) {
  */
 export async function getUserByEmail(email) {
   const normalizedEmail = normalizeEmail(email);
-  const query = 'SELECT * FROM users WHERE email = $1 LIMIT 1';
+  const query = `SELECT * FROM users
+    WHERE LOWER(email) = LOWER($1)
+    ORDER BY CASE role
+      WHEN 'ADMIN' THEN 1
+      WHEN 'VALIDATOR' THEN 2
+      ELSE 3
+    END, created_at ASC
+    LIMIT 1`;
 
   try {
     const result = await executeQuery(query, [normalizedEmail]);
