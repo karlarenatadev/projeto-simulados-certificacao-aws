@@ -16,7 +16,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=mstbr14m" />
+    <link rel="stylesheet" href="./css/style.css?v=mstj309t" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -207,6 +207,8 @@
       import { storageManager } from "./js/storageManager.js";
       import { initShell } from "./js/shell.js";
       import { authGuard } from "./js/core/authGuard.js";
+      import { getCurrentLanguage } from "./js/core/languageManager.js";
+      import { t } from "./js/i18n/useTranslation.js";
 
       // ── Helpers ───────────────────────────────────────────────────────────
       const CERT_LABELS = {
@@ -216,14 +218,26 @@
         "aif-c01": "AI Practitioner",
       };
       const ROLE_LABELS = {
-        STUDENT: "Estudante",
-        VALIDATOR: "Validador",
-        ADMIN: "Admin",
+        STUDENT: "role_student",
+        VALIDATOR: "role_validator",
+        ADMIN: "role_admin",
       };
       const ROLE_CLASSES = {
         STUDENT: "a3-role-student",
         VALIDATOR: "a3-role-validator",
         ADMIN: "a3-role-admin",
+      };
+      const BADGE_TITLE_KEYS = {
+        perfect: "profile_badge_perfect",
+        dedicated: "profile_badge_dedicated",
+        streak: "profile_badge_streak",
+        speed: "profile_badge_speed",
+      };
+      const BADGE_DESC_KEYS = {
+        perfect: "profile_badge_perfect_desc",
+        dedicated: "profile_badge_dedicated_desc",
+        streak: "profile_badge_streak_desc",
+        speed: "profile_badge_speed_desc",
       };
       const BADGE_CATALOG = [
         { id: "perfect", icon: "fa-star", color: "text-yellow-400", bg: "bg-yellow-500/10", title: "100% Perfeita", desc: "Gabaritou um simulado inteiro." },
@@ -249,7 +263,7 @@
 
         const roleBadge = document.getElementById("profile-role-badge");
         if (roleBadge) {
-          roleBadge.textContent = ROLE_LABELS[role] || role;
+          roleBadge.textContent = ROLE_LABELS[role] ? t(ROLE_LABELS[role], getCurrentLanguage()) : role;
           roleBadge.className = `a3-badge ${ROLE_CLASSES[role] || "a3-role-student"}`;
         }
       }
@@ -282,10 +296,9 @@
         const certIds = [...new Set(history.map((h) => h.certId).filter(Boolean))];
 
         if (certIds.length === 0) {
-          container.innerHTML = `<p class="profile-empty-hint">Nenhuma certificação iniciada ainda.</p>`;
+          container.textContent = t("profile_empty_certifications", getCurrentLanguage());
           return;
         }
-
         container.innerHTML = certIds
           .map((certId) => {
             const certSessions = history.filter((h) => h.certId === certId);
@@ -315,12 +328,14 @@
         container.innerHTML = BADGE_CATALOG.map((badge) => {
           const earned = earnedBadges.has(badge.id);
           const opacity = earned ? "" : "opacity-40 grayscale cursor-not-allowed";
+          const title = t(BADGE_TITLE_KEYS[badge.id], getCurrentLanguage()) || badge.title;
+          const description = t(BADGE_DESC_KEYS[badge.id], getCurrentLanguage()) || badge.desc;
           return `
             <div class="a3-card relative ${opacity} ${badge.bg} p-4 flex flex-col items-center text-center profile-badge-card">
               ${!earned ? '<div class="profile-badge-lock"><i class="fa-solid fa-lock"></i></div>' : ""}
               <i class="fa-solid ${badge.icon} ${badge.color} text-2xl mb-2"></i>
-              <h4 class="profile-badge-title">${badge.title}</h4>
-              <p class="profile-badge-desc">${badge.desc}</p>
+              <h4 class="profile-badge-title">${title}</h4>
+              <p class="profile-badge-desc">${description}</p>
             </div>`;
         }).join("");
       }

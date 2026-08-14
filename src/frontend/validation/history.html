@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="css/admin.css" />
-    <title>Histórico de validações - Cloud Academy A3</title>
+    <title data-i18n="admin_history_title">Histórico de validações - Cloud Academy A3</title>
   </head>
   <body class="has-left-sidebar">
     <header class="a3-header">
@@ -15,9 +15,9 @@
     </header>
     <nav id="left-sidebar" aria-label="Menu principal" role="navigation"><div class="left-sidebar-nav"></div></nav>
     <main class="validation-container main-content-container admin-page">
-      <section class="validator-section card admin-page-header"><p id="validator-status" class="status-text">Carregando sessão...</p><h1>Histórico de validações</h1><p>Questões já aprovadas ou rejeitadas.</p></section>
+      <section class="validator-section card admin-page-header"><p id="validator-status" class="status-text" data-i18n="common_loading_session">Carregando sessão...</p><h1 data-i18n="admin_history_title">Histórico de validações</h1><p data-i18n="admin_history_subtitle">Questões já aprovadas ou rejeitadas.</p></section>
       <div id="screen-message" class="hidden" role="status" aria-live="polite"></div>
-      <div class="admin-page-content"><section class="questions-section card"><div class="admin-toolbar"><label for="history-status">Status</label><select id="history-status"><option value="">Todas</option><option value="APPROVED">Aprovadas</option><option value="REJECTED">Rejeitadas</option></select></div><div id="history-list"><p class="admin-empty">Carregando histórico...</p></div></section></div>
+      <div class="admin-page-content"><section class="questions-section card"><div class="admin-toolbar"><label for="history-status" data-i18n="admin_history_status">Status</label><select id="history-status"><option value="" data-i18n="admin_history_all">Todas</option><option value="APPROVED" data-i18n="admin_history_approved">Aprovadas</option><option value="REJECTED" data-i18n="admin_history_rejected">Rejeitadas</option></select></div><div id="history-list"><p class="admin-empty" data-i18n="common_loading_session">Carregando histórico...</p></div></section></div>
     </main>
     <script src="js/validationAPI.js"></script>
     <script type="module">import { initHistoryPage } from './js/historyPage.js'; document.addEventListener('DOMContentLoaded', initHistoryPage);</script>

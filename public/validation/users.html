@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="../css/style.css" />
     <link rel="stylesheet" href="css/admin.css" />
-    <title>Usuários - Cloud Academy A3</title>
+    <title data-i18n="admin_users_title">Usuários - Cloud Academy A3</title>
   </head>
   <body class="has-left-sidebar">
     <header class="a3-header">
@@ -15,11 +15,11 @@
     </header>
     <nav id="left-sidebar" aria-label="Menu principal" role="navigation"><div class="left-sidebar-nav"></div></nav>
     <main class="validation-container main-content-container admin-page">
-      <section class="validator-section card admin-page-header"><p id="validator-status" class="status-text">Carregando sessão...</p><h1>Gestão de usuários</h1><p>Administre acessos e solicitações de Validator.</p></section>
+      <section class="validator-section card admin-page-header"><p id="validator-status" class="status-text" data-i18n="common_loading_session">Carregando sessão...</p><h1 data-i18n="admin_users_title">Gestão de usuários</h1><p data-i18n="admin_users_subtitle">Administre acessos e solicitações de Validator.</p></section>
       <div id="screen-message" class="hidden" role="status" aria-live="polite"></div>
       <div class="admin-page-content">
-        <section class="questions-section card"><h2>Usuários</h2><div class="admin-toolbar"><input id="access-search" placeholder="Buscar por nome ou email" aria-label="Buscar usuário" /><button id="btn-search-users" class="btn-secondary">Pesquisar</button><button id="btn-load-users" class="btn-secondary">Atualizar</button></div><div id="users-list"><p class="admin-empty">Carregando usuários...</p></div></section>
-        <section class="questions-section card"><h2>Solicitações de Validator</h2><div class="admin-toolbar"><button id="btn-load-requests" class="btn-secondary">Atualizar solicitações</button></div><div id="requests-list"><p class="admin-empty">Carregando solicitações...</p></div></section>
+        <section class="questions-section card"><h2 data-i18n="nav_users">Usuários</h2><div class="admin-toolbar"><input id="access-search" data-i18n="admin_users_search" data-i18n-attr="placeholder" placeholder="Buscar por nome ou email" aria-label="Buscar por nome ou email" /><button id="btn-search-users" class="btn-secondary" data-i18n="admin_users_search_button">Pesquisar</button><button id="btn-load-users" class="btn-secondary" data-i18n="admin_users_refresh">Atualizar</button></div><div id="users-list"><p class="admin-empty" data-i18n="common_loading_session">Carregando usuários...</p></div></section>
+        <section class="questions-section card"><h2 data-i18n="admin_users_requests">Solicitações de Validator</h2><div class="admin-toolbar"><button id="btn-load-requests" class="btn-secondary" data-i18n="admin_users_refresh_requests">Atualizar solicitações</button></div><div id="requests-list"><p class="admin-empty" data-i18n="common_loading_session">Carregando solicitações...</p></div></section>
       </div>
     </main>
     <script src="js/validationAPI.js"></script>

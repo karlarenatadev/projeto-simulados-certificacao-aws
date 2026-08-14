@@ -524,6 +524,7 @@
       import { renderArchitecture } from "./js/cases/architectureRenderer.js";
       import { AuthService } from "./js/services/authService.js";
       import { getCurrentLanguage, setCurrentLanguage } from "./js/core/languageManager.js";
+      import { initializeUI } from "./js/i18n/initUI.js";
 
       // ---- Theme ----
       const themeToggle = document.getElementById("theme-toggle");
@@ -551,6 +552,7 @@
       const langBtn = document.getElementById("btn-language");
       if (langBtn) {
         const lang = getCurrentLanguage();
+        initializeUI(lang);
         langBtn.innerHTML =
           lang === "pt"
             ? '<span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>'

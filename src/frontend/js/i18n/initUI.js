@@ -1,4 +1,5 @@
 import { t } from "./useTranslation.js";
+import { translations } from "./translations.js";
 
 export function initializeUI(language) {
   const lang = language || "pt";
@@ -15,8 +16,10 @@ export function initializeUI(language) {
   updateAttribute("#theme-toggle", "aria-label", t("toggle_dark_mode", lang));
 
   // Start Screen
-  updateElement("#screen-start h2", t("ai_question_engine", lang));
-  updateElement("#screen-start > p", t("ai_description", lang));
+  if (!document.getElementById("btn-start-diagnostic")) {
+    updateElement("#screen-start h2", t("ai_question_engine", lang));
+    updateElement("#screen-start > p", t("ai_description", lang));
+  }
 
   // Certification selection
   updateElement("#screen-start h3:nth-of-type(1)", null, (el) => {
@@ -294,12 +297,164 @@ export function initializeUI(language) {
     const translated = t(key, lang);
     if (translated && translated !== key) {
       // Allow HTML in translation only if it's safe or explicitly handled
-      if (el.tagName === 'INPUT' && el.type === 'placeholder') {
+      if (el.matches('input, textarea') && el.dataset.i18nAttr === 'placeholder') {
         el.placeholder = translated;
+      } else if (el.dataset.i18nAttr) {
+        el.setAttribute(el.dataset.i18nAttr, translated);
       } else {
         el.innerHTML = translated;
       }
     }
+  });
+
+  // Standalone Validation pages share the shell but do not load app.js.
+  updateElement("#validator-status", t("admin_validation_auth_waiting", lang));
+  updateElement(".validator-section h2", t("admin_validation_identity", lang));
+  updateElement("#login-section .mock-notice", t("admin_validation_restrict", lang));
+  updateElement("#questions-list .loading-msg", t("admin_validation_loading", lang));
+  updateElement(".dashboard-section .stat-card.pending h3", t("admin_validation_pending_count", lang));
+  updateElement(".dashboard-section .stat-card.approved h3", t("admin_validation_approved_count", lang));
+  updateElement(".dashboard-section .stat-card.rejected h3", t("admin_validation_rejected_count", lang));
+  updateAttribute("#login-email", "placeholder", lang === "en" ? "your.name@a3data.com.br" : "seu.nome@a3data.com.br");
+  updateAttribute("#rejection-reason", "placeholder", lang === "en" ? "At least 10 characters" : "Mínimo de 10 caracteres");
+  updateElement("#btn-login", t("common_login", lang));
+  updateElement("#btn-confirm-reject", t("admin_validation_reject", lang));
+  updateElement("#btn-cancel-reject", t("cancel", lang));
+
+  // Shared standalone-page labels. Selectors are page-scoped by their IDs/classes.
+  [
+    [".settings-page-title", "settings_title"],
+    ["#profile-stats-title", "profile_statistics"],
+    ["#profile-certs-title", "profile_certifications"],
+    ["#profile-badges-title", "profile_badges"],
+  ].forEach(([selector, key]) => updateElement(selector, null, (el) => {
+    const icon = el.querySelector("i");
+    el.textContent = "";
+    if (icon) el.appendChild(icon);
+    el.append(` ${t(key, lang)}`);
+  }));
+  const profileLabels = document.querySelectorAll(".profile-stat-label");
+  ["profile_quizzes", "profile_best_score", "profile_streak", "profile_xp"].forEach((key, index) => {
+    if (profileLabels[index]) profileLabels[index].textContent = t(key, lang);
+  });
+  updateElement("#resources-main h2", null, (el) => {
+    const icon = el.querySelector("i");
+    el.textContent = "";
+    if (icon) el.appendChild(icon);
+    el.append(` ${t("resources_title", lang)}`);
+  });
+  updateElement("#resources-main > div > p", t("resources_subtitle", lang));
+  const resourceTitles = document.querySelectorAll("#resources-main .a3-card-header h3");
+  ["resources_aws", "resources_certifications", "resources_architecture", "resources_channels", "resources_community", "resources_blogs", "resources_references"].forEach((key, index) => {
+    if (resourceTitles[index]) {
+      const icon = resourceTitles[index].querySelector("i");
+      resourceTitles[index].textContent = "";
+      if (icon) resourceTitles[index].appendChild(icon);
+      resourceTitles[index].append(` ${t(key, lang)}`);
+    }
+  });
+  const settingsGroups = document.querySelectorAll("#settings-page .settings-group-title");
+  ["settings_account", "settings_appearance", "settings_study", "settings_platform"].forEach((key, index) => {
+    if (settingsGroups[index]) settingsGroups[index].textContent = t(key, lang);
+  });
+  const displayNameLabel = document.querySelector('#setting-display-name')?.closest('.settings-item')?.querySelector('.settings-item-label');
+  const displayNameHint = document.querySelector('#setting-display-name')?.closest('.settings-item')?.querySelector('.settings-item-hint');
+  if (displayNameLabel) displayNameLabel.textContent = t('settings_display_name', lang);
+  if (displayNameHint) displayNameHint.textContent = t('settings_display_name_hint', lang);
+  const languageLabel = document.querySelector('#setting-lang')?.closest('.settings-item')?.querySelector('.settings-item-label');
+  const languageHint = document.querySelector('#setting-lang')?.closest('.settings-item')?.querySelector('.settings-item-hint');
+  if (languageLabel) languageLabel.textContent = t('settings_language', lang);
+  if (languageHint) languageHint.textContent = t('settings_language_hint', lang);
+  updateAttribute('#setting-display-name', 'placeholder', t('settings_display_name', lang));
+  updateAttribute('#setting-lang', 'aria-label', t('settings_language', lang));
+  updateAttribute('#settings-btn-save', 'aria-label', t('settings_save', lang));
+  if (document.getElementById("btn-start-diagnostic")) {
+    updateElement("#screen-start h2", null, (el) => {
+      const icon = el.querySelector("i");
+      el.textContent = "";
+      if (icon) el.appendChild(icon);
+      el.append(` ${t("diagnostic_title", lang)}`);
+    });
+    updateElement("#btn-start-diagnostic", null, (el) => {
+      const icon = el.querySelector("i");
+      el.textContent = "";
+      if (icon) el.appendChild(icon);
+      el.append(` ${t("diagnostic_start", lang)}`);
+    });
+  }
+
+  translateStaticSurface(lang);
+}
+
+/**
+ * Translates static labels that belong to the shared dictionary even when a
+ * legacy page has not yet been annotated with data-i18n. Dynamic educational
+ * content is intentionally excluded by matching complete text nodes only.
+ */
+function translateStaticSurface(lang) {
+  document.documentElement.lang = lang === "en" ? "en" : "pt-BR";
+  const selectorKeys = [
+    [".lh-metrics-title", "home_guide_title"],
+    [".lh-metrics-sub", "home_guide_subtitle"],
+    ["#hub-guide h3:nth-of-type(1)", "home_studies"],
+    ["#hub-guide h3:nth-of-type(2)", "home_practice"],
+    ["#hub-guide h3:nth-of-type(3)", "home_resources"],
+    ["#global-performance-dashboard h3", "certification_statistics"],
+    ["#hub-activity h2", "home_activity"],
+    ["#quick-access h2", "home_quick_access"],
+    ["#screen-flashcards .fc-diagnostic-title", "diagnostic_flashcards_title"],
+    ["#study-insight-container #insight-card-title", "study_insight"],
+    ["#flashcards-diagnostic-banner h3", "diagnostic_flashcards_title"],
+    ["#flashcards-diagnostic-banner > p", "diagnostic_flashcards_subtitle"],
+    ["#question-category", "category"],
+    ["#btn-cancel", "cancel"],
+    ["#btn-submit", "confirm_answer"],
+    ["#btn-next", "next"],
+    ["#btn-finish", "view_result"],
+    ["#sprint-progress-label", "progress"],
+    ["#guild-total-questions", "questions"],
+    ["#guild-weekly-avg", "average"],
+    ["#guild-leaderboard li", "ui_loading_board"],
+    ["#cases-page-body h1", "cases_title"],
+    ["#filter-certification option[value='']", "ui_all_feminine"],
+    ["#filter-difficulty option[value='']", "ui_all"],
+    ["#study-now-content .text-gray-400.italic", "common_loading_session"],
+  ];
+  selectorKeys.forEach(([selector, key]) => {
+    const element = document.querySelector(selector);
+    if (element) element.textContent = t(key, lang);
+  });
+
+  const portuguese = translations.pt || {};
+  const keyByText = new Map();
+  Object.entries(portuguese).forEach(([key, value]) => {
+    if (typeof value === "string" && value.trim() && !keyByText.has(value.trim())) {
+      keyByText.set(value.trim(), key);
+    }
+  });
+
+  const textNodeType = document.defaultView?.NodeFilter?.SHOW_TEXT || 4;
+  const walker = document.createTreeWalker(document.body, textNodeType);
+  const textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
+  textNodes.forEach((node) => {
+    const parent = node.parentElement;
+    if (!parent || ["SCRIPT", "STYLE", "NOSCRIPT"].includes(parent.tagName)) return;
+    const value = node.nodeValue?.trim();
+    const key = keyByText.get(value);
+    if (!key) return;
+    const translated = t(key, lang);
+    if (translated && translated !== value) node.nodeValue = node.nodeValue.replace(value, translated);
+  });
+
+  ["title", "aria-label", "aria-description", "placeholder", "alt"].forEach((attribute) => {
+    document.querySelectorAll(`[${attribute}]`).forEach((element) => {
+      const value = element.getAttribute(attribute)?.trim();
+      const key = keyByText.get(value);
+      if (!key) return;
+      const translated = t(key, lang);
+      if (translated) element.setAttribute(attribute, translated);
+    });
   });
 }
 

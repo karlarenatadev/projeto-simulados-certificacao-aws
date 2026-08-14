@@ -20,8 +20,8 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
 
-    <link rel="stylesheet" href="./css/style.css?v=mstbr12m" />
-    <link rel="stylesheet" href="./css/cases.css?v=mstbr12m" />
+    <link rel="stylesheet" href="./css/style.css?v=mstj308f" />
+    <link rel="stylesheet" href="./css/cases.css?v=mstj308f" />
 
     <!-- Drawflow — node editor for Architecture Builder -->
     <link
@@ -529,6 +529,7 @@
       import { renderArchitecture } from "./js/cases/architectureRenderer.js";
       import { AuthService } from "./js/services/authService.js";
       import { getCurrentLanguage, setCurrentLanguage } from "./js/core/languageManager.js";
+      import { initializeUI } from "./js/i18n/initUI.js";
 
       // ---- Theme ----
       const themeToggle = document.getElementById("theme-toggle");
@@ -556,6 +557,7 @@
       const langBtn = document.getElementById("btn-language");
       if (langBtn) {
         const lang = getCurrentLanguage();
+        initializeUI(lang);
         langBtn.innerHTML =
           lang === "pt"
             ? '<span class="text-[10px] md:text-xs font-bold">🇧🇷 <span class="hidden sm:inline">PT-BR</span></span>'

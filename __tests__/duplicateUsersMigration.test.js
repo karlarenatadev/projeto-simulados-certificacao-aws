@@ -11,6 +11,8 @@ import {
 import { mergeDuplicateUsers } from '../scripts/migrate/merge-duplicate-users.mjs';
 
 describe('duplicate user identity migration', () => {
+  const duplicateEmail = `duplicate-admin-${Date.now()}@a3data.com.br`;
+
   beforeAll(async () => {
     delete process.env.DB_DATA_DIR;
     await initializeDatabase({ environment: 'test' });
@@ -18,8 +20,9 @@ describe('duplicate user identity migration', () => {
     await executeSql('ALTER TABLE users DROP CONSTRAINT IF EXISTS users_email_key');
     await executeQuery(
       `INSERT INTO users (id, email, nickname, role)
-       VALUES ('00000000-0000-0000-0000-000000000001', 'Admin@A3Data.com.br', 'migration-admin', 'ADMIN'),
-              ('00000000-0000-0000-0000-000000000002', ' admin@a3data.com.br ', 'migration-student', 'STUDENT')`,
+       VALUES ('00000000-0000-0000-0000-000000000001', $1, 'migration-admin', 'ADMIN'),
+              ('00000000-0000-0000-0000-000000000002', $2, 'migration-student', 'STUDENT')`,
+      [duplicateEmail.toUpperCase(), ` ${duplicateEmail} `],
     );
   });
 
@@ -32,13 +35,14 @@ describe('duplicate user identity migration', () => {
 
     expect(result.applied).toBe(true);
     expect(result.plan[0].canonicalId).toBe('00000000-0000-0000-0000-000000000001');
-    expect(await getUserByEmail(' ADMIN@a3data.com.br ')).toMatchObject({
+    expect(await getUserByEmail(` ${duplicateEmail.toUpperCase()} `)).toMatchObject({
       id: '00000000-0000-0000-0000-000000000001',
       role: 'ADMIN',
     });
 
     const users = await executeQuery(
-      "SELECT id::text AS id FROM users WHERE lower(trim(email)) = 'admin@a3data.com.br'",
+      'SELECT id::text AS id FROM users WHERE lower(trim(email)) = lower(trim($1))',
+      [duplicateEmail],
     );
     expect(users).toHaveLength(1);
 

@@ -2,6 +2,8 @@ import { logger } from "../utils/logger.js";
 import { storageManager } from "../storageManager.js";
 import { NotificationService } from "../services/notificationService.js";
 import { ModalService } from "../services/modalService.js";
+import { getCurrentLanguage } from "../core/languageManager.js";
+import { t } from "../i18n/useTranslation.js";
 
 export class SimulatorEngineClient {
   constructor(level, caseId) {
@@ -14,6 +16,10 @@ export class SimulatorEngineClient {
     this.selectedServices = new Set();
   }
 
+  tr(key) {
+    return t(key, getCurrentLanguage());
+  }
+
   async init() {
     try {
       await this.loadCaseData();
@@ -23,7 +29,7 @@ export class SimulatorEngineClient {
       const activeCase = storageManager.loadActiveCase(this.caseId);
       if (activeCase) {
         const resumeAgreed = await ModalService.confirm({
-          message: "Você tem um caso prático em andamento. Deseja retomar?",
+          message: this.tr("simulator_resume"),
         });
         if (resumeAgreed) {
           this.currentStage = activeCase.currentStage || 1;
@@ -40,11 +46,12 @@ export class SimulatorEngineClient {
       this.renderInterviewOptions();
       this.renderDesignBuilder();
       this.setStage(this.currentStage);
+      this.localizeStaticInterface();
     } catch (err) {
       logger.error("Failed to init simulator", err);
       const status = document.getElementById("simulatorStatus");
-      if (status) status.textContent = `Simulator unavailable: ${err.message}`;
-      NotificationService.error("Erro ao carregar simulação: " + err.message);
+      if (status) status.textContent = `${this.tr("simulator_unavailable")} ${err.message}`;
+      NotificationService.error(`${this.tr("simulator_load_error")} ${err.message}`);
     }
   }
 
@@ -142,16 +149,48 @@ export class SimulatorEngineClient {
     if (currStep) currStep.classList.add("active");
   }
 
+  localizeStaticInterface() {
+    const labels = [
+      ["#step-1 span", "simulator_briefing"],
+      ["#step-2 span", "simulator_interview"],
+      ["#step-3 span", "simulator_design"],
+      ["#step-4 span", "simulator_evaluation"],
+      ["#panel-1 h2", "simulator_briefing"],
+      ["#panel-2 h2", "simulator_interview"],
+      ["#panel-3 h2", "simulator_design"],
+      ["#panel-4 h2", "simulator_evaluation"],
+    ];
+    labels.forEach(([selector, key]) => {
+      const element = document.querySelector(selector);
+      if (element) element.textContent = this.tr(key);
+    });
+    const controls = [
+      ["#panel-1 .nav-buttons button", "simulator_start_interview"],
+      ["#panel-2 .nav-buttons button:first-child", "simulator_back"],
+      ["#panel-2 .nav-buttons button:last-child", "simulator_go_design"],
+      ["#panel-3 .nav-buttons button:first-child", "simulator_back"],
+      ["#panel-3 .nav-buttons button:last-child", "simulator_submit_design"],
+      ["#panel-4 .nav-buttons button", "simulator_back_hub"],
+      ["#panel-2 > p", "simulator_interview_description"],
+      ["#panel-3 > p", "simulator_design_description"],
+      ["#chatHistory .chat-client", "simulator_client_greeting"],
+    ];
+    controls.forEach(([selector, key]) => {
+      const element = document.querySelector(selector);
+      if (element) element.textContent = this.tr(key);
+    });
+  }
+
   renderBriefing() {
     const container = document.getElementById("briefingContent");
     container.innerHTML = `
             <h2>${this.caseData.title}</h2>
-            <p><strong>Objetivo:</strong> ${this.caseData.objective}</p>
-            <p><strong>Cenário:</strong> ${this.caseData.scenario}</p>
+            <p><strong>${this.tr("simulator_objective")}</strong> ${this.caseData.objective}</p>
+            <p><strong>${this.tr("simulator_scenario")}</strong> ${this.caseData.scenario}</p>
             ${
               this.caseData.constraints
                 ? `
-            <h4>Restrições</h4>
+            <h4>${this.tr("simulator_constraints")}</h4>
             <ul>
                 ${this.caseData.constraints
                   .map((c) => `<li>${c}</li>`)
@@ -168,8 +207,7 @@ export class SimulatorEngineClient {
     optionsContainer.innerHTML = "";
 
     if (this.dialogues.length === 0) {
-      optionsContainer.innerHTML =
-        "<p>Nenhuma pergunta adicional disponível.</p>";
+      optionsContainer.innerHTML = `<p>${this.tr("simulator_no_questions")}</p>`;
       return;
     }
 
@@ -201,7 +239,7 @@ export class SimulatorEngineClient {
       aDiv.innerHTML = dialogue.answer.replace(/\n/g, "<br>");
 
       if (dialogue.hints && dialogue.hints.length > 0) {
-        aDiv.innerHTML += `<br><br><small style="color:var(--primary-color)">💡 Dica: ${dialogue.hints.join(", ")}</small>`;
+        aDiv.innerHTML += `<br><br><small style="color:var(--primary-color)">💡 ${this.tr("simulator_hint")} ${dialogue.hints.join(", ")}</small>`;
       }
 
       history.appendChild(aDiv);
@@ -266,7 +304,7 @@ export class SimulatorEngineClient {
   async submitDesign() {
     if (this.selectedServices.size === 0) {
       NotificationService.error(
-        "Selecione pelo menos um serviço para a sua arquitetura.",
+        this.tr("simulator_select_service"),
       );
       return;
     }
@@ -299,7 +337,7 @@ export class SimulatorEngineClient {
       const evalData = {
         score,
         passed,
-        feedback: passed ? "Parabéns, sua arquitetura está bem aderente aos requisitos do caso!" : "Atenção: faltaram alguns serviços cruciais para atingir todos os requisitos. Revise o gabarito.",
+        feedback: passed ? this.tr("simulator_passed_feedback") : this.tr("simulator_review_feedback"),
         missing_services: expected.filter(e => !selected.includes(e)),
         extra_services: selected.filter(s => !expected.includes(s))
       };
@@ -309,7 +347,7 @@ export class SimulatorEngineClient {
 
     } catch (err) {
       logger.error("Failed to submit design", err);
-      NotificationService.error("Erro ao avaliar a arquitetura.");
+      NotificationService.error(this.tr("simulator_evaluation_error"));
     }
   }
 
@@ -319,7 +357,7 @@ export class SimulatorEngineClient {
 
     let html = `
             <h3 class="${data.passed ? "text-green-600" : "text-red-600"}">
-                Avaliação: ${data.score}% - ${data.passed ? "Aprovado" : "Revisar"}
+                ${this.tr("simulator_evaluation_label")} ${data.score}% - ${data.passed ? this.tr("simulator_passed") : this.tr("simulator_review")}
             </h3>
             <p style="margin: 1rem 0">${data.feedback}</p>
         `;
@@ -327,7 +365,7 @@ export class SimulatorEngineClient {
     if (data.missing_services && data.missing_services.length > 0) {
       html += `
                 <div class="feedback-alert warning">
-                    <strong>Faltou incluir:</strong> ${data.missing_services.join(", ")}
+                    <strong>${this.tr("simulator_missing")}</strong> ${data.missing_services.join(", ")}
                 </div>
             `;
     }
@@ -335,7 +373,7 @@ export class SimulatorEngineClient {
     if (data.extra_services && data.extra_services.length > 0) {
       html += `
                 <div class="feedback-alert info">
-                    <strong>Incluído a mais (Avalie se é necessário):</strong> ${data.extra_services.join(", ")}
+                    <strong>${this.tr("simulator_extra")}</strong> ${data.extra_services.join(", ")}
                 </div>
             `;
     }
@@ -344,7 +382,7 @@ export class SimulatorEngineClient {
     if (this.caseData.architecture_graph && this.caseData.architecture_graph.type === 'mermaid') {
        html += `
            <div style="margin-top:2rem">
-               <h4>Gabarito de Arquitetura</h4>
+               <h4>${this.tr("simulator_reference")}</h4>
                <div class="mermaid" style="background:#f0f2f5; padding:1rem; border-radius:8px;">
                    ${this.caseData.architecture_graph.content}
                </div>

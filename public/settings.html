@@ -16,7 +16,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=mstbr15t" />
+    <link rel="stylesheet" href="./css/style.css?v=mstj30ad" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -429,6 +429,7 @@
       import { initShell } from "./js/shell.js";
       import { authGuard } from "./js/core/authGuard.js";
       import { getCurrentLanguage, setCurrentLanguage } from "./js/core/languageManager.js";
+      import { t } from "./js/i18n/useTranslation.js";
       import apiService from "./js/services/api.js";
 
       // ── Chaves de preferências ────────────────────────────────────────────
@@ -436,9 +437,10 @@
       const SIDEBAR_KEY = "sidebar_closed";
       const POMODORO_KEY = "aws_sim_pomodoro_duration";
       const DAILY_GOAL_KEY = "aws_sim_daily_goal";
+      const tr = (key, variables) => t(key, getCurrentLanguage(), variables);
 
       // ── Toast ──────────────────────────────────────────────────────────────
-      function showToast(msg = "Configurações salvas!", isError = false) {
+      function showToast(msg = tr("settings_saved"), isError = false) {
         const toast = document.getElementById("settings-toast");
         const toastMsg = document.getElementById("settings-toast-msg");
         const icon = toast?.querySelector("i");
@@ -561,9 +563,9 @@
             const ownRequests = response.data || [];
             requestStatus.textContent = ownRequests.length
               ? ownRequests.map((item) => `${item.certification_id}: ${item.status}`).join(" · ")
-              : "Nenhuma solicitação enviada.";
+              : tr("settings_request_empty");
           } catch {
-            requestStatus.textContent = "Solicitações disponíveis somente com o backend ativo.";
+            requestStatus.textContent = tr("settings_request_offline");
           }
         }
         document.getElementById("validator-request-submit")?.addEventListener("click", async () => {
@@ -574,9 +576,9 @@
               credential_url: document.getElementById("validator-request-credential-url").value,
               notes: document.getElementById("validator-request-notes").value,
             });
-            requestStatus.textContent = "Solicitação enviada: PENDING";
+            requestStatus.textContent = tr("settings_request_sent");
           } catch (error) {
-            requestStatus.textContent = error.message || "Não foi possível enviar a solicitação.";
+            requestStatus.textContent = error.message || tr("settings_request_error");
           }
         });
 
@@ -591,12 +593,12 @@
           ?.addEventListener("click", () => {
             if (
               !confirm(
-                "Tem certeza? O histórico de simulados será removido (XP e conquistas são mantidos).",
+                tr("settings_clear_history_confirm"),
               )
             )
               return;
             storageManager.clearHistory();
-            showToast("Histórico de simulados removido.");
+            showToast(tr("settings_clear_history_done"));
           });
 
         // Resetar tudo
@@ -605,12 +607,12 @@
           ?.addEventListener("click", () => {
             if (
               !confirm(
-                "Tem certeza? Todo o progresso (histórico, XP, sequência e conquistas) será removido permanentemente.",
+                tr("settings_reset_confirm"),
               )
             )
               return;
             storageManager.clearAll();
-            showToast("Progresso resetado com sucesso.");
+            showToast(tr("settings_reset_done"));
           });
 
         // Logout

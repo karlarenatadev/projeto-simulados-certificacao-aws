@@ -145,7 +145,7 @@ async function request(baseUrl, path, options = {}) {
       'Content-Type': 'application/json',
       // Usa o bypass de test do requireAuth (ver requireRole.js)
       'X-Test-Role': 'VALIDATOR',
-      'X-Test-Email': 'validator@a3data.com.br',
+      'X-Test-Email': 'validator-test@example.com',
       ...options.headers,
     },
     ...options,

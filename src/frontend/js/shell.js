@@ -22,6 +22,7 @@ import { AuthService } from "./services/authService.js";
 import { initializeUI } from "./i18n/initUI.js";
 import { getCurrentLanguage, setCurrentLanguage } from "./core/languageManager.js";
 import { resolveAppUrl } from "./core/navigation.js";
+import { t } from "./i18n/useTranslation.js";
 
 // 🔹 CONSTANTES 🔹──────────────────────────────────────────────────────────────
 
@@ -393,6 +394,26 @@ export function renderUserMenu(user) {
   `;
 
   _bindUserMenuEvents();
+  _applyUserMenuTranslations();
+}
+
+function _applyUserMenuTranslations() {
+  const language = getCurrentLanguage();
+  const menu = document.getElementById("user-menu-btn");
+  if (menu) menu.setAttribute("aria-label", t("nav_user_menu", language));
+  const profile = document.querySelector("#user-menu-profile span");
+  const settings = document.querySelector("#user-menu-settings span");
+  const logout = document.querySelector("#user-menu-logout span");
+  if (profile) profile.textContent = t("nav_my_profile", language);
+  if (settings) settings.textContent = t("nav_settings", language);
+  if (logout) logout.textContent = t("nav_sign_out", language);
+  const roleElement = document.querySelector(".a3-user-role");
+  if (roleElement) {
+    const roleKey = roleElement.classList.contains("a3-role-admin")
+      ? "role_admin"
+      : roleElement.classList.contains("a3-role-validator") ? "role_validator" : "role_student";
+    roleElement.textContent = t(roleKey, language);
+  }
 }
 
 function _roleLabel(role) {
@@ -559,12 +580,12 @@ export function buildSidebar(user) {
   const collapseBtn = document.createElement("button");
   collapseBtn.id = "sidebar-collapse-btn";
   collapseBtn.className = "sidebar-collapse-btn";
-  collapseBtn.title = "Recolher menu lateral";
-  collapseBtn.setAttribute("aria-label", "Recolher menu lateral");
+  collapseBtn.title = t("nav_collapse_sidebar", getCurrentLanguage());
+  collapseBtn.setAttribute("aria-label", t("nav_collapse_sidebar", getCurrentLanguage()));
   collapseBtn.setAttribute("aria-expanded", "true");
   collapseBtn.innerHTML = `
     <i class="fa-solid fa-angles-left sidebar-collapse-icon" aria-hidden="true"></i>
-    <span class="sidebar-collapse-label">Recolher</span>
+    <span class="sidebar-collapse-label">${t("nav_collapse_sidebar_short", getCurrentLanguage())}</span>
   `;
   footerEl.appendChild(collapseBtn);
 
@@ -593,6 +614,7 @@ function _createAdminMenu(items) {
     <span class="left-sidebar-item-label">Admin</span>
     <i class="fa-solid fa-chevron-down left-sidebar-admin-chevron" aria-hidden="true"></i>
   `;
+  toggle.querySelector(".left-sidebar-item-label").textContent = t("nav_admin", getCurrentLanguage());
 
   const menu = document.createElement("div");
   menu.id = "sidebar-admin-menu";
@@ -618,8 +640,9 @@ function _syncAdminMenuState(wrapper, collapsed) {
   if (!toggle || !menu) return;
   wrapper.classList.toggle("is-collapsed", collapsed);
   toggle.setAttribute("aria-expanded", String(!collapsed));
-  toggle.setAttribute("aria-label", collapsed ? "Expandir menu Admin" : "Recolher menu Admin");
-  toggle.title = collapsed ? "Expandir menu Admin" : "Recolher menu Admin";
+  const language = getCurrentLanguage();
+  toggle.setAttribute("aria-label", collapsed ? t("nav_expand_admin", language) : t("nav_collapse_admin", language));
+  toggle.title = collapsed ? t("nav_expand_admin", language) : t("nav_collapse_admin", language);
   menu.hidden = collapsed;
 }
 
@@ -628,8 +651,9 @@ function _createSidebarItem(item) {
   const el = document.createElement(tag);
 
   el.id = item.id;
-  el.title = item.title || item.label;
-  el.setAttribute("aria-label", item.title || item.label);
+  const itemLabel = _sidebarLabel(item);
+  el.title = itemLabel;
+  el.setAttribute("aria-label", itemLabel);
 
   let classes = "left-sidebar-item";
   if (item.primary) classes += " left-sidebar-item-primary";
@@ -676,7 +700,7 @@ function _createSidebarItem(item) {
   const label = document.createElement("span");
   label.className = "left-sidebar-item-label";
   if (item.i18n) label.setAttribute("data-i18n", item.i18n);
-  label.textContent = item.label;
+  label.textContent = itemLabel;
   el.appendChild(label);
 
   // Badge opcional
@@ -689,6 +713,27 @@ function _createSidebarItem(item) {
   }
 
   return el;
+}
+
+function _sidebarLabel(item) {
+  const keys = {
+    "sidebar-btn-hub": "nav_home",
+    "sidebar-btn-quiz": "nav_simulations",
+    "sidebar-btn-journey": "nav_journey",
+    "sidebar-btn-diagnostic": "nav_diagnostic",
+    "sidebar-btn-flashcards": "nav_flashcards",
+    "sidebar-btn-cases": "nav_cases",
+    "sidebar-btn-labs": "nav_labs",
+    "sidebar-btn-resources": "nav_resources",
+    "sidebar-btn-sprint": "nav_sprint",
+    "sidebar-btn-mistakes": "nav_mistakes",
+    "sidebar-btn-validation": "nav_validation",
+    "sidebar-btn-users": "nav_users",
+    "sidebar-btn-history": "nav_history",
+    "sidebar-btn-profile": "nav_profile",
+    "sidebar-btn-settings": "nav_settings",
+  };
+  return keys[item.id] ? t(keys[item.id], getCurrentLanguage()) : item.label;
 }
 
 // ─── TOGGLE SIDEBAR ───────────────────────────────────────────────────────────
@@ -713,8 +758,8 @@ function _syncSidebarToggleState(isClosed) {
   if (collapseBtn) {
     collapseBtn.setAttribute("aria-expanded", String(!isClosed));
     collapseBtn.title = isClosed
-      ? "Expandir menu lateral"
-      : "Recolher menu lateral";
+      ? t("nav_expand_sidebar", getCurrentLanguage())
+      : t("nav_collapse_sidebar", getCurrentLanguage());
     const collapseIcon = collapseBtn.querySelector(".sidebar-collapse-icon");
     if (collapseIcon) {
       collapseIcon.style.transform = isClosed
@@ -723,7 +768,9 @@ function _syncSidebarToggleState(isClosed) {
     }
     const collapseLabel = collapseBtn.querySelector(".sidebar-collapse-label");
     if (collapseLabel) {
-      collapseLabel.textContent = isClosed ? "Expandir" : "Recolher";
+      collapseLabel.textContent = isClosed
+        ? t("nav_expand_sidebar_short", getCurrentLanguage())
+        : t("nav_collapse_sidebar_short", getCurrentLanguage());
     }
   }
 }
@@ -761,7 +808,7 @@ export function initLeftSidebarToggleShell() {
     const headerBtn = document.getElementById("cloud-sidebar-toggle");
     if (headerBtn) {
       headerBtn.setAttribute("aria-expanded", "true");
-      headerBtn.title = "Fechar menu lateral";
+      headerBtn.title = t("nav_close_sidebar", getCurrentLanguage());
     }
   }
 
@@ -773,7 +820,7 @@ export function initLeftSidebarToggleShell() {
     const headerBtn = document.getElementById("cloud-sidebar-toggle");
     if (headerBtn) {
       headerBtn.setAttribute("aria-expanded", "false");
-      headerBtn.title = "Abrir menu lateral";
+      headerBtn.title = t("nav_open_sidebar", getCurrentLanguage());
     }
   }
 

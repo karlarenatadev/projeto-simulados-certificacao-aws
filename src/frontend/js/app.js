@@ -130,7 +130,7 @@ function showLoginUI() {
     function setLoading(loading) {
       if (!submitBtn) return;
       submitBtn.disabled = loading;
-      if (btnText) btnText.textContent = loading ? "Autenticando..." : "Entrar";
+      if (btnText) btnText.textContent = loading ? t("auth_loading", uiState.language) : t("common_login", uiState.language);
       if (spinner) spinner.classList.toggle("hidden", !loading);
     }
 
@@ -141,12 +141,12 @@ function showLoginUI() {
       const email = emailInput?.value?.trim() || "";
 
       if (!email) {
-        showError("Informe seu email corporativo.");
+        showError(t("auth_email_required", uiState.language));
         return;
       }
 
       if (!userManager.isValidCorporateEmail(email)) {
-        showError("Acesso restrito a emails @a3data.com.br ou @a3data.com.");
+        showError(t("auth_corporate_email", uiState.language));
         return;
       }
 
@@ -1662,14 +1662,13 @@ function renderLearningHubData() {
         <div class="lh-empty-icon" aria-hidden="true">
           <i class="fa-solid fa-rocket"></i>
         </div>
-        <p class="lh-empty-title">Bem-vindo à Cloud Academy A3!</p>
+        <p class="lh-empty-title">${t("home_welcome", uiState.language)}</p>
         <p class="lh-empty-desc">
-          Você ainda não realizou nenhum simulado. Comece agora e acompanhe
-          sua evolução para as certificações AWS.
+          ${t("home_no_simulation", uiState.language)}
         </p>
         <button class="a3-btn a3-btn-primary lh-empty-cta" onclick="showLearningHubQuickStart()">
           <i class="fa-solid fa-play"></i>
-          Iniciar primeiro simulado
+          ${t("home_first_simulation", uiState.language)}
         </button>
       `;
       metricsCard.parentNode.insertBefore(emptyEl, metricsCard);
@@ -1690,10 +1689,10 @@ function renderLearningHubData() {
       const best = Math.max(...safeHistory.map((h) => h.percentage || 0));
       const awsScale = Math.floor((best / 100) * 900) + 100;
       bestEl.textContent = String(awsScale);
-      if (bestHintEl) bestHintEl.textContent = `${best.toFixed(0)}% de acerto`;
+      if (bestHintEl) bestHintEl.textContent = `${best.toFixed(0)}% ${t("home_accuracy", uiState.language)}`;
     } else {
       bestEl.textContent = "—";
-      if (bestHintEl) bestHintEl.textContent = "sem histórico";
+      if (bestHintEl) bestHintEl.textContent = t("home_no_history", uiState.language);
     }
   }
 
@@ -1707,10 +1706,10 @@ function renderLearningHubData() {
         safeHistory.length;
       const awsAvg = Math.floor((avg / 100) * 900) + 100;
       avgEl.textContent = String(awsAvg);
-      if (avgHintEl) avgHintEl.textContent = `${avg.toFixed(0)}% média`;
+      if (avgHintEl) avgHintEl.textContent = `${avg.toFixed(0)}% ${t("home_average", uiState.language)}`;
     } else {
       avgEl.textContent = "—";
-      if (avgHintEl) avgHintEl.textContent = "sem histórico";
+      if (avgHintEl) avgHintEl.textContent = t("home_no_history", uiState.language);
     }
   }
 
@@ -1802,16 +1801,16 @@ function renderLearningHubData() {
       lastQuizEl.innerHTML = `
         <div class="lh-last-quiz-entry">
           <div>
-            <p class="lh-last-quiz-label">Último simulado · ${certLabel}</p>
+            <p class="lh-last-quiz-label">${t("home_last_simulation", uiState.language)} · ${certLabel}</p>
             <p class="lh-last-quiz-date">${dateStr}</p>
           </div>
           <div style="text-align:right">
             <p class="lh-last-quiz-score ${passed ? "pass" : "fail"}">${awsScore}</p>
-            <p class="lh-last-quiz-hint" style="font-size:0.68rem;color:var(--text-muted);margin:0">${passed ? "✓ Aprovado" : "✗ Reprovado"}</p>
+            <p class="lh-last-quiz-hint" style="font-size:0.68rem;color:var(--text-muted);margin:0">${passed ? `✓ ${t("approved", uiState.language)}` : `✗ ${t("rejected", uiState.language)}`}</p>
           </div>
         </div>`;
     } else {
-      lastQuizEl.innerHTML = `<p class="lh-last-quiz-empty">Nenhum simulado realizado ainda. Que tal começar agora?</p>`;
+      lastQuizEl.innerHTML = `<p class="lh-last-quiz-empty">${t("home_no_simulation", uiState.language)}</p>`;
     }
   }
 

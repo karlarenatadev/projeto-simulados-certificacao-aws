@@ -1,5 +1,7 @@
 import { AuthService } from '../../js/services/authService.js';
 import { initShell } from '../../js/shell.js';
+import { getCurrentLanguage } from '../../js/core/languageManager.js';
+import { t } from '../../js/i18n/useTranslation.js';
 
 export async function initAdminPage({ roles, message }) {
   const user = await AuthService.restoreSession();
@@ -13,7 +15,7 @@ export async function initAdminPage({ roles, message }) {
     if (content) content.hidden = true;
     if (screenMessage) {
       screenMessage.className = 'admin-feedback error';
-      screenMessage.textContent = message || 'Acesso não autorizado.';
+      screenMessage.textContent = message || t('common_unauthorized', getCurrentLanguage());
     }
     return null;
   }

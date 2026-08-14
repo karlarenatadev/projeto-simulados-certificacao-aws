@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AWS Simulator Hub — Cloud Academy A3</title>
     <!-- CSS consolidado do design system (inclui simulator.css via build) -->
-    <link rel="stylesheet" href="./css/style.css?v=mstbr16v" />
+    <link rel="stylesheet" href="./css/style.css?v=mstj30ap" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -19,6 +19,7 @@
   <body>
     <div class="hub-container">
       <div class="hub-header">
+        <button id="simulator-language" type="button" aria-label="Alternar idioma">EN</button>
         <h1>Simulador Interativo de Arquitetura</h1>
         <p>
           Aprenda na prática projetando soluções reais para desafios da nuvem
@@ -31,7 +32,25 @@
       </div>
     </div>
 
-    <script>
+    <script type="module">
+      import { getCurrentLanguage, setCurrentLanguage } from "../js/core/languageManager.js";
+      import { t } from "../js/i18n/useTranslation.js";
+
+      const languageButton = document.getElementById("simulator-language");
+      const applyLanguage = () => {
+        const language = getCurrentLanguage();
+        document.documentElement.lang = language === "en" ? "en" : "pt-BR";
+        document.querySelector(".hub-header h1").textContent = t("simulator_hub_title", language);
+        document.querySelector(".hub-header p").textContent = t("simulator_hub_subtitle", language);
+        languageButton.textContent = t("simulator_language", language);
+      };
+      languageButton.addEventListener("click", () => {
+        setCurrentLanguage(getCurrentLanguage() === "pt" ? "en" : "pt");
+        applyLanguage();
+        loadLevels();
+      });
+      applyLanguage();
+
       const LEVELS = [
           { id: 'level_1_clf', title: 'Nível 1 - Cloud Practitioner', desc: 'Entenda os conceitos fundamentais e tome decisões entre serviços core.', badge: 'Iniciante' },
           { id: 'level_2_saa', title: 'Nível 2 - Solutions Architect', desc: 'Projete arquiteturas resilientes, seguras e com alta disponibilidade.', badge: 'Intermediário' },
@@ -56,6 +75,19 @@
           investigative: 'advanced',
       };
 
+      const LEVEL_EN = {
+        level_1_clf: ['Level 1 - Cloud Practitioner', 'Understand core concepts and make decisions among essential services.', 'Beginner'],
+        level_2_saa: ['Level 2 - Solutions Architect', 'Design resilient, secure, highly available architectures.', 'Intermediate'],
+        level_3_dva: ['Level 3 - Developer', 'Focus on Serverless, APIs and CI/CD.', 'Intermediate'],
+        level_4_sys: ['Level 4 - SysOps', 'Solve operational, cost and scalability challenges.', 'Intermediate'],
+        level_5_sec: ['Level 5 - Security', 'Protect workloads and respond to security incidents.', 'Advanced'],
+        level_6_data: ['Level 6 - Data Engineer', 'Build Big Data pipelines and Data Lakes.', 'Advanced'],
+        level_7_ai: ['Level 7 - AI Practitioner', 'Implement GenAI and Machine Learning in practice.', 'Advanced'],
+        level_8_adv: ['Level 8 - Advanced Architect', 'Design complex, multi-region, high-scale architectures.', 'Advanced'],
+        investigative: ['Investigative Cases', 'Advanced troubleshooting. Discover what failed in the infrastructure.', 'Expert'],
+      };
+      const levelLabel = (level, index) => getCurrentLanguage() === 'en' ? LEVEL_EN[level.id][index] : [level.title, level.desc, level.badge][index];
+
       async function loadLevels() {
           const grid = document.getElementById('levelsGrid');
           grid.innerHTML = '';
@@ -74,10 +106,10 @@
                       card.style.opacity = '0.5';
                       card.style.cursor = 'default';
                       card.innerHTML = `
-                          <span class="level-badge">${level.badge}</span>
-                          <h3>${level.title}</h3>
-                          <p>${level.desc}</p>
-                          <div class="start-btn">Em Breve</div>
+                          <span class="level-badge">${levelLabel(level, 2)}</span>
+                          <h3>${levelLabel(level, 0)}</h3>
+                          <p>${levelLabel(level, 1)}</p>
+                          <div class="start-btn">${t("simulator_coming_soon", getCurrentLanguage())}</div>
                       `;
                       grid.appendChild(card);
                   });
@@ -103,16 +135,16 @@
                   }
 
                   card.innerHTML = `
-                      <span class="level-badge">${level.badge}</span>
-                      <h3>${level.title}</h3>
-                      <p>${level.desc}</p>
-                      <div class="start-btn">${hasCases ? 'Iniciar Simulação' : 'Em Breve'}</div>
+                      <span class="level-badge">${levelLabel(level, 2)}</span>
+                      <h3>${levelLabel(level, 0)}</h3>
+                      <p>${levelLabel(level, 1)}</p>
+                      <div class="start-btn">${hasCases ? t("simulator_start", getCurrentLanguage()) : t("simulator_coming_soon", getCurrentLanguage())}</div>
                   `;
                   grid.appendChild(card);
               });
           } catch (err) {
               console.error('Failed to load simulator levels', err);
-              grid.innerHTML = '<p role="status">Unable to load simulator cases right now.</p>';
+              grid.innerHTML = `<p role="status">${t("simulator_catalog_error", getCurrentLanguage())}</p>`;
           }
       }
 

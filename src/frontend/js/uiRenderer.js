@@ -4,6 +4,11 @@
  * Na arquitetura futura, será substituído por componentes React.
  */
 
+import { getCurrentLanguage } from "./core/languageManager.js";
+import { t } from "./i18n/useTranslation.js";
+
+const tr = (key) => t(key, getCurrentLanguage());
+
 export function initUIRenderer() {
   _setupToastContainer();
   _setupModalContainer();
@@ -78,14 +83,14 @@ function _renderModal({ type, payload, onResult }) {
 
   if (type === "confirm") {
     card.innerHTML = `
-      <h3 class="text-xl font-bold text-white mb-2">${payload.title || "Atenção"}</h3>
+      <h3 class="text-xl font-bold text-white mb-2">${payload.title || tr("common_attention")}</h3>
       <p class="text-slate-300 mb-6">${payload.message}</p>
       <div class="flex justify-end gap-3">
         <button id="modal-btn-cancel" class="px-4 py-2 rounded text-slate-300 hover:bg-slate-800 transition-colors">
-          ${payload.cancelText || "Cancelar"}
+          ${payload.cancelText || tr("cancel")}
         </button>
         <button id="modal-btn-confirm" class="px-4 py-2 rounded bg-aws-orange text-white hover:bg-orange-600 transition-colors font-medium">
-          ${payload.confirmText || "Confirmar"}
+          ${payload.confirmText || tr("confirm")}
         </button>
       </div>
     `;

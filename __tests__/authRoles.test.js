@@ -11,14 +11,15 @@ import {
 } from '../backend/database/db.js';
 import { seedUser } from '../scripts/seed/seed-users.mjs';
 
+const roleTestSuffix = Date.now();
 const adminConfig = {
-  email: 'admin@a3data.com.br',
+  email: `bootstrap-admin-${roleTestSuffix}@a3data.com.br`,
   full_name: 'Admin CloudAcademy',
   nickname: 'Admin',
   role: 'ADMIN',
 };
 const validatorConfig = {
-  email: 'validator@a3data.com.br',
+  email: `bootstrap-validator-${roleTestSuffix}@a3data.com.br`,
   full_name: 'Validador CloudAcademy',
   nickname: 'Validator',
   role: 'VALIDATOR',

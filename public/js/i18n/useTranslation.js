@@ -8,8 +8,8 @@ import { translations } from "./translations.js";
  * @returns {string} Translated text
  */
 export function t(key, lang, variables = {}) {
-  // Get translation or return key if not found
-  let text = translations[lang]?.[key] || translations["pt"]?.[key] || key;
+  // Prefer current language, then PT. Never expose an internal key to users.
+  let text = translations[lang]?.[key] || translations["pt"]?.[key] || "";
 
   // Replace all variables in the format {{variableName}}
   Object.keys(variables).forEach((varKey) => {
