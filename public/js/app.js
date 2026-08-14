@@ -25,6 +25,14 @@ import { quizManager } from "./quizManager.js";
 import { renderRadarChart, renderGlobalRadarChart, renderPerformanceLineChart } from "./chartManager.js";
 import { t } from "./i18n/useTranslation.js";
 import { initializeUI } from "./i18n/initUI.js";
+import {
+  buildReviewSummary,
+  getQuestionId,
+  getReviewIndexes,
+  migrateLegacyReviewFlags,
+  normalizeReviewQuestionIds,
+  toggleReviewQuestion,
+} from "./quizReview.js";
 import { getCertificationProgress, renderTrail } from "./gamificacao/trailManager.js";
 import { renderGuildDashboard } from "./gamificacao/leaderboard.js";
 import { renderJornadaDashboard } from "./modules/jornada.js";
@@ -81,6 +89,9 @@ let uiState = {
   isFinishing: false,
   hasFinished: false,
   flags: [],
+  reviewQuestionIds: [],
+  reviewQueueIndexes: null,
+  reviewQueuePosition: 0,
 };
 
 let lastRenderedResult = null;
@@ -496,7 +507,7 @@ function setFinishButtonLoading(isLoading) {
   btnFinish.disabled = isLoading;
   btnFinish.innerHTML = isLoading
     ? `<i class="fa-solid fa-spinner fa-spin mr-2"></i>${t("loading", uiState.language)}`
-    : `${t("view_result", uiState.language)} <i class="fa-solid fa-flag-checkered ml-2" aria-hidden="true"></i>`;
+    : `${t("quiz_finish", uiState.language)} <i class="fa-solid fa-flag-checkered ml-2" aria-hidden="true"></i>`;
 }
 
 function getActiveCertificationId() {
@@ -566,7 +577,48 @@ function resetFinishState() {
   uiState.isFinishing = false;
   uiState.hasFinished = false;
   uiState.flags = [];
+  uiState.reviewQuestionIds = [];
+  uiState.reviewQueueIndexes = null;
+  uiState.reviewQueuePosition = 0;
   setFinishButtonLoading(false);
+}
+
+function syncLegacyReviewFlags() {
+  uiState.flags = getReviewIndexes(
+    uiState.reviewQuestionIds,
+    engine.state.questions,
+  );
+}
+
+function isCurrentQuestionMarked() {
+  const index = engine.state.currentIndex;
+  const question = engine.state.questions[index];
+  const id = getQuestionId(question, index);
+  return normalizeReviewQuestionIds(uiState.reviewQuestionIds).includes(id);
+}
+
+function updateReviewButton() {
+  const button = document.getElementById("btn-flag");
+  if (!button) return;
+  const marked = isCurrentQuestionMarked();
+  const key = marked ? "marked_for_review" : "flag_for_review";
+  const label = t(key, uiState.language);
+  button.classList.toggle("text-orange-500", marked);
+  button.classList.toggle("a3-review-marked", marked);
+  button.setAttribute("aria-pressed", String(marked));
+  button.setAttribute("aria-label", label);
+  button.setAttribute("title", label);
+  const icon = button.querySelector("i");
+  if (icon) icon.classList.toggle("fa-flag-checkered", marked);
+  if (icon) icon.classList.toggle("fa-flag", !marked);
+}
+
+function getAnsweredQuestionIds() {
+  return new Set(
+    (Array.isArray(engine.state.answers) ? engine.state.answers : [])
+      .map((answer) => getQuestionId(answer))
+      .filter(Boolean),
+  );
 }
 
 /**
@@ -603,6 +655,7 @@ function wireUIActions() {
   bindClick("btn-cancel", cancelQuiz);
   bindClick("btn-submit", submitAnswer);
   bindClick("btn-next", nextQuestion);
+  bindClick("btn-prev", previousQuestion);
   bindClick("btn-finish", finishQuiz);
   bindClick("btn-generate-report", generatePerformanceReport);
   bindClick("btn-retake-quiz", retakeQuiz);
@@ -770,7 +823,11 @@ async function startQuiz() {
 
       uiState.currentMode = activeSession.mode || "exam";
       uiState.timeRemaining = activeSession.timeRemaining;
-      uiState.flags = activeSession.flags || [];
+      uiState.reviewQuestionIds = normalizeReviewQuestionIds(
+        activeSession.reviewQuestionIds ||
+          migrateLegacyReviewFlags(activeSession.flags || [], engine.state.questions),
+      );
+      syncLegacyReviewFlags();
       logger.info(`Resuming session for ${certId}`);
     } else {
       if (activeSession) {
@@ -838,6 +895,7 @@ async function startQuiz() {
 
       uiState.timeRemaining = result.totalQuestions * tempoPorQuestao;
       uiState.flags = []; // Reseta flags de revisão
+      uiState.reviewQuestionIds = [];
     }
 
     const oldReport = document.getElementById("detailed-report");
@@ -1079,7 +1137,7 @@ async function startPersonalizedDiagnosticQuiz() {
 function startTimer() {
   startExamTimer(uiState, () => {
     alert(t("time_up", uiState.language));
-    finishQuiz();
+    finishQuiz(true);
   });
 }
 
@@ -1248,30 +1306,45 @@ function loadQuestionUI() {
 
   renderOptionsUI(q);
 
+  const existingAnswer = engine.state.answers.find(
+    (answer) => getQuestionId(answer) === getQuestionId(q),
+  );
+  if (existingAnswer) {
+    uiState.tempSelectedAnswer = Array.isArray(existingAnswer.userSelection)
+      ? [...existingAnswer.userSelection]
+      : existingAnswer.userSelection;
+    const selected = Array.isArray(uiState.tempSelectedAnswer)
+      ? uiState.tempSelectedAnswer
+      : [uiState.tempSelectedAnswer];
+    selected.forEach((index) => {
+      document.getElementById(`option-${index}`)?.classList.add("a3-option-selected");
+    });
+  }
+
   const btnSubmit = document.getElementById("btn-submit");
   const explanationBox = document.getElementById("explanation-box");
   const btnNext = document.getElementById("btn-next");
   const btnFinish = document.getElementById("btn-finish");
 
   if (btnSubmit) {
-    btnSubmit.disabled = true;
+    btnSubmit.disabled = !existingAnswer;
     btnSubmit.classList.remove("hidden");
   }
   if (explanationBox) explanationBox.classList.add("hidden");
   if (btnNext) btnNext.classList.add("hidden");
   if (btnFinish) {
-    btnFinish.classList.add("hidden");
+    btnFinish.classList.remove("hidden");
     setFinishButtonLoading(false);
   }
-
-  const flagBtn = document.getElementById("btn-flag");
-  if (flagBtn) {
-    if (uiState.flags.includes(progress.current - 1)) {
-      flagBtn.classList.add("text-orange-500");
-    } else {
-      flagBtn.classList.remove("text-orange-500");
-    }
+  const btnPrev = document.getElementById("btn-prev");
+  if (btnPrev) {
+    const hasPrevious = Array.isArray(uiState.reviewQueueIndexes)
+      ? uiState.reviewQueuePosition > 0
+      : engine.state.currentIndex > 0;
+    btnPrev.disabled = !hasPrevious;
   }
+
+  updateReviewButton();
 
   updateScoreDisplayUI();
 }
@@ -1297,8 +1370,7 @@ function renderOptionsUI(question) {
 
     card.onclick = () => {
       const isAnswered =
-        !document.getElementById("btn-next").classList.contains("hidden") ||
-        !document.getElementById("btn-finish").classList.contains("hidden");
+        !document.getElementById("explanation-box").classList.contains("hidden");
       if (isAnswered) return;
 
       if (!isMulti) {
@@ -1493,11 +1565,20 @@ function saveCurrentSession() {
     domainScores: engine.state.domainScores,
     timeRemaining: uiState.timeRemaining,
     flags: uiState.flags,
+    reviewQuestionIds: uiState.reviewQuestionIds,
   });
 }
 
 function nextQuestion() {
-  if (engine.nextQuestion()) {
+  const queue = uiState.reviewQueueIndexes;
+  if (Array.isArray(queue)) {
+    if (uiState.reviewQueuePosition < queue.length - 1) {
+      uiState.reviewQueuePosition++;
+      engine.state.currentIndex = queue[uiState.reviewQueuePosition];
+      loadQuestionUI();
+      saveCurrentSession();
+    }
+  } else if (engine.nextQuestion()) {
     loadQuestionUI();
     saveCurrentSession();
   }
@@ -1507,9 +1588,92 @@ function nextQuestion() {
   }
 }
 
-function finishQuiz() {
+function previousQuestion() {
+  const queue = uiState.reviewQueueIndexes;
+  if (Array.isArray(queue)) {
+    if (uiState.reviewQueuePosition > 0) {
+      uiState.reviewQueuePosition--;
+      engine.state.currentIndex = queue[uiState.reviewQueuePosition];
+      loadQuestionUI();
+      saveCurrentSession();
+    }
+  } else if (engine.previousQuestion()) {
+    loadQuestionUI();
+    saveCurrentSession();
+  }
+}
+
+function showReviewSummary() {
+  const existing = document.getElementById("quiz-review-summary");
+  if (existing) existing.remove();
+
+  const summary = buildReviewSummary(
+    engine.state.questions,
+    engine.state.answers,
+    uiState.reviewQuestionIds,
+  );
+  const language = uiState.language;
+  const panel = document.createElement("div");
+  panel.id = "quiz-review-summary";
+  panel.className = "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4";
+  panel.setAttribute("role", "dialog");
+  panel.setAttribute("aria-modal", "true");
+  panel.innerHTML = `
+    <div class="a3-card w-full max-w-lg p-6 shadow-xl" role="document">
+      <h2 class="text-xl font-bold text-strong mb-4">${t("quiz_review_summary", language)}</h2>
+      <dl class="grid grid-cols-2 gap-3 text-sm mb-6">
+        <div><dt class="text-muted">${t("quiz_total", language)}</dt><dd class="font-bold">${summary.total}</dd></div>
+        <div><dt class="text-muted">${t("quiz_answered", language)}</dt><dd class="font-bold">${summary.answered}</dd></div>
+        <div><dt class="text-muted">${t("quiz_unanswered", language)}</dt><dd class="font-bold">${summary.unanswered}</dd></div>
+        <div><dt class="text-muted">${t("quiz_marked", language)}</dt><dd class="font-bold">${summary.marked}</dd></div>
+      </dl>
+      <div class="flex flex-wrap justify-end gap-2">
+        <button type="button" id="quiz-review-back" class="a3-btn a3-btn-outline">${t("quiz_back_to_questions", language)}</button>
+        <button type="button" id="quiz-review-marked" class="a3-btn a3-btn-outline" ${summary.marked ? "" : "disabled"}>${t("quiz_review_marked", language)}</button>
+        <button type="button" id="quiz-review-unanswered" class="a3-btn a3-btn-outline" ${summary.unanswered ? "" : "disabled"}>${t("quiz_review_unanswered", language)}</button>
+        <button type="button" id="quiz-finish-confirm" class="a3-btn a3-btn-primary">${t("quiz_finish", language)}</button>
+      </div>
+    </div>`;
+  document.body.appendChild(panel);
+
+  const close = () => panel.remove();
+  document.getElementById("quiz-review-back")?.addEventListener("click", close);
+  document.getElementById("quiz-finish-confirm")?.addEventListener("click", () => {
+    close();
+    finishQuiz(true);
+  });
+  const startReview = (indexes) => {
+    if (!indexes.length) return;
+    uiState.reviewQueueIndexes = indexes;
+    uiState.reviewQueuePosition = 0;
+    engine.state.currentIndex = indexes[0];
+    close();
+    loadQuestionUI();
+    saveCurrentSession();
+  };
+  document.getElementById("quiz-review-marked")?.addEventListener("click", () => {
+    startReview(getReviewIndexes(uiState.reviewQuestionIds, engine.state.questions));
+  });
+  document.getElementById("quiz-review-unanswered")?.addEventListener("click", () => {
+    const answered = getAnsweredQuestionIds();
+    startReview(engine.state.questions
+      .map((question, index) => (answered.has(getQuestionId(question)) ? -1 : index))
+      .filter((index) => index >= 0));
+  });
+}
+
+function finishQuiz(force = false) {
   // Trava para evitar execução múltipla por cliques rápidos
   if (uiState.isFinishing || uiState.hasFinished) return;
+  const summary = buildReviewSummary(
+    engine.state.questions,
+    engine.state.answers,
+    uiState.reviewQuestionIds,
+  );
+  if (!force && (summary.marked > 0 || summary.unanswered > 0)) {
+    showReviewSummary();
+    return;
+  }
   uiState.isFinishing = true;
   uiState.hasFinished = true;
 
@@ -1574,16 +1738,20 @@ function toggleFlag() {
   const currentIdx = engine.state.currentIndex;
   const question = engine.state.questions[currentIdx];
   const certId = getActiveCertificationId();
+  const questionId = getQuestionId(question, currentIdx);
+  uiState.reviewQuestionIds = toggleReviewQuestion(
+    uiState.reviewQuestionIds,
+    questionId,
+  );
+  syncLegacyReviewFlags();
 
-  if (uiState.flags.includes(currentIdx)) {
-    uiState.flags = uiState.flags.filter((i) => i !== currentIdx);
-    flagBtn.classList.remove("text-orange-500");
+  if (!isCurrentQuestionMarked()) {
     storageManager.removeReviewQuestion(certId, question);
   } else {
-    uiState.flags.push(currentIdx);
-    flagBtn.classList.add("text-orange-500");
     storageManager.addReviewQuestion(certId, question);
   }
+  updateReviewButton();
+  saveCurrentSession();
 }
 
 //  TELAS E RELATÓRIOS
@@ -2837,6 +3005,7 @@ function toggleLanguage() {
   // 7. Atualiza badge de validação se o quiz estiver ativo
   // ══════════════════════════════════════════════════════════════
   updateValidationBadgeLanguage();
+  updateReviewButton();
 
   logger.info(
     `[i18n] Interface atualizada para: ${uiState.language.toUpperCase()}`,
@@ -3308,6 +3477,7 @@ window.showLearningHubQuickStart = showLearningHubQuickStart;
 window.showQuizConfig = showQuizConfig;
 window.submitAnswer = submitAnswer;
 window.nextQuestion = nextQuestion;
+window.previousQuestion = previousQuestion;
 window.finishQuiz = finishQuiz;
 window.cancelQuiz = cancelQuiz;
 window.goHome = goHome;

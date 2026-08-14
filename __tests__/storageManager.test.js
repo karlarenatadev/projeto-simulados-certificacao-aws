@@ -4,6 +4,7 @@
  */
 
 import { StorageManager } from '../src/frontend/js/storageManager.js';
+import { SessionManager } from '../src/frontend/js/core/sessionManager.js';
 
 describe('StorageManager - Persistência de Dados', () => {
     let storage;
@@ -13,6 +14,7 @@ describe('StorageManager - Persistência de Dados', () => {
     beforeEach(() => {
         localStorage.clear();
         storage = new StorageManager('test_aws_sim_');
+        SessionManager.logout();
     });
 
     test('Deve salvar e carregar o último resultado do quiz corretamente', () => {
@@ -55,6 +57,16 @@ describe('StorageManager - Persistência de Dados', () => {
         // O último a ser salvo deve ser o primeiro da lista (unshift)
         expect(history[0].certId).toBe('saa-c03');
         expect(history[1].certId).toBe('clf-c02');
+    });
+
+    test('Deve persistir marcações da sessão ativa isoladas por usuário e certificação', () => {
+        SessionManager.persist({ user: { id: 'user-a' } });
+        storage.saveActiveSession({ certId: 'clf-c02', reviewQuestionIds: ['q1'] });
+        SessionManager.persist({ user: { id: 'user-b' } });
+        expect(storage.loadActiveSession('clf-c02')).toBeNull();
+        SessionManager.persist({ user: { id: 'user-a' } });
+        expect(storage.loadActiveSession('clf-c02').reviewQuestionIds).toEqual(['q1']);
+        expect(storage.loadActiveSession('saa-c03')).toBeNull();
     });
 
     test('Deve persistir diagnósticos com desempenho por domínio para comparação temporal', () => {

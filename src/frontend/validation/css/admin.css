@@ -2,6 +2,223 @@
   max-width: 1180px;
 }
 
+/* Validation legacy markup shares the same tokenized admin surfaces. */
+.validation-container {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--space-24) var(--space-16);
+}
+
+.validation-container .card {
+  background: var(--a3-surface-raised);
+  color: var(--text-main);
+  border: 1px solid var(--a3-border-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--a3-shadow-sm);
+}
+
+.validation-container .btn-primary,
+.validation-container ~ .modal .btn-primary,
+.validation-container .btn-secondary,
+.validation-container ~ .modal .btn-secondary,
+.validation-container .btn-danger,
+.validation-container ~ .modal .btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: var(--space-8) var(--space-16);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--a3-transition-base), box-shadow var(--a3-transition-base), opacity var(--a3-transition-fast);
+}
+
+.validation-container .btn-primary,
+.validation-container ~ .modal .btn-primary {
+  background: var(--a3-tech-blue);
+  color: var(--a3-text-inverse);
+  border: 1px solid var(--a3-tech-blue);
+}
+
+.validation-container .btn-secondary,
+.validation-container ~ .modal .btn-secondary {
+  background: var(--a3-surface-soft);
+  color: var(--text-strong);
+  border: 1px solid var(--border-theme);
+}
+
+.validation-container .btn-danger,
+.validation-container ~ .modal .btn-danger {
+  background: var(--a3-danger);
+  color: var(--a3-text-inverse);
+  border: 1px solid var(--a3-danger);
+}
+
+.validation-container .btn-primary:hover,
+.validation-container ~ .modal .btn-primary:hover,
+.validation-container .btn-secondary:hover,
+.validation-container ~ .modal .btn-secondary:hover,
+.validation-container .btn-danger:hover,
+.validation-container ~ .modal .btn-danger:hover {
+  box-shadow: var(--a3-shadow-sm);
+  opacity: 0.9;
+}
+
+.validation-container .btn-primary:focus-visible,
+.validation-container ~ .modal .btn-primary:focus-visible,
+.validation-container .btn-secondary:focus-visible,
+.validation-container ~ .modal .btn-secondary:focus-visible,
+.validation-container .btn-danger:focus-visible,
+.validation-container ~ .modal .btn-danger:focus-visible {
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
+}
+
+.validation-container button:disabled,
+.validation-container ~ .modal button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.validation-container .validator-section {
+  padding: var(--space-24);
+  margin-bottom: var(--space-24);
+  border-left: 4px solid var(--a3-tech-blue);
+}
+
+.validation-container .validator-section h2,
+.validation-container .questions-section h2 {
+  color: var(--text-strong);
+}
+
+.validation-container .status-text,
+.validation-container .mock-notice,
+.validation-container small {
+  color: var(--text-muted);
+}
+
+.validation-container .input-group {
+  display: flex;
+  gap: var(--space-8);
+  flex-wrap: wrap;
+  margin-top: var(--space-12);
+}
+
+.validation-container .input-group input,
+.validation-container ~ .modal .modal-content textarea {
+  flex: 1 1 14rem;
+  min-width: 0;
+  padding: var(--space-8) var(--space-12);
+  background: var(--a3-control-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border-theme);
+  border-radius: var(--radius-md);
+}
+
+.validation-container .input-group input:focus-visible,
+.validation-container ~ .modal .modal-content textarea:focus-visible {
+  outline: none;
+  border-color: var(--a3-tech-blue);
+  box-shadow: var(--a3-focus-ring);
+}
+
+.validation-container .dashboard-section {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-16);
+  margin-bottom: var(--space-24);
+}
+
+.validation-container .stat-card {
+  padding: var(--space-16);
+  background: var(--a3-surface-raised);
+  border: 1px solid var(--a3-border-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--a3-shadow-sm);
+}
+
+.validation-container .stat-card h3,
+.validation-container .stat-card p {
+  margin: 0;
+  color: var(--text-strong);
+}
+
+.validation-container .stat-card small {
+  display: block;
+  margin-top: var(--space-4);
+}
+
+.validation-container .stat-number {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+}
+
+.validation-container .questions-section {
+  padding: var(--space-24);
+}
+
+.validation-container .loading-msg,
+.validation-container .screen-message {
+  color: var(--text-muted);
+}
+
+.validation-container .screen-message {
+  margin-bottom: var(--space-16);
+  padding: var(--space-12) var(--space-16);
+  border-radius: var(--radius-md);
+  background: var(--a3-surface-info);
+  border: 1px solid var(--a3-border-soft);
+}
+
+.validation-container ~ .modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: var(--space-16);
+  background: color-mix(in srgb, var(--a3-deep-sea) 68%, transparent);
+}
+
+.validation-container ~ .modal.hidden {
+  display: none;
+}
+
+.validation-container ~ .modal .modal-content {
+  width: min(100%, 32rem);
+  padding: var(--space-24);
+  background: var(--a3-surface-raised);
+  color: var(--text-main);
+  border: 1px solid var(--a3-border-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--a3-shadow-card);
+}
+
+.validation-container ~ .modal .modal-content h3 {
+  margin-top: 0;
+  color: var(--text-strong);
+}
+
+.validation-container ~ .modal .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin-top: var(--space-16);
+}
+
+@media (max-width: 640px) {
+  .validation-container {
+    padding: var(--space-16) var(--space-12);
+  }
+
+  .validation-container .dashboard-section {
+    grid-template-columns: 1fr;
+  }
+}
+
 .admin-page-header {
   margin-bottom: var(--space-16);
 }
@@ -63,6 +280,14 @@
   border-bottom: 0;
 }
 
+.admin-table tbody tr {
+  transition: background-color var(--a3-transition-fast);
+}
+
+.admin-table tbody tr:hover {
+  background: var(--a3-surface-soft);
+}
+
 .admin-table th {
   color: var(--text-muted);
   font-size: var(--text-xs);
@@ -73,6 +298,14 @@
 .admin-table select {
   min-height: 2rem;
   padding: var(--space-4) var(--space-8);
+}
+
+.admin-table select:disabled,
+.admin-toolbar input:disabled,
+.admin-toolbar select:disabled {
+  background: var(--a3-control-disabled);
+  color: var(--text-muted);
+  cursor: not-allowed;
 }
 
 .admin-actions {

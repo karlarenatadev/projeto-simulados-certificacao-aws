@@ -21,6 +21,7 @@
   --a3-text-strong: #00083d;
   --a3-text-inverse: #f5f7ff;
   --a3-border: #ebebeb;
+  --a3-sidebar-bg: var(--a3-primary-dark);
   
   /* Semantic Brand Aliases */
   --a3-deep-sea: #001863;
@@ -110,6 +111,8 @@
   --a3-transition-slow:   0.35s ease;
   --a3-focus-ring:        0 0 0 3px color-mix(in srgb, var(--a3-tech-blue) 28%, transparent);
   --a3-focus-ring-danger: 0 0 0 3px color-mix(in srgb, var(--a3-danger) 28%, transparent);
+  --a3-control-bg: var(--a3-surface-soft);
+  --a3-control-disabled: color-mix(in srgb, var(--a3-bg) 72%, var(--a3-border));
   --a3-shadow-sm: 0 1px 3px color-mix(in srgb, var(--a3-deep-sea) 8%, transparent),
                   0 1px 2px color-mix(in srgb, var(--a3-deep-sea) 6%, transparent);
   --a3-shadow-hover: 0 8px 24px color-mix(in srgb, var(--a3-deep-sea) 14%, transparent);

@@ -137,7 +137,7 @@
 }
 
 .dark .a3-user-dropdown {
-  background-color: #0d1a3a;
+  background-color: var(--a3-surface-soft);
   border-color: color-mix(in srgb, var(--a3-text-inverse) 10%, transparent);
 }
 

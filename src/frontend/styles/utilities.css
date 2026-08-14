@@ -27,6 +27,16 @@ ALIASES VISUAIS A3 PARA UTILITÁRIOS EXISTENTES
 .dark .dark\:bg-slate-800 {
   background-color: var(--a3-surface-raised) !important;
 }
+
+body.bg-gray-100 {
+  background-color: var(--bg-main) !important;
+}
+
+.dark select,
+.dark input,
+.dark textarea {
+  color-scheme: dark;
+}
 .bg-gray-50,
 .bg-gray-100,
 .bg-gray-100\/10,

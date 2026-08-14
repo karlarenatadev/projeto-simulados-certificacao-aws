@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Simulador de Arquitetura AWS — Cloud Academy A3</title>
     <!-- CSS consolidado do design system (inclui simulator.css via build) -->
-    <link rel="stylesheet" href="./css/style.css?v=mstj30as" />
+    <link rel="stylesheet" href="./css/style.css?v=mstla5a7" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -17,6 +17,11 @@
     <meta http-equiv="Expires" content="0">
 </head>
   <body>
+    <div class="simulator-page-actions simulator-room-actions">
+      <button id="theme-toggle" class="a3-btn a3-btn-secondary" type="button" aria-label="Alternar modo escuro">
+        <i id="theme-icon" class="fa-solid fa-moon" aria-hidden="true"></i>
+      </button>
+    </div>
     <div class="room-container">
       <div id="simulatorStatus" role="status" aria-live="polite"></div>
       <!-- Stepper -->
@@ -122,9 +127,11 @@
     </div>
 
     <script type="module">
+      import { initThemeShell } from "./js/shell.js";
       import { SimulatorEngineClient } from "./js/simulator/engine.js";
 
       document.addEventListener("DOMContentLoaded", () => {
+        initThemeShell();
         const urlParams = new URLSearchParams(window.location.search);
         const level = urlParams.get("level");
         const caseId = urlParams.get("case_id");

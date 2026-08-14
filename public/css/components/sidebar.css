@@ -31,7 +31,7 @@ body.has-left-sidebar {
   flex-direction: column;
   align-items: center;
   gap: 0;
-  background-color: var(--a3-primary-dark);
+  background-color: var(--a3-sidebar-bg);
   border-right: 1px solid
     color-mix(in srgb, var(--a3-text-inverse) 12%, transparent);
   box-shadow: 2px 0 16px color-mix(in srgb, var(--a3-deep-sea) 40%, transparent);
@@ -353,7 +353,7 @@ body.sidebar-closed .sidebar-collapse-btn .sidebar-collapse-icon {
 /* ── Dark mode ─────────────────────────────────────────────────────────── */
 
 .dark #left-sidebar {
-  background-color: #050e2e;
+  background-color: var(--a3-sidebar-bg);
   border-right-color: color-mix(
     in srgb,
     var(--a3-text-inverse) 8%,

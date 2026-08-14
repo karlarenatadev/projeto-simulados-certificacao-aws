@@ -19,6 +19,32 @@
   padding: 0 var(--space-16);
 }
 
+.simulator-page-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-8);
+  max-width: 1200px;
+  margin: var(--space-16) auto 0;
+  padding: 0 var(--space-16);
+}
+
+.simulator-page-actions > button:first-child:not(.a3-btn) {
+  padding: var(--space-8) var(--space-12);
+  border: 1px solid var(--border-theme);
+  border-radius: var(--radius-md);
+  background: var(--a3-surface-soft);
+  color: var(--text-main);
+  cursor: pointer;
+}
+
+.simulator-room-actions {
+  position: fixed;
+  top: var(--space-16);
+  right: var(--space-16);
+  z-index: 10;
+  margin: 0;
+}
+
 /* ── Hub header ────────────────────────────────────────────────────────── */
 
 .hub-header {

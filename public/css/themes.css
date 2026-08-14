@@ -20,6 +20,9 @@
   --a3-surface-success: color-mix(in srgb, var(--bg-card) 84%, var(--a3-success));
   --a3-surface-danger: color-mix(in srgb, var(--bg-card) 84%, var(--a3-danger));
   --a3-surface-warning: color-mix(in srgb, var(--bg-card) 84%, var(--a3-warning));
+  --a3-sidebar-bg: #050e2e;
+  --a3-control-bg: var(--a3-surface-soft);
+  --a3-control-disabled: color-mix(in srgb, var(--bg-main) 82%, var(--a3-border));
   
   --a3-border-soft: color-mix(in srgb, var(--a3-text-on-dark) 10%, var(--bg-card));
   

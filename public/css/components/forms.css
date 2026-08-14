@@ -13,7 +13,7 @@ Design System Inputs & Forms
   font-size: var(--text-sm);
   line-height: 1.5;
   color: var(--text-main);
-  background-color: var(--a3-surface-soft);
+  background-color: var(--a3-control-bg);
   background-clip: padding-box;
   border: 1.5px solid var(--border-theme);
   border-radius: var(--radius-md);
@@ -39,6 +39,13 @@ Design System Inputs & Forms
   box-shadow: var(--a3-focus-ring);
 }
 
+.a3-input:focus-visible,
+.a3-select:focus-visible,
+.a3-textarea:focus-visible {
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
+}
+
 .a3-input::placeholder,
 .a3-textarea::placeholder {
   color: var(--text-muted);
@@ -48,7 +55,7 @@ Design System Inputs & Forms
 .a3-input:disabled,
 .a3-select:disabled,
 .a3-textarea:disabled {
-  background-color: var(--bg-main);
+  background-color: var(--a3-control-disabled);
   opacity: 0.6;
   cursor: not-allowed;
   border-color: var(--border-theme);

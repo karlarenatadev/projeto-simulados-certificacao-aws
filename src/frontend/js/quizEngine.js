@@ -544,9 +544,27 @@ export class QuizEngine {
     return false;
   }
 
+  previousQuestion() {
+    if (this.state.currentIndex > 0) {
+      this.state.currentIndex--;
+      return true;
+    }
+    return false;
+  }
+
   // 3. AVALIAÇÃO
   submitAnswer(selectedIndex) {
     const q = this.getCurrentQuestion();
+    const questionId = q.id ?? q.questionId ?? q.uuid ?? null;
+    const existingAnswerIndex = this.state.answers.findIndex(
+      (answer) =>
+        questionId !== null &&
+        (answer.id ?? answer.questionId ?? answer.uuid) === questionId,
+    );
+    const replacedAnswer =
+      existingAnswerIndex >= 0
+        ? this.state.answers.splice(existingAnswerIndex, 1)[0]
+        : null;
 
     let isCorrect;
     if (Array.isArray(q.correct)) {
@@ -560,6 +578,7 @@ export class QuizEngine {
     }
 
     this.state.answers.push({ ...q, userSelection: selectedIndex, isCorrect });
+    if (replacedAnswer?.isCorrect) this.state.score--;
     if (isCorrect) this.state.score++;
 
     // --- CORREÇÃO DE BUG DO GRÁFICO (Normalização de Domínios) ---
@@ -569,6 +588,23 @@ export class QuizEngine {
       this.state.mode === "targeted-practice"
     ) {
       qDomain = normalizeDomain(this.state.certId, qDomain) || qDomain;
+    }
+
+    if (replacedAnswer) {
+      const previousDomain = String(replacedAnswer.domain).trim();
+      const previousKey = Object.keys(this.state.domainScores).find(
+        (key) =>
+          key === previousDomain ||
+          parseFloat(key) === parseFloat(previousDomain) ||
+          key.includes(previousDomain),
+      );
+      const previousScore = this.state.domainScores[previousKey];
+      if (previousScore) {
+        previousScore.total = Math.max(previousScore.total - 1, 0);
+        if (replacedAnswer.isCorrect) {
+          previousScore.correct = Math.max(previousScore.correct - 1, 0);
+        }
+      }
     }
 
     // 1. Tenta o match exato

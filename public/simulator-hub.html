@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AWS Simulator Hub — Cloud Academy A3</title>
     <!-- CSS consolidado do design system (inclui simulator.css via build) -->
-    <link rel="stylesheet" href="./css/style.css?v=mstj30ap" />
+    <link rel="stylesheet" href="./css/style.css?v=mstla59y" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -19,7 +19,12 @@
   <body>
     <div class="hub-container">
       <div class="hub-header">
-        <button id="simulator-language" type="button" aria-label="Alternar idioma">EN</button>
+        <div class="simulator-page-actions">
+          <button id="simulator-language" type="button" aria-label="Alternar idioma">EN</button>
+          <button id="theme-toggle" class="a3-btn a3-btn-secondary" type="button" aria-label="Alternar modo escuro">
+            <i id="theme-icon" class="fa-solid fa-moon" aria-hidden="true"></i>
+          </button>
+        </div>
         <h1>Simulador Interativo de Arquitetura</h1>
         <p>
           Aprenda na prática projetando soluções reais para desafios da nuvem
@@ -32,11 +37,13 @@
       </div>
     </div>
 
-    <script type="module">
+      <script type="module">
+      import { initThemeShell } from "../js/shell.js";
       import { getCurrentLanguage, setCurrentLanguage } from "../js/core/languageManager.js";
       import { t } from "../js/i18n/useTranslation.js";
 
-      const languageButton = document.getElementById("simulator-language");
+          const languageButton = document.getElementById("simulator-language");
+          initThemeShell();
       const applyLanguage = () => {
         const language = getCurrentLanguage();
         document.documentElement.lang = language === "en" ? "en" : "pt-BR";

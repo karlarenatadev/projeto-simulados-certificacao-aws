@@ -140,6 +140,12 @@
   box-shadow: var(--a3-focus-ring);
 }
 
+.settings-input:focus-visible,
+.settings-select:focus-visible {
+  outline: none;
+  box-shadow: var(--a3-focus-ring);
+}
+
 .dark .settings-input {
   background-color: color-mix(
     in srgb,

@@ -410,6 +410,7 @@ function translateStaticSurface(lang) {
     ["#btn-cancel", "cancel"],
     ["#btn-submit", "confirm_answer"],
     ["#btn-next", "next"],
+    ["#btn-prev", "previous"],
     ["#btn-finish", "view_result"],
     ["#sprint-progress-label", "progress"],
     ["#guild-total-questions", "questions"],

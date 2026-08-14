@@ -71,6 +71,27 @@ describe('QuizEngine - Testes Base', () => {
         expect(engine.state.domainScores.compute.total).toBe(1);
     });
 
+    test('permite revisar e substituir a resposta sem duplicar a questão', () => {
+        engine.state.questions = [{
+            id: 'q1',
+            options: ['A', 'B'],
+            correct: 1,
+            domain: 'compute',
+            explanation: 'explicação'
+        }];
+        engine.state.certId = 'test-cert';
+        engine.state.domainScores = { compute: { total: 0, correct: 0 } };
+
+        engine.submitAnswer(0);
+        expect(engine.state.score).toBe(0);
+        engine.submitAnswer(1);
+
+        expect(engine.state.score).toBe(1);
+        expect(engine.state.answers).toHaveLength(1);
+        expect(engine.state.answers[0].userSelection).toBe(1);
+        expect(engine.state.domainScores.compute).toEqual({ total: 1, correct: 1 });
+    });
+
     test('resultado do diagnóstico expõe score geral e resultado por domínio', () => {
         const diagnosticEngine = new QuizEngine(70);
         diagnosticEngine.state.mode = 'diagnostic';
