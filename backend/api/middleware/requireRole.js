@@ -34,7 +34,7 @@ export async function requireAuth(req, res, next) {
   // Bypass de teste: permite que os testes Jest simulem um usuário autenticado
   // passando X-Test-Role sem precisar de um banco ou mock de getUserById.
   // Seguro: o servidor de testes escuta em porta efêmera (listen(0)) isolada.
-  if (req.headers['x-test-role']) {
+  if (process.env.NODE_ENV === 'test' && req.headers['x-test-role']) {
     req.user = {
       id: req.headers['x-user-id'] || 'test-user-id',
       email: req.headers['x-test-email'] || 'test@a3data.com.br',

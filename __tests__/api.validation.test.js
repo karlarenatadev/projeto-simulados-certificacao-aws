@@ -246,4 +246,51 @@ describe('question validation API', () => {
     });
     expect(validateQuestionMock).not.toHaveBeenCalled();
   });
+
+  test.each(['STUDENT', 'UNKNOWN'])('%s cannot list pending questions', async (role) => {
+    const { response } = await request(baseUrl, '/api/questions/pending', {
+      headers: { 'X-Test-Role': role },
+    });
+
+    expect(response.status).toBe(403);
+    expect(getPendingQuestionsMock).not.toHaveBeenCalled();
+  });
+
+  test('STUDENT cannot approve or reject questions', async () => {
+    const headers = { 'X-Test-Role': 'STUDENT' };
+    const approve = await request(baseUrl, '/api/questions/question-1/validate', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ status: 'APPROVED', validated_by: 'student' }),
+    });
+    const reject = await request(baseUrl, '/api/questions/question-1/validate', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        status: 'REJECTED',
+        rejection_reason: 'A sufficiently detailed rejection reason.',
+        validated_by: 'student',
+      }),
+    });
+
+    expect(approve.response.status).toBe(403);
+    expect(reject.response.status).toBe(403);
+    expect(validateQuestionMock).not.toHaveBeenCalled();
+  });
+
+  test('ADMIN retains validator access', async () => {
+    const { response } = await request(baseUrl, '/api/questions/pending', {
+      headers: { 'X-Test-Role': 'ADMIN' },
+    });
+
+    expect(response.status).toBe(200);
+  });
+
+  test('missing authenticated user is rejected', async () => {
+    const { response } = await request(baseUrl, '/api/questions/pending', {
+      headers: { 'X-Test-Role': '', 'X-User-Id': '' },
+    });
+
+    expect(response.status).toBe(401);
+  });
 });

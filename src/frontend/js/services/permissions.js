@@ -107,6 +107,14 @@ export class PermissionService {
     return this.canManageQuestions(user);
   }
 
+  static canAccessValidation(user) {
+    return this.canManageQuestions(user);
+  }
+
+  static canValidateQuestions(user) {
+    return this.canManageQuestions(user);
+  }
+
   /**
    * Quem pode gerenciar contas, aprovar cadastros de validadores, etc.
    */

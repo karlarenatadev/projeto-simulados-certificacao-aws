@@ -500,7 +500,10 @@ export function buildSidebar(user) {
     if (item.roles.includes("*")) return true;
 
     for (const requiredRole of item.roles) {
-      if (PermissionService.hasAccess(user, requiredRole.toLowerCase())) {
+      const allowed = item.id === "sidebar-btn-validation"
+        ? PermissionService.canAccessValidation(user)
+        : PermissionService.hasAccess(user, requiredRole.toLowerCase());
+      if (allowed) {
         return true;
       }
     }

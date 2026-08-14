@@ -2,7 +2,8 @@
  * authService.js — CloudAcademy A3
  *
  * Camada de autenticação e autorização.
- * Delega persistência para userManager (que usa cloudacademy_user no localStorage).
+ * Delega persistência para o SessionManager, cuja chave oficial é
+ * cloudacademy_session.
  *
  * @module services/authService
  */
@@ -66,7 +67,7 @@ export const AuthService = {
   canValidate() {
     const user = this.getCurrentUser();
     if (!user) return false;
-    return PermissionService.canValidate(user);
+    return PermissionService.canAccessValidation(user);
   },
 
   // ---------------------------------------------------------------------------

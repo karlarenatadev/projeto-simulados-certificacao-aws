@@ -341,6 +341,12 @@ try {
   // VALIDATION - Removed
   // ============================================================
 
+  // Validation remains a static shell, but its client source is maintained
+  // under src/frontend/validation and generated here with the other assets.
+  if (fs.existsSync('src/frontend/validation')) {
+    copyDirectoryRecursive('src/frontend/validation', 'public/validation');
+  }
+
 
 
   // ============================================================
