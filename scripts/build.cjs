@@ -170,6 +170,32 @@ function processHTMLTemplates() {
   console.log(`  → ${templateFiles.length} página(s) processada(s) com partials.`);
 }
 
+function injectValidationCompatibilityBridge() {
+  const validationHtmlPath = path.join('public', 'validation', 'valid.html');
+  if (!fs.existsSync(validationHtmlPath)) {
+    return;
+  }
+
+  let html = fs.readFileSync(validationHtmlPath, 'utf8');
+  const bridgeTag = '<script src="../js/utils/validationSessionBridge.js"></script>\n    ';
+  const apiGuardTag = '<script src="../js/utils/validationApiGuard.js"></script>\n    ';
+
+  if (!html.includes('validationSessionBridge.js')) {
+    html = html.replace(
+      '<script src="js/validationStorage.js"></script>',
+      `${bridgeTag}<script src="js/validationStorage.js"></script>`,
+    );
+  }
+  if (!html.includes('validationApiGuard.js')) {
+    html = html.replace(
+      '<script src="js/validationUI.js"></script>',
+      `${apiGuardTag}<script src="js/validationUI.js"></script>`,
+    );
+  }
+
+  fs.writeFileSync(validationHtmlPath, html, 'utf8');
+}
+
 console.log('🔨 Building...');
 
 
@@ -196,6 +222,7 @@ try {
 
   console.log('🧩 Processando templates HTML com partials...');
   processHTMLTemplates();
+  injectValidationCompatibilityBridge();
 
   // ============================================================
   // PARTIALS HTML (sidebar.html, etc.)

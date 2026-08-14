@@ -176,6 +176,39 @@ describe('question validation API', () => {
     expect(getPendingQuestionsMock).toHaveBeenCalledWith({ limit: 50, offset: 0 });
   });
 
+  test('STUDENT cannot access pending questions', async () => {
+    const { response, body } = await request(baseUrl, '/api/questions/pending', {
+      headers: { 'X-Test-Role': 'STUDENT' },
+    });
+
+    expect(response.status).toBe(403);
+    expect(body.status).toBe(403);
+    expect(getPendingQuestionsMock).not.toHaveBeenCalled();
+  });
+
+  test('ADMIN can access pending questions', async () => {
+    const pending = await request(baseUrl, '/api/questions/pending', {
+      headers: { 'X-Test-Role': 'ADMIN' },
+    });
+    expect(pending.response.status).toBe(200);
+  });
+
+  test('test role header never authenticates a request outside test mode', async () => {
+    const previousNodeEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+
+    try {
+      const { response, body } = await request(baseUrl, '/api/questions/pending', {
+        headers: { 'X-Test-Role': 'ADMIN' },
+      });
+
+      expect(response.status).toBe(401);
+      expect(body.status).toBe(401);
+    } finally {
+      process.env.NODE_ENV = previousNodeEnv;
+    }
+  });
+
   test('POST /api/questions/:id/validate approves a question', async () => {
     const { response, body } = await request(baseUrl, '/api/questions/question-1/validate', {
       method: 'POST',
