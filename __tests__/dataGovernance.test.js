@@ -6,7 +6,7 @@ import {
   validateRuntimeTaxonomy,
   validateTaxonomy,
 } from '../scripts/validation/validate_data_consistency.mjs';
-import { glossaryTerms } from '../src/frontend/js/data.js';
+import { certificationPaths, glossaryTerms } from '../src/frontend/js/data.js';
 
 function createReport() {
   return { issues: [], counts: {} };
@@ -182,6 +182,22 @@ describe('dataset governance validators', () => {
         expect(card.term?.en).toBeTruthy();
         expect(card.definition?.pt).toBeTruthy();
         expect(card.definition?.en).toBeTruthy();
+      }
+    }
+  });
+
+  test('keeps every canonical domain at the MVP flashcard floor with stable bilingual IDs', () => {
+    const ids = glossaryTerms.map((card) => card.id);
+
+    expect(ids.every(Boolean)).toBe(true);
+    expect(new Set(ids).size).toBe(ids.length);
+
+    for (const [certification, config] of Object.entries(certificationPaths)) {
+      for (const { id: domain } of config.domains) {
+        const cards = glossaryTerms.filter((card) => card.cert === certification && card.domain === domain);
+
+        expect(cards.length).toBeGreaterThanOrEqual(10);
+        expect(cards.every((card) => card.term?.pt && card.term?.en && card.definition?.pt && card.definition?.en)).toBe(true);
       }
     }
   });
