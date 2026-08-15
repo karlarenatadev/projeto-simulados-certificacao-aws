@@ -201,7 +201,6 @@
       "global_domain_id": "gen-ai",
       "aliases": [
         "fundamentals-genai",
-        "applications-foundation-models",
         "Foundation Models",
         "Foundation Models Access"
       ]
@@ -212,6 +211,7 @@
       "certification": "AIF-C01",
       "global_domain_id": "gen-ai",
       "aliases": [
+        "applications-foundation-models",
         "ai-services",
         "agent-orchestration",
         "agents"
@@ -224,7 +224,6 @@
       "global_domain_id": "security",
       "aliases": [
         "guidelines-responsible-ai",
-        "security-compliance-governance",
         "ai-security",
         "ai-governance",
         "ai-ethics",
@@ -233,6 +232,17 @@
         "Compliance",
         "access-control-auditing",
         "access-control"
+      ]
+    },
+    {
+      "domain_id": "aif-security-governance",
+      "official_name": "Security, Compliance, and Governance for AI Solutions",
+      "certification": "AIF-C01",
+      "global_domain_id": "security",
+      "aliases": [
+        "security-compliance-governance",
+        "aif-security-compliance-governance",
+        "ai-security-governance"
       ]
     }
   ],
@@ -458,7 +468,9 @@
       "service_slug": "amazon-route-53",
       "service_name": "Amazon Route 53",
       "aliases": [
-        "Amazon Route 53"
+        "Amazon Route 53",
+        "amazon-route53",
+        "route53"
       ]
     },
     {

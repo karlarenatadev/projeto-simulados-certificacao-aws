@@ -249,6 +249,29 @@ describe('Question CRUD operations', () => {
     expect(byDifficulty[0].difficulty).toBe('hard');
   });
 
+  test('supports canonical-only catalog queries without hiding legacy-compatible queries', async () => {
+    const canonical = await insertQuestion(validQuestion({
+      language: 'pt',
+      source_question_id: 'canonical-catalog-question',
+      question_text: 'Which canonical question belongs in the current catalog?',
+    }));
+    const legacy = await insertQuestion(validQuestion({
+      question_text: 'Which legacy question remains for historical compatibility?',
+    }));
+
+    const allQuestions = await getQuestions({ certification: 'CLF-C02' });
+    const canonicalQuestions = await getQuestions({ certification: 'CLF-C02', canonicalOnly: true });
+    const canonicalSearch = await searchQuestions('question', 10, { canonicalOnly: true });
+
+    expect(allQuestions.map((question) => question.id)).toEqual(
+      expect.arrayContaining([canonical.id, legacy.id]),
+    );
+    expect(canonicalQuestions.map((question) => question.id)).toContain(canonical.id);
+    expect(canonicalQuestions.map((question) => question.id)).not.toContain(legacy.id);
+    expect(canonicalSearch.map((question) => question.id)).toContain(canonical.id);
+    expect(canonicalSearch.map((question) => question.id)).not.toContain(legacy.id);
+  });
+
   test('gets questions by certification and domain', async () => {
     await insertQuestionWithText(
       'Which AWS service helps evaluate IAM permissions before production use?',

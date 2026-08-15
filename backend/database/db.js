@@ -8,7 +8,7 @@ import { config as loadEnvironment } from 'dotenv';
 import { readFileSync } from 'fs';
 import { dirname, isAbsolute, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { normalizeCertificationId } from './normalizers.js';
+import { normalizeCertificationId, normalizeLanguage } from './normalizers.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SCHEMA_PATH = join(__dirname, 'schema.sql');
@@ -40,6 +40,64 @@ const USER_MODULES = new Set([
   'journey', 'sprint', 'flashcards', 'labs', 'diagnostic', 'preferences',
 ]);
 const MAX_MODULE_STATE_BYTES = 256 * 1024;
+
+export async function migrateQuestionIdentity(database) {
+  await database.exec(`
+    ALTER TABLE questions ADD COLUMN IF NOT EXISTS language VARCHAR(2);
+    ALTER TABLE questions ADD COLUMN IF NOT EXISTS source_question_id TEXT;
+  `);
+
+  await database.exec(`
+    DO $$
+    BEGIN
+      IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'chk_questions_language'
+          AND conrelid = 'questions'::regclass
+      ) THEN
+        ALTER TABLE questions
+          ADD CONSTRAINT chk_questions_language
+          CHECK (language IS NULL OR language IN ('pt', 'en'));
+      END IF;
+    END $$;
+  `);
+
+  await database.exec(`
+    UPDATE questions
+    SET language = CASE
+      WHEN tags @> ARRAY['language:pt']::text[] THEN 'pt'
+      WHEN tags @> ARRAY['language:en']::text[] THEN 'en'
+      ELSE language
+    END
+    WHERE language IS NULL;
+
+    UPDATE questions AS q
+    SET source_question_id = (
+      SELECT regexp_replace(tag, '^source-question-id:', '')
+      FROM unnest(q.tags) AS tag
+      WHERE tag LIKE 'source-question-id:%'
+        AND length(regexp_replace(tag, '^source-question-id:', '')) > 0
+      LIMIT 1
+    )
+    WHERE q.source_question_id IS NULL
+      AND EXISTS (
+        SELECT 1
+        FROM unnest(q.tags) AS tag
+        WHERE tag LIKE 'source-question-id:%'
+          AND length(regexp_replace(tag, '^source-question-id:', '')) > 0
+      );
+  `);
+
+  await database.exec(`
+    CREATE INDEX IF NOT EXISTS idx_questions_language
+      ON questions (certification, language);
+    CREATE INDEX IF NOT EXISTS idx_questions_language_domain
+      ON questions (certification, language, domain);
+    CREATE UNIQUE INDEX IF NOT EXISTS uq_questions_editorial_identity
+      ON questions (certification, language, source_question_id)
+      WHERE language IS NOT NULL AND source_question_id IS NOT NULL;
+  `);
+}
 
 loadEnvironment({ quiet: true });
 
@@ -194,6 +252,8 @@ export async function initializeDatabase(options = {}) {
         console.log('[database] Schema applied successfully');
       }
 
+      await migrateQuestionIdentity(database);
+
       db = database;
       return db;
     } catch (error) {
@@ -221,6 +281,7 @@ export async function initializeDatabase(options = {}) {
           console.log('[database] PGlite instance ready (retry)');
           await database.exec(loadSchema());
           console.log('[database] Schema applied successfully (retry)');
+          await migrateQuestionIdentity(database);
           db = database;
           return db;
         } catch (retryError) {
@@ -539,6 +600,8 @@ function normalizeQuestionInput(questionData, { partial = false } = {}) {
 
   const normalized = {};
   const certification = questionData.certification;
+  const language = questionData.language;
+  const sourceQuestionId = questionData.source_question_id;
   const domain = questionData.domain;
   const difficulty = questionData.difficulty;
   const questionText = questionData.question_text ?? questionData.question;
@@ -546,6 +609,16 @@ function normalizeQuestionInput(questionData, { partial = false } = {}) {
 
   if (!partial || certification !== undefined) {
     normalized.certification = validateCertification(certification, { required: !partial });
+  }
+
+  if (!partial || language !== undefined) {
+    normalized.language = normalizeLanguage(language, { required: false });
+  }
+
+  if (!partial || sourceQuestionId !== undefined) {
+    normalized.source_question_id = sourceQuestionId === undefined || sourceQuestionId === null
+      ? undefined
+      : normalizeRequiredString(sourceQuestionId, 'source_question_id');
   }
 
   if (!partial || domain !== undefined) {
@@ -668,19 +741,23 @@ function normalizeQuestionFilters(certificationOrFilters, domain, difficulty, op
   if (isPlainObject(certificationOrFilters)) {
     return {
       certification: certificationOrFilters.certification,
+      language: certificationOrFilters.language,
       domain: certificationOrFilters.domain,
       difficulty: certificationOrFilters.difficulty,
       limit: certificationOrFilters.limit,
       offset: certificationOrFilters.offset,
+      canonicalOnly: certificationOrFilters.canonicalOnly === true,
     };
   }
 
   return {
     certification: certificationOrFilters,
+    language: options?.language,
     domain,
     difficulty,
     limit: options?.limit,
     offset: options?.offset,
+    canonicalOnly: options?.canonicalOnly === true,
   };
 }
 
@@ -703,6 +780,7 @@ function escapeLikePattern(value) {
 export async function getQuestions(certificationOrFilters = {}, domain, difficulty, options = {}) {
   const filters = normalizeQuestionFilters(certificationOrFilters, domain, difficulty, options);
   const normalizedCertification = validateCertification(filters.certification);
+  const normalizedLanguage = normalizeLanguage(filters.language);
   const normalizedDomain = filters.domain
     ? normalizeRequiredString(filters.domain, 'domain')
     : undefined;
@@ -711,12 +789,20 @@ export async function getQuestions(certificationOrFilters = {}, domain, difficul
   const offset = normalizeOffset(filters.offset);
 
   let query = 'SELECT * FROM questions WHERE is_active = TRUE';
+  if (filters.canonicalOnly) {
+    query += " AND source_question_id IS NOT NULL AND language IN ('pt', 'en')";
+  }
   const params = [];
   let paramIndex = 1;
 
   if (normalizedCertification) {
     query += ` AND certification = $${paramIndex++}`;
     params.push(normalizedCertification);
+  }
+
+  if (normalizedLanguage) {
+    query += ` AND language = $${paramIndex++}`;
+    params.push(normalizedLanguage);
   }
 
   if (normalizedDomain) {
@@ -764,24 +850,34 @@ export async function getQuestionById(questionId) {
  * @param {number} limit - Max results (default: 20, max: 100)
  * @returns {Promise<Array>} Array of matching questions
  */
-export async function searchQuestions(searchTerm, limit = 20) {
+export async function searchQuestions(searchTerm, limit = 20, options = {}) {
   const normalizedSearchTerm = normalizeRequiredString(searchTerm, 'searchTerm');
   const normalizedLimit = normalizeLimit(limit, DEFAULT_SEARCH_LIMIT);
   const pattern = `%${escapeLikePattern(normalizedSearchTerm)}%`;
+  const normalizedLanguage = normalizeLanguage(options.language);
+  const languageClause = normalizedLanguage ? 'AND language = $3' : '';
+  const canonicalClause = options.canonicalOnly === true
+    ? "AND source_question_id IS NOT NULL AND language IN ('pt', 'en')"
+    : '';
   const query = `
     SELECT * FROM questions 
     WHERE is_active = TRUE 
+    ${canonicalClause}
     AND (
       question_text ILIKE $1 ESCAPE '\\'
       OR explanation ILIKE $1 ESCAPE '\\'
       OR domain ILIKE $1 ESCAPE '\\'
     )
+    ${languageClause}
     ORDER BY created_at DESC
     LIMIT $2
   `;
 
   try {
-    return await executeQuery(query, [pattern, normalizedLimit]);
+    return await executeQuery(
+      query,
+      normalizedLanguage ? [pattern, normalizedLimit, normalizedLanguage] : [pattern, normalizedLimit],
+    );
   } catch (error) {
     console.error('✗ Error searching questions:', error.message);
     throw error;
@@ -806,6 +902,8 @@ export async function insertQuestion(questionData) {
   const normalizedQuestion = normalizeQuestionInput(questionData);
   const {
     certification,
+    language = null,
+    source_question_id: sourceQuestionId = null,
     domain,
     difficulty,
     question_text,
@@ -818,15 +916,17 @@ export async function insertQuestion(questionData) {
 
   const query = `
     INSERT INTO questions (
-      certification, domain, difficulty, question_text,
+      certification, language, source_question_id, domain, difficulty, question_text,
       options, correct_answer, explanation, reference_url, tags, is_active
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, TRUE)
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, TRUE)
     RETURNING *
   `;
 
   try {
     const result = await executeQuery(query, [
       normalizeCertificationId(certification),
+      language,
+      sourceQuestionId,
       domain,
       difficulty,
       question_text,
@@ -2377,6 +2477,7 @@ export async function validateQuestion(questionId, validatorId, status, rejectio
 export default {
   // Core functions
   initializeDatabase,
+  migrateQuestionIdentity,
   getDatabase,
   closeDatabase,
   executeQuery,

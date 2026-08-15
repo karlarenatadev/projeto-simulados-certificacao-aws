@@ -456,6 +456,7 @@ export const apiService = {
       const payload = {
         certification: options.certification,
         num_questions: options.num_questions || 10,
+        language: options.language || options.locale || 'pt',
       };
 
       const response = await fetchWithRetry('/api/quiz/start', {

@@ -206,6 +206,8 @@ CREATE TABLE IF NOT EXISTS questions (
     certification   certification_type NOT NULL,
     domain          VARCHAR(100)      NOT NULL,
     domain_id       UUID              REFERENCES domains(id) ON DELETE SET NULL,
+    language        VARCHAR(2),
+    source_question_id TEXT,
     difficulty      difficulty_level  NOT NULL,
     question_text   TEXT              NOT NULL,
     options         JSONB             NOT NULL,       -- [{id, text}, ...]
@@ -236,11 +238,26 @@ COMMENT ON COLUMN questions.is_active      IS 'FALSE = questão desativada/apose
 COMMENT ON COLUMN questions.domain_id      IS 'FK para tabela domains (opcional, complementa domain text)';
 
 ALTER TABLE questions
+    ADD COLUMN IF NOT EXISTS language VARCHAR(2),
+    ADD COLUMN IF NOT EXISTS source_question_id TEXT,
     ADD COLUMN IF NOT EXISTS validation_status VARCHAR(20) NOT NULL DEFAULT 'PENDING'
         CHECK (validation_status IN ('PENDING', 'APPROVED', 'REJECTED')),
     ADD COLUMN IF NOT EXISTS rejection_reason TEXT,
     ADD COLUMN IF NOT EXISTS validation_logs JSONB NOT NULL DEFAULT '[]'::jsonb,
     ADD COLUMN IF NOT EXISTS validated_by_id UUID REFERENCES users(id) ON DELETE SET NULL;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'chk_questions_language'
+          AND conrelid = 'questions'::regclass
+    ) THEN
+        ALTER TABLE questions
+            ADD CONSTRAINT chk_questions_language
+            CHECK (language IS NULL OR language IN ('pt', 'en'));
+    END IF;
+END $$;
 
 COMMENT ON COLUMN questions.validation_status IS 'Status de validacao da questao: PENDING, APPROVED ou REJECTED';
 COMMENT ON COLUMN questions.rejection_reason  IS 'Motivo informado quando a questao e rejeitada na validacao';
@@ -255,6 +272,11 @@ CREATE INDEX IF NOT EXISTS idx_questions_validation_status ON questions(validati
 CREATE INDEX IF NOT EXISTS idx_questions_validated_by_id     ON questions(validated_by_id);
 CREATE INDEX IF NOT EXISTS idx_questions_active        ON questions(is_active) WHERE is_active = TRUE;
 CREATE INDEX IF NOT EXISTS idx_questions_tags          ON questions USING GIN(tags);
+CREATE INDEX IF NOT EXISTS idx_questions_language ON questions (certification, language);
+CREATE INDEX IF NOT EXISTS idx_questions_language_domain ON questions (certification, language, domain);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_questions_editorial_identity
+    ON questions (certification, language, source_question_id)
+    WHERE language IS NOT NULL AND source_question_id IS NOT NULL;
 -- Busca full-text no enunciado
 CREATE INDEX IF NOT EXISTS idx_questions_text_search   ON questions USING GIN(to_tsvector('portuguese', question_text));
 

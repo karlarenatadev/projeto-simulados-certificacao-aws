@@ -309,6 +309,7 @@ export class QuizEngine {
         const response = await apiService.loadQuestions({
           certification: certId,
           limit: 200,
+          language,
         });
 
         if (response.success && response.data && response.data.length > 0) {
@@ -445,7 +446,7 @@ export class QuizEngine {
           certification: certId,
           search: "diagnostic", // Attempt to filter for diagnostic questions
           limit: 50,
-          locale: language
+          language,
         });
 
         if (response.success && response.data && response.data.length > 0) {

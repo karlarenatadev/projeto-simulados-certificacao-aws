@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import {
   closeDatabase,
   executeQuery,
@@ -9,6 +8,7 @@ import {
   insertQuestion,
   normalizeCertification,
 } from '../../backend/database/db.js';
+import { normalizeLanguage } from '../../backend/database/normalizers.js';
 
 const DATA_FILES = [
   { certification: 'CLF-C02', language: 'pt', path: 'data/questions/clf-c02.json' },
@@ -99,7 +99,9 @@ function normalizeSeedQuestion(rawQuestion, fileInfo, index) {
   }
 
   return {
+    source_question_id: String(rawQuestion.questionId || '').trim(),
     certification: normalizeCertification(rawQuestion.certification || fileInfo.certification),
+    language: normalizeLanguage(fileInfo.language, { required: true }),
     domain: rawQuestion.domain,
     difficulty: rawQuestion.difficulty || 'medium',
     question_text: rawQuestion.question_text || rawQuestion.question,
@@ -111,64 +113,92 @@ function normalizeSeedQuestion(rawQuestion, fileInfo, index) {
       ...tags.map((tag) => String(tag).trim()).filter(Boolean),
       `language:${fileInfo.language}`,
       `source:${fileInfo.relativePath}`,
+      `source-question-id:${String(rawQuestion.questionId || '').trim()}`,
     ],
   };
 }
 
-async function questionExists(question) {
+async function findExistingQuestions(question) {
   const rows = await executeQuery(
-    `SELECT id FROM questions
+    `SELECT id, tags FROM questions
      WHERE certification = $1
-       AND domain = $2
-       AND question_text = $3
-     LIMIT 1`,
-    [question.certification, question.domain, question.question_text],
+       AND language = $2
+       AND source_question_id = $3
+     ORDER BY created_at ASC`,
+    [question.certification, question.language, question.source_question_id],
   );
 
-  return rows.length > 0;
+  return rows;
 }
 
-async function seedFile(fileInfo) {
-  const rows = await readJsonArray(fileInfo.path);
-  let imported = 0;
-  let skipped = 0;
+function mergeTags(existingTags, newTags) {
+  return [...new Set([...(Array.isArray(existingTags) ? existingTags : []), ...newTags])];
+}
 
-  for (let index = 0; index < rows.length; index += 1) {
-    const question = normalizeSeedQuestion(rows[index], fileInfo, index);
+async function syncQuestion(question) {
+  const existingRows = await findExistingQuestions(question);
 
-    try {
-      if (await questionExists(question)) {
-        skipped += 1;
-        continue;
+  if (existingRows.length > 0) {
+    for (const existing of existingRows) {
+      const tags = mergeTags(existing.tags, question.tags);
+      await executeQuery(
+        'UPDATE questions SET tags = $1, language = $2, source_question_id = $3 WHERE id = $4',
+        [tags, question.language, question.source_question_id, existing.id],
+      );
+    }
+    return { imported: 0, skipped: 1 };
+  }
+
+  await insertQuestion(question);
+  return { imported: 1, skipped: 0 };
+}
+
+function assertValidQuestion(question, fileInfo, index) {
+  const prefix = `${fileInfo.relativePath}[${index}]`;
+  if (!question.source_question_id) throw new Error(`${prefix}: questionId is required`);
+  if (!question.certification) throw new Error(`${prefix}: unsupported certification`);
+  if (!question.question_text || !question.explanation) throw new Error(`${prefix}: question and explanation are required`);
+}
+
+export async function readPlan(dataFiles = DATA_FILES) {
+  const plan = [];
+  const sourceIds = new Map();
+
+  for (const fileInfo of dataFiles) {
+    const rows = await readJsonArray(fileInfo.path);
+    for (let index = 0; index < rows.length; index += 1) {
+      const question = normalizeSeedQuestion(rows[index], fileInfo, index);
+      assertValidQuestion(question, { ...fileInfo, relativePath: fileInfo.path }, index);
+      const identity = `${question.certification}|${question.language}|${question.source_question_id}`;
+      const contentIdentity = `${question.domain}|${question.question_text}`;
+      const previous = sourceIds.get(identity);
+      if (previous) {
+        const reason = previous === contentIdentity ? 'duplicate editorial identity' : 'duplicate source ID with different content';
+        throw new Error(`${fileInfo.path}[${index}]: ${reason} (${question.source_question_id})`);
       }
-
-      await insertQuestion(question);
-      imported += 1;
-    } catch (error) {
-      throw new Error(`${fileInfo.relativePath}[${index}]: ${error.message}`);
+      sourceIds.set(identity, contentIdentity);
+      plan.push({ question, fileInfo });
     }
   }
 
-  console.log(
-    `[seed] ${fileInfo.certification} ${fileInfo.language}: `
-    + `${imported} imported, ${skipped} skipped, ${rows.length} read`,
-  );
-
-  return { imported, skipped, read: rows.length };
+  return plan;
 }
 
-async function main() {
-  const args = parseArgs(process.argv.slice(2));
+async function seedPlan(plan) {
+  let imported = 0;
+  let skipped = 0;
 
-  if (args.help) {
-    printHelp();
-    return;
+  for (const { question } of plan) {
+    const result = await syncQuestion(question);
+    imported += result.imported;
+    skipped += result.skipped;
   }
 
-  if (args.dataDir) {
-    process.env.DB_DATA_DIR = args.dataDir;
-  }
+  return { imported, skipped, read: plan.length };
+}
 
+export async function seedQuestions({ dataDir, dataFiles = DATA_FILES } = {}) {
+  if (dataDir) process.env.DB_DATA_DIR = dataDir;
   console.log('[seed] Starting PGlite seed from JSON files');
   console.log(`[seed] DB_DATA_DIR=${process.env.DB_DATA_DIR || '(from .env or unset)'}`);
 
@@ -177,32 +207,34 @@ async function main() {
     environment: process.env.NODE_ENV || 'development',
   });
 
-  const totals = { imported: 0, skipped: 0, read: 0 };
-
   try {
-    for (const fileInfo of DATA_FILES) {
-      const result = await seedFile({
-        ...fileInfo,
-        relativePath: fileInfo.path,
-        path: join(process.cwd(), fileInfo.path),
-      });
-
-      totals.imported += result.imported;
-      totals.skipped += result.skipped;
-      totals.read += result.read;
-    }
+    const plan = await readPlan(dataFiles);
+    await executeQuery('BEGIN');
+    const totals = await seedPlan(plan);
+    await executeQuery('COMMIT');
 
     console.log(
       `[seed] Done: ${totals.imported} imported, `
       + `${totals.skipped} skipped, ${totals.read} read`,
     );
+  } catch (error) {
+    await executeQuery('ROLLBACK').catch(() => {});
+    throw error;
   } finally {
     await closeDatabase();
   }
 }
 
-main().catch(async (error) => {
-  console.error(`[seed] Failed: ${error.message}`);
-  await closeDatabase().catch(() => {});
-  process.exit(1);
-});
+async function main() {
+  const args = parseArgs(process.argv.slice(2));
+  if (args.help) return printHelp();
+  await seedQuestions({ dataDir: args.dataDir });
+}
+
+if (process.argv[1]?.endsWith('seed-pglite.mjs')) {
+  main().catch(async (error) => {
+    console.error(`[seed] Failed: ${error.message}`);
+    await closeDatabase().catch(() => {});
+    process.exit(1);
+  });
+}

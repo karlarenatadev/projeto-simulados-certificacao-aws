@@ -14,8 +14,10 @@ import {
   recordAnswer,
   getAnswersByQuiz,
   calculateQuizStats,
+  getUserModuleState,
 } from '../../database/db.js';
 import { requireAuth } from '../middleware/requireRole.js';
+import { normalizeLanguage } from '../../database/normalizers.js';
 
 const router = Router();
 
@@ -25,8 +27,18 @@ const router = Router();
 
 router.post('/start', requireAuth, async (req, res, next) => {
   try {
-    const { certification, num_questions = 10 } = req.body;
+    const { certification, num_questions = 10, language: requestedLanguage, locale } = req.body;
     const user_id = req.user.id;
+
+    let language;
+    try {
+      const preferences = await getUserModuleState(user_id, 'preferences');
+      language = normalizeLanguage(
+        requestedLanguage || locale || preferences?.state_json?.language || 'pt',
+      );
+    } catch (error) {
+      return res.status(400).json({ success: false, message: error.message, status: 400 });
+    }
 
     // Validate required fields
     if (!certification) {
@@ -39,8 +51,10 @@ router.post('/start', requireAuth, async (req, res, next) => {
     // Fetch questions for the quiz
     const questions = await getQuestions({
       certification,
+      language,
       limit: num_questions,
       offset: 0,
+      canonicalOnly: true,
     });
 
     if (questions.length === 0) {
@@ -74,11 +88,14 @@ router.post('/start', requireAuth, async (req, res, next) => {
       message: 'Quiz started successfully',
       data: {
         quiz_id: quiz.id,
+        language,
         questions: questions.map(q => ({
           id: q.id,
           certification: q.certification,
           domain: q.domain,
           difficulty: q.difficulty,
+          language: q.language,
+          source_question_id: q.source_question_id,
           question_text: q.question_text,
           options: q.options,
           reference_url: q.reference_url

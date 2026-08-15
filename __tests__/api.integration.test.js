@@ -51,6 +51,8 @@ describe('Express API integration', () => {
   let baseUrl;
   let user;
   let question;
+  let englishQuestion;
+  let legacyQuestion;
 
   beforeAll(async () => {
     process.env.DB_DATA_DIR = 'memory://';
@@ -59,6 +61,8 @@ describe('Express API integration', () => {
     user = await createUser(`IntegrationUser-${Date.now()}`);
     question = await insertQuestion({
       certification: 'CLF-C02',
+      language: 'pt',
+      source_question_id: 'integration-language-question',
       domain: 'faturamento',
       difficulty: 'easy',
       question_text: 'Which AWS pricing model charges only for actual usage in this integration test?',
@@ -66,6 +70,27 @@ describe('Express API integration', () => {
       correct_answer: [0],
       explanation: 'On-Demand pricing charges only for the capacity that is actually used.',
       tags: ['integration-test'],
+    });
+    englishQuestion = await insertQuestion({
+      certification: 'CLF-C02',
+      language: 'en',
+      source_question_id: 'integration-language-question',
+      domain: 'faturamento',
+      difficulty: 'easy',
+      question_text: 'Which AWS pricing model charges only for actual usage in this English integration test?',
+      options: ['On-Demand', 'Reserved Instances', 'Savings Plans', 'Dedicated Hosts'],
+      correct_answer: [0],
+      explanation: 'On-Demand pricing charges only for the capacity that is actually used.',
+      tags: ['integration-test'],
+    });
+    legacyQuestion = await insertQuestion({
+      certification: 'CLF-C02',
+      domain: 'faturamento',
+      difficulty: 'easy',
+      question_text: 'Which legacy question must never enter the current catalog?',
+      options: ['A', 'B'],
+      correct_answer: [0],
+      explanation: 'Legacy fixture.',
     });
 
     ({ server, baseUrl } = await listen(app));
@@ -98,6 +123,41 @@ describe('Express API integration', () => {
     expect(body.data.every((item) => item.correct_answer === undefined)).toBe(true);
   });
 
+  test('GET /api/questions filters by the structured language', async () => {
+    const pt = await request(baseUrl, '/api/questions?certification=CLF-C02&language=pt&limit=100');
+    const en = await request(baseUrl, '/api/questions?certification=CLF-C02&language=en&limit=100');
+    const searched = await request(baseUrl, '/api/questions?search=pricing&language=en&limit=100');
+    const invalid = await request(baseUrl, '/api/questions?language=es');
+
+    expect(pt.response.status).toBe(200);
+    expect(en.response.status).toBe(200);
+    expect(searched.response.status).toBe(200);
+    expect(invalid.response.status).toBe(400);
+    expect(pt.body.data.some((item) => item.id === question.id)).toBe(true);
+    expect(pt.body.data.some((item) => item.id === englishQuestion.id)).toBe(false);
+    expect(pt.body.data.some((item) => item.id === legacyQuestion.id)).toBe(false);
+    expect(en.body.data.some((item) => item.id === englishQuestion.id)).toBe(true);
+    expect(en.body.data.some((item) => item.id === question.id)).toBe(false);
+    expect(pt.body.data.every((item) => item.language === 'pt')).toBe(true);
+    expect(en.body.data.every((item) => item.language === 'en')).toBe(true);
+    expect(searched.body.data.every((item) => item.language === 'en')).toBe(true);
+    expect(searched.body.data.some((item) => item.id === legacyQuestion.id)).toBe(false);
+  });
+
+  test('quiz start keeps all questions in the requested language', async () => {
+    const started = await request(baseUrl, '/api/quiz/start', {
+      method: 'POST',
+      body: JSON.stringify({ certification: 'CLF-C02', num_questions: 1, language: 'en' }),
+      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
+    });
+
+    expect(started.response.status).toBe(201);
+    expect(started.body.data.language).toBe('en');
+    expect(started.body.data.questions).toHaveLength(1);
+    expect(started.body.data.questions.every((item) => item.language === 'en')).toBe(true);
+    expect(started.body.data.questions.every((item) => item.source_question_id)).toBe(true);
+  });
+
   test('quiz lifecycle: start, answer, and fetch results', async () => {
     const started = await request(baseUrl, '/api/quiz/start', {
       method: 'POST',
@@ -113,6 +173,7 @@ describe('Express API integration', () => {
     expect(started.body.success).toBe(true);
     expect(started.body.data.questions).toHaveLength(1);
     expect(started.body.data.questions[0].correct_answer).toBeUndefined();
+    expect(started.body.data.questions[0].source_question_id).toBeTruthy();
 
     const quizId = started.body.data.quiz_id;
     const questionId = started.body.data.questions[0].id;

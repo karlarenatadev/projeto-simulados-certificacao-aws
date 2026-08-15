@@ -22,6 +22,7 @@ import {
   getValidatorCertifications,
 } from '../../database/db.js';
 import { requireAuth, requireRole } from '../middleware/requireRole.js';
+import { normalizeLanguage } from '../../database/normalizers.js';
 
 const router = Router();
 const VALID_VALIDATION_STATUSES = new Set(['APPROVED', 'REJECTED']);
@@ -223,11 +224,22 @@ router.get('/', async (req, res, next) => {
       limit = 10,
       offset = 0,
       search,
+      language: languageParam,
     } = req.query;
+
+    let language;
+    try {
+      language = normalizeLanguage(languageParam);
+    } catch (error) {
+      return res.status(400).json({ success: false, message: error.message, status: 400 });
+    }
 
     // If search term provided, use search function
     if (search) {
-      const results = await searchQuestions(search, parseInt(limit) || 20);
+      const results = await searchQuestions(search, parseInt(limit) || 20, {
+        language,
+        canonicalOnly: true,
+      });
       return res.status(200).json({
         success: true,
         data: sanitizeQuestionForClient(results),
@@ -238,10 +250,12 @@ router.get('/', async (req, res, next) => {
     // Otherwise, use filtered query
     const questions = await getQuestions({
       certification,
+      language,
       domain,
       difficulty,
       limit: parseInt(limit) || 10,
       offset: parseInt(offset) || 0,
+      canonicalOnly: true,
     });
 
     res.status(200).json({
