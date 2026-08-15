@@ -1,4 +1,5 @@
 import { SessionManager } from "./sessionManager.js";
+import apiService from "../services/api.js";
 
 const DEFAULT_LANGUAGE = "pt";
 const LEGACY_LANGUAGE_KEYS = ["language", "aws_sim_lang"];
@@ -49,6 +50,13 @@ export function setCurrentLanguage(language) {
 
   if (session?.user) {
     SessionManager.update({ language: normalizedLanguage });
+    if (session.accessToken && session.authenticationMode === "online") {
+      void apiService
+        .updateMyProfile({ preferences: { language: normalizedLanguage } })
+        .catch(() => {
+          // A preferencia local permanece disponivel no modo offline.
+        });
+    }
   } else {
     localStorage.setItem("language", normalizedLanguage);
     localStorage.setItem("aws_sim_lang", normalizedLanguage);

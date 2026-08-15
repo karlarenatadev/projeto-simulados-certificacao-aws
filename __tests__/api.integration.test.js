@@ -9,6 +9,7 @@ import {
   createUser,
   initializeDatabase,
   insertQuestion,
+  insertCase,
 } from '../backend/database/db.js';
 
 function listen(serverApp) {
@@ -34,11 +35,11 @@ function closeServer(server) {
 
 async function request(baseUrl, path, options = {}) {
   const response = await fetch(`${baseUrl}${path}`, {
+    ...options,
     headers: {
       'Content-Type': 'application/json',
       ...options.headers,
     },
-    ...options,
   });
 
   const body = await response.json();
@@ -94,6 +95,7 @@ describe('Express API integration', () => {
     expect(response.status).toBe(200);
     expect(body.success).toBe(true);
     expect(body.data.some((item) => item.id === question.id)).toBe(true);
+    expect(body.data.every((item) => item.correct_answer === undefined)).toBe(true);
   });
 
   test('quiz lifecycle: start, answer, and fetch results', async () => {
@@ -104,6 +106,7 @@ describe('Express API integration', () => {
         certification: 'CLF-C02',
         num_questions: 1,
       }),
+      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
     });
 
     expect(started.response.status).toBe(201);
@@ -119,20 +122,105 @@ describe('Express API integration', () => {
       body: JSON.stringify({
         question_id: questionId,
         user_answer: 0,
+        is_correct: false,
         time_secs: 12,
       }),
+      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
     });
 
     expect(answered.response.status).toBe(200);
     expect(answered.body.success).toBe(true);
     expect(answered.body.data.answer_id).toBeTruthy();
 
-    const results = await request(baseUrl, `/api/quiz/${quizId}/results`);
+    const results = await request(baseUrl, `/api/quiz/${quizId}/results`, {
+      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
+    });
 
     expect(results.response.status).toBe(200);
     expect(results.body.success).toBe(true);
     expect(results.body.data.total_questions).toBe(1);
     expect(results.body.data.correct_answers).toBe(1);
     expect(results.body.data.percentage).toBe(100);
+  });
+
+  test('quiz routes require authentication and enforce ownership', async () => {
+    const unauthenticated = await request(baseUrl, '/api/quiz/start', {
+      method: 'POST',
+      body: JSON.stringify({ certification: 'CLF-C02', num_questions: 1 }),
+    });
+    expect(unauthenticated.response.status).toBe(401);
+
+    const started = await request(baseUrl, '/api/quiz/start', {
+      method: 'POST',
+      body: JSON.stringify({ user_id: 'attacker-supplied-id', certification: 'CLF-C02', num_questions: 1 }),
+      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
+    });
+    expect(started.response.status).toBe(201);
+    const quizId = started.body.data.quiz_id;
+    const unauthenticatedDetail = await request(baseUrl, `/api/quiz/${quizId}`);
+    const unauthenticatedResults = await request(baseUrl, `/api/quiz/${quizId}/results`);
+    const unauthenticatedAnswer = await request(baseUrl, `/api/quiz/${quizId}/answer`, {
+      method: 'POST',
+      body: JSON.stringify({ question_id: started.body.data.questions[0].id, user_answer: 0 }),
+    });
+    expect(unauthenticatedDetail.response.status).toBe(401);
+    expect(unauthenticatedResults.response.status).toBe(401);
+    expect(unauthenticatedAnswer.response.status).toBe(401);
+    const otherUser = await createUser(`OtherIntegrationUser-${Date.now()}`);
+
+    for (const path of [`/api/quiz/${quizId}`, `/api/quiz/${quizId}/results`]) {
+      const response = await request(baseUrl, path, {
+        headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': otherUser.id },
+      });
+      expect(response.response.status).toBe(404);
+    }
+
+    const answered = await request(baseUrl, `/api/quiz/${quizId}/answer`, {
+      method: 'POST',
+      body: JSON.stringify({ question_id: started.body.data.questions[0].id, user_answer: 0 }),
+      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': otherUser.id },
+    });
+    expect(answered.response.status).toBe(404);
+  });
+
+  test('quiz correctness is calculated by the server', async () => {
+    const started = await request(baseUrl, '/api/quiz/start', {
+      method: 'POST',
+      body: JSON.stringify({ certification: 'CLF-C02', num_questions: 1 }),
+      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
+    });
+    const quizId = started.body.data.quiz_id;
+    const questionId = started.body.data.questions[0].id;
+    const answered = await request(baseUrl, `/api/quiz/${quizId}/answer`, {
+      method: 'POST',
+      body: JSON.stringify({ question_id: questionId, user_answer: 1, is_correct: true }),
+      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
+    });
+    expect(answered.response.status).toBe(200);
+    const results = await request(baseUrl, `/api/quiz/${quizId}/results`, {
+      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
+    });
+    expect(results.body.data.correct_answers).toBe(0);
+    expect(results.body.data.percentage).toBe(0);
+  });
+
+  test('case completion uses the authenticated user instead of body.user_id', async () => {
+    const caseData = await insertCase({
+      slug: `security-case-${Date.now()}`,
+      title: 'Security ownership case',
+      scenario: 'A case used to verify progress ownership.',
+      objective: 'Keep completion tied to the authenticated user.',
+      certifications: ['CLF-C02'],
+    });
+    const otherUser = await createUser(`CaseBodyUser-${Date.now()}`);
+    const completed = await request(baseUrl, `/api/cases/${caseData.id}/complete`, {
+      method: 'POST',
+      body: JSON.stringify({ user_id: otherUser.id }),
+      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
+    });
+
+    expect(completed.response.status).toBe(200);
+    expect(completed.body.data.user_id).toBe(user.id);
+    expect(completed.body.data.user_id).not.toBe(otherUser.id);
   });
 });

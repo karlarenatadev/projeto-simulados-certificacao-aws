@@ -36,6 +36,10 @@ const DEFAULT_WEAK_DOMAIN_THRESHOLD = 70;
 const MAX_QUESTION_LIMIT = 100;
 const DEFAULT_LEADERBOARD_LIMIT = 100;
 const MAX_LEADERBOARD_LIMIT = 100;
+const USER_MODULES = new Set([
+  'journey', 'sprint', 'flashcards', 'labs', 'diagnostic', 'preferences',
+]);
+const MAX_MODULE_STATE_BYTES = 256 * 1024;
 
 loadEnvironment({ quiet: true });
 
@@ -137,6 +141,7 @@ const REQUIRED_SCHEMA_TABLES = [
   'validator_requests',
   'validator_certifications',
   'role_audit_log',
+  'user_module_state',
 ];
 
 async function hasCurrentSchema(database) {
@@ -1123,6 +1128,75 @@ export async function getUserById(userId) {
     console.error('✗ Error fetching user:', error.message);
     throw error;
   }
+}
+
+function normalizeModuleScope(module, certificationId = null) {
+  const normalizedModule = String(module || '').trim().toLowerCase();
+  if (!USER_MODULES.has(normalizedModule)) {
+    const error = new Error(`Unsupported user module: ${module}`);
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const normalizedCertification = certificationId
+    ? normalizeCertificationId(certificationId)
+    : '';
+  return { module: normalizedModule, certificationId: normalizedCertification };
+}
+
+function normalizeModuleState(state) {
+  if (state === undefined || state === null) return {};
+  if (typeof state !== 'object' || Array.isArray(state)) {
+    const error = new Error('state must be a JSON object');
+    error.statusCode = 400;
+    throw error;
+  }
+  const serialized = JSON.stringify(state);
+  if (Buffer.byteLength(serialized, 'utf8') > MAX_MODULE_STATE_BYTES) {
+    const error = new Error('state exceeds the maximum allowed size');
+    error.statusCode = 413;
+    throw error;
+  }
+  return JSON.parse(serialized);
+}
+
+export async function getUserModuleState(userId, module, certificationId = null) {
+  const normalizedUserId = normalizeUserId(userId);
+  const scope = normalizeModuleScope(module, certificationId);
+  const rows = await executeQuery(`
+    SELECT id, user_id, module, certification_id, state_json, version, updated_at
+    FROM user_module_state
+    WHERE user_id = $1 AND module = $2
+      AND certification_id = $3
+    LIMIT 1
+  `, [normalizedUserId, scope.module, scope.certificationId]);
+  return rows[0] || null;
+}
+
+export async function upsertUserModuleState(userId, module, certificationId, state, expectedVersion = null) {
+  const normalizedUserId = normalizeUserId(userId);
+  const scope = normalizeModuleScope(module, certificationId);
+  const normalizedState = normalizeModuleState(state);
+  const existing = await getUserModuleState(normalizedUserId, scope.module, scope.certificationId);
+
+  if (expectedVersion !== null && existing && Number(expectedVersion) !== Number(existing.version)) {
+    const error = new Error('module state version conflict');
+    error.statusCode = 409;
+    error.current = existing;
+    throw error;
+  }
+
+  const nextVersion = existing ? Number(existing.version) + 1 : 1;
+  const rows = await executeQuery(`
+    INSERT INTO user_module_state (user_id, module, certification_id, state_json, version)
+    VALUES ($1, $2, $3, $4, $5)
+    ON CONFLICT (user_id, module, certification_id) DO UPDATE SET
+      state_json = EXCLUDED.state_json,
+      version = EXCLUDED.version,
+      updated_at = NOW()
+    RETURNING id, user_id, module, certification_id, state_json, version, updated_at
+  `, [normalizedUserId, scope.module, scope.certificationId, JSON.stringify(normalizedState), nextVersion]);
+  return rows[0] || null;
 }
 
 /**
@@ -2322,6 +2396,8 @@ export default {
   getUserByName,
   upsertUserByEmail,
   updateUser,
+  getUserModuleState,
+  upsertUserModuleState,
   // Gamification
   getGamification,
   updateGamification,

@@ -8,12 +8,14 @@
 import { Router } from 'express';
 import {
   getQuestions,
+  getQuestionById,
   createQuizHistory,
   getQuizById,
   recordAnswer,
   getAnswersByQuiz,
   calculateQuizStats,
 } from '../../database/db.js';
+import { requireAuth } from '../middleware/requireRole.js';
 
 const router = Router();
 
@@ -21,15 +23,16 @@ const router = Router();
 // POST /api/quiz/start - Start new quiz
 // ============================================================================
 
-router.post('/start', async (req, res, next) => {
+router.post('/start', requireAuth, async (req, res, next) => {
   try {
-    const { user_id, certification, num_questions = 10 } = req.body;
+    const { certification, num_questions = 10 } = req.body;
+    const user_id = req.user.id;
 
     // Validate required fields
-    if (!user_id || !certification) {
+    if (!certification) {
       return res.status(400).json({
         success: false,
-        message: 'user_id and certification are required',
+        message: 'certification is required',
       });
     }
 
@@ -92,7 +95,7 @@ router.post('/start', async (req, res, next) => {
 // POST /api/quiz/:id/answer - Record answer
 // ============================================================================
 
-router.post('/:id/answer', async (req, res, next) => {
+router.post('/:id/answer', requireAuth, async (req, res, next) => {
   try {
     const { id: quiz_id } = req.params;
     const { question_id, user_answer, time_secs } = req.body;
@@ -105,23 +108,27 @@ router.post('/:id/answer', async (req, res, next) => {
       });
     }
 
-    // Verify quiz exists
+    // Verify quiz existence and ownership before accepting an answer.
     const quiz = await getQuizById(quiz_id);
-    if (!quiz) {
+    if (!quiz || String(quiz.user_id) !== String(req.user.id)) {
       return res.status(404).json({
         success: false,
         message: `Quiz with ID ${quiz_id} not found`,
       });
     }
 
-    // Note: We could fetch question to validate correct_answer here,
-    // but for security we'll accept the answer as provided
-    // The frontend should not send the correct_answer
+    const question = await getQuestionById(question_id);
+    if (!question) {
+      return res.status(404).json({
+        success: false,
+        message: `Question with ID ${question_id} not found`,
+      });
+    }
+
     const answer = await recordAnswer({
       quiz_id,
       question_id,
       user_answer: Array.isArray(user_answer) ? user_answer : [user_answer],
-      is_correct: req.body.is_correct || false,
       time_secs: time_secs || 0,
     });
 
@@ -149,13 +156,13 @@ router.post('/:id/answer', async (req, res, next) => {
 // GET /api/quiz/:id/results - Get quiz results
 // ============================================================================
 
-router.get('/:id/results', async (req, res, next) => {
+router.get('/:id/results', requireAuth, async (req, res, next) => {
   try {
     const { id: quiz_id } = req.params;
 
     // Verify quiz exists
     const quiz = await getQuizById(quiz_id);
-    if (!quiz) {
+    if (!quiz || String(quiz.user_id) !== String(req.user.id)) {
       return res.status(404).json({
         success: false,
         message: `Quiz with ID ${quiz_id} not found`,
@@ -193,12 +200,12 @@ router.get('/:id/results', async (req, res, next) => {
 // GET /api/quiz/:id - Get quiz details (alias for results)
 // ============================================================================
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', requireAuth, async (req, res, next) => {
   try {
     const { id: quiz_id } = req.params;
 
     const quiz = await getQuizById(quiz_id);
-    if (!quiz) {
+    if (!quiz || String(quiz.user_id) !== String(req.user.id)) {
       return res.status(404).json({
         success: false,
         message: `Quiz with ID ${quiz_id} not found`,

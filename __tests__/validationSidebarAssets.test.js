@@ -18,8 +18,9 @@ describe('Validation sidebar asset contract', () => {
     expect(validationHtml).toContain('href="../css/style.css"');
     expect(validationHtml).toContain("'../../js/shell.js'");
     expect(validationHtml).not.toContain('validation/index.html');
-    expect(validationUi).toContain("window.addEventListener('hashchange'");
-    expect(validationUi).toContain('applyAdminHash');
-    expect(validationUi).toContain('loadUsers');
+    expect(validationHtml).toContain('<script type="module" src="js/validationUI.js"></script>');
+    expect(validationUi).not.toContain('admin-access-section');
+    expect(validationUi).not.toContain('applyAdminHash');
+    expect(validationUi).not.toContain('access-list');
   });
 });

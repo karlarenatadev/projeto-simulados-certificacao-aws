@@ -13,11 +13,9 @@ class ValidationUI {
       'validator-status', 'login-section', 'login-email', 'btn-login', 'login-error',
       'screen-message', 'questions-list', 'stat-pending', 'stat-approved', 'stat-rejected',
       'modal-reject', 'rejection-reason', 'btn-confirm-reject', 'btn-cancel-reject',
-      'admin-access-section', 'btn-load-requests', 'btn-load-users', 'access-search', 'access-list',
     ].map((id) => [id, document.getElementById(id)]));
     this.bindEvents();
     this.restoreOfficialSession();
-    window.addEventListener('hashchange', () => this.applyAdminHash());
   }
 
   readOfficialSession() {
@@ -48,12 +46,10 @@ class ValidationUI {
       return;
     }
     this.elements['login-section']?.classList.add('hidden');
-    if (role === 'ADMIN') this.elements['admin-access-section']?.classList.remove('hidden');
     if (this.elements['validator-status']) {
       this.elements['validator-status'].textContent = `Validador: ${user.name || user.email} (${role})`;
     }
     this.loadQuestions();
-    this.applyAdminHash();
   }
 
   bindEvents() {
@@ -64,23 +60,6 @@ class ValidationUI {
     this.elements['questions-list']?.addEventListener('click', (event) => this.handleAction(event));
     this.elements['btn-cancel-reject']?.addEventListener('click', () => this.closeReject());
     this.elements['btn-confirm-reject']?.addEventListener('click', () => this.reject());
-    this.elements['btn-load-requests']?.addEventListener('click', () => this.loadRequests());
-    this.elements['btn-load-users']?.addEventListener('click', () => this.loadUsers());
-    this.elements['access-search']?.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter' && this.user?.role === 'ADMIN') this.loadUsers();
-    });
-  }
-
-  applyAdminHash() {
-    if (String(this.user?.role || '').toUpperCase() !== 'ADMIN') return;
-    const tab = window.location.hash.replace('#', '') || 'requests';
-    const isUsers = tab === 'users';
-    this.elements['admin-access-section']?.classList.remove('hidden');
-    document.querySelectorAll('[data-validation-tab]').forEach((link) => {
-      link.classList.toggle('is-active', link.dataset.validationTab === (isUsers ? 'users' : 'requests'));
-    });
-    if (isUsers) this.loadUsers();
-    else this.loadRequests();
   }
 
   async login() {
@@ -118,93 +97,6 @@ class ValidationUI {
         ? 'Acesso negado pela API. A role válida é determinada pelo banco.'
         : 'Painel de validação requer conexão com a API.', 'error');
     }
-  }
-
-  async loadRequests() {
-    try {
-      const response = await window.ValidationAPI.listValidatorRequests();
-      const requests = response.data || [];
-      this.elements['access-list'].innerHTML = requests.length
-        ? requests.map((request) => this.renderRequest(request)).join('')
-        : `<p class="loading-msg">${tr('admin_users_requests_empty')}</p>`;
-      this.elements['access-list'].querySelectorAll('[data-request-action]').forEach((button) => {
-        button.addEventListener('click', () => this.reviewRequest(button.dataset.id, button.dataset.requestAction));
-      });
-    } catch (error) {
-      this.showMessage(error.message || tr('admin_users_request_error'), 'error');
-    }
-  }
-
-  async loadUsers() {
-    try {
-      const response = await window.ValidationAPI.listUsers(this.elements['access-search']?.value || '');
-      const users = response.data || [];
-      this.elements['access-list'].innerHTML = users.length
-        ? users.map((user) => this.renderUser(user)).join('')
-        : `<p class="loading-msg">${tr('admin_users_empty')}</p>`;
-      this.elements['access-list'].querySelectorAll('[data-user-action]').forEach((button) => {
-        button.addEventListener('click', () => this.updateUser(button.dataset.userId, button.dataset.userAction));
-      });
-    } catch (error) {
-      this.showMessage(error.message || tr('admin_users_update_error'), 'error');
-    }
-  }
-
-  renderRequest(request) {
-    return `<article class="question-card"><h3>${this.escape(request.full_name || request.email)} — ${this.escape(request.certification_id)}</h3>
-      <p>${this.escape(request.email || '')}</p>
-      <p>Credential ID: ${this.escape(request.credential_id || '—')}</p>
-      <p>Credential URL: ${this.escape(request.credential_url || '—')}</p>
-      <p>${tr('admin_users_request_date')}: ${this.escape(request.requested_at || '—')}</p>
-      <p>${tr('admin_users_status')}: ${this.escape(request.status)}</p>
-      ${request.status === 'PENDING' ? `<button class="btn-primary" data-request-action="APPROVED" data-id="${this.escape(request.id)}">${tr('admin_users_approve')}</button>
-      <button class="btn-danger" data-request-action="REJECTED" data-id="${this.escape(request.id)}">${tr('admin_users_reject')}</button>` : ''}</article>`;
-  }
-
-  renderUser(user) {
-    const certifications = (user.validator_certifications || []).map((item) => item.certification_id).join(', ') || '—';
-    return `<article class="question-card"><h3>${this.escape(user.full_name || user.email)}</h3>
-      <p>${this.escape(user.email || '')} · ${this.escape(user.role)} · ${user.is_active ? tr('admin_users_active') : tr('admin_users_inactive')}</p>
-      <p>${tr('admin_users_last_access')}: ${this.escape(user.last_login || '—')}</p>
-      <p>${tr('admin_users_certifications')}: ${this.escape(certifications)}</p>
-      <select data-role-select="${this.escape(user.id)}" aria-label="${tr('admin_users_role')}">
-        ${['STUDENT', 'VALIDATOR', 'ADMIN'].map((role) => `<option value="${role}" ${role === user.role ? 'selected' : ''}>${role}</option>`).join('')}
-      </select>
-      <button class="btn-secondary" data-user-action="toggle" data-user-id="${this.escape(user.id)}">${user.is_active ? tr('admin_users_deactivate') : tr('admin_users_activate')}</button>
-      <button class="btn-secondary" data-user-action="role" data-user-id="${this.escape(user.id)}">${tr('admin_users_save')}</button></article>`;
-  }
-
-  async reviewRequest(requestId, status) {
-    try {
-      const notes = status === 'REJECTED' ? window.prompt(tr('common_rejection_reason')) : '';
-      if (status === 'REJECTED' && (!notes || notes.trim().length < 10)) return;
-      await window.ValidationAPI.reviewValidatorRequest(requestId, status, notes);
-      await this.loadRequests();
-    } catch (error) {
-      this.showMessage(error.message || 'Não foi possível revisar a solicitação.', 'error');
-    }
-  }
-
-  async updateUser(userId, action = 'toggle') {
-    try {
-      const users = (await window.ValidationAPI.listUsers()).data || [];
-      const user = users.find((item) => item.id === userId);
-      if (!user) return;
-      const roleSelect = this.elements['access-list'].querySelector(`[data-role-select="${userId}"]`);
-      const payload = action === 'role'
-        ? { role: roleSelect?.value || user.role }
-        : { is_active: !user.is_active };
-      if (action === 'role' && payload.role === 'ADMIN' && user.role !== 'ADMIN'
-        && !window.confirm(tr('admin_users_confirm_admin'))) return;
-      await window.ValidationAPI.updateUserAccess(userId, payload);
-      await this.loadUsers();
-    } catch (error) {
-      this.showMessage(error.message || tr('admin_users_update_error'), 'error');
-    }
-  }
-
-  escape(value) {
-    return String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   }
 
   renderQuestion(question) {

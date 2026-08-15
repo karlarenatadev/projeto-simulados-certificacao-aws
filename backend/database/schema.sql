@@ -56,6 +56,30 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_users_nickname ON users(nickname) WHERE ni
 CREATE INDEX        IF NOT EXISTS idx_users_role     ON users(role);
 CREATE INDEX        IF NOT EXISTS idx_users_active   ON users(is_active) WHERE is_active = TRUE;
 
+-- ============================================================================
+-- TABELA: user_module_state
+-- Estado substituível de módulos por conta/certificação. Dados transacionais
+-- (quiz_history, answers e case_progress) permanecem em suas tabelas próprias.
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS user_module_state (
+    id                 UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id            UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    module             VARCHAR(40)  NOT NULL,
+    certification_id   VARCHAR(20)  NOT NULL DEFAULT '',
+    state_json         JSONB        NOT NULL DEFAULT '{}',
+    version            BIGINT       NOT NULL DEFAULT 1 CHECK (version > 0),
+    updated_at         TIMESTAMP    NOT NULL DEFAULT NOW(),
+    CONSTRAINT chk_user_module_state_module CHECK (
+        module IN ('journey', 'sprint', 'flashcards', 'labs', 'diagnostic', 'preferences')
+    )
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_user_module_state_scope
+    ON user_module_state(user_id, module, certification_id);
+CREATE INDEX IF NOT EXISTS idx_user_module_state_user
+    ON user_module_state(user_id, updated_at DESC);
+
 -- Adiciona colunas idempotentemente caso a tabela já exista sem elas
 ALTER TABLE users
     ADD COLUMN IF NOT EXISTS email      VARCHAR(120),
@@ -140,6 +164,10 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER trg_user_module_state_updated_at
+    BEFORE UPDATE ON user_module_state
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 CREATE OR REPLACE TRIGGER trg_users_updated_at
     BEFORE UPDATE ON users

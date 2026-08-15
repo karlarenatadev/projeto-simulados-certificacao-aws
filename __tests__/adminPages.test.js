@@ -23,7 +23,7 @@ describe('separate validation administration pages', () => {
 
   test('validation page no longer renders the users management area', () => {
     expect(validationPage).not.toContain('id="admin-access-section"');
-    expect(validationPage).toContain("window.location.replace('users.html')");
+    expect(validationPage).toContain('<script type="module" src="js/validationUI.js"></script>');
   });
 
   test('admin styles use shared tokens and include accessible semantic states', () => {

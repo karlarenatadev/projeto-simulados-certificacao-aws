@@ -313,12 +313,20 @@ function toggleCompleted(labId) {
 }
 
 function getCompletedLabsStorageKey() {
-  return storageManager.getUserScopedKey("completed_labs");
+  const certification = normalizeCertificationId(
+    document.getElementById("filter-certification")?.value
+      || AuthService.getCurrentUser()?.certification
+      || "clf-c02",
+  );
+  return storageManager.getUserScopedKey(`completed_labs_${certification}`);
 }
 
 function getCompletedLabs() {
   try {
-    const savedLabs = JSON.parse(localStorage.getItem(getCompletedLabsStorageKey()));
+    const scopedKey = getCompletedLabsStorageKey();
+    const scopedValue = localStorage.getItem(scopedKey);
+    const legacyValue = localStorage.getItem(storageManager.getUserScopedKey("completed_labs"));
+    const savedLabs = JSON.parse(scopedValue ?? legacyValue ?? "[]");
     return Array.isArray(savedLabs) ? savedLabs : [];
   } catch {
     return [];
@@ -327,4 +335,5 @@ function getCompletedLabs() {
 
 function saveCompletedLabs(completedLabs) {
   localStorage.setItem(getCompletedLabsStorageKey(), JSON.stringify(completedLabs));
+  void storageManager.syncAccountModuleState?.("labs", AuthService.getCurrentUser()?.certification || null);
 }

@@ -75,16 +75,12 @@
     </div>
     <script src="js/validationStorage.js"></script>
     <script src="js/validationAPI.js"></script>
-    <script src="js/validationUI.js"></script>
+    <script type="module" src="js/validationUI.js"></script>
     <script type="module">
       import { AuthService } from '../../js/services/authService.js';
       import { initShell } from '../../js/shell.js';
       document.addEventListener('DOMContentLoaded', async () => {
         const user = await AuthService.restoreSession();
-        if (user?.role === 'ADMIN' && window.location.hash === '#users') {
-          window.location.replace('users.html');
-          return;
-        }
         if (user) initShell(user);
       });
     </script>

@@ -32,6 +32,22 @@ function createHttpError(statusCode, message) {
   return error;
 }
 
+const PUBLICLY_HIDDEN_QUESTION_KEYS = new Set([
+  'correct_answer', 'correctanswer', 'answer_key', 'answerkey',
+  'is_correct', 'iscorrect', 'solution', 'correct',
+]);
+
+function sanitizeQuestionForClient(value) {
+  if (Array.isArray(value)) return value.map(sanitizeQuestionForClient);
+  if (!value || typeof value !== 'object') return value;
+
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter(([key]) => !PUBLICLY_HIDDEN_QUESTION_KEYS.has(key.toLowerCase()))
+      .map(([key, entry]) => [key, sanitizeQuestionForClient(entry)]),
+  );
+}
+
 // ============================================================================
 // VALIDATION HELPERS
 // ============================================================================
@@ -214,7 +230,7 @@ router.get('/', async (req, res, next) => {
       const results = await searchQuestions(search, parseInt(limit) || 20);
       return res.status(200).json({
         success: true,
-        data: results,
+        data: sanitizeQuestionForClient(results),
         count: results.length,
       });
     }
@@ -230,7 +246,7 @@ router.get('/', async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: questions,
+      data: sanitizeQuestionForClient(questions),
       count: questions.length,
       pagination: {
         limit: parseInt(limit) || 10,
@@ -268,7 +284,7 @@ router.get('/:id', async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: question,
+      data: sanitizeQuestionForClient(question),
     });
   } catch (error) {
     next(error);

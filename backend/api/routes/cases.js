@@ -109,14 +109,9 @@ router.get('/:idOrSlug', async (req, res, next) => {
 router.post('/:id/complete', requireAuth, async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { user_id } = req.body;
 
     if (!id) {
       throw createHttpError(400, 'Case ID is required');
-    }
-
-    if (!user_id) {
-      throw createHttpError(400, 'user_id is required in request body');
     }
 
     const caseData = await getCaseById(id);
@@ -124,7 +119,7 @@ router.post('/:id/complete', requireAuth, async (req, res, next) => {
       throw createHttpError(404, `Case not found: ${id}`);
     }
 
-    const progress = await markCaseCompleted(user_id, caseData.id);
+    const progress = await markCaseCompleted(req.user.id, caseData.id);
 
     res.status(200).json({
       success: true,

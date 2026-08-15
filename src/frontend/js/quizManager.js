@@ -139,7 +139,6 @@ export const quizManager = {
             quiz_id: this.currentQuizId,
             question_id: options.question_id,
             user_answer: options.user_answer,
-            is_correct: options.is_correct,
             time_secs: options.time_secs,
           });
           this._markAnswerSynced(this.currentQuizId, options.question_id);

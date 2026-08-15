@@ -334,6 +334,29 @@ export const apiService = {
     }
   },
 
+  async getMyProfile() {
+    return fetchWithRetry('/api/me/profile');
+  },
+
+  async updateMyProfile(payload = {}) {
+    return fetchWithRetry('/api/me/profile', {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    });
+  },
+
+  async getModuleState(module, certification = null) {
+    const query = certification ? `?certification=${encodeURIComponent(certification)}` : '';
+    return fetchWithRetry(`/api/me/state/${encodeURIComponent(module)}${query}`);
+  },
+
+  async saveModuleState(module, certification, state, version = null) {
+    return fetchWithRetry(`/api/me/state/${encodeURIComponent(module)}`, {
+      method: 'PUT',
+      body: JSON.stringify({ certification, state, ...(version === null ? {} : { version }) }),
+    });
+  },
+
   async createValidatorRequest(payload) {
     return fetchWithRetry('/api/access/validator-requests', {
       method: 'POST',
@@ -416,7 +439,6 @@ export const apiService = {
    * POST /api/quiz/start
    * 
    * @param {object} options - Quiz configuration
-   * @param {string} options.user_id - User ID
    * @param {string} options.certification - Certification ID (e.g., 'clf-c02')
    * @param {number} [options.num_questions] - Number of questions (default: 10)
    * 
@@ -427,12 +449,11 @@ export const apiService = {
       options.certification = normalizeCertificationId(options.certification);
     }
     try {
-      if (!options.user_id || !options.certification) {
-        throw createError('user_id and certification are required', 400);
+      if (!options.certification) {
+        throw createError('certification is required', 400);
       }
 
       const payload = {
-        user_id: options.user_id,
         certification: options.certification,
         num_questions: options.num_questions || 10,
       };
@@ -457,7 +478,6 @@ export const apiService = {
    * @param {string} options.quiz_id - Quiz ID
    * @param {string} options.question_id - Question ID
    * @param {array|string} options.user_answer - User's answer (index or array of indices)
-   * @param {boolean} [options.is_correct] - Whether answer is correct
    * @param {number} [options.time_secs] - Time spent on question in seconds
    * 
    * @returns {Promise<object>} { success, data: { answer_id } }
@@ -471,7 +491,6 @@ export const apiService = {
       const payload = {
         question_id: options.question_id,
         user_answer: options.user_answer,
-        is_correct: options.is_correct || false,
         time_secs: options.time_secs || 0,
       };
 
@@ -550,20 +569,11 @@ export const apiService = {
     }
   },
 
-  async markCaseComplete(caseId, userId) {
+  async markCaseComplete(caseId, _userId) {
     try {
-      const url = `${API_CONFIG.BASE_URL}/api/cases/${encodeURIComponent(caseId)}/complete`;
-      const response = await fetch(url, {
+      return await fetchWithRetry(`/api/cases/${encodeURIComponent(caseId)}/complete`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: userId }),
-        signal: globalThis.AbortSignal.timeout(8000)
       });
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-        throw new Error(body.error || `API error ${response.status}`);
-      }
-      return await response.json();
     } catch (error) {
       logger.error('Failed to mark case complete:', error);
       throw error;

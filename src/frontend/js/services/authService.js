@@ -96,6 +96,13 @@ export const AuthService = {
               certification: session.user.certification,
             });
             SessionManager.persist({ ...session, user });
+            const profile = await storageManager.hydrateAccountState();
+            if (profile?.data?.preferences) {
+              SessionManager.update({
+                language: profile.data.preferences.language,
+                certification: profile.data.preferences.certification?.toLowerCase(),
+              });
+            }
             return user;
           }
         } catch (error) {
