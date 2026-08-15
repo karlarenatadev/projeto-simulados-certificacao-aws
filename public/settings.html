@@ -16,7 +16,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=msuxbfqi" />
+    <link rel="stylesheet" href="./css/style.css?v=msv0i4rk" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -373,7 +373,7 @@
               <p class="settings-item-hint">Envie Credential ID ou URL para análise de um Admin.</p>
             </div>
           </div>
-          <div class="settings-item">
+          <div class="validator-request-fields">
             <select id="validator-request-certification" class="settings-select" aria-label="Certificação">
               <option value="CLF-C02">CLF-C02</option>
               <option value="SAA-C03">SAA-C03</option>
@@ -382,7 +382,7 @@
             </select>
             <input id="validator-request-credential-id" class="settings-input" placeholder="Credential ID (opcional)" />
             <input id="validator-request-credential-url" class="settings-input" placeholder="URL da credencial (opcional)" />
-            <textarea id="validator-request-notes" class="settings-input" rows="2" placeholder="Observação (opcional)"></textarea>
+            <textarea id="validator-request-notes" class="settings-input validator-request-notes" rows="2" placeholder="Observação (opcional)"></textarea>
             <button id="validator-request-submit" class="a3-btn a3-btn-outline">Solicitar</button>
           </div>
           <p id="validator-request-status" class="settings-item-hint"></p>
@@ -556,8 +556,10 @@
         loadPreferences(user);
         const requestGroup = document.getElementById("validator-request-group");
         const requestStatus = document.getElementById("validator-request-status");
-        if (user.role === "student") {
-          requestGroup?.classList.remove("hidden");
+        const normalizedRole = String(user.role || "").trim().toUpperCase();
+        const canRequestValidatorAccess = normalizedRole === "STUDENT";
+        requestGroup?.classList.toggle("hidden", !canRequestValidatorAccess);
+        if (canRequestValidatorAccess) {
           try {
             const response = await apiService.getValidatorRequests();
             const ownRequests = response.data || [];

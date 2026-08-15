@@ -29,7 +29,13 @@ describe('centralized PT/EN interface translations', () => {
     expect(activePages.length + validationPages.length).toBe(18);
     [...activePages, ...validationPages].forEach((url) => {
       const source = readFileSync(url, 'utf8');
-      expect(source).toMatch(/btn-language|initShell|app\.js|i18n\/|languageManager|simulator\/engine|shell\.js/);
+      if (url.pathname.endsWith('/study-now.html')) {
+        expect(source).toContain('index.html#study-now-section');
+      } else if (url.pathname.endsWith('/valid.html')) {
+        expect(source).toContain('validationUI.js');
+      } else {
+        expect(source).toMatch(/btn-language|initShell|app\.js|i18n\/|languageManager|simulator\/engine|shell\.js/);
+      }
     });
   });
 
@@ -43,7 +49,11 @@ describe('centralized PT/EN interface translations', () => {
   test('administrative pages expose translatable visible controls', () => {
     for (const file of ['valid.html', 'users.html', 'history.html']) {
       const source = readFileSync(new URL(`../src/frontend/validation/${file}`, import.meta.url), 'utf8');
-      expect(source).toContain('btn-language');
+      if (file === 'valid.html') {
+        expect(source).toContain('validationUI.js');
+      } else {
+        expect(source).toContain('btn-language');
+      }
       if (file !== 'valid.html') expect(source).toContain('data-i18n');
     }
   });

@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import vm from 'node:vm';
 import { describe, expect, test } from '@jest/globals';
 
 const validationHtml = readFileSync(
@@ -16,11 +17,18 @@ describe('Validation sidebar asset contract', () => {
       'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
     );
     expect(validationHtml).toContain('href="../css/style.css"');
-    expect(validationHtml).toContain("'../../js/shell.js'");
     expect(validationHtml).not.toContain('validation/index.html');
+    expect(validationHtml).toContain('<!-- {{HEADER_PAGE}} -->');
+    expect(validationHtml).toContain('<!-- {{SIDEBAR}} -->');
+    expect(validationHtml).toContain('class="has-left-sidebar"');
     expect(validationHtml).toContain('<script type="module" src="js/validationUI.js"></script>');
+    expect(validationUi).toContain("from '../../js/shell.js'");
     expect(validationUi).not.toContain('admin-access-section');
     expect(validationUi).not.toContain('applyAdminHash');
     expect(validationUi).not.toContain('access-list');
+  });
+
+  test('validationUI permanece sintaticamente parseável como ES module', () => {
+    expect(() => new vm.SourceTextModule(validationUi)).not.toThrow();
   });
 });

@@ -116,6 +116,39 @@
   flex-shrink: 0;
 }
 
+.validator-request-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-12);
+  align-items: center;
+  padding: var(--space-16);
+  border-bottom: 1px solid var(--a3-border-soft);
+}
+
+.validator-request-fields > * {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+#validator-request-credential-url,
+.validator-request-notes {
+  grid-column: 1 / -1;
+}
+
+.validator-request-fields #validator-request-submit {
+  width: auto;
+  justify-self: end;
+  grid-column: 2;
+}
+
+#validator-request-status {
+  display: block;
+  padding: var(--space-12) var(--space-16);
+  overflow-wrap: anywhere;
+}
+
 /* ── Controles de input ────────────────────────────────────────────────── */
 
 .settings-input {
@@ -296,7 +329,30 @@
               var(--a3-shadow-card);
 }
 
+@media (max-width: 720px) {
+  .validator-request-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .validator-request-notes {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 480px) {
+  .validator-request-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .validator-request-notes {
+    grid-column: auto;
+  }
+
+  .validator-request-fields #validator-request-submit {
+    grid-column: auto;
+    justify-self: stretch;
+  }
+
   .settings-toast {
     bottom: var(--space-16);
     right: var(--space-16);

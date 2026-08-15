@@ -6,6 +6,7 @@ import {
   validateRuntimeTaxonomy,
   validateTaxonomy,
 } from '../scripts/validation/validate_data_consistency.mjs';
+import { glossaryTerms } from '../src/frontend/js/data.js';
 
 function createReport() {
   return { issues: [], counts: {} };
@@ -161,5 +162,27 @@ describe('dataset governance validators', () => {
     expect(report.issues).toEqual([
       expect.objectContaining({ severity: 'CONTENT_GAP', code: 'FLASHCARD_BILINGUAL_CONTENT' }),
     ]);
+  });
+
+  test('keeps the minimum bilingual flashcard coverage by canonical domain', () => {
+    const minimums = {
+      'dva-c02': 4,
+      'aif-c01': 5,
+    };
+
+    for (const [certification, domainCount] of Object.entries(minimums)) {
+      const cards = glossaryTerms.filter((card) => card.cert === certification);
+      const counts = new Map();
+      for (const card of cards) counts.set(card.domain, (counts.get(card.domain) || 0) + 1);
+
+      expect(counts.size).toBe(domainCount);
+      for (const count of counts.values()) expect(count).toBeGreaterThanOrEqual(3);
+      for (const card of cards) {
+        expect(card.term?.pt).toBeTruthy();
+        expect(card.term?.en).toBeTruthy();
+        expect(card.definition?.pt).toBeTruthy();
+        expect(card.definition?.en).toBeTruthy();
+      }
+    }
   });
 });

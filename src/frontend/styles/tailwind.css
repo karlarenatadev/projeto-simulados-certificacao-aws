@@ -1290,9 +1290,6 @@
     --tw-tracking: var(--tracking-widest);
     letter-spacing: var(--tracking-widest);
   }
-  .break-words {
-    overflow-wrap: break-word;
-  }
   .whitespace-normal {
     white-space: normal;
   }
@@ -1875,12 +1872,6 @@
     border-color: color-mix(in srgb, oklch(70.5% 0.213 47.604) 30%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--color-orange-500) 30%, transparent);
-    }
-  }
-  .dark\:border-orange-800\/50:where(.dark, .dark *) {
-    border-color: color-mix(in srgb, oklch(47% 0.157 37.304) 50%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-orange-800) 50%, transparent);
     }
   }
   .dark\:border-red-700:where(.dark, .dark *) {

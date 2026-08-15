@@ -1,7 +1,8 @@
 import { getCurrentLanguage } from '../../js/core/languageManager.js';
 import { t } from '../../js/i18n/useTranslation.js';
+import { AuthService } from '../../js/services/authService.js';
+import { initShell } from '../../js/shell.js';
 
-const VALIDATION_SESSION_KEY = 'cloudacademy_session';
 const VALIDATION_ROLES = new Set(['VALIDATOR', 'ADMIN']);
 const tr = (key, variables) => t(key, getCurrentLanguage(), variables);
 
@@ -10,31 +11,26 @@ class ValidationUI {
     this.user = null;
     this.selectedQuestionId = null;
     this.elements = Object.fromEntries([
-      'validator-status', 'login-section', 'login-email', 'btn-login', 'login-error',
-      'screen-message', 'questions-list', 'stat-pending', 'stat-approved', 'stat-rejected',
-      'modal-reject', 'rejection-reason', 'btn-confirm-reject', 'btn-cancel-reject',
+      'validator-status', 'screen-message', 'questions-list',
+      'stat-pending', 'stat-approved', 'stat-rejected', 'modal-reject',
+      'rejection-reason', 'btn-confirm-reject', 'btn-cancel-reject',
     ].map((id) => [id, document.getElementById(id)]));
     this.bindEvents();
     this.restoreOfficialSession();
   }
 
-  readOfficialSession() {
+  async restoreOfficialSession() {
     try {
-      const session = JSON.parse(localStorage.getItem(VALIDATION_SESSION_KEY) || 'null');
-      return session?.user?.id ? session : null;
-    } catch {
-      return null;
+      const user = await AuthService.restoreSession();
+      if (!user) {
+        this.showMessage(tr('validation_session_required'), 'error');
+        return;
+      }
+      initShell(user);
+      this.setUser(user);
+    } catch (error) {
+      this.showMessage(error.message || tr('common_api_error'), 'error');
     }
-  }
-
-  restoreOfficialSession() {
-    const session = this.readOfficialSession();
-    if (!session) {
-      this.showMessage(tr('validation_session_required'), 'error');
-      this.elements['login-section']?.classList.remove('hidden');
-      return;
-    }
-    this.setUser(session.user);
   }
 
   setUser(user) {
@@ -42,46 +38,18 @@ class ValidationUI {
     const role = String(user.role || '').toUpperCase();
     if (!VALIDATION_ROLES.has(role)) {
       this.showMessage(tr('validation_role_denied', { role: role || 'STUDENT' }), 'error');
-      this.elements['login-section']?.classList.add('hidden');
       return;
     }
-    this.elements['login-section']?.classList.add('hidden');
-    if (this.elements['validator-status']) {
-      this.elements['validator-status'].textContent = `Validador: ${user.name || user.email} (${role})`;
-    }
+    this.elements['validator-status'].textContent =
+      `${tr('validation_authenticated_as')} ${user.name || user.email} (${role})`;
     this.loadQuestions();
+    this.loadStats();
   }
 
   bindEvents() {
-    this.elements['btn-login']?.addEventListener('click', () => this.login());
-    this.elements['login-email']?.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') this.login();
-    });
     this.elements['questions-list']?.addEventListener('click', (event) => this.handleAction(event));
     this.elements['btn-cancel-reject']?.addEventListener('click', () => this.closeReject());
     this.elements['btn-confirm-reject']?.addEventListener('click', () => this.reject());
-  }
-
-  async login() {
-    const email = this.elements['login-email']?.value?.trim();
-    if (!email) return this.showLoginError(tr('auth_email_required'));
-    try {
-      const response = await window.ValidationAPI.login(email);
-      if (!response.success || !response.data?.id) throw new Error(response.error || tr('common_login_error'));
-      const user = response.data;
-      const session = {
-        user,
-        accessToken: response.data.access_token || null,
-        tokenExpiresIn: response.data.expires_in || null,
-        authenticationMode: 'online',
-        provider: 'backend',
-        version: 1,
-      };
-      localStorage.setItem(VALIDATION_SESSION_KEY, JSON.stringify(session));
-      this.setUser(user);
-    } catch (error) {
-      this.showLoginError(error.message || tr('common_api_error'));
-    }
   }
 
   async loadQuestions() {
@@ -93,14 +61,33 @@ class ValidationUI {
         ? questions.map((question) => this.renderQuestion(question)).join('')
         : `<p class="loading-msg">${tr('admin_validation_empty')}</p>`;
     } catch (error) {
-      this.showMessage(error.status === 401 || error.status === 403
-        ? 'Acesso negado pela API. A role válida é determinada pelo banco.'
-        : 'Painel de validação requer conexão com a API.', 'error');
+      this.showMessage(
+        error.status === 401 || error.status === 403
+          ? tr('common_unauthorized')
+          : tr('validation_api_required'),
+        'error',
+      );
+    }
+  }
+
+  async loadStats() {
+    try {
+      const [approved, rejected] = await Promise.all([
+        window.ValidationAPI.fetchValidationHistory('APPROVED'),
+        window.ValidationAPI.fetchValidationHistory('REJECTED'),
+      ]);
+      this.elements['stat-approved'].textContent = String((approved.data || []).length);
+      this.elements['stat-rejected'].textContent = String((rejected.data || []).length);
+    } catch {
+      this.elements['stat-approved'].textContent = '0';
+      this.elements['stat-rejected'].textContent = '0';
     }
   }
 
   renderQuestion(question) {
-    const options = (question.options || []).map((option) => `<li><strong>${option.id || ''}</strong> ${option.text || option}</li>`).join('');
+    const options = (question.options || [])
+      .map((option) => `<li><strong>${option.id || ''}</strong> ${option.text || option}</li>`)
+      .join('');
     return `<article class="question-card" data-question-id="${question.id}">
       <h3>${question.certification || ''} — ${question.domain || ''}</h3>
       <p>${question.question_text || ''}</p><ol>${options}</ol>
@@ -120,32 +107,39 @@ class ValidationUI {
   async validate(status, rejectionReason = null) {
     try {
       await window.ValidationAPI.validateQuestion(this.selectedQuestionId, {
-        status, rejection_reason: rejectionReason,
+        status,
+        rejection_reason: rejectionReason,
       });
-      status === 'APPROVED' ? window.ValidationStorage.incrementApproved() : window.ValidationStorage.incrementRejected();
       this.closeReject();
-      await this.loadQuestions();
+      await Promise.all([this.loadQuestions(), this.loadStats()]);
     } catch (error) {
-      this.showMessage(error.status === 401 || error.status === 403 ? tr('common_unauthorized') : error.message, 'error');
+      this.showMessage(
+        error.status === 401 || error.status === 403
+          ? tr('common_unauthorized')
+          : error.message || tr('common_api_error'),
+        'error',
+      );
     }
   }
 
   reject() {
     const reason = this.elements['rejection-reason']?.value?.trim();
-    if (!reason || reason.length < 10) return this.showMessage(tr('validation_rejection_min'), 'error');
+    if (!reason || reason.length < 10) {
+      this.showMessage(tr('validation_rejection_min'), 'error');
+      return;
+    }
     this.validate('REJECTED', reason);
   }
 
-  closeReject() { this.elements['modal-reject']?.classList.add('hidden'); }
-  showLoginError(message) { if (this.elements['login-error']) { this.elements['login-error'].textContent = message; this.elements['login-error'].classList.remove('hidden'); } }
-  showMessage(message, type = 'info') { if (this.elements['screen-message']) { this.elements['screen-message'].textContent = this.localizeMessage(message); this.elements['screen-message'].className = `screen-message ${type}`; } }
-  localizeMessage(message) {
-    const text = String(message || '');
-    if (text.includes('conexão com a API') || text.includes('sessão autenticada')) return tr('common_unauthorized');
-    if (text.includes('role válida') || text.includes('Acesso negado')) return tr('common_unauthorized');
-    if (text.includes('motivo da rejeição')) return tr('common_rejection_reason');
-    if (text.includes('Não foi possível')) return tr('common_error');
-    return text;
+  closeReject() {
+    this.elements['modal-reject']?.classList.add('hidden');
+  }
+
+  showMessage(message, type = 'info') {
+    const element = this.elements['screen-message'];
+    if (!element) return;
+    element.textContent = message;
+    element.className = `screen-message ${type}`;
   }
 }
 

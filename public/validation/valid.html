@@ -3,53 +3,97 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
     <title>Validação de Questões - Cloud Academy A3</title>
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="css/admin.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/style.css?v=msv0iean" />
+    <link rel="stylesheet" href="css/admin.css?v=msv0iean" />
   </head>
   <body class="has-left-sidebar">
-    <header class="a3-header">
+<header class="a3-header">
       <div class="flex items-center gap-2 md:gap-3">
-        <button id="cloud-sidebar-toggle" class="btn-sidebar-toggle" title="Esconder menu lateral" aria-label="Alternar menu lateral" aria-expanded="true">
-          <i id="cloud-logo-icon" class="fa-solid fa-cloud text-2xl md:text-3xl" aria-hidden="true"></i>
+        <button
+          id="cloud-sidebar-toggle"
+          class="btn-sidebar-toggle flex items-center justify-center group/cloud"
+          title="Esconder menu lateral"
+          aria-label="Alternar menu lateral"
+          aria-expanded="true"
+        >
+          <i
+            id="cloud-logo-icon"
+            class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
+            aria-hidden="true"
+          ></i>
         </button>
         <a href="../index.html" class="a3-header-link" title="Voltar ao início">
           <div>
-            <h1 class="text-base md:text-xl font-bold leading-tight">Cloud Academy A3</h1>
-            <p class="text-[10px] md:text-xs text-gray-300">Sua jornada para certificações AWS</p>
+            <h1 class="text-base md:text-xl font-bold leading-tight">
+              Cloud Academy A3
+            </h1>
+            <p class="text-[10px] md:text-xs text-gray-300">
+              Sua jornada para certificações AWS
+            </p>
           </div>
         </a>
       </div>
       <div class="a3-header-actions">
-        <button id="btn-language" class="a3-btn a3-btn-secondary" aria-label="Alternar idioma" title="Alternar idioma"></button>
-        <button id="theme-toggle" class="a3-btn a3-btn-secondary" aria-label="Alternar modo escuro">
-          <i id="theme-icon" class="fa-solid fa-moon" aria-hidden="true"></i>
+        <button
+          id="btn-language"
+          class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
+          aria-label="Alternar idioma"
+          title="Alternar idioma"
+        >
+          <span class="text-[10px] md:text-xs font-bold"
+            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
+          >
         </button>
-        <button id="install-app" class="a3-btn a3-btn-secondary hidden md:flex" aria-label="Baixar App">
-          <i class="fa-solid fa-download" aria-hidden="true"></i>
+        <button
+          id="theme-toggle"
+          class="a3-btn a3-btn-secondary"
+          aria-label="Alternar modo escuro"
+        >
+          <i
+            id="theme-icon"
+            class="fa-solid fa-moon text-base md:text-xl"
+            aria-hidden="true"
+          ></i>
         </button>
+        <button
+          id="install-app"
+          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
+        >
+          <i class="fa-solid fa-download"></i> Baixar App
+        </button>
+        <!-- User Menu — populado pelo shell.js -->
         <div id="user-menu-container"></div>
       </div>
     </header>
-    <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
-      <div class="left-sidebar-nav"></div>
-    </nav>
+<nav id="left-sidebar" aria-label="Menu principal" role="navigation">
+  <!--
+    .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
+    no momento do boot. O botão abaixo é apenas um fallback visual
+    para Progressive Enhancement (evita flash de sidebar vazia).
+  -->
+  <div class="left-sidebar-nav">
+    <button
+      id="sidebar-btn-hub"
+      class="left-sidebar-item left-sidebar-item-primary"
+      aria-label="Learning Hub — Painel Principal"
+      title="Learning Hub — Painel Principal"
+    >
+      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <span class="left-sidebar-item-label">Home</span>
+    </button>
+  </div>
+  <!--
+    .left-sidebar-footer é gerado dinamicamente por buildSidebar(user).
+    Contém: divisor, Perfil, Config, divisor, botão Recolher.
+  -->
+</nav>
+
     <main class="validation-container main-content-container">
       <section class="validator-section card">
-        <h2>Identificação do Validador</h2>
-        <p id="validator-status" class="status-text">Status: Aguardando autenticação...</p>
-        <div id="login-section">
-          <p class="mock-notice">Acesso restrito a usuários com role VALIDATOR ou ADMIN.</p>
-          <div class="input-group">
-            <input type="email" id="login-email" placeholder="seu.nome@a3data.com.br" autocomplete="email" />
-            <button id="btn-login" class="btn-primary">Entrar</button>
-          </div>
-          <p id="login-error" class="status-text validation-error hidden"></p>
-        </div>
+        <h2>Validação de Questões</h2>
+        <p id="validator-status" class="status-text">Aguardando autenticação...</p>
       </section>
       <div id="screen-message" class="screen-message hidden" role="status" aria-live="polite"></div>
       <section class="dashboard-section">
@@ -73,16 +117,8 @@
         </div>
       </div>
     </div>
-    <script src="js/validationStorage.js"></script>
-    <script src="js/validationAPI.js"></script>
-    <script type="module" src="js/validationUI.js"></script>
-    <script type="module">
-      import { AuthService } from '../../js/services/authService.js';
-      import { initShell } from '../../js/shell.js';
-      document.addEventListener('DOMContentLoaded', async () => {
-        const user = await AuthService.restoreSession();
-        if (user) initShell(user);
-      });
-    </script>
+    <script src="js/validationStorage.js?v=msv0iean"></script>
+    <script src="js/validationAPI.js?v=msv0iean"></script>
+    <script type="module" src="js/validationUI.js?v=msv0iean"></script>
   </body>
 </html>

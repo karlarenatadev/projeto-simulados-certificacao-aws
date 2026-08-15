@@ -1,187 +1,20 @@
 <!doctype html>
-<html lang="pt">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Simulados AWS — Pratique com questões no estilo oficial dos exames AWS." />
-    <title>Study Now — Cloud Academy A3</title>
-
-    
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
-    />
-    <link rel="stylesheet" href="./css/style.css?v=msuxbfr2" />
-    <link rel="manifest" href="./manifest.json" />
-    <meta name="theme-color" content="#001863" />
+    <meta http-equiv="refresh" content="0; url=./index.html#study-now-section" />
+    <title>Insights de Estudo — Cloud Academy A3</title>
   
     <!-- Cache Busting Meta Tags -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 </head>
-
-  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
-<header class="a3-header">
-      <div class="flex items-center gap-2 md:gap-3">
-        <button
-          id="cloud-sidebar-toggle"
-          class="btn-sidebar-toggle flex items-center justify-center group/cloud"
-          title="Esconder menu lateral"
-          aria-label="Alternar menu lateral"
-          aria-expanded="true"
-        >
-          <i
-            id="cloud-logo-icon"
-            class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <a href="index.html" class="a3-header-link" title="Voltar ao início">
-          <div>
-            <h1 class="text-base md:text-xl font-bold leading-tight">
-              Cloud Academy A3
-            </h1>
-            <p class="text-[10px] md:text-xs text-gray-300">
-              Sua jornada para certificações AWS
-            </p>
-          </div>
-        </a>
-      </div>
-      <div class="a3-header-actions">
-        <button
-          id="btn-language"
-          class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
-          aria-label="Alternar idioma"
-          title="Alternar idioma"
-        >
-          <span class="text-[10px] md:text-xs font-bold"
-            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
-          >
-        </button>
-        <button
-          id="theme-toggle"
-          class="a3-btn a3-btn-secondary"
-          aria-label="Alternar modo escuro"
-        >
-          <i
-            id="theme-icon"
-            class="fa-solid fa-moon text-base md:text-xl"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <button
-          id="install-app"
-          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
-        >
-          <i class="fa-solid fa-download"></i> Baixar App
-        </button>
-        <!-- User Menu — populado pelo shell.js -->
-        <div id="user-menu-container"></div>
-      </div>
-    </header>
-<nav id="left-sidebar" aria-label="Menu principal" role="navigation">
-  <!--
-    .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
-    no momento do boot. O botão abaixo é apenas um fallback visual
-    para Progressive Enhancement (evita flash de sidebar vazia).
-  -->
-  <div class="left-sidebar-nav">
-    <button
-      id="sidebar-btn-hub"
-      class="left-sidebar-item left-sidebar-item-primary"
-      aria-label="Learning Hub — Painel Principal"
-      title="Learning Hub — Painel Principal"
-    >
-      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
-      <span class="left-sidebar-item-label">Home</span>
-    </button>
-  </div>
-  <!--
-    .left-sidebar-footer é gerado dinamicamente por buildSidebar(user).
-    Contém: divisor, Perfil, Config, divisor, botão Recolher.
-  -->
-</nav>
-
-
-    <main id="main-section" class="flex flex-row gap-6 flex-1 a3-container py-6 main-content-container">
-
-      <!-- CONTENT AREA -->
-      <section class="flex-1 min-w-0 flex flex-col gap-6 overflow-y-auto p-4" id="study-now-content">
-        <div
-          id="study-insight-container"
-          class="a3-card bg-orange-50 dark:bg-orange-900/20 w-full insight-card-highlight"
-        >
-          <div class="a3-card-header border-orange-200 dark:border-orange-800/50">
-            <h3 class="flex items-center gap-2 text-orange-800 dark:text-orange-400 m-0">
-              <i class="fa-solid fa-lightbulb text-orange-600 dark:text-orange-400"></i>
-              <span id="insight-card-title">Insight de Estudo</span>
-            </h3>
-          </div>
-          <div class="a3-card-body">
-            <div
-              id="dynamic-insight"
-              class="text-sm text-gray-700 leading-relaxed break-words"
-              data-empty="true"
-            >
-              <span class="text-gray-400 italic">Aguardando dados...</span>
-            </div>
-          </div>
-        </div>
-
-        <div id="study-now-recommendations" class="flex flex-col gap-6"></div>
-
-        <div id="weak-domains-content" class="a3-card mt-6"></div>
-      </section>
-      <!-- /SIDE INFO -->
-
-    </main>
-<footer
-      class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
-    >
-      Plataforma colaborativa de estudo para certificações AWS construída para a
-      comunidade da Guilda Z-Maguinhos | A3Data.
-    </footer>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <body>
+    <p>Redirecionando para os Insights de Estudo...</p>
     <script>
-      window.chartJsLoaded = new Promise((resolve) => {
-        if (typeof Chart !== "undefined") { resolve(); }
-        else {
-          const checkChart = setInterval(() => {
-            if (typeof Chart !== "undefined") { clearInterval(checkChart); resolve(); }
-          }, 50);
-        }
-      });
+      window.location.replace('./index.html#study-now-section');
     </script>
-    <script src="./js/sprintData.js?v=msuxbfr2" type="module"></script>
-    <script src="./js/pomodoroManager.js?v=msuxbfr2" type="module"></script>
-    <script src="./js/app.js?v=msuxbfr2" type="module"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-
-    <script type="module">
-      import { initShell } from "./js/shell.js";
-      import { authGuard } from "./js/core/authGuard.js";
-      import { initStudyNow, refreshStudyNow } from "./js/recommendations/studyNow.js";
-
-      document.addEventListener("DOMContentLoaded", async () => {
-        const session = authGuard();
-        if (!session) return;
-        const user = session.user;
-        
-        initShell(user);
-        initStudyNow();
-        
-        await refreshStudyNow();
-      });
-    </script>
-    
-</body>
+  </body>
 </html>

@@ -81,7 +81,6 @@ export const SIDEBAR_ITEMS = [
     activePaths: [
       "/simulados.html",
       "/simulator-room.html",
-      "/study-now.html",
       "/study-sprint.html"
     ],
     roles: ["*"],

@@ -345,6 +345,32 @@ try {
   // under src/frontend/validation and generated here with the other assets.
   if (fs.existsSync('src/frontend/validation')) {
     copyDirectoryRecursive('src/frontend/validation', 'public/validation');
+
+    // Validation lives outside src/frontend/pages, but uses the same official
+    // App Shell partials. Process its entry page after copying the source so
+    // the generated artifact cannot retain unresolved placeholders.
+    const validationTemplatePath = path.join('src/frontend/validation', 'valid.html');
+    if (fs.existsSync(validationTemplatePath)) {
+      let validationHtml = fs.readFileSync(validationTemplatePath, 'utf8');
+      const validationPartials = {
+        HEADER_PAGE: fs.readFileSync(path.join('src/frontend/partials', 'header-page.html'), 'utf8'),
+        SIDEBAR: fs.readFileSync(path.join('src/frontend/partials', 'sidebar.html'), 'utf8'),
+      };
+      for (const [key, content] of Object.entries(validationPartials)) {
+        const commentPlaceholder = new RegExp(`\\s*<!--\\s*\\{\\{${key}\\}\\}\\s*-->`, 'g');
+        const simplePlaceholder = new RegExp(`\\{\\{${key}\\}\\}`, 'g');
+        validationHtml = validationHtml.replace(commentPlaceholder, '\n' + content);
+        validationHtml = validationHtml.replace(simplePlaceholder, content);
+      }
+      validationHtml = validationHtml.replace(/href="index\.html"/g, 'href="../index.html"');
+      const buildHash = Date.now().toString(36);
+      validationHtml = validationHtml.replace(/(src|href)="([^"?]+\.(js|css))"/g, (match, attr, filePath) => {
+        if (filePath.startsWith('http')) return match;
+        return `${attr}="${filePath}?v=${buildHash}"`;
+      });
+      fs.writeFileSync(path.join('public/validation', 'valid.html'), validationHtml, 'utf8');
+      console.log('  ✅ validation/valid.html (App Shell partials injected)');
+    }
   }
 
 

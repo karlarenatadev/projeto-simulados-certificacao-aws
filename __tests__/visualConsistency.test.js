@@ -25,10 +25,10 @@ describe("consistência visual global", () => {
   test("as 15 páginas principais usam o shell com tema e sidebar", () => {
     activePages.forEach((page) => {
       const html = pageSource(page);
-      if (!["simulator-hub.html", "simulator-room.html"].includes(page)) {
+      if (!["simulator-hub.html", "simulator-room.html", "study-now.html"].includes(page)) {
         expect(html).toMatch(/\{\{HEADER|a3-header/);
       }
-      if (page !== "case-view.html") {
+      if (!["case-view.html", "study-now.html"].includes(page)) {
         if (["simulator-hub.html", "simulator-room.html"].includes(page)) {
           expect(html).toContain("theme-toggle");
         } else {
@@ -68,5 +68,30 @@ describe("consistência visual global", () => {
 
   test("a validação não depende mais do CSS legado dark-only", () => {
     expect(pageSource("../validation/valid.html")).not.toContain("valid.css");
+  });
+  test("Home Performance e Validator Request preservam wrappers responsivos", () => {
+    const home = pageSource("index.html");
+    const settings = pageSource("settings.html");
+    const gamification = readFileSync(
+      new URL("../src/frontend/styles/components/gamification.css", import.meta.url),
+      "utf8",
+    );
+    const settingsCss = readFileSync(
+      new URL("../src/frontend/styles/components/settings.css", import.meta.url),
+      "utf8",
+    );
+
+    expect(home).toContain('class="home-performance-grid"');
+    expect(home).toContain('class="home-performance-left"');
+    expect(home).toContain("home-performance-metrics-grid");
+    expect(gamification).toContain("grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);");
+    expect(gamification).toContain("grid-template-columns: repeat(4, minmax(0, 1fr));");
+    expect(gamification).toContain("grid-template-rows: repeat(2, minmax(0, 1fr));");
+    expect(gamification).toContain(".home-performance-metrics-grid .lh-metric-item");
+    expect(gamification).not.toMatch(/#hub-performance\s*\{[\s\S]*grid-template-columns/);
+    expect(settings).toContain('class="validator-request-fields"');
+    expect(settingsCss).toContain("grid-template-columns: repeat(2, minmax(0, 1fr));");
+    expect(settingsCss).toContain("#validator-request-credential-url");
+    expect(settingsCss).toContain("#validator-request-status");
   });
 });

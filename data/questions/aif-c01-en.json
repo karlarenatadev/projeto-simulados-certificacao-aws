@@ -10232,5 +10232,75 @@
       "validatorVersion": "1.0",
       "createdBy": "A3 Cloud Academy"
     }
+  },
+  {
+    "questionId": "aif-c01-18b3bca5",
+    "certId": "aif-c01",
+    "examCode": "AWS Certified AI Practitioner",
+    "version": "1.0",
+    "domain": "Fundamentals of AI and ML",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-sagemaker-autopilot",
+        "service_name": "Amazon SageMaker Autopilot",
+        "service_slug": "amazon-sagemaker-autopilot"
+      }
+    ],
+    "tags": [
+      "machine learning model development",
+      "hyperparameter optimization"
+    ],
+    "question": "An online retail company wants to develop a machine learning model to predict the likelihood of a customer making a purchase based on their browsing and purchase history. Which AWS service can be used to train and optimize the machine learning model?",
+    "options": [
+      "Amazon SageMaker Autopilot",
+      "Amazon SageMaker",
+      "AWS Lambda",
+      "Amazon S3"
+    ],
+    "correct": 0,
+    "explanation": "Amazon SageMaker Autopilot is the most suitable service for training and optimizing the machine learning model because it provides automated training and hyperparameter optimization capabilities.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-08-15T00:00:00.000Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    }
+  },
+  {
+    "questionId": "aif-c01-c35b2d80",
+    "certId": "aif-c01",
+    "examCode": "AWS Certified AI Practitioner",
+    "version": "1.0",
+    "domain": "Fundamentals of Generative AI",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-comprehend",
+        "service_name": "Amazon Comprehend",
+        "service_slug": "amazon-comprehend"
+      }
+    ],
+    "tags": [
+      "natural language processing",
+      "text analysis"
+    ],
+    "question": "A social media company wants to analyze users' opinions about certain products in their posts. Which AWS service is most appropriate for analyzing this sentiment?",
+    "options": [
+      "Amazon Comprehend",
+      "Amazon Rekognition",
+      "Amazon Transcribe",
+      "Amazon Polly"
+    ],
+    "correct": 0,
+    "explanation": "Amazon Comprehend is an AWS service that provides text analysis and natural language processing. It can analyze users' opinions and sentiment in text, making it the ideal choice for this task.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-08-15T00:00:00.000Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    }
   }
 ]

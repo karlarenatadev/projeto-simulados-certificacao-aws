@@ -134,6 +134,42 @@ function getContainer() {
   return document.getElementById(CONTENT_ID);
 }
 
+function getCompactContainer() {
+  return document.getElementById("study-now-compact");
+}
+
+function renderCompactRecommendation(actions) {
+  const container = getCompactContainer();
+  if (!container) return;
+
+  const lang = getCurrentLanguage();
+  const action = (actions || []).find((item) => item?.type !== "empty_state");
+  if (!action) {
+    container.innerHTML = `
+      <p class="study-now-compact-empty">${t("studyNow.empty_state_no_history", lang)}</p>`;
+    return;
+  }
+
+  const title = t(action.title, lang, action.titleVariables || {});
+  const description = t(action.description, lang, action.descriptionVariables || {});
+  const route = action.route || "./simulados.html";
+  container.innerHTML = `
+    <div class="study-now-compact-content">
+      <i class="fa-solid fa-lightbulb study-now-compact-icon" aria-hidden="true"></i>
+      <div class="study-now-compact-copy">
+        <strong>${title}</strong>
+        <span>${description}</span>
+      </div>
+      <a class="a3-btn a3-btn-outline study-now-compact-cta" href="${route}">
+        ${t("studyNow.compact_cta", lang)}
+      </a>
+    </div>`;
+}
+
+export function renderStudyNowCompact(actions) {
+  renderCompactRecommendation(actions);
+}
+
 function renderEmpty(messageKey, success = false) {
   const container = getContainer();
   if (!container) return;
@@ -293,6 +329,7 @@ export async function refreshStudyNow() {
     const plan = recommendationEngine.generateStudyPlan(profile);
 
     renderActions(plan.nextActions);
+    renderCompactRecommendation(plan.nextActions);
     renderDiagnosticRecommendations(readDiagnosticRecommendations());
   } catch (error) {
     logger.error("[StudyNow] Erro ao gerar recomendacoes:", error);

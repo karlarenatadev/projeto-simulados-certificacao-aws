@@ -33,7 +33,7 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
 
-    <link rel="stylesheet" href="./css/style.css?v=msuxbfpn" />
+    <link rel="stylesheet" href="./css/style.css?v=msv0i4n6" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -347,14 +347,14 @@
                   <div class="lh-features-list flex-1">
                     <button
                       class="lh-feature-item"
-                      onclick="window.location.href='./study-now.html'"
-                      title="Study Now — Insights IA e recomendações de estudo"
+                      onclick="document.getElementById('study-now-section')?.scrollIntoView({ behavior: 'smooth' })"
+                      title="Insights de Estudo — recomendações da próxima melhor ação"
                     >
                       <span class="lh-feature-icon lh-feat-pink">
                         <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
                       </span>
                       <div class="lh-feature-info">
-                        <p class="lh-feature-name">Study Now</p>
+                        <p class="lh-feature-name" data-i18n="study_insight">Insights de Estudo</p>
                         <p class="lh-feature-desc">Insights IA e recomendações da próxima melhor ação de estudo</p>
                       </div>
                       <i class="fa-solid fa-chevron-right lh-feature-arrow" aria-hidden="true"></i>
@@ -500,8 +500,10 @@
               </div>
             </div>
 
+            <div class="home-performance-grid">
+              <div class="home-performance-left">
             <!-- Progresso da Certificação -->
-            <div class="lh-metrics-card mb-4">
+            <div class="lh-metrics-card home-performance-compact">
               <div class="lh-metrics-header">
                 <div>
                   <p class="lh-metrics-title" data-i18n="cert_progress">Progresso da Certificação</p>
@@ -541,15 +543,40 @@
               </div>
             </div>
 
+            <div id="study-insight-container" class="lh-metrics-card home-performance-compact">
+              <div class="lh-metrics-header">
+                <div>
+                  <p id="insight-card-title" class="lh-metrics-title" data-i18n="study_insight">Insight de Estudo</p>
+                  <p class="lh-metrics-sub" data-i18n="study_insight_subtitle">Uma leitura rápida do seu momento de estudo.</p>
+                </div>
+              </div>
+              <div id="dynamic-insight" data-empty="true" aria-live="polite">
+                <p class="text-muted text-sm" data-i18n="first_quiz_for_insights">Faça seu primeiro simulado para receber insights personalizados baseados no seu desempenho.</p>
+              </div>
+            </div>
+
+            <div id="study-now-section" class="lh-metrics-card home-performance-compact">
+              <div class="lh-metrics-header">
+                <div>
+                  <p class="lh-metrics-title" data-i18n="next_recommendation">Próxima recomendação</p>
+                  <p class="lh-metrics-sub" data-i18n="next_recommendation_subtitle">A melhor ação para continuar agora.</p>
+                </div>
+              </div>
+              <div id="study-now-compact" aria-live="polite">
+                <p class="text-muted text-sm" data-i18n="common_loading_session">Carregando...</p>
+              </div>
+            </div>
+              </div>
+
             <!-- Performance Geral -->
-            <div class="lh-metrics-card">
+            <div class="lh-metrics-card home-performance-card">
               <div class="lh-metrics-header">
                 <div>
                   <p class="lh-metrics-title" data-i18n="general_performance">Sua performance geral</p>
                   <p class="lh-metrics-sub">Leitura consolidada dos seus simulados</p>
                 </div>
               </div>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 home-performance-metrics-grid">
                 <div class="lh-metric-item lh-metric-blue">
                   <i class="fa-solid fa-chart-line lh-metric-icon" aria-hidden="true"></i>
                   <div>
@@ -615,6 +642,7 @@
                   </div>
                 </div>
               </div>
+            </div>
             </div>
           </section>
           <!-- /3. PERFORMANCE -->
@@ -788,12 +816,12 @@
                   </button>
                   <button
                     class="flex flex-col items-center justify-center p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 transition"
-                    onclick="window.location.href='./study-now.html'"
-                    title="Ir para Study Now"
-                    aria-label="Acessar Study Now"
+                    onclick="document.getElementById('study-now-section')?.scrollIntoView({ behavior: 'smooth' })"
+                    title="Ir para Insights de Estudo"
+                    aria-label="Acessar Insights de Estudo"
                   >
                     <i class="fa-solid fa-lightbulb text-pink-600 text-xl mb-2" aria-hidden="true"></i>
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Study Now</span>
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300" data-i18n="study_insight">Insights de Estudo</span>
                   </button>
                 </div>
               </div>
@@ -846,9 +874,9 @@
     </script>
 
     <!-- Módulos da aplicação -->
-    <script src="./js/sprintData.js?v=msuxbfpn" type="module"></script>
-    <script src="./js/pomodoroManager.js?v=msuxbfpn" type="module"></script>
-    <script src="./js/app.js?v=msuxbfpn" type="module"></script>
+    <script src="./js/sprintData.js?v=msv0i4n6" type="module"></script>
+    <script src="./js/pomodoroManager.js?v=msv0i4n6" type="module"></script>
+    <script src="./js/app.js?v=msv0i4n6" type="module"></script>
 
     <!-- Service Worker (PWA) -->
     <script>

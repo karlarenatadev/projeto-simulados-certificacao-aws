@@ -523,7 +523,191 @@ export const glossaryTerms = [
       en: "Neural machine translation service providing fast, high-quality, and affordable language translation. Supports over 75 languages.",
     },
   },
-];
+
+  // DVA-C02 coverage additions: one concept per canonical domain.
+  {
+    cert: "dva-c02",
+    domain: "desenvolvimento-servicos",
+    term: { pt: "AWS SDK", en: "AWS SDK" },
+    definition: {
+      pt: "Conjunto de bibliotecas que permite chamar serviços AWS diretamente a partir do código da aplicação.",
+      en: "Set of libraries that lets application code call AWS services directly.",
+    },
+  },
+  {
+    cert: "dva-c02",
+    domain: "implementacao",
+    term: { pt: "AWS CodeDeploy", en: "AWS CodeDeploy" },
+    definition: {
+      pt: "Serviço que automatiza a implantação de aplicações em instâncias, serviços serverless e plataformas gerenciadas.",
+      en: "Service that automates application deployments to instances, serverless services, and managed platforms.",
+    },
+  },
+  {
+    cert: "dva-c02",
+    domain: "implementacao",
+    term: { pt: "AWS CodePipeline", en: "AWS CodePipeline" },
+    definition: {
+      pt: "Serviço de entrega contínua que modela as etapas de compilação, teste e implantação de uma aplicação.",
+      en: "Continuous delivery service that models an application's build, test, and deployment stages.",
+    },
+  },
+  {
+    cert: "dva-c02",
+    domain: "seguranca-app",
+    term: { pt: "AWS Secrets Manager", en: "AWS Secrets Manager" },
+    definition: {
+      pt: "Armazena e recupera credenciais e outros segredos com controle de acesso e rotação automatizada.",
+      en: "Stores and retrieves credentials and other secrets with access control and automated rotation.",
+    },
+  },
+  {
+    cert: "dva-c02",
+    domain: "seguranca-app",
+    term: { pt: "Amazon Cognito", en: "Amazon Cognito" },
+    definition: {
+      pt: "Oferece autenticação, autorização e gerenciamento de usuários para aplicações web e móveis.",
+      en: "Provides authentication, authorization, and user management for web and mobile applications.",
+    },
+  },
+  {
+    cert: "dva-c02",
+    domain: "seguranca-app",
+    term: { pt: "AWS Identity and Access Management", en: "AWS Identity and Access Management" },
+    definition: {
+      pt: "Controla identidades, funções e permissões usadas para acessar recursos AWS.",
+      en: "Controls identities, roles, and permissions used to access AWS resources.",
+    },
+  },
+  {
+    cert: "dva-c02",
+    domain: "resolucao-problemas",
+    term: { pt: "Amazon CloudWatch Logs", en: "Amazon CloudWatch Logs" },
+    definition: {
+      pt: "Centraliza logs de aplicações e recursos para consulta, monitoramento e investigação de falhas.",
+      en: "Centralizes application and resource logs for querying, monitoring, and troubleshooting failures.",
+    },
+  },
+  {
+    cert: "dva-c02",
+    domain: "resolucao-problemas",
+    term: { pt: "AWS X-Ray", en: "AWS X-Ray" },
+    definition: {
+      pt: "Rastreia requisições distribuídas para identificar gargalos e erros em aplicações compostas por vários serviços.",
+      en: "Traces distributed requests to identify bottlenecks and errors in applications built from multiple services.",
+    },
+  },
+  {
+    cert: "dva-c02",
+    domain: "resolucao-problemas",
+    term: { pt: "Amazon API Gateway access logs", en: "Amazon API Gateway access logs" },
+    definition: {
+      pt: "Registram chamadas às APIs, códigos de resposta e latência para apoiar a investigação de problemas.",
+      en: "Record API calls, response codes, and latency to support problem investigation.",
+    },
+  },
+
+  // AIF-C01 coverage additions: complete the minimum floor for every domain.
+  {
+    cert: "aif-c01",
+    domain: "applications-foundation-models",
+    term: { pt: "Amazon Bedrock knowledge bases", en: "Amazon Bedrock knowledge bases" },
+    definition: {
+      pt: "Conectam modelos de fundação a fontes privadas para gerar respostas baseadas em dados recuperados.",
+      en: "Connect foundation models to private data sources to generate answers grounded in retrieved data.",
+    },
+  },
+  {
+    cert: "aif-c01",
+    domain: "applications-foundation-models",
+    term: { pt: "Amazon Bedrock Agents", en: "Amazon Bedrock Agents" },
+    definition: {
+      pt: "Orquestram modelos de fundação, APIs e fontes de dados para executar tarefas em aplicações generativas.",
+      en: "Orchestrate foundation models, APIs, and data sources to perform tasks in generative applications.",
+    },
+  },
+  {
+    cert: "aif-c01",
+    domain: "fundamentals-genai",
+    term: { pt: "Modelo de fundação", en: "Foundation model" },
+    definition: {
+      pt: "Modelo treinado em grandes volumes de dados e adaptável a diferentes tarefas de inteligência artificial.",
+      en: "Model trained on large volumes of data and adaptable to different artificial intelligence tasks.",
+    },
+  },
+  {
+    cert: "aif-c01",
+    domain: "fundamentals-genai",
+    term: { pt: "Prompt engineering", en: "Prompt engineering" },
+    definition: {
+      pt: "Prática de estruturar instruções para orientar a resposta de um modelo generativo.",
+      en: "Practice of structuring instructions to guide a generative model's response.",
+    },
+  },
+  {
+    cert: "aif-c01",
+    domain: "fundamentals-genai",
+    term: { pt: "Tokens", en: "Tokens" },
+    definition: {
+      pt: "Unidades de texto processadas por um modelo e usadas para medir entrada, saída e limites de contexto.",
+      en: "Text units processed by a model and used to measure input, output, and context limits.",
+    },
+  },
+  {
+    cert: "aif-c01",
+    domain: "guidelines-responsible-ai",
+    term: { pt: "Explicabilidade", en: "Explainability" },
+    definition: {
+      pt: "Capacidade de comunicar os fatores que contribuem para uma previsão ou decisão de um modelo.",
+      en: "Ability to communicate the factors that contribute to a model's prediction or decision.",
+    },
+  },
+  {
+    cert: "aif-c01",
+    domain: "guidelines-responsible-ai",
+    term: { pt: "Viés em modelos", en: "Model bias" },
+    definition: {
+      pt: "Tendência sistemática que pode produzir resultados injustos ou menos precisos para determinados grupos.",
+      en: "Systematic tendency that can produce unfair or less accurate results for certain groups.",
+    },
+  },
+  {
+    cert: "aif-c01",
+    domain: "guidelines-responsible-ai",
+    term: { pt: "Guardrails", en: "Guardrails" },
+    definition: {
+      pt: "Controles que ajudam a limitar entradas e saídas inadequadas em uma aplicação de IA generativa.",
+      en: "Controls that help limit unsuitable inputs and outputs in a generative AI application.",
+    },
+  },
+  {
+    cert: "aif-c01",
+    domain: "security-compliance-governance",
+    term: { pt: "Proteção de dados em IA", en: "AI data protection" },
+    definition: {
+      pt: "Práticas para controlar acesso, uso e retenção dos dados processados por soluções de inteligência artificial.",
+      en: "Practices for controlling access to, use of, and retention of data processed by AI solutions.",
+    },
+  },
+  {
+    cert: "aif-c01",
+    domain: "security-compliance-governance",
+    term: { pt: "Amazon Macie", en: "Amazon Macie" },
+    definition: {
+      pt: "Serviço que usa machine learning para descobrir e proteger dados sensíveis armazenados no Amazon S3.",
+      en: "Service that uses machine learning to discover and protect sensitive data stored in Amazon S3.",
+    },
+  },
+  {
+    cert: "aif-c01",
+    domain: "security-compliance-governance",
+    term: { pt: "AWS CloudTrail", en: "AWS CloudTrail" },
+    definition: {
+      pt: "Registra atividades de API para apoiar auditoria, rastreabilidade e investigação de segurança.",
+      en: "Records API activity to support auditing, traceability, and security investigations.",
+    },
+  },
+]; 
 
 // ============================================
 // CONFIGURAÇÃO DAS CERTIFICAÇÕES
