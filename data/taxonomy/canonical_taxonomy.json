@@ -772,6 +772,15 @@
       ]
     },
     {
+      "service_id": "amazon-kinesis-data-firehose",
+      "service_slug": "amazon-kinesis-data-firehose",
+      "service_name": "Amazon Kinesis Data Firehose",
+      "aliases": [
+        "Amazon Kinesis Data Firehose",
+        "Amazon Data Firehose"
+      ]
+    },
+    {
       "service_id": "amazon-transcribe",
       "service_slug": "amazon-transcribe",
       "service_name": "Amazon Transcribe",
@@ -2165,6 +2174,24 @@
       "service_name": "Auto Scaling",
       "aliases": [
         "Auto Scaling"
+      ]
+    },
+    {
+      "service_id": "aws-dms",
+      "service_slug": "aws-dms",
+      "service_name": "AWS Database Migration Service",
+      "aliases": [
+        "AWS DMS",
+        "AWS Database Migration Service"
+      ]
+    },
+    {
+      "service_id": "aws-certificate-manager",
+      "service_slug": "aws-certificate-manager",
+      "service_name": "AWS Certificate Manager",
+      "aliases": [
+        "AWS ACM",
+        "AWS Certificate Manager"
       ]
     }
   ],

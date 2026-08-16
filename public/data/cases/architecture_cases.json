@@ -2,6 +2,7 @@
   {
     "id": "case-001",
     "slug": "marketplace-global",
+    "builder": { "required_services": ["amazon-dynamodb", "amazon-cloudfront", "amazon-api-gateway"], "optional_services": ["amazon-s3", "amazon-route-53"], "distractors": ["amazon-rds", "aws-lambda", "amazon-ec2"], "required_connections": [["amazon-api-gateway", "amazon-dynamodb"], ["amazon-cloudfront", "amazon-s3"]] },
     "title": "Marketplace Global com Leitura de Baixa Latência",
     "certification": "SAA-C03",
     "certifications": [
@@ -193,14 +194,15 @@
   {
     "id": "case-002",
     "slug": "fintech-pagamentos",
-    "title": "Fintech de Pagamentos PIX com Zero Perda de Dados",
+    "builder": { "required_services": ["amazon-aurora", "amazon-sqs", "aws-lambda"], "optional_services": ["amazon-sns"], "distractors": ["amazon-dynamodb", "amazon-api-gateway", "amazon-ec2"], "required_connections": [["amazon-sqs", "aws-lambda"], ["aws-lambda", "amazon-aurora"]] },
+    "title": "Fintech de Pagamentos PIX com RPO Próximo de Zero",
     "certification": "SAA-C03",
     "certifications": [
       "SAA-C03"
     ],
     "difficulty": "advanced",
-    "objective": "Garantir transações ACID com RPO=0 e desacoplamento resiliente via filas FIFO.",
-    "scenario": "Uma fintech processa transferências PIX 24/7. Não é tolerada nenhuma perda de transação. O pico de Black Friday multiplica o volume por 40x. Microsserviços de pagamento, notificação e contabilidade precisam ser desacoplados.",
+    "objective": "Garantir transações ACID com RPO próximo de zero e desacoplamento resiliente via filas FIFO.",
+    "scenario": "Uma fintech processa transferências PIX 24/7. A arquitetura deve minimizar a perda de transações durante falhas. O pico de Black Friday multiplica o volume por 40x. Microsserviços de pagamento, notificação e contabilidade precisam ser desacoplados.",
     "services": [
       {
         "slug": "amazon-aurora",
@@ -249,7 +251,7 @@
           },
           {
             "id": "B",
-            "text": "Garante ordem exata e entrega exactly-once, vital para evitar cobranças duplicadas."
+            "text": "Preserva a ordem por grupo e oferece deduplicação na janela configurada, mas ainda exige consumidores idempotentes."
           },
           {
             "id": "C",
@@ -259,7 +261,7 @@
         "correct_answer": [
           "B"
         ],
-        "explanation": "SQS FIFO garante que mensagens sejam entregues na mesma ordem em que foram enviadas e que cada mensagem seja processada exatamente uma vez. Para pagamentos, isso evita que a mesma transação seja executada duas vezes."
+        "explanation": "SQS FIFO preserva a ordem dentro de cada MessageGroupId e oferece deduplicação na janela configurada. A entrega continua exigindo consumidores idempotentes, porque a aplicação deve tolerar reentregas e impedir que uma transação seja aplicada duas vezes."
       },
       {
         "question_text": "O Aurora PostgreSQL Multi-AZ garante qual tipo de failover?",
@@ -296,9 +298,9 @@
       }
     ],
     "content_en": {
-      "title": "PIX Payments Fintech with Zero Data Loss",
-      "objective": "Guarantee ACID transactions with RPO=0 and resilient decoupling through FIFO queues.",
-      "scenario": "A fintech processes PIX transfers 24/7. No transaction loss is acceptable, Black Friday traffic increases volume by 40x, and payment, notification, and accounting microservices must be decoupled.",
+      "title": "PIX Payments Fintech with Near-Zero RPO",
+      "objective": "Guarantee ACID transactions with near-zero RPO and resilient decoupling through FIFO queues.",
+      "scenario": "A fintech processes PIX transfers 24/7. The architecture must minimize transaction loss during failures, Black Friday traffic increases volume by 40x, and payment, notification, and accounting microservices must be decoupled.",
       "services": [
         {
           "service_slug": "amazon-aurora",
@@ -331,7 +333,7 @@
             },
             {
               "id": "B",
-              "text": "It guarantees ordering and exactly-once processing, which is vital to prevent duplicate charges."
+              "text": "It preserves ordering per message group and provides deduplication within the configured window, while still requiring idempotent consumers."
             },
             {
               "id": "C",
@@ -341,7 +343,7 @@
           "correct_answer": [
             "B"
           ],
-          "explanation": "SQS FIFO preserves message order and supports exactly-once processing. For payments, this prevents the same transaction from being executed twice."
+          "explanation": "SQS FIFO preserves ordering within each MessageGroupId and provides deduplication within the configured window. Consumers must still be idempotent because applications must tolerate re-delivery and prevent a payment from being applied twice."
         },
         {
           "question_text": "What type of failover does Aurora PostgreSQL Multi-AZ provide?",
@@ -382,6 +384,7 @@
   {
     "id": "case-003",
     "slug": "streaming-cache",
+    "builder": { "required_services": ["amazon-elasticache", "amazon-rds", "elastic-load-balancing", "amazon-ec2", "amazon-ec2-auto-scaling"], "optional_services": ["amazon-cloudwatch"], "distractors": ["aws-lambda", "amazon-dynamodb", "amazon-s3"], "required_connections": [["elastic-load-balancing", "amazon-ec2"], ["amazon-ec2", "amazon-elasticache"], ["amazon-ec2", "amazon-rds"]] },
     "title": "Plataforma de Streaming com Pico de Login",
     "certification": "DVA-C02",
     "certifications": [
@@ -571,6 +574,7 @@
   {
     "id": "case-004",
     "slug": "hospital-compliance",
+    "builder": { "required_services": ["amazon-s3"], "optional_services": [], "distractors": ["amazon-rds", "amazon-ebs", "amazon-ec2"], "required_connections": [] },
     "title": "Sistema Hospitalar com Compliance de 10 Anos",
     "certification": "SAA-C03",
     "certifications": [
@@ -736,6 +740,7 @@
   {
     "id": "case-005",
     "slug": "iot-industrial",
+    "builder": { "required_services": ["amazon-kinesis-data-streams", "aws-lambda", "amazon-s3", "amazon-kinesis-data-firehose"], "optional_services": ["amazon-sns"], "distractors": ["amazon-sqs", "amazon-api-gateway", "amazon-rds"], "required_connections": [["amazon-kinesis-data-streams", "aws-lambda"], ["amazon-kinesis-data-streams", "amazon-kinesis-data-firehose"], ["amazon-kinesis-data-firehose", "amazon-s3"]] },
     "title": "IoT Industrial — Ingestão e Detecção de Anomalias em Tempo Real",
     "certification": "SAA-C03",
     "certifications": [
@@ -746,16 +751,16 @@
     "scenario": "Fábricas com 50.000 sensores enviam temperatura, pressão e vibração a cada segundo. Superaquecimentos devem ser detectados em menos de 5 segundos. Todos os dados devem ser salvos para análise retroativa e ML.",
     "services": [
       {
-        "slug": "amazon-kinesis",
-        "service_slug": "amazon-kinesis",
+        "slug": "amazon-kinesis-data-streams",
+        "service_slug": "amazon-kinesis-data-streams",
         "name": "Amazon Kinesis Data Streams",
         "service_name": "Amazon Kinesis Data Streams",
         "category": "Analytics",
         "role_note": "Ingestão de streaming em tempo real"
       },
       {
-        "slug": "amazon-kinesis",
-        "service_slug": "amazon-kinesis",
+        "slug": "amazon-kinesis-data-firehose",
+        "service_slug": "amazon-kinesis-data-firehose",
         "name": "Amazon Kinesis Data Firehose",
         "service_name": "Amazon Kinesis Data Firehose",
         "category": "Analytics",
@@ -844,11 +849,11 @@
       "scenario": "Factories operate 50,000 sensors that send temperature, pressure, and vibration readings every second. Overheating must be detected in under five seconds, and all data must be retained for retrospective analysis and machine learning.",
       "services": [
         {
-          "service_slug": "amazon-kinesis",
+          "service_slug": "amazon-kinesis-data-streams",
           "role_note": "Provides the Amazon Kinesis Data Streams capability required by this architecture."
         },
         {
-          "service_slug": "amazon-kinesis",
+          "service_slug": "amazon-kinesis-data-firehose",
           "role_note": "Provides the Amazon Kinesis Data Firehose capability required by this architecture."
         },
         {
@@ -925,6 +930,7 @@
   {
     "id": "case-006",
     "slug": "saas-multitenant",
+    "builder": { "required_services": ["amazon-api-gateway", "aws-lambda", "amazon-dynamodb", "amazon-cognito"], "optional_services": ["aws-iam"], "distractors": ["amazon-ecs", "amazon-rds", "amazon-s3"], "required_connections": [["amazon-api-gateway", "aws-lambda"], ["aws-lambda", "amazon-dynamodb"]] },
     "title": "SaaS Multi-Tenant Serverless com Isolamento por Tenant",
     "certification": "SAA-C03",
     "certifications": [
@@ -1114,6 +1120,7 @@
   {
     "id": "case-007",
     "slug": "ai-call-center",
+    "builder": { "required_services": ["amazon-s3", "aws-lambda", "amazon-transcribe", "amazon-comprehend"], "optional_services": ["amazon-dynamodb"], "distractors": ["amazon-rekognition", "amazon-bedrock", "amazon-kinesis"], "required_connections": [["amazon-s3", "aws-lambda"], ["aws-lambda", "amazon-transcribe"], ["amazon-transcribe", "amazon-comprehend"]] },
     "title": "IA para Auditoria Automática de Call Center",
     "certification": "AIF-C01",
     "certifications": [
@@ -1303,6 +1310,7 @@
   {
     "id": "case-008",
     "slug": "migracao-oracle-aurora",
+    "builder": { "required_services": ["amazon-aurora", "aws-dms", "aws-direct-connect"], "optional_services": ["amazon-route-53"], "distractors": ["amazon-rds", "amazon-ec2", "aws-lambda"], "required_connections": [["aws-direct-connect", "aws-dms"], ["aws-dms", "amazon-aurora"]] },
     "title": "Migração Zero-Downtime Oracle → Aurora PostgreSQL",
     "certification": "SAA-C03",
     "certifications": [
@@ -1536,7 +1544,7 @@
     ],
     "architecture_graph": {
       "type": "mermaid",
-      "content": "graph LR\n  U([Usuário]) --> CF[CloudFront\\n+ Shield]\n  CF -->|OAC| S3[(S3 Bucket\\nEstático)]\n  CF --> ACM[ACM\\nSSL Cert]"
+      "content": "graph LR\n  U([Usuário]) --> CF[CloudFront]\n  CF -->|OAC| S3[(S3 Bucket\\nEstático)]\n  CF -.-> SH[AWS Shield Standard]\n  CF -.-> ACM[ACM\\nCustom-domain TLS]"
     },
     "questions": [
       {
@@ -1561,7 +1569,7 @@
         "explanation": "Origin Access Control (OAC) é a forma moderna de restringir acesso ao S3 apenas via CloudFront. O bucket fica privado e o CloudFront recebe permissão via resource-based policy. Isso evita que usuários acessem o S3 diretamente e contornem a CDN, gerando custos extras e bypassando o WAF."
       },
       {
-        "question_text": "Qual serviço fornece certificado SSL gratuito para o domínio no CloudFront?",
+        "question_text": "Se o site usar um domínio personalizado no CloudFront, qual serviço fornece o certificado SSL gratuito?",
         "options": [
           {
             "id": "A",
@@ -1594,6 +1602,28 @@
         "type": "doc"
       }
     ],
+    "builder": {
+      "required_services": [
+        "amazon-s3",
+        "amazon-cloudfront"
+      ],
+      "optional_services": [
+        "aws-certificate-manager",
+        "amazon-route53",
+        "aws-waf"
+      ],
+      "distractors": [
+        "amazon-ec2",
+        "amazon-rds",
+        "amazon-api-gateway"
+      ],
+      "required_connections": [
+        [
+          "amazon-cloudfront",
+          "amazon-s3"
+        ]
+      ]
+    },
     "content_en": {
       "title": "Static Blog with Global CDN and DDoS Protection",
       "objective": "Host a static site with a global CDN, free TLS, DDoS protection, and minimal cost.",
@@ -1618,7 +1648,7 @@
       ],
       "architecture_graph": {
         "type": "mermaid",
-        "content": "graph LR\n  U([Usuário]) --> CF[CloudFront\\n+ Shield]\n  CF -->|OAC| S3[(S3 Bucket\\nEstático)]\n  CF --> ACM[ACM\\nSSL Cert]"
+        "content": "graph LR\n  U([User]) --> CF[CloudFront]\n  CF -->|OAC| S3[(S3 Bucket\\nStatic)]\n  CF -.-> SH[AWS Shield Standard]\n  CF -.-> ACM[ACM\\nCustom-domain TLS]"
       },
       "questions": [
         {
@@ -1643,7 +1673,7 @@
           "explanation": "Origin Access Control lets a private S3 bucket trust CloudFront while preventing users from bypassing the CDN."
         },
         {
-          "question_text": "Which service provides a free SSL certificate for a CloudFront domain?",
+          "question_text": "If the site uses a custom domain with CloudFront, which service provides the free SSL certificate?",
           "options": [
             {
               "id": "A",
@@ -1661,7 +1691,7 @@
           "correct_answer": [
             "B"
           ],
-          "explanation": "ACM provides and manages free TLS certificates for services such as CloudFront and renews them automatically."
+          "explanation": "When the site uses a custom CloudFront domain, AWS Certificate Manager (ACM) provides and manages the free TLS certificate and renews it automatically."
         }
       ],
       "resources": [
@@ -1681,6 +1711,7 @@
   {
     "id": "case-010",
     "slug": "multi-conta-landing-zone",
+    "builder": { "required_services": ["aws-organizations", "aws-cloudtrail", "amazon-s3"], "optional_services": ["aws-iam"], "distractors": ["amazon-cognito", "amazon-api-gateway", "amazon-ec2"], "required_connections": [["aws-cloudtrail", "amazon-s3"]] },
     "title": "Governança Multi-Contas com AWS Organizations",
     "certification": "SAA-C03",
     "certifications": [
@@ -1870,6 +1901,7 @@
   {
     "id": "case-011",
     "slug": "api-gateway-lambda",
+    "builder": { "required_services": ["amazon-api-gateway", "aws-lambda", "amazon-dynamodb"], "optional_services": ["aws-iam"], "distractors": ["amazon-ecs", "amazon-rds", "amazon-sqs"], "required_connections": [["amazon-api-gateway", "aws-lambda"], ["aws-lambda", "amazon-dynamodb"]] },
     "title": "API REST Serverless com API Gateway e Lambda",
     "certification": "DVA-C02",
     "certifications": [
@@ -2059,6 +2091,7 @@
   {
     "id": "case-012",
     "slug": "ci-cd-pipeline",
+    "builder": { "required_services": ["aws-codepipeline", "aws-codebuild", "amazon-ecr", "amazon-ecs", "aws-codedeploy"], "optional_services": ["amazon-cloudwatch"], "distractors": ["aws-lambda", "amazon-ec2", "amazon-api-gateway"], "required_connections": [["aws-codepipeline", "aws-codebuild"], ["aws-codebuild", "amazon-ecr"], ["amazon-ecr", "amazon-ecs"], ["aws-codedeploy", "amazon-ecs"]] },
     "title": "Pipeline CI/CD Automatizado com CodePipeline",
     "certification": "DVA-C02",
     "certifications": [
@@ -2248,6 +2281,7 @@
   {
     "id": "case-013",
     "slug": "rekognition-seguranca",
+    "builder": { "required_services": ["amazon-rekognition", "amazon-s3", "aws-lambda"], "optional_services": ["amazon-sns"], "distractors": ["amazon-comprehend", "amazon-transcribe", "amazon-bedrock"], "required_connections": [["amazon-s3", "aws-lambda"], ["aws-lambda", "amazon-rekognition"]] },
     "title": "Sistema de Segurança com Reconhecimento de Imagens",
     "certification": "AIF-C01",
     "certifications": [
@@ -2437,6 +2471,7 @@
   {
     "id": "case-014",
     "slug": "vpc-network-seguranca",
+    "builder": { "required_services": ["amazon-vpc", "elastic-load-balancing", "amazon-ec2", "amazon-rds"], "optional_services": [], "distractors": ["aws-lambda", "amazon-dynamodb", "amazon-s3"], "required_connections": [["elastic-load-balancing", "amazon-ec2"], ["amazon-ec2", "amazon-rds"]] },
     "title": "Arquitetura de Rede VPC com Camadas de Segurança",
     "certification": "SAA-C03",
     "certifications": [
@@ -2626,6 +2661,7 @@
   {
     "id": "case-015",
     "slug": "cloudwatch-alarms",
+    "builder": { "required_services": ["amazon-cloudwatch", "amazon-ec2", "amazon-ec2-auto-scaling"], "optional_services": ["amazon-sns"], "distractors": ["aws-lambda", "amazon-rds", "amazon-sqs"], "required_connections": [["amazon-ec2", "amazon-cloudwatch"], ["amazon-cloudwatch", "amazon-ec2-auto-scaling"]] },
     "title": "Monitoramento Proativo com CloudWatch e Auto Scaling",
     "certification": "CLF-C02",
     "certifications": [
@@ -2652,8 +2688,8 @@
         "role_note": "Instâncias com Auto Scaling"
       },
       {
-        "slug": "amazon-auto-scaling",
-        "service_slug": "amazon-auto-scaling",
+        "slug": "amazon-ec2-auto-scaling",
+        "service_slug": "amazon-ec2-auto-scaling",
         "name": "Auto Scaling",
         "service_name": "Auto Scaling",
         "category": "Compute",
@@ -2815,6 +2851,7 @@
   {
     "id": "case-016",
     "slug": "rekognition-moderacao",
+    "builder": { "required_services": ["amazon-s3", "aws-lambda", "amazon-rekognition"], "optional_services": ["amazon-sqs"], "distractors": ["amazon-comprehend", "amazon-transcribe", "amazon-dynamodb"], "required_connections": [["amazon-s3", "aws-lambda"], ["aws-lambda", "amazon-rekognition"]] },
     "title": "Moderação de Conteúdo em Rede Social com IA",
     "certification": "AIF-C01",
     "certifications": [
@@ -2994,6 +3031,7 @@
   {
     "id": "case-017",
     "slug": "bedrock-chatbot",
+    "builder": { "required_services": ["amazon-bedrock", "amazon-kendra", "amazon-s3", "aws-lambda", "amazon-api-gateway"], "optional_services": [], "distractors": ["amazon-dynamodb", "amazon-ecs", "amazon-rekognition"], "required_connections": [["amazon-api-gateway", "aws-lambda"], ["aws-lambda", "amazon-kendra"], ["amazon-kendra", "amazon-s3"], ["aws-lambda", "amazon-bedrock"]] },
     "title": "Chatbot Corporativo com Amazon Bedrock e RAG",
     "certification": "AIF-C01",
     "certifications": [
@@ -3183,6 +3221,7 @@
   {
     "id": "case-018",
     "slug": "disaster-recovery",
+    "builder": { "required_services": ["amazon-aurora", "amazon-route-53"], "optional_services": ["amazon-ec2", "amazon-cloudwatch"], "distractors": ["amazon-s3", "amazon-dynamodb", "amazon-cloudfront"], "required_connections": [["amazon-route-53", "amazon-aurora"]] },
     "title": "Disaster Recovery Multi-Região com RTO < 1 hora",
     "certification": "SAA-C03",
     "certifications": [
@@ -3372,6 +3411,7 @@
   {
     "id": "case-019",
     "slug": "cognito-auth",
+    "builder": { "required_services": ["amazon-cognito", "amazon-s3", "amazon-api-gateway", "aws-lambda"], "optional_services": ["aws-iam"], "distractors": ["amazon-dynamodb", "amazon-ecs", "amazon-aurora"], "required_connections": [["amazon-cognito", "amazon-api-gateway"], ["amazon-api-gateway", "aws-lambda"], ["amazon-cognito", "amazon-s3"]] },
     "title": "Autenticação e Autorização com Amazon Cognito",
     "certification": "DVA-C02",
     "certifications": [
@@ -3561,6 +3601,7 @@
   {
     "id": "case-020",
     "slug": "ec2-auto-scaling",
+    "builder": { "required_services": ["amazon-ec2", "amazon-ec2-auto-scaling", "elastic-load-balancing"], "optional_services": ["amazon-cloudwatch"], "distractors": ["aws-lambda", "amazon-rds", "amazon-dynamodb"], "required_connections": [["elastic-load-balancing", "amazon-ec2"], ["amazon-cloudwatch", "amazon-ec2-auto-scaling"]] },
     "title": "Auto Scaling com Políticas de Escalonamento Dinâmico",
     "certification": "CLF-C02",
     "certifications": [
@@ -3579,8 +3620,8 @@
         "role_note": "Instâncias da aplicação"
       },
       {
-        "slug": "amazon-auto-scaling",
-        "service_slug": "amazon-auto-scaling",
+        "slug": "amazon-ec2-auto-scaling",
+        "service_slug": "amazon-ec2-auto-scaling",
         "name": "Auto Scaling",
         "service_name": "Auto Scaling",
         "category": "Compute",
@@ -3750,6 +3791,7 @@
   {
     "id": "case-021",
     "slug": "sagemaker-modelo",
+    "builder": { "required_services": ["amazon-sagemaker", "amazon-s3"], "optional_services": ["amazon-cloudwatch"], "distractors": ["amazon-bedrock", "amazon-rekognition", "aws-lambda"], "required_connections": [["amazon-s3", "amazon-sagemaker"]] },
     "title": "Treinamento e Deploy de Modelo ML com SageMaker",
     "certification": "AIF-C01",
     "certifications": [
@@ -3927,6 +3969,7 @@
   {
     "id": "case-022",
     "slug": "s3-event-pipeline",
+    "builder": { "required_services": ["amazon-s3", "aws-lambda", "amazon-dynamodb"], "optional_services": ["amazon-sns", "amazon-sqs"], "distractors": ["amazon-kinesis", "amazon-api-gateway"], "required_connections": [["amazon-s3", "aws-lambda"], ["aws-lambda", "amazon-dynamodb"]] },
     "title": "Pipeline de Processamento de Dados via S3 Events",
     "certification": "DVA-C02",
     "certifications": [
@@ -4116,6 +4159,7 @@
   {
     "id": "case-023",
     "slug": "fargate-microservicos",
+    "builder": { "required_services": ["amazon-ecs", "elastic-load-balancing", "amazon-ecr"], "optional_services": ["amazon-cloudwatch"], "distractors": ["amazon-ec2", "aws-lambda", "amazon-api-gateway"], "required_connections": [["amazon-ecr", "amazon-ecs"], ["elastic-load-balancing", "amazon-ecs"]] },
     "title": "Microserviços Containerizados com ECS Fargate",
     "certification": "SAA-C03",
     "certifications": [
@@ -4305,6 +4349,7 @@
   {
     "id": "case-024",
     "slug": "iam-least-privilege",
+    "builder": { "required_services": ["aws-iam", "amazon-s3", "amazon-dynamodb"], "optional_services": ["amazon-ec2"], "distractors": ["aws-lambda", "amazon-rds", "amazon-ecs"], "required_connections": [["aws-iam", "amazon-s3"], ["aws-iam", "amazon-dynamodb"]] },
     "title": "Segurança IAM com Princípio do Menor Privilégio",
     "certification": "CLF-C02",
     "certifications": [
@@ -4349,7 +4394,7 @@
     ],
     "architecture_graph": {
       "type": "mermaid",
-      "content": "graph TD\n  Root[Root Account\\nSÓ para emergências]\n  DevGroup[IAM Group\\nDevs] -->|S3 Policy| S3[(S3 Dev)]\n  AnalGroup[IAM Group\\nAnalistas] -->|DDB ReadOnly| DDB[(DynamoDB)]\n  DevOpsRole[IAM Role\\nDevOps] -->|EC2 Full| EC2[EC2]"
+      "content": "graph TD\n  Root[Root Account\\nSÓ para emergências]\n  DevGroup[IAM Group\\nDevs] -->|S3 Policy| S3[(S3 Dev)]\n  AnalGroup[IAM Group\\nAnalistas] -->|DDB ReadOnly| DDB[(DynamoDB)]\n  DevOpsRole[IAM Role\\nDevOps] -->|EC2 Least-Privilege Role| EC2[EC2]"
     },
     "questions": [
       {
@@ -4431,7 +4476,7 @@
       ],
       "architecture_graph": {
         "type": "mermaid",
-        "content": "graph TD\n  Root[Root Account\\nSÓ para emergências]\n  DevGroup[IAM Group\\nDevs] -->|S3 Policy| S3[(S3 Dev)]\n  AnalGroup[IAM Group\\nAnalistas] -->|DDB ReadOnly| DDB[(DynamoDB)]\n  DevOpsRole[IAM Role\\nDevOps] -->|EC2 Full| EC2[EC2]"
+        "content": "graph TD\n  Root[Root Account\\nSÓ para emergências]\n  DevGroup[IAM Group\\nDevs] -->|S3 Policy| S3[(S3 Dev)]\n  AnalGroup[IAM Group\\nAnalistas] -->|DDB ReadOnly| DDB[(DynamoDB)]\n  DevOpsRole[IAM Role\\nDevOps] -->|EC2 Least-Privilege Role| EC2[EC2]"
       },
       "questions": [
         {
@@ -4494,13 +4539,14 @@
   {
     "id": "case-025",
     "slug": "redshift-data-warehouse",
+    "builder": { "required_services": ["amazon-redshift", "amazon-s3", "aws-glue", "amazon-kinesis-data-firehose"], "optional_services": [], "distractors": ["amazon-dynamodb", "amazon-rds", "amazon-aurora"], "required_connections": [["amazon-kinesis-data-firehose", "amazon-s3"], ["amazon-s3", "aws-glue"], ["aws-glue", "amazon-redshift"]] },
     "title": "Data Warehouse Analítico com Amazon Redshift",
     "certification": "SAA-C03",
     "certifications": [
       "SAA-C03"
     ],
     "difficulty": "intermediate",
-    "objective": "Construir Data Warehouse para BI com Redshift, ingestão via Firehose e consultas Athena no cold data.",
+    "objective": "Construir Data Warehouse para BI com Redshift, ingestão via Firehose e consultas Redshift Spectrum no cold data.",
     "scenario": "Uma varejista tem 5 anos de dados de vendas no S3. O BI precisa de queries complexas com JOINs em bilhões de linhas. DynamoDB e RDS não suportam esse volume analítico.",
     "services": [
       {
@@ -4520,8 +4566,8 @@
         "role_note": "Data Lake com histórico completo"
       },
       {
-        "slug": "amazon-kinesis",
-        "service_slug": "amazon-kinesis",
+        "slug": "amazon-kinesis-data-firehose",
+        "service_slug": "amazon-kinesis-data-firehose",
         "name": "Amazon Kinesis Firehose",
         "service_name": "Amazon Kinesis Firehose",
         "category": "Analytics",
@@ -4598,7 +4644,7 @@
     ],
     "content_en": {
       "title": "Analytical Data Warehouse with Amazon Redshift",
-      "objective": "Build a BI data warehouse with Redshift, Firehose ingestion, and Athena queries over cold data.",
+      "objective": "Build a BI data warehouse with Redshift, Firehose ingestion, and Redshift Spectrum queries over cold data.",
       "scenario": "A retailer has five years of sales data in S3. BI requires complex joins over billions of rows, which DynamoDB and RDS cannot support efficiently for this analytical workload.",
       "services": [
         {
@@ -4610,7 +4656,7 @@
           "role_note": "Provides the Amazon S3 capability required by this architecture."
         },
         {
-          "service_slug": "amazon-kinesis",
+          "service_slug": "amazon-kinesis-data-firehose",
           "role_note": "Provides the Amazon Kinesis Firehose capability required by this architecture."
         },
         {

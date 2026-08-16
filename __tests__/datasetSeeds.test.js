@@ -257,7 +257,7 @@ describe('catalog seed projections', () => {
       };
     });
 
-    expect(first).toEqual({ cases: 25, services: 238, progress: 1 });
-    expect(second).toEqual({ cases: 25, services: 238, progress: 1, labs: 0, route53Links: 1, apiCases: 25, apiServices: 238 });
+    expect(first).toEqual({ cases: 25, services: 241, progress: 1 });
+    expect(second).toEqual({ cases: 25, services: 241, progress: 1, labs: 0, route53Links: 1, apiCases: 25, apiServices: 241 });
   });
 });

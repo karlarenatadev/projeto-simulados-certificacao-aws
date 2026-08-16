@@ -973,6 +973,7 @@
         }
 
         window._caseData = caseData;
+        window.dispatchEvent(new CustomEvent("case:data-ready"));
         currentCaseId = caseData.id;
 
         // Update page meta
@@ -1052,6 +1053,8 @@
          ====================================================== -->
     <script src="https://cdn.jsdelivr.net/npm/drawflow@0.0.60/dist/drawflow.min.js"></script>
     <script>
+      /* Legacy builder is retained only as a source-compatible migration guard. */
+      if (false) {
       // ================================================================
       // Architecture Builder — AWS Service Catalog + Drawflow
       // ================================================================
@@ -1544,6 +1547,10 @@
 
       // Build palette immediately
       buildPalette();
+      }
+    </script>
+    <script type="module">
+      import "./js/cases/architectureBuilder.js";
     </script>
   </body>
 </html>

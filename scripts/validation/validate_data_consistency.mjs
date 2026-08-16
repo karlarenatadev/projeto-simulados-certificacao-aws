@@ -194,6 +194,62 @@ export function validateLabs(labs, context, report, file = 'data/labs/labs.json'
   report.counts.labs = labs.length;
 }
 
+function validateBuilderConfig(item, context, report, file, index) {
+  const builder = item?.builder;
+  if (!builder || typeof builder !== 'object' || Array.isArray(builder)) {
+    return false;
+  }
+
+  const arrays = ['required_services', 'optional_services', 'distractors', 'required_connections'];
+  arrays.forEach((field) => {
+    if (!Array.isArray(builder[field])) {
+      issue(report, 'ERROR', 'Cases', 'BUILDER_FIELD_SCHEMA', `Case '${item?.id}' builder.${field} must be an array.`, file, index);
+    }
+  });
+  if (!Array.isArray(builder.required_services) || builder.required_services.length === 0) {
+    issue(report, 'ERROR', 'Cases', 'BUILDER_REQUIRED_SERVICES', `Case '${item?.id}' builder.required_services must not be empty.`, file, index);
+  }
+
+  const categories = new Map();
+  for (const [category, values] of [
+    ['required_services', builder.required_services],
+    ['optional_services', builder.optional_services],
+    ['distractors', builder.distractors],
+  ]) {
+    if (!Array.isArray(values)) continue;
+    for (const value of values) {
+      const key = normalize(value);
+      if (!key) {
+        issue(report, 'ERROR', 'Cases', 'BUILDER_EMPTY_SERVICE', `Case '${item?.id}' contains an empty builder service.`, file, index);
+        continue;
+      }
+      if (categories.has(key)) {
+        issue(report, 'ERROR', 'Cases', 'BUILDER_DUPLICATE_SERVICE', `Case '${item?.id}' repeats builder service '${value}' across categories.`, file, index);
+      }
+    categories.set(key, category);
+      if (!context.serviceAliases?.has(key)) {
+        issue(report, 'ERROR', 'Cases', 'BUILDER_UNKNOWN_SERVICE', `Builder ${category} service '${value}' is not canonical or governance-pending.`, file, index);
+      }
+    }
+  }
+
+  for (const required of Array.isArray(builder.required_services) ? builder.required_services : []) {
+    const serviceKey = normalize(required);
+    if (!context.serviceAliases?.has(serviceKey)) {
+      issue(report, 'ERROR', 'Cases', 'BUILDER_UNKNOWN_REQUIRED_SERVICE', `Required builder service '${required}' is not canonical or governance-pending.`, file, index);
+    }
+  }
+
+  if (Array.isArray(builder.required_connections)) {
+    builder.required_connections.forEach((connection) => {
+      if (!Array.isArray(connection) || connection.length !== 2 || connection.some((service) => !categories.has(normalize(service)))) {
+        issue(report, 'ERROR', 'Cases', 'BUILDER_CONNECTION_REFERENCE', `Case '${item?.id}' has a builder connection that does not reference two configured services.`, file, index);
+      }
+    });
+  }
+  return true;
+}
+
 export function validateCases(cases, context, report, file = 'data/cases/architecture_cases.json') {
   if (!Array.isArray(cases)) {
     issue(report, 'ERROR', 'Cases', 'CASE_FILE_SHAPE', 'Cases source must be an array.', file);
@@ -201,6 +257,7 @@ export function validateCases(cases, context, report, file = 'data/cases/archite
   }
   const ids = new Set();
   const slugs = new Set();
+  let builderConfigured = 0;
   for (const [index, item] of cases.entries()) {
     for (const field of ['id', 'slug', 'objective', 'scenario', 'services']) {
       if (item?.[field] === undefined || item?.[field] === null || item?.[field] === '') issue(report, 'ERROR', 'Cases', 'CASE_REQUIRED_FIELD', `Missing required field '${field}'.`, file, index);
@@ -209,6 +266,8 @@ export function validateCases(cases, context, report, file = 'data/cases/archite
     if (slugs.has(item?.slug)) issue(report, 'ERROR', 'Cases', 'DUPLICATE_CASE_SLUG', `Duplicate case slug '${item?.slug}'.`, file, index);
     if (item?.id) ids.add(item.id);
     if (item?.slug) slugs.add(item.slug);
+    if (validateBuilderConfig(item, context, report, file, index)) builderConfigured += 1;
+    else issue(report, 'ERROR', 'Cases', 'BUILDER_REQUIRED', `Case '${item?.id}' must define a Builder contract.`, file, index);
     const certifications = item?.certifications || [item?.certification];
     if (!certifications.length || certifications.some((certification) => !normalizeCertification(certification))) issue(report, 'ERROR', 'Cases', 'CASE_CERTIFICATION', `Unsupported certification in case '${item?.id}'.`, file, index);
     if (!Array.isArray(item?.services)) issue(report, 'ERROR', 'Cases', 'CASE_SERVICES', `Case '${item?.id}' services must be an array.`, file, index);
@@ -260,6 +319,8 @@ export function validateCases(cases, context, report, file = 'data/cases/archite
     }
   }
   report.counts.cases = cases.length;
+  report.counts.builderConfigured = builderConfigured;
+  report.counts.builderMigrationPending = cases.length - builderConfigured;
 }
 
 export function validateTaxonomy(taxonomy, report, file = 'data/taxonomy/canonical_taxonomy.json') {
@@ -419,6 +480,8 @@ async function main() {
   console.log(`Questions: ${Object.values(report.counts.questions).reduce((total, count) => total + count, 0)}`);
   console.log(`Labs: ${report.counts.labs}`);
   console.log(`Cases: ${report.counts.cases}`);
+  console.log(`Cases with Builder config: ${report.counts.builderConfigured || 0}`);
+  console.log(`Builder migration pending: ${report.counts.builderMigrationPending || 0}`);
   console.log(`Flashcards: ${report.counts.flashcards}`);
   console.log(`Services: ${report.counts.services}`);
   console.log(`Sprint structural days: ${report.counts.sprintStructure}`);
