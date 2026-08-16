@@ -289,28 +289,27 @@
             <div id="progress-bar" class="h-2 aws-bg-orange transition-all duration-500" style="width: 0%"></div>
           </div>
 
-          <div class="flex flex-wrap justify-between items-center mb-6 mt-4 gap-3">
-            <span id="question-category" class="text-xs font-bold uppercase tracking-wider text-muted bg-gray-100 border border-gray-200 dark:border-slate-600 px-4 py-1.5 rounded-full shadow-sm">
-              Categoria
-            </span>
+          <div class="quiz-question-meta" data-i18n="question_metadata" data-i18n-attr="aria-label">
+            <div class="quiz-question-meta-info">
+              <span id="question-category" class="quiz-question-domain">Categoria</span>
+              <span id="question-difficulty" class="quiz-question-difficulty hidden"></span>
+            </div>
 
-            <div class="a3-card flex items-center gap-4 shadow-sm">
-              <div id="timer-container" class="hidden flex items-center gap-2 font-bold text-orange-600 dark:text-orange-400">
+            <div class="quiz-question-meta-actions">
+              <div id="timer-container" class="quiz-question-timer hidden" role="timer" aria-live="off">
                 <i class="fa-solid fa-clock" aria-hidden="true"></i>
                 <span id="quiz-timer">00:00</span>
               </div>
 
-              <div class="w-px h-5 bg-gray-300"></div>
-
-              <button id="btn-flag" class="a3-btn a3-btn-outline" aria-label="Marcar questão para revisão" aria-pressed="false" title="Marcar para revisão">
-                <i class="fa-solid fa-flag text-lg" aria-hidden="true"></i>
+              <button id="btn-flag" class="quiz-question-flag" aria-label="Marcar questão para revisão" aria-pressed="false" title="Marcar para revisão">
+                <i class="fa-solid fa-flag" aria-hidden="true"></i>
               </button>
 
-              <div class="w-px h-5 bg-gray-300"></div>
-
-              <span class="text-sm font-semibold text-muted dark:text-gray-400">
-                Questão <span id="current-q-num" class="text-aws-dark text-base mx-1">1</span>
-                de <span id="total-q-num" class="ml-1">10</span>
+              <span class="quiz-question-progress">
+                <span id="question-progress-prefix" data-i18n="question">Questão</span>
+                <span id="current-q-num">1</span>
+                <span id="question-progress-of" data-i18n="of">de</span>
+                <span id="total-q-num">10</span>
               </span>
             </div>
           </div>

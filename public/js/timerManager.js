@@ -49,7 +49,7 @@ export function updateExamTimerDisplay(uiState) {
   const min = Math.floor((uiState.timeRemaining % 3600) / 60);
   const sec = uiState.timeRemaining % 60;
 
-  const el = document.getElementById("timer-text");
+  const el = document.getElementById("quiz-timer");
   if (el) {
     if (hours > 0) {
       el.textContent = `${hours}:${min.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;

@@ -1291,6 +1291,22 @@ function loadQuestionUI() {
     }
   }
 
+  const difficultyElement = document.getElementById("question-difficulty");
+  const difficultyKey = {
+    easy: "beginner",
+    medium: "intermediate",
+    hard: "expert",
+  }[String(q.difficulty || "").toLowerCase()];
+  if (difficultyElement) {
+    if (difficultyKey) {
+      difficultyElement.textContent = t(difficultyKey, uiState.language);
+      difficultyElement.classList.remove("hidden");
+    } else {
+      difficultyElement.textContent = "";
+      difficultyElement.classList.add("hidden");
+    }
+  }
+
   const questionText = isMulti
     ? `${q.question} <br><span class="text-sm text-aws-orange italic mt-2 block">(${t("choose_options", uiState.language, { count: q.correct.length })})</span>`
     : q.question;

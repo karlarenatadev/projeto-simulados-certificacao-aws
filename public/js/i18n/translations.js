@@ -83,6 +83,7 @@ export const translations = {
 
     // Quiz Screen
     category: "Categoria",
+    question_metadata: "Metadados da questão",
     flag_for_review: "Marcar para revisão",
     marked_for_review: "Marcada para revisão",
     quiz_review_summary: "Resumo antes de finalizar",
@@ -661,6 +662,7 @@ export const translations = {
 
     // Quiz Screen
     category: "Category",
+    question_metadata: "Question metadata",
     flag_for_review: "Flag for review",
     marked_for_review: "Marked for review",
     quiz_review_summary: "Summary before finishing",
