@@ -1,6 +1,7 @@
 export const translations = {
   pt: {
     // Labs
+    domain_filter: "Domínio:",
     aws_labs: "Laboratórios AWS",
     aws_labs_desc: "Pratique AWS com laboratórios hands-on e ambientes guiados.",
     labs_hero_title: "Laboratórios AWS",
@@ -578,6 +579,7 @@ export const translations = {
 
   en: {
     // Labs
+    domain_filter: "Domain:",
     aws_labs: "AWS Labs",
     aws_labs_desc: "Practice AWS with hands-on labs and guided environments.",
     labs_hero_title: "AWS Labs",

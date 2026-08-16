@@ -134,16 +134,50 @@ export function validateLabs(labs, context, report, file = 'data/labs/labs.json'
     return;
   }
   const ids = new Set();
+  const coveredDomains = new Set();
   for (const [index, lab] of labs.entries()) {
-    for (const field of ['id', 'title', 'certification', 'service', 'difficulty', 'duration', 'provider']) {
+    for (const field of ['id', 'title', 'description', 'certification', 'domain', 'service', 'difficulty', 'duration', 'provider', 'externalUrl', 'active']) {
       if (lab?.[field] === undefined || lab?.[field] === null || lab?.[field] === '') issue(report, 'ERROR', 'Labs', 'LAB_REQUIRED_FIELD', `Missing required field '${field}'.`, file, index);
     }
     if (ids.has(lab?.id)) issue(report, 'ERROR', 'Labs', 'DUPLICATE_LAB_ID', `Duplicate lab id '${lab?.id}'.`, file, index);
     if (lab?.id) ids.add(lab.id);
-    if (!normalizeCertification(lab?.certification)) issue(report, 'ERROR', 'Labs', 'LAB_CERTIFICATION', `Unsupported certification '${lab?.certification}'.`, file, index);
+    const certification = normalizeCertification(lab?.certification);
+    if (!certification) issue(report, 'ERROR', 'Labs', 'LAB_CERTIFICATION', `Unsupported certification '${lab?.certification}'.`, file, index);
+    const domainKey = certification ? `${certification}:${normalize(lab?.domain)}` : null;
+    if (!domainKey || !context.domainsByCertification.has(domainKey)) {
+      issue(report, 'ERROR', 'Labs', 'LAB_DOMAIN', `Unsupported domain '${lab?.domain}' for certification '${lab?.certification}'.`, file, index);
+    } else if (lab?.active === true) {
+      coveredDomains.add(domainKey);
+    }
     if (lab?.difficulty && !LAB_DIFFICULTIES.has(normalize(lab.difficulty))) issue(report, 'ERROR', 'Labs', 'LAB_DIFFICULTY', `Unsupported difficulty '${lab.difficulty}'.`, file, index);
+    if (typeof lab?.duration !== 'number' || lab.duration <= 0) issue(report, 'ERROR', 'Labs', 'LAB_DURATION', `Lab duration must be a positive number.`, file, index);
+    if (typeof lab?.active !== 'boolean') issue(report, 'ERROR', 'Labs', 'LAB_ACTIVE', `Lab active must be boolean.`, file, index);
     if (lab?.externalUrl && !/^https?:\/\//i.test(lab.externalUrl)) issue(report, 'ERROR', 'Labs', 'LAB_URL', `Invalid externalUrl '${lab.externalUrl}'.`, file, index);
     if (lab?.service && !context.serviceAliases.has(normalize(lab.service))) issue(report, 'WARNING', 'Labs', 'UNKNOWN_SERVICE', `Lab service '${lab.service}' is not in the canonical catalog.`, file, index);
+    for (const [locale, content] of [['pt', lab?.content_pt], ['en', lab?.content_en]]) {
+      for (const field of ['title', 'description']) {
+        if (typeof content?.[field] !== 'string' || !content[field].trim()) {
+          issue(report, 'CONTENT_GAP', 'Labs', 'LAB_BILINGUAL_FIELD', `Lab '${lab?.id}' ${locale} field '${field}' is missing.`, file, index);
+        }
+      }
+    }
+  }
+  const taxonomyEntries = context?.domainsByCertification instanceof Map
+    ? [...context.domainsByCertification.entries()]
+    : [];
+  const domainsByCertification = new Map(taxonomyEntries.reduce((groups, [key, domain]) => {
+    const [cert] = key.split(':');
+    const list = groups.get(cert) || [];
+    list.push(domain.domain_id);
+    groups.set(cert, list);
+    return groups;
+  }, new Map()));
+  for (const [certification, domains] of domainsByCertification) {
+    for (const domain of domains) {
+      if (!coveredDomains.has(`${certification}:${normalize(domain)}`)) {
+        issue(report, 'CONTENT_GAP', 'Labs', 'LAB_DOMAIN_COVERAGE', `No active Lab covers '${certification}:${domain}'.`, file);
+      }
+    }
   }
   report.counts.labs = labs.length;
 }

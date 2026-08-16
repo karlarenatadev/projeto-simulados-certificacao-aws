@@ -21,7 +21,7 @@ export function resolveLabsCatalogUrl(pageUrl = globalThis.location?.href) {
 
 export function filterLabs(
   labs,
-  { certification = "", service = "", difficulty = "", recommendedLabIds = null } = {},
+  { certification = "", domain = "", service = "", difficulty = "", recommendedLabIds = null } = {},
 ) {
   const normalizedCertification = normalizeCertificationId(certification);
   return (Array.isArray(labs) ? labs : []).filter((lab) => {
@@ -31,6 +31,7 @@ export function filterLabs(
       normalizedCertification &&
       normalizeCertificationId(lab.certification) !== normalizedCertification
     ) return false;
+    if (domain && lab.domain !== domain) return false;
     if (service && lab.service !== service) return false;
     if (difficulty && lab.difficulty !== difficulty) return false;
     return true;
@@ -84,12 +85,23 @@ export function selectRecommendedLabs(labs, context) {
     : { labs: sameCertification, fallback: true };
 }
 
+export function localizeLab(lab, language = globalThis.currentLang || "pt") {
+  const content = language === "en" ? lab?.content_en : lab?.content_pt;
+  return {
+    ...lab,
+    title: content?.title || lab?.title || "",
+    description: content?.description || lab?.description || "",
+  };
+}
+
 export async function initLaboratorios() {
   await loadLabsCatalog();
   setupFilters();
   populateServiceFilter();
   preselectCertification();
+  populateDomainFilter();
   applyDiagnosticRecommendation();
+  populateDomainFilter();
   renderLabs();
 }
 
@@ -115,11 +127,12 @@ export async function loadLabsCatalog(fetchImpl = globalThis.fetch, pageUrl = gl
 }
 
 function setupFilters() {
-  ["filter-certification", "filter-service", "filter-difficulty"].forEach((id) => {
+  ["filter-certification", "filter-domain", "filter-service", "filter-difficulty"].forEach((id) => {
     document.getElementById(id)?.addEventListener("change", () => {
       diagnosticContextActive = false;
       diagnosticRecommendedLabIds = null;
       document.getElementById("labs-diagnostic-context")?.replaceChildren();
+      if (id === "filter-certification") populateDomainFilter();
       renderLabs();
     });
   });
@@ -172,6 +185,33 @@ function populateServiceFilter() {
   });
 }
 
+function populateDomainFilter() {
+  const domainSelect = document.getElementById("filter-domain");
+  if (!domainSelect) return;
+
+  const currentDomain = domainSelect.value;
+  const certification = document.getElementById("filter-certification")?.value || "";
+  const normalizedCertification = normalizeCertificationId(certification);
+  const domains = [...new Set(
+    allLabs
+      .filter((lab) => !normalizedCertification || normalizeCertificationId(lab.certification) === normalizedCertification)
+      .map((lab) => lab.domain)
+      .filter(Boolean),
+  )].sort();
+
+  const allOption = document.createElement("option");
+  allOption.value = "";
+  allOption.textContent = window.t ? window.t("all", window.currentLang || "pt") : "Todos";
+  domainSelect.replaceChildren(allOption);
+  domains.forEach((domain) => {
+    const option = document.createElement("option");
+    option.value = domain;
+    option.textContent = domain;
+    domainSelect.appendChild(option);
+  });
+  if (domains.includes(currentDomain)) domainSelect.value = currentDomain;
+}
+
 function preselectCertification() {
   const currentCert = AuthService.getCurrentUser()?.certification;
   const certSelect = document.getElementById("filter-certification");
@@ -192,12 +232,14 @@ function renderLabs() {
   if (!grid) return;
 
   const certFilter = document.getElementById("filter-certification")?.value || "";
+  const domainFilter = document.getElementById("filter-domain")?.value || "";
   const serviceFilter = document.getElementById("filter-service")?.value || "";
   const difficultyFilter = document.getElementById("filter-difficulty")?.value || "";
 
   // Apply filters
   const filtered = filterLabs(allLabs, {
     certification: certFilter,
+    domain: domainFilter,
     service: serviceFilter,
     difficulty: difficultyFilter,
     recommendedLabIds: diagnosticContextActive ? diagnosticRecommendedLabIds : null,
@@ -258,6 +300,7 @@ function renderLabs() {
 
   // Render cards
   filtered.forEach(lab => {
+    const localizedLab = localizeLab(lab);
     const isCompleted = completedLabs.includes(lab.id);
     
     // Icon based on difficulty
@@ -286,11 +329,11 @@ function renderLabs() {
         </div>
         <div>
           <span class="text-xs font-semibold text-blue-600 uppercase tracking-wider">${lab.service}</span>
-          <h3 class="font-bold text-gray-800 dark:text-white leading-tight mt-1">${lab.title}</h3>
+          <h3 class="font-bold text-gray-800 dark:text-white leading-tight mt-1">${localizedLab.title}</h3>
         </div>
       </div>
       
-      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">${lab.description}</p>
+      <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">${localizedLab.description}</p>
       
       <div class="flex items-center gap-4 text-xs font-medium text-gray-500 dark:text-gray-400 mb-6 bg-gray-50 dark:bg-slate-700/50 p-3 rounded-lg">
         <div class="flex items-center gap-1.5" title="Nível">

@@ -1,6 +1,8 @@
 import { jest } from "@jest/globals";
+import fs from "node:fs";
 import {
   filterLabs,
+  localizeLab,
   loadLabsCatalog,
   readLabsRecommendation,
   resolveLabsCatalogUrl,
@@ -15,8 +17,37 @@ const catalog = [
   { id: "iam-clf", certification: "CLF-C02", service: "AWS IAM", difficulty: "beginner", active: true },
   { id: "iam-inactive", certification: "CLF-C02", service: "AWS IAM", difficulty: "advanced", active: false },
 ];
+const labsDataset = JSON.parse(fs.readFileSync(new URL("../data/labs/labs.json", import.meta.url), "utf8"));
+const taxonomy = JSON.parse(fs.readFileSync(new URL("../data/taxonomy/canonical_taxonomy.json", import.meta.url), "utf8"));
 
 describe("Labs deploy/runtime", () => {
+  test("cobre todos os domínios canônicos ativos e mantém o contrato bilíngue", () => {
+    const expected = taxonomy.certification_domains.map(
+      (domain) => `${domain.certification}:${domain.domain_id}`,
+    );
+    const actual = new Set(
+      labsDataset.filter((lab) => lab.active).map((lab) => `${lab.certification}:${lab.domain}`),
+    );
+
+    expect(actual.size).toBe(17);
+    expect(expected.every((domainKey) => actual.has(domainKey))).toBe(true);
+    expect(new Set(labsDataset.map((lab) => lab.id)).size).toBe(labsDataset.length);
+    labsDataset.forEach((lab) => {
+      expect(lab.content_pt.title).toBeTruthy();
+      expect(lab.content_pt.description).toBeTruthy();
+      expect(lab.content_en.title).toBeTruthy();
+      expect(lab.content_en.description).toBeTruthy();
+      expect(lab.duration).toBeGreaterThan(0);
+    });
+  });
+
+  test("localiza títulos e descrições sem alterar a identidade do Lab", () => {
+    const lab = labsDataset.find((item) => item.id === "aws-bedrock-rag-aif");
+    expect(localizeLab(lab, "en").title).toBe(lab.content_en.title);
+    expect(localizeLab(lab, "pt").title).toBe(lab.content_pt.title);
+    expect(localizeLab(lab, "en").id).toBe(lab.id);
+  });
+
   test("resolve o catálogo relativamente à página, inclusive em project Pages", () => {
     expect(resolveLabsCatalogUrl("http://localhost:8080/laboratorios.html")).toBe(
       "http://localhost:8080/data/labs/labs.json",
@@ -44,6 +75,12 @@ describe("Labs deploy/runtime", () => {
   test("normaliza o filtro de certificação do catálogo", () => {
     expect(filterLabs(catalog, { certification: "saa-c03" }).map((lab) => lab.id)).toEqual([
       "iam-saa",
+    ]);
+  });
+
+  test("filtra por domínio canônico", () => {
+    expect(filterLabs(labsDataset, { domain: "aif-applications" }).map((lab) => lab.id)).toEqual([
+      "aws-bedrock-rag-aif",
     ]);
   });
 });
