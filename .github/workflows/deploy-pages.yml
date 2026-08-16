@@ -57,6 +57,11 @@ jobs:
 
           test -f public/data/questions/clf-c02.json
 
+          test -f public/laboratorios.html
+          test -f public/js/modules/laboratorios.js
+          test -f public/data/labs/labs.json
+          node -e "const fs=require('fs'); const labs=JSON.parse(fs.readFileSync('public/data/labs/labs.json','utf8')); if(!Array.isArray(labs)||labs.length===0) throw new Error('Labs catalog must be a non-empty array'); console.log('Labs catalog:', labs.length);"
+
           test -f public/manifest.json
           test -f public/sw.js
 
@@ -111,7 +116,10 @@ jobs:
             "js/app.js" \
             "css/style.css" \
             "manifest.json" \
-            "sw.js"; do
+            "sw.js" \
+            "laboratorios.html" \
+            "js/modules/laboratorios.js" \
+            "data/labs/labs.json"; do
 
               url="${SITE_URL%/}/${path}"
 
@@ -128,5 +136,17 @@ jobs:
                 "${url}" > /dev/null
 
           done
+
+          labs_json="${RUNNER_TEMP}/labs.json"
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --location \
+            --retry 5 \
+            --retry-delay 3 \
+            --retry-all-errors \
+            "${SITE_URL%/}/data/labs/labs.json" > "${labs_json}"
+          node -e "const fs=require('fs'); const labs=JSON.parse(fs.readFileSync(process.argv[1],'utf8')); if(!Array.isArray(labs)||labs.length===0) throw new Error('Deployed Labs catalog must be a non-empty array'); console.log('Deployed Labs catalog:', labs.length);" "${labs_json}"
 
           echo "Smoke test passed."

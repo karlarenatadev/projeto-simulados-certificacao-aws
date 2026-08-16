@@ -12,6 +12,30 @@ import { storageManager } from "../storageManager.js";
 let allLabs = [];
 let diagnosticContextActive = false;
 let diagnosticRecommendedLabIds = null;
+let labsCatalogError = null;
+
+export function resolveLabsCatalogUrl(pageUrl = globalThis.location?.href) {
+  if (!pageUrl) throw new Error("A página atual é necessária para resolver o catálogo de Labs.");
+  return new URL("./data/labs/labs.json", pageUrl).toString();
+}
+
+export function filterLabs(
+  labs,
+  { certification = "", service = "", difficulty = "", recommendedLabIds = null } = {},
+) {
+  const normalizedCertification = normalizeCertificationId(certification);
+  return (Array.isArray(labs) ? labs : []).filter((lab) => {
+    if (!lab?.active) return false;
+    if (recommendedLabIds && !recommendedLabIds.has(lab.id)) return false;
+    if (
+      normalizedCertification &&
+      normalizeCertificationId(lab.certification) !== normalizedCertification
+    ) return false;
+    if (service && lab.service !== service) return false;
+    if (difficulty && lab.difficulty !== difficulty) return false;
+    return true;
+  });
+}
 
 export function readLabsRecommendation(storage = globalThis.localStorage) {
   try {
@@ -61,7 +85,7 @@ export function selectRecommendedLabs(labs, context) {
 }
 
 export async function initLaboratorios() {
-  await fetchLabs();
+  await loadLabsCatalog();
   setupFilters();
   populateServiceFilter();
   preselectCertification();
@@ -69,23 +93,24 @@ export async function initLaboratorios() {
   renderLabs();
 }
 
-async function fetchLabs() {
+export async function loadLabsCatalog(fetchImpl = globalThis.fetch, pageUrl = globalThis.location?.href) {
+  const url = resolveLabsCatalogUrl(pageUrl);
   try {
-    // Tenta buscar usando um caminho absoluto para evitar erros dependendo da rota atual
-    const url = window.location.pathname.includes('/public/') 
-      ? "/public/data/labs/labs.json"
-      : "/data/labs/labs.json";
-      
-    const res = await fetch(url).catch(() => fetch("./data/labs/labs.json"));
-    if (res && res.ok) {
-      allLabs = await res.json();
-    } else {
-      logger.warn("Failed to fetch labs from /data/labs/labs.json");
-      allLabs = [];
+    const response = await fetchImpl(url);
+    if (!response?.ok) {
+      throw new Error(`HTTP ${response?.status ?? "unknown"} ${response?.statusText || "Unknown error"}`);
     }
+
+    const payload = await response.json();
+    if (!Array.isArray(payload)) throw new Error("O catálogo de Labs não é um array JSON.");
+    allLabs = payload;
+    labsCatalogError = null;
+    return allLabs;
   } catch (error) {
-    logger.error("Error fetching labs:", error);
+    labsCatalogError = { url, message: error?.message || "Unknown error" };
+    logger.error("[Labs] catalog load failed", labsCatalogError);
     allLabs = [];
+    return allLabs;
   }
 }
 
@@ -152,9 +177,11 @@ function preselectCertification() {
   const certSelect = document.getElementById("filter-certification");
   if (currentCert && certSelect) {
     // If the select has an option for the current cert, select it
-    const optionExists = Array.from(certSelect.options).some(opt => opt.value === currentCert);
-    if (optionExists) {
-      certSelect.value = currentCert;
+    const option = Array.from(certSelect.options).find(
+      (optionItem) => normalizeCertificationId(optionItem.value) === normalizeCertificationId(currentCert),
+    );
+    if (option) {
+      certSelect.value = option.value;
     }
   }
 }
@@ -169,13 +196,11 @@ function renderLabs() {
   const difficultyFilter = document.getElementById("filter-difficulty")?.value || "";
 
   // Apply filters
-  const filtered = allLabs.filter(lab => {
-    if (!lab.active) return false;
-    if (diagnosticContextActive && diagnosticRecommendedLabIds && !diagnosticRecommendedLabIds.has(lab.id)) return false;
-    if (certFilter && lab.certification !== certFilter) return false;
-    if (serviceFilter && lab.service !== serviceFilter) return false;
-    if (difficultyFilter && lab.difficulty !== difficultyFilter) return false;
-    return true;
+  const filtered = filterLabs(allLabs, {
+    certification: certFilter,
+    service: serviceFilter,
+    difficulty: difficultyFilter,
+    recommendedLabIds: diagnosticContextActive ? diagnosticRecommendedLabIds : null,
   });
 
   // Update count
@@ -185,6 +210,26 @@ function renderLabs() {
 
   // Remove loading skeletons or cards from the previous render.
   grid.innerHTML = "";
+
+  // Distinguish a catalog load failure from a valid empty filter result.
+  if (labsCatalogError) {
+    grid.innerHTML = `
+      <div class="col-span-1 md:col-span-2 lg:col-span-3 py-16 text-center bg-gray-50 dark:bg-slate-800/50 rounded-xl border border-dashed border-gray-300 dark:border-slate-700">
+        <div class="w-16 h-16 bg-gray-100 dark:bg-slate-700 text-gray-400 dark:text-gray-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 class="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2" data-i18n="no_labs_title">Labs indisponíveis</h3>
+        <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto" data-i18n="no_labs_desc">Verifique sua conexão e tente novamente.</p>
+      </div>
+    `;
+    if (window.t) {
+      grid.querySelectorAll("[data-i18n]").forEach((element) => {
+        const translated = window.t(element.dataset.i18n, window.currentLang || "pt");
+        if (translated) element.textContent = translated;
+      });
+    }
+    return;
+  }
 
   // Check empty state
   if (filtered.length === 0) {
