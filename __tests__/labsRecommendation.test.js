@@ -48,6 +48,32 @@ describe("Labs deploy/runtime", () => {
     expect(localizeLab(lab, "en").id).toBe(lab.id);
   });
 
+  test("mantém os 18 Labs, IDs legados e URLs Skill Builder canônicas", () => {
+    expect(labsDataset).toHaveLength(18);
+    expect(labsDataset.filter((lab) => lab.certification === "CLF-C02")).toHaveLength(4);
+    expect(labsDataset.filter((lab) => lab.certification === "SAA-C03")).toHaveLength(4);
+    expect(labsDataset.filter((lab) => lab.certification === "DVA-C02")).toHaveLength(5);
+    expect(labsDataset.filter((lab) => lab.certification === "AIF-C01")).toHaveLength(5);
+
+    const preservedIds = [
+      "aws-s3-basics",
+      "aws-ec2-linux",
+      "aws-vpc-basics",
+      "aws-iam-roles",
+      "aws-lambda-api",
+      "aws-dynamodb-crud",
+      "aws-bedrock-intro",
+    ];
+    expect(preservedIds.every((id) => labsDataset.some((lab) => lab.id === id))).toBe(true);
+    expect(labsDataset.every((lab) => {
+      const url = new URL(lab.externalUrl);
+      return url.protocol === "https:" &&
+        ["explore.skillbuilder.aws", "skillbuilder.aws"].includes(url.hostname) &&
+        !/\[[^\]]+\]\([^\)]+\)/.test(lab.externalUrl);
+    })).toBe(true);
+    expect(labsDataset.find((lab) => lab.id === "aws-bedrock-responsible-aif").service).toBe("Amazon Bedrock");
+  });
+
   test("resolve o catálogo relativamente à página, inclusive em project Pages", () => {
     expect(resolveLabsCatalogUrl("http://localhost:8080/laboratorios.html")).toBe(
       "http://localhost:8080/data/labs/labs.json",

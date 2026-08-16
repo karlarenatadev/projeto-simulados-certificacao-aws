@@ -152,7 +152,19 @@ export function validateLabs(labs, context, report, file = 'data/labs/labs.json'
     if (lab?.difficulty && !LAB_DIFFICULTIES.has(normalize(lab.difficulty))) issue(report, 'ERROR', 'Labs', 'LAB_DIFFICULTY', `Unsupported difficulty '${lab.difficulty}'.`, file, index);
     if (typeof lab?.duration !== 'number' || lab.duration <= 0) issue(report, 'ERROR', 'Labs', 'LAB_DURATION', `Lab duration must be a positive number.`, file, index);
     if (typeof lab?.active !== 'boolean') issue(report, 'ERROR', 'Labs', 'LAB_ACTIVE', `Lab active must be boolean.`, file, index);
-    if (lab?.externalUrl && !/^https?:\/\//i.test(lab.externalUrl)) issue(report, 'ERROR', 'Labs', 'LAB_URL', `Invalid externalUrl '${lab.externalUrl}'.`, file, index);
+    if (lab?.externalUrl) {
+      let parsedUrl;
+      try {
+        parsedUrl = new URL(lab.externalUrl);
+      } catch {
+        parsedUrl = null;
+      }
+      const allowedHost = parsedUrl
+        && ['explore.skillbuilder.aws', 'skillbuilder.aws'].includes(parsedUrl.hostname.toLowerCase());
+      if (!parsedUrl || parsedUrl.protocol !== 'https:' || !allowedHost || /\[[^\]]+\]\([^\)]+\)/.test(lab.externalUrl)) {
+        issue(report, 'ERROR', 'Labs', 'LAB_URL', `Invalid or non-canonical externalUrl '${lab.externalUrl}'.`, file, index);
+      }
+    }
     if (lab?.service && !context.serviceAliases.has(normalize(lab.service))) issue(report, 'WARNING', 'Labs', 'UNKNOWN_SERVICE', `Lab service '${lab.service}' is not in the canonical catalog.`, file, index);
     for (const [locale, content] of [['pt', lab?.content_pt], ['en', lab?.content_en]]) {
       for (const field of ['title', 'description']) {

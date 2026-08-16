@@ -11,7 +11,7 @@
     "difficulty": "beginner",
     "duration": 20,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/course/134/aws-cloud-practitioner-essentials",
     "active": true
   },
   {
@@ -26,7 +26,7 @@
     "difficulty": "beginner",
     "duration": 30,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/course/internal/view/elearning/13042/launching-amazon-ec2-instances",
     "active": true
   },
   {
@@ -41,7 +41,7 @@
     "difficulty": "intermediate",
     "duration": 45,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/course/79/introduction-to-amazon-virtual-private-cloud-vpc",
     "active": true
   },
   {
@@ -56,7 +56,7 @@
     "difficulty": "intermediate",
     "duration": 30,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/course/external/view/elearning/18443/aws-skill-builder-learner-guide",
     "active": true
   },
   {
@@ -71,7 +71,7 @@
     "difficulty": "intermediate",
     "duration": 40,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/course/external/view/elearning/17917/lab-building-a-serverless-api",
     "active": true
   },
   {
@@ -86,7 +86,7 @@
     "difficulty": "advanced",
     "duration": 45,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/course/external/view/elearning/20435/lab-data-modeling-for-amazon-dynamodb",
     "active": true
   },
   {
@@ -101,7 +101,7 @@
     "difficulty": "beginner",
     "duration": 35,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/courses/22073/generative-ai-amazon-bedrock",
     "active": true
   },
   {
@@ -116,7 +116,7 @@
     "difficulty": "beginner",
     "duration": 20,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/course/134/aws-cloud-practitioner-essentials",
     "active": true
   },
   {
@@ -131,7 +131,7 @@
     "difficulty": "beginner",
     "duration": 25,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/course/134/aws-cloud-practitioner-essentials",
     "active": true
   },
   {
@@ -146,7 +146,7 @@
     "difficulty": "intermediate",
     "duration": 35,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/course/external/view/elearning/12439/aws-networking-basics",
     "active": true
   },
   {
@@ -161,7 +161,7 @@
     "difficulty": "intermediate",
     "duration": 30,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/course/external/view/elearning/11458/aws-cloud-quest-cloud-practitioner",
     "active": true
   },
   {
@@ -176,7 +176,7 @@
     "difficulty": "intermediate",
     "duration": 30,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/courses/22336/lab-securing-application-credentials-with-aws-secrets-manager",
     "active": true
   },
   {
@@ -191,7 +191,7 @@
     "difficulty": "intermediate",
     "duration": 40,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/course/external/view/elearning/17919/lab-using-aws-cloudformation-for-automation",
     "active": true
   },
   {
@@ -206,7 +206,7 @@
     "difficulty": "intermediate",
     "duration": 35,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/course/external/view/elearning/14688/aws-observability",
     "active": true
   },
   {
@@ -221,7 +221,7 @@
     "difficulty": "intermediate",
     "duration": 40,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://explore.skillbuilder.aws/learn/course/external/view/elearning/7636/cloud-quest",
     "active": true
   },
   {
@@ -236,7 +236,7 @@
     "difficulty": "intermediate",
     "duration": 35,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://skillbuilder.aws/learning-plan/66NZQBVQD7/builder-labs-generative-ai-on-aws/UYVE81N2Y7",
     "active": true
   },
   {
@@ -245,13 +245,13 @@
     "description": "Compare respostas de um modelo, identifique riscos de viés e conteúdo inseguro e teste uma barreira de proteção no fluxo.",
     "content_pt": { "title": "Avaliação de segurança e responsabilidade em respostas de IA", "description": "Compare respostas de um modelo, identifique riscos de viés e conteúdo inseguro e teste uma barreira de proteção no fluxo." },
     "content_en": { "title": "Evaluate Safety and Responsibility in AI Responses", "description": "Compare model responses, identify bias and unsafe-content risks, and test a guardrail in the workflow." },
-    "service": "Amazon Bedrock Guardrails",
+    "service": "Amazon Bedrock",
     "certification": "AIF-C01",
     "domain": "aif-security-compliance",
     "difficulty": "intermediate",
     "duration": 30,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://skillbuilder.aws/learning-plan/66NZQBVQD7/builder-labs-generative-ai-on-aws/UYVE81N2Y7",
     "active": true
   },
   {
@@ -266,7 +266,7 @@
     "difficulty": "intermediate",
     "duration": 30,
     "provider": "AWS Skill Builder",
-    "externalUrl": "https://explore.skillbuilder.aws/learn",
+    "externalUrl": "https://skillbuilder.aws/learning-plan/66NZQBVQD7/builder-labs-generative-ai-on-aws/UYVE81N2Y7",
     "active": true
   }
 ]
