@@ -8044,14 +8044,14 @@ html.dark #screen-results {
 
 /* ── Input overrides globais ───────────────────────────────────────────── */
 
-select,
+:where(select,
 input[type="text"],
 input[type="number"],
 input[type="email"],
-textarea {
-  background-color: var(--a3-surface) !important;
-  border-color: var(--a3-border-default) !important;
-  color: var(--text-main) !important;
+textarea) {
+  background-color: var(--a3-surface);
+  border-color: var(--a3-border-default);
+  color: var(--text-main);
 }
 
 .dark select,
@@ -8062,6 +8062,17 @@ textarea {
   background-color: color-mix(in srgb,
       var(--a3-surface-soft) 86%,
       var(--a3-text-strong));
+}
+
+:where(select, input, textarea)::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+:where(select, input, textarea):disabled {
+  background-color: var(--a3-surface-soft);
+  color: var(--text-muted);
+  opacity: 0.75;
 }
 
 /* ── Utilitários gerais ────────────────────────────────────────────────── */

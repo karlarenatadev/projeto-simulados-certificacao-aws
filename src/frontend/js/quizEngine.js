@@ -437,58 +437,17 @@ export class QuizEngine {
     this.state.mode = "diagnostic"; // Isola o estado do simulado real
 
     try {
-      let data = null;
-
       // O diagnóstico é local-first e usa somente o banco principal.
-      if (apiService.getConfiguredApiUrl()?.trim()) {
-        try {
-        const response = await apiService.loadQuestions({
-          certification: certId,
-          search: "diagnostic", // Attempt to filter for diagnostic questions
-          limit: 50,
-          language,
-        });
+      const fileSuffix = language === "en" ? "-en" : "";
+      const filePath = `data/questions/${certId}${fileSuffix}.json`;
+      const response = await fetch(filePath);
 
-        if (response.success && response.data && response.data.length > 0) {
-          data = response.data;
-          logger.info(`✓ Loaded ${data.length} diagnostic questions from API`);
-        }
-      } catch (apiError) {
-        logger.warn(
-          "API request failed for diagnostic, falling back to JSON:",
-          apiError,
-        );
-      }
+      if (!response.ok) {
+        throw new Error(`Arquivo de diagnóstico não encontrado para ${certId} (${response.status}).`);
       }
 
-      data = null;
-
-      // Fallback to JSON
-      if (!data || data.length === 0) {
-        const fileSuffix = language === "en" ? "-en" : "";
-        let filePath = `data/questions/${certId}${fileSuffix}.json`;
-
-        let response = await fetch(filePath);
-
-        // FALLBACK: Se falhar ao buscar o ficheiro em EN, tenta buscar o padrão (PT)
-        if (!response.ok && language === "en") {
-          logger.warn(
-            `Diagnóstico EN não encontrado para ${certId}. Tentando versão PT...`,
-          );
-          filePath = `data/questions/${certId}.json`;
-          response = await fetch(filePath);
-        }
-
-        if (!response.ok)
-          throw new Error(
-            `Arquivo de diagnóstico não encontrado para ${certId}.`,
-          );
-
-        data = await response.json();
-        logger.info(
-          `✓ Loaded ${data.length} diagnostic questions from JSON file`,
-        );
-      }
+      let data = await response.json();
+      logger.info(`✓ Loaded ${data.length} diagnostic questions from JSON file`);
 
       // Seleciona a amostra do banco principal sem criar uma segunda fonte.
       data = selectDiagnosticQuestions(data, domainsConfig, {
