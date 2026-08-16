@@ -9,6 +9,7 @@ import apiService from "../services/api.js";
 import { normalizeCertificationId } from "../utils/certUtils.js";
 import { normalizeServiceId } from "../utils/serviceIdentity.js";
 import { storageManager } from "../storageManager.js";
+import { getCurrentLanguage } from "../core/languageManager.js";
 
 let apiStatus = {
   apiAvailable: true,
@@ -56,6 +57,53 @@ function getCaseServiceIds(caseItem) {
       ),
     )
     .filter(Boolean);
+}
+
+function asTranslationObject(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return value;
+}
+
+function mergeLocalizedServices(baseServices, localizedServices) {
+  const localizedBySlug = new Map(
+    (Array.isArray(localizedServices) ? localizedServices : []).map((service) => [
+      service?.service_slug || service?.slug,
+      service,
+    ]),
+  );
+  return (Array.isArray(baseServices) ? baseServices : []).map((service) => {
+    const key = service?.service_slug || service?.slug;
+    const localized = localizedBySlug.get(key);
+    return localized ? { ...service, ...localized } : service;
+  });
+}
+
+function mergeLocalizedResources(baseResources, localizedResources) {
+  const localized = Array.isArray(localizedResources) ? localizedResources : [];
+  return (Array.isArray(baseResources) ? baseResources : []).map((resource, index) => ({
+    ...resource,
+    ...(localized[index] || {}),
+    url: resource?.url || localized[index]?.url,
+    type: resource?.type || localized[index]?.type,
+  }));
+}
+
+/**
+ * Applies the official platform language to one bilingual Case payload.
+ * Structural identifiers remain sourced from the canonical PT/base object.
+ */
+export function localizeCase(caseItem, language = getCurrentLanguage()) {
+  if (!caseItem || typeof caseItem !== "object") return caseItem;
+  const normalizedLanguage = String(language || "pt").toLowerCase() === "en" ? "en" : "pt";
+  const source = normalizedLanguage === "en"
+    ? asTranslationObject(caseItem.content_en)
+    : asTranslationObject(caseItem.content_pt);
+  const localized = { ...caseItem, ...source };
+  localized.services = mergeLocalizedServices(caseItem.services, source.services);
+  localized.resources = mergeLocalizedResources(caseItem.resources, source.resources);
+  localized.architecture_graph = source.architecture_graph || caseItem.architecture_graph;
+  localized.questions = source.questions || caseItem.questions || [];
+  return localized;
 }
 
 export function rankRecommendedCases(cases, context, limit = 3) {
@@ -149,7 +197,7 @@ export async function getCases(filters = {}) {
     const response = await apiService.getCases(filters);
     apiStatus.apiAvailable = true;
     apiStatus.fallbackUsed = false;
-    return response.data || [];
+    return (response.data || []).map((caseItem) => localizeCase(caseItem));
   } catch (error) {
     logger.warn(
       "[caseManager] API unavailable, using fallback:",
@@ -179,7 +227,7 @@ export async function getCases(filters = {}) {
       );
     }
 
-    return fallbackCases;
+    return fallbackCases.map((caseItem) => localizeCase(caseItem));
   }
 }
 
@@ -193,7 +241,7 @@ export async function getCaseById(idOrSlug) {
     const response = await apiService.getCaseById(idOrSlug);
     apiStatus.apiAvailable = true;
     apiStatus.fallbackUsed = false;
-    return response.data || null;
+    return localizeCase(response.data || null);
   } catch (error) {
     logger.warn(
       "[caseManager] Could not fetch case, using fallback:",
@@ -203,10 +251,8 @@ export async function getCaseById(idOrSlug) {
     apiStatus.fallbackUsed = true;
 
     const fallbackCases = await fetchFallbackCases();
-    return (
-      fallbackCases.find((c) => c.id === idOrSlug || c.slug === idOrSlug) ||
-      null
-    );
+    const caseItem = fallbackCases.find((c) => c.id === idOrSlug || c.slug === idOrSlug) || null;
+    return localizeCase(caseItem);
   }
 }
 

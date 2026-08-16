@@ -15,6 +15,7 @@ import { PermissionService } from "./permissions.js";
 import { storageManager } from "../storageManager.js";
 import apiService from "./api.js";
 import { UserMapper } from "../core/contracts/userMapper.js";
+import { normalizeCertificationId } from "../utils/certUtils.js";
 
 /**
  * authService.js — CloudAcademy A3
@@ -86,6 +87,7 @@ export const AuthService = {
   async restoreSession() {
     const session = this.getSession();
     if (session) {
+      const pendingPreferenceSync = SessionManager.getPendingPreferenceSync();
       if (session.accessToken && session.authenticationMode === "online") {
         try {
           const response = await apiService.getMe(session.user.id);
@@ -98,12 +100,37 @@ export const AuthService = {
             SessionManager.persist({ ...session, user });
             const profile = await storageManager.hydrateAccountState();
             if (profile?.data?.preferences) {
+              const remotePreferences = profile.data.preferences;
+              const preferencesToKeep = {
+                language:
+                  pendingPreferenceSync?.language || remotePreferences.language,
+                certification:
+                  pendingPreferenceSync?.certification ||
+                  normalizeCertificationId(remotePreferences.certification),
+              };
+
+              if (pendingPreferenceSync) {
+                const pendingPreferences = Object.fromEntries(
+                  ["language", "certification", "theme"]
+                    .filter((key) => pendingPreferenceSync[key] !== undefined)
+                    .map((key) => [key, pendingPreferenceSync[key]]),
+                );
+                try {
+                  await apiService.updateMyProfile({
+                    preferences: pendingPreferences,
+                  });
+                  SessionManager.clearPendingPreferenceSync(pendingPreferences);
+                } catch {
+                  // A sessão local recente continua válida até a próxima tentativa.
+                }
+              }
+
               SessionManager.update({
-                language: profile.data.preferences.language,
-                certification: profile.data.preferences.certification?.toLowerCase(),
+                language: preferencesToKeep.language,
+                certification: preferencesToKeep.certification,
               });
             }
-            return user;
+            return SessionManager.restore()?.user || user;
           }
         } catch (error) {
           if (error.statusCode === 401 || error.status === 401) {

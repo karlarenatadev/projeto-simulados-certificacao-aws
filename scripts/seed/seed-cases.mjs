@@ -113,8 +113,8 @@ async function upsertCase(item) {
   const rows = await executeQuery(
     `INSERT INTO cases (
        slug, title, scenario, objective, difficulty, certifications,
-       architecture_graph, resources, tags
-     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       architecture_graph, resources, content_pt, content_en, tags
+     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
      ON CONFLICT (slug) DO UPDATE SET
        title = EXCLUDED.title,
        scenario = EXCLUDED.scenario,
@@ -123,6 +123,8 @@ async function upsertCase(item) {
        certifications = EXCLUDED.certifications,
        architecture_graph = EXCLUDED.architecture_graph,
        resources = EXCLUDED.resources,
+       content_pt = EXCLUDED.content_pt,
+       content_en = EXCLUDED.content_en,
        tags = EXCLUDED.tags,
        updated_at = NOW()
      RETURNING id, slug`,
@@ -135,6 +137,8 @@ async function upsertCase(item) {
       certifications,
       JSON.stringify(item.architecture_graph || {}),
       JSON.stringify(item.resources || []),
+      JSON.stringify(item),
+      JSON.stringify(item.content_en || {}),
       [...asArray(item.tags), `source-case-id:${item.id}`],
     ],
   );

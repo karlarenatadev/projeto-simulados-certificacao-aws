@@ -104,7 +104,91 @@
         "url": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DownloadDistS3AndCustomOrigins.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Global Marketplace with Low-Latency Reads",
+      "objective": "Design a globally distributed data layer with reads below 50 ms and strong consistency during checkout.",
+      "scenario": "A B2C marketplace is expanding across four continents. Its product catalog contains millions of SKUs, users require responses below 50 ms regardless of region, and cart purchases must remain consistent.",
+      "services": [
+        {
+          "service_slug": "amazon-dynamodb",
+          "role_note": "Provides the Amazon DynamoDB capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-cloudfront",
+          "role_note": "Provides the Amazon CloudFront capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-route53",
+          "role_note": "Provides the Amazon Route 53 capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  U([User]) --> CF[CloudFront CDN]\n  CF --> S3[(S3 Assets)]\n  U --> R53[Route 53]\n  R53 --> API[API Gateway]\n  API --> DDB[(DynamoDB\\nGlobal Tables)]\n  DDB -->|replica| DDB2[(DynamoDB\\nsa-east-1)]"
+      },
+      "questions": [
+        {
+          "question_text": "If DynamoDB in us-east-1 fails, what happens to users in sa-east-1?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The site is unavailable until us-east-1 returns."
+            },
+            {
+              "id": "B",
+              "text": "Route 53 directs traffic to the local Global Tables replica without noticeable impact."
+            },
+            {
+              "id": "C",
+              "text": "Cart items are permanently lost."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "DynamoDB Global Tables maintains active replicas in multiple Regions. With Route 53 latency-based routing, traffic already targets the nearest Region, so sa-east-1 can continue serving requests autonomously.",
+          "reference_url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html"
+        },
+        {
+          "question_text": "Which feature prevents a cart item from being duplicated during a retry?",
+          "options": [
+            {
+              "id": "A",
+              "text": "DynamoDB Streams"
+            },
+            {
+              "id": "B",
+              "text": "DynamoDB conditional operations using ConditionExpression"
+            },
+            {
+              "id": "C",
+              "text": "S3 Versioning"
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "ConditionExpression allows the write only when the item does not already exist, such as with attribute_not_exists. This makes the operation idempotent and safe to retry."
+        }
+      ],
+      "resources": [
+        {
+          "title": "DynamoDB Global Tables",
+          "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html",
+          "type": "doc"
+        },
+        {
+          "title": "CloudFront Origins",
+          "url": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DownloadDistS3AndCustomOrigins.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-002",
@@ -210,7 +294,90 @@
         "url": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "PIX Payments Fintech with Zero Data Loss",
+      "objective": "Guarantee ACID transactions with RPO=0 and resilient decoupling through FIFO queues.",
+      "scenario": "A fintech processes PIX transfers 24/7. No transaction loss is acceptable, Black Friday traffic increases volume by 40x, and payment, notification, and accounting microservices must be decoupled.",
+      "services": [
+        {
+          "service_slug": "amazon-aurora",
+          "role_note": "Provides the Amazon Aurora capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-sqs",
+          "role_note": "Provides the Amazon SQS capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-sns",
+          "role_note": "Provides the Amazon SNS capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-lambda",
+          "role_note": "Provides the AWS Lambda capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph TD\n  App[App de Payment] --> SQS[(SQS FIFO\\nOrdens)]\n  SQS --> Lambda[Lambda\\nProcessor]\n  Lambda --> Aurora[(Aurora\\nPostgreSQL)]\n  Lambda --> SNS[SNS]\n  SNS --> Email[Email]\n  SNS --> Push[Push Notification]"
+      },
+      "questions": [
+        {
+          "question_text": "Why use SQS FIFO instead of SQS Standard in this scenario?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It is cheaper than Standard."
+            },
+            {
+              "id": "B",
+              "text": "It guarantees ordering and exactly-once processing, which is vital to prevent duplicate charges."
+            },
+            {
+              "id": "C",
+              "text": "It provides unlimited throughput without additional configuration."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "SQS FIFO preserves message order and supports exactly-once processing. For payments, this prevents the same transaction from being executed twice."
+        },
+        {
+          "question_text": "What type of failover does Aurora PostgreSQL Multi-AZ provide?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Manual failover; a DBA must promote the replica."
+            },
+            {
+              "id": "B",
+              "text": "Automatic failover in under 60 seconds by promoting the standby replica."
+            },
+            {
+              "id": "C",
+              "text": "Only read access is preserved while the primary is unavailable."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Aurora Multi-AZ detects a primary instance failure and automatically promotes a standby replica in another Availability Zone, usually within 60 seconds, keeping the RPO close to zero."
+        }
+      ],
+      "resources": [
+        {
+          "title": "SQS FIFO Queues",
+          "url": "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html",
+          "type": "doc"
+        },
+        {
+          "title": "Aurora Multi-AZ",
+          "url": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-003",
@@ -316,7 +483,90 @@
         "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Strategies.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Streaming Platform with a Login Spike",
+      "objective": "Protect the user database from extreme read spikes by using ElastiCache and JWT sessions in Redis.",
+      "scenario": "A streaming service releases episodes every Friday at 8 PM. The user RDS database receives a 10,000% access increase within seconds, the login API overloads the database, and the existing RDS instance cannot be migrated.",
+      "services": [
+        {
+          "service_slug": "amazon-elasticache",
+          "role_note": "Provides the Amazon ElastiCache capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-rds",
+          "role_note": "Provides the Amazon RDS capability required by this architecture."
+        },
+        {
+          "service_slug": "elastic-load-balancing",
+          "role_note": "Provides the Elastic Load Balancing capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-ec2",
+          "role_note": "Provides the Amazon EC2 capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  U([User]) --> ALB[ALB]\n  ALB --> EC2[EC2 Auto Scaling]\n  EC2 -->|cache hit| Redis[(ElastiCache\\nRedis)]\n  EC2 -->|cache miss| RDS[(Amazon RDS)]"
+      },
+      "questions": [
+        {
+          "question_text": "Which strategy ensures that the cache is populated before the 8 PM spike?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Cache-Aside (lazy loading), populated only on demand."
+            },
+            {
+              "id": "B",
+              "text": "Write-Through or manual warm-up before 8 PM."
+            },
+            {
+              "id": "C",
+              "text": "Delete the cache at 7:59 PM to force rapid repopulation."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Write-Through keeps the cache current after each write. Alternatively, a job can warm the cache with the most popular profiles before the spike. Lazy loading would populate entries only on demand and cause slow responses at the start of the spike."
+        },
+        {
+          "question_text": "How can JWT sessions of banned users be invalidated immediately in Redis?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Wait for the JWT to expire naturally."
+            },
+            {
+              "id": "B",
+              "text": "Keep a Redis blacklist of invalidated JTIs with a TTL equal to the JWT lifetime."
+            },
+            {
+              "id": "C",
+              "text": "Revoke the server SSL certificate."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "JWTs are stateless, so immediate invalidation requires a blacklist in Redis. The backend checks the JTI on each request, while the TTL removes old entries automatically."
+        }
+      ],
+      "resources": [
+        {
+          "title": "ElastiCache for Redis",
+          "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html",
+          "type": "doc"
+        },
+        {
+          "title": "Caching Strategies",
+          "url": "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Strategies.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-004",
@@ -406,7 +656,82 @@
         "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Hospital Records with Ten-Year Compliance",
+      "objective": "Store medical exams with automated lifecycle policies and WORM immutability for compliance.",
+      "scenario": "A hospital stores DICOM imaging exams. Recent exams are accessed frequently, exams become cold after six months, and legislation requires ten years of retention with no early deletion, including by administrators.",
+      "services": [
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 Glacier capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  Upload[Upload DICOM] --> S3S[S3 Standard\\n0-180 dias]\n  S3S -->|Lifecycle Rule| S3G[S3 Glacier\\nFlexible 180d-1ano]\n  S3G -->|Lifecycle Rule| S3DA[S3 Glacier\\nDeep Archive 1-10 anos]\n  S3DA -->|Object Lock WORM| Lock[Imutável]"
+      },
+      "questions": [
+        {
+          "question_text": "Which feature prevents an administrator from deleting exams before ten years?",
+          "options": [
+            {
+              "id": "A",
+              "text": "S3 Versioning"
+            },
+            {
+              "id": "B",
+              "text": "S3 Object Lock in Compliance mode"
+            },
+            {
+              "id": "C",
+              "text": "An IAM policy with Deny:s3:DeleteObject"
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "S3 Object Lock in Compliance mode prevents any user, including the account root user, from deleting or changing an object before its retention period ends. Governance mode would allow the root user to remove the protection."
+        },
+        {
+          "question_text": "Which storage option has the lowest cost per GB but the longest retrieval time?",
+          "options": [
+            {
+              "id": "A",
+              "text": "S3 Standard with immediate access."
+            },
+            {
+              "id": "B",
+              "text": "S3 Glacier Flexible Retrieval with retrieval in minutes to hours."
+            },
+            {
+              "id": "C",
+              "text": "S3 Glacier Deep Archive with retrieval in up to 12 hours and the lowest cost."
+            }
+          ],
+          "correct_answer": [
+            "C"
+          ],
+          "explanation": "S3 Glacier Deep Archive is the lowest-cost option for rarely accessed data, with retrieval taking up to 12 hours. It is appropriate for long-term compliance data that is rarely retrieved."
+        }
+      ],
+      "resources": [
+        {
+          "title": "S3 Object Lock",
+          "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html",
+          "type": "doc"
+        },
+        {
+          "title": "S3 Lifecycle",
+          "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-005",
@@ -512,7 +837,90 @@
         "url": "https://docs.aws.amazon.com/athena/latest/ug/what-is.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Industrial IoT Ingestion and Real-Time Anomaly Detection",
+      "objective": "Ingest sensor data in real time, detect anomalies, and store the data in a data lake.",
+      "scenario": "Factories operate 50,000 sensors that send temperature, pressure, and vibration readings every second. Overheating must be detected in under five seconds, and all data must be retained for retrospective analysis and machine learning.",
+      "services": [
+        {
+          "service_slug": "amazon-kinesis",
+          "role_note": "Provides the Amazon Kinesis Data Streams capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-kinesis",
+          "role_note": "Provides the Amazon Kinesis Data Firehose capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-lambda",
+          "role_note": "Provides the AWS Lambda capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  Sensor[50k Sensores] --> KDS[Kinesis\\nData Streams]\n  KDS --> Lambda[Lambda\\nDetecção Anomalia]\n  Lambda -->|alerta| SNS[SNS Alerta]\n  KDS --> KDF[Kinesis\\nFirehose]\n  KDF --> S3[(S3\\nData Lake)]"
+      },
+      "questions": [
+        {
+          "question_text": "How can historical data be queried in S3 without loading it into a database?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Mount S3 as an EC2 disk and run SQL locally."
+            },
+            {
+              "id": "B",
+              "text": "Use Amazon Athena for serverless SQL queries directly against S3."
+            },
+            {
+              "id": "C",
+              "text": "Copy the data to RDS before every analysis."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Amazon Athena runs SQL queries directly against files in S3, including Parquet, JSON, and CSV, without moving the data. Charges are based on data scanned, making it suitable for ad-hoc data lake analysis."
+        },
+        {
+          "question_text": "Why use Kinesis Data Firehose instead of writing directly to S3 from Lambda?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Firehose has no additional cost."
+            },
+            {
+              "id": "B",
+              "text": "Firehose batches messages, reducing the number of S3 objects and the cost."
+            },
+            {
+              "id": "C",
+              "text": "Lambda cannot write to S3."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Firehose buffers data by time or size before writing a single object to S3. This avoids millions of tiny objects, which would hurt performance and increase S3 listing-operation costs."
+        }
+      ],
+      "resources": [
+        {
+          "title": "Kinesis Data Streams",
+          "url": "https://docs.aws.amazon.com/streams/latest/dev/introduction.html",
+          "type": "doc"
+        },
+        {
+          "title": "Amazon Athena",
+          "url": "https://docs.aws.amazon.com/athena/latest/ug/what-is.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-006",
@@ -618,7 +1026,90 @@
         "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/specifying-conditions.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Serverless Multi-Tenant SaaS with Tenant Isolation",
+      "objective": "Build serverless routing that sends each tenant to an isolated database by using IAM controls.",
+      "scenario": "A human-resources SaaS serves 200 companies. Each company must have isolated data, the frontend is shared, traffic is unpredictable, and a premium tenant must not consume the resources of other tenants.",
+      "services": [
+        {
+          "service_slug": "amazon-api-gateway",
+          "role_note": "Provides the Amazon API Gateway capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-lambda",
+          "role_note": "Provides the AWS Lambda capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-dynamodb",
+          "role_note": "Provides the Amazon DynamoDB capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-iam",
+          "role_note": "Provides the AWS IAM capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  App[Frontend SPA] --> APIGW[API Gateway]\n  APIGW -->|JWT Cognito| Lambda[Lambda]\n  Lambda -->|assume role| IAM[IAM Role\\npor Tenant]\n  IAM --> DDB[(DynamoDB\\nTenant A)]\n  IAM --> DDB2[(DynamoDB\\nTenant B)]"
+      },
+      "questions": [
+        {
+          "question_text": "Why is AWS Lambda suitable for unpredictable traffic from multiple tenants?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Because it runs continuously on dedicated instances."
+            },
+            {
+              "id": "B",
+              "text": "Because it scales from zero to thousands of parallel executions and charges by milliseconds."
+            },
+            {
+              "id": "C",
+              "text": "Because it never has cold starts."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Lambda runs on demand and scales concurrent executions automatically, with no idle server cost."
+        },
+        {
+          "question_text": "How can Lambda for Tenant A be prevented from accessing Tenant B data in DynamoDB?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Use one IAM role for every tenant and rely on the code."
+            },
+            {
+              "id": "B",
+              "text": "Use separate IAM roles with conditions that restrict access to the tenant partition key."
+            },
+            {
+              "id": "C",
+              "text": "Encrypt Tenant B data."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "IAM conditions such as dynamodb:LeadingKeys enforce tenant isolation at the permission layer rather than relying only on application code."
+        }
+      ],
+      "resources": [
+        {
+          "title": "Multi-tenant SaaS on AWS",
+          "url": "https://docs.aws.amazon.com/wellarchitected/latest/saas-lens/welcome.html",
+          "type": "doc"
+        },
+        {
+          "title": "DynamoDB IAM Conditions",
+          "url": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/specifying-conditions.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-007",
@@ -724,7 +1215,90 @@
         "url": "https://docs.aws.amazon.com/transcribe/latest/dg/what-is.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "AI for Automated Call-Center Auditing",
+      "objective": "Use managed AWS AI services for transcription and sentiment analysis without building machine-learning models.",
+      "scenario": "A company records 5,000 hours of call-center audio each month. It needs to detect dissatisfied customers automatically and classify calls without hiring data scientists.",
+      "services": [
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-lambda",
+          "role_note": "Provides the AWS Lambda capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-transcribe",
+          "role_note": "Provides the Amazon Transcribe capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-comprehend",
+          "role_note": "Provides the Amazon Comprehend capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  Audio[MP3 Upload] --> S3[(S3 Áudio)]\n  S3 -->|event| Lambda[Lambda]\n  Lambda --> Transcribe[Amazon\\nTranscribe]\n  Transcribe --> Text[Text]\n  Text --> Comprehend[Amazon\\nComprehend]\n  Comprehend --> DB[(DynamoDB\\nResults)]"
+      },
+      "questions": [
+        {
+          "question_text": "Which AWS service classifies \"I hate this charge!\" as negative sentiment?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Amazon Rekognition"
+            },
+            {
+              "id": "B",
+              "text": "Amazon Comprehend"
+            },
+            {
+              "id": "C",
+              "text": "Amazon Transcribe"
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Amazon Comprehend provides managed natural-language processing and sentiment detection. Transcribe converts audio to text, while Rekognition analyzes images."
+        },
+        {
+          "question_text": "How can each new audio file uploaded to S3 be processed automatically?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Poll continuously with Lambda every second."
+            },
+            {
+              "id": "B",
+              "text": "Configure an S3 Event Notification to invoke Lambda when the file arrives."
+            },
+            {
+              "id": "C",
+              "text": "Monitor the bucket manually through CloudTrail."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "S3 Event Notifications invoke Lambda, SQS, or SNS when an object is created, creating an event-driven pipeline without polling."
+        }
+      ],
+      "resources": [
+        {
+          "title": "Amazon Comprehend",
+          "url": "https://docs.aws.amazon.com/comprehend/latest/dg/what-is.html",
+          "type": "doc"
+        },
+        {
+          "title": "Amazon Transcribe",
+          "url": "https://docs.aws.amazon.com/transcribe/latest/dg/what-is.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-008",
@@ -830,7 +1404,90 @@
         "url": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Zero-Downtime Oracle to Aurora PostgreSQL Migration",
+      "objective": "Migrate 10 TB from on-premises Oracle to Aurora PostgreSQL with CDC and a weekend cutover.",
+      "scenario": "A physical data center contains 10 TB in Oracle 19c. The company wants to migrate to Aurora PostgreSQL without taking the application down for more than five minutes, while synchronizing changes continuously for weeks.",
+      "services": [
+        {
+          "service_slug": "amazon-aurora",
+          "role_note": "Provides the Amazon Aurora capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-dms",
+          "role_note": "Provides the AWS DMS capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-direct-connect",
+          "role_note": "Provides the AWS Direct Connect capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-route53",
+          "role_note": "Provides the Amazon Route 53 capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  Oracle[(Oracle\\nOn-Premises)] -->|Direct Connect| DMS[AWS DMS]\n  DMS -->|Full Load| Aurora[(Aurora\\nPostgreSQL)]\n  DMS -->|CDC sync| Aurora\n  App[Aplicação] -->|DNS cutover| Aurora"
+      },
+      "questions": [
+        {
+          "question_text": "What does AWS DMS do after completing the initial Full Load?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It shuts down automatically to reduce cost."
+            },
+            {
+              "id": "B",
+              "text": "It starts Change Data Capture (CDC) to keep both databases synchronized."
+            },
+            {
+              "id": "C",
+              "text": "It deletes the Oracle database automatically."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "After Full Load, DMS captures INSERT, UPDATE, and DELETE changes from the source and continuously applies them to the target until cutover."
+        },
+        {
+          "question_text": "Why use AWS Direct Connect instead of a VPN for this migration?",
+          "options": [
+            {
+              "id": "A",
+              "text": "A VPN is more expensive."
+            },
+            {
+              "id": "B",
+              "text": "Direct Connect provides dedicated bandwidth, lower latency, and predictable throughput for 10 TB."
+            },
+            {
+              "id": "C",
+              "text": "A VPN cannot connect to RDS."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Direct Connect provides private connectivity with dedicated bandwidth, making large data transfers more predictable and reducing migration time."
+        }
+      ],
+      "resources": [
+        {
+          "title": "AWS DMS",
+          "url": "https://docs.aws.amazon.com/dms/latest/userguide/Welcome.html",
+          "type": "doc"
+        },
+        {
+          "title": "AWS Direct Connect",
+          "url": "https://docs.aws.amazon.com/directconnect/latest/UserGuide/Welcome.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-009",
@@ -936,7 +1593,90 @@
         "url": "https://docs.aws.amazon.com/waf/latest/developerguide/shield-chapter.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Static Blog with Global CDN and DDoS Protection",
+      "objective": "Host a static site with a global CDN, free TLS, DDoS protection, and minimal cost.",
+      "scenario": "A news blog was taken down by a DDoS attack while its WordPress backend ran on EC2. The company migrated to a static React site and needs DDoS protection, SSL, and near-zero operating cost.",
+      "services": [
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-cloudfront",
+          "role_note": "Provides the Amazon CloudFront capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-shield",
+          "role_note": "Provides the AWS Shield capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-certificate-manager",
+          "role_note": "Provides the AWS ACM capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  U([Usuário]) --> CF[CloudFront\\n+ Shield]\n  CF -->|OAC| S3[(S3 Bucket\\nEstático)]\n  CF --> ACM[ACM\\nSSL Cert]"
+      },
+      "questions": [
+        {
+          "question_text": "How can direct access to the S3 URL be blocked so all traffic goes through CloudFront?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Keep the bucket private and use CloudFront Origin Access Control (OAC)."
+            },
+            {
+              "id": "B",
+              "text": "Disable the public S3 endpoint only."
+            },
+            {
+              "id": "C",
+              "text": "Use an IAM user in the customer browser."
+            }
+          ],
+          "correct_answer": [
+            "A"
+          ],
+          "explanation": "Origin Access Control lets a private S3 bucket trust CloudFront while preventing users from bypassing the CDN."
+        },
+        {
+          "question_text": "Which service provides a free SSL certificate for a CloudFront domain?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Let us Encrypt hosted on EC2."
+            },
+            {
+              "id": "B",
+              "text": "AWS Certificate Manager (ACM), with automatic renewal."
+            },
+            {
+              "id": "C",
+              "text": "AWS KMS."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "ACM provides and manages free TLS certificates for services such as CloudFront and renews them automatically."
+        }
+      ],
+      "resources": [
+        {
+          "title": "CloudFront OAC",
+          "url": "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-restricting-access-to-s3.html",
+          "type": "doc"
+        },
+        {
+          "title": "AWS Shield Standard",
+          "url": "https://docs.aws.amazon.com/waf/latest/developerguide/shield-chapter.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-010",
@@ -1042,7 +1782,90 @@
         "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/creating-trail-organization.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Multi-Account Governance with AWS Organizations",
+      "objective": "Centralize governance, billing, auditing, and guardrails across more than 30 AWS accounts.",
+      "scenario": "A company grew from one to 30 AWS accounts. It struggles to manage permissions and billing, audit actions, prevent teams from creating expensive resources accidentally, and provide centralized security visibility.",
+      "services": [
+        {
+          "service_slug": "aws-organizations",
+          "role_note": "Provides the AWS Organizations capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-cloudtrail",
+          "role_note": "Provides the AWS CloudTrail capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-iam",
+          "role_note": "Provides the AWS IAM capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph TD\n  Org[AWS Organizations\\nManagement Account]\n  Org --> OU1[OU: Production]\n  Org --> OU2[OU: Development]\n  Org --> OU3[OU: Security]\n  SCP[SCPs\\nGuardrails] --> Org\n  CloudTrail[CloudTrail\\nOrg Trail] --> S3Logs[(S3 Central\\nAudit Logs)]"
+      },
+      "questions": [
+        {
+          "question_text": "An IAM administrator has an EC2 Allow in a development account, but an SCP prohibits EC2. Which rule prevails?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The local IAM administrator Allow."
+            },
+            {
+              "id": "B",
+              "text": "The SCP guardrail, because Organizations policies limit the maximum permissions."
+            },
+            {
+              "id": "C",
+              "text": "The account becomes inaccessible because the policies conflict."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "SCPs do not grant permissions; they limit the maximum permissions an account can use. An action outside the SCP is denied even when IAM allows it."
+        },
+        {
+          "question_text": "What is an AWS Organizations trail and why is it better than separate trails?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It is cheaper per account."
+            },
+            {
+              "id": "B",
+              "text": "It captures API events from all organization accounts in a centralized bucket."
+            },
+            {
+              "id": "C",
+              "text": "It replaces GuardDuty."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "An Organization Trail enabled in the management account automatically captures events from member accounts, avoiding one separately maintained trail per account."
+        }
+      ],
+      "resources": [
+        {
+          "title": "AWS Organizations SCPs",
+          "url": "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html",
+          "type": "doc"
+        },
+        {
+          "title": "CloudTrail Org Trail",
+          "url": "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/creating-trail-organization.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-011",
@@ -1148,7 +1971,90 @@
         "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Serverless REST API with API Gateway and Lambda",
+      "objective": "Build a serverless REST API with authentication and throttling without managing servers.",
+      "scenario": "A startup must launch a mobile-app API in two weeks. The small team does not want to operate servers, and traffic may vary from 10 to 100,000 requests per hour.",
+      "services": [
+        {
+          "service_slug": "amazon-api-gateway",
+          "role_note": "Provides the Amazon API Gateway capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-lambda",
+          "role_note": "Provides the AWS Lambda capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-dynamodb",
+          "role_note": "Provides the Amazon DynamoDB capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-iam",
+          "role_note": "Provides the AWS IAM capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  App[Mobile App] --> APIGW[API Gateway\\nREST API]\n  APIGW -->|throttle + auth| Lambda[Lambda\\nFunção]\n  Lambda --> DDB[(DynamoDB)]"
+      },
+      "questions": [
+        {
+          "question_text": "How can a client sending 10,000 requests per second be prevented from overwhelming the API?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Block the client IP manually."
+            },
+            {
+              "id": "B",
+              "text": "Configure API Gateway usage plans with rate and burst limits."
+            },
+            {
+              "id": "C",
+              "text": "Increase the Lambda timeout to 15 minutes."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "API Gateway usage plans enforce rate and burst limits. Clients that exceed the limit receive HTTP 429, protecting the backend without additional infrastructure."
+        },
+        {
+          "question_text": "What is an advantage of Lambda proxy integration in API Gateway?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It removes the need to configure any routes."
+            },
+            {
+              "id": "B",
+              "text": "It passes the complete request to Lambda and gives the code full control of the response."
+            },
+            {
+              "id": "C",
+              "text": "It eliminates Lambda cold starts."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Proxy integration forwards headers, body, paths, and query strings as the event. Lambda returns statusCode, headers, and body, giving the application complete response control."
+        }
+      ],
+      "resources": [
+        {
+          "title": "API Gateway Usage Plans",
+          "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-usage-plans.html",
+          "type": "doc"
+        },
+        {
+          "title": "Lambda Proxy Integration",
+          "url": "https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-012",
@@ -1254,7 +2160,90 @@
         "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-bluegreen.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Automated CI/CD Pipeline with CodePipeline",
+      "objective": "Automate deployment of a Node.js application from commit to ECS using CodePipeline.",
+      "scenario": "A team of ten developers pushes to GitHub several times a day. Manual ECS deployment takes two hours and causes errors, so the team needs a pipeline that tests, builds, and deploys automatically.",
+      "services": [
+        {
+          "service_slug": "aws-codepipeline",
+          "role_note": "Provides the AWS CodePipeline capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-codebuild",
+          "role_note": "Provides the AWS CodeBuild capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-ecr",
+          "role_note": "Provides the Amazon ECR capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-ecs",
+          "role_note": "Provides the Amazon ECS capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  GH[GitHub Push] --> CP[CodePipeline]\n  CP --> CB[CodeBuild\\ntestes + build]\n  CB --> ECR[(ECR\\nDocker Image)]\n  ECR --> ECS[ECS\\nDeploy Blue/Green]"
+      },
+      "questions": [
+        {
+          "question_text": "What happens if unit tests fail in CodeBuild?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The pipeline continues and deploys the failed version."
+            },
+            {
+              "id": "B",
+              "text": "The pipeline stops at that stage and does not continue to deployment."
+            },
+            {
+              "id": "C",
+              "text": "CodeBuild emails the developer and continues."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "A nonzero CodeBuild exit code marks the CodePipeline stage as failed and stops the execution, protecting production from broken code."
+        },
+        {
+          "question_text": "Why use an ECS blue/green deployment instead of a rolling update?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Blue/green is always faster."
+            },
+            {
+              "id": "B",
+              "text": "It enables an immediate rollback without downtime if the new version fails."
+            },
+            {
+              "id": "C",
+              "text": "Rolling updates do not work with ECS."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Blue/green provisions the new version beside the current version and shifts traffic only after health checks pass. Rollback switches traffic back to the blue version."
+        }
+      ],
+      "resources": [
+        {
+          "title": "CodePipeline",
+          "url": "https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html",
+          "type": "doc"
+        },
+        {
+          "title": "ECS Blue/Green",
+          "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-bluegreen.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-013",
@@ -1360,7 +2349,90 @@
         "url": "https://docs.aws.amazon.com/rekognition/latest/dg/moderation.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Image Recognition for Physical Security",
+      "objective": "Detect dangerous objects in security-camera images with Amazon Rekognition without training custom models.",
+      "scenario": "A residential complex has 200 cameras. Guards receive manual alerts too late, so the company wants automatic detection of suspicious objects and visitor face recognition.",
+      "services": [
+        {
+          "service_slug": "amazon-rekognition",
+          "role_note": "Provides the Amazon Rekognition capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-lambda",
+          "role_note": "Provides the AWS Lambda capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-sns",
+          "role_note": "Provides the Amazon SNS capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  Cam[Câmera IP] --> S3[(S3 Frames)]\n  S3 -->|event| Lambda[Lambda]\n  Lambda --> Rek[Amazon\\nRekognition]\n  Rek -->|objeto detectado| Lambda\n  Lambda --> SNS[SNS Alerta]"
+      },
+      "questions": [
+        {
+          "question_text": "Which Rekognition API detects whether an image contains a weapon?",
+          "options": [
+            {
+              "id": "A",
+              "text": "DetectFaces"
+            },
+            {
+              "id": "B",
+              "text": "DetectModerationLabels"
+            },
+            {
+              "id": "C",
+              "text": "CompareFaces"
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "DetectModerationLabels returns labels for sensitive or potentially dangerous content, including weapons, violence, and adult content."
+        },
+        {
+          "question_text": "How does Rekognition charge for the service?",
+          "options": [
+            {
+              "id": "A",
+              "text": "By EC2 instance hours used to process images."
+            },
+            {
+              "id": "B",
+              "text": "Per analyzed image or per minute of video processed."
+            },
+            {
+              "id": "C",
+              "text": "A fixed unlimited monthly fee."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Rekognition uses pay-per-use pricing: photo analysis is charged per image and video analysis is charged per minute, without infrastructure to provision."
+        }
+      ],
+      "resources": [
+        {
+          "title": "Amazon Rekognition",
+          "url": "https://docs.aws.amazon.com/rekognition/latest/dg/what-is.html",
+          "type": "doc"
+        },
+        {
+          "title": "Content Moderation",
+          "url": "https://docs.aws.amazon.com/rekognition/latest/dg/moderation.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-014",
@@ -1466,7 +2538,90 @@
         "url": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "VPC Network Architecture with Security Layers",
+      "objective": "Design a VPC with public and private subnets, a NAT Gateway, and three security layers.",
+      "scenario": "A web application needs three layers: a public frontend, private application servers, and an isolated database. Private servers must download updates without being exposed to the internet.",
+      "services": [
+        {
+          "service_slug": "amazon-vpc",
+          "role_note": "Provides the Amazon VPC capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-vpc",
+          "role_note": "Provides the NAT Gateway capability required by this architecture."
+        },
+        {
+          "service_slug": "elastic-load-balancing",
+          "role_note": "Provides the ALB capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-rds",
+          "role_note": "Provides the Amazon RDS capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph TD\n  Internet[Internet] --> ALB[ALB\\nSubnet Pública]\n  ALB --> App[App Servers\\nSubnet Privada]\n  App --> RDS[(RDS\\nSubnet Isolada)]\n  App -->|atualizações| NAT[NAT Gateway]\n  NAT --> Internet"
+      },
+      "questions": [
+        {
+          "question_text": "Why do application servers in private subnets need a NAT Gateway?",
+          "options": [
+            {
+              "id": "A",
+              "text": "To receive internet traffic directly."
+            },
+            {
+              "id": "B",
+              "text": "To make outbound requests such as downloading patches without public IP addresses."
+            },
+            {
+              "id": "C",
+              "text": "To access S3 without transfer charges."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "A NAT Gateway lets private instances initiate outbound internet connections while preventing the internet from initiating inbound connections."
+        },
+        {
+          "question_text": "What is the difference between Security Groups and network ACLs in a VPC?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Security Groups operate at the subnet layer and ACLs at the instance layer."
+            },
+            {
+              "id": "B",
+              "text": "Security Groups are stateful and ACLs are stateless."
+            },
+            {
+              "id": "C",
+              "text": "ACLs work only in public subnets."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Security Groups track connections and are stateful. Network ACLs are stateless, so explicit inbound and outbound rules are required; Security Groups apply to instances and ACLs to subnets."
+        }
+      ],
+      "resources": [
+        {
+          "title": "VPC Design",
+          "url": "https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Scenario2.html",
+          "type": "doc"
+        },
+        {
+          "title": "NAT Gateway",
+          "url": "https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-015",
@@ -1572,7 +2727,90 @@
         "url": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Install-CloudWatch-Agent.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Proactive Monitoring with CloudWatch and Auto Scaling",
+      "objective": "Configure metrics, alarms, and Auto Scaling to respond automatically to CPU spikes.",
+      "scenario": "An EC2 application becomes slow during traffic spikes and the team learns about it only from customer complaints. The team needs automatic alerts and scaling for high-traffic events.",
+      "services": [
+        {
+          "service_slug": "amazon-cloudwatch",
+          "role_note": "Provides the Amazon CloudWatch capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-ec2",
+          "role_note": "Provides the Amazon EC2 capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-auto-scaling",
+          "role_note": "Provides the Auto Scaling capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-sns",
+          "role_note": "Provides the Amazon SNS capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  EC2[EC2 Instances] -->|métricas| CW[CloudWatch]\n  CW -->|CPU > 70%| Alarm[Alarm]\n  Alarm --> ASG[Auto Scaling\\nAdd Instance]\n  Alarm --> SNS[SNS\\nE-mail Alerta]"
+      },
+      "questions": [
+        {
+          "question_text": "What happens when a CloudWatch alarm changes to ALARM?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The EC2 instance is always restarted automatically."
+            },
+            {
+              "id": "B",
+              "text": "The configured alarm actions run, such as scaling, notification, or publishing to SNS."
+            },
+            {
+              "id": "C",
+              "text": "The alarm only records an event in CloudWatch Logs."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "An alarm executes its configured actions, which may add or remove Auto Scaling instances, publish to SNS, or trigger EC2 recovery."
+        },
+        {
+          "question_text": "Which CloudWatch metric indicates that an EC2 instance needs scaling because of memory pressure?",
+          "options": [
+            {
+              "id": "A",
+              "text": "CPUUtilization, an EC2 default metric."
+            },
+            {
+              "id": "B",
+              "text": "MemoryUtilization, which requires the CloudWatch Agent because it is not collected by default."
+            },
+            {
+              "id": "C",
+              "text": "NetworkIn, which measures network traffic."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "EC2 does not collect memory and disk metrics by default. The CloudWatch Agent must be installed and configured to publish memory utilization."
+        }
+      ],
+      "resources": [
+        {
+          "title": "CloudWatch Alarms",
+          "url": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html",
+          "type": "doc"
+        },
+        {
+          "title": "CloudWatch Agent",
+          "url": "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Install-CloudWatch-Agent.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-016",
@@ -1673,7 +2911,85 @@
         "url": "https://docs.aws.amazon.com/rekognition/latest/dg/moderation.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "AI Content Moderation for a Social Network",
+      "objective": "Automatically moderate user-uploaded images with Rekognition and SQS.",
+      "scenario": "A social network receives 500,000 image uploads per day. Manual review is impossible, so the company must detect inappropriate content automatically and queue borderline cases for human review.",
+      "services": [
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-lambda",
+          "role_note": "Provides the AWS Lambda capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-rekognition",
+          "role_note": "Provides the Amazon Rekognition capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-sqs",
+          "role_note": "Provides the Amazon SQS capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  Upload[Upload Imagem] --> S3[(S3)]\n  S3 --> Lambda[Lambda]\n  Lambda --> Rek[Rekognition\\nModeração]\n  Rek -->|score alto| Delete[Deletar Auto]\n  Rek -->|score médio| SQS[(SQS\\nRevisão Humana)]\n  Rek -->|score baixo| Approve[Aprovar Auto]"
+      },
+      "questions": [
+        {
+          "question_text": "Which Rekognition API returns a confidence score for adult content?",
+          "options": [
+            {
+              "id": "A",
+              "text": "DetectLabels"
+            },
+            {
+              "id": "B",
+              "text": "DetectModerationLabels"
+            },
+            {
+              "id": "C",
+              "text": "DetectText"
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "DetectModerationLabels returns categories such as Nudity, Violence, and Drugs with confidence scores from 0 to 100."
+        },
+        {
+          "question_text": "Why use SQS Standard for human review instead of FIFO?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Standard costs less and exact ordering is not important for manual review."
+            },
+            {
+              "id": "B",
+              "text": "SQS FIFO does not work with Lambda."
+            },
+            {
+              "id": "C",
+              "text": "SQS Standard has more features than FIFO."
+            }
+          ],
+          "correct_answer": [
+            "A"
+          ],
+          "explanation": "Human review generally does not require strict ordering. Standard offers lower cost and very high throughput; FIFO is needed only when ordering is critical."
+        }
+      ],
+      "resources": [
+        {
+          "title": "Rekognition Moderation",
+          "url": "https://docs.aws.amazon.com/rekognition/latest/dg/moderation.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-017",
@@ -1779,7 +3095,90 @@
         "url": "https://docs.aws.amazon.com/kendra/latest/dg/what-is-kendra.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Enterprise Chatbot with Amazon Bedrock and RAG",
+      "objective": "Build a chatbot that answers questions about internal documents using RAG with Bedrock and Kendra.",
+      "scenario": "A company has 50,000 internal policies, manuals, and contracts. Employees spend hours searching for information, so the company wants answers grounded in internal documents without fine-tuning a model.",
+      "services": [
+        {
+          "service_slug": "amazon-bedrock",
+          "role_note": "Provides the Amazon Bedrock capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-kendra",
+          "role_note": "Provides the Amazon Kendra capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-lambda",
+          "role_note": "Provides the AWS Lambda capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  User[Funcionário] --> API[API Gateway]\n  API --> Lambda[Lambda\\nRAG Orchestrator]\n  Lambda --> Kendra[Amazon Kendra\\nBusca Semântica]\n  Kendra --> S3[(S3\\nDocumentos)]\n  Lambda --> Bedrock[Amazon Bedrock\\nLLM Response]"
+      },
+      "questions": [
+        {
+          "question_text": "What is RAG (Retrieval-Augmented Generation) in this context?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Train a custom model with company documents."
+            },
+            {
+              "id": "B",
+              "text": "Retrieve relevant document passages and inject them into the LLM prompt as context."
+            },
+            {
+              "id": "C",
+              "text": "Create document embeddings and store them in S3."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "RAG combines retrieval and generation: relevant passages are retrieved, added to the prompt, and used by the model to produce a grounded answer."
+        },
+        {
+          "question_text": "Why use Amazon Kendra instead of a simple keyword search?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Kendra is cheaper."
+            },
+            {
+              "id": "B",
+              "text": "Kendra understands the intent and semantics of a question, not only exact keywords."
+            },
+            {
+              "id": "C",
+              "text": "Kendra replaces S3 for storage."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Kendra uses machine learning for semantic search, so differently worded questions can still find documents describing the same concept."
+        }
+      ],
+      "resources": [
+        {
+          "title": "Amazon Bedrock",
+          "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html",
+          "type": "doc"
+        },
+        {
+          "title": "Amazon Kendra",
+          "url": "https://docs.aws.amazon.com/kendra/latest/dg/what-is-kendra.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-018",
@@ -1885,7 +3284,90 @@
         "url": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Multi-Region Disaster Recovery with RTO under One Hour",
+      "objective": "Design a Warm Standby disaster-recovery strategy with RTO under one hour and RPO under 15 minutes.",
+      "scenario": "A healthcare system must continue operating after a complete Regional failure. The maximum RTO is one hour, the maximum RPO is 15 minutes, and fully duplicated infrastructure is too expensive.",
+      "services": [
+        {
+          "service_slug": "amazon-aurora",
+          "role_note": "Provides the Amazon Aurora capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-route53",
+          "role_note": "Provides the Amazon Route 53 capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-ec2",
+          "role_note": "Provides the Amazon EC2 capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-cloudwatch",
+          "role_note": "Provides the Amazon CloudWatch capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  App[Usuários] --> R53[Route 53\\nHealth Check]\n  R53 -->|primário| US[us-east-1\\nFull Stack]\n  R53 -->|failover| BR[sa-east-1\\nWarm Standby]\n  US -->|replicação| AuroraGlobal[(Aurora Global DB)]\n  BR --> AuroraGlobal"
+      },
+      "questions": [
+        {
+          "question_text": "What is Warm Standby and how does it differ from Pilot Light?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Warm Standby has stopped servers; Pilot Light runs everything at reduced scale."
+            },
+            {
+              "id": "B",
+              "text": "Warm Standby keeps a reduced but functional version running; Pilot Light keeps only the core database ready."
+            },
+            {
+              "id": "C",
+              "text": "They are equivalent strategies."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Pilot Light keeps only the minimum core, usually a replicated database, ready to start. Warm Standby keeps a reduced but functional environment that can receive traffic with scaling."
+        },
+        {
+          "question_text": "How does Route 53 detect a primary Regional failure and redirect traffic?",
+          "options": [
+            {
+              "id": "A",
+              "text": "An operator manually updates DNS."
+            },
+            {
+              "id": "B",
+              "text": "Health Checks monitor the primary endpoint and activate a failover record automatically."
+            },
+            {
+              "id": "C",
+              "text": "CloudFront redirects traffic without Route 53."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Route 53 Health Checks poll the primary endpoint. After configured consecutive failures, DNS uses the failover record, subject to the configured TTL."
+        }
+      ],
+      "resources": [
+        {
+          "title": "DR Strategies",
+          "url": "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/disaster-recovery-options-in-the-cloud.html",
+          "type": "doc"
+        },
+        {
+          "title": "Aurora Global Database",
+          "url": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-019",
@@ -1991,7 +3473,90 @@
         "url": "https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-identity.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Authentication and Authorization with Amazon Cognito",
+      "objective": "Implement user authentication with User Pools and authorize AWS resource access with Identity Pools.",
+      "scenario": "A mobile application needs email, Google, and Apple login. After login, users upload files directly to their own S3 folder, and API Gateway plus Lambda must identify the authenticated user.",
+      "services": [
+        {
+          "service_slug": "amazon-cognito",
+          "role_note": "Provides the Amazon Cognito capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-api-gateway",
+          "role_note": "Provides the Amazon API Gateway capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-lambda",
+          "role_note": "Provides the AWS Lambda capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  App[Mobile App] --> UP[Cognito\\nUser Pool]\n  UP -->|JWT| APIGW[API Gateway]\n  APIGW --> Lambda[Lambda]\n  UP -->|troca por creds| IP[Cognito\\nIdentity Pool]\n  IP -->|IAM temp creds| S3[(S3 Upload\\nDireto)]"
+      },
+      "questions": [
+        {
+          "question_text": "What is the difference between a Cognito User Pool and Identity Pool?",
+          "options": [
+            {
+              "id": "A",
+              "text": "A User Pool manages identities; an Identity Pool only stores passwords."
+            },
+            {
+              "id": "B",
+              "text": "A User Pool authenticates users and issues JWTs; an Identity Pool exchanges tokens for temporary AWS credentials."
+            },
+            {
+              "id": "C",
+              "text": "They are equivalent names for the same feature."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "A User Pool manages registration, login, MFA, and JWT tokens. An Identity Pool federates identities and returns temporary IAM credentials for direct AWS access."
+        },
+        {
+          "question_text": "How can user A be limited to the /user-a/ S3 prefix and prevented from accessing /user-b/?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Create a separate bucket for every user."
+            },
+            {
+              "id": "B",
+              "text": "Use an IAM role condition and a resource prefix based on the Cognito identity subject."
+            },
+            {
+              "id": "C",
+              "text": "Check the path only in Lambda code."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Temporary IAM credentials can include the user subject, which an IAM policy uses to restrict access to the matching S3 prefix."
+        }
+      ],
+      "resources": [
+        {
+          "title": "Cognito User Pools",
+          "url": "https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools.html",
+          "type": "doc"
+        },
+        {
+          "title": "Cognito Identity Pools",
+          "url": "https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-identity.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-020",
@@ -2097,7 +3662,90 @@
         "url": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/launch-templates.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "EC2 Auto Scaling with Dynamic Policies",
+      "objective": "Configure an EC2 Auto Scaling Group with target-tracking policies based on CPU.",
+      "scenario": "An online store has predictable daytime traffic and low nighttime traffic. Paying for idle instances wastes 40% of the budget, so the company wants automatic scaling and pay-for-use efficiency.",
+      "services": [
+        {
+          "service_slug": "amazon-ec2",
+          "role_note": "Provides the Amazon EC2 capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-auto-scaling",
+          "role_note": "Provides the Auto Scaling capability required by this architecture."
+        },
+        {
+          "service_slug": "elastic-load-balancing",
+          "role_note": "Provides the ALB capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-cloudwatch",
+          "role_note": "Provides the Amazon CloudWatch capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  Traffic[Tráfego] --> ALB[ALB]\n  ALB --> ASG[Auto Scaling Group]\n  ASG --> EC2a[EC2]\n  ASG --> EC2b[EC2]\n  CW[CloudWatch\\nCPU Metric] -->|policy| ASG"
+      },
+      "questions": [
+        {
+          "question_text": "Which Auto Scaling policy keeps CPU near 50% automatically?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Simple Scaling, adding one instance when CPU exceeds 60%."
+            },
+            {
+              "id": "B",
+              "text": "Target Tracking, maintaining the metric at a target such as 50%."
+            },
+            {
+              "id": "C",
+              "text": "Scheduled Scaling, scaling only at fixed times."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Target Tracking adjusts the number of instances continuously to keep the selected metric near its target, much like an automatic thermostat."
+        },
+        {
+          "question_text": "What is a Launch Template in Auto Scaling?",
+          "options": [
+            {
+              "id": "A",
+              "text": "A JSON file containing only application settings."
+            },
+            {
+              "id": "B",
+              "text": "A reusable model defining the AMI, instance type, security, and configuration of new instances."
+            },
+            {
+              "id": "C",
+              "text": "A billing policy for EC2 instances."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "A Launch Template defines the AMI, instance type, key pair, security groups, user data, and other parameters used to launch instances."
+        }
+      ],
+      "resources": [
+        {
+          "title": "Auto Scaling Target Tracking",
+          "url": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-scaling-target-tracking.html",
+          "type": "doc"
+        },
+        {
+          "title": "Launch Templates",
+          "url": "https://docs.aws.amazon.com/autoscaling/ec2/userguide/launch-templates.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-021",
@@ -2195,7 +3843,86 @@
         "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/xgboost.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Machine-Learning Model Training and Deployment with SageMaker",
+      "objective": "Use SageMaker to train, evaluate, and host a machine-learning model without managing infrastructure.",
+      "scenario": "A bank wants to predict customer default using historical data. The data team does not want to manage ML servers, and the model must be updated monthly with new data.",
+      "services": [
+        {
+          "service_slug": "amazon-sagemaker",
+          "role_note": "Provides the Amazon SageMaker capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-cloudwatch",
+          "role_note": "Provides the Amazon CloudWatch capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  Data[(S3\\nDataset)] --> Train[SageMaker\\nTraining Job]\n  Train --> Model[(S3\\nModel Artifact)]\n  Model --> Deploy[SageMaker\\nEndpoint]\n  App[Aplicação] -->|predict| Deploy\n  CW[CloudWatch] -->|drift| Monitor[Model Monitor]"
+      },
+      "questions": [
+        {
+          "question_text": "What is SageMaker Model Monitor and why is it important?",
+          "options": [
+            {
+              "id": "A",
+              "text": "It monitors endpoint cost only."
+            },
+            {
+              "id": "B",
+              "text": "It detects data drift and model-performance degradation in production."
+            },
+            {
+              "id": "C",
+              "text": "It replaces CloudWatch infrastructure metrics."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Model Monitor compares production inputs and predictions with a reference baseline and raises alerts when data drift or performance degradation indicates retraining is needed."
+        },
+        {
+          "question_text": "Which built-in SageMaker algorithm is appropriate for binary default classification?",
+          "options": [
+            {
+              "id": "A",
+              "text": "K-Means, an unsupervised clustering algorithm."
+            },
+            {
+              "id": "B",
+              "text": "XGBoost, widely used for classification and regression on tabular data."
+            },
+            {
+              "id": "C",
+              "text": "BlazingText, designed for natural-language processing."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "SageMaker provides an optimized XGBoost built-in algorithm that is well suited to structured credit-history data without custom implementation."
+        }
+      ],
+      "resources": [
+        {
+          "title": "SageMaker Overview",
+          "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html",
+          "type": "doc"
+        },
+        {
+          "title": "SageMaker XGBoost",
+          "url": "https://docs.aws.amazon.com/sagemaker/latest/dg/xgboost.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-022",
@@ -2301,7 +4028,90 @@
         "url": "https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "S3 Event-Driven Data Processing Pipeline",
+      "objective": "Automatically validate, transform, and store partner CSV files using S3 events and Lambda.",
+      "scenario": "A company receives partner CSV files in S3 at any time. Each file must be validated, transformed, and saved to a database; the previous manual process took four hours and depended on an analyst.",
+      "services": [
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-lambda",
+          "role_note": "Provides the AWS Lambda capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-dynamodb",
+          "role_note": "Provides the Amazon DynamoDB capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-sns",
+          "role_note": "Provides the Amazon SNS capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  Partner[Parceiro] --> S3In[(S3 Input)]\n  S3In -->|PutObject event| Lambda[Lambda\\nETL]\n  Lambda --> DDB[(DynamoDB)]\n  Lambda --> SNS[SNS\\nNotificação]"
+      },
+      "questions": [
+        {
+          "question_text": "How can Lambda avoid processing the same CSV file twice?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Record processed file IDs in DynamoDB and check them before processing."
+            },
+            {
+              "id": "B",
+              "text": "Delete the S3 file immediately after downloading it."
+            },
+            {
+              "id": "C",
+              "text": "Configure Lambda to ignore duplicate events automatically."
+            }
+          ],
+          "correct_answer": [
+            "A"
+          ],
+          "explanation": "Recording an ETag or file name in DynamoDB and checking it before processing provides reliable idempotency. Lambda has no automatic event deduplication."
+        },
+        {
+          "question_text": "What happens if Lambda fails while processing a file and throws an exception?",
+          "options": [
+            {
+              "id": "A",
+              "text": "S3 retries delivery up to three times by default."
+            },
+            {
+              "id": "B",
+              "text": "The event is permanently lost."
+            },
+            {
+              "id": "C",
+              "text": "S3 automatically places the file in a dead-letter queue."
+            }
+          ],
+          "correct_answer": [
+            "A"
+          ],
+          "explanation": "For S3 event notifications invoking Lambda, failed invocations are retried up to two additional times. A DLQ can capture events that still fail."
+        }
+      ],
+      "resources": [
+        {
+          "title": "S3 Event Notifications",
+          "url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/NotificationHowTo.html",
+          "type": "doc"
+        },
+        {
+          "title": "Lambda Retry Behavior",
+          "url": "https://docs.aws.amazon.com/lambda/latest/dg/invocation-retries.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-023",
@@ -2407,7 +4217,90 @@
         "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/tutorial-load-balancer-routing.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Containerized Microservices with ECS Fargate",
+      "objective": "Decompose a monolith into catalog, order, and payment microservices on ECS Fargate without managing servers.",
+      "scenario": "An e-commerce monolith cannot scale components independently. The team wants separate catalog, order, and payment microservices but does not want to manage EC2 clusters for containers.",
+      "services": [
+        {
+          "service_slug": "amazon-ecs",
+          "role_note": "Provides the Amazon ECS capability required by this architecture."
+        },
+        {
+          "service_slug": "elastic-load-balancing",
+          "role_note": "Provides the ALB capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-ecr",
+          "role_note": "Provides the Amazon ECR capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-cloudwatch",
+          "role_note": "Provides the Amazon CloudWatch capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  Client[Client] --> ALB[ALB]\n  ALB -->|/catalog| Cat[ECS Fargate\\nCatálogo]\n  ALB -->|/orders| Ord[ECS Fargate\\nPedidos]\n  ALB -->|/payments| Pay[ECS Fargate\\nPayments]\n  ECR[(ECR)] --> Cat\n  ECR --> Ord\n  ECR --> Pay"
+      },
+      "questions": [
+        {
+          "question_text": "What is the main advantage of Fargate over EC2 for containers?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Fargate is always cheaper than EC2."
+            },
+            {
+              "id": "B",
+              "text": "Fargate removes server management because AWS provisions, scales, and patches the infrastructure."
+            },
+            {
+              "id": "C",
+              "text": "Fargate has no startup delay like Lambda."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "With Fargate, the team defines task CPU and memory while AWS manages the underlying server provisioning, scaling, and maintenance."
+        },
+        {
+          "question_text": "How can an ALB route /catalog to the catalog service and /orders to the order service?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Use two separate load balancers."
+            },
+            {
+              "id": "B",
+              "text": "Use path-based routing with listener rules for each URL prefix."
+            },
+            {
+              "id": "C",
+              "text": "Use Route 53 private hosted-zone service discovery only."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "ALB listener rules can route by path, headers, query strings, or HTTP method. Each rule targets a different target group."
+        }
+      ],
+      "resources": [
+        {
+          "title": "ECS Fargate",
+          "url": "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/AWS_Fargate.html",
+          "type": "doc"
+        },
+        {
+          "title": "ALB Path Routing",
+          "url": "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/tutorial-load-balancer-routing.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-024",
@@ -2513,7 +4406,90 @@
         "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "IAM Security with Least Privilege",
+      "objective": "Apply least privilege in IAM with roles, groups, and policies for a development team.",
+      "scenario": "Developers need access to development S3, analysts need read access to DynamoDB, and a DevOps engineer manages EC2. Everyone currently uses the root account or one administrator user.",
+      "services": [
+        {
+          "service_slug": "aws-iam",
+          "role_note": "Provides the AWS IAM capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-dynamodb",
+          "role_note": "Provides the Amazon DynamoDB capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-ec2",
+          "role_note": "Provides the Amazon EC2 capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph TD\n  Root[Root Account\\nSÓ para emergências]\n  DevGroup[IAM Group\\nDevs] -->|S3 Policy| S3[(S3 Dev)]\n  AnalGroup[IAM Group\\nAnalistas] -->|DDB ReadOnly| DDB[(DynamoDB)]\n  DevOpsRole[IAM Role\\nDevOps] -->|EC2 Full| EC2[EC2]"
+      },
+      "questions": [
+        {
+          "question_text": "Why should the AWS root user not be used for daily activities?",
+          "options": [
+            {
+              "id": "A",
+              "text": "The root user cannot create resources."
+            },
+            {
+              "id": "B",
+              "text": "The root user has unrestricted access and cannot be limited by policies, making compromise catastrophic."
+            },
+            {
+              "id": "C",
+              "text": "The root user does not support MFA."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "The root user has full account access and cannot be restricted with IAM policies. MFA should be enabled, and root should be used only for tasks that require it."
+        },
+        {
+          "question_text": "What is the difference between identity-based and resource-based IAM policies?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Identity policies are stored in S3 and resource policies are stored in IAM."
+            },
+            {
+              "id": "B",
+              "text": "Identity policies attach to users, groups, or roles; resource policies attach to the resource itself."
+            },
+            {
+              "id": "C",
+              "text": "They are equivalent and differ only historically."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Identity-based policies define what an IAM principal can do. Resource-based policies, such as an S3 bucket policy, define who can access a particular resource."
+        }
+      ],
+      "resources": [
+        {
+          "title": "IAM Best Practices",
+          "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html",
+          "type": "doc"
+        },
+        {
+          "title": "IAM Policies",
+          "url": "https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html",
+          "type": "doc"
+        }
+      ]
+    }
   },
   {
     "id": "case-025",
@@ -2619,6 +4595,89 @@
         "url": "https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html",
         "type": "doc"
       }
-    ]
+    ],
+    "content_en": {
+      "title": "Analytical Data Warehouse with Amazon Redshift",
+      "objective": "Build a BI data warehouse with Redshift, Firehose ingestion, and Athena queries over cold data.",
+      "scenario": "A retailer has five years of sales data in S3. BI requires complex joins over billions of rows, which DynamoDB and RDS cannot support efficiently for this analytical workload.",
+      "services": [
+        {
+          "service_slug": "amazon-redshift",
+          "role_note": "Provides the Amazon Redshift capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-s3",
+          "role_note": "Provides the Amazon S3 capability required by this architecture."
+        },
+        {
+          "service_slug": "amazon-kinesis",
+          "role_note": "Provides the Amazon Kinesis Firehose capability required by this architecture."
+        },
+        {
+          "service_slug": "aws-glue",
+          "role_note": "Provides the AWS Glue capability required by this architecture."
+        }
+      ],
+      "architecture_graph": {
+        "type": "mermaid",
+        "content": "graph LR\n  Sales[Data de Sales] --> KDF[Kinesis\\nFirehose]\n  KDF --> S3[(S3\\nData Lake)]\n  Glue[AWS Glue\\nETL] --> Redshift[(Amazon\\nRedshift)]\n  S3 --> Glue\n  BI[BI Tools\\nQuickSight] --> Redshift"
+      },
+      "questions": [
+        {
+          "question_text": "Why is Redshift faster than RDS for analytical queries over billions of rows?",
+          "options": [
+            {
+              "id": "A",
+              "text": "Redshift uses faster SSDs only."
+            },
+            {
+              "id": "B",
+              "text": "Redshift uses columnar storage, so queries read only the required columns instead of whole rows."
+            },
+            {
+              "id": "C",
+              "text": "Redshift has no table-size limit."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Columnar storage lets an analytical query read only the requested columns, greatly reducing I/O compared with row-oriented storage when a table has many columns."
+        },
+        {
+          "question_text": "What is Redshift Spectrum and when should it be used?",
+          "options": [
+            {
+              "id": "A",
+              "text": "A more powerful Redshift instance type."
+            },
+            {
+              "id": "B",
+              "text": "A feature that queries S3 data directly from Redshift without importing it into the cluster."
+            },
+            {
+              "id": "C",
+              "text": "A Redshift backup service."
+            }
+          ],
+          "correct_answer": [
+            "B"
+          ],
+          "explanation": "Redshift Spectrum exposes S3 data as external tables. It is useful for occasional queries over cold historical data that does not need to reside in the cluster."
+        }
+      ],
+      "resources": [
+        {
+          "title": "Amazon Redshift",
+          "url": "https://docs.aws.amazon.com/redshift/latest/dg/welcome.html",
+          "type": "doc"
+        },
+        {
+          "title": "Redshift Spectrum",
+          "url": "https://docs.aws.amazon.com/redshift/latest/dg/c-using-spectrum.html",
+          "type": "doc"
+        }
+      ]
+    }
   }
 ]

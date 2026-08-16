@@ -3,6 +3,7 @@ import apiService from "./services/api.js";
 import { SessionManager } from "./core/sessionManager.js";
 import { UserMapper } from "./core/contracts/userMapper.js";
 import { storageManager } from "./storageManager.js";
+import { normalizeCertificationId } from "./utils/certUtils.js";
 
 export const userManager = {
   isValidCorporateEmail(email) {
@@ -75,13 +76,36 @@ export const userManager = {
   },
 
   updatePreferences(preferences) {
-    SessionManager.update(preferences);
+    const normalizedPreferences = { ...preferences };
+    if (normalizedPreferences.certification !== undefined) {
+      normalizedPreferences.certification = normalizeCertificationId(
+        normalizedPreferences.certification,
+      );
+    }
+
+    SessionManager.update(normalizedPreferences);
     const session = SessionManager.restore();
     if (session?.accessToken && session.authenticationMode === "online") {
-      void apiService.updateMyProfile({ preferences }).catch(() => {
-        // A sessão local continua válida quando a API estiver indisponível.
-      });
+      const pending = {
+        ...(SessionManager.getPendingPreferenceSync() || {}),
+        ...normalizedPreferences,
+        updatedAt: Date.now(),
+      };
+      SessionManager.updateSession({ pendingPreferenceSync: pending });
+
+      return apiService
+        .updateMyProfile({ preferences: normalizedPreferences })
+        .then((response) => {
+          SessionManager.clearPendingPreferenceSync(normalizedPreferences);
+          return response;
+        })
+        .catch(() => {
+          // Mantém o valor pendente para a próxima hidratação tentar novamente.
+          return null;
+        });
     }
+
+    return Promise.resolve(null);
   },
 };
 

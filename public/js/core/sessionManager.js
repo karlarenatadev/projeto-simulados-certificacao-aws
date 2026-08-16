@@ -71,6 +71,41 @@ export class SessionManager {
   }
 
   /**
+   * Atualiza metadados transitórios da sessão sem misturá-los ao User.
+   * Usado apenas para proteger uma escrita explícita contra uma hidratação
+   * remota que ainda esteja defasada.
+   */
+  static updateSession(sessionUpdates) {
+    const session = this.restore();
+    if (!session) return;
+
+    this.persist({ ...session, ...sessionUpdates });
+  }
+
+  static getPendingPreferenceSync() {
+    return this.restore()?.pendingPreferenceSync || null;
+  }
+
+  static clearPendingPreferenceSync(preferences = {}) {
+    const session = this.restore();
+    const pending = session?.pendingPreferenceSync;
+    if (!session || !pending) return;
+
+    const remaining = { ...pending };
+    Object.entries(preferences).forEach(([key, value]) => {
+      if (remaining[key] === value) delete remaining[key];
+    });
+    delete remaining.updatedAt;
+
+    this.persist({
+      ...session,
+      ...(Object.keys(remaining).length > 0
+        ? { pendingPreferenceSync: { ...remaining, updatedAt: pending.updatedAt } }
+        : { pendingPreferenceSync: null }),
+    });
+  }
+
+  /**
    * Atualiza o timestamp de última atividade.
    */
   static touch() {

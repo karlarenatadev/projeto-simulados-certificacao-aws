@@ -20,10 +20,17 @@ const cards = [
 describe("Diagnóstico → Flashcards", () => {
   test("resolve a certificação inicial sem fallback silencioso para CLF", () => {
     expect(resolveInitialCertification()).toBeNull();
-    expect(
-      resolveInitialCertification({ accountCertification: "SAA-C03" }),
-    ).toBe("saa-c03");
+    expect(resolveInitialCertification({ accountCertification: "SAA-C03" })).toBe("saa-c03");
   });
+
+  test.each(["clf-c02", "saa-c03", "dva-c02", "aif-c01"])(
+    "%s é uma certificação inicial válida",
+    (certification) => {
+      expect(resolveInitialCertification({ accountCertification: certification })).toBe(
+        certification,
+      );
+    },
+  );
 
   test("prioriza contexto diagnóstico e mantém a conta separada", () => {
     expect(

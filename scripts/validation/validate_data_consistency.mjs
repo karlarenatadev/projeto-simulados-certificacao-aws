@@ -171,7 +171,47 @@ export function validateCases(cases, context, report, file = 'data/cases/archite
       if (!serviceName || !context.serviceAliases.has(normalize(serviceName))) issue(report, 'WARNING', 'Cases', 'UNKNOWN_SERVICE', `Unknown case service '${serviceName}'.`, file, index);
     });
     if (!item?.architecture_graph || typeof item.architecture_graph !== 'object') issue(report, 'WARNING', 'Cases', 'CASE_ARCHITECTURE', `Case '${item?.id}' has no architecture_graph object.`, file, index);
-    if (!item?.content_en && !item?.scenario_en) issue(report, 'CONTENT_GAP', 'Cases', 'CASE_EN_CONTENT', `Case '${item?.id}' has no English content contract.`, file, index);
+    const english = item?.content_en;
+    if (!english || typeof english !== 'object') {
+      issue(report, 'CONTENT_GAP', 'Cases', 'CASE_EN_CONTENT', `Case '${item?.id}' has no English content contract.`, file, index);
+      continue;
+    }
+    for (const field of ['title', 'objective', 'scenario']) {
+      if (typeof english[field] !== 'string' || !english[field].trim()) {
+        issue(report, 'CONTENT_GAP', 'Cases', 'CASE_EN_FIELD', `Case '${item?.id}' English field '${field}' is missing.`, file, index);
+      }
+    }
+    if (!Array.isArray(english.services) || english.services.length !== item.services.length) {
+      issue(report, 'CONTENT_GAP', 'Cases', 'CASE_EN_SERVICES', `Case '${item?.id}' English services are incomplete.`, file, index);
+    } else {
+      english.services.forEach((service, serviceIndex) => {
+        if (typeof service?.role_note !== 'string' || !service.role_note.trim()) {
+          issue(report, 'CONTENT_GAP', 'Cases', 'CASE_EN_SERVICE_ROLE', `Case '${item?.id}' English service role ${serviceIndex + 1} is missing.`, file, index);
+        }
+      });
+    }
+    if (item.architecture_graph?.content && (!english.architecture_graph?.content || !english.architecture_graph?.type)) {
+      issue(report, 'CONTENT_GAP', 'Cases', 'CASE_EN_ARCHITECTURE', `Case '${item?.id}' English architecture graph is incomplete.`, file, index);
+    }
+    if (!Array.isArray(english.questions) || english.questions.length !== (item.questions || []).length) {
+      issue(report, 'CONTENT_GAP', 'Cases', 'CASE_EN_QUESTIONS', `Case '${item?.id}' English questions are incomplete.`, file, index);
+    } else {
+      english.questions.forEach((question, questionIndex) => {
+        const sourceQuestion = item.questions[questionIndex];
+        if (typeof question?.question_text !== 'string' || !question.question_text.trim() || typeof question.explanation !== 'string' || !question.explanation.trim()) {
+          issue(report, 'CONTENT_GAP', 'Cases', 'CASE_EN_QUESTION_FIELD', `Case '${item?.id}' English question ${questionIndex + 1} is incomplete.`, file, index);
+        }
+        if (!Array.isArray(question?.options) || question.options.length !== (sourceQuestion.options || []).length || question.options.some((option) => typeof option?.text !== 'string' || !option.text.trim())) {
+          issue(report, 'CONTENT_GAP', 'Cases', 'CASE_EN_OPTIONS', `Case '${item?.id}' English question ${questionIndex + 1} options are incomplete.`, file, index);
+        }
+        if (JSON.stringify(question?.correct_answer || []) !== JSON.stringify(sourceQuestion.correct_answer || [])) {
+          issue(report, 'ERROR', 'Cases', 'CASE_ANSWER_DRIFT', `Case '${item?.id}' question ${questionIndex + 1} changed correct_answer between languages.`, file, index);
+        }
+      });
+    }
+    if (Array.isArray(item.resources) && (!Array.isArray(english.resources) || english.resources.length !== item.resources.length || english.resources.some((resource) => typeof resource?.title !== 'string' || !resource.title.trim()))) {
+      issue(report, 'CONTENT_GAP', 'Cases', 'CASE_EN_RESOURCES', `Case '${item?.id}' English resources are incomplete.`, file, index);
+    }
   }
   report.counts.cases = cases.length;
 }

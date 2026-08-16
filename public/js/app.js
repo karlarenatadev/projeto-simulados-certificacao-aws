@@ -382,6 +382,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // 1. Salva a certificação no cache para as outras telas saberem
         userManager.updatePreferences({ certification: certId });
+        authenticatedUser = AuthService.getCurrentUser() || authenticatedUser;
 
         updateTopicDropdown();
         loadLastScore();

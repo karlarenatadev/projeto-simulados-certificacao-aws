@@ -568,6 +568,8 @@ CREATE TABLE IF NOT EXISTS cases (
     certifications      TEXT[]          NOT NULL DEFAULT '{}',  -- ex: {CLF-C02, SAA-C03}
     architecture_graph  JSONB           NOT NULL DEFAULT '{}',  -- {type: 'mermaid', content: '...'}
     resources           JSONB           NOT NULL DEFAULT '[]',  -- [{type, title, url}]
+    content_pt          JSONB           NOT NULL DEFAULT '{}',
+    content_en          JSONB           NOT NULL DEFAULT '{}',
     tags                TEXT[]          NOT NULL DEFAULT '{}',
     is_active           BOOLEAN         NOT NULL DEFAULT TRUE,
     -- Simulator properties

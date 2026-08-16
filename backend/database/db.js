@@ -99,6 +99,13 @@ export async function migrateQuestionIdentity(database) {
   `);
 }
 
+export async function migrateCaseTranslations(database) {
+  await database.exec(`
+    ALTER TABLE cases ADD COLUMN IF NOT EXISTS content_pt JSONB NOT NULL DEFAULT '{}';
+    ALTER TABLE cases ADD COLUMN IF NOT EXISTS content_en JSONB NOT NULL DEFAULT '{}';
+  `);
+}
+
 loadEnvironment({ quiet: true });
 
 let db = null;
@@ -253,6 +260,7 @@ export async function initializeDatabase(options = {}) {
       }
 
       await migrateQuestionIdentity(database);
+      await migrateCaseTranslations(database);
 
       db = database;
       return db;
@@ -282,6 +290,7 @@ export async function initializeDatabase(options = {}) {
           await database.exec(loadSchema());
           console.log('[database] Schema applied successfully (retry)');
           await migrateQuestionIdentity(database);
+          await migrateCaseTranslations(database);
           db = database;
           return db;
         } catch (retryError) {
