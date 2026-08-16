@@ -2,7 +2,9 @@ import {
   filterTermsByCertification,
   filterTermsByDiagnosticContext,
   getDiagnosticContextViewModel,
+  getFlashcardState,
   parseDiagnosticContext,
+  resolveInitialCertification,
 } from "../src/frontend/js/flashcards.js";
 
 const cards = [
@@ -16,6 +18,26 @@ const cards = [
 ];
 
 describe("Diagnóstico → Flashcards", () => {
+  test("resolve a certificação inicial sem fallback silencioso para CLF", () => {
+    expect(resolveInitialCertification()).toBeNull();
+    expect(
+      resolveInitialCertification({ accountCertification: "SAA-C03" }),
+    ).toBe("saa-c03");
+  });
+
+  test("prioriza contexto diagnóstico e mantém a conta separada", () => {
+    expect(
+      resolveInitialCertification({
+        diagnosticContext: { certificationId: "DVA-C02" },
+        accountCertification: "SAA-C03",
+      }),
+    ).toBe("dva-c02");
+    expect(getFlashcardState()).toMatchObject({
+      selectedCertification: null,
+      activeStudyCertification: null,
+    });
+  });
+
   test.each([
     ["clf-c02", "Security and Compliance", "seguranca", "clf-security"],
     ["saa-c03", "Design Secure Architectures", "seguranca-aplicacoes", "saa-security"],

@@ -94,4 +94,17 @@ describe("consistência visual global", () => {
     expect(settingsCss).toContain("#validator-request-credential-url");
     expect(settingsCss).toContain("#validator-request-status");
   });
+
+  test("Flashcards possui seleção própria de certificação", () => {
+    const flashcards = pageSource("flashcards.html");
+    const flashcardsJs = readFileSync(
+      new URL("../src/frontend/js/flashcards.js", import.meta.url),
+      "utf8",
+    );
+
+    expect(flashcards).toContain('id="flashcard-certification-options"');
+    expect(flashcards).not.toContain('id="certification-select"');
+    expect(flashcardsJs).toContain("selectedCertification");
+    expect(flashcardsJs).not.toContain('certSelect ? certSelect.value : "clf-c02"');
+  });
 });

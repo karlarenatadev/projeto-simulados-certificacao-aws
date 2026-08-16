@@ -5,6 +5,8 @@ import { normalizeCertificationId } from "./utils/certUtils.js";
 import { t } from "./i18n/useTranslation.js";
 import { storageManager } from "./storageManager.js";
 import { getCurrentLanguage as getOfficialLanguage } from "./core/languageManager.js";
+import { AuthService } from "./services/authService.js";
+import { userManager } from "./userManager.js";
 
 
 function getCurrentLanguage() {
@@ -20,7 +22,45 @@ let flashcardState = {
   diagnosticContext: null,
   diagnosticDomainIds: null,
   diagnosticFallback: false,
+  selectedCertification: null,
+  activeStudyCertification: null,
 };
+
+function isSupportedCertification(certificationId) {
+  const normalized = normalizeCertificationId(certificationId);
+  return Boolean(normalized && certificationPaths[normalized]);
+}
+
+export function getAccountCertification() {
+  const certificationId = normalizeCertificationId(
+    AuthService.getCurrentUser()?.certification,
+  );
+  return isSupportedCertification(certificationId) ? certificationId : null;
+}
+
+export function resolveInitialCertification({
+  diagnosticContext = null,
+  selectedCertification = null,
+  accountCertification = null,
+} = {}) {
+  const candidates = [
+    diagnosticContext?.certificationId,
+    selectedCertification,
+    accountCertification,
+  ];
+  return candidates
+    .map((candidate) => normalizeCertificationId(candidate))
+    .find((candidate) => isSupportedCertification(candidate)) || null;
+}
+
+export function getFlashcardState() {
+  return {
+    selectedCertification: flashcardState.selectedCertification,
+    activeStudyCertification: flashcardState.activeStudyCertification,
+    currentDomainFilter: flashcardState.currentDomainFilter,
+    diagnosticContext: flashcardState.diagnosticContext,
+  };
+}
 
 export function parseDiagnosticContext(value) {
   try {
@@ -164,6 +204,131 @@ function handleManualFlashcardFilter() {
   filterFlashcards();
 }
 
+function getCertificationDisplayName(certificationId, language) {
+  const certification = certificationPaths[certificationId];
+  if (!certification) return certificationId.toUpperCase();
+  return language === "en" && certification.englishName
+    ? certification.englishName
+    : certification.name;
+}
+
+function renderCertificationPicker() {
+  const optionsContainer = document.getElementById("flashcard-certification-options");
+  if (!optionsContainer) return;
+
+  const language = getCurrentLanguage();
+  const activeCertification = flashcardState.activeStudyCertification;
+  const selectedCertification = flashcardState.selectedCertification;
+  const title = document.getElementById("flashcard-certification-title");
+  const description = document.getElementById("flashcard-certification-description");
+  const activeStatus = document.getElementById("flashcard-active-certification");
+  const emptyState = document.getElementById("flashcard-certification-empty");
+
+  optionsContainer.setAttribute(
+    "aria-label",
+    t("flashcards_all_certifications", language),
+  );
+  if (title) title.textContent = t("flashcards_choose_certification", language);
+  if (description) description.textContent = t("flashcards_certification_description", language);
+  if (activeStatus) {
+    activeStatus.textContent = activeCertification
+      ? `${t("flashcards_studying", language)}: ${activeCertification.toUpperCase()}`
+      : "";
+  }
+  if (emptyState) {
+    emptyState.textContent = t("flashcards_choose_prompt", language);
+    emptyState.classList.toggle("hidden", Boolean(selectedCertification));
+  }
+
+  optionsContainer.innerHTML = "";
+  for (const [certificationId, certification] of Object.entries(certificationPaths)) {
+    const count = glossaryTerms.filter((card) => card.cert === certificationId).length;
+    const wrapper = document.createElement("div");
+    wrapper.className = "fc-certification-option-wrap";
+    const option = document.createElement("button");
+    const isViewing = selectedCertification === certificationId;
+    const isStudying = activeCertification === certificationId;
+
+    option.type = "button";
+    option.className = `fc-certification-option${isViewing ? " is-viewing" : ""}${isStudying ? " is-studying" : ""}`;
+    option.setAttribute("aria-pressed", String(isViewing));
+    option.setAttribute("aria-label", `${certification.code} — ${getCertificationDisplayName(certificationId, language)}`);
+    option.innerHTML = `
+      <span class="fc-certification-option-code">${certification.code}</span>
+      <span class="fc-certification-option-name">${getCertificationDisplayName(certificationId, language)}</span>
+      <span class="fc-certification-option-meta">${t("flashcards_certification_count", language, { count })}</span>
+      ${isStudying ? `<span class="fc-certification-option-action">${t("flashcards_studying", language)}</span>` : ""}
+      ${isViewing && !isStudying ? `<span class="fc-certification-option-action">${t("flashcards_viewing", language)}</span>` : ""}
+    `;
+    option.addEventListener("click", () => setFlashcardCertification(certificationId, { clearDiagnostic: true }));
+    wrapper.appendChild(option);
+
+    if (!isStudying) {
+      const primaryButton = document.createElement("button");
+      primaryButton.type = "button";
+      primaryButton.className = "fc-certification-primary-action";
+      primaryButton.textContent = t("flashcards_set_as_primary", language);
+      primaryButton.addEventListener("click", () => setPrimaryFlashcardCertification(certificationId));
+      wrapper.appendChild(primaryButton);
+    }
+    optionsContainer.appendChild(wrapper);
+  }
+}
+
+function populateDomainFilter(reset = false) {
+  const categorySelect = document.getElementById("flashcard-category");
+  if (!categorySelect) return;
+
+  const certification = certificationPaths[flashcardState.selectedCertification];
+  const previousValue = reset ? "all" : categorySelect.value;
+  categorySelect.innerHTML = `
+    <option value="all">${t("all_terms", getCurrentLanguage())}</option>
+    <option value="review-deck" class="fc-opt-review">${t("review_deck", getCurrentLanguage())}</option>
+  `;
+
+  for (const domain of certification?.domains || []) {
+    const option = document.createElement("option");
+    option.value = domain.id;
+    option.textContent = getCurrentLanguage() === "en" ? domain.englishName : domain.name;
+    categorySelect.appendChild(option);
+  }
+
+  const hasPreviousValue = [...categorySelect.options].some((option) => option.value === previousValue);
+  categorySelect.value = hasPreviousValue ? previousValue : "all";
+  flashcardState.currentDomainFilter = categorySelect.value;
+}
+
+export function setFlashcardCertification(certificationId, { clearDiagnostic = false } = {}) {
+  const normalized = normalizeCertificationId(certificationId);
+  if (!isSupportedCertification(normalized)) return false;
+
+  if (clearDiagnostic) clearDiagnosticRecommendation();
+  flashcardState.selectedCertification = normalized;
+  populateDomainFilter(true);
+  renderCertificationPicker();
+  filterFlashcards();
+  return true;
+}
+
+export function setPrimaryFlashcardCertification(certificationId) {
+  const normalized = normalizeCertificationId(certificationId);
+  if (!isSupportedCertification(normalized)) return false;
+
+  userManager.updatePreferences({ certification: normalized });
+  flashcardState.activeStudyCertification = normalized;
+  renderCertificationPicker();
+  return true;
+}
+
+export function refreshFlashcardUI() {
+  if (!flashcardState.selectedCertification) return false;
+
+  populateDomainFilter(false);
+  renderCertificationPicker();
+  filterFlashcards();
+  return true;
+}
+
 // ==========================================
 // INICIALIZAÇÃO
 // ==========================================
@@ -181,52 +346,27 @@ export function startFlashcards(showScreenFn) {
   }
 
   const categorySelect = document.getElementById("flashcard-category");
-  const certSelect = document.getElementById("certification-select");
   const diagnosticCtx = parseDiagnosticContext(
     sessionStorage.getItem(storageManager.getUserScopedKey("diagnostic_context")),
   );
 
-  if (diagnosticCtx && certSelect) {
-    certSelect.value = diagnosticCtx.certificationId;
-  }
-
-  const selectedCert = certSelect ? certSelect.value : "clf-c02";
-
-  // --- Popula as opções do Dropdown dinamicamente ---
-  if (categorySelect) {
-    const certInfo = certificationPaths[selectedCert];
-    
-    // Salva opção anterior (para não perder o deck de revisão se selecionado)
-    const currentVal = categorySelect.value;
-    
-    // Limpa mantendo o padrão "all" e o "review-deck"
-    categorySelect.innerHTML = `
-      <option value="all">Todos os Domínios (Misturado)</option>
-      <option value="review-deck" class="fc-opt-review">💡 Meu Deck de Revisão</option>
-    `;
-    
-    if (certInfo && certInfo.domains) {
-      certInfo.domains.forEach(d => {
-        const opt = document.createElement("option");
-        opt.value = d.id;
-        opt.textContent = d.name;
-        categorySelect.appendChild(opt);
-      });
-    }
-    
-    // Restaura a seleção se ainda existir, ou cai pra all
-    const exists = Array.from(categorySelect.options).some(o => o.value === currentVal);
-    categorySelect.value = exists ? currentVal : "all";
-
-    if (!categorySelect.dataset.listenerAdded) {
-      categorySelect.addEventListener("change", handleManualFlashcardFilter);
-      categorySelect.dataset.listenerAdded = "true";
-    }
-  }
+  flashcardState.activeStudyCertification = getAccountCertification();
+  flashcardState.selectedCertification = resolveInitialCertification({
+    diagnosticContext: diagnosticCtx,
+    accountCertification: flashcardState.activeStudyCertification,
+  });
+  renderCertificationPicker();
+  populateDomainFilter(true);
 
   // --- Lógica do Diagnóstico ---
   const banner = document.getElementById("flashcards-diagnostic-banner");
   
+  if (!flashcardState.selectedCertification) {
+    if (categorySelect) categorySelect.disabled = true;
+    renderDiagnosticContext(null);
+    return;
+  }
+
   if (diagnosticCtx) {
     try {
       flashcardState.diagnosticContext = diagnosticCtx;
@@ -267,10 +407,6 @@ export function startFlashcards(showScreenFn) {
   }
 
   setupFlashcardListeners();
-  if (certSelect && !certSelect.dataset.diagnosticListenerAdded) {
-    certSelect.addEventListener("change", handleManualFlashcardFilter);
-    certSelect.dataset.diagnosticListenerAdded = "true";
-  }
   renderDiagnosticContext(flashcardState.diagnosticContext);
   filterFlashcards();
 }
@@ -279,11 +415,12 @@ export function startFlashcards(showScreenFn) {
 // MOTOR DE FILTRAGEM (Certificação + Domínio)
 // ==========================================
 export function filterFlashcards() {
-  const certSelect = document.getElementById("certification-select");
   const categorySelect = document.getElementById("flashcard-category");
 
-  const selectedCert = certSelect ? certSelect.value : "clf-c02";
+  const selectedCert = flashcardState.selectedCertification;
   const selectedDomain = categorySelect ? categorySelect.value : "all";
+
+  if (!selectedCert || !isSupportedCertification(selectedCert)) return;
 
   // --- Atualiza a Badge visual no topo da tela ---
   const certBadge = document.getElementById("flashcards-cert-badge");
@@ -392,7 +529,7 @@ export function renderCurrentFlashcard() {
   if (badgeEl) {
     const certId =
       card.cert === "all"
-        ? document.getElementById("certification-select")?.value || "clf-c02"
+        ? flashcardState.selectedCertification
         : card.cert;
     const certInfo = certificationPaths[certId];
     const domainObj = certInfo?.domains.find((d) => d.id === card.domain);
@@ -488,6 +625,7 @@ function setupFlashcardListeners() {
   const nextBtn = document.getElementById("btn-next-flashcard");
   const prevBtn = document.getElementById("btn-prev-flashcard");
   const homeBtn = document.getElementById("btn-flashcards-home");
+  const categorySelect = document.getElementById("flashcard-category");
 
   if (nextBtn && !nextBtn.dataset.bound) {
     nextBtn.addEventListener("click", nextFlashcard);
@@ -510,6 +648,11 @@ function setupFlashcardListeners() {
       }
     });
     homeBtn.dataset.bound = "true";
+  }
+
+  if (categorySelect && !categorySelect.dataset.bound) {
+    categorySelect.addEventListener("change", handleManualFlashcardFilter);
+    categorySelect.dataset.bound = "true";
   }
 }
 

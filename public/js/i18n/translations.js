@@ -145,6 +145,16 @@ export const translations = {
       "Não foi possível iniciar o simulado personalizado. {{message}}",
 
     // Flashcards
+    flashcards_choose_certification: "Escolha a certificação",
+    flashcards_all_certifications: "Todas as certificações",
+    flashcards_certification_description:
+      "A coleção aberta pode ser consultada sem alterar sua certificação em estudo.",
+    flashcards_studying: "Em estudo",
+    flashcards_viewing: "Visualizando",
+    flashcards_set_as_primary: "Definir como minha certificação",
+    flashcards_certification_count: "{{count}} flashcards",
+    flashcards_choose_prompt: "Escolha uma certificação para começar.",
+    review_deck: "Meu Deck de Revisão",
     flashcards_mode_title: "Modo Flashcards",
     flashcards_description:
       "Revise termos essenciais da AWS de forma rápida e eficiente",
@@ -712,6 +722,16 @@ export const translations = {
       "Could not start the personalized quiz. {{message}}",
 
     // Flashcards
+    flashcards_choose_certification: "Choose a certification",
+    flashcards_all_certifications: "All certifications",
+    flashcards_certification_description:
+      "Browse a collection without changing your certification in study.",
+    flashcards_studying: "In study",
+    flashcards_viewing: "Viewing",
+    flashcards_set_as_primary: "Set as my certification",
+    flashcards_certification_count: "{{count}} flashcards",
+    flashcards_choose_prompt: "Choose a certification to begin.",
+    review_deck: "My Review Deck",
     flashcards_mode_title: "Flashcards Mode",
     flashcards_description:
       "Review essential AWS terms quickly and efficiently",

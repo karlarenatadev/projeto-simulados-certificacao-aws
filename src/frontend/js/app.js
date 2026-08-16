@@ -2981,6 +2981,7 @@ function toggleLanguage() {
     updateDifficultyFilters(certSelect.value);
     updateTopicDropdown();
   }
+  refreshFlashcardUI();
 
   // ══════════════════════════════════════════════════════════════
   // 5. Re-renderiza dados dinâmicos (mantém estrutura)
@@ -3290,6 +3291,7 @@ import {
   nextFlashcard as nextFlashcardModule,
   prevFlashcard as prevFlashcardModule,
   filterFlashcardsByCert,
+  refreshFlashcardUI,
   reloadCurrentFlashcard,
 } from "./flashcards.js";
 

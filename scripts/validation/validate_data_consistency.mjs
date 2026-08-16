@@ -259,13 +259,20 @@ export function validateGamification(badges, report, file = 'data/gamificacao/ba
   report.counts.badges = badges?.length || 0;
 }
 
-export function validateSprintMaps(maps, report, file = 'src/frontend/js/gamificacao/sprintManager.js') {
+export function validateSprintMaps(maps, report, file = 'src/frontend/js/gamificacao/sprintManager.js', pillData = null) {
   for (const certification of SUPPORTED_CERTIFICATIONS.map((value) => value.toLowerCase())) {
     const days = maps?.[certification] || {};
     const dayIds = Object.keys(days).map(Number).sort((a, b) => a - b);
     if (dayIds.length !== 14 || dayIds.some((day, index) => day !== index + 1)) issue(report, 'ERROR', 'Sprint', 'SPRINT_STRUCTURE', `${certification} must contain ordered days 1-14.`, file);
     for (const day of dayIds) {
       if (!days[day]?.pt || !days[day]?.en) issue(report, 'ERROR', 'Sprint', 'SPRINT_LABELS', `${certification} day ${day} requires PT and EN labels.`, file);
+      const pill = pillData?.[certification]?.[day];
+      for (const language of ['pt', 'en']) {
+        const localized = pill?.[language];
+        if (!localized?.title || !localized?.topic || !localized?.content || !localized?.keyTakeaway || !localized?.readTime) {
+          issue(report, 'ERROR', 'Sprint', 'SPRINT_CONTENT', `${certification} day ${day} requires detailed ${language.toUpperCase()} content.`, file);
+        }
+      }
     }
   }
   report.counts.sprintStructure = SUPPORTED_CERTIFICATIONS.length * 14;
@@ -305,7 +312,8 @@ export async function collectGovernanceReport(rootDir) {
   validateFlashcards(dataModule.glossaryTerms, context, report);
   validateRuntimeTaxonomy(dataModule.certificationPaths, taxonomy, report);
   const sprintModule = await import(pathToFileURL(path.join(rootDir, 'src', 'frontend', 'js', 'gamificacao', 'sprintManager.js')).href);
-  validateSprintMaps(sprintModule.SPRINT_MAPS, report);
+  const sprintDataModule = await import(pathToFileURL(path.join(rootDir, 'src', 'frontend', 'js', 'sprintData.js')).href);
+  validateSprintMaps(sprintModule.SPRINT_MAPS, report, undefined, sprintDataModule.sprintPillsData);
 
   for (const file of ['data/nivelamento/diagnostic-clf-c02.json', 'data/nivelamento/diagnostic-saa-c03.json', 'data/nivelamento/diagnostic-dva-c02.json', 'data/nivelamento/diagnostic-aif-c01.json']) {
     issue(report, 'LEGACY', 'Nivelamento', 'NIVELAMENTO_COMPATIBILITY', `${file} is retained for compatibility; Diagnóstico V2 uses the main question bank.`, file);

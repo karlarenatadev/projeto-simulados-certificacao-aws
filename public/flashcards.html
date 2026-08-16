@@ -16,7 +16,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=msv18ia9" />
+    <link rel="stylesheet" href="./css/style.css?v=msv2vwh1" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -114,7 +114,7 @@
           
           <!-- Cabeçalho -->
           <div class="fc-header">
-            <span id="flashcards-cert-badge" class="fc-badge">CLF-C02</span>
+            <span id="flashcards-cert-badge" class="fc-badge"></span>
             <h2 class="fc-title">
               <i class="fa-solid fa-layer-group"></i> Modo Flashcards
             </h2>
@@ -124,6 +124,18 @@
           </div>
 
           <!-- Banner de Diagnóstico -->
+          <section id="flashcard-certification-picker" class="fc-certification-picker a3-card" aria-labelledby="flashcard-certification-title">
+            <div class="fc-certification-picker-heading">
+              <div>
+                <h3 id="flashcard-certification-title" class="fc-section-title">Escolha a certificação</h3>
+                <p id="flashcard-certification-description" class="fc-section-description">A coleção aberta pode ser consultada sem alterar sua certificação em estudo.</p>
+              </div>
+              <span id="flashcard-active-certification" class="fc-study-status"></span>
+            </div>
+            <div id="flashcard-certification-options" class="fc-certification-options" role="group"></div>
+            <p id="flashcard-certification-empty" class="hidden fc-empty-state"></p>
+          </section>
+
           <div id="flashcards-diagnostic-banner" class="hidden mb-4 p-4 bg-orange-100 border border-orange-300 text-orange-800 rounded-lg flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm">
             <div>
               <h3 class="font-bold mb-1"><i class="fa-solid fa-bullseye"></i> Plano de Estudo Personalizado</h3>
@@ -220,8 +232,8 @@
     </footer>
 
 
-    <script src="./js/pomodoroManager.js?v=msv18ia9" type="module"></script>
-    <script src="./js/app.js?v=msv18ia9" type="module"></script>
+    <script src="./js/pomodoroManager.js?v=msv2vwh1" type="module"></script>
+    <script src="./js/app.js?v=msv2vwh1" type="module"></script>
     <script type="module">
       import { initShell } from "./js/shell.js";
       import { authGuard } from "./js/core/authGuard.js";

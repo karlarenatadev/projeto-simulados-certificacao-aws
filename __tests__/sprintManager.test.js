@@ -5,6 +5,7 @@ import {
     getSprintProgress,
     readSprintRecommendation,
 } from '../src/frontend/js/gamificacao/sprintManager.js';
+import { sprintPillsData } from '../src/frontend/js/sprintData.js';
 
 describe('sprintManager', () => {
     beforeEach(() => {
@@ -27,6 +28,23 @@ describe('sprintManager', () => {
             for (const [day, labels] of Object.entries(map)) {
                 expect(labels.pt).toBeDefined();
                 expect(labels.en).toBeDefined();
+            }
+        }
+    });
+
+    test('cada dia possui conteúdo detalhado bilíngue', () => {
+        for (const days of Object.values(sprintPillsData)) {
+            expect(Object.keys(days).map(Number).sort((a, b) => a - b)).toEqual(
+                Array.from({ length: 14 }, (_, index) => index + 1),
+            );
+            for (const day of Object.values(days)) {
+                for (const language of ['pt', 'en']) {
+                    expect(day[language].title).toBeTruthy();
+                    expect(day[language].topic).toBeTruthy();
+                    expect(day[language].readTime).toBeTruthy();
+                    expect(day[language].content).toBeTruthy();
+                    expect(day[language].keyTakeaway).toBeTruthy();
+                }
             }
         }
     });

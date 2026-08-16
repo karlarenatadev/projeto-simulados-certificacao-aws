@@ -134,6 +134,157 @@ html.dark .fc-badge {
 
 /* ── Barra de Ferramentas (Toolbar) ────────────────────────────────────── */
 
+.fc-certification-picker {
+  width: 100%;
+  max-width: 56rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  text-align: left;
+}
+
+.fc-certification-picker-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.fc-section-title {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.fc-section-description {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.fc-study-status {
+  flex: 0 0 auto;
+  color: var(--a3-primary);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.fc-certification-options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.fc-certification-option-wrap {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.fc-certification-option {
+  min-width: 0;
+  padding: 0.875rem;
+  border: 1px solid var(--border-theme);
+  border-radius: 0.75rem;
+  background: var(--a3-surface-raised);
+  color: var(--text-main);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.fc-certification-option:hover,
+.fc-certification-option:focus-visible {
+  border-color: var(--a3-primary);
+  box-shadow: var(--a3-shadow-sm);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.fc-certification-option.is-viewing {
+  border-color: var(--a3-primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--a3-primary) 18%, transparent);
+}
+
+.fc-certification-option.is-studying {
+  background: var(--a3-surface-warning);
+}
+
+.fc-certification-option-code {
+  display: block;
+  color: var(--text-strong);
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+.fc-certification-option-name {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.fc-certification-option-meta {
+  display: block;
+  margin-top: 0.65rem;
+  color: var(--a3-primary);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.fc-certification-option-action {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.fc-certification-primary-action {
+  width: 100%;
+  min-width: 0;
+  padding: 0.35rem 0.5rem;
+  border: 0;
+  background: transparent;
+  color: var(--a3-primary);
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.fc-certification-primary-action:hover,
+.fc-certification-primary-action:focus-visible {
+  text-decoration: underline;
+}
+
+.fc-empty-state {
+  margin: 0.75rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 900px) {
+  .fc-certification-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .fc-certification-picker-heading {
+    flex-direction: column;
+  }
+
+  .fc-certification-options {
+    grid-template-columns: 1fr;
+  }
+}
+
 .fc-toolbar {
   width: 100%;
   max-width: 42rem;
