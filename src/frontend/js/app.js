@@ -2443,11 +2443,14 @@ function renderDiagnosticReport(results) {
         <div class="mt-10 text-center flex flex-col md:flex-row justify-center gap-4 fade-in">
             ${
               weakDomains.length > 0
-                ? `<button id="btn-diagnostic-to-flashcards" class="a3-button-secondary py-3 px-6 text-base w-auto">
+              ? `<button id="btn-diagnostic-to-flashcards" class="a3-button-secondary py-3 px-6 text-base w-auto">
                     <i class="fa-solid fa-layer-group mr-2"></i> ${t("review_recommended_flashcards", uiState.language)}
                 </button>
                 <button id="btn-diagnostic-to-questions" class="a3-button-primary py-3 px-6 text-base w-auto">
                     <i class="fa-solid fa-play mr-2"></i> Praticar Questões
+                </button>
+                <button id="btn-diagnostic-to-exam-tips" class="a3-button-secondary py-3 px-6 text-base w-auto">
+                    <i class="fa-solid fa-bullseye mr-2"></i> ${t("review_recommended_exam_tips", uiState.language)}
                 </button>`
                 : ""
             }
@@ -2487,6 +2490,15 @@ function renderDiagnosticReport(results) {
         );
       }
       window.location.href = "./simulados.html";
+    });
+    bindClick("btn-diagnostic-to-exam-tips", () => {
+      const recommendation = lastDiagnosticRecommendation?.recommendations?.tips;
+      const query = new URLSearchParams({
+        source: "diagnostic",
+        cert: recommendation?.context?.certificationId || results.certId,
+      });
+      if (recommendation?.context?.weakDomains?.length) query.set("domain", recommendation.context.weakDomains[0]);
+      window.location.href = `./dicas-prova.html?${query.toString()}`;
     });
   }
 

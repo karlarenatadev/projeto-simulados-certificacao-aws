@@ -287,7 +287,7 @@ try {
   }
 
   // cases.css — estilos específicos da tela de cases (após global)
-  const specificFiles = ['cases.css'];
+  const specificFiles = ['cases.css', 'exam-tips.css'];
   for (const file of specificFiles) {
     const filePath = path.join(stylesDir, file);
     if (fs.existsSync(filePath)) {

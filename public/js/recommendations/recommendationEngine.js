@@ -16,6 +16,7 @@ import { ResourceMapper } from "./resourceMapper.js";
 import { normalizeDomain } from "../domainTaxonomy.js";
 import { normalizeCertificationId } from "../utils/certUtils.js";
 import { normalizeServiceId } from "../utils/serviceIdentity.js";
+import { buildExamTipsRecommendation } from "./examTips.js";
 
 export class RecommendationEngine {
   constructor() {
@@ -198,6 +199,13 @@ export class RecommendationEngine {
             weakTopics,
           },
         },
+        tips: buildExamTipsRecommendation({
+          source: "diagnostic",
+          certificationId,
+          weakDomains,
+          weakServices,
+          weakTopics,
+        }),
       },
     };
   }

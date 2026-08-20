@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Dicas de Prova AWS — revisão rápida por contexto."
+    />
+    <title data-i18n="exam_tips_title">Dicas de Prova</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="manifest" href="./manifest.json" />
+  </head>
+  <body
+    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar exam-tips-page"
+  >
+    <!-- {{HEADER_PAGE}} -->
+    <!-- {{SIDEBAR}} -->
+    <main class="a3-container main-content-container">
+      <section class="exam-tips-hero">
+        <div>
+          <p class="exam-tips-kicker">
+            <i class="fa-solid fa-bullseye" aria-hidden="true"></i>
+            <span data-i18n="exam_tips_kicker">Revisão rápida</span>
+          </p>
+          <h1 data-i18n="exam_tips_title">Dicas de Prova</h1>
+          <p data-i18n="exam_tips_subtitle">
+            Reconheça pistas, diferencie serviços e revise conceitos importantes
+            para o exame.
+          </p>
+        </div>
+        <span
+          id="exam-tips-count"
+          class="exam-tips-count"
+          aria-live="polite"
+        ></span>
+      </section>
+      <section class="exam-tips-toolbar a3-card" aria-label="Filtros de dicas">
+        <label class="exam-tips-search">
+          <span class="sr-only" data-i18n="exam_tips_search_label"
+            >Buscar serviço, conceito ou palavra-chave</span
+          >
+          <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+          <input
+            id="exam-tips-search"
+            type="search"
+            data-i18n="exam_tips_search_placeholder"
+            data-i18n-attr="placeholder"
+            placeholder="Buscar serviço, conceito ou palavra-chave..."
+          />
+        </label>
+        <label
+          ><span data-i18n="exam_tips_certification">Certificação</span
+          ><select
+            id="exam-tips-certification"
+            aria-label="Certificação"
+          ></select
+        ></label>
+        <label
+          ><span data-i18n="domain_filter">Domínio</span
+          ><select id="exam-tips-domain" aria-label="Domínio"></select
+        ></label>
+        <button
+          id="exam-tips-clear"
+          class="a3-btn a3-btn-secondary"
+          type="button"
+          data-i18n="exam_tips_clear"
+        >
+          Limpar filtros
+        </button>
+      </section>
+      <div
+        id="exam-tips-types"
+        class="exam-tips-type-filters"
+        role="group"
+        aria-label="Tipos de dica"
+      ></div>
+      <section
+        id="exam-tips-feedback"
+        class="exam-tips-feedback hidden"
+        role="status"
+      ></section>
+      <section
+        id="exam-tips-grid"
+        class="exam-tips-grid"
+        aria-live="polite"
+      ></section>
+    </main>
+    <!-- {{FOOTER}} -->
+    <script type="module">
+      import { initShell } from "./js/shell.js";
+      import { authGuard } from "./js/core/authGuard.js";
+      import "./js/examTipsPage.js";
+      document.addEventListener("DOMContentLoaded", () => {
+        const session = authGuard();
+        if (session) initShell(session.user);
+      });
+    </script>
+  </body>
+</html>

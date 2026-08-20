@@ -21,7 +21,8 @@ function safePath(requestUrl) {
   return candidate === root || candidate.startsWith(`${root}${path.sep}`) ? candidate : null;
 }
 
-const server = http.createServer(async (request, response) => {
+export function createPublicServer() {
+  return http.createServer(async (request, response) => {
   const filePath = safePath(request.url || "/");
   if (!filePath) {
     response.writeHead(403);
@@ -38,12 +39,24 @@ const server = http.createServer(async (request, response) => {
     response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     response.end("Not found");
   }
-});
+  });
+}
 
-server.listen(port, "127.0.0.1", () => {
-  console.log(`[e2e-server] serving public at http://127.0.0.1:${port}`);
-});
+export function startPublicServer() {
+  const server = createPublicServer();
+  return new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(port, "127.0.0.1", () => {
+      server.off("error", reject);
+      console.log(`[e2e-server] serving public at http://127.0.0.1:${port}`);
+      resolve(server);
+    });
+  });
+}
 
-for (const signal of ["SIGINT", "SIGTERM"]) {
-  process.once(signal, () => server.close(() => process.exit(0)));
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  const server = await startPublicServer();
+  for (const signal of ["SIGINT", "SIGTERM"]) {
+    process.once(signal, () => server.close(() => process.exit(0)));
+  }
 }

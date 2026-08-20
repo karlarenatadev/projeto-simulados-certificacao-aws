@@ -18,13 +18,17 @@ export default defineConfig({
     screenshot: "only-on-failure",
     video: "off",
   },
-  webServer: {
-    command: "node e2e/serve-public.mjs",
-    url: "http://127.0.0.1:4173/index.html",
-    reuseExistingServer: false,
-    timeout: 30_000,
-    stdout: "pipe",
-    stderr: "pipe",
-  },
+  ...(process.env.PLAYWRIGHT_EXTERNAL_SERVER
+    ? {}
+    : {
+        webServer: {
+          command: "node e2e/serve-public.mjs",
+          url: "http://127.0.0.1:4173/index.html",
+          reuseExistingServer: false,
+          timeout: 30_000,
+          stdout: "pipe",
+          stderr: "pipe",
+        },
+      }),
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 });

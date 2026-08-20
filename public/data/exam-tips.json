@@ -1,0 +1,3886 @@
+[
+  {
+    "id": "clf-cloudwatch-cloudtrail",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "comparison",
+    "title": {
+      "pt": "CloudWatch × CloudTrail",
+      "en": "CloudWatch × CloudTrail"
+    },
+    "keywords": [
+      "métricas",
+      "logs",
+      "auditoria",
+      "API calls",
+      "observabilidade"
+    ],
+    "comparison": {
+      "pt": [
+        {
+          "name": "CloudWatch",
+          "points": ["métricas", "logs", "alarmes", "performance"]
+        },
+        {
+          "name": "CloudTrail",
+          "points": ["ações", "chamadas de API", "identidade", "auditoria"]
+        }
+      ],
+      "en": [
+        {
+          "name": "CloudWatch",
+          "points": ["metrics", "logs", "alarms", "performance"]
+        },
+        {
+          "name": "CloudTrail",
+          "points": ["actions", "API calls", "identity", "auditing"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Desempenho e estado dos recursos apontam para CloudWatch; quem fez o quê aponta para CloudTrail.",
+      "en": "Resource performance and state point to CloudWatch; who did what points to CloudTrail."
+    },
+    "services": ["amazon-cloudwatch", "aws-cloudtrail"],
+    "tags": ["monitoring", "audit"]
+  },
+  {
+    "id": "clf-iam-cognito",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "comparison",
+    "title": { "pt": "IAM × Cognito", "en": "IAM × Cognito" },
+    "keywords": [
+      "usuários de aplicação",
+      "identidade",
+      "autenticação",
+      "permissões"
+    ],
+    "comparison": {
+      "pt": [
+        {
+          "name": "IAM",
+          "points": ["acesso a recursos AWS", "políticas", "roles"]
+        },
+        {
+          "name": "Cognito",
+          "points": ["usuários de aplicações", "login", "federação"]
+        }
+      ],
+      "en": [
+        {
+          "name": "IAM",
+          "points": ["AWS resource access", "policies", "roles"]
+        },
+        {
+          "name": "Cognito",
+          "points": ["application users", "sign-in", "federation"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Separe identidades que administram recursos AWS de usuários finais de uma aplicação.",
+      "en": "Separate identities that administer AWS resources from end users of an application."
+    },
+    "services": ["iam", "amazon-cognito"],
+    "tags": ["identity", "authentication"]
+  },
+  {
+    "id": "clf-sqs-sns",
+    "certifications": ["CLF-C02"],
+    "domain": "tecnologia",
+    "type": "comparison",
+    "title": { "pt": "SQS × SNS", "en": "SQS × SNS" },
+    "keywords": ["fila", "pub/sub", "mensagens", "desacoplamento"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "SQS",
+          "points": ["fila", "consumidor processa mensagens", "desacoplamento"]
+        },
+        {
+          "name": "SNS",
+          "points": ["pub/sub", "tópicos", "distribuição para assinantes"]
+        }
+      ],
+      "en": [
+        {
+          "name": "SQS",
+          "points": ["queue", "consumer processes messages", "decoupling"]
+        },
+        {
+          "name": "SNS",
+          "points": ["pub/sub", "topics", "fan-out to subscribers"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Pergunte se o cenário precisa armazenar mensagens para consumo ou distribuí-las a vários assinantes.",
+      "en": "Ask whether the scenario needs to queue messages for consumption or distribute them to subscribers."
+    },
+    "services": ["amazon-sqs", "amazon-sns"],
+    "tags": ["messaging"]
+  },
+  {
+    "id": "clf-emr-redshift",
+    "certifications": ["CLF-C02"],
+    "domain": "tecnologia",
+    "type": "comparison",
+    "title": { "pt": "EMR × Redshift", "en": "EMR × Redshift" },
+    "keywords": ["Hadoop", "Spark", "data warehouse", "analytics"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Amazon EMR",
+          "points": ["Hadoop e Spark", "processamento distribuído", "clusters"]
+        },
+        {
+          "name": "Amazon Redshift",
+          "points": ["data warehouse", "SQL analítico", "colunas"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Amazon EMR",
+          "points": ["Hadoop and Spark", "distributed processing", "clusters"]
+        },
+        {
+          "name": "Amazon Redshift",
+          "points": ["data warehouse", "analytical SQL", "columnar storage"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Hadoop/Spark sugerem EMR; consultas analíticas estruturadas em um warehouse sugerem Redshift — valide o cenário completo.",
+      "en": "Hadoop/Spark suggest EMR; structured analytical queries in a warehouse suggest Redshift — validate the full scenario."
+    },
+    "services": ["amazon-emr", "amazon-redshift"],
+    "tags": ["big-data", "analytics"]
+  },
+  {
+    "id": "clf-kms-cloudhsm",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "comparison",
+    "title": { "pt": "KMS × CloudHSM", "en": "KMS × CloudHSM" },
+    "keywords": ["criptografia", "chaves", "HSM", "controle de chave"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "AWS KMS",
+          "points": [
+            "serviço gerenciado",
+            "integrações AWS",
+            "controle de chaves"
+          ]
+        },
+        {
+          "name": "CloudHSM",
+          "points": [
+            "HSM dedicado",
+            "controle adicional",
+            "requisitos específicos"
+          ]
+        }
+      ],
+      "en": [
+        {
+          "name": "AWS KMS",
+          "points": ["managed service", "AWS integrations", "key control"]
+        },
+        {
+          "name": "CloudHSM",
+          "points": [
+            "dedicated HSM",
+            "additional control",
+            "specific requirements"
+          ]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Ambos protegem chaves, mas o requisito de controle dedicado e hardware HSM muda a escolha.",
+      "en": "Both protect keys, but a requirement for dedicated control and HSM hardware changes the choice."
+    },
+    "services": ["aws-key-management-service-kms", "amazon-cloudhsm"],
+    "tags": ["encryption"]
+  },
+  {
+    "id": "clf-keyword-emr",
+    "certifications": ["CLF-C02"],
+    "domain": "tecnologia",
+    "type": "keyword",
+    "title": { "pt": "Hadoop / Spark", "en": "Hadoop / Spark" },
+    "keywords": ["Hadoop", "Spark", "processamento distribuído", "big data"],
+    "thinkFirst": { "pt": "Amazon EMR", "en": "Amazon EMR" },
+    "description": {
+      "pt": "Se a questão mencionar Hadoop ou Spark, pense primeiro em EMR e valide se o cenário pede clusters e processamento distribuído.",
+      "en": "If a question mentions Hadoop or Spark, think first of EMR and validate whether the scenario calls for clusters and distributed processing."
+    },
+    "dontConfuseWith": ["Amazon Redshift"],
+    "services": ["amazon-emr", "amazon-redshift"],
+    "tags": ["big-data"]
+  },
+  {
+    "id": "clf-keyword-cognito",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "keyword",
+    "title": { "pt": "Usuários de aplicação", "en": "Application users" },
+    "keywords": [
+      "usuários de aplicativo",
+      "mobile users",
+      "web users",
+      "authentication"
+    ],
+    "thinkFirst": { "pt": "Amazon Cognito", "en": "Amazon Cognito" },
+    "description": {
+      "pt": "Autenticação e autorização de usuários de aplicações web e mobile; confirme o fluxo de identidade exigido.",
+      "en": "Authentication and authorization for web and mobile application users; confirm the required identity flow."
+    },
+    "dontConfuseWith": ["AWS IAM"],
+    "services": ["amazon-cognito", "iam"],
+    "tags": ["identity"]
+  },
+  {
+    "id": "clf-keyword-cost",
+    "certifications": ["CLF-C02"],
+    "domain": "faturamento",
+    "type": "keyword",
+    "title": {
+      "pt": "Planejar ou acompanhar custos",
+      "en": "Plan or track costs"
+    },
+    "keywords": [
+      "estimar custo",
+      "quanto vou gastar",
+      "quanto já gastei",
+      "previsão"
+    ],
+    "thinkFirst": {
+      "pt": "Pricing Calculator para estimar; Cost Explorer para analisar uso e custos",
+      "en": "Pricing Calculator to estimate; Cost Explorer to analyze usage and costs"
+    },
+    "description": {
+      "pt": "Quanto vou gastar antes de implementar? Pricing Calculator. Quanto já gastei? Cost Explorer.",
+      "en": "How much will I spend before implementation? Pricing Calculator. How much have I spent? Cost Explorer."
+    },
+    "services": ["aws-pricing-calculator", "aws-cost-explorer"],
+    "tags": ["billing", "pricing"]
+  },
+  {
+    "id": "clf-security-group-nacl",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "trap",
+    "title": { "pt": "Security Group × NACL", "en": "Security Group × NACL" },
+    "keywords": ["stateful", "stateless", "subnet", "instância"],
+    "description": {
+      "pt": "Security Groups são associados a interfaces/instâncias e são stateful; NACLs atuam no nível de subnet e são stateless. Verifique também as regras de retorno.",
+      "en": "Security Groups attach to interfaces/instances and are stateful; NACLs operate at the subnet level and are stateless. Also check return rules."
+    },
+    "services": ["ec2"],
+    "tags": ["networking", "security"]
+  },
+  {
+    "id": "clf-shield-waf",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "trap",
+    "title": { "pt": "Proteção contra DDoS", "en": "DDoS protection" },
+    "keywords": ["DDoS", "web requests", "firewall", "Shield", "WAF"],
+    "description": {
+      "pt": "Proteção contra DDoS → considere Shield e avalie Standard ou Advanced; filtragem de requisições web aponta para WAF. Não trate uma palavra isolada como resposta automática.",
+      "en": "DDoS protection → consider Shield and evaluate Standard or Advanced; web request filtering points to WAF. Do not treat one word as an automatic answer."
+    },
+    "services": ["aws-shield", "aws-waf"],
+    "tags": ["security", "networking"]
+  },
+  {
+    "id": "clf-multi-az-read-replica",
+    "certifications": ["CLF-C02"],
+    "domain": "tecnologia",
+    "type": "trap",
+    "title": {
+      "pt": "Multi-AZ × Read Replica",
+      "en": "Multi-AZ × Read Replica"
+    },
+    "keywords": ["alta disponibilidade", "leitura", "replicação", "failover"],
+    "description": {
+      "pt": "Multi-AZ prioriza disponibilidade e failover; Read Replica amplia capacidade de leitura. Identifique se o problema é falha ou carga de leitura.",
+      "en": "Multi-AZ prioritizes availability and failover; Read Replica expands read capacity. Identify whether the problem is failure or read load."
+    },
+    "services": ["amazon-rds"],
+    "tags": ["database", "availability"]
+  },
+  {
+    "id": "clf-shared-responsibility",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "trap",
+    "title": {
+      "pt": "Responsabilidade compartilhada",
+      "en": "Shared Responsibility"
+    },
+    "keywords": ["segurança da nuvem", "segurança na nuvem", "AWS", "cliente"],
+    "description": {
+      "pt": "AWS protege a infraestrutura da nuvem; o cliente continua responsável pela segurança dentro da nuvem conforme o serviço e a configuração usados.",
+      "en": "AWS protects the infrastructure of the cloud; the customer remains responsible for security in the cloud according to the service and configuration used."
+    },
+    "services": ["amazon-s3", "ec2"],
+    "tags": ["governance", "security"]
+  },
+  {
+    "id": "clf-stateful-stateless",
+    "certifications": ["CLF-C02"],
+    "domain": "conceitos-cloud",
+    "type": "trap",
+    "title": { "pt": "Stateful × Stateless", "en": "Stateful × Stateless" },
+    "keywords": ["stateful", "stateless", "estado", "conexão"],
+    "description": {
+      "pt": "Stateful preserva contexto/estado entre pacotes ou requisições; stateless exige que cada interação carregue o contexto necessário. Relacione a definição ao componente citado.",
+      "en": "Stateful preserves context/state between packets or requests; stateless requires each interaction to carry the needed context. Relate the definition to the named component."
+    },
+    "services": ["ec2"],
+    "tags": ["architecture"]
+  },
+  {
+    "id": "clf-scale-elasticity",
+    "certifications": ["CLF-C02"],
+    "domain": "conceitos-cloud",
+    "type": "mental-shortcut",
+    "title": {
+      "pt": "Escalabilidade × elasticidade",
+      "en": "Scalability × elasticity"
+    },
+    "keywords": ["crescer", "reduzir", "demanda", "capacidade"],
+    "thinkFirst": {
+      "pt": "Escalabilidade é capacidade de crescer; elasticidade é ajustar capacidade à demanda.",
+      "en": "Scalability is the ability to grow; elasticity is adjusting capacity to demand."
+    },
+    "description": {
+      "pt": "Use a distinção como pista conceitual, mas confirme o comportamento pedido pelo cenário.",
+      "en": "Use the distinction as a conceptual clue, but confirm the behavior requested by the scenario."
+    },
+    "services": ["ec2"],
+    "tags": ["cloud-concepts"]
+  },
+  {
+    "id": "clf-pricing-cost-explorer",
+    "certifications": ["CLF-C02"],
+    "domain": "faturamento",
+    "type": "mental-shortcut",
+    "title": {
+      "pt": "Antes ou depois da implementação?",
+      "en": "Before or after implementation?"
+    },
+    "keywords": ["estimar", "histórico", "custo atual", "orçamento"],
+    "thinkFirst": {
+      "pt": "Pricing Calculator antes; Cost Explorer depois.",
+      "en": "Pricing Calculator before; Cost Explorer after."
+    },
+    "description": {
+      "pt": "A ferramenta deve combinar com o momento: estimativa para planejar, análise histórica para entender gastos reais.",
+      "en": "The tool should match the moment: estimation for planning, historical analysis for real spending."
+    },
+    "services": ["aws-pricing-calculator", "aws-cost-explorer"],
+    "tags": ["billing"]
+  },
+  {
+    "id": "clf-monitoring-audit",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "mental-shortcut",
+    "title": { "pt": "Como está? Quem fez?", "en": "How is it? Who did it?" },
+    "keywords": ["performance", "métricas", "ação", "auditoria", "logs"],
+    "thinkFirst": {
+      "pt": "Como está? CloudWatch. Quem fez? CloudTrail.",
+      "en": "How is it? CloudWatch. Who did it? CloudTrail."
+    },
+    "description": {
+      "pt": "É uma associação inicial para orientar a leitura; valide o requisito de observabilidade ou auditoria.",
+      "en": "This is an initial association to guide reading; validate the observability or auditing requirement."
+    },
+    "services": ["amazon-cloudwatch", "aws-cloudtrail"],
+    "tags": ["monitoring", "audit"]
+  },
+  {
+    "id": "clf-storage-choice",
+    "certifications": ["CLF-C02"],
+    "domain": "tecnologia",
+    "type": "mental-shortcut",
+    "title": {
+      "pt": "Objeto, bloco ou arquivo?",
+      "en": "Object, block, or file?"
+    },
+    "keywords": [
+      "armazenamento",
+      "objeto",
+      "bloco",
+      "arquivo",
+      "S3",
+      "EBS",
+      "EFS"
+    ],
+    "thinkFirst": {
+      "pt": "S3 para objetos; EBS para blocos de uma instância; EFS para arquivos compartilhados.",
+      "en": "S3 for objects; EBS for blocks attached to an instance; EFS for shared files."
+    },
+    "description": {
+      "pt": "Trate como ponto de partida e confira disponibilidade, acesso e performance exigidos.",
+      "en": "Treat this as a starting point and check the required availability, access, and performance."
+    },
+    "services": ["amazon-s3", "amazon-ebs", "amazon-efs"],
+    "tags": ["storage"]
+  },
+  {
+    "id": "clf-availability-fault-tolerance",
+    "certifications": ["CLF-C02"],
+    "domain": "conceitos-cloud",
+    "type": "mental-shortcut",
+    "title": {
+      "pt": "Alta disponibilidade × tolerância a falhas",
+      "en": "High availability × fault tolerance"
+    },
+    "keywords": ["disponível", "falha", "redundância", "downtime"],
+    "thinkFirst": {
+      "pt": "Disponibilidade reduz interrupções; tolerância a falhas mantém a operação diante de falhas.",
+      "en": "Availability reduces interruptions; fault tolerance keeps operating through failures."
+    },
+    "description": {
+      "pt": "A prova pode exigir uma combinação dos dois conceitos; leia o impacto esperado da falha.",
+      "en": "The exam may require a combination of both concepts; read the expected impact of failure."
+    },
+    "services": ["amazon-rds", "amazon-s3"],
+    "tags": ["reliability"]
+  },
+  {
+    "id": "clf-iam-user-role",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "comparison",
+    "title": { "pt": "IAM User × IAM Role", "en": "IAM User × IAM Role" },
+    "keywords": [
+      "credencial permanente",
+      "acesso temporário",
+      "workload",
+      "delegação"
+    ],
+    "comparison": {
+      "pt": [
+        {
+          "name": "IAM User",
+          "points": [
+            "identidade de pessoa",
+            "credenciais próprias",
+            "uso administrativo controlado"
+          ]
+        },
+        {
+          "name": "IAM Role",
+          "points": [
+            "identidade assumível",
+            "credenciais temporárias",
+            "ideal para workloads"
+          ]
+        }
+      ],
+      "en": [
+        {
+          "name": "IAM User",
+          "points": [
+            "person identity",
+            "own credentials",
+            "controlled administration"
+          ]
+        },
+        {
+          "name": "IAM Role",
+          "points": [
+            "assumable identity",
+            "temporary credentials",
+            "ideal for workloads"
+          ]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Para uma aplicação ou serviço, considere uma role e credenciais temporárias em vez de embutir chaves de usuário.",
+      "en": "For an application or service, consider a role and temporary credentials instead of embedding user keys."
+    },
+    "services": ["iam"],
+    "tags": ["identity", "least-privilege"]
+  },
+  {
+    "id": "clf-identity-center",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "keyword",
+    "title": {
+      "pt": "Acesso centralizado a várias contas",
+      "en": "Centralized access to multiple accounts"
+    },
+    "keywords": [
+      "SSO",
+      "login centralizado",
+      "multi-account",
+      "permission sets"
+    ],
+    "thinkFirst": { "pt": "IAM Identity Center", "en": "IAM Identity Center" },
+    "description": {
+      "pt": "Quando pessoas precisam acessar várias contas com uma identidade central, avalie IAM Identity Center e permission sets.",
+      "en": "When people need access to multiple accounts with a central identity, consider IAM Identity Center and permission sets."
+    },
+    "services": ["iam", "aws-organizations"],
+    "tags": ["identity", "governance"]
+  },
+  {
+    "id": "clf-sts-temporary",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "keyword",
+    "title": { "pt": "Credenciais temporárias", "en": "Temporary credentials" },
+    "keywords": ["assume role", "sessão", "token", "credenciais temporárias"],
+    "thinkFirst": { "pt": "AWS STS", "en": "AWS STS" },
+    "description": {
+      "pt": "Para acesso delegado e temporário, considere STS/AssumeRole e valide a política que limita a sessão.",
+      "en": "For delegated temporary access, consider STS/AssumeRole and validate the policy limiting the session."
+    },
+    "services": ["iam"],
+    "tags": ["security", "identity"]
+  },
+  {
+    "id": "clf-acm-certificates",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "keyword",
+    "title": {
+      "pt": "Certificados TLS gerenciados",
+      "en": "Managed TLS certificates"
+    },
+    "keywords": ["HTTPS", "SSL", "TLS", "certificado"],
+    "thinkFirst": {
+      "pt": "AWS Certificate Manager",
+      "en": "AWS Certificate Manager"
+    },
+    "description": {
+      "pt": "Para provisionar e renovar certificados TLS integrados a serviços AWS, considere ACM e confirme o recurso de destino.",
+      "en": "To provision and renew TLS certificates integrated with AWS services, consider ACM and confirm the target resource."
+    },
+    "services": ["aws-certificate-manager"],
+    "tags": ["encryption", "web"]
+  },
+  {
+    "id": "clf-secrets-parameter",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "comparison",
+    "title": {
+      "pt": "Secrets Manager × Parameter Store",
+      "en": "Secrets Manager × Parameter Store"
+    },
+    "keywords": ["segredo", "senha", "parâmetro", "rotação"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Secrets Manager",
+          "points": ["segredos sensíveis", "rotação integrada", "credenciais"]
+        },
+        {
+          "name": "Parameter Store",
+          "points": [
+            "parâmetros de configuração",
+            "hierarquia",
+            "opção simples"
+          ]
+        }
+      ],
+      "en": [
+        {
+          "name": "Secrets Manager",
+          "points": ["sensitive secrets", "integrated rotation", "credentials"]
+        },
+        {
+          "name": "Parameter Store",
+          "points": ["configuration parameters", "hierarchy", "simple option"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "A necessidade de rotação automática e gestão de credenciais pesa para Secrets Manager; configuração simples pode caber no Parameter Store.",
+      "en": "Automatic rotation and credential management favor Secrets Manager; simple configuration may fit Parameter Store."
+    },
+    "services": ["aws-secrets-manager", "aws-systems-manager-parameter-store"],
+    "tags": ["security", "configuration"]
+  },
+  {
+    "id": "clf-config-cloudtrail",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "comparison",
+    "title": {
+      "pt": "AWS Config × CloudTrail",
+      "en": "AWS Config × CloudTrail"
+    },
+    "keywords": ["conformidade", "configuração", "histórico de API", "mudança"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "AWS Config",
+          "points": [
+            "estado e configuração",
+            "regras de conformidade",
+            "histórico de configuração"
+          ]
+        },
+        {
+          "name": "CloudTrail",
+          "points": ["chamadas de API", "identidade", "eventos de atividade"]
+        }
+      ],
+      "en": [
+        {
+          "name": "AWS Config",
+          "points": [
+            "state and configuration",
+            "compliance rules",
+            "configuration history"
+          ]
+        },
+        {
+          "name": "CloudTrail",
+          "points": ["API calls", "identity", "activity events"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Pergunte se a questão investiga como um recurso está configurado ou qual chamada alterou a conta.",
+      "en": "Ask whether the question investigates how a resource is configured or which call changed the account."
+    },
+    "services": ["aws-config", "aws-cloudtrail"],
+    "tags": ["governance", "audit"]
+  },
+  {
+    "id": "clf-guard-services",
+    "certifications": ["CLF-C02"],
+    "domain": "seguranca",
+    "type": "comparison",
+    "title": {
+      "pt": "GuardDuty × Inspector × Macie",
+      "en": "GuardDuty × Inspector × Macie"
+    },
+    "keywords": ["ameaça", "vulnerabilidade", "dados sensíveis", "malware"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "GuardDuty",
+          "points": ["ameaças e comportamento", "contas e workloads"]
+        },
+        {
+          "name": "Inspector / Macie",
+          "points": ["vulnerabilidades / dados sensíveis"]
+        }
+      ],
+      "en": [
+        {
+          "name": "GuardDuty",
+          "points": ["threats and behavior", "accounts and workloads"]
+        },
+        {
+          "name": "Inspector / Macie",
+          "points": ["vulnerabilities / sensitive data"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Diferencie detecção de ameaças, avaliação de vulnerabilidades e descoberta de dados sensíveis pelo objeto analisado.",
+      "en": "Differentiate threat detection, vulnerability assessment, and sensitive-data discovery by the analyzed object."
+    },
+    "services": ["amazon-guardduty", "inspector", "amazon-macie"],
+    "tags": ["security", "detection"]
+  },
+  {
+    "id": "clf-ec2-lambda",
+    "certifications": ["CLF-C02"],
+    "domain": "tecnologia",
+    "type": "comparison",
+    "title": { "pt": "EC2 × Lambda", "en": "EC2 × Lambda" },
+    "keywords": [
+      "servidor",
+      "serverless",
+      "runtime",
+      "controle de sistema operacional"
+    ],
+    "comparison": {
+      "pt": [
+        {
+          "name": "EC2",
+          "points": [
+            "instâncias",
+            "controle do sistema operacional",
+            "processo contínuo"
+          ]
+        },
+        {
+          "name": "Lambda",
+          "points": ["event-driven", "serverless", "execução gerenciada"]
+        }
+      ],
+      "en": [
+        {
+          "name": "EC2",
+          "points": [
+            "instances",
+            "operating-system control",
+            "continuous process"
+          ]
+        },
+        {
+          "name": "Lambda",
+          "points": ["event-driven", "serverless", "managed execution"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "O requisito de controle do sistema operacional ou execução longa pode favorecer EC2; eventos e operação sem servidores podem favorecer Lambda.",
+      "en": "Operating-system control or long-running execution may favor EC2; events and serverless operation may favor Lambda."
+    },
+    "services": ["ec2", "lambda"],
+    "tags": ["compute"]
+  },
+  {
+    "id": "clf-ecs-eks-fargate",
+    "certifications": ["CLF-C02"],
+    "domain": "tecnologia",
+    "type": "comparison",
+    "title": { "pt": "ECS × EKS × Fargate", "en": "ECS × EKS × Fargate" },
+    "keywords": [
+      "containers",
+      "Kubernetes",
+      "orquestração",
+      "serverless containers"
+    ],
+    "comparison": {
+      "pt": [
+        {
+          "name": "ECS / EKS",
+          "points": ["ECS é orquestrador AWS; EKS é Kubernetes gerenciado"]
+        },
+        {
+          "name": "Fargate",
+          "points": ["modo de executar containers sem gerenciar servidores"]
+        }
+      ],
+      "en": [
+        {
+          "name": "ECS / EKS",
+          "points": ["ECS is AWS orchestration; EKS is managed Kubernetes"]
+        },
+        {
+          "name": "Fargate",
+          "points": ["way to run containers without managing servers"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Separe a escolha do orquestrador da decisão sobre onde a capacidade dos containers será executada.",
+      "en": "Separate the orchestrator choice from the decision about where container capacity will run."
+    },
+    "services": ["amazon-ecs", "aws-fargate"],
+    "tags": ["containers"]
+  },
+  {
+    "id": "clf-rds-dynamodb",
+    "certifications": ["CLF-C02"],
+    "domain": "tecnologia",
+    "type": "comparison",
+    "title": { "pt": "RDS × DynamoDB", "en": "RDS × DynamoDB" },
+    "keywords": ["relacional", "NoSQL", "SQL", "chave-valor"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "RDS",
+          "points": ["banco relacional", "SQL", "joins e esquema"]
+        },
+        {
+          "name": "DynamoDB",
+          "points": ["NoSQL", "chave-valor/documento", "escala gerenciada"]
+        }
+      ],
+      "en": [
+        {
+          "name": "RDS",
+          "points": ["relational database", "SQL", "joins and schema"]
+        },
+        {
+          "name": "DynamoDB",
+          "points": ["NoSQL", "key-value/document", "managed scale"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "O modelo de dados e o padrão de acesso importam mais que uma associação genérica de performance.",
+      "en": "The data model and access pattern matter more than a generic performance association."
+    },
+    "services": ["amazon-rds", "dynamodb"],
+    "tags": ["database"]
+  },
+  {
+    "id": "clf-direct-vpn",
+    "certifications": ["CLF-C02"],
+    "domain": "tecnologia",
+    "type": "comparison",
+    "title": { "pt": "Direct Connect × VPN", "en": "Direct Connect × VPN" },
+    "keywords": [
+      "conexão dedicada",
+      "internet pública",
+      "túnel criptografado",
+      "híbrido"
+    ],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Direct Connect",
+          "points": ["conexão dedicada", "previsibilidade", "provisionamento"]
+        },
+        {
+          "name": "Site-to-Site VPN",
+          "points": [
+            "túnel sobre internet",
+            "implantação mais rápida",
+            "criptografia"
+          ]
+        }
+      ],
+      "en": [
+        {
+          "name": "Direct Connect",
+          "points": ["dedicated connection", "predictability", "provisioning"]
+        },
+        {
+          "name": "Site-to-Site VPN",
+          "points": ["tunnel over internet", "faster deployment", "encryption"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Considere tempo de implantação, previsibilidade e requisitos de conectividade híbrida antes de escolher.",
+      "en": "Consider deployment time, predictability, and hybrid-connectivity requirements before choosing."
+    },
+    "services": ["aws-direct-connect", "amazon-virtual-private-cloud-vpc"],
+    "tags": ["networking"]
+  },
+  {
+    "id": "clf-billing-governance",
+    "certifications": ["CLF-C02"],
+    "domain": "faturamento",
+    "type": "mental-shortcut",
+    "title": {
+      "pt": "Governar contas e custos",
+      "en": "Govern accounts and costs"
+    },
+    "keywords": [
+      "multi-account",
+      "faturamento consolidado",
+      "orçamento",
+      "contas"
+    ],
+    "thinkFirst": {
+      "pt": "Organizations para estrutura e consolidação; Budgets para alertas de gasto.",
+      "en": "Organizations for structure and consolidation; Budgets for spending alerts."
+    },
+    "description": {
+      "pt": "A ferramenta depende da ação: organizar contas, consolidar faturamento ou alertar sobre um limite de custo.",
+      "en": "The tool depends on the action: organize accounts, consolidate billing, or alert on a cost threshold."
+    },
+    "services": ["aws-organizations", "aws-budgets"],
+    "tags": ["billing", "governance"]
+  },
+  {
+    "id": "saa-multi-az-region",
+    "certifications": ["SAA-C03"],
+    "domain": "design-resiliente",
+    "type": "comparison",
+    "title": {
+      "pt": "Multi-AZ × Multi-Region",
+      "en": "Multi-AZ × Multi-Region"
+    },
+    "keywords": [
+      "disaster recovery",
+      "isolamento regional",
+      "alta disponibilidade",
+      "falha"
+    ],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Multi-AZ",
+          "points": [
+            "falha dentro da região",
+            "redundância próxima",
+            "menor complexidade"
+          ]
+        },
+        {
+          "name": "Multi-Region",
+          "points": [
+            "falha regional",
+            "distribuição geográfica",
+            "mais complexidade"
+          ]
+        }
+      ],
+      "en": [
+        {
+          "name": "Multi-AZ",
+          "points": [
+            "failure within a Region",
+            "nearby redundancy",
+            "less complexity"
+          ]
+        },
+        {
+          "name": "Multi-Region",
+          "points": [
+            "regional failure",
+            "geographic distribution",
+            "more complexity"
+          ]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Escolha conforme o raio da falha e o RTO/RPO, não apenas pela busca genérica de disponibilidade.",
+      "en": "Choose according to the failure radius and RTO/RPO, not merely a generic availability goal."
+    },
+    "services": ["amazon-rds", "amazon-s3"],
+    "tags": ["resilience"]
+  },
+  {
+    "id": "saa-alb-nlb",
+    "certifications": ["SAA-C03"],
+    "domain": "design-resiliente",
+    "type": "comparison",
+    "title": { "pt": "ALB × NLB", "en": "ALB × NLB" },
+    "keywords": ["HTTP", "path routing", "TCP", "alta performance"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "ALB",
+          "points": ["HTTP/HTTPS", "roteamento por caminho e host", "camada 7"]
+        },
+        {
+          "name": "NLB",
+          "points": ["TCP/UDP/TLS", "baixa latência", "camada 4"]
+        }
+      ],
+      "en": [
+        {
+          "name": "ALB",
+          "points": ["HTTP/HTTPS", "path and host routing", "layer 7"]
+        },
+        { "name": "NLB", "points": ["TCP/UDP/TLS", "low latency", "layer 4"] }
+      ]
+    },
+    "description": {
+      "pt": "O protocolo e o tipo de roteamento exigido orientam a escolha do load balancer.",
+      "en": "The required protocol and routing behavior guide the load balancer choice."
+    },
+    "services": ["elastic-load-balancing"],
+    "tags": ["networking"]
+  },
+  {
+    "id": "saa-auto-scaling",
+    "certifications": ["SAA-C03"],
+    "domain": "design-resiliente",
+    "type": "keyword",
+    "title": {
+      "pt": "Capacidade ajustada à demanda",
+      "en": "Capacity adjusted to demand"
+    },
+    "keywords": ["scale out", "scale in", "health check", "demanda"],
+    "thinkFirst": { "pt": "EC2 Auto Scaling", "en": "EC2 Auto Scaling" },
+    "description": {
+      "pt": "Quando instâncias precisam aumentar ou diminuir conforme métricas e saúde, avalie Auto Scaling com uma política adequada.",
+      "en": "When instances must grow or shrink from metrics and health, consider Auto Scaling with an appropriate policy."
+    },
+    "services": ["aws-auto-scaling", "elastic-load-balancing"],
+    "tags": ["resilience", "compute"]
+  },
+  {
+    "id": "saa-route53-policies",
+    "certifications": ["SAA-C03"],
+    "domain": "design-resiliente",
+    "type": "comparison",
+    "title": {
+      "pt": "Políticas de roteamento Route 53",
+      "en": "Route 53 routing policies"
+    },
+    "keywords": ["weighted", "latency", "failover", "geolocation"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Weighted / Latency",
+          "points": ["distribuir por peso", "menor latência"]
+        },
+        {
+          "name": "Failover / Geolocation",
+          "points": ["primário-secundário", "localização do usuário"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Weighted / Latency",
+          "points": ["distribute by weight", "lowest latency"]
+        },
+        {
+          "name": "Failover / Geolocation",
+          "points": ["primary-secondary", "user location"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Identifique o critério de decisão do DNS antes de selecionar a política.",
+      "en": "Identify the DNS decision criterion before selecting the policy."
+    },
+    "services": ["amazon-route-53"],
+    "tags": ["dns", "resilience"]
+  },
+  {
+    "id": "saa-active-active-passive",
+    "certifications": ["SAA-C03"],
+    "domain": "design-resiliente",
+    "type": "trap",
+    "title": {
+      "pt": "Active-active × active-passive",
+      "en": "Active-active × active-passive"
+    },
+    "keywords": ["failover", "tráfego simultâneo", "DR", "standby"],
+    "description": {
+      "pt": "Active-active serve tráfego em mais de um local; active-passive mantém um destino de espera. Compare custo, RTO e consistência.",
+      "en": "Active-active serves traffic in more than one location; active-passive keeps a standby destination. Compare cost, RTO, and consistency."
+    },
+    "services": ["amazon-route-53", "amazon-rds"],
+    "tags": ["disaster-recovery"]
+  },
+  {
+    "id": "saa-rds-replica",
+    "certifications": ["SAA-C03"],
+    "domain": "design-resiliente",
+    "type": "comparison",
+    "title": {
+      "pt": "RDS Multi-AZ × Read Replica",
+      "en": "RDS Multi-AZ × Read Replica"
+    },
+    "keywords": ["failover", "leitura", "standby", "replicação"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Multi-AZ",
+          "points": ["standby para failover", "alta disponibilidade"]
+        },
+        {
+          "name": "Read Replica",
+          "points": ["escala de leitura", "cópia para consultas"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Multi-AZ",
+          "points": ["standby for failover", "high availability"]
+        },
+        {
+          "name": "Read Replica",
+          "points": ["read scaling", "copy for queries"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Se o requisito é continuidade após falha, pense Multi-AZ; se é aliviar leituras, avalie Read Replica.",
+      "en": "For continuity after failure, think Multi-AZ; to offload reads, consider a Read Replica."
+    },
+    "services": ["amazon-rds"],
+    "tags": ["database", "resilience"]
+  },
+  {
+    "id": "saa-aurora-replicas",
+    "certifications": ["SAA-C03"],
+    "domain": "design-resiliente",
+    "type": "keyword",
+    "title": { "pt": "Réplicas Aurora", "en": "Aurora replicas" },
+    "keywords": ["reader endpoint", "failover priority", "leitura", "Aurora"],
+    "thinkFirst": { "pt": "Aurora Replicas", "en": "Aurora Replicas" },
+    "description": {
+      "pt": "Para distribuir leituras e apoiar failover em Aurora, avalie réplicas e o endpoint apropriado.",
+      "en": "To distribute reads and support Aurora failover, consider replicas and the appropriate endpoint."
+    },
+    "services": ["amazon-aurora"],
+    "tags": ["database"]
+  },
+  {
+    "id": "saa-s3-replication",
+    "certifications": ["SAA-C03"],
+    "domain": "design-resiliente",
+    "type": "keyword",
+    "title": {
+      "pt": "Cópia de objetos entre regiões",
+      "en": "Cross-Region object copies"
+    },
+    "keywords": ["replication", "CRR", "residência", "disaster recovery"],
+    "thinkFirst": {
+      "pt": "S3 Cross-Region Replication",
+      "en": "S3 Cross-Region Replication"
+    },
+    "description": {
+      "pt": "Para replicar objetos entre regiões, considere CRR e valide versionamento, política e objetivo de recuperação.",
+      "en": "To replicate objects across Regions, consider CRR and validate versioning, policy, and recovery objective."
+    },
+    "services": ["amazon-s3"],
+    "tags": ["storage", "resilience"]
+  },
+  {
+    "id": "saa-backup-replication",
+    "certifications": ["SAA-C03"],
+    "domain": "design-resiliente",
+    "type": "comparison",
+    "title": { "pt": "Backup × Replicação", "en": "Backup × replication" },
+    "keywords": ["ponto no tempo", "cópia contínua", "recuperação", "DR"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Backup",
+          "points": ["pontos de recuperação", "retenção", "restauração"]
+        },
+        {
+          "name": "Replicação",
+          "points": ["cópia contínua ou frequente", "redução de perda de dados"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Backup",
+          "points": ["recovery points", "retention", "restore"]
+        },
+        {
+          "name": "Replication",
+          "points": ["continuous or frequent copy", "reduced data loss"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "RPO, retenção e necessidade de restauração histórica diferenciam backup de replicação.",
+      "en": "RPO, retention, and historical restore needs distinguish backup from replication."
+    },
+    "services": ["amazon-s3", "amazon-rds"],
+    "tags": ["backup", "resilience"]
+  },
+  {
+    "id": "saa-rto-rpo",
+    "certifications": ["SAA-C03"],
+    "domain": "design-resiliente",
+    "type": "mental-shortcut",
+    "title": { "pt": "RTO × RPO", "en": "RTO × RPO" },
+    "keywords": [
+      "tempo de recuperação",
+      "perda de dados",
+      "downtime",
+      "recovery"
+    ],
+    "thinkFirst": {
+      "pt": "RTO pergunta quanto tempo; RPO pergunta quanto dado pode ser perdido.",
+      "en": "RTO asks how much time; RPO asks how much data may be lost."
+    },
+    "description": {
+      "pt": "Use os dois objetivos para avaliar se a arquitetura e o mecanismo de recuperação são suficientes.",
+      "en": "Use both objectives to assess whether the architecture and recovery mechanism are sufficient."
+    },
+    "services": ["amazon-rds", "amazon-s3"],
+    "tags": ["disaster-recovery"]
+  },
+  {
+    "id": "saa-decoupling",
+    "certifications": ["SAA-C03"],
+    "domain": "design-resiliente",
+    "type": "mental-shortcut",
+    "title": { "pt": "Desacoplamento", "en": "Decoupling" },
+    "keywords": [
+      "fila",
+      "absorver picos",
+      "componentes independentes",
+      "assíncrono"
+    ],
+    "thinkFirst": {
+      "pt": "SQS, SNS ou EventBridge conforme o padrão de mensagem.",
+      "en": "SQS, SNS, or EventBridge depending on the messaging pattern."
+    },
+    "description": {
+      "pt": "Se produtores e consumidores não devem depender do mesmo ritmo, procure uma fronteira assíncrona e avalie suas garantias.",
+      "en": "If producers and consumers should not depend on the same pace, look for an asynchronous boundary and assess its guarantees."
+    },
+    "services": ["amazon-sqs", "amazon-sns"],
+    "tags": ["architecture"]
+  },
+  {
+    "id": "saa-ebs-types",
+    "certifications": ["SAA-C03"],
+    "domain": "design-performance",
+    "type": "comparison",
+    "title": { "pt": "Tipos de volume EBS", "en": "EBS volume types" },
+    "keywords": ["gp3", "io2", "throughput", "IOPS"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "gp3",
+          "points": ["uso geral", "IOPS e throughput ajustáveis"]
+        },
+        {
+          "name": "io2",
+          "points": ["workloads intensivos", "alta durabilidade e IOPS"]
+        }
+      ],
+      "en": [
+        {
+          "name": "gp3",
+          "points": ["general purpose", "adjustable IOPS and throughput"]
+        },
+        {
+          "name": "io2",
+          "points": ["intensive workloads", "high durability and IOPS"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Compare IOPS, throughput, latência, durabilidade e custo em vez de escolher pelo nome do volume.",
+      "en": "Compare IOPS, throughput, latency, durability, and cost instead of choosing by volume name."
+    },
+    "services": ["amazon-ebs"],
+    "tags": ["storage", "performance"]
+  },
+  {
+    "id": "saa-efs-fsx",
+    "certifications": ["SAA-C03"],
+    "domain": "design-performance",
+    "type": "comparison",
+    "title": { "pt": "EFS × FSx", "en": "EFS × FSx" },
+    "keywords": ["filesystem compartilhado", "NFS", "Windows", "performance"],
+    "comparison": {
+      "pt": [
+        { "name": "EFS", "points": ["NFS gerenciado", "acesso elástico"] },
+        {
+          "name": "FSx",
+          "points": [
+            "sistemas de arquivos especializados",
+            "Windows ou workloads específicos"
+          ]
+        }
+      ],
+      "en": [
+        { "name": "EFS", "points": ["managed NFS", "elastic access"] },
+        {
+          "name": "FSx",
+          "points": [
+            "specialized file systems",
+            "Windows or specific workloads"
+          ]
+        }
+      ]
+    },
+    "description": {
+      "pt": "O sistema de arquivos e o protocolo exigido são pistas mais fortes que a necessidade genérica de storage compartilhado.",
+      "en": "The required file system and protocol are stronger clues than a generic shared-storage need."
+    },
+    "services": ["amazon-efs"],
+    "tags": ["storage"]
+  },
+  {
+    "id": "saa-s3-storage-classes",
+    "certifications": ["SAA-C03"],
+    "domain": "design-performance",
+    "type": "comparison",
+    "title": {
+      "pt": "Classes de armazenamento S3",
+      "en": "S3 storage classes"
+    },
+    "keywords": [
+      "acesso frequente",
+      "infrequente",
+      "arquivo",
+      "latência",
+      "custo"
+    ],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Standard / IA",
+          "points": ["acesso frequente / infrequente", "trade-off de custo"]
+        },
+        {
+          "name": "Glacier",
+          "points": ["arquivo", "recuperação mais lenta e econômica"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Standard / IA",
+          "points": ["frequent / infrequent access", "cost trade-off"]
+        },
+        {
+          "name": "Glacier",
+          "points": ["archive", "slower and economical retrieval"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "A frequência de acesso e o tempo aceitável de recuperação devem orientar a classe.",
+      "en": "Access frequency and acceptable retrieval time should guide the class."
+    },
+    "services": ["amazon-s3"],
+    "tags": ["storage", "cost"]
+  },
+  {
+    "id": "saa-cloudfront-global",
+    "certifications": ["SAA-C03"],
+    "domain": "design-performance",
+    "type": "keyword",
+    "title": {
+      "pt": "Conteúdo servido perto do usuário",
+      "en": "Content served near users"
+    },
+    "keywords": ["CDN", "cache", "edge", "latência global"],
+    "thinkFirst": { "pt": "Amazon CloudFront", "en": "Amazon CloudFront" },
+    "description": {
+      "pt": "Para cache e entrega de conteúdo em pontos de presença, considere CloudFront e avalie origem e política de cache.",
+      "en": "For caching and delivering content from edge locations, consider CloudFront and assess the origin and cache policy."
+    },
+    "services": ["amazon-cloudfront"],
+    "tags": ["performance", "cdn"]
+  },
+  {
+    "id": "saa-global-accelerator-cloudfront",
+    "certifications": ["SAA-C03"],
+    "domain": "design-performance",
+    "type": "comparison",
+    "title": {
+      "pt": "Global Accelerator × CloudFront",
+      "en": "Global Accelerator × CloudFront"
+    },
+    "keywords": ["IP anycast", "conteúdo cacheável", "TCP", "HTTP"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Global Accelerator",
+          "points": [
+            "acelera tráfego para endpoints",
+            "IPs anycast",
+            "não é CDN"
+          ]
+        },
+        {
+          "name": "CloudFront",
+          "points": ["CDN", "cache de conteúdo", "HTTP/HTTPS"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Global Accelerator",
+          "points": [
+            "accelerates traffic to endpoints",
+            "anycast IPs",
+            "not a CDN"
+          ]
+        },
+        {
+          "name": "CloudFront",
+          "points": ["CDN", "content caching", "HTTP/HTTPS"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Pergunte se o problema é entrega de conteúdo cacheável ou caminho de rede até uma aplicação.",
+      "en": "Ask whether the problem is cacheable content delivery or the network path to an application."
+    },
+    "services": ["amazon-cloudfront"],
+    "tags": ["networking", "performance"]
+  },
+  {
+    "id": "saa-elasticache-modes",
+    "certifications": ["SAA-C03"],
+    "domain": "design-performance",
+    "type": "comparison",
+    "title": { "pt": "Redis × Memcached", "en": "Redis × Memcached" },
+    "keywords": ["cache", "persistência", "replicação", "sessão"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Redis",
+          "points": ["estruturas de dados", "replicação e recursos avançados"]
+        },
+        {
+          "name": "Memcached",
+          "points": ["cache simples", "escala horizontal de nós"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Redis",
+          "points": ["data structures", "replication and advanced features"]
+        },
+        {
+          "name": "Memcached",
+          "points": ["simple cache", "horizontal node scaling"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Persistência, replicação e estrutura de dados exigidas ajudam a diferenciar os mecanismos de cache.",
+      "en": "Required persistence, replication, and data structures help differentiate cache engines."
+    },
+    "services": ["amazon-elasticache"],
+    "tags": ["cache"]
+  },
+  {
+    "id": "saa-dax",
+    "certifications": ["SAA-C03"],
+    "domain": "design-performance",
+    "type": "keyword",
+    "title": {
+      "pt": "Cache para leituras DynamoDB",
+      "en": "Cache for DynamoDB reads"
+    },
+    "keywords": ["microsegundos", "leituras", "cache", "DynamoDB"],
+    "thinkFirst": {
+      "pt": "DynamoDB Accelerator (DAX)",
+      "en": "DynamoDB Accelerator (DAX)"
+    },
+    "description": {
+      "pt": "Para reduzir latência de leituras compatíveis com DynamoDB, considere DAX e valide o padrão de acesso.",
+      "en": "To reduce latency for DynamoDB-compatible reads, consider DAX and validate the access pattern."
+    },
+    "services": ["dynamodb"],
+    "tags": ["database", "performance"]
+  },
+  {
+    "id": "saa-dynamodb-capacity",
+    "certifications": ["SAA-C03"],
+    "domain": "design-performance",
+    "type": "comparison",
+    "title": {
+      "pt": "Provisioned × On-Demand",
+      "en": "Provisioned × On-Demand"
+    },
+    "keywords": ["capacidade", "tráfego previsível", "picos", "DynamoDB"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Provisioned",
+          "points": ["capacidade planejada", "auto scaling possível"]
+        },
+        {
+          "name": "On-Demand",
+          "points": ["tráfego variável", "sem planejamento de unidades"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Provisioned",
+          "points": ["planned capacity", "auto scaling possible"]
+        },
+        {
+          "name": "On-Demand",
+          "points": ["variable traffic", "no capacity-unit planning"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Use previsibilidade, variabilidade e custo esperado para escolher o modo de capacidade.",
+      "en": "Use predictability, variability, and expected cost to choose the capacity mode."
+    },
+    "services": ["dynamodb"],
+    "tags": ["database", "cost"]
+  },
+  {
+    "id": "saa-kinesis-stream-firehose",
+    "certifications": ["SAA-C03"],
+    "domain": "design-performance",
+    "type": "comparison",
+    "title": {
+      "pt": "Kinesis Data Streams × Firehose",
+      "en": "Kinesis Data Streams × Firehose"
+    },
+    "keywords": ["streaming", "tempo real", "entrega", "buffer"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Data Streams",
+          "points": [
+            "consumidores controlados",
+            "processamento próximo de tempo real"
+          ]
+        },
+        {
+          "name": "Firehose",
+          "points": ["entrega gerenciada", "destinos analíticos"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Data Streams",
+          "points": ["controlled consumers", "near-real-time processing"]
+        },
+        {
+          "name": "Firehose",
+          "points": ["managed delivery", "analytics destinations"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Diferencie controle de consumidores e processamento contínuo de uma entrega gerenciada ao destino.",
+      "en": "Differentiate consumer control and continuous processing from managed delivery to a destination."
+    },
+    "services": ["amazon-kinesis-data-streams", "amazon-kinesis-data-firehose"],
+    "tags": ["streaming"]
+  },
+  {
+    "id": "saa-athena-redshift",
+    "certifications": ["SAA-C03"],
+    "domain": "design-performance",
+    "type": "comparison",
+    "title": { "pt": "Athena × Redshift", "en": "Athena × Redshift" },
+    "keywords": ["SQL em S3", "data warehouse", "ad hoc", "analytics"],
+    "comparison": {
+      "pt": [
+        { "name": "Athena", "points": ["consulta serverless em S3", "ad hoc"] },
+        {
+          "name": "Redshift",
+          "points": ["warehouse persistente", "cargas analíticas recorrentes"]
+        }
+      ],
+      "en": [
+        { "name": "Athena", "points": ["serverless queries on S3", "ad hoc"] },
+        {
+          "name": "Redshift",
+          "points": ["persistent warehouse", "recurring analytical workloads"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "A origem dos dados, frequência das consultas e necessidade de warehouse orientam a escolha.",
+      "en": "Data origin, query frequency, and the need for a warehouse guide the choice."
+    },
+    "services": ["amazon-s3", "amazon-redshift"],
+    "tags": ["analytics"]
+  },
+  {
+    "id": "saa-emr-big-data",
+    "certifications": ["SAA-C03"],
+    "domain": "design-performance",
+    "type": "keyword",
+    "title": {
+      "pt": "Clusters Hadoop/Spark gerenciados",
+      "en": "Managed Hadoop/Spark clusters"
+    },
+    "keywords": ["Spark", "Hadoop", "ETL distribuído", "cluster"],
+    "thinkFirst": { "pt": "Amazon EMR", "en": "Amazon EMR" },
+    "description": {
+      "pt": "Para processamento distribuído em frameworks de big data, considere EMR e avalie duração e configuração do cluster.",
+      "en": "For distributed processing with big-data frameworks, consider EMR and assess cluster duration and configuration."
+    },
+    "services": ["amazon-emr"],
+    "tags": ["analytics"]
+  },
+  {
+    "id": "saa-transfer-acceleration",
+    "certifications": ["SAA-C03"],
+    "domain": "design-performance",
+    "type": "mental-shortcut",
+    "title": { "pt": "Upload global para S3", "en": "Global uploads to S3" },
+    "keywords": ["upload", "long distance", "edge", "S3"],
+    "thinkFirst": {
+      "pt": "S3 Transfer Acceleration",
+      "en": "S3 Transfer Acceleration"
+    },
+    "description": {
+      "pt": "Quando usuários distantes precisam enviar objetos ao S3, considere aceleração e compare o custo com a necessidade real.",
+      "en": "When distant users need to upload objects to S3, consider acceleration and compare its cost with the actual need."
+    },
+    "services": ["amazon-s3"],
+    "tags": ["networking", "storage"]
+  },
+  {
+    "id": "saa-kms-cloudhsm",
+    "certifications": ["SAA-C03"],
+    "domain": "seguranca-aplicacoes",
+    "type": "comparison",
+    "title": {
+      "pt": "KMS × CloudHSM em arquiteturas seguras",
+      "en": "KMS × CloudHSM in secure architectures"
+    },
+    "keywords": ["CMK", "HSM dedicado", "controle criptográfico", "FIPS"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "KMS",
+          "points": ["integração gerenciada", "políticas e auditoria"]
+        },
+        {
+          "name": "CloudHSM",
+          "points": ["hardware dedicado", "controle mais profundo"]
+        }
+      ],
+      "en": [
+        {
+          "name": "KMS",
+          "points": ["managed integration", "policies and auditing"]
+        },
+        {
+          "name": "CloudHSM",
+          "points": ["dedicated hardware", "deeper control"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "O nível de controle criptográfico, conformidade e operação exigido deve justificar CloudHSM; não é substituição automática do KMS.",
+      "en": "Required cryptographic control, compliance, and operations must justify CloudHSM; it is not an automatic KMS replacement."
+    },
+    "services": ["aws-key-management-service-kms", "amazon-cloudhsm"],
+    "tags": ["security"]
+  },
+  {
+    "id": "saa-secrets-parameter",
+    "certifications": ["SAA-C03"],
+    "domain": "seguranca-aplicacoes",
+    "type": "comparison",
+    "title": {
+      "pt": "Secrets Manager × Parameter Store no design",
+      "en": "Secrets Manager × Parameter Store in design"
+    },
+    "keywords": ["credenciais", "rotação", "configuração", "segredo"],
+    "comparison": {
+      "pt": [
+        { "name": "Secrets Manager", "points": ["segredos e rotação"] },
+        {
+          "name": "Parameter Store",
+          "points": ["parâmetros hierárquicos", "configuração"]
+        }
+      ],
+      "en": [
+        { "name": "Secrets Manager", "points": ["secrets and rotation"] },
+        {
+          "name": "Parameter Store",
+          "points": ["hierarchical parameters", "configuration"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Não armazene segredos no código; escolha o mecanismo conforme rotação, integração e custo.",
+      "en": "Do not store secrets in code; choose according to rotation, integration, and cost."
+    },
+    "services": ["aws-secrets-manager", "aws-systems-manager-parameter-store"],
+    "tags": ["security"]
+  },
+  {
+    "id": "saa-private-public-subnet",
+    "certifications": ["SAA-C03"],
+    "domain": "seguranca-aplicacoes",
+    "type": "comparison",
+    "title": {
+      "pt": "Subnet pública × privada",
+      "en": "Public × private subnet"
+    },
+    "keywords": ["route table", "internet gateway", "entrada", "saída"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Pública",
+          "points": [
+            "rota para Internet Gateway",
+            "recurso pode ter caminho público"
+          ]
+        },
+        {
+          "name": "Privada",
+          "points": ["sem rota direta ao IGW", "saída pode usar NAT"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Public",
+          "points": [
+            "route to Internet Gateway",
+            "resource may have public path"
+          ]
+        },
+        {
+          "name": "Private",
+          "points": ["no direct IGW route", "outbound may use NAT"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Classifique a subnet pela tabela de rotas; o nome da subnet não determina sozinho a exposição.",
+      "en": "Classify the subnet by its route table; the subnet name alone does not determine exposure."
+    },
+    "services": ["amazon-virtual-private-cloud-vpc"],
+    "tags": ["networking", "security"]
+  },
+  {
+    "id": "saa-nat-igw",
+    "certifications": ["SAA-C03"],
+    "domain": "seguranca-aplicacoes",
+    "type": "comparison",
+    "title": {
+      "pt": "NAT Gateway × Internet Gateway",
+      "en": "NAT Gateway × Internet Gateway"
+    },
+    "keywords": ["saída", "entrada", "subnet privada", "internet"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "NAT Gateway",
+          "points": [
+            "saída de subnets privadas",
+            "não aceita conexão iniciada da internet"
+          ]
+        },
+        {
+          "name": "Internet Gateway",
+          "points": ["conectividade de subnets públicas", "rota pública"]
+        }
+      ],
+      "en": [
+        {
+          "name": "NAT Gateway",
+          "points": [
+            "outbound from private subnets",
+            "does not accept internet-initiated connections"
+          ]
+        },
+        {
+          "name": "Internet Gateway",
+          "points": ["public subnet connectivity", "public route"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Leia a direção do tráfego e a tabela de rotas antes de escolher o componente.",
+      "en": "Read traffic direction and route tables before choosing the component."
+    },
+    "services": ["amazon-virtual-private-cloud-vpc"],
+    "tags": ["networking"]
+  },
+  {
+    "id": "saa-vpc-endpoints",
+    "certifications": ["SAA-C03"],
+    "domain": "seguranca-aplicacoes",
+    "type": "comparison",
+    "title": {
+      "pt": "Gateway Endpoint × Interface Endpoint",
+      "en": "Gateway Endpoint × Interface Endpoint"
+    },
+    "keywords": ["acesso privado", "S3", "DynamoDB", "PrivateLink"],
+    "comparison": {
+      "pt": [
+        { "name": "Gateway", "points": ["S3 e DynamoDB", "rota na tabela"] },
+        {
+          "name": "Interface",
+          "points": ["ENI privada", "PrivateLink e outros serviços"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Gateway",
+          "points": ["S3 and DynamoDB", "route-table based"]
+        },
+        {
+          "name": "Interface",
+          "points": ["private ENI", "PrivateLink and other services"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "O serviço de destino e o mecanismo de conectividade privada determinam o endpoint.",
+      "en": "The destination service and private-connectivity mechanism determine the endpoint."
+    },
+    "services": ["amazon-virtual-private-cloud-vpc", "amazon-s3", "dynamodb"],
+    "tags": ["networking", "security"]
+  },
+  {
+    "id": "saa-sg-nacl",
+    "certifications": ["SAA-C03"],
+    "domain": "seguranca-aplicacoes",
+    "type": "trap",
+    "title": {
+      "pt": "Security Group × NACL no VPC",
+      "en": "Security Group × NACL in a VPC"
+    },
+    "keywords": ["stateful", "stateless", "subnet", "interface"],
+    "description": {
+      "pt": "Security Group é stateful e associado à interface; NACL é stateless e associado à subnet. Verifique regras de retorno.",
+      "en": "A Security Group is stateful and attached to an interface; a NACL is stateless and attached to a subnet. Check return rules."
+    },
+    "services": ["amazon-virtual-private-cloud-vpc"],
+    "tags": ["security", "networking"]
+  },
+  {
+    "id": "saa-waf-shield",
+    "certifications": ["SAA-C03"],
+    "domain": "seguranca-aplicacoes",
+    "type": "comparison",
+    "title": { "pt": "WAF × Shield", "en": "WAF × Shield" },
+    "keywords": ["requisição web", "DDoS", "regra", "aplicação"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "WAF",
+          "points": ["filtra requisições web", "regras de aplicação"]
+        },
+        {
+          "name": "Shield",
+          "points": ["proteção DDoS", "níveis Standard e Advanced"]
+        }
+      ],
+      "en": [
+        {
+          "name": "WAF",
+          "points": ["filters web requests", "application rules"]
+        },
+        {
+          "name": "Shield",
+          "points": ["DDoS protection", "Standard and Advanced tiers"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Escolha pela ameaça e camada: filtragem de requisições ou mitigação de DDoS.",
+      "en": "Choose by threat and layer: request filtering or DDoS mitigation."
+    },
+    "services": ["aws-waf", "aws-shield"],
+    "tags": ["security"]
+  },
+  {
+    "id": "saa-iam-scp",
+    "certifications": ["SAA-C03"],
+    "domain": "seguranca-aplicacoes",
+    "type": "comparison",
+    "title": { "pt": "IAM Policy × SCP", "en": "IAM Policy × SCP" },
+    "keywords": ["permissão", "conta membro", "Organizations", "deny"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "IAM Policy",
+          "points": ["concede ou nega ao principal", "recurso e identidade"]
+        },
+        {
+          "name": "SCP",
+          "points": [
+            "limite máximo da organização",
+            "não concede permissão sozinho"
+          ]
+        }
+      ],
+      "en": [
+        {
+          "name": "IAM Policy",
+          "points": ["grants or denies to a principal", "identity and resource"]
+        },
+        {
+          "name": "SCP",
+          "points": [
+            "organization maximum boundary",
+            "does not grant permission alone"
+          ]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Uma SCP pode limitar o que uma conta pode fazer, mas ainda é necessária uma permissão IAM aplicável.",
+      "en": "An SCP can limit what an account may do, but an applicable IAM permission is still required."
+    },
+    "services": ["iam", "aws-organizations"],
+    "tags": ["governance", "security"]
+  },
+  {
+    "id": "saa-private-link",
+    "certifications": ["SAA-C03"],
+    "domain": "seguranca-aplicacoes",
+    "type": "keyword",
+    "title": {
+      "pt": "Serviço publicado privadamente",
+      "en": "Privately published service"
+    },
+    "keywords": ["endpoint service", "consumidor", "ENI", "sem peering"],
+    "thinkFirst": { "pt": "AWS PrivateLink", "en": "AWS PrivateLink" },
+    "description": {
+      "pt": "Para expor um serviço a consumidores por endpoints privados sem abrir a rede inteira, considere PrivateLink.",
+      "en": "To expose a service to consumers through private endpoints without opening the whole network, consider PrivateLink."
+    },
+    "services": ["amazon-virtual-private-cloud-vpc"],
+    "tags": ["networking"]
+  },
+  {
+    "id": "saa-spot-reserved-savings",
+    "certifications": ["SAA-C03"],
+    "domain": "design-custo",
+    "type": "comparison",
+    "title": {
+      "pt": "Spot × Reserved × Savings Plans",
+      "en": "Spot × Reserved × Savings Plans"
+    },
+    "keywords": ["desconto", "interrompível", "compromisso", "uso estável"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Spot",
+          "points": ["capacidade interrompível", "workloads flexíveis"]
+        },
+        {
+          "name": "Reserved / Savings Plans",
+          "points": ["compromisso de uso", "carga previsível"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Spot",
+          "points": ["interruptible capacity", "flexible workloads"]
+        },
+        {
+          "name": "Reserved / Savings Plans",
+          "points": ["usage commitment", "predictable load"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Associe o desconto ao grau de flexibilidade e compromisso que o workload suporta.",
+      "en": "Match the discount to the flexibility and commitment the workload can support."
+    },
+    "services": ["amazon-ec2-spot-instances", "savings-plans"],
+    "tags": ["cost", "compute"]
+  },
+  {
+    "id": "saa-s3-lifecycle",
+    "certifications": ["SAA-C03"],
+    "domain": "design-custo",
+    "type": "keyword",
+    "title": {
+      "pt": "Mover objetos conforme idade",
+      "en": "Move objects by age"
+    },
+    "keywords": ["transição", "expiração", "lifecycle", "Glacier"],
+    "thinkFirst": { "pt": "S3 Lifecycle", "en": "S3 Lifecycle" },
+    "description": {
+      "pt": "Para transicionar ou expirar objetos automaticamente conforme idade, considere uma regra de Lifecycle e valide retenção.",
+      "en": "To transition or expire objects automatically by age, consider a Lifecycle rule and validate retention."
+    },
+    "services": ["amazon-s3"],
+    "tags": ["cost", "storage"]
+  },
+  {
+    "id": "saa-intelligent-tiering",
+    "certifications": ["SAA-C03"],
+    "domain": "design-custo",
+    "type": "mental-shortcut",
+    "title": {
+      "pt": "Acesso imprevisível ao S3",
+      "en": "Unpredictable S3 access"
+    },
+    "keywords": [
+      "padrão desconhecido",
+      "tiering",
+      "acesso variável",
+      "storage"
+    ],
+    "thinkFirst": {
+      "pt": "S3 Intelligent-Tiering",
+      "en": "S3 Intelligent-Tiering"
+    },
+    "description": {
+      "pt": "Quando o padrão de acesso é imprevisível, considere tiering automático e compare taxas e requisitos.",
+      "en": "When access patterns are unpredictable, consider automatic tiering and compare fees and requirements."
+    },
+    "services": ["amazon-s3"],
+    "tags": ["cost", "storage"]
+  },
+  {
+    "id": "saa-graviton",
+    "certifications": ["SAA-C03"],
+    "domain": "design-custo",
+    "type": "mental-shortcut",
+    "title": {
+      "pt": "Mesmo workload, custo de computação menor",
+      "en": "Same workload, lower compute cost"
+    },
+    "keywords": ["ARM", "compatibilidade", "processador", "custo"],
+    "thinkFirst": {
+      "pt": "Instâncias Graviton, após validar compatibilidade.",
+      "en": "Graviton instances, after validating compatibility."
+    },
+    "description": {
+      "pt": "A economia depende de arquitetura e compatibilidade da aplicação; não trate Graviton como troca sem testes.",
+      "en": "Savings depend on architecture and application compatibility; do not treat Graviton as a swap without testing."
+    },
+    "services": ["ec2"],
+    "tags": ["cost", "compute"]
+  },
+  {
+    "id": "saa-nat-cost",
+    "certifications": ["SAA-C03"],
+    "domain": "design-custo",
+    "type": "trap",
+    "title": { "pt": "Custo de NAT Gateway", "en": "NAT Gateway cost" },
+    "keywords": ["processamento por GB", "tráfego", "endpoint", "saída"],
+    "description": {
+      "pt": "NAT Gateway cobra por hora e processamento; para destinos AWS, avalie endpoints e rotas privadas quando fizer sentido.",
+      "en": "NAT Gateway charges hourly and for processing; for AWS destinations, consider endpoints and private routes where appropriate."
+    },
+    "services": ["amazon-virtual-private-cloud-vpc"],
+    "tags": ["cost", "networking"]
+  },
+  {
+    "id": "saa-data-transfer",
+    "certifications": ["SAA-C03"],
+    "domain": "design-custo",
+    "type": "trap",
+    "title": { "pt": "Transferência de dados", "en": "Data transfer" },
+    "keywords": ["cross-region", "AZ", "egress", "tráfego"],
+    "description": {
+      "pt": "O custo pode mudar com direção, região e caminho do tráfego. Mapeie o fluxo antes de escolher a arquitetura mais barata.",
+      "en": "Cost can change with traffic direction, Region, and path. Map the flow before choosing the cheaper architecture."
+    },
+    "services": ["amazon-virtual-private-cloud-vpc", "amazon-s3"],
+    "tags": ["cost", "networking"]
+  },
+  {
+    "id": "dva-lambda-role",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "keyword",
+    "title": {
+      "pt": "Permissões da função Lambda",
+      "en": "Lambda function permissions"
+    },
+    "keywords": ["execution role", "runtime", "IAM", "permissão"],
+    "thinkFirst": {
+      "pt": "Lambda execution role",
+      "en": "Lambda execution role"
+    },
+    "description": {
+      "pt": "A função assume uma execution role para acessar serviços; a política deve conceder somente o necessário.",
+      "en": "A function assumes an execution role to access services; the policy should grant only what is needed."
+    },
+    "services": ["lambda", "iam"],
+    "tags": ["lambda", "security"]
+  },
+  {
+    "id": "dva-lambda-layers",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "keyword",
+    "title": {
+      "pt": "Dependências compartilhadas Lambda",
+      "en": "Shared Lambda dependencies"
+    },
+    "keywords": ["bibliotecas", "runtime", "package", "reuso"],
+    "thinkFirst": { "pt": "Lambda Layers", "en": "Lambda Layers" },
+    "description": {
+      "pt": "Para reutilizar dependências entre funções sem duplicar o pacote de cada função, considere Layers e controle versões.",
+      "en": "To reuse dependencies across functions without duplicating each package, consider Layers and control versions."
+    },
+    "services": ["lambda"],
+    "tags": ["lambda"]
+  },
+  {
+    "id": "dva-lambda-env",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "trap",
+    "title": {
+      "pt": "Variáveis de ambiente Lambda",
+      "en": "Lambda environment variables"
+    },
+    "keywords": ["configuração", "segredo", "runtime", "deploy"],
+    "description": {
+      "pt": "Variáveis ajudam na configuração por ambiente, mas segredos devem ser protegidos e não tratados como texto público.",
+      "en": "Variables help configure environments, but secrets must be protected and not treated as public text."
+    },
+    "services": ["lambda", "aws-secrets-manager"],
+    "tags": ["lambda", "security"]
+  },
+  {
+    "id": "dva-lambda-version-alias",
+    "certifications": ["DVA-C02"],
+    "domain": "implementacao",
+    "type": "comparison",
+    "title": { "pt": "Lambda Version × Alias", "en": "Lambda Version × Alias" },
+    "keywords": ["imutável", "tráfego", "stage", "rollback"],
+    "comparison": {
+      "pt": [
+        { "name": "Version", "points": ["snapshot imutável do código"] },
+        {
+          "name": "Alias",
+          "points": ["ponteiro mutável", "pode apontar para versões"]
+        }
+      ],
+      "en": [
+        { "name": "Version", "points": ["immutable code snapshot"] },
+        {
+          "name": "Alias",
+          "points": ["mutable pointer", "can point to versions"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Use versões para imutabilidade e aliases para promover ou redirecionar tráfego entre versões.",
+      "en": "Use versions for immutability and aliases to promote or redirect traffic between versions."
+    },
+    "services": ["lambda"],
+    "tags": ["deployment"]
+  },
+  {
+    "id": "dva-api-rest-http",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "comparison",
+    "title": {
+      "pt": "API Gateway REST × HTTP API",
+      "en": "API Gateway REST × HTTP API"
+    },
+    "keywords": ["API", "HTTP", "recursos", "custo", "features"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "REST API",
+          "points": ["mais recursos de API Gateway", "casos avançados"]
+        },
+        {
+          "name": "HTTP API",
+          "points": ["menor custo e latência", "API simples"]
+        }
+      ],
+      "en": [
+        {
+          "name": "REST API",
+          "points": ["more API Gateway features", "advanced cases"]
+        },
+        {
+          "name": "HTTP API",
+          "points": ["lower cost and latency", "simpler API"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Compare recursos necessários, latência e custo; não escolha apenas pelo nome REST.",
+      "en": "Compare required features, latency, and cost; do not choose only by the REST name."
+    },
+    "services": ["amazon-api-gateway"],
+    "tags": ["api"]
+  },
+  {
+    "id": "dva-dynamo-partition-sort",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "comparison",
+    "title": {
+      "pt": "Partition Key × Sort Key",
+      "en": "Partition Key × Sort Key"
+    },
+    "keywords": ["chave primária", "item", "ordenação", "DynamoDB"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Partition key",
+          "points": ["distribui itens", "identifica partição"]
+        },
+        {
+          "name": "Sort key",
+          "points": ["ordena itens na partição", "completa chave composta"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Partition key",
+          "points": ["distributes items", "identifies partition"]
+        },
+        {
+          "name": "Sort key",
+          "points": ["orders items in partition", "completes composite key"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "O padrão de consulta deve orientar a chave; cardinalidade baixa da partition key pode causar hot partitions.",
+      "en": "The query pattern should guide the key; low partition-key cardinality can cause hot partitions."
+    },
+    "services": ["dynamodb"],
+    "tags": ["database"]
+  },
+  {
+    "id": "dva-query-scan",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "comparison",
+    "title": { "pt": "Query × Scan", "en": "Query × Scan" },
+    "keywords": ["DynamoDB", "filtro", "partição", "leitura"],
+    "comparison": {
+      "pt": [
+        { "name": "Query", "points": ["usa chave", "mais direcionada"] },
+        { "name": "Scan", "points": ["percorre itens", "mais caro e amplo"] }
+      ],
+      "en": [
+        { "name": "Query", "points": ["uses key", "more targeted"] },
+        {
+          "name": "Scan",
+          "points": ["reads items broadly", "more expensive and wide"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Prefira Query quando o access pattern permite; filtros de Scan não eliminam o custo da leitura percorrida.",
+      "en": "Prefer Query when the access pattern allows; Scan filters do not remove the cost of scanned reads."
+    },
+    "services": ["dynamodb"],
+    "tags": ["database", "performance"]
+  },
+  {
+    "id": "dva-conditional-write",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "keyword",
+    "title": {
+      "pt": "Atualização somente se condição for verdadeira",
+      "en": "Update only if a condition is true"
+    },
+    "keywords": ["concorrência", "condição", "DynamoDB", "integridade"],
+    "thinkFirst": { "pt": "Conditional write", "en": "Conditional write" },
+    "description": {
+      "pt": "Use condições para impedir sobrescritas ou transições inválidas e trate a falha esperada no código.",
+      "en": "Use conditions to prevent overwrites or invalid transitions and handle the expected failure in code."
+    },
+    "services": ["dynamodb"],
+    "tags": ["database"]
+  },
+  {
+    "id": "dva-sqs-standard-fifo",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "comparison",
+    "title": { "pt": "SQS Standard × FIFO", "en": "SQS Standard × FIFO" },
+    "keywords": ["ordenação", "deduplicação", "throughput", "fila"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Standard",
+          "points": ["alto throughput", "ordenação eventual"]
+        },
+        {
+          "name": "FIFO",
+          "points": ["ordenação por grupo", "deduplicação configurada"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Standard",
+          "points": ["high throughput", "best-effort ordering"]
+        },
+        {
+          "name": "FIFO",
+          "points": ["ordering per group", "configured deduplication"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "FIFO ajuda com ordenação e deduplicação, mas consumidores idempotentes continuam importantes; não confunda com exactly-once da aplicação.",
+      "en": "FIFO helps with ordering and deduplication, but idempotent consumers remain important; do not confuse it with application exactly-once processing."
+    },
+    "services": ["amazon-sqs"],
+    "tags": ["messaging"]
+  },
+  {
+    "id": "dva-visibility-timeout",
+    "certifications": ["DVA-C02"],
+    "domain": "resolucao-problemas",
+    "type": "trap",
+    "title": { "pt": "Visibility timeout", "en": "Visibility timeout" },
+    "keywords": ["mensagem invisível", "ack", "reprocessamento", "SQS"],
+    "description": {
+      "pt": "O timeout deve cobrir o processamento esperado; se expirar antes do delete, outra entrega pode ocorrer.",
+      "en": "The timeout should cover expected processing; if it expires before delete, another delivery may occur."
+    },
+    "services": ["amazon-sqs"],
+    "tags": ["messaging", "reliability"]
+  },
+  {
+    "id": "dva-dlq",
+    "certifications": ["DVA-C02"],
+    "domain": "resolucao-problemas",
+    "type": "keyword",
+    "title": {
+      "pt": "Mensagens que falham repetidamente",
+      "en": "Messages that repeatedly fail"
+    },
+    "keywords": ["poison message", "retry", "dead letter", "SQS"],
+    "thinkFirst": { "pt": "Dead-letter queue", "en": "Dead-letter queue" },
+    "description": {
+      "pt": "Use uma DLQ para isolar mensagens após tentativas e permitir diagnóstico sem bloquear a fila principal.",
+      "en": "Use a DLQ to isolate messages after retries and enable diagnosis without blocking the main queue."
+    },
+    "services": ["amazon-sqs"],
+    "tags": ["messaging"]
+  },
+  {
+    "id": "dva-sns-eventbridge",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "comparison",
+    "title": { "pt": "SNS × EventBridge", "en": "SNS × EventBridge" },
+    "keywords": ["fanout", "event bus", "filtros", "assinantes"],
+    "comparison": {
+      "pt": [
+        { "name": "SNS", "points": ["pub/sub simples", "fan-out"] },
+        {
+          "name": "EventBridge",
+          "points": ["event bus", "regras e fontes de eventos"]
+        }
+      ],
+      "en": [
+        { "name": "SNS", "points": ["simple pub/sub", "fan-out"] },
+        {
+          "name": "EventBridge",
+          "points": ["event bus", "rules and event sources"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Use o padrão de distribuição e a necessidade de regras/event sources para diferenciar os serviços.",
+      "en": "Use the distribution pattern and need for rules/event sources to differentiate the services."
+    },
+    "services": ["amazon-sns", "aws-config-e-amazon-eventbridge"],
+    "tags": ["events"]
+  },
+  {
+    "id": "dva-step-functions",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "keyword",
+    "title": {
+      "pt": "Orquestrar etapas com estado",
+      "en": "Orchestrate stateful steps"
+    },
+    "keywords": ["workflow", "retries", "branch", "estado"],
+    "thinkFirst": { "pt": "AWS Step Functions", "en": "AWS Step Functions" },
+    "description": {
+      "pt": "Para coordenar etapas, retries, timeouts e decisões de um workflow, considere Step Functions.",
+      "en": "To coordinate steps, retries, timeouts, and workflow decisions, consider Step Functions."
+    },
+    "services": ["aws-step-functions"],
+    "tags": ["workflow"]
+  },
+  {
+    "id": "dva-kinesis-stream-firehose",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "comparison",
+    "title": {
+      "pt": "Kinesis Streams × Firehose",
+      "en": "Kinesis Streams × Firehose"
+    },
+    "keywords": ["stream", "consumidor", "entrega", "tempo real"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Streams",
+          "points": ["consumidores controlados", "processamento contínuo"]
+        },
+        {
+          "name": "Firehose",
+          "points": ["entrega gerenciada", "buffer para destinos"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Streams",
+          "points": ["controlled consumers", "continuous processing"]
+        },
+        {
+          "name": "Firehose",
+          "points": ["managed delivery", "buffering to destinations"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Pergunte se a aplicação precisa controlar consumidores ou apenas entregar dados a um destino.",
+      "en": "Ask whether the application needs controlled consumers or only delivery to a destination."
+    },
+    "services": ["amazon-kinesis-data-streams", "amazon-kinesis-data-firehose"],
+    "tags": ["streaming"]
+  },
+  {
+    "id": "dva-iam-role-access-key",
+    "certifications": ["DVA-C02"],
+    "domain": "seguranca-app",
+    "type": "comparison",
+    "title": { "pt": "IAM Role × Access Key", "en": "IAM Role × Access Key" },
+    "keywords": ["credencial", "workload", "rotacionar", "SDK"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Role",
+          "points": ["credenciais temporárias", "assumida por workload"]
+        },
+        {
+          "name": "Access key",
+          "points": ["credencial de usuário", "exige proteção e rotação"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Role",
+          "points": ["temporary credentials", "assumed by workload"]
+        },
+        {
+          "name": "Access key",
+          "points": ["user credential", "requires protection and rotation"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Para código em AWS, prefira role; nunca coloque access keys no repositório ou no pacote.",
+      "en": "For code on AWS, prefer a role; never put access keys in a repository or package."
+    },
+    "services": ["iam"],
+    "tags": ["security"]
+  },
+  {
+    "id": "dva-sts-credentials",
+    "certifications": ["DVA-C02"],
+    "domain": "seguranca-app",
+    "type": "keyword",
+    "title": {
+      "pt": "Credencial temporária para acesso delegado",
+      "en": "Temporary credentials for delegated access"
+    },
+    "keywords": ["AssumeRole", "session token", "STS", "cross-account"],
+    "thinkFirst": { "pt": "AWS STS", "en": "AWS STS" },
+    "description": {
+      "pt": "Para sessões temporárias e acesso entre contas, considere STS/AssumeRole com escopo limitado.",
+      "en": "For temporary sessions and cross-account access, consider STS/AssumeRole with limited scope."
+    },
+    "services": ["iam"],
+    "tags": ["security"]
+  },
+  {
+    "id": "dva-cognito-pools",
+    "certifications": ["DVA-C02"],
+    "domain": "seguranca-app",
+    "type": "comparison",
+    "title": {
+      "pt": "Cognito User Pool × Identity Pool",
+      "en": "Cognito User Pool × Identity Pool"
+    },
+    "keywords": ["usuário", "federation", "credencial AWS", "aplicação"],
+    "comparison": {
+      "pt": [
+        { "name": "User Pool", "points": ["diretório e login de usuários"] },
+        {
+          "name": "Identity Pool",
+          "points": ["troca identidade por credencial AWS"]
+        }
+      ],
+      "en": [
+        { "name": "User Pool", "points": ["user directory and sign-in"] },
+        {
+          "name": "Identity Pool",
+          "points": ["exchanges identity for AWS credentials"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Separe autenticação de usuários da concessão de acesso temporário a recursos AWS.",
+      "en": "Separate user authentication from granting temporary access to AWS resources."
+    },
+    "services": ["amazon-cognito", "iam"],
+    "tags": ["identity"]
+  },
+  {
+    "id": "dva-presigned-url",
+    "certifications": ["DVA-C02"],
+    "domain": "seguranca-app",
+    "type": "keyword",
+    "title": {
+      "pt": "Upload/download sem expor credenciais",
+      "en": "Upload/download without exposing credentials"
+    },
+    "keywords": ["URL temporária", "S3", "cliente", "upload"],
+    "thinkFirst": { "pt": "Presigned URL", "en": "Presigned URL" },
+    "description": {
+      "pt": "Para conceder acesso temporário a um objeto, considere uma URL pré-assinada com expiração e escopo adequados.",
+      "en": "To grant temporary object access, consider a presigned URL with appropriate expiry and scope."
+    },
+    "services": ["amazon-s3"],
+    "tags": ["security", "storage"]
+  },
+  {
+    "id": "dva-kms-at-rest-transit",
+    "certifications": ["DVA-C02"],
+    "domain": "seguranca-app",
+    "type": "comparison",
+    "title": {
+      "pt": "Encryption at rest × in transit",
+      "en": "Encryption at rest × in transit"
+    },
+    "keywords": ["TLS", "KMS", "dados armazenados", "rede"],
+    "comparison": {
+      "pt": [
+        { "name": "At rest", "points": ["dados armazenados", "KMS e chaves"] },
+        { "name": "In transit", "points": ["dados em trânsito", "TLS/HTTPS"] }
+      ],
+      "en": [
+        { "name": "At rest", "points": ["stored data", "KMS and keys"] },
+        { "name": "In transit", "points": ["data moving", "TLS/HTTPS"] }
+      ]
+    },
+    "description": {
+      "pt": "Identifique onde o dado está vulnerável; uma única camada de criptografia não cobre automaticamente as duas situações.",
+      "en": "Identify where data is exposed; one encryption layer does not automatically cover both situations."
+    },
+    "services": ["aws-key-management-service-kms", "aws-certificate-manager"],
+    "tags": ["security"]
+  },
+  {
+    "id": "dva-codebuild",
+    "certifications": ["DVA-C02"],
+    "domain": "implementacao",
+    "type": "keyword",
+    "title": {
+      "pt": "Compilar e testar no pipeline",
+      "en": "Build and test in a pipeline"
+    },
+    "keywords": ["buildspec", "compilação", "teste", "artefato"],
+    "thinkFirst": { "pt": "AWS CodeBuild", "en": "AWS CodeBuild" },
+    "description": {
+      "pt": "Para executar comandos de build e testes em ambiente gerenciado, considere CodeBuild e seu artefato de saída.",
+      "en": "To run build commands and tests in a managed environment, consider CodeBuild and its output artifact."
+    },
+    "services": ["amazon-codebuild"],
+    "tags": ["ci-cd"]
+  },
+  {
+    "id": "dva-codedeploy",
+    "certifications": ["DVA-C02"],
+    "domain": "implementacao",
+    "type": "keyword",
+    "title": {
+      "pt": "Implantar revisão em hosts",
+      "en": "Deploy a revision to hosts"
+    },
+    "keywords": ["deployment group", "hook", "EC2", "rollback"],
+    "thinkFirst": { "pt": "AWS CodeDeploy", "en": "AWS CodeDeploy" },
+    "description": {
+      "pt": "Para automatizar a implantação de uma revisão em hosts ou funções, considere CodeDeploy e a estratégia escolhida.",
+      "en": "To automate deploying a revision to hosts or functions, consider CodeDeploy and the selected strategy."
+    },
+    "services": ["aws-codedeploy"],
+    "tags": ["deployment"]
+  },
+  {
+    "id": "dva-codepipeline",
+    "certifications": ["DVA-C02"],
+    "domain": "implementacao",
+    "type": "keyword",
+    "title": {
+      "pt": "Orquestrar etapas CI/CD",
+      "en": "Orchestrate CI/CD stages"
+    },
+    "keywords": ["source", "build", "test", "deploy", "pipeline"],
+    "thinkFirst": { "pt": "AWS CodePipeline", "en": "AWS CodePipeline" },
+    "description": {
+      "pt": "Para encadear origem, build, aprovação e deploy, considere CodePipeline com ações compatíveis.",
+      "en": "To chain source, build, approval, and deploy, consider CodePipeline with compatible actions."
+    },
+    "services": ["aws-codepipeline"],
+    "tags": ["ci-cd"]
+  },
+  {
+    "id": "dva-blue-green-canary",
+    "certifications": ["DVA-C02"],
+    "domain": "implementacao",
+    "type": "comparison",
+    "title": {
+      "pt": "Blue/green × Canary × Rolling",
+      "en": "Blue/green × Canary × Rolling"
+    },
+    "keywords": ["tráfego", "versão", "rollback", "deploy"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Blue/green",
+          "points": ["ambientes separados", "troca de tráfego"]
+        },
+        {
+          "name": "Canary/Rolling",
+          "points": ["exposição gradual / substituição progressiva"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Blue/green",
+          "points": ["separate environments", "traffic switch"]
+        },
+        {
+          "name": "Canary/Rolling",
+          "points": ["gradual exposure / progressive replacement"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "A estratégia depende de como a nova versão recebe tráfego e de como o rollback deve ocorrer.",
+      "en": "The strategy depends on how the new version receives traffic and how rollback should work."
+    },
+    "services": ["aws-codedeploy", "lambda"],
+    "tags": ["deployment"]
+  },
+  {
+    "id": "dva-sam",
+    "certifications": ["DVA-C02"],
+    "domain": "implementacao",
+    "type": "keyword",
+    "title": { "pt": "Template serverless local", "en": "Serverless template" },
+    "keywords": ["SAM template", "local invoke", "Lambda", "API"],
+    "thinkFirst": { "pt": "AWS SAM", "en": "AWS SAM" },
+    "description": {
+      "pt": "Para modelar, testar localmente e empacotar recursos serverless, considere SAM e seu template declarativo.",
+      "en": "To model, test locally, and package serverless resources, consider SAM and its declarative template."
+    },
+    "services": ["aws-sam", "lambda"],
+    "tags": ["serverless"]
+  },
+  {
+    "id": "dva-cloudformation-cdk",
+    "certifications": ["DVA-C02"],
+    "domain": "implementacao",
+    "type": "comparison",
+    "title": { "pt": "CloudFormation × CDK", "en": "CloudFormation × CDK" },
+    "keywords": [
+      "infraestrutura como código",
+      "template",
+      "linguagem",
+      "stack"
+    ],
+    "comparison": {
+      "pt": [
+        {
+          "name": "CloudFormation",
+          "points": ["templates declarativos", "stacks"]
+        },
+        {
+          "name": "CDK",
+          "points": ["define infraestrutura em código", "sintetiza templates"]
+        }
+      ],
+      "en": [
+        {
+          "name": "CloudFormation",
+          "points": ["declarative templates", "stacks"]
+        },
+        {
+          "name": "CDK",
+          "points": ["defines infrastructure in code", "synthesizes templates"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "O CDK não elimina o CloudFormation: normalmente sintetiza templates para provisionamento.",
+      "en": "CDK does not replace CloudFormation: it commonly synthesizes templates for provisioning."
+    },
+    "services": ["aws-cloudformation"],
+    "tags": ["iac"]
+  },
+  {
+    "id": "dva-lambda-package-image",
+    "certifications": ["DVA-C02"],
+    "domain": "implementacao",
+    "type": "comparison",
+    "title": {
+      "pt": "Lambda ZIP × Container image",
+      "en": "Lambda ZIP × Container image"
+    },
+    "keywords": ["package", "imagem OCI", "dependência", "tamanho"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "ZIP",
+          "points": ["pacote tradicional", "layers e runtimes"]
+        },
+        {
+          "name": "Container",
+          "points": ["imagem de container", "controle do empacotamento"]
+        }
+      ],
+      "en": [
+        {
+          "name": "ZIP",
+          "points": ["traditional package", "layers and runtimes"]
+        },
+        {
+          "name": "Container",
+          "points": ["container image", "packaging control"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Escolha pelo processo de build, dependências e ferramenta de empacotamento, não por preferência abstrata.",
+      "en": "Choose by build process, dependencies, and packaging tool rather than an abstract preference."
+    },
+    "services": ["lambda"],
+    "tags": ["deployment"]
+  },
+  {
+    "id": "dva-cloudwatch-logs-metrics",
+    "certifications": ["DVA-C02"],
+    "domain": "resolucao-problemas",
+    "type": "comparison",
+    "title": {
+      "pt": "CloudWatch Logs × Metrics × Alarms",
+      "en": "CloudWatch Logs × Metrics × Alarms"
+    },
+    "keywords": ["log", "métrica", "limiar", "notificação"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Logs",
+          "points": ["eventos detalhados", "texto estruturado"]
+        },
+        {
+          "name": "Metrics / Alarms",
+          "points": ["série numérica / ação por limiar"]
+        }
+      ],
+      "en": [
+        { "name": "Logs", "points": ["detailed events", "structured text"] },
+        {
+          "name": "Metrics / Alarms",
+          "points": ["numeric series / threshold action"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Logs ajudam a investigar; métricas medem; alarmes reagem a condições definidas.",
+      "en": "Logs help investigate; metrics measure; alarms react to defined conditions."
+    },
+    "services": ["amazon-cloudwatch"],
+    "tags": ["observability"]
+  },
+  {
+    "id": "dva-xray",
+    "certifications": ["DVA-C02"],
+    "domain": "resolucao-problemas",
+    "type": "keyword",
+    "title": {
+      "pt": "Rastrear requisição distribuída",
+      "en": "Trace a distributed request"
+    },
+    "keywords": ["trace", "segment", "latência", "microservices"],
+    "thinkFirst": { "pt": "AWS X-Ray", "en": "AWS X-Ray" },
+    "description": {
+      "pt": "Para localizar latência e dependências em uma aplicação distribuída, considere X-Ray e instrumentação adequada.",
+      "en": "To locate latency and dependencies in a distributed application, consider X-Ray and proper instrumentation."
+    },
+    "services": ["aws-x-ray"],
+    "tags": ["observability"]
+  },
+  {
+    "id": "dva-cloudtrail-debug",
+    "certifications": ["DVA-C02"],
+    "domain": "resolucao-problemas",
+    "type": "comparison",
+    "title": {
+      "pt": "CloudTrail × CloudWatch na investigação",
+      "en": "CloudTrail × CloudWatch in investigation"
+    },
+    "keywords": ["API call", "log", "métrica", "alteração"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "CloudTrail",
+          "points": ["quem chamou qual API", "auditoria"]
+        },
+        {
+          "name": "CloudWatch",
+          "points": ["métrica e log operacional", "comportamento"]
+        }
+      ],
+      "en": [
+        { "name": "CloudTrail", "points": ["who called which API", "audit"] },
+        {
+          "name": "CloudWatch",
+          "points": ["operational metric and log", "behavior"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Use o serviço que corresponde à evidência procurada: ação de API ou comportamento operacional.",
+      "en": "Use the service matching the evidence sought: an API action or operational behavior."
+    },
+    "services": ["aws-cloudtrail", "amazon-cloudwatch"],
+    "tags": ["observability"]
+  },
+  {
+    "id": "dva-concurrency-throttling",
+    "certifications": ["DVA-C02"],
+    "domain": "resolucao-problemas",
+    "type": "comparison",
+    "title": {
+      "pt": "Concurrency × Throttling Lambda",
+      "en": "Lambda concurrency × throttling"
+    },
+    "keywords": ["reserved concurrency", "limite", "429", "paralelismo"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Reserved concurrency",
+          "points": ["reserva e limita capacidade", "protege função"]
+        },
+        {
+          "name": "Throttling",
+          "points": ["invocações acima do limite", "exige retry/backoff"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Reserved concurrency",
+          "points": ["reserves and limits capacity", "protects function"]
+        },
+        {
+          "name": "Throttling",
+          "points": ["invocations above limit", "needs retry/backoff"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Descubra se o problema é limite configurado, explosão de concorrência ou retry inadequado.",
+      "en": "Determine whether the issue is a configured limit, concurrency spike, or inadequate retry."
+    },
+    "services": ["lambda"],
+    "tags": ["lambda", "reliability"]
+  },
+  {
+    "id": "dva-backoff-idempotency",
+    "certifications": ["DVA-C02"],
+    "domain": "resolucao-problemas",
+    "type": "mental-shortcut",
+    "title": { "pt": "Retry seguro", "en": "Safe retries" },
+    "keywords": ["exponential backoff", "idempotência", "retry", "duplicação"],
+    "thinkFirst": {
+      "pt": "Backoff exponencial + operação idempotente.",
+      "en": "Exponential backoff + idempotent operation."
+    },
+    "description": {
+      "pt": "Retries precisam respeitar backoff e não duplicar efeitos; analise a operação antes de apenas aumentar tentativas.",
+      "en": "Retries need backoff and must avoid duplicate effects; analyze the operation before simply adding attempts."
+    },
+    "services": ["lambda", "dynamodb"],
+    "tags": ["reliability"]
+  },
+  {
+    "id": "dva-structured-logging",
+    "certifications": ["DVA-C02"],
+    "domain": "resolucao-problemas",
+    "type": "mental-shortcut",
+    "title": { "pt": "Logs úteis em produção", "en": "Useful production logs" },
+    "keywords": ["JSON", "correlation ID", "contexto", "CloudWatch"],
+    "thinkFirst": {
+      "pt": "Logs estruturados com correlation ID.",
+      "en": "Structured logs with a correlation ID."
+    },
+    "description": {
+      "pt": "Inclua contexto pesquisável sem registrar segredos; isso acelera a investigação distribuída.",
+      "en": "Include searchable context without logging secrets; this accelerates distributed investigation."
+    },
+    "services": ["amazon-cloudwatch"],
+    "tags": ["observability", "security"]
+  },
+  {
+    "id": "dva-lambda-event-source",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "keyword",
+    "title": {
+      "pt": "Lambda consumindo eventos",
+      "en": "Lambda consuming events"
+    },
+    "keywords": ["event source mapping", "batch", "retry", "stream"],
+    "thinkFirst": {
+      "pt": "Event source mapping",
+      "en": "Event source mapping"
+    },
+    "description": {
+      "pt": "Para polling gerenciado de filas ou streams, avalie event source mapping e o comportamento de retry.",
+      "en": "For managed polling of queues or streams, consider event source mapping and its retry behavior."
+    },
+    "services": ["lambda", "amazon-sqs"],
+    "tags": ["serverless"]
+  },
+  {
+    "id": "dva-optimistic-locking",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "trap",
+    "title": { "pt": "Concorrência otimista", "en": "Optimistic locking" },
+    "keywords": ["versão", "condição", "concorrência", "DynamoDB"],
+    "description": {
+      "pt": "Guarde uma versão e condicione a escrita; se a condição falhar, recarregue e decida como resolver o conflito.",
+      "en": "Store a version and condition the write; if it fails, reload and decide how to resolve the conflict."
+    },
+    "services": ["dynamodb"],
+    "tags": ["database"]
+  },
+  {
+    "id": "dva-api-idempotency",
+    "certifications": ["DVA-C02"],
+    "domain": "desenvolvimento-servicos",
+    "type": "trap",
+    "title": { "pt": "Idempotência de APIs", "en": "API idempotency" },
+    "keywords": ["request ID", "duplicate", "retry", "write"],
+    "description": {
+      "pt": "Uma requisição repetida não deve duplicar efeitos; desenhe chave de idempotência e armazenamento do resultado.",
+      "en": "A repeated request should not duplicate effects; design an idempotency key and result storage."
+    },
+    "services": ["amazon-api-gateway", "dynamodb"],
+    "tags": ["api", "reliability"]
+  },
+  {
+    "id": "dva-lambda-reserved-provisioned",
+    "certifications": ["DVA-C02"],
+    "domain": "resolucao-problemas",
+    "type": "comparison",
+    "title": {
+      "pt": "Reserved × Provisioned Concurrency",
+      "en": "Reserved × Provisioned Concurrency"
+    },
+    "keywords": ["cold start", "limite", "capacidade", "Lambda"],
+    "comparison": {
+      "pt": [
+        { "name": "Reserved", "points": ["reserva e limita concorrência"] },
+        { "name": "Provisioned", "points": ["mantém ambientes inicializados"] }
+      ],
+      "en": [
+        { "name": "Reserved", "points": ["reserves and limits concurrency"] },
+        { "name": "Provisioned", "points": ["keeps environments initialized"] }
+      ]
+    },
+    "description": {
+      "pt": "Uma controla capacidade e isolamento; a outra busca reduzir cold starts. Confirme o problema antes de escolher.",
+      "en": "One controls capacity and isolation; the other targets cold starts. Confirm the problem before choosing."
+    },
+    "services": ["lambda"],
+    "tags": ["lambda", "performance"]
+  },
+  {
+    "id": "aif-ai-ml-dl",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-ai-ml",
+    "type": "comparison",
+    "title": {
+      "pt": "IA × ML × Deep Learning",
+      "en": "AI × ML × Deep Learning"
+    },
+    "keywords": [
+      "inteligência artificial",
+      "machine learning",
+      "redes neurais"
+    ],
+    "comparison": {
+      "pt": [
+        { "name": "IA", "points": ["campo amplo de sistemas inteligentes"] },
+        {
+          "name": "ML / Deep Learning",
+          "points": ["aprendizado de dados / redes profundas"]
+        }
+      ],
+      "en": [
+        { "name": "AI", "points": ["broad field of intelligent systems"] },
+        {
+          "name": "ML / Deep Learning",
+          "points": ["learning from data / deep networks"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Use a relação de escopo: deep learning é uma abordagem dentro de ML, que é uma abordagem dentro de IA.",
+      "en": "Use the scope relationship: deep learning is an approach within ML, which is an approach within AI."
+    },
+    "services": ["amazon-sagemaker"],
+    "tags": ["fundamentals"]
+  },
+  {
+    "id": "aif-supervised-unsupervised",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-ai-ml",
+    "type": "comparison",
+    "title": {
+      "pt": "Supervisionado × Não supervisionado",
+      "en": "Supervised × Unsupervised"
+    },
+    "keywords": ["labels", "clusters", "treino", "dados"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Supervisionado",
+          "points": ["usa labels", "aprende relação entrada-saída"]
+        },
+        { "name": "Não supervisionado", "points": ["busca padrões sem labels"] }
+      ],
+      "en": [
+        {
+          "name": "Supervised",
+          "points": ["uses labels", "learns input-output relationship"]
+        },
+        { "name": "Unsupervised", "points": ["finds patterns without labels"] }
+      ]
+    },
+    "description": {
+      "pt": "A existência de labels e o objetivo analítico diferenciam os paradigmas.",
+      "en": "The presence of labels and the analytical objective differentiate the paradigms."
+    },
+    "services": ["amazon-sagemaker"],
+    "tags": ["fundamentals"]
+  },
+  {
+    "id": "aif-classification-regression",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-ai-ml",
+    "type": "comparison",
+    "title": {
+      "pt": "Classificação × Regressão",
+      "en": "Classification × Regression"
+    },
+    "keywords": ["categoria", "valor numérico", "previsão", "label"],
+    "comparison": {
+      "pt": [
+        { "name": "Classificação", "points": ["prediz classe"] },
+        { "name": "Regressão", "points": ["prediz valor contínuo"] }
+      ],
+      "en": [
+        { "name": "Classification", "points": ["predicts a class"] },
+        { "name": "Regression", "points": ["predicts a continuous value"] }
+      ]
+    },
+    "description": {
+      "pt": "Pergunte se a saída é uma categoria ou um número contínuo antes de interpretar o modelo.",
+      "en": "Ask whether the output is a category or continuous number before interpreting the model."
+    },
+    "services": ["amazon-sagemaker"],
+    "tags": ["fundamentals"]
+  },
+  {
+    "id": "aif-clustering",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-ai-ml",
+    "type": "keyword",
+    "title": {
+      "pt": "Agrupar exemplos semelhantes",
+      "en": "Group similar examples"
+    },
+    "keywords": ["clusters", "sem labels", "segmentação", "padrão"],
+    "thinkFirst": { "pt": "Clustering", "en": "Clustering" },
+    "description": {
+      "pt": "Para segmentar dados sem categorias previamente rotuladas, considere clustering e valide a interpretação dos grupos.",
+      "en": "To segment data without pre-labeled categories, consider clustering and validate group interpretation."
+    },
+    "services": ["amazon-sagemaker"],
+    "tags": ["fundamentals"]
+  },
+  {
+    "id": "aif-training-inference",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-ai-ml",
+    "type": "comparison",
+    "title": { "pt": "Training × Inference", "en": "Training × Inference" },
+    "keywords": ["treinamento", "predição", "modelo", "endpoint"],
+    "comparison": {
+      "pt": [
+        { "name": "Training", "points": ["ajusta parâmetros com dados"] },
+        {
+          "name": "Inference",
+          "points": ["gera predições com modelo treinado"]
+        }
+      ],
+      "en": [
+        { "name": "Training", "points": ["adjusts parameters with data"] },
+        {
+          "name": "Inference",
+          "points": ["generates predictions from trained model"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "O custo, a latência e a infraestrutura podem ser diferentes nas duas fases.",
+      "en": "Cost, latency, and infrastructure can differ between the two phases."
+    },
+    "services": ["amazon-sagemaker"],
+    "tags": ["fundamentals"]
+  },
+  {
+    "id": "aif-overfit-underfit",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-ai-ml",
+    "type": "trap",
+    "title": {
+      "pt": "Overfitting × Underfitting",
+      "en": "Overfitting × Underfitting"
+    },
+    "keywords": ["generalização", "treino", "validação", "complexidade"],
+    "description": {
+      "pt": "Overfitting memoriza o treino e generaliza mal; underfitting não captura o padrão. Compare desempenho em treino e validação.",
+      "en": "Overfitting memorizes training and generalizes poorly; underfitting fails to capture the pattern. Compare training and validation performance."
+    },
+    "services": ["amazon-sagemaker"],
+    "tags": ["fundamentals"]
+  },
+  {
+    "id": "aif-precision-recall",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-ai-ml",
+    "type": "comparison",
+    "title": { "pt": "Precision × Recall", "en": "Precision × Recall" },
+    "keywords": [
+      "falsos positivos",
+      "falsos negativos",
+      "métrica",
+      "classificação"
+    ],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Precision",
+          "points": ["entre positivos previstos, quantos são corretos"]
+        },
+        {
+          "name": "Recall",
+          "points": ["entre positivos reais, quantos foram encontrados"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Precision",
+          "points": ["of predicted positives, how many are correct"]
+        },
+        {
+          "name": "Recall",
+          "points": ["of actual positives, how many were found"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "O custo relativo de falsos positivos e falsos negativos ajuda a definir a métrica relevante.",
+      "en": "The relative cost of false positives and false negatives helps define the relevant metric."
+    },
+    "services": ["amazon-sagemaker"],
+    "tags": ["evaluation"]
+  },
+  {
+    "id": "aif-foundation-model",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-genai",
+    "type": "keyword",
+    "title": {
+      "pt": "Modelo treinado para muitas tarefas",
+      "en": "Model trained for many tasks"
+    },
+    "keywords": ["FM", "foundation model", "generalista", "pré-treinado"],
+    "thinkFirst": { "pt": "Foundation model", "en": "Foundation model" },
+    "description": {
+      "pt": "Um foundation model é pré-treinado em grande escala e pode ser adaptado a tarefas por prompts ou especialização.",
+      "en": "A foundation model is pretrained at scale and can be adapted through prompts or specialization."
+    },
+    "services": ["amazon-bedrock"],
+    "tags": ["generative-ai"]
+  },
+  {
+    "id": "aif-tokens",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-genai",
+    "type": "keyword",
+    "title": {
+      "pt": "Unidades processadas pelo modelo",
+      "en": "Units processed by a model"
+    },
+    "keywords": ["tokens", "texto", "custo", "context"],
+    "thinkFirst": { "pt": "Tokens", "en": "Tokens" },
+    "description": {
+      "pt": "Tokens são unidades de entrada/saída; quantidade, idioma e contexto afetam custo e limite.",
+      "en": "Tokens are input/output units; quantity, language, and context affect cost and limits."
+    },
+    "services": ["amazon-bedrock"],
+    "tags": ["generative-ai"]
+  },
+  {
+    "id": "aif-embeddings",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-genai",
+    "type": "keyword",
+    "title": {
+      "pt": "Representação vetorial de significado",
+      "en": "Vector representation of meaning"
+    },
+    "keywords": ["embedding", "vetor", "similaridade", "semântica"],
+    "thinkFirst": { "pt": "Embeddings", "en": "Embeddings" },
+    "description": {
+      "pt": "Embeddings representam significado em vetores para comparação semântica e recuperação.",
+      "en": "Embeddings represent meaning as vectors for semantic comparison and retrieval."
+    },
+    "services": ["amazon-bedrock"],
+    "tags": ["generative-ai"]
+  },
+  {
+    "id": "aif-vector-search",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-genai",
+    "type": "comparison",
+    "title": {
+      "pt": "Busca lexical × busca semântica",
+      "en": "Lexical × semantic search"
+    },
+    "keywords": [
+      "vector database",
+      "embedding",
+      "palavra exata",
+      "similaridade"
+    ],
+    "comparison": {
+      "pt": [
+        { "name": "Lexical", "points": ["combina termos"] },
+        {
+          "name": "Semântica",
+          "points": ["compara significado por embeddings"]
+        }
+      ],
+      "en": [
+        { "name": "Lexical", "points": ["matches terms"] },
+        {
+          "name": "Semantic",
+          "points": ["compares meaning through embeddings"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Pergunte se a busca precisa de correspondência textual ou entendimento de significado.",
+      "en": "Ask whether search needs textual matching or understanding of meaning."
+    },
+    "services": ["amazon-bedrock"],
+    "tags": ["search"]
+  },
+  {
+    "id": "aif-rag",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-genai",
+    "type": "comparison",
+    "title": { "pt": "RAG × Fine-tuning", "en": "RAG × Fine-tuning" },
+    "keywords": ["conhecimento atualizado", "documentos", "pesquisa", "ajuste"],
+    "comparison": {
+      "pt": [
+        {
+          "name": "RAG",
+          "points": ["recupera contexto externo", "atualiza base"]
+        },
+        {
+          "name": "Fine-tuning",
+          "points": ["ajusta comportamento/padrão", "treino adicional"]
+        }
+      ],
+      "en": [
+        {
+          "name": "RAG",
+          "points": ["retrieves external context", "updates knowledge base"]
+        },
+        {
+          "name": "Fine-tuning",
+          "points": ["adjusts behavior/pattern", "additional training"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Conhecimento factual mutável favorece recuperação; comportamento ou formato específico pode justificar fine-tuning.",
+      "en": "Changing factual knowledge favors retrieval; specific behavior or format may justify fine-tuning."
+    },
+    "services": ["amazon-bedrock"],
+    "tags": ["generative-ai"]
+  },
+  {
+    "id": "aif-prompt-zero-few",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-genai",
+    "type": "comparison",
+    "title": { "pt": "Zero-shot × Few-shot", "en": "Zero-shot × Few-shot" },
+    "keywords": ["prompt", "exemplos", "instrução", "modelo"],
+    "comparison": {
+      "pt": [
+        { "name": "Zero-shot", "points": ["sem exemplos na solicitação"] },
+        { "name": "Few-shot", "points": ["inclui poucos exemplos"] }
+      ],
+      "en": [
+        { "name": "Zero-shot", "points": ["no examples in request"] },
+        { "name": "Few-shot", "points": ["includes a few examples"] }
+      ]
+    },
+    "description": {
+      "pt": "Exemplos podem orientar formato e padrão, mas consomem contexto e precisam ser representativos.",
+      "en": "Examples can guide format and pattern, but consume context and must be representative."
+    },
+    "services": ["amazon-bedrock"],
+    "tags": ["prompting"]
+  },
+  {
+    "id": "aif-hallucination",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-genai",
+    "type": "trap",
+    "title": { "pt": "Alucinação", "en": "Hallucination" },
+    "keywords": [
+      "resposta plausível",
+      "fato incorreto",
+      "grounding",
+      "verificação"
+    ],
+    "description": {
+      "pt": "Uma resposta fluente não prova que é verdadeira; use grounding, fontes, avaliação e revisão humana conforme o risco.",
+      "en": "A fluent response is not proof of truth; use grounding, sources, evaluation, and human review according to risk."
+    },
+    "services": ["amazon-bedrock"],
+    "tags": ["responsible-ai"]
+  },
+  {
+    "id": "aif-temperature-context",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-genai",
+    "type": "comparison",
+    "title": {
+      "pt": "Temperature × Context window",
+      "en": "Temperature × Context window"
+    },
+    "keywords": ["aleatoriedade", "criatividade", "limite", "tokens"],
+    "comparison": {
+      "pt": [
+        { "name": "Temperature", "points": ["varia aleatoriedade da geração"] },
+        { "name": "Context window", "points": ["limita tokens disponíveis"] }
+      ],
+      "en": [
+        { "name": "Temperature", "points": ["changes generation randomness"] },
+        { "name": "Context window", "points": ["limits available tokens"] }
+      ]
+    },
+    "description": {
+      "pt": "Aumentar temperature não aumenta a janela de contexto; são controles diferentes.",
+      "en": "Increasing temperature does not increase the context window; they are different controls."
+    },
+    "services": ["amazon-bedrock"],
+    "tags": ["generative-ai"]
+  },
+  {
+    "id": "aif-agents",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "keyword",
+    "title": {
+      "pt": "Modelo que planeja ações e usa ferramentas",
+      "en": "Model that plans actions and uses tools"
+    },
+    "keywords": ["agent", "action group", "tool use", "workflow"],
+    "thinkFirst": {
+      "pt": "Agents for Amazon Bedrock",
+      "en": "Agents for Amazon Bedrock"
+    },
+    "description": {
+      "pt": "Para orquestrar passos e chamar APIs com base em uma meta, considere Agents e controle permissões e guardrails.",
+      "en": "To orchestrate steps and call APIs toward a goal, consider Agents and control permissions and guardrails."
+    },
+    "services": ["amazon-bedrock"],
+    "tags": ["agents"]
+  },
+  {
+    "id": "aif-knowledge-bases",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "keyword",
+    "title": {
+      "pt": "RAG gerenciado no Bedrock",
+      "en": "Managed RAG in Bedrock"
+    },
+    "keywords": ["data source", "chunking", "retrieval", "Knowledge Base"],
+    "thinkFirst": {
+      "pt": "Knowledge Bases for Amazon Bedrock",
+      "en": "Knowledge Bases for Amazon Bedrock"
+    },
+    "description": {
+      "pt": "Para ingerir fontes e recuperar contexto para respostas, considere Knowledge Bases e valide sincronização e qualidade.",
+      "en": "To ingest sources and retrieve context for answers, consider Knowledge Bases and validate sync and quality."
+    },
+    "services": ["amazon-bedrock-knowledge-bases", "amazon-bedrock"],
+    "tags": ["rag"]
+  },
+  {
+    "id": "aif-guardrails",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "keyword",
+    "title": {
+      "pt": "Filtrar conteúdo e tópicos",
+      "en": "Filter content and topics"
+    },
+    "keywords": ["safety", "denied topics", "PII", "guardrail"],
+    "thinkFirst": {
+      "pt": "Amazon Bedrock Guardrails",
+      "en": "Amazon Bedrock Guardrails"
+    },
+    "description": {
+      "pt": "Para aplicar filtros de conteúdo e tópicos em uma aplicação generativa, considere Guardrails e teste os limites.",
+      "en": "To apply content and topic filters in a generative application, consider Guardrails and test the boundaries."
+    },
+    "services": ["amazon-bedrock-guardrails"],
+    "tags": ["responsible-ai"]
+  },
+  {
+    "id": "aif-bedrock-sagemaker",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "comparison",
+    "title": { "pt": "Bedrock × SageMaker", "en": "Bedrock × SageMaker" },
+    "keywords": [
+      "foundation model",
+      "treinar",
+      "endpoint",
+      "modelo gerenciado"
+    ],
+    "comparison": {
+      "pt": [
+        {
+          "name": "Bedrock",
+          "points": ["consome FMs via API", "aplicações generativas"]
+        },
+        {
+          "name": "SageMaker",
+          "points": ["constrói, treina e implanta modelos", "mais controle"]
+        }
+      ],
+      "en": [
+        {
+          "name": "Bedrock",
+          "points": ["uses FMs through API", "generative applications"]
+        },
+        {
+          "name": "SageMaker",
+          "points": ["builds, trains, deploys models", "more control"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Use Bedrock para consumir modelos fundacionais com abstração; SageMaker quando o ciclo de ML e controle do modelo são centrais.",
+      "en": "Use Bedrock to consume foundation models with abstraction; SageMaker when the ML lifecycle and model control are central."
+    },
+    "services": ["amazon-bedrock", "amazon-sagemaker"],
+    "tags": ["aws-ai"]
+  },
+  {
+    "id": "aif-model-evaluation",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "keyword",
+    "title": {
+      "pt": "Comparar qualidade de modelos",
+      "en": "Compare model quality"
+    },
+    "keywords": ["evaluation", "benchmark", "qualidade", "modelo"],
+    "thinkFirst": { "pt": "Model evaluation", "en": "Model evaluation" },
+    "description": {
+      "pt": "Avalie qualidade, segurança, custo e latência com critérios alinhados ao caso de uso.",
+      "en": "Evaluate quality, safety, cost, and latency with criteria aligned to the use case."
+    },
+    "services": ["amazon-bedrock"],
+    "tags": ["evaluation"]
+  },
+  {
+    "id": "aif-provisioned-throughput",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "mental-shortcut",
+    "title": {
+      "pt": "Capacidade dedicada para inferência",
+      "en": "Dedicated inference capacity"
+    },
+    "keywords": ["throughput", "capacidade", "latência", "compromisso"],
+    "thinkFirst": {
+      "pt": "Provisioned Throughput no Bedrock, quando o padrão justificar.",
+      "en": "Bedrock Provisioned Throughput when the pattern justifies it."
+    },
+    "description": {
+      "pt": "Considere capacidade provisionada quando o tráfego previsível e os requisitos de performance compensarem o compromisso.",
+      "en": "Consider provisioned capacity when predictable traffic and performance requirements justify the commitment."
+    },
+    "services": ["amazon-bedrock"],
+    "tags": ["cost", "performance"]
+  },
+  {
+    "id": "aif-comprehend",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "keyword",
+    "title": {
+      "pt": "Sentimento e entidades em texto",
+      "en": "Sentiment and entities in text"
+    },
+    "keywords": ["NLP", "sentiment", "entities", "texto"],
+    "thinkFirst": { "pt": "Amazon Comprehend", "en": "Amazon Comprehend" },
+    "description": {
+      "pt": "Para extrair entidades, idioma ou sentimento de texto sem treinar um modelo do zero, considere Comprehend.",
+      "en": "To extract entities, language, or sentiment from text without training from scratch, consider Comprehend."
+    },
+    "services": ["amazon-comprehend"],
+    "tags": ["ai-services"]
+  },
+  {
+    "id": "aif-translate",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "keyword",
+    "title": { "pt": "Tradução automática", "en": "Machine translation" },
+    "keywords": ["idioma", "tradução", "texto", "localização"],
+    "thinkFirst": { "pt": "Amazon Translate", "en": "Amazon Translate" },
+    "description": {
+      "pt": "Para tradução neural entre idiomas, considere Translate e valide idioma, contexto e qualidade.",
+      "en": "For neural translation between languages, consider Translate and validate language, context, and quality."
+    },
+    "services": ["amazon-translate"],
+    "tags": ["ai-services"]
+  },
+  {
+    "id": "aif-vision-speech",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "comparison",
+    "title": {
+      "pt": "Rekognition × Transcribe × Polly",
+      "en": "Rekognition × Transcribe × Polly"
+    },
+    "keywords": ["imagem", "fala para texto", "texto para fala", "visão"],
+    "comparison": {
+      "pt": [
+        { "name": "Rekognition", "points": ["imagem e vídeo"] },
+        { "name": "Transcribe / Polly", "points": ["fala→texto / texto→fala"] }
+      ],
+      "en": [
+        { "name": "Rekognition", "points": ["image and video"] },
+        {
+          "name": "Transcribe / Polly",
+          "points": ["speech→text / text→speech"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Identifique o tipo de entrada e saída multimodal antes de escolher o serviço de IA.",
+      "en": "Identify the multimodal input and output before choosing the AI service."
+    },
+    "services": ["amazon-rekognition", "amazon-transcribe", "amazon-polly"],
+    "tags": ["ai-services"]
+  },
+  {
+    "id": "aif-textract",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "keyword",
+    "title": {
+      "pt": "Texto e dados de documentos",
+      "en": "Text and data from documents"
+    },
+    "keywords": ["OCR", "formulário", "tabela", "documento"],
+    "thinkFirst": { "pt": "Amazon Textract", "en": "Amazon Textract" },
+    "description": {
+      "pt": "Para extrair texto, formulários e tabelas de documentos, considere Textract e valide confiança e revisão.",
+      "en": "To extract text, forms, and tables from documents, consider Textract and validate confidence and review."
+    },
+    "services": ["amazon-s3"],
+    "tags": ["ai-services"]
+  },
+  {
+    "id": "aif-lex",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "keyword",
+    "title": {
+      "pt": "Interface conversacional por voz/texto",
+      "en": "Voice/text conversational interface"
+    },
+    "keywords": ["chatbot", "intent", "slot", "conversa"],
+    "thinkFirst": { "pt": "Amazon Lex", "en": "Amazon Lex" },
+    "description": {
+      "pt": "Para construir bots conversacionais com intents e slots, considere Lex e modele o diálogo.",
+      "en": "To build conversational bots with intents and slots, consider Lex and model the dialogue."
+    },
+    "services": ["amazon-lex"],
+    "tags": ["ai-services"]
+  },
+  {
+    "id": "aif-personalize",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "keyword",
+    "title": {
+      "pt": "Recomendações personalizadas",
+      "en": "Personalized recommendations"
+    },
+    "keywords": ["recomendação", "usuário", "item", "ranking"],
+    "thinkFirst": { "pt": "Amazon Personalize", "en": "Amazon Personalize" },
+    "description": {
+      "pt": "Para recomendações personalizadas gerenciadas, considere Personalize e avalie dados de interação.",
+      "en": "For managed personalized recommendations, consider Personalize and assess interaction data."
+    },
+    "services": ["amazon-personalize"],
+    "tags": ["ai-services"]
+  },
+  {
+    "id": "aif-kendra",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "keyword",
+    "title": {
+      "pt": "Busca inteligente em documentos",
+      "en": "Intelligent document search"
+    },
+    "keywords": ["enterprise search", "documentos", "consulta", "índice"],
+    "thinkFirst": { "pt": "Amazon Kendra", "en": "Amazon Kendra" },
+    "description": {
+      "pt": "Para busca corporativa com conectores e relevância semântica, considere Kendra.",
+      "en": "For enterprise search with connectors and semantic relevance, consider Kendra."
+    },
+    "services": ["amazon-kendra"],
+    "tags": ["search"]
+  },
+  {
+    "id": "aif-fairness",
+    "certifications": ["AIF-C01"],
+    "domain": "guidelines-responsible-ai",
+    "type": "keyword",
+    "title": {
+      "pt": "Resultados justos entre grupos",
+      "en": "Fair outcomes across groups"
+    },
+    "keywords": ["fairness", "viés", "grupo", "impacto"],
+    "thinkFirst": { "pt": "Fairness", "en": "Fairness" },
+    "description": {
+      "pt": "Avalie se o sistema produz impactos desiguais e defina métricas e mitigação apropriadas ao contexto.",
+      "en": "Assess whether the system produces unequal impacts and define context-appropriate metrics and mitigation."
+    },
+    "services": ["amazon-sagemaker"],
+    "tags": ["responsible-ai"]
+  },
+  {
+    "id": "aif-explainability",
+    "certifications": ["AIF-C01"],
+    "domain": "guidelines-responsible-ai",
+    "type": "keyword",
+    "title": {
+      "pt": "Entender por que o modelo decidiu",
+      "en": "Understand why a model decided"
+    },
+    "keywords": [
+      "explainability",
+      "feature importance",
+      "transparência",
+      "decisão"
+    ],
+    "thinkFirst": { "pt": "Explainability", "en": "Explainability" },
+    "description": {
+      "pt": "Escolha técnicas que ajudem a explicar decisões conforme o risco e o público afetado.",
+      "en": "Choose techniques that explain decisions according to risk and affected audiences."
+    },
+    "services": ["amazon-sagemaker"],
+    "tags": ["responsible-ai"]
+  },
+  {
+    "id": "aif-human-oversight",
+    "certifications": ["AIF-C01"],
+    "domain": "guidelines-responsible-ai",
+    "type": "trap",
+    "title": { "pt": "Supervisão humana", "en": "Human oversight" },
+    "keywords": ["human in the loop", "revisão", "alto impacto", "intervenção"],
+    "description": {
+      "pt": "Automação não elimina julgamento humano em decisões de alto impacto; defina quando revisar e intervir.",
+      "en": "Automation does not remove human judgment from high-impact decisions; define when to review and intervene."
+    },
+    "services": ["amazon-bedrock-guardrails"],
+    "tags": ["responsible-ai"]
+  },
+  {
+    "id": "aif-robustness",
+    "certifications": ["AIF-C01"],
+    "domain": "guidelines-responsible-ai",
+    "type": "comparison",
+    "title": { "pt": "Robustez × Precisão", "en": "Robustness × Accuracy" },
+    "keywords": ["perturbação", "erro", "generalização", "segurança"],
+    "comparison": {
+      "pt": [
+        { "name": "Precisão", "points": ["desempenho em dados avaliados"] },
+        {
+          "name": "Robustez",
+          "points": ["resistência a variações e entradas adversas"]
+        }
+      ],
+      "en": [
+        { "name": "Accuracy", "points": ["performance on evaluated data"] },
+        {
+          "name": "Robustness",
+          "points": ["resistance to variation and adversarial inputs"]
+        }
+      ]
+    },
+    "description": {
+      "pt": "Uma métrica alta em cenário controlado não prova resistência a entradas inesperadas.",
+      "en": "High metrics in a controlled setting do not prove resistance to unexpected inputs."
+    },
+    "services": ["amazon-sagemaker"],
+    "tags": ["responsible-ai"]
+  },
+  {
+    "id": "aif-privacy-data",
+    "certifications": ["AIF-C01"],
+    "domain": "security-compliance-governance",
+    "type": "trap",
+    "title": {
+      "pt": "Dados de treinamento e privacidade",
+      "en": "Training data and privacy"
+    },
+    "keywords": ["PII", "dados sensíveis", "retenção", "consentimento"],
+    "description": {
+      "pt": "Classifique dados, limite acesso e retenção e confirme se o uso é permitido antes de treinar ou enviar prompts.",
+      "en": "Classify data, limit access and retention, and confirm permitted use before training or sending prompts."
+    },
+    "services": ["iam", "aws-key-management-service-kms"],
+    "tags": ["security", "privacy"]
+  },
+  {
+    "id": "aif-iam-encryption",
+    "certifications": ["AIF-C01"],
+    "domain": "security-compliance-governance",
+    "type": "comparison",
+    "title": { "pt": "IAM × Encryption em IA", "en": "IAM × Encryption in AI" },
+    "keywords": ["acesso", "chave", "permissão", "dados"],
+    "comparison": {
+      "pt": [
+        { "name": "IAM", "points": ["quem pode acessar"] },
+        {
+          "name": "KMS",
+          "points": ["como dados são protegidos criptograficamente"]
+        }
+      ],
+      "en": [
+        { "name": "IAM", "points": ["who may access"] },
+        { "name": "KMS", "points": ["how data is cryptographically protected"] }
+      ]
+    },
+    "description": {
+      "pt": "Controle de acesso e proteção criptográfica são controles complementares, não substitutos.",
+      "en": "Access control and cryptographic protection are complementary controls, not substitutes."
+    },
+    "services": ["iam", "aws-key-management-service-kms"],
+    "tags": ["security"]
+  },
+  {
+    "id": "aif-bedrock-security",
+    "certifications": ["AIF-C01"],
+    "domain": "security-compliance-governance",
+    "type": "keyword",
+    "title": {
+      "pt": "Aplicação generativa com controle AWS",
+      "en": "Generative application with AWS controls"
+    },
+    "keywords": ["Bedrock", "IAM", "guardrails", "encryption"],
+    "thinkFirst": {
+      "pt": "IAM + Guardrails + criptografia, conforme o risco.",
+      "en": "IAM + Guardrails + encryption, according to risk."
+    },
+    "description": {
+      "pt": "Avalie identidade, proteção de dados, filtros e auditoria juntos; nenhum controle isolado resolve todo o risco.",
+      "en": "Assess identity, data protection, filtering, and audit together; no single control solves all risk."
+    },
+    "services": ["amazon-bedrock", "amazon-bedrock-guardrails", "iam"],
+    "tags": ["security"]
+  },
+  {
+    "id": "aif-agent-tool-permission",
+    "certifications": ["AIF-C01"],
+    "domain": "security-compliance-governance",
+    "type": "trap",
+    "title": {
+      "pt": "Agente e permissões de ferramenta",
+      "en": "Agent and tool permissions"
+    },
+    "keywords": ["agent", "action group", "least privilege", "API"],
+    "description": {
+      "pt": "Um agente que chama ferramentas precisa de permissões mínimas, validação de entrada e controles contra ações indevidas.",
+      "en": "An agent calling tools needs least-privilege permissions, input validation, and controls against unwanted actions."
+    },
+    "services": ["amazon-bedrock", "iam"],
+    "tags": ["agents", "security"]
+  },
+  {
+    "id": "aif-zero-few-mental",
+    "certifications": ["AIF-C01"],
+    "domain": "fundamentals-genai",
+    "type": "mental-shortcut",
+    "title": {
+      "pt": "Instrução ou exemplos?",
+      "en": "Instruction or examples?"
+    },
+    "keywords": ["prompt engineering", "zero-shot", "few-shot", "formato"],
+    "thinkFirst": {
+      "pt": "Comece claro; adicione exemplos quando o formato ainda variar.",
+      "en": "Start clearly; add examples when the format still varies."
+    },
+    "description": {
+      "pt": "Uma técnica de prompting deve reduzir ambiguidade sem consumir contexto desnecessariamente.",
+      "en": "A prompting technique should reduce ambiguity without consuming context unnecessarily."
+    },
+    "services": ["amazon-bedrock"],
+    "tags": ["prompting"]
+  },
+  {
+    "id": "aif-rag-grounding",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "mental-shortcut",
+    "title": {
+      "pt": "Resposta baseada em documentos",
+      "en": "Answer grounded in documents"
+    },
+    "keywords": ["RAG", "fonte", "retrieval", "citação"],
+    "thinkFirst": {
+      "pt": "Recuperar contexto antes de gerar.",
+      "en": "Retrieve context before generating."
+    },
+    "description": {
+      "pt": "Grounding pode reduzir alucinação, mas exige documentos relevantes, recuperação adequada e avaliação.",
+      "en": "Grounding can reduce hallucination, but requires relevant documents, retrieval quality, and evaluation."
+    },
+    "services": ["amazon-bedrock-knowledge-bases"],
+    "tags": ["rag"]
+  },
+  {
+    "id": "aif-model-cost-latency",
+    "certifications": ["AIF-C01"],
+    "domain": "applications-foundation-models",
+    "type": "mental-shortcut",
+    "title": {
+      "pt": "Qualidade não é o único critério",
+      "en": "Quality is not the only criterion"
+    },
+    "keywords": ["custo", "latência", "throughput", "modelo"],
+    "thinkFirst": {
+      "pt": "Compare qualidade, custo, latência e segurança para o caso de uso.",
+      "en": "Compare quality, cost, latency, and safety for the use case."
+    },
+    "description": {
+      "pt": "O modelo mais capaz pode não ser a melhor escolha operacional; valide requisitos e trade-offs.",
+      "en": "The most capable model may not be the best operational choice; validate requirements and trade-offs."
+    },
+    "services": ["amazon-bedrock"],
+    "tags": ["evaluation", "cost"]
+  }
+]

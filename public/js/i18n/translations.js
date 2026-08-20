@@ -1,5 +1,14 @@
 export const translations = {
   pt: {
+    sidebar_exam_tips: "Dicas de Prova",
+    exam_tips_title: "Dicas de Prova",
+    exam_tips_kicker: "Revisão rápida",
+    exam_tips_subtitle: "Reconheça pistas, diferencie serviços e revise conceitos importantes para o exame.",
+    exam_tips_search_label: "Buscar serviço, conceito ou palavra-chave",
+    exam_tips_search_placeholder: "Buscar serviço, conceito ou palavra-chave...",
+    exam_tips_certification: "Certificação",
+    exam_tips_clear: "Limpar filtros",
+    review_recommended_exam_tips: "Revisar dicas recomendadas",
     // Labs
     domain_filter: "Domínio:",
     aws_labs: "Laboratórios AWS",
@@ -579,6 +588,15 @@ export const translations = {
   },
 
   en: {
+    sidebar_exam_tips: "Exam Tips",
+    exam_tips_title: "Exam Tips",
+    exam_tips_kicker: "Quick review",
+    exam_tips_subtitle: "Recognize question clues, distinguish AWS services, and review important exam concepts.",
+    exam_tips_search_label: "Search service, concept, or keyword",
+    exam_tips_search_placeholder: "Search service, concept, or keyword...",
+    exam_tips_certification: "Certification",
+    exam_tips_clear: "Clear filters",
+    review_recommended_exam_tips: "Review recommended tips",
     // Labs
     domain_filter: "Domain:",
     aws_labs: "AWS Labs",

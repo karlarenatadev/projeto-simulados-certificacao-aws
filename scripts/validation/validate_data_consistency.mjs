@@ -396,6 +396,31 @@ export function validateFlashcards(cards, context, report, file = 'src/frontend/
   report.counts.flashcards = cards?.length || 0;
 }
 
+export function validateExamTips(tips, context, report, file = 'data/exam-tips.json') {
+  const validTypes = new Set(['keyword', 'comparison', 'trap', 'mental-shortcut']);
+  if (!Array.isArray(tips)) {
+    issue(report, 'ERROR', 'ExamTips', 'EXAM_TIPS_FILE_SHAPE', 'Exam tips source must be an array.', file);
+    return;
+  }
+  const ids = new Set();
+  for (const [index, tip] of tips.entries()) {
+    if (!tip?.id || ids.has(tip.id)) issue(report, 'ERROR', 'ExamTips', 'DUPLICATE_EXAM_TIP_ID', `Exam tip id '${tip?.id}' is missing or duplicated.`, file, index);
+    if (tip?.id) ids.add(tip.id);
+    if (!validTypes.has(tip?.type)) issue(report, 'ERROR', 'ExamTips', 'EXAM_TIP_TYPE', `Exam tip '${tip?.id}' has an invalid type.`, file, index);
+    const certifications = Array.isArray(tip?.certifications) ? tip.certifications : [];
+    if (!certifications.length || certifications.some((certification) => !SUPPORTED_CERTIFICATIONS.includes(normalizeCertification(certification)))) issue(report, 'ERROR', 'ExamTips', 'EXAM_TIP_CERTIFICATION', `Exam tip '${tip?.id}' has an unknown certification.`, file, index);
+    const certification = normalizeCertification(certifications[0]);
+    if (!tip?.domain || !context.domainAliases.has(`${certification}:${normalize(tip.domain)}`)) issue(report, 'ERROR', 'ExamTips', 'EXAM_TIP_DOMAIN', `Exam tip '${tip?.id}' has an unknown domain.`, file, index);
+    for (const language of ['pt', 'en']) {
+      if (!tip?.title?.[language] || !tip?.description?.[language]) issue(report, 'ERROR', 'ExamTips', 'EXAM_TIP_BILINGUAL_CONTENT', `Exam tip '${tip?.id}' requires title and description in ${language.toUpperCase()}.`, file, index);
+    }
+    if (!Array.isArray(tip?.keywords) || tip.keywords.length === 0 || !Array.isArray(tip?.services) || tip.services.length === 0) issue(report, 'ERROR', 'ExamTips', 'EXAM_TIP_SEARCH_FIELDS', `Exam tip '${tip?.id}' requires keywords and services.`, file, index);
+    for (const service of tip?.services || []) if (!context.serviceAliases.has(normalize(service))) issue(report, 'ERROR', 'ExamTips', 'EXAM_TIP_UNKNOWN_SERVICE', `Exam tip '${tip?.id}' references unknown service '${service}'.`, file, index);
+    if (tip?.type === 'comparison' && (!tip.comparison?.pt || !tip.comparison?.en)) issue(report, 'ERROR', 'ExamTips', 'EXAM_TIP_COMPARISON', `Comparison '${tip?.id}' requires PT and EN comparison content.`, file, index);
+  }
+  report.counts.examTips = tips.length;
+}
+
 export function validateGamification(badges, report, file = 'data/gamificacao/badges.json') {
   const ids = new Set();
   for (const [index, badge] of (badges || []).entries()) {
@@ -428,7 +453,7 @@ export function validateSprintMaps(maps, report, file = 'src/frontend/js/gamific
 export async function collectGovernanceReport(rootDir) {
   const report = {
     issues: [],
-    counts: { questions: {}, labs: 0, cases: 0, services: 0, flashcards: 0, badges: 0, sprintStructure: 0 },
+    counts: { questions: {}, labs: 0, cases: 0, services: 0, flashcards: 0, examTips: 0, badges: 0, sprintStructure: 0 },
   };
   const taxonomyFile = path.join(rootDir, 'data', 'taxonomy', 'canonical_taxonomy.json');
   const taxonomy = readJson(taxonomyFile);
@@ -457,6 +482,7 @@ export async function collectGovernanceReport(rootDir) {
 
   const dataModule = await import(pathToFileURL(path.join(rootDir, 'src', 'frontend', 'js', 'data.js')).href);
   validateFlashcards(dataModule.glossaryTerms, context, report);
+  validateExamTips(readJson(path.join(rootDir, 'data', 'exam-tips.json')), context, report);
   validateRuntimeTaxonomy(dataModule.certificationPaths, taxonomy, report);
   const sprintModule = await import(pathToFileURL(path.join(rootDir, 'src', 'frontend', 'js', 'gamificacao', 'sprintManager.js')).href);
   const sprintDataModule = await import(pathToFileURL(path.join(rootDir, 'src', 'frontend', 'js', 'sprintData.js')).href);
@@ -483,6 +509,7 @@ async function main() {
   console.log(`Cases with Builder config: ${report.counts.builderConfigured || 0}`);
   console.log(`Builder migration pending: ${report.counts.builderMigrationPending || 0}`);
   console.log(`Flashcards: ${report.counts.flashcards}`);
+  console.log(`Exam tips: ${report.counts.examTips}`);
   console.log(`Services: ${report.counts.services}`);
   console.log(`Sprint structural days: ${report.counts.sprintStructure}`);
   console.log(`ERRORS: ${summary.ERROR}`);

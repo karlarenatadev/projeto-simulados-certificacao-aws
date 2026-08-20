@@ -1,0 +1,207 @@
+.exam-tips-page .main-content-container {
+  max-width: 1180px;
+}
+.dark .exam-tips-page {
+  background: var(--bg-main) !important;
+}
+.exam-tips-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1.5rem;
+}
+.exam-tips-kicker,
+.exam-tips-type {
+  color: var(--a3-primary-dark);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.exam-tips-hero h1 {
+  color: var(--text-main);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  margin: 0.35rem 0;
+}
+.exam-tips-hero p {
+  color: var(--text-muted);
+  max-width: 700px;
+}
+.exam-tips-count {
+  color: var(--text-muted);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.exam-tips-toolbar {
+  display: grid;
+  grid-template-columns:
+    minmax(240px, 1fr) repeat(2, minmax(150px, 0.35fr))
+    auto;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1rem;
+}
+.exam-tips-toolbar label {
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.exam-tips-search {
+  position: relative;
+}
+.exam-tips-search i {
+  position: absolute;
+  left: 0.9rem;
+  bottom: 0.8rem;
+}
+.exam-tips-search input {
+  padding-left: 2.4rem;
+}
+.exam-tips-toolbar input,
+.exam-tips-toolbar select {
+  border: 1px solid var(--border-theme);
+  border-radius: 0.65rem;
+  color: var(--text-main);
+  background: var(--a3-control-bg);
+  padding: 0.7rem 0.8rem;
+  min-height: 42px;
+}
+.exam-tips-type-filters {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.exam-tips-type-button {
+  border: 1px solid var(--border-theme);
+  border-radius: 999px;
+  background: var(--a3-control-bg);
+  color: var(--text-muted);
+  padding: 0.55rem 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.exam-tips-type-button.is-active {
+  color: var(--a3-text-inverse);
+  background: var(--a3-primary-dark);
+  border-color: var(--a3-primary-dark);
+}
+.exam-tips-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.exam-tip-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-theme);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 6px 18px rgb(20 32 60 / 7%);
+  min-width: 0;
+}
+.exam-tip-card h2 {
+  color: var(--text-main);
+  font-size: 1.2rem;
+  margin: 0.8rem 0;
+}
+.exam-tip-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+.exam-tip-domain {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+.exam-tip-think {
+  background: var(--a3-surface-selected);
+  border-left: 3px solid var(--a3-primary);
+  border-radius: 0.4rem;
+  padding: 0.7rem 0.8rem;
+  display: grid;
+  gap: 0.25rem;
+}
+.exam-tip-think span {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.exam-tip-think strong {
+  color: var(--text-main);
+}
+.exam-tip-description,
+.exam-tip-dont {
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+.exam-tip-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0.8rem 0;
+}
+.exam-tip-comparison > div {
+  border: 1px solid var(--border-theme);
+  border-radius: 0.65rem;
+  padding: 0.7rem;
+}
+.exam-tip-comparison h3 {
+  color: var(--text-main);
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+.exam-tip-comparison ul {
+  color: var(--text-muted);
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.9rem;
+}
+.exam-tip-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 1rem;
+}
+.exam-tip-tags span {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+.exam-tips-feedback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-muted);
+}
+@media (max-width: 800px) {
+  .exam-tips-toolbar {
+    grid-template-columns: 1fr 1fr;
+  }
+  .exam-tips-search {
+    grid-column: 1/-1;
+  }
+  .exam-tips-toolbar button {
+    width: 100%;
+  }
+}
+@media (max-width: 560px) {
+  .exam-tips-hero {
+    align-items: start;
+    flex-direction: column;
+  }
+  .exam-tips-grid,
+  .exam-tip-comparison {
+    grid-template-columns: 1fr;
+  }
+  .exam-tips-toolbar {
+    grid-template-columns: 1fr;
+  }
+}

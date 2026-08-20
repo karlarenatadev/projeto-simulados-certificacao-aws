@@ -121,6 +121,16 @@ export const SIDEBAR_ITEMS = [
     title: "Flashcards",
   },
   {
+    id: "sidebar-btn-exam-tips",
+    label: "Dicas de Prova",
+    icon: "fa-solid fa-bullseye",
+    href: "./dicas-prova.html",
+    activePaths: ["/dicas-prova.html"],
+    roles: ["*"],
+    i18n: "sidebar_exam_tips",
+    title: "Dicas de Prova",
+  },
+  {
     id: "sidebar-btn-cases",
     label: "Prática",
     icon: "fa-solid fa-diagram-project",
