@@ -60,7 +60,7 @@
     "@tailwindcss/cli": "^4.2.2",
     "babel-jest": "^29.7.0",
     "cheerio": "^1.2.0",
-    "concurrently": "^10.0.4",
+    "concurrently": "^10.0.5",
     "cross-env": "^10.1.0",
     "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
