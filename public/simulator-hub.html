@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AWS Simulator Hub — Cloud Academy A3</title>
     <!-- CSS consolidado do design system (inclui simulator.css via build) -->
-    <link rel="stylesheet" href="./css/style.css?v=mt1ppaig" />
+    <link rel="stylesheet" href="./css/style.css?v=77e805b0" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -20,8 +20,19 @@
     <div class="hub-container">
       <div class="hub-header">
         <div class="simulator-page-actions">
-          <button id="simulator-language" type="button" aria-label="Alternar idioma">EN</button>
-          <button id="theme-toggle" class="a3-btn a3-btn-secondary" type="button" aria-label="Alternar modo escuro">
+          <button
+            id="simulator-language"
+            type="button"
+            aria-label="Alternar idioma"
+          >
+            EN
+          </button>
+          <button
+            id="theme-toggle"
+            class="a3-btn a3-btn-secondary"
+            type="button"
+            aria-label="Alternar modo escuro"
+          >
             <i id="theme-icon" class="fa-solid fa-moon" aria-hidden="true"></i>
           </button>
         </div>
@@ -37,18 +48,27 @@
       </div>
     </div>
 
-      <script type="module">
+    <script type="module">
       import { initThemeShell } from "../js/shell.js";
-      import { getCurrentLanguage, setCurrentLanguage } from "../js/core/languageManager.js";
+      import {
+        getCurrentLanguage,
+        setCurrentLanguage,
+      } from "../js/core/languageManager.js";
       import { t } from "../js/i18n/useTranslation.js";
 
-          const languageButton = document.getElementById("simulator-language");
-          initThemeShell();
+      const languageButton = document.getElementById("simulator-language");
+      initThemeShell();
       const applyLanguage = () => {
         const language = getCurrentLanguage();
         document.documentElement.lang = language === "en" ? "en" : "pt-BR";
-        document.querySelector(".hub-header h1").textContent = t("simulator_hub_title", language);
-        document.querySelector(".hub-header p").textContent = t("simulator_hub_subtitle", language);
+        document.querySelector(".hub-header h1").textContent = t(
+          "simulator_hub_title",
+          language,
+        );
+        document.querySelector(".hub-header p").textContent = t(
+          "simulator_hub_subtitle",
+          language,
+        );
         languageButton.textContent = t("simulator_language", language);
       };
       languageButton.addEventListener("click", () => {
@@ -59,103 +79,193 @@
       applyLanguage();
 
       const LEVELS = [
-          { id: 'level_1_clf', title: 'Nível 1 - Cloud Practitioner', desc: 'Entenda os conceitos fundamentais e tome decisões entre serviços core.', badge: 'Iniciante' },
-          { id: 'level_2_saa', title: 'Nível 2 - Solutions Architect', desc: 'Projete arquiteturas resilientes, seguras e com alta disponibilidade.', badge: 'Intermediário' },
-          { id: 'level_3_dva', title: 'Nível 3 - Developer', desc: 'Foque em Serverless, APIs e CI/CD.', badge: 'Intermediário' },
-          { id: 'level_4_sys', title: 'Nível 4 - SysOps', desc: 'Solucione problemas operacionais, custos e escalabilidade.', badge: 'Intermediário' },
-          { id: 'level_5_sec', title: 'Nível 5 - Security', desc: 'Proteja workloads e reaja a incidentes de segurança.', badge: 'Avançado' },
-          { id: 'level_6_data', title: 'Nível 6 - Data Engineer', desc: 'Construa pipelines de Big Data e Data Lakes.', badge: 'Avançado' },
-          { id: 'level_7_ai', title: 'Nível 7 - AI Practitioner', desc: 'Implemente GenAI e Machine Learning na prática.', badge: 'Avançado' },
-          { id: 'level_8_adv', title: 'Nível 8 - Advanced Architect', desc: 'Arquiteturas complexas, multirregião e altíssima escala.', badge: 'Especialista' },
-          { id: 'investigative', title: 'Casos Investigativos', desc: 'Troubleshooting avançado. Descubra o que quebrou na infraestrutura.', badge: 'Especialista' },
+        {
+          id: "level_1_clf",
+          title: "Nível 1 - Cloud Practitioner",
+          desc: "Entenda os conceitos fundamentais e tome decisões entre serviços core.",
+          badge: "Iniciante",
+        },
+        {
+          id: "level_2_saa",
+          title: "Nível 2 - Solutions Architect",
+          desc: "Projete arquiteturas resilientes, seguras e com alta disponibilidade.",
+          badge: "Intermediário",
+        },
+        {
+          id: "level_3_dva",
+          title: "Nível 3 - Developer",
+          desc: "Foque em Serverless, APIs e CI/CD.",
+          badge: "Intermediário",
+        },
+        {
+          id: "level_4_sys",
+          title: "Nível 4 - SysOps",
+          desc: "Solucione problemas operacionais, custos e escalabilidade.",
+          badge: "Intermediário",
+        },
+        {
+          id: "level_5_sec",
+          title: "Nível 5 - Security",
+          desc: "Proteja workloads e reaja a incidentes de segurança.",
+          badge: "Avançado",
+        },
+        {
+          id: "level_6_data",
+          title: "Nível 6 - Data Engineer",
+          desc: "Construa pipelines de Big Data e Data Lakes.",
+          badge: "Avançado",
+        },
+        {
+          id: "level_7_ai",
+          title: "Nível 7 - AI Practitioner",
+          desc: "Implemente GenAI e Machine Learning na prática.",
+          badge: "Avançado",
+        },
+        {
+          id: "level_8_adv",
+          title: "Nível 8 - Advanced Architect",
+          desc: "Arquiteturas complexas, multirregião e altíssima escala.",
+          badge: "Especialista",
+        },
+        {
+          id: "investigative",
+          title: "Casos Investigativos",
+          desc: "Troubleshooting avançado. Descubra o que quebrou na infraestrutura.",
+          badge: "Especialista",
+        },
       ];
 
       const LEVEL_DIFFICULTY = {
-          level_1_clf: 'beginner',
-          level_2_saa: 'intermediate',
-          level_3_dva: 'intermediate',
-          level_4_sys: 'intermediate',
-          level_5_sec: 'advanced',
-          level_6_data: 'advanced',
-          level_7_ai: 'advanced',
-          level_8_adv: 'advanced',
-          investigative: 'advanced',
+        level_1_clf: "beginner",
+        level_2_saa: "intermediate",
+        level_3_dva: "intermediate",
+        level_4_sys: "intermediate",
+        level_5_sec: "advanced",
+        level_6_data: "advanced",
+        level_7_ai: "advanced",
+        level_8_adv: "advanced",
+        investigative: "advanced",
       };
 
       const LEVEL_EN = {
-        level_1_clf: ['Level 1 - Cloud Practitioner', 'Understand core concepts and make decisions among essential services.', 'Beginner'],
-        level_2_saa: ['Level 2 - Solutions Architect', 'Design resilient, secure, highly available architectures.', 'Intermediate'],
-        level_3_dva: ['Level 3 - Developer', 'Focus on Serverless, APIs and CI/CD.', 'Intermediate'],
-        level_4_sys: ['Level 4 - SysOps', 'Solve operational, cost and scalability challenges.', 'Intermediate'],
-        level_5_sec: ['Level 5 - Security', 'Protect workloads and respond to security incidents.', 'Advanced'],
-        level_6_data: ['Level 6 - Data Engineer', 'Build Big Data pipelines and Data Lakes.', 'Advanced'],
-        level_7_ai: ['Level 7 - AI Practitioner', 'Implement GenAI and Machine Learning in practice.', 'Advanced'],
-        level_8_adv: ['Level 8 - Advanced Architect', 'Design complex, multi-region, high-scale architectures.', 'Advanced'],
-        investigative: ['Investigative Cases', 'Advanced troubleshooting. Discover what failed in the infrastructure.', 'Expert'],
+        level_1_clf: [
+          "Level 1 - Cloud Practitioner",
+          "Understand core concepts and make decisions among essential services.",
+          "Beginner",
+        ],
+        level_2_saa: [
+          "Level 2 - Solutions Architect",
+          "Design resilient, secure, highly available architectures.",
+          "Intermediate",
+        ],
+        level_3_dva: [
+          "Level 3 - Developer",
+          "Focus on Serverless, APIs and CI/CD.",
+          "Intermediate",
+        ],
+        level_4_sys: [
+          "Level 4 - SysOps",
+          "Solve operational, cost and scalability challenges.",
+          "Intermediate",
+        ],
+        level_5_sec: [
+          "Level 5 - Security",
+          "Protect workloads and respond to security incidents.",
+          "Advanced",
+        ],
+        level_6_data: [
+          "Level 6 - Data Engineer",
+          "Build Big Data pipelines and Data Lakes.",
+          "Advanced",
+        ],
+        level_7_ai: [
+          "Level 7 - AI Practitioner",
+          "Implement GenAI and Machine Learning in practice.",
+          "Advanced",
+        ],
+        level_8_adv: [
+          "Level 8 - Advanced Architect",
+          "Design complex, multi-region, high-scale architectures.",
+          "Advanced",
+        ],
+        investigative: [
+          "Investigative Cases",
+          "Advanced troubleshooting. Discover what failed in the infrastructure.",
+          "Expert",
+        ],
       };
-      const levelLabel = (level, index) => getCurrentLanguage() === 'en' ? LEVEL_EN[level.id][index] : [level.title, level.desc, level.badge][index];
+      const levelLabel = (level, index) =>
+        getCurrentLanguage() === "en"
+          ? LEVEL_EN[level.id][index]
+          : [level.title, level.desc, level.badge][index];
 
       async function loadLevels() {
-          const grid = document.getElementById('levelsGrid');
-          grid.innerHTML = '';
+        const grid = document.getElementById("levelsGrid");
+        grid.innerHTML = "";
 
-          try {
-              let response = await fetch('./api/cases?limit=100').catch(() => null);
-              if (!response || !response.ok) {
-                  // Fallback para arquivo estático
-                  response = await fetch('./data/cases/architecture_cases.json').catch(() => null);
-              }
-              if (!response || !response.ok) {
-                  // API e arquivo indisponíveis — renderiza todos como "em breve"
-                  LEVELS.forEach(level => {
-                      const card = document.createElement('div');
-                      card.className = 'level-card';
-                      card.style.opacity = '0.5';
-                      card.style.cursor = 'default';
-                      card.innerHTML = `
+        try {
+          let response = await fetch("./api/cases?limit=100").catch(() => null);
+          if (!response || !response.ok) {
+            // Fallback para arquivo estático
+            response = await fetch(
+              "./data/cases/architecture_cases.json",
+            ).catch(() => null);
+          }
+          if (!response || !response.ok) {
+            // API e arquivo indisponíveis — renderiza todos como "em breve"
+            LEVELS.forEach((level) => {
+              const card = document.createElement("div");
+              card.className = "level-card";
+              card.style.opacity = "0.5";
+              card.style.cursor = "default";
+              card.innerHTML = `
                           <span class="level-badge">${levelLabel(level, 2)}</span>
                           <h3>${levelLabel(level, 0)}</h3>
                           <p>${levelLabel(level, 1)}</p>
                           <div class="start-btn">${t("simulator_coming_soon", getCurrentLanguage())}</div>
                       `;
-                      grid.appendChild(card);
-                  });
-                  return;
-              }
-              const result = await response.json();
-              const cases = Array.isArray(result) ? result : result?.data;
-              if (!Array.isArray(cases)) {
-                  throw new Error('Invalid cases catalog format');
-              }
-              const availableDifficulties = new Set(cases.map(c => c.difficulty).filter(Boolean));
+              grid.appendChild(card);
+            });
+            return;
+          }
+          const result = await response.json();
+          const cases = Array.isArray(result) ? result : result?.data;
+          if (!Array.isArray(cases)) {
+            throw new Error("Invalid cases catalog format");
+          }
+          const availableDifficulties = new Set(
+            cases.map((c) => c.difficulty).filter(Boolean),
+          );
 
-              LEVELS.forEach(level => {
-                  const difficulty = LEVEL_DIFFICULTY[level.id];
-                  const hasCases = availableDifficulties.has(difficulty);
+          LEVELS.forEach((level) => {
+            const difficulty = LEVEL_DIFFICULTY[level.id];
+            const hasCases = availableDifficulties.has(difficulty);
 
-                  const card = document.createElement('a');
-                  card.className = 'level-card';
-                  card.href = hasCases ? `./simulator-room.html?level=${difficulty}` : '#';
-                  if (!hasCases) {
-                      card.style.opacity = '0.5';
-                      card.style.pointerEvents = 'none';
-                  }
+            const card = document.createElement("a");
+            card.className = "level-card";
+            card.href = hasCases
+              ? `./simulator-room.html?level=${difficulty}`
+              : "#";
+            if (!hasCases) {
+              card.style.opacity = "0.5";
+              card.style.pointerEvents = "none";
+            }
 
-                  card.innerHTML = `
+            card.innerHTML = `
                       <span class="level-badge">${levelLabel(level, 2)}</span>
                       <h3>${levelLabel(level, 0)}</h3>
                       <p>${levelLabel(level, 1)}</p>
                       <div class="start-btn">${hasCases ? t("simulator_start", getCurrentLanguage()) : t("simulator_coming_soon", getCurrentLanguage())}</div>
                   `;
-                  grid.appendChild(card);
-              });
-          } catch (err) {
-              console.error('Failed to load simulator levels', err);
-              grid.innerHTML = `<p role="status">${t("simulator_catalog_error", getCurrentLanguage())}</p>`;
-          }
+            grid.appendChild(card);
+          });
+        } catch (err) {
+          console.error("Failed to load simulator levels", err);
+          grid.innerHTML = `<p role="status">${t("simulator_catalog_error", getCurrentLanguage())}</p>`;
+        }
       }
 
-      document.addEventListener('DOMContentLoaded', loadLevels);
+      document.addEventListener("DOMContentLoaded", loadLevels);
     </script>
   </body>
 </html>

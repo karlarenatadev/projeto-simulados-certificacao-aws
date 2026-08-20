@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Trilha de aprendizado AWS — acompanhe sua jornada, conquistas e progresso." />
+    <meta
+      name="description"
+      content="Trilha de aprendizado AWS — acompanhe sua jornada, conquistas e progresso."
+    />
     <title>Minha Jornada — Cloud Academy A3</title>
-
-    
 
     <link
       rel="stylesheet"
@@ -21,41 +22,51 @@
     <meta name="theme-color" content="#001863" />
   </head>
 
-  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
-
+  <body
+    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
+  >
     <!-- {{HEADER_PAGE}} -->
 
     <!-- {{SIDEBAR}} -->
 
     <main class="flex-1 a3-container py-6 main-content-container">
+      <div
+        id="screen-jornada"
+        class="p-8 md:p-12 flex flex-col items-center h-full overflow-y-auto custom-scroll fade-in"
+      >
+        <div class="w-full max-w-2xl text-center mb-10">
+          <h2 class="text-3xl font-bold text-strong mb-2">
+            <i class="fa-solid fa-map-location-dot text-aws-orange mr-2"></i>
+            Jornada AWS
+          </h2>
+          <p class="text-muted dark:text-gray-400">
+            Complete os módulos para desbloquear novas certificações e ganhar
+            insígnias.
+          </p>
+          <p
+            id="jornada-cert-title"
+            class="text-lg font-semibold text-aws-orange mt-2"
+          ></p>
+        </div>
+
+        <div class="trail-container custom-scroll" id="gamificacao-trail"></div>
+
         <div
-          id="screen-jornada"
-          class="p-8 md:p-12 flex flex-col items-center h-full overflow-y-auto custom-scroll fade-in"
+          id="jornada-recommendation"
+          class="w-full max-w-5xl"
+          aria-live="polite"
+        ></div>
+
+        <div
+          class="w-full max-w-5xl mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start"
         >
-          <div class="w-full max-w-2xl text-center mb-10">
-            <h2 class="text-3xl font-bold text-strong mb-2">
-              <i class="fa-solid fa-map-location-dot text-aws-orange mr-2"></i>
-              Jornada AWS
-            </h2>
-            <p class="text-muted dark:text-gray-400">
-              Complete os módulos para desbloquear novas certificações e ganhar
-              insígnias.
-            </p>
-            <p id="jornada-cert-title" class="text-lg font-semibold text-aws-orange mt-2"></p>
-          </div>
-
-          <div
-            class="trail-container custom-scroll"
-            id="gamificacao-trail"
-          ></div>
-
-          <div id="jornada-recommendation" class="w-full max-w-5xl" aria-live="polite"></div>
-
-          <div class="w-full max-w-5xl mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-  
           <!-- CARD 1: SUAS CONQUISTAS -->
-          <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow border border-gray-200 dark:border-slate-700 w-full">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2">
+          <div
+            class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow border border-gray-200 dark:border-slate-700 w-full"
+          >
+            <h3
+              class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2"
+            >
               <i class="fa-solid fa-medal text-yellow-500"></i> Suas Conquistas
             </h3>
             <div
@@ -65,26 +76,49 @@
           </div>
 
           <!-- CARD 2: PLACAR DA GUILDA -->
-          <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow border border-gray-200 dark:border-slate-700 w-full">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2">
+          <div
+            class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow border border-gray-200 dark:border-slate-700 w-full"
+          >
+            <h3
+              class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2"
+            >
               <i class="fa-solid fa-users text-blue-500"></i> Placar da Guilda
             </h3>
-            <div class="flex justify-around mb-6 border-b pb-4 border-gray-200 dark:border-slate-700">
+            <div
+              class="flex justify-around mb-6 border-b pb-4 border-gray-200 dark:border-slate-700"
+            >
               <div class="text-center">
-                <p class="text-sm text-gray-500 dark:text-gray-400">Questões Totais</p>
-                <p id="guild-total-questions" class="text-2xl font-bold text-blue-600 dark:text-blue-400">0</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  Questões Totais
+                </p>
+                <p
+                  id="guild-total-questions"
+                  class="text-2xl font-bold text-blue-600 dark:text-blue-400"
+                >
+                  0
+                </p>
               </div>
               <div class="text-center">
-                <p class="text-sm text-gray-500 dark:text-gray-400">Média Semanal</p>
-                <p id="guild-weekly-avg" class="text-2xl font-bold text-green-600 dark:text-green-400">0%</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  Média Semanal
+                </p>
+                <p
+                  id="guild-weekly-avg"
+                  class="text-2xl font-bold text-green-600 dark:text-green-400"
+                >
+                  0%
+                </p>
               </div>
             </div>
             <ul id="guild-leaderboard" class="space-y-3">
-              <li class="text-center text-gray-500 text-sm">Carregando placar...</li>
+              <li class="text-center text-gray-500 text-sm">
+                Carregando placar...
+              </li>
             </ul>
           </div>
-
         </div>
+      </div>
+    </main>
     <!-- {{FOOTER}} -->
 
     <script src="./js/sprintData.js" type="module"></script>
@@ -94,7 +128,7 @@
       document.addEventListener("DOMContentLoaded", () => {
         const session = authGuard();
         if (!session) return;
-        
+
         // Inicia a jornada apenas se estivermos na página correta
         setTimeout(() => {
           if (typeof window.startJornada === "function") {
@@ -103,11 +137,10 @@
         }, 100);
       });
     </script>
-    
 
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </body>
 </html>

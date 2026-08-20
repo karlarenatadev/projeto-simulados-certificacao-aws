@@ -5,11 +5,21 @@ const DEFAULT_LANGUAGE = "pt";
 const LEGACY_LANGUAGE_KEYS = ["language", "aws_sim_lang"];
 
 export function normalizeLanguage(language) {
-  const normalized = String(language || "").trim().toLowerCase();
-  if (normalized === "en" || normalized === "en-us" || normalized === "english") {
+  const normalized = String(language || "")
+    .trim()
+    .toLowerCase();
+  if (
+    normalized === "en" ||
+    normalized === "en-us" ||
+    normalized === "english"
+  ) {
     return "en";
   }
-  if (normalized === "pt" || normalized === "pt-br" || normalized === "portuguese") {
+  if (
+    normalized === "pt" ||
+    normalized === "pt-br" ||
+    normalized === "portuguese"
+  ) {
     return "pt";
   }
   return null;

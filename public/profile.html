@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Perfil do usuário — histórico, certificações e conquistas." />
+    <meta
+      name="description"
+      content="Perfil do usuário — histórico, certificações e conquistas."
+    />
     <title>Meu Perfil — Cloud Academy A3</title>
-
-    
 
     <link
       rel="stylesheet"
@@ -16,7 +17,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=mt1ppagv" />
+    <link rel="stylesheet" href="./css/style.css?v=acddee29" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -26,65 +27,68 @@
     <meta http-equiv="Expires" content="0">
 </head>
 
-  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
+  <body
+    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
+  >
 <header class="a3-header">
-      <div class="flex items-center gap-2 md:gap-3">
-        <button
-          id="cloud-sidebar-toggle"
-          class="btn-sidebar-toggle flex items-center justify-center group/cloud"
-          title="Esconder menu lateral"
-          aria-label="Alternar menu lateral"
-          aria-expanded="true"
-        >
-          <i
-            id="cloud-logo-icon"
-            class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <a href="index.html" class="a3-header-link" title="Voltar ao início">
-          <div>
-            <h1 class="text-base md:text-xl font-bold leading-tight">
-              Cloud Academy A3
-            </h1>
-            <p class="text-[10px] md:text-xs text-gray-300">
-              Sua jornada para certificações AWS
-            </p>
-          </div>
-        </a>
+  <div class="flex items-center gap-2 md:gap-3">
+    <button
+      id="cloud-sidebar-toggle"
+      class="btn-sidebar-toggle flex items-center justify-center group/cloud"
+      title="Esconder menu lateral"
+      aria-label="Alternar menu lateral"
+      aria-expanded="true"
+    >
+      <i
+        id="cloud-logo-icon"
+        class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
+        aria-hidden="true"
+      ></i>
+    </button>
+    <a href="index.html" class="a3-header-link" title="Voltar ao início">
+      <div>
+        <h1 class="text-base md:text-xl font-bold leading-tight">
+          Cloud Academy A3
+        </h1>
+        <p class="text-[10px] md:text-xs text-gray-300">
+          Sua jornada para certificações AWS
+        </p>
       </div>
-      <div class="a3-header-actions">
-        <button
-          id="btn-language"
-          class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
-          aria-label="Alternar idioma"
-          title="Alternar idioma"
-        >
-          <span class="text-[10px] md:text-xs font-bold"
-            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
-          >
-        </button>
-        <button
-          id="theme-toggle"
-          class="a3-btn a3-btn-secondary"
-          aria-label="Alternar modo escuro"
-        >
-          <i
-            id="theme-icon"
-            class="fa-solid fa-moon text-base md:text-xl"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <button
-          id="install-app"
-          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
-        >
-          <i class="fa-solid fa-download"></i> Baixar App
-        </button>
-        <!-- User Menu — populado pelo shell.js -->
-        <div id="user-menu-container"></div>
-      </div>
-    </header>
+    </a>
+  </div>
+  <div class="a3-header-actions">
+    <button
+      id="btn-language"
+      class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
+      aria-label="Alternar idioma"
+      title="Alternar idioma"
+    >
+      <span class="text-[10px] md:text-xs font-bold"
+        >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
+      >
+    </button>
+    <button
+      id="theme-toggle"
+      class="a3-btn a3-btn-secondary"
+      aria-label="Alternar modo escuro"
+    >
+      <i
+        id="theme-icon"
+        class="fa-solid fa-moon text-base md:text-xl"
+        aria-hidden="true"
+      ></i>
+    </button>
+    <button
+      id="install-app"
+      class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
+    >
+      <i class="fa-solid fa-download"></i> Baixar App
+    </button>
+    <!-- User Menu — populado pelo shell.js -->
+    <div id="user-menu-container"></div>
+  </div>
+</header>
+<script src="./js/pwa/registerServiceWorker.js?v=acddee29"></script>
 <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
   <!--
     .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
@@ -98,7 +102,10 @@
       aria-label="Learning Hub — Painel Principal"
       title="Learning Hub — Painel Principal"
     >
-      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <i
+        class="fa-solid fa-house left-sidebar-item-icon"
+        aria-hidden="true"
+      ></i>
       <span class="left-sidebar-item-label">Home</span>
     </button>
   </div>
@@ -109,7 +116,7 @@
 </nav>
 
 
-<!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
+    <!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
 
     <!-- ===== CONTEÚDO PRINCIPAL ===== -->
     <main class="main-content-container profile-main" id="profile-page">
@@ -196,11 +203,11 @@
 
     <!-- App Shell: tema, idioma, UserMenu e Sidebar -->
 <footer
-      class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
-    >
-      Plataforma colaborativa de estudo para certificações AWS construída para a
-      comunidade da Guilda Z-Maguinhos | A3Data.
-    </footer>
+  class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
+>
+  Plataforma colaborativa de estudo para certificações AWS construída para a
+  comunidade da Guilda Z-Maguinhos | A3Data.
+</footer>
 
 
     <script type="module">
@@ -240,10 +247,38 @@
         speed: "profile_badge_speed_desc",
       };
       const BADGE_CATALOG = [
-        { id: "perfect", icon: "fa-star", color: "text-yellow-400", bg: "bg-yellow-500/10", title: "100% Perfeita", desc: "Gabaritou um simulado inteiro." },
-        { id: "dedicated", icon: "fa-book-open", color: "text-blue-400", bg: "bg-blue-500/10", title: "Dedicada", desc: "Completou 10 simulados." },
-        { id: "streak", icon: "fa-fire", color: "text-orange-500", bg: "bg-orange-500/10", title: "No Foco", desc: "5 aprovações consecutivas." },
-        { id: "speed", icon: "fa-stopwatch", color: "text-rose-400", bg: "bg-rose-500/10", title: "The Flash", desc: "Terminou na metade do tempo." },
+        {
+          id: "perfect",
+          icon: "fa-star",
+          color: "text-yellow-400",
+          bg: "bg-yellow-500/10",
+          title: "100% Perfeita",
+          desc: "Gabaritou um simulado inteiro.",
+        },
+        {
+          id: "dedicated",
+          icon: "fa-book-open",
+          color: "text-blue-400",
+          bg: "bg-blue-500/10",
+          title: "Dedicada",
+          desc: "Completou 10 simulados.",
+        },
+        {
+          id: "streak",
+          icon: "fa-fire",
+          color: "text-orange-500",
+          bg: "bg-orange-500/10",
+          title: "No Foco",
+          desc: "5 aprovações consecutivas.",
+        },
+        {
+          id: "speed",
+          icon: "fa-stopwatch",
+          color: "text-rose-400",
+          bg: "bg-rose-500/10",
+          title: "The Flash",
+          desc: "Terminou na metade do tempo.",
+        },
       ];
 
       function setText(id, val) {
@@ -253,7 +288,12 @@
 
       // ── Render user header ────────────────────────────────────────────────
       function renderUserHeader(user) {
-        const displayName = user.name || user.nickname || user.full_name || user.email || "Usuário";
+        const displayName =
+          user.name ||
+          user.nickname ||
+          user.full_name ||
+          user.email ||
+          "Usuário";
         const initial = displayName.charAt(0).toUpperCase();
         const role = (user.role || "STUDENT").toUpperCase();
 
@@ -263,7 +303,9 @@
 
         const roleBadge = document.getElementById("profile-role-badge");
         if (roleBadge) {
-          roleBadge.textContent = ROLE_LABELS[role] ? t(ROLE_LABELS[role], getCurrentLanguage()) : role;
+          roleBadge.textContent = ROLE_LABELS[role]
+            ? t(ROLE_LABELS[role], getCurrentLanguage())
+            : role;
           roleBadge.className = `a3-badge ${ROLE_CLASSES[role] || "a3-role-student"}`;
         }
       }
@@ -279,7 +321,9 @@
             ? `${Math.round(gam.bestScore)}%`
             : "—";
         const streak = gam.currentStreak || 0;
-        const xp = Math.round((gam.totalQuizzes || 0) * 10 + (gam.bestScore || 0) * 2);
+        const xp = Math.round(
+          (gam.totalQuizzes || 0) * 10 + (gam.bestScore || 0) * 2,
+        );
 
         setText("stat-total-quizzes", totalQuizzes);
         setText("stat-best-score", bestScore);
@@ -293,16 +337,23 @@
         if (!container) return;
 
         const history = storageManager.getHistory() || [];
-        const certIds = [...new Set(history.map((h) => h.certId).filter(Boolean))];
+        const certIds = [
+          ...new Set(history.map((h) => h.certId).filter(Boolean)),
+        ];
 
         if (certIds.length === 0) {
-          container.textContent = t("profile_empty_certifications", getCurrentLanguage());
+          container.textContent = t(
+            "profile_empty_certifications",
+            getCurrentLanguage(),
+          );
           return;
         }
         container.innerHTML = certIds
           .map((certId) => {
             const certSessions = history.filter((h) => h.certId === certId);
-            const bestPct = Math.max(...certSessions.map((h) => Number(h.percentage) || 0));
+            const bestPct = Math.max(
+              ...certSessions.map((h) => Number(h.percentage) || 0),
+            );
             const label = CERT_LABELS[certId] || certId.toUpperCase();
             return `
               <div class="a3-card profile-cert-card">
@@ -327,9 +378,13 @@
 
         container.innerHTML = BADGE_CATALOG.map((badge) => {
           const earned = earnedBadges.has(badge.id);
-          const opacity = earned ? "" : "opacity-40 grayscale cursor-not-allowed";
-          const title = t(BADGE_TITLE_KEYS[badge.id], getCurrentLanguage()) || badge.title;
-          const description = t(BADGE_DESC_KEYS[badge.id], getCurrentLanguage()) || badge.desc;
+          const opacity = earned
+            ? ""
+            : "opacity-40 grayscale cursor-not-allowed";
+          const title =
+            t(BADGE_TITLE_KEYS[badge.id], getCurrentLanguage()) || badge.title;
+          const description =
+            t(BADGE_DESC_KEYS[badge.id], getCurrentLanguage()) || badge.desc;
           return `
             <div class="a3-card relative ${opacity} ${badge.bg} p-4 flex flex-col items-center text-center profile-badge-card">
               ${!earned ? '<div class="profile-badge-lock"><i class="fa-solid fa-lock"></i></div>' : ""}
@@ -352,7 +407,5 @@
         renderBadgesGrid();
       });
     </script>
-    
-
   </body>
 </html>

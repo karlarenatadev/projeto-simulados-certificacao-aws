@@ -84,6 +84,21 @@ function normalizeOption(option, index) {
   throw new Error(`options[${index}] must be a string or object with text`);
 }
 
+function normalizeSeedValidationStatus(rawQuestion) {
+  const rawStatus = rawQuestion.validation_status ?? rawQuestion.validation?.status;
+  const normalizedStatus = String(rawStatus || '').trim().toUpperCase();
+
+  if (normalizedStatus === 'APPROVED' || normalizedStatus === 'VALIDATED') {
+    return 'APPROVED';
+  }
+
+  if (normalizedStatus === 'PENDING' || normalizedStatus === 'REJECTED') {
+    return normalizedStatus;
+  }
+
+  return 'PENDING';
+}
+
 function normalizeSeedQuestion(rawQuestion, fileInfo, index) {
   const prefix = `${fileInfo.relativePath}[${index}]`;
   const options = rawQuestion.options;
@@ -115,6 +130,7 @@ function normalizeSeedQuestion(rawQuestion, fileInfo, index) {
       `source:${fileInfo.relativePath}`,
       `source-question-id:${String(rawQuestion.questionId || '').trim()}`,
     ],
+    validation_status: normalizeSeedValidationStatus(rawQuestion),
   };
 }
 

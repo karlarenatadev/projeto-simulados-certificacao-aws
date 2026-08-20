@@ -1,249 +1,226 @@
-﻿        <div
-          id="screen-quiz"
-          class="hidden flex-col h-full relative p-6 md:p-8"
-        >
-          <div class="absolute top-0 left-0 h-2 w-full bg-gray-200">
-            <div
-              id="progress-bar"
-              class="h-2 aws-bg-orange transition-all duration-500"
-              style="width: 0%"
-            ></div>
-          </div>
+﻿<div id="screen-quiz" class="hidden flex-col h-full relative p-6 md:p-8">
+  <div class="absolute top-0 left-0 h-2 w-full bg-gray-200">
+    <div
+      id="progress-bar"
+      class="h-2 aws-bg-orange transition-all duration-500"
+      style="width: 0%"
+    ></div>
+  </div>
 
-          <div
-            class="flex flex-wrap justify-between items-center mb-6 mt-4 gap-3"
-          >
-            <span
-              id="question-category"
-              class="text-xs font-bold uppercase tracking-wider text-muted bg-gray-100 border border-gray-200 dark:border-slate-600 px-4 py-1.5 rounded-full shadow-sm"
-            >
-              Categoria
-            </span>
+  <div class="flex flex-wrap justify-between items-center mb-6 mt-4 gap-3">
+    <span
+      id="question-category"
+      class="text-xs font-bold uppercase tracking-wider text-muted bg-gray-100 border border-gray-200 dark:border-slate-600 px-4 py-1.5 rounded-full shadow-sm"
+    >
+      Categoria
+    </span>
 
-            <div class="a3-card flex items-center gap-4 shadow-sm">
-              <div
-                id="timer-container"
-                class="hidden flex items-center gap-2 font-bold text-orange-600 dark:text-orange-400"
-              >
-                <i class="fa-solid fa-clock" aria-hidden="true"></i>
-                <span id="timer-text">00:00</span>
-              </div>
+    <div class="a3-card flex items-center gap-4 shadow-sm">
+      <div
+        id="timer-container"
+        class="hidden flex items-center gap-2 font-bold text-orange-600 dark:text-orange-400"
+      >
+        <i class="fa-solid fa-clock" aria-hidden="true"></i>
+        <span id="timer-text">00:00</span>
+      </div>
 
-              <div class="w-px h-5 bg-gray-300"></div>
+      <div class="w-px h-5 bg-gray-300"></div>
 
-              <button
-                id="btn-flag"
-                class="a3-btn a3-btn-outline"
-                aria-label="Marcar questÃ£o para revisÃ£o"
-                title="Marcar para revisÃ£o"
-              >
-                <i class="fa-solid fa-flag text-lg" aria-hidden="true"></i>
-              </button>
+      <button
+        id="btn-flag"
+        class="a3-btn a3-btn-outline"
+        aria-label="Marcar questÃ£o para revisÃ£o"
+        title="Marcar para revisÃ£o"
+      >
+        <i class="fa-solid fa-flag text-lg" aria-hidden="true"></i>
+      </button>
 
-              <div class="w-px h-5 bg-gray-300"></div>
+      <div class="w-px h-5 bg-gray-300"></div>
 
-              <span class="text-sm font-semibold text-muted dark:text-gray-400">
-                QuestÃ£o
-                <span id="current-q-num" class="text-aws-dark text-base mx-1"
-                  >1</span
-                >
-                de <span id="total-q-num" class="ml-1">10</span>
-              </span>
-            </div>
-          </div>
+      <span class="text-sm font-semibold text-muted dark:text-gray-400">
+        QuestÃ£o
+        <span id="current-q-num" class="text-aws-dark text-base mx-1">1</span>
+        de <span id="total-q-num" class="ml-1">10</span>
+      </span>
+    </div>
+  </div>
 
-          <div
-            id="mission-hud"
-            class="a3-card hidden w-full flex justify-between items-center mb-6 shadow-sm"
-          >
-            <div
-              class="flex gap-1.5"
-              id="mission-hearts"
-              title="Vidas Restantes"
-            ></div>
+  <div
+    id="mission-hud"
+    class="a3-card hidden w-full flex justify-between items-center mb-6 shadow-sm"
+  >
+    <div class="flex gap-1.5" id="mission-hearts" title="Vidas Restantes"></div>
 
-            <div class="flex-1 mx-4 sm:mx-8">
-              <div
-                class="flex justify-between text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-wider"
-              >
-                <span>Tempo da Questão</span>
-                <span id="mission-time-text" class="text-orange-500">45s</span>
-              </div>
-              <div
-                class="h-2 w-full bg-gray-100 rounded-full overflow-hidden shadow-inner"
-              >
-                <div
-                  id="mission-time-bar"
-                  class="h-full bg-gradient-to-r from-orange-400 to-red-500 transition-all duration-1000 ease-linear"
-                  style="width: 100%"
-                ></div>
-              </div>
-            </div>
-
-            <div
-              class="text-xs font-bold text-muted uppercase flex flex-col items-end"
-            >
-              Meta
-              <span class="text-green-500 text-sm">80%</span>
-            </div>
-          </div>
-          <h3
-            id="question-text"
-            class="text-xl md:text-2xl font-semibold text-strong mb-8 leading-snug"
-          >
-            Carregando questÃ£o...
-          </h3>
-          <div id="options-container" class="flex flex-col gap-3 mb-8"></div>
-
-          <div
-            id="explanation-box"
-            class="hidden mt-4 bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-lg shadow-sm"
-          >
-            <h4
-              class="font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2"
-            >
-              <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-              ExplicaÃ§Ã£o
-            </h4>
-            <p
-              id="explanation-text"
-              class="text-sm text-blue-900 dark:text-gray-200 leading-relaxed"
-            ></p>
-          </div>
-
-          <div
-            class="mt-auto pt-6 flex flex-wrap justify-end gap-3 items-center w-full border-t border-gray-100 dark:border-slate-700"
-          >
-            <button
-              id="btn-cancel"
-              class="a3-btn a3-btn-secondary shadow-sm"
-              aria-label="Cancelar simulado"
-            >
-              <i class="fa-solid fa-xmark mr-2" aria-hidden="true"></i> Cancelar
-            </button>
-            <button
-              id="btn-submit"
-              disabled=""
-              class="a3-btn a3-btn-secondary a3-btn-lg shadow-md"
-            >
-              Confirmar Resposta
-            </button>
-            <button
-              id="btn-next"
-              class="a3-btn a3-btn-primary a3-btn-lg hidden shadow-md"
-            >
-              PrÃ³xima
-              <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
-            </button>
-            <button
-              id="btn-finish"
-              class="a3-btn a3-btn-secondary hidden shadow-md"
-            >
-              Ver Resultado
-              <i class="fa-solid fa-flag-checkered ml-2" aria-hidden="true"></i>
-            </button>
-          </div>
-        </div>
-
+    <div class="flex-1 mx-4 sm:mx-8">
+      <div
+        class="flex justify-between text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-wider"
+      >
+        <span>Tempo da Questão</span>
+        <span id="mission-time-text" class="text-orange-500">45s</span>
+      </div>
+      <div
+        class="h-2 w-full bg-gray-100 rounded-full overflow-hidden shadow-inner"
+      >
         <div
-          id="screen-results"
-          class="hidden p-8 md:p-12 flex flex-col items-center justify-center text-center h-full overflow-y-auto custom-scroll"
-        >
-          <h2 class="text-3xl font-bold mb-2 text-strong">
-            Simulação Concluída!
-          </h2>
-          <p class="text-muted dark:text-gray-400 mb-6">
-            Análise detalhada do seu desempenho.
-          </p>
+          id="mission-time-bar"
+          class="h-full bg-gradient-to-r from-orange-400 to-red-500 transition-all duration-1000 ease-linear"
+          style="width: 100%"
+        ></div>
+      </div>
+    </div>
 
-          <div class="a3-card w-full max-w-md mb-4 shadow-sm">
-            <div
-              class="text-6xl font-black mb-1"
-              id="final-score-percent"
-              aria-live="polite"
-            >
-              0
-            </div>
-            <p class="text-lg font-semibold text-gray-700 mb-1">
-              Pontuação Oficial AWS (100 - 1000)
-            </p>
-            <div
-              id="improvement-badge"
-              class="text-sm font-bold mb-4 hidden"
-              role="status"
-            ></div>
-            <div
-              class="flex justify-between border-t border-gray-200 dark:border-slate-500 pt-4 text-sm"
-            >
-              <div class="text-green-600 dark:text-green-400 font-bold">
-                <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
-                Acertos: <span id="final-correct">0</span>
-              </div>
-              <div class="text-red-600 dark:text-red-400 font-bold">
-                <i class="fa-solid fa-times-circle" aria-hidden="true"></i>
-                Erros: <span id="final-incorrect">0</span>
-              </div>
-            </div>
-          </div>
+    <div class="text-xs font-bold text-muted uppercase flex flex-col items-end">
+      Meta
+      <span class="text-green-500 text-sm">80%</span>
+    </div>
+  </div>
+  <h3
+    id="question-text"
+    class="text-xl md:text-2xl font-semibold text-strong mb-8 leading-snug"
+  >
+    Carregando questÃ£o...
+  </h3>
+  <div id="options-container" class="flex flex-col gap-3 mb-8"></div>
 
-          <div class="a3-card shadow-sm mb-6 w-full max-w-2xl">
-            <h3
-              class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"
-            >
-              <i class="fa-solid fa-chart-radar text-aws-orange"></i> Análise
-              por Domínio
-            </h3>
-            <div class="relative h-[300px] w-full">
-              <canvas id="radarChart"></canvas>
-            </div>
-          </div>
+  <div
+    id="explanation-box"
+    class="hidden mt-4 bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-lg shadow-sm"
+  >
+    <h4
+      class="font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2"
+    >
+      <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+      ExplicaÃ§Ã£o
+    </h4>
+    <p
+      id="explanation-text"
+      class="text-sm text-blue-900 dark:text-gray-200 leading-relaxed"
+    ></p>
+  </div>
 
-          <div
-            id="ai-recommendation"
-            class="bg-orange-50 border border-orange-200 dark:border-orange-500/30 p-5 rounded-lg text-left w-full max-w-2xl mb-6 shadow-sm"
-          >
-            <h4 class="font-bold text-a3-primary mb-2">
-              <i class="fa-solid fa-robot" aria-hidden="true"></i> Recomendação
-              da IA
-            </h4>
-            <p
-              id="recommendation-text"
-              class="text-sm text-gray-800 dark:text-gray-200 mb-3"
-            ></p>
-            <div id="study-sites" class="flex flex-wrap gap-2 mt-3"></div>
-          </div>
+  <div
+    class="mt-auto pt-6 flex flex-wrap justify-end gap-3 items-center w-full border-t border-gray-100 dark:border-slate-700"
+  >
+    <button
+      id="btn-cancel"
+      class="a3-btn a3-btn-secondary shadow-sm"
+      aria-label="Cancelar simulado"
+    >
+      <i class="fa-solid fa-xmark mr-2" aria-hidden="true"></i> Cancelar
+    </button>
+    <button
+      id="btn-submit"
+      disabled=""
+      class="a3-btn a3-btn-secondary a3-btn-lg shadow-md"
+    >
+      Confirmar Resposta
+    </button>
+    <button
+      id="btn-next"
+      class="a3-btn a3-btn-primary a3-btn-lg hidden shadow-md"
+    >
+      PrÃ³xima
+      <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
+    </button>
+    <button id="btn-finish" class="a3-btn a3-btn-secondary hidden shadow-md">
+      Ver Resultado
+      <i class="fa-solid fa-flag-checkered ml-2" aria-hidden="true"></i>
+    </button>
+  </div>
+</div>
 
-          <div class="flex gap-3 flex-wrap justify-center w-full max-w-2xl">
-            <button
-              id="btn-generate-report"
-              class="a3-btn a3-btn-secondary flex-1 shadow-md"
-              aria-label="Gerar relatÃ³rio de desempenho em PDF"
-            >
-              <i class="fa-solid fa-file-pdf mr-2" aria-hidden="true"></i>
-              Relatório PDF
-            </button>
-            <button
-              id="btn-retake-quiz"
-              class="a3-btn a3-btn-primary a3-btn-lg flex-1 shadow-md"
-              aria-label="Refazer simulado"
-            >
-              <i class="fa-solid fa-rotate-right mr-2" aria-hidden="true"></i>
-              Refazer
-            </button>
-            <button
-              id="btn-results-home"
-              class="a3-btn a3-btn-secondary a3-btn-lg flex-1 shadow-md"
-              aria-label="Voltar ao iní­cio"
-            >
-              <i class="fa-solid fa-house mr-2" aria-hidden="true"></i> Iní­cio
-            </button>
-            <button
-              id="btn-next-mission"
-              class="a3-btn a3-btn-primary a3-btn-lg hidden flex-1 to-yellow-500 hover:to-yellow-600 shadow-md"
-            >
-              <i class="fa-solid fa-map-location-dot mr-2"></i> Continuar
-              Jornada
-            </button>
-          </div>
-        </div>
+<div
+  id="screen-results"
+  class="hidden p-8 md:p-12 flex flex-col items-center justify-center text-center h-full overflow-y-auto custom-scroll"
+>
+  <h2 class="text-3xl font-bold mb-2 text-strong">Simulação Concluída!</h2>
+  <p class="text-muted dark:text-gray-400 mb-6">
+    Análise detalhada do seu desempenho.
+  </p>
 
+  <div class="a3-card w-full max-w-md mb-4 shadow-sm">
+    <div
+      class="text-6xl font-black mb-1"
+      id="final-score-percent"
+      aria-live="polite"
+    >
+      0
+    </div>
+    <p class="text-lg font-semibold text-gray-700 mb-1">
+      Pontuação Oficial AWS (100 - 1000)
+    </p>
+    <div
+      id="improvement-badge"
+      class="text-sm font-bold mb-4 hidden"
+      role="status"
+    ></div>
+    <div
+      class="flex justify-between border-t border-gray-200 dark:border-slate-500 pt-4 text-sm"
+    >
+      <div class="text-green-600 dark:text-green-400 font-bold">
+        <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+        Acertos: <span id="final-correct">0</span>
+      </div>
+      <div class="text-red-600 dark:text-red-400 font-bold">
+        <i class="fa-solid fa-times-circle" aria-hidden="true"></i>
+        Erros: <span id="final-incorrect">0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="a3-card shadow-sm mb-6 w-full max-w-2xl">
+    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+      <i class="fa-solid fa-chart-radar text-aws-orange"></i> Análise por
+      Domínio
+    </h3>
+    <div class="relative h-[300px] w-full">
+      <canvas id="radarChart"></canvas>
+    </div>
+  </div>
+
+  <div
+    id="ai-recommendation"
+    class="bg-orange-50 border border-orange-200 dark:border-orange-500/30 p-5 rounded-lg text-left w-full max-w-2xl mb-6 shadow-sm"
+  >
+    <h4 class="font-bold text-a3-primary mb-2">
+      <i class="fa-solid fa-robot" aria-hidden="true"></i> Recomendação da IA
+    </h4>
+    <p
+      id="recommendation-text"
+      class="text-sm text-gray-800 dark:text-gray-200 mb-3"
+    ></p>
+    <div id="study-sites" class="flex flex-wrap gap-2 mt-3"></div>
+  </div>
+
+  <div class="flex gap-3 flex-wrap justify-center w-full max-w-2xl">
+    <button
+      id="btn-generate-report"
+      class="a3-btn a3-btn-secondary flex-1 shadow-md"
+      aria-label="Gerar relatÃ³rio de desempenho em PDF"
+    >
+      <i class="fa-solid fa-file-pdf mr-2" aria-hidden="true"></i>
+      Relatório PDF
+    </button>
+    <button
+      id="btn-retake-quiz"
+      class="a3-btn a3-btn-primary a3-btn-lg flex-1 shadow-md"
+      aria-label="Refazer simulado"
+    >
+      <i class="fa-solid fa-rotate-right mr-2" aria-hidden="true"></i>
+      Refazer
+    </button>
+    <button
+      id="btn-results-home"
+      class="a3-btn a3-btn-secondary a3-btn-lg flex-1 shadow-md"
+      aria-label="Voltar ao iní­cio"
+    >
+      <i class="fa-solid fa-house mr-2" aria-hidden="true"></i> Iní­cio
+    </button>
+    <button
+      id="btn-next-mission"
+      class="a3-btn a3-btn-primary a3-btn-lg hidden flex-1 to-yellow-500 hover:to-yellow-600 shadow-md"
+    >
+      <i class="fa-solid fa-map-location-dot mr-2"></i> Continuar Jornada
+    </button>
+  </div>
+</div>

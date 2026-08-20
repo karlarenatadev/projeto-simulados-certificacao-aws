@@ -756,6 +756,7 @@ function normalizeQuestionFilters(certificationOrFilters, domain, difficulty, op
       limit: certificationOrFilters.limit,
       offset: certificationOrFilters.offset,
       canonicalOnly: certificationOrFilters.canonicalOnly === true,
+      approvedOnly: certificationOrFilters.approvedOnly === true,
     };
   }
 
@@ -767,6 +768,7 @@ function normalizeQuestionFilters(certificationOrFilters, domain, difficulty, op
     limit: options?.limit,
     offset: options?.offset,
     canonicalOnly: options?.canonicalOnly === true,
+    approvedOnly: options?.approvedOnly === true,
   };
 }
 
@@ -800,6 +802,9 @@ export async function getQuestions(certificationOrFilters = {}, domain, difficul
   let query = 'SELECT * FROM questions WHERE is_active = TRUE';
   if (filters.canonicalOnly) {
     query += " AND source_question_id IS NOT NULL AND language IN ('pt', 'en')";
+  }
+  if (filters.approvedOnly) {
+    query += " AND validation_status = 'APPROVED'";
   }
   const params = [];
   let paramIndex = 1;
@@ -840,9 +845,12 @@ export async function getQuestions(certificationOrFilters = {}, domain, difficul
  * @param {string} questionId - UUID of the question
  * @returns {Promise<Object|null>} Question object or null if not found
  */
-export async function getQuestionById(questionId) {
+export async function getQuestionById(questionId, options = {}) {
   normalizeRequiredString(questionId, 'questionId');
-  const query = 'SELECT * FROM questions WHERE id = $1 AND is_active = TRUE';
+  const approvedClause = options.approvedOnly === true
+    ? " AND validation_status = 'APPROVED'"
+    : '';
+  const query = `SELECT * FROM questions WHERE id = $1 AND is_active = TRUE${approvedClause}`;
 
   try {
     const result = await executeQuery(query, [questionId]);
@@ -868,10 +876,14 @@ export async function searchQuestions(searchTerm, limit = 20, options = {}) {
   const canonicalClause = options.canonicalOnly === true
     ? "AND source_question_id IS NOT NULL AND language IN ('pt', 'en')"
     : '';
+  const approvedClause = options.approvedOnly === true
+    ? "AND validation_status = 'APPROVED'"
+    : '';
   const query = `
     SELECT * FROM questions 
     WHERE is_active = TRUE 
     ${canonicalClause}
+    ${approvedClause}
     AND (
       question_text ILIKE $1 ESCAPE '\\'
       OR explanation ILIKE $1 ESCAPE '\\'
@@ -921,13 +933,14 @@ export async function insertQuestion(questionData) {
     explanation,
     reference_url = null,
     tags = [],
+    validation_status: validationStatus = null,
   } = normalizedQuestion;
 
   const query = `
     INSERT INTO questions (
       certification, language, source_question_id, domain, difficulty, question_text,
-      options, correct_answer, explanation, reference_url, tags, is_active
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, TRUE)
+      options, correct_answer, explanation, reference_url, tags, is_active, validation_status
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, TRUE, COALESCE($12, 'PENDING'))
     RETURNING *
   `;
 
@@ -944,6 +957,7 @@ export async function insertQuestion(questionData) {
       explanation,
       reference_url,
       tags,
+      validationStatus,
     ]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {

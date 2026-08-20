@@ -84,7 +84,8 @@ export function selectTargetedQuestions(
   const eligible = (questions || [])
     .filter(
       (question) =>
-        !question.certId || normalizeCertificationId(question.certId) === certId,
+        !question.certId ||
+        normalizeCertificationId(question.certId) === certId,
     )
     .map((question) => ({
       ...question,
@@ -112,10 +113,12 @@ export function selectTargetedQuestions(
     selected = [
       ...selected,
       ...selectBalanced(
-        certWithoutExcluded.filter(
-          (question) => !selected.includes(question),
-        ),
-        [...new Set(certWithoutExcluded.map((question) => question.canonicalDomain))],
+        certWithoutExcluded.filter((question) => !selected.includes(question)),
+        [
+          ...new Set(
+            certWithoutExcluded.map((question) => question.canonicalDomain),
+          ),
+        ],
         requestedQuantity - selected.length,
       ),
     ];
@@ -132,10 +135,12 @@ export function selectTargetedQuestions(
     ];
   }
 
-  return selected.slice(0, requestedQuantity).map(({ canonicalDomain: domainId, ...question }) => ({
-    ...question,
-    domainId,
-  }));
+  return selected
+    .slice(0, requestedQuantity)
+    .map(({ canonicalDomain: domainId, ...question }) => ({
+      ...question,
+      domainId,
+    }));
 }
 
 export function buildTargetedPracticeContext(

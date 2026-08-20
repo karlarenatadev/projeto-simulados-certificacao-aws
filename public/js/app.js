@@ -2,15 +2,10 @@ import { logger, dispatchBusinessEvent } from "./utils/logger.js";
 import { sanitizeHTML } from "./utils/sanitize.js";
 import { normalizeCertificationId } from "./utils/certUtils.js";
 
-import {
-  DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD,
-  QuizEngine,
-} from "./quizEngine.js";
+import { DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD, QuizEngine } from "./quizEngine.js";
 import { certificationPaths } from "./data.js";
 import { getDomainDefinition, normalizeDomain } from "./domainTaxonomy.js";
-import {
-  TARGETED_PRACTICE_QUESTION_COUNT,
-} from "./targetedQuestionSelector.js";
+import { TARGETED_PRACTICE_QUESTION_COUNT } from "./targetedQuestionSelector.js";
 import { ModalService } from "./services/modalService.js";
 import { NotificationService } from "./services/notificationService.js";
 import { initUIRenderer } from "./uiRenderer.js";
@@ -20,9 +15,16 @@ import { RecommendationEngine } from "./recommendations/recommendationEngine.js"
 import { storageManager } from "./storageManager.js";
 import { userManager } from "./userManager.js";
 import { AuthService } from "./services/authService.js";
-import { getCurrentLanguage, setCurrentLanguage } from "./core/languageManager.js";
+import {
+  getCurrentLanguage,
+  setCurrentLanguage,
+} from "./core/languageManager.js";
 import { quizManager } from "./quizManager.js";
-import { renderRadarChart, renderGlobalRadarChart, renderPerformanceLineChart } from "./chartManager.js";
+import {
+  renderRadarChart,
+  renderGlobalRadarChart,
+  renderPerformanceLineChart,
+} from "./chartManager.js";
 import { t } from "./i18n/useTranslation.js";
 import { initializeUI } from "./i18n/initUI.js";
 import {
@@ -33,7 +35,10 @@ import {
   normalizeReviewQuestionIds,
   toggleReviewQuestion,
 } from "./quizReview.js";
-import { getCertificationProgress, renderTrail } from "./gamificacao/trailManager.js";
+import {
+  getCertificationProgress,
+  renderTrail,
+} from "./gamificacao/trailManager.js";
 import { renderGuildDashboard } from "./gamificacao/leaderboard.js";
 import { renderJornadaDashboard } from "./modules/jornada.js";
 import { renderBadges } from "./gamificacao/badges.js";
@@ -68,6 +73,19 @@ const APP_CONFIG = {
   PASSING_SCORE: 70,
   STORAGE_KEY: "aws_sim_",
 };
+
+function getSafeReferenceUrl(value) {
+  if (!value) return "";
+  try {
+    const parsed = new URL(
+      String(value),
+      globalThis.location?.origin || "http://localhost",
+    );
+    return ["http:", "https:"].includes(parsed.protocol) ? parsed.href : "";
+  } catch {
+    return "";
+  }
+}
 
 const engine = new QuizEngine(APP_CONFIG.PASSING_SCORE);
 const recommendationEngine = new RecommendationEngine();
@@ -141,7 +159,10 @@ function showLoginUI() {
     function setLoading(loading) {
       if (!submitBtn) return;
       submitBtn.disabled = loading;
-      if (btnText) btnText.textContent = loading ? t("auth_loading", uiState.language) : t("common_login", uiState.language);
+      if (btnText)
+        btnText.textContent = loading
+          ? t("auth_loading", uiState.language)
+          : t("common_login", uiState.language);
       if (spinner) spinner.classList.toggle("hidden", !loading);
     }
 
@@ -258,7 +279,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const user = await showLoginUI();
         authenticatedUser = user;
         await quizManager.initialize(user.id);
-
       } catch {
         logger.error("Impossível inicializar sem autenticação.");
         return; // Aborta o boot — não há como continuar
@@ -283,8 +303,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   buildSidebar(authenticatedUser);
 
   // Executa as inicializações complementares caso existam no shell global
-  if (typeof window.syncLanguageButtonShell === "function") window.syncLanguageButtonShell();
-  if (typeof window.initPWAInstallShell === "function") window.initPWAInstallShell();
+  if (typeof window.syncLanguageButtonShell === "function")
+    window.syncLanguageButtonShell();
+  if (typeof window.initPWAInstallShell === "function")
+    window.initPWAInstallShell();
 
   // Marca item ativo baseado na URL atual (replicando lógica do initShell)
   const currentPath = window.location.pathname;
@@ -294,12 +316,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     "/flashcards.html": "sidebar-btn-flashcards",
     "/diagnostico.html": "sidebar-btn-diagnostic",
     "/cases.html": "sidebar-btn-cases",
-      "/laboratorios.html": "sidebar-btn-labs",
+    "/laboratorios.html": "sidebar-btn-labs",
     "/resources.html": "sidebar-btn-resources",
     "/profile.html": "sidebar-btn-profile",
     "/settings.html": "sidebar-btn-settings",
   };
-  const activeId = Object.entries(pathToId).find(([path]) => currentPath.endsWith(path))?.[1];
+  const activeId = Object.entries(pathToId).find(([path]) =>
+    currentPath.endsWith(path),
+  )?.[1];
   if (activeId) {
     const activeEl = document.getElementById(activeId);
     if (activeEl) activeEl.classList.add("is-active");
@@ -343,7 +367,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   // após um reload — ex.: trilha desenha cards "saa-1" enquanto o select está
   // em "clf-c02", e startMission("saa-1") não encontra o módulo na trilha CLF.
   if (certSelect && certificationPaths) {
-    const savedCert = authenticatedUser ? authenticatedUser.certification : null;
+    const savedCert = authenticatedUser
+      ? authenticatedUser.certification
+      : null;
     const savedCertIsValid =
       savedCert &&
       certificationPaths[savedCert] &&
@@ -446,21 +472,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (diagnosticCtxStr) {
       try {
         const diagCtx = JSON.parse(diagnosticCtxStr);
-        lastDiagnosticRecommendation = diagCtx; 
-        
+        lastDiagnosticRecommendation = diagCtx;
+
         const certSelect = document.getElementById("certification-select");
         if (certSelect && diagCtx.certificationId) {
           certSelect.value = diagCtx.certificationId;
         }
-        
+
         setTimeout(() => {
           startPersonalizedDiagnosticQuiz();
         }, 150);
       } catch (e) {
         logger.error(e);
-      sessionStorage.removeItem(
-        storageManager.getUserScopedKey("diagnostic_context"),
-      );
+        sessionStorage.removeItem(
+          storageManager.getUserScopedKey("diagnostic_context"),
+        );
       }
     }
   }
@@ -516,7 +542,7 @@ function getActiveCertificationId() {
   const certValue =
     engine.state?.certId ||
     (certSelect && certSelect.value) ||
-    (AuthService.getCurrentUser()?.certification) ||
+    AuthService.getCurrentUser()?.certification ||
     "clf-c02";
 
   return normalizeCertificationId(certValue);
@@ -768,13 +794,15 @@ async function startQuiz() {
 
   const certSelect = document.getElementById("certification-select");
   const quantityInput =
-    document.querySelector('input[name="question-quantity"]:checked')?.value || 10;
+    document.querySelector('input[name="question-quantity"]:checked')?.value ||
+    10;
   const difficultyInput =
-    document.querySelector('input[name="difficulty-level"]:checked')?.value || "all";
+    document.querySelector('input[name="difficulty-level"]:checked')?.value ||
+    "all";
   const modeInput =
     document.querySelector('input[name="quiz-mode"]:checked')?.value || "exam";
   const topicSelect = document.getElementById("topic-filter")?.value || "";
-  
+
   if (!certSelect) return;
 
   const btn = document.getElementById("btn-start-quiz");
@@ -794,7 +822,8 @@ async function startQuiz() {
       // Correção rápida para o texto não ficar aparecendo "resume_session_prompt"
       let promptMsg = t("resume_session_prompt", uiState.language);
       if (!promptMsg || promptMsg === "resume_session_prompt") {
-         promptMsg = "Você possui um simulado em andamento. Deseja retomá-lo de onde parou?";
+        promptMsg =
+          "Você possui um simulado em andamento. Deseja retomá-lo de onde parou?";
       }
 
       resumeAgreed = await ModalService.confirm({
@@ -826,7 +855,10 @@ async function startQuiz() {
       uiState.timeRemaining = activeSession.timeRemaining;
       uiState.reviewQuestionIds = normalizeReviewQuestionIds(
         activeSession.reviewQuestionIds ||
-          migrateLegacyReviewFlags(activeSession.flags || [], engine.state.questions),
+          migrateLegacyReviewFlags(
+            activeSession.flags || [],
+            engine.state.questions,
+          ),
       );
       syncLegacyReviewFlags();
       logger.info(`Resuming session for ${certId}`);
@@ -845,12 +877,14 @@ async function startQuiz() {
         const quizResponse = await quizManager.startQuiz(
           certId,
           parseInt(quantityInput),
-          uiState.language
+          uiState.language,
         );
         preloadedQuestions = quizResponse.questions;
-        
+
         if (!quizResponse.fromAPI) {
-          logger.info("⚠ Quiz started in local mode (API unavailable or offline)");
+          logger.info(
+            "⚠ Quiz started in local mode (API unavailable or offline)",
+          );
         }
       } catch (error) {
         logger.warn("Could not start quiz:", error);
@@ -873,7 +907,7 @@ async function startQuiz() {
         currentCertInfo.domains,
         filters,
         uiState.language,
-        preloadedQuestions
+        preloadedQuestions,
       );
 
       if (!result.success) {
@@ -926,9 +960,9 @@ async function startQuiz() {
       if (timerContainer) timerContainer.classList.add("hidden");
       if (missionHud) {
         missionHud.classList.remove("hidden");
-        updateHeartsUI(); 
+        updateHeartsUI();
       }
-      startQuestionTimer(); 
+      startQuestionTimer();
     } else if (uiState.currentMode === "exam") {
       // Se for um Simulado Normal (Exame)
       if (missionHud) missionHud.classList.add("hidden"); // Força o HUD da missão a sumir
@@ -963,7 +997,7 @@ async function startDiagnostic() {
 
   const certSelect = document.getElementById("certification-select");
   if (!certSelect) return;
-  
+
   if (isSPAPage()) {
     window.location.href = `simulados.html?mode=diagnostic&cert=${certSelect.value}`;
     return;
@@ -1334,7 +1368,9 @@ function loadQuestionUI() {
       ? uiState.tempSelectedAnswer
       : [uiState.tempSelectedAnswer];
     selected.forEach((index) => {
-      document.getElementById(`option-${index}`)?.classList.add("a3-option-selected");
+      document
+        .getElementById(`option-${index}`)
+        ?.classList.add("a3-option-selected");
     });
   }
 
@@ -1376,18 +1412,18 @@ function renderOptionsUI(question) {
     card.id = `option-${idx}`;
     card.className = "a3-option";
 
-    card.innerHTML = `
-            <div class="a3-option-letter">
-                ${String.fromCharCode(65 + idx)}
-            </div>
-            <div class="a3-option-text">
-                ${opt}
-            </div>
-        `;
+    const letter = document.createElement("div");
+    letter.className = "a3-option-letter";
+    letter.textContent = String.fromCharCode(65 + idx);
+    const text = document.createElement("div");
+    text.className = "a3-option-text";
+    text.textContent = String(opt ?? "");
+    card.append(letter, text);
 
     card.onclick = () => {
-      const isAnswered =
-        !document.getElementById("explanation-box").classList.contains("hidden");
+      const isAnswered = !document
+        .getElementById("explanation-box")
+        .classList.contains("hidden");
       if (isAnswered) return;
 
       if (!isMulti) {
@@ -1507,8 +1543,9 @@ function submitAnswer() {
   const expBox = document.getElementById("explanation-box");
   if (!expBox) return;
 
-  const docLink = result.referenceUrl
-    ? `<a href="${result.referenceUrl}" target="_blank" class="mt-3 inline-block text-orange-600 font-bold hover:underline">
+  const safeReferenceUrl = getSafeReferenceUrl(result.referenceUrl);
+  const docLink = safeReferenceUrl
+    ? `<a href="${safeReferenceUrl}" target="_blank" class="mt-3 inline-block text-orange-600 font-bold hover:underline">
             <i class="fa-solid fa-book-open mr-1"></i> ${t("see_official_docs", uiState.language)}
          </a>`
     : "";
@@ -1632,7 +1669,8 @@ function showReviewSummary() {
   const language = uiState.language;
   const panel = document.createElement("div");
   panel.id = "quiz-review-summary";
-  panel.className = "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4";
+  panel.className =
+    "fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4";
   panel.setAttribute("role", "dialog");
   panel.setAttribute("aria-modal", "true");
   panel.innerHTML = `
@@ -1655,10 +1693,12 @@ function showReviewSummary() {
 
   const close = () => panel.remove();
   document.getElementById("quiz-review-back")?.addEventListener("click", close);
-  document.getElementById("quiz-finish-confirm")?.addEventListener("click", () => {
-    close();
-    finishQuiz(true);
-  });
+  document
+    .getElementById("quiz-finish-confirm")
+    ?.addEventListener("click", () => {
+      close();
+      finishQuiz(true);
+    });
   const startReview = (indexes) => {
     if (!indexes.length) return;
     uiState.reviewQueueIndexes = indexes;
@@ -1668,15 +1708,25 @@ function showReviewSummary() {
     loadQuestionUI();
     saveCurrentSession();
   };
-  document.getElementById("quiz-review-marked")?.addEventListener("click", () => {
-    startReview(getReviewIndexes(uiState.reviewQuestionIds, engine.state.questions));
-  });
-  document.getElementById("quiz-review-unanswered")?.addEventListener("click", () => {
-    const answered = getAnsweredQuestionIds();
-    startReview(engine.state.questions
-      .map((question, index) => (answered.has(getQuestionId(question)) ? -1 : index))
-      .filter((index) => index >= 0));
-  });
+  document
+    .getElementById("quiz-review-marked")
+    ?.addEventListener("click", () => {
+      startReview(
+        getReviewIndexes(uiState.reviewQuestionIds, engine.state.questions),
+      );
+    });
+  document
+    .getElementById("quiz-review-unanswered")
+    ?.addEventListener("click", () => {
+      const answered = getAnsweredQuestionIds();
+      startReview(
+        engine.state.questions
+          .map((question, index) =>
+            answered.has(getQuestionId(question)) ? -1 : index,
+          )
+          .filter((index) => index >= 0),
+      );
+    });
 }
 
 function finishQuiz(force = false) {
@@ -1874,10 +1924,12 @@ function renderLearningHubData() {
       const best = Math.max(...safeHistory.map((h) => h.percentage || 0));
       const awsScale = Math.floor((best / 100) * 900) + 100;
       bestEl.textContent = String(awsScale);
-      if (bestHintEl) bestHintEl.textContent = `${best.toFixed(0)}% ${t("home_accuracy", uiState.language)}`;
+      if (bestHintEl)
+        bestHintEl.textContent = `${best.toFixed(0)}% ${t("home_accuracy", uiState.language)}`;
     } else {
       bestEl.textContent = "—";
-      if (bestHintEl) bestHintEl.textContent = t("home_no_history", uiState.language);
+      if (bestHintEl)
+        bestHintEl.textContent = t("home_no_history", uiState.language);
     }
   }
 
@@ -1891,10 +1943,12 @@ function renderLearningHubData() {
         safeHistory.length;
       const awsAvg = Math.floor((avg / 100) * 900) + 100;
       avgEl.textContent = String(awsAvg);
-      if (avgHintEl) avgHintEl.textContent = `${avg.toFixed(0)}% ${t("home_average", uiState.language)}`;
+      if (avgHintEl)
+        avgHintEl.textContent = `${avg.toFixed(0)}% ${t("home_average", uiState.language)}`;
     } else {
       avgEl.textContent = "—";
-      if (avgHintEl) avgHintEl.textContent = t("home_no_history", uiState.language);
+      if (avgHintEl)
+        avgHintEl.textContent = t("home_no_history", uiState.language);
     }
   }
 
@@ -1921,10 +1975,12 @@ function renderLearningHubData() {
   // ── Progresso Global (Sprint) ──
   const progEl = document.getElementById("jornada-progress");
   if (progEl) {
-    const certificationProgress = getCertificationProgress(getActiveCertificationId());
+    const certificationProgress = getCertificationProgress(
+      getActiveCertificationId(),
+    );
     progEl.textContent = `${certificationProgress.percentage}%`;
   }
-  
+
   if (typeof renderPerformanceLineChart === "function") {
     renderPerformanceLineChart(safeHistory);
   }
@@ -1932,14 +1988,14 @@ function renderLearningHubData() {
   // ── Erros pendentes e Ponto Fraco ──
   const mistakesEl = document.getElementById("hub-mistakes-count");
   if (mistakesEl) mistakesEl.textContent = String(mistakes.length);
-  
+
   const weakDomainEl = document.getElementById("jornada-weak-domain");
   if (weakDomainEl) {
     if (mistakes.length === 0) {
       weakDomainEl.textContent = "-";
     } else {
       const domainErrors = {};
-      mistakes.forEach(m => {
+      mistakes.forEach((m) => {
         const dom = m.domain || "Desconhecido";
         domainErrors[dom] = (domainErrors[dom] || 0) + 1;
       });
@@ -1952,7 +2008,10 @@ function renderLearningHubData() {
         }
       }
       // Truncate worst domain if it's too long
-      const truncated = worstDomain.length > 25 ? worstDomain.substring(0, 25) + "..." : worstDomain;
+      const truncated =
+        worstDomain.length > 25
+          ? worstDomain.substring(0, 25) + "..."
+          : worstDomain;
       weakDomainEl.textContent = truncated;
       weakDomainEl.title = worstDomain;
     }
@@ -2005,7 +2064,8 @@ function renderLearningHubData() {
     if (safeHistory.length > 0) {
       const insight = generateSmartInsight(safeHistory);
       insightEl.textContent =
-        insight.message || "Continue praticando para obter insights personalizados.";
+        insight.message ||
+        "Continue praticando para obter insights personalizados.";
     } else {
       insightEl.textContent =
         "Realize seu primeiro simulado para receber análises personalizadas de IA sobre seus pontos fortes e áreas de melhoria.";
@@ -2335,14 +2395,15 @@ function renderDiagnosticReport(results) {
   const weakDomains = (results.domainResults || [])
     .filter((domain) => weakDomainIds.has(domain.domainId || domain.id))
     .map((domain) => {
-    const domainId = domain.domainId || domain.id;
-    return {
-      id: domainId,
-      domainId,
-      name: getDomainDefinition(results.certId, domainId)?.labelPt || domainId,
-      score: domain.score,
-      percentage: domain.score,
-    };
+      const domainId = domain.domainId || domain.id;
+      return {
+        id: domainId,
+        domainId,
+        name:
+          getDomainDefinition(results.certId, domainId)?.labelPt || domainId,
+        score: domain.score,
+        percentage: domain.score,
+      };
     });
 
   const diagnosticRecommendations =
@@ -2443,7 +2504,7 @@ function renderDiagnosticReport(results) {
         <div class="mt-10 text-center flex flex-col md:flex-row justify-center gap-4 fade-in">
             ${
               weakDomains.length > 0
-              ? `<button id="btn-diagnostic-to-flashcards" class="a3-button-secondary py-3 px-6 text-base w-auto">
+                ? `<button id="btn-diagnostic-to-flashcards" class="a3-button-secondary py-3 px-6 text-base w-auto">
                     <i class="fa-solid fa-layer-group mr-2"></i> ${t("review_recommended_flashcards", uiState.language)}
                 </button>
                 <button id="btn-diagnostic-to-questions" class="a3-button-primary py-3 px-6 text-base w-auto">
@@ -2467,7 +2528,7 @@ function renderDiagnosticReport(results) {
   if (targetedQuestionsButton) {
     targetedQuestionsButton.innerHTML = `<i class="fa-solid fa-play mr-2"></i> ${t("practice_recommended_questions", uiState.language)}`;
   }
-  
+
   if (weakDomains.length > 0) {
     bindClick("btn-diagnostic-to-flashcards", () => {
       if (lastDiagnosticRecommendation) {
@@ -2492,12 +2553,14 @@ function renderDiagnosticReport(results) {
       window.location.href = "./simulados.html";
     });
     bindClick("btn-diagnostic-to-exam-tips", () => {
-      const recommendation = lastDiagnosticRecommendation?.recommendations?.tips;
+      const recommendation =
+        lastDiagnosticRecommendation?.recommendations?.tips;
       const query = new URLSearchParams({
         source: "diagnostic",
         cert: recommendation?.context?.certificationId || results.certId,
       });
-      if (recommendation?.context?.weakDomains?.length) query.set("domain", recommendation.context.weakDomains[0]);
+      if (recommendation?.context?.weakDomains?.length)
+        query.set("domain", recommendation.context.weakDomains[0]);
       window.location.href = `./dicas-prova.html?${query.toString()}`;
     });
   }
@@ -2701,7 +2764,7 @@ function updateHistoryDisplay() {
   historyList.innerHTML = html;
   updateDynamicInsight(history);
 
-  if (typeof renderPerformanceLineChart === 'function') {
+  if (typeof renderPerformanceLineChart === "function") {
     renderPerformanceLineChart(history);
   }
 }
@@ -2989,7 +3052,9 @@ function toggleLanguage() {
   // ══════════════════════════════════════════════════════════════
   // 1. Troca o idioma global
   // ══════════════════════════════════════════════════════════════
-  uiState.language = setCurrentLanguage(uiState.language === "pt" ? "en" : "pt");
+  uiState.language = setCurrentLanguage(
+    uiState.language === "pt" ? "en" : "pt",
+  );
 
   // ══════════════════════════════════════════════════════════════
   // 2. Atualiza o botão de idioma
@@ -3068,14 +3133,12 @@ function updateValidationBadgeLanguage() {
   initValidationBadgeTooltip(badge, tooltipText);
 }
 
-
-
 function goHome() {
   // Limpa o contexto de diagnóstico ao voltar para a home
   sessionStorage.removeItem(
     storageManager.getUserScopedKey("diagnostic_context"),
   );
-  
+
   // ========================================================================
   // LIMPEZA COMPLETA DE TIMERS
   // ========================================================================
@@ -3146,10 +3209,10 @@ function goHome() {
 async function startJornada() {
   if (uiState.timerInterval) clearInterval(uiState.timerInterval);
   showScreen("jornada");
-  
+
   const certId = getActiveCertificationId();
   renderJornadaDashboard(certId);
-  
+
   renderTrail();
   await renderGuildDashboard();
   renderBadges();
@@ -3207,7 +3270,12 @@ async function startMistakesQuiz() {
 
     // Inicia sessão local (sem backend — erros são locais por definição)
     try {
-      const quizResponse = await quizManager.startQuiz(certId, mistakes.length, uiState.language, "mistakes-review");
+      const quizResponse = await quizManager.startQuiz(
+        certId,
+        mistakes.length,
+        uiState.language,
+        "mistakes-review",
+      );
       if (!quizResponse.fromAPI) {
         logger.info("⚠ Mistakes quiz rodando em modo local (API indisponível)");
       }
@@ -3337,8 +3405,6 @@ function prevFlashcard() {
   prevFlashcardModule();
 }
 
-
-
 // TEXTOS ESTÁTICOS DOS CARDS DA SIDEBAR (i18n)
 function updateSidebarTexts() {
   const lang = uiState.language || "pt";
@@ -3426,14 +3492,14 @@ function updateSidebarTexts() {
 function updateSidebarProgress() {
   const gamification = storageManager.getGamification();
   const certSelect = document.getElementById("certification-select");
-  const currentLang =
-    uiState.language || getCurrentLanguage();
+  const currentLang = uiState.language || getCurrentLanguage();
 
   // Tratamento absoluto contra undefined
   let currentCertId =
     certSelect && certSelect.value
       ? String(certSelect.value).toLowerCase().trim()
-      : normalizeCertificationId(AuthService.getCurrentUser()?.certification) || "clf-c02";
+      : normalizeCertificationId(AuthService.getCurrentUser()?.certification) ||
+        "clf-c02";
 
   const certNames = {
     pt: {
@@ -3570,18 +3636,23 @@ window.startMission = async function (stageId) {
   // redirecionamos para simulados.html com os parâmetros necessários.
   if (!document.getElementById("question-text")) {
     const certSelect = document.getElementById("certification-select");
-    const certId = certSelect ? certSelect.value : (storageManager.getActiveCertification?.() || "clf-c02");
-    const params = new URLSearchParams({ mode: "mission", stageId, cert: certId });
+    const certId = certSelect
+      ? certSelect.value
+      : storageManager.getActiveCertification?.() || "clf-c02";
+    const params = new URLSearchParams({
+      mode: "mission",
+      stageId,
+      cert: certId,
+    });
     window.location.href = `simulados.html?${params.toString()}`;
     return;
   }
-  
+
   // Se já temos o contexto (simulados.html), chamamos a função interna
   return startMissionInternal(stageId);
 };
 
 async function startMissionInternal(stageId) {
-
   resetFinishState();
 
   // ========================================================================
@@ -3757,7 +3828,7 @@ async function startMissionInternal(stageId) {
     logger.error("[startMission] Erro ao iniciar missão:", err);
     alert(t("error_starting_quiz", uiState.language, { message: err.message }));
   }
-};
+}
 
 /**
  * Atualiza a interface dos corações (vidas restantes) no HUD de missão.

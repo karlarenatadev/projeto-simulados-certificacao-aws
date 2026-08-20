@@ -25,13 +25,16 @@ let recommendationEngine = null;
 
 const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 };
 
-export function readDiagnosticRecommendations(storage = globalThis.localStorage) {
+export function readDiagnosticRecommendations(
+  storage = globalThis.localStorage,
+) {
   if (!storage) return null;
 
   try {
-    const key = storage === globalThis.localStorage
-      ? storageManager.getUserScopedKey("last_diagnostic_recommendation")
-      : DIAGNOSTIC_RECOMMENDATION_STORAGE_KEY;
+    const key =
+      storage === globalThis.localStorage
+        ? storageManager.getUserScopedKey("last_diagnostic_recommendation")
+        : DIAGNOSTIC_RECOMMENDATION_STORAGE_KEY;
     const raw = storage.getItem(key);
     if (!raw) return null;
 
@@ -53,12 +56,17 @@ export function readDiagnosticRecommendations(storage = globalThis.localStorage)
 }
 
 export function getDiagnosticPriorities(recommendation, limit = 3) {
-  if (!recommendation?.certificationId || !Array.isArray(recommendation.priorities)) {
+  if (
+    !recommendation?.certificationId ||
+    !Array.isArray(recommendation.priorities)
+  ) {
     return [];
   }
 
   return [...recommendation.priorities]
-    .filter((priority) => priority?.domainId && typeof priority.score === "number")
+    .filter(
+      (priority) => priority?.domainId && typeof priority.score === "number",
+    )
     .sort(
       (left, right) =>
         (PRIORITY_ORDER[left.priority] ?? PRIORITY_ORDER.low) -
@@ -80,7 +88,10 @@ export function getDiagnosticPriorities(recommendation, limit = 3) {
 }
 
 export function buildDiagnosticStudyNowModel(recommendation, language = "pt") {
-  if (!Array.isArray(recommendation?.weakDomains) || recommendation.weakDomains.length === 0) {
+  if (
+    !Array.isArray(recommendation?.weakDomains) ||
+    recommendation.weakDomains.length === 0
+  ) {
     return null;
   }
   const priorities = getDiagnosticPriorities(recommendation);
@@ -125,7 +136,8 @@ export function buildDiagnosticStudyNowModel(recommendation, language = "pt") {
  * @param {(domainId: string, certId: string|null) => void} options.startFilteredQuiz
  */
 export function initStudyNow({ startFilteredQuiz } = {}) {
-  onStudyWeakest = typeof startFilteredQuiz === "function" ? startFilteredQuiz : null;
+  onStudyWeakest =
+    typeof startFilteredQuiz === "function" ? startFilteredQuiz : null;
   learningAnalytics = new LearningAnalytics(storageManager);
   recommendationEngine = new RecommendationEngine();
 }
@@ -151,7 +163,11 @@ function renderCompactRecommendation(actions) {
   }
 
   const title = t(action.title, lang, action.titleVariables || {});
-  const description = t(action.description, lang, action.descriptionVariables || {});
+  const description = t(
+    action.description,
+    lang,
+    action.descriptionVariables || {},
+  );
   const route = action.route || "./simulados.html";
   container.innerHTML = `
     <div class="study-now-compact-content">
@@ -183,7 +199,7 @@ function renderEmpty(messageKey, success = false) {
 function renderActions(actions) {
   const container = getContainer();
   if (!container) return;
-  
+
   const lang = getCurrentLanguage();
 
   if (!actions || actions.length === 0) {
@@ -200,9 +216,15 @@ function renderActions(actions) {
   const items = actions
     .map((action, i) => {
       const title = t(action.title, lang, action.titleVariables || {});
-      const desc = t(action.description, lang, action.descriptionVariables || {});
-      
-      const isExternal = action.isExternal ? 'target="_blank" rel="noopener noreferrer"' : '';
+      const desc = t(
+        action.description,
+        lang,
+        action.descriptionVariables || {},
+      );
+
+      const isExternal = action.isExternal
+        ? 'target="_blank" rel="noopener noreferrer"'
+        : "";
       const studyLink = `<a href="${action.route}" ${isExternal} class="study-now-link">${title} <i class="fa-solid fa-arrow-right"></i></a>`;
 
       return `<div class="study-now-item">
@@ -214,7 +236,7 @@ function renderActions(actions) {
     })
     .join("");
 
-  const firstPractice = actions.find(a => a.type === "practice");
+  const firstPractice = actions.find((a) => a.type === "practice");
   const button = firstPractice
     ? `<button type="button" class="study-now-btn" data-route="${firstPractice.route}">
         <i class="${firstPractice.icon}"></i> ${t(firstPractice.title, lang, firstPractice.titleVariables || {})}
@@ -229,10 +251,10 @@ function renderActions(actions) {
       const route = btn.getAttribute("data-route");
       // Se não houver override de navegação (SPA antigo), usa a rota física
       if (onStudyWeakest) {
-         // Fallback legacy caso precise (mas agora as rotas já vêm prontas do backend analytics)
-         window.location.href = route;
+        // Fallback legacy caso precise (mas agora as rotas já vêm prontas do backend analytics)
+        window.location.href = route;
       } else {
-         window.location.href = route;
+        window.location.href = route;
       }
     });
   }
@@ -249,8 +271,7 @@ export function renderDiagnosticRecommendations(recommendation) {
     return;
   }
 
-  const priorityLabel = (priority) =>
-    t(`studyNow.priority_${priority}`, lang);
+  const priorityLabel = (priority) => t(`studyNow.priority_${priority}`, lang);
   const priorityItems = model.priorities
     .map(
       (priority) => `
@@ -277,35 +298,51 @@ export function renderDiagnosticRecommendations(recommendation) {
         <button type="button" class="study-now-btn" data-diagnostic-action="questions">
           <i class="fa-solid fa-play"></i> ${t("studyNow.diagnostic_questions", lang)}
         </button>
-        ${model.labsContext ? `<button type="button" class="study-now-btn" data-diagnostic-action="labs">
+        ${
+          model.labsContext
+            ? `<button type="button" class="study-now-btn" data-diagnostic-action="labs">
           <i class="fa-solid fa-flask"></i> ${t("studyNow.diagnostic_labs", lang)}
-        </button>` : ""}
-        ${model.casesContext ? `<button type="button" class="study-now-btn" data-diagnostic-action="cases">
+        </button>`
+            : ""
+        }
+        ${
+          model.casesContext
+            ? `<button type="button" class="study-now-btn" data-diagnostic-action="cases">
           <i class="fa-solid fa-diagram-project"></i> ${t("studyNow.diagnostic_cases", lang)}
-        </button>` : ""}
+        </button>`
+            : ""
+        }
       </div>
     </div>`;
 
-  container.querySelector('[data-diagnostic-action="flashcards"]')?.addEventListener("click", () => {
-    sessionStorage.setItem(
-      storageManager.getUserScopedKey("diagnostic_context"),
-      JSON.stringify(model.flashcardsContext),
-    );
-    window.location.href = "./flashcards.html";
-  });
-  container.querySelector('[data-diagnostic-action="questions"]')?.addEventListener("click", () => {
-    sessionStorage.setItem(
-      storageManager.getUserScopedKey("diagnostic_context"),
-      JSON.stringify(model.questionsContext),
-    );
-    window.location.href = "./simulados.html";
-  });
-  container.querySelector('[data-diagnostic-action="labs"]')?.addEventListener("click", () => {
-    window.location.href = "./laboratorios.html";
-  });
-  container.querySelector('[data-diagnostic-action="cases"]')?.addEventListener("click", () => {
-    window.location.href = "./cases.html";
-  });
+  container
+    .querySelector('[data-diagnostic-action="flashcards"]')
+    ?.addEventListener("click", () => {
+      sessionStorage.setItem(
+        storageManager.getUserScopedKey("diagnostic_context"),
+        JSON.stringify(model.flashcardsContext),
+      );
+      window.location.href = "./flashcards.html";
+    });
+  container
+    .querySelector('[data-diagnostic-action="questions"]')
+    ?.addEventListener("click", () => {
+      sessionStorage.setItem(
+        storageManager.getUserScopedKey("diagnostic_context"),
+        JSON.stringify(model.questionsContext),
+      );
+      window.location.href = "./simulados.html";
+    });
+  container
+    .querySelector('[data-diagnostic-action="labs"]')
+    ?.addEventListener("click", () => {
+      window.location.href = "./laboratorios.html";
+    });
+  container
+    .querySelector('[data-diagnostic-action="cases"]')
+    ?.addEventListener("click", () => {
+      window.location.href = "./cases.html";
+    });
 }
 
 /**
@@ -320,10 +357,12 @@ export async function refreshStudyNow() {
 
   try {
     const certId = AuthService.getCurrentUser()?.certification || "clf-c02";
-    
+
     // Fallback instantiation if called before initApp (sanity check)
-    if (!learningAnalytics) learningAnalytics = new LearningAnalytics(storageManager);
-    if (!recommendationEngine) recommendationEngine = new RecommendationEngine();
+    if (!learningAnalytics)
+      learningAnalytics = new LearningAnalytics(storageManager);
+    if (!recommendationEngine)
+      recommendationEngine = new RecommendationEngine();
 
     const profile = learningAnalytics.getLearningProfile(certId);
     const plan = recommendationEngine.generateStudyPlan(profile);

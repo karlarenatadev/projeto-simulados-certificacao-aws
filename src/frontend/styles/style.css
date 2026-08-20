@@ -26,14 +26,13 @@
 
 header {
   background-color: var(--a3-primary-dark);
-  border-bottom: 1px solid color-mix(in srgb, var(--a3-text-inverse) 16%, transparent);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--a3-text-inverse) 16%, transparent);
 }
 
 header.a3-header .hover\:bg-gray-700:hover,
 header.a3-header .hover\:bg-gray-800:hover {
-  background-color: color-mix(in srgb,
-      var(--a3-text-inverse) 12%,
-      transparent);
+  background-color: color-mix(in srgb, var(--a3-text-inverse) 12%, transparent);
 }
 
 header.a3-header #home-trigger i,
@@ -42,19 +41,13 @@ header.a3-header #home-trigger:hover h1 {
 }
 
 header.a3-header #header-pomodoro-btn {
-  background-color: color-mix(in srgb,
-      var(--a3-accent) 16%,
-      transparent);
-  border-color: color-mix(in srgb,
-      var(--a3-accent) 52%,
-      transparent);
+  background-color: color-mix(in srgb, var(--a3-accent) 16%, transparent);
+  border-color: color-mix(in srgb, var(--a3-accent) 52%, transparent);
   color: var(--a3-text-inverse);
 }
 
 header.a3-header #score-container {
-  background-color: color-mix(in srgb,
-      var(--a3-text-inverse) 12%,
-      transparent);
+  background-color: color-mix(in srgb, var(--a3-text-inverse) 12%, transparent);
 }
 
 /* ── Screens base ──────────────────────────────────────────────────────── */
@@ -74,16 +67,18 @@ html.dark #screen-results {
   background-color: var(--a3-surface-raised);
 }
 
-#screen-start>.w-20.h-20 {
+#screen-start > .w-20.h-20 {
   background:
-    radial-gradient(circle at 70% 25%,
+    radial-gradient(
+      circle at 70% 25%,
       color-mix(in srgb, var(--a3-accent) 26%, transparent),
-      transparent 34%),
+      transparent 34%
+    ),
     color-mix(in srgb, var(--a3-primary) 8%, var(--a3-surface));
   box-shadow: inset 0 0 0 1px var(--a3-border-soft);
 }
 
-#screen-start>.w-20.h-20 i {
+#screen-start > .w-20.h-20 i {
   color: var(--a3-primary);
 }
 
@@ -98,11 +93,13 @@ html.dark #screen-results {
 
 /* ── Input overrides globais ───────────────────────────────────────────── */
 
-:where(select,
-input[type="text"],
-input[type="number"],
-input[type="email"],
-textarea) {
+:where(
+  select,
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  textarea
+) {
   background-color: var(--a3-surface);
   border-color: var(--a3-border-default);
   color: var(--text-main);
@@ -113,9 +110,11 @@ textarea) {
 .dark input[type="number"],
 .dark input[type="email"],
 .dark textarea {
-  background-color: color-mix(in srgb,
-      var(--a3-surface-soft) 86%,
-      var(--a3-text-strong));
+  background-color: color-mix(
+    in srgb,
+    var(--a3-surface-soft) 86%,
+    var(--a3-text-strong)
+  );
 }
 
 :where(select, input, textarea)::placeholder {
@@ -254,7 +253,8 @@ textarea) {
   border: 1px solid color-mix(in srgb, var(--a3-success) 20%, transparent);
   padding: 0.375rem 1rem;
   border-radius: var(--radius-full);
-  box-shadow: 0 1px 2px color-mix(in srgb, var(--a3-text-strong) 5%, transparent);
+  box-shadow: 0 1px 2px
+    color-mix(in srgb, var(--a3-text-strong) 5%, transparent);
   cursor: help;
   transition: all 0.2s ease;
 }
@@ -529,7 +529,6 @@ textarea) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
@@ -562,7 +561,11 @@ textarea) {
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: color-mix(in srgb, var(--a3-tech-blue) 50%, var(--a3-border-default));
+  background-color: color-mix(
+    in srgb,
+    var(--a3-tech-blue) 50%,
+    var(--a3-border-default)
+  );
 }
 
 /* Skeleton shimmer aprimorado */
@@ -578,10 +581,12 @@ textarea) {
 .dark .case-card-skeleton,
 .dark .skeleton-line,
 .dark [class*="skeleton"] {
-  --a3-skeleton-bg: linear-gradient(90deg,
-      color-mix(in srgb, #ffffff 6%, transparent) 25%,
-      color-mix(in srgb, #ffffff 12%, transparent) 50%,
-      color-mix(in srgb, #ffffff 6%, transparent) 75%);
+  --a3-skeleton-bg: linear-gradient(
+    90deg,
+    color-mix(in srgb, #ffffff 6%, transparent) 25%,
+    color-mix(in srgb, #ffffff 12%, transparent) 50%,
+    color-mix(in srgb, #ffffff 6%, transparent) 75%
+  );
 }
 
 /* Empty states uniformes */
@@ -625,7 +630,8 @@ textarea) {
 
 /* HUB — lh-feature-items: active state e foco */
 .lh-feature-item {
-  transition: background-color var(--a3-transition-base),
+  transition:
+    background-color var(--a3-transition-base),
     transform var(--a3-transition-fast),
     box-shadow var(--a3-transition-base),
     border-color var(--a3-transition-base) !important;
@@ -642,7 +648,8 @@ textarea) {
 
 /* HUB — quick actions active e focus */
 .lh-quick-btn {
-  transition: background-color var(--a3-transition-base),
+  transition:
+    background-color var(--a3-transition-base),
     transform var(--a3-transition-fast),
     box-shadow var(--a3-transition-base),
     border-color var(--a3-transition-base) !important;
@@ -663,7 +670,8 @@ textarea) {
 
 /* HUB — lh-metric-item hover */
 .lh-metric-item {
-  transition: transform var(--a3-transition-base),
+  transition:
+    transform var(--a3-transition-base),
     box-shadow var(--a3-transition-base) !important;
 }
 
@@ -688,7 +696,8 @@ textarea) {
 
 /* Sidebar widgets — hover refinado */
 #side-info .a3-card {
-  transition: transform var(--a3-transition-base),
+  transition:
+    transform var(--a3-transition-base),
     box-shadow var(--a3-transition-base),
     border-color var(--a3-transition-base) !important;
 }
@@ -696,38 +705,42 @@ textarea) {
 #side-info .a3-card:hover {
   transform: translateY(-1px) !important;
   box-shadow: var(--a3-shadow-hover) !important;
-  border-color: color-mix(in srgb, var(--a3-tech-blue) 20%, var(--border-theme)) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--a3-tech-blue) 20%,
+    var(--border-theme)
+  ) !important;
 }
 
 /* Profile badges grid — entrada animada */
-#profile-badges-grid>div {
+#profile-badges-grid > div {
   animation: scaleIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
 
-#profile-badges-grid>div:nth-child(1) {
+#profile-badges-grid > div:nth-child(1) {
   animation-delay: 0.02s;
 }
 
-#profile-badges-grid>div:nth-child(2) {
+#profile-badges-grid > div:nth-child(2) {
   animation-delay: 0.06s;
 }
 
-#profile-badges-grid>div:nth-child(3) {
-  animation-delay: 0.10s;
+#profile-badges-grid > div:nth-child(3) {
+  animation-delay: 0.1s;
 }
 
-#profile-badges-grid>div:nth-child(4) {
+#profile-badges-grid > div:nth-child(4) {
   animation-delay: 0.14s;
 }
 
 /* History list items — hover sutil */
-#history-list>div,
+#history-list > div,
 .feedback-item {
   transition: background-color var(--a3-transition-fast) !important;
   border-radius: var(--radius-md);
 }
 
-#history-list>div:hover {
+#history-list > div:hover {
   background-color: var(--a3-surface-soft) !important;
 }
 
@@ -743,7 +756,8 @@ footer.w-full {
 
 /* Pomodoro widget — entrada animada */
 #pomodoro-widget {
-  transition: opacity var(--a3-transition-base),
+  transition:
+    opacity var(--a3-transition-base),
     transform var(--a3-transition-base);
 }
 
@@ -769,13 +783,13 @@ select {
 /* Tags/badges — transição de hover */
 .cert-tag,
 .difficulty-badge {
-  transition: opacity var(--a3-transition-fast),
+  transition:
+    opacity var(--a3-transition-fast),
     transform var(--a3-transition-fast);
 }
 
 /* Responsividade mobile 375px — ajustes de padding refinados */
 @media (max-width: 400px) {
-
   .profile-main,
   .settings-main {
     padding-left: var(--space-12) !important;
@@ -823,14 +837,17 @@ select {
 
 /* Linha de progresso do sprint com gradiente */
 #sidebar-pct-bar {
-  background: linear-gradient(90deg, var(--a3-tech-blue), var(--a3-sky-frost)) !important;
+  background: linear-gradient(
+    90deg,
+    var(--a3-tech-blue),
+    var(--a3-sky-frost)
+  ) !important;
   border-radius: var(--radius-full) !important;
 }
 
 /* ── FIM UX POLISH ─────────────────────────────────────────────────────── */
 
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
@@ -843,7 +860,6 @@ select {
 /* ── Impressão (Print) ─────────────────────────────────────────────────── */
 
 @media print {
-
   html,
   body,
   main,
@@ -868,9 +884,9 @@ select {
   .no-print,
   #last-score-banner,
   #ai-recommendation,
-  #screen-results>div.bg-gray-50,
-  #screen-results>h2.aws-text-dark,
-  #screen-results>p.text-gray-500 {
+  #screen-results > div.bg-gray-50,
+  #screen-results > h2.aws-text-dark,
+  #screen-results > p.text-gray-500 {
     display: none !important;
   }
 

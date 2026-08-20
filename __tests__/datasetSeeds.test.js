@@ -46,6 +46,7 @@ describe('catalog seed projections', () => {
 
     const first = await withDatabase(dataDir, async () => {
       const rows = await executeQuery('SELECT id, validation_status FROM questions ORDER BY id LIMIT 1');
+      expect(rows[0].validation_status).toBe('APPROVED');
       await executeQuery("UPDATE questions SET validation_status = 'APPROVED', validated_by = 'fixture-validator' WHERE id = $1", [rows[0].id]);
       const count = await executeQuery('SELECT COUNT(*)::int AS count FROM questions');
       return { id: rows[0].id, count: count[0].count };

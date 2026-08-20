@@ -20,7 +20,10 @@ import { PermissionService } from "./services/permissions.js";
 import { logger } from "./utils/logger.js";
 import { AuthService } from "./services/authService.js";
 import { initializeUI } from "./i18n/initUI.js";
-import { getCurrentLanguage, setCurrentLanguage } from "./core/languageManager.js";
+import {
+  getCurrentLanguage,
+  setCurrentLanguage,
+} from "./core/languageManager.js";
 import { resolveAppUrl } from "./core/navigation.js";
 import { t } from "./i18n/useTranslation.js";
 
@@ -81,7 +84,7 @@ export const SIDEBAR_ITEMS = [
     activePaths: [
       "/simulados.html",
       "/simulator-room.html",
-      "/study-sprint.html"
+      "/study-sprint.html",
     ],
     roles: ["*"],
     i18n: "sidebar_start",
@@ -92,10 +95,7 @@ export const SIDEBAR_ITEMS = [
     label: "Jornada",
     icon: "fa-solid fa-route",
     href: "./jornada.html",
-    activePaths: [
-      "/jornada.html",
-      "/study-sprint.html"
-    ],
+    activePaths: ["/jornada.html", "/study-sprint.html"],
     roles: ["*"],
     i18n: "sidebar_journey",
     title: "Minha Jornada",
@@ -135,23 +135,20 @@ export const SIDEBAR_ITEMS = [
     label: "Prática",
     icon: "fa-solid fa-diagram-project",
     href: "./cases.html",
-    activePaths: [
-      "/cases.html",
-      "/case-view.html"
-    ],
+    activePaths: ["/cases.html", "/case-view.html"],
     roles: ["*"],
     i18n: "sidebar_cases",
     title: "Aprenda na Prática",
   },
-    {
-      id: "sidebar-btn-labs",
-      label: "Labs",
-      icon: "fa-solid fa-flask",
-      href: "./laboratorios.html",
-      activePaths: ["/laboratorios.html"],
-      roles: ["*"],
-      title: "Laboratórios AWS"
-    },
+  {
+    id: "sidebar-btn-labs",
+    label: "Labs",
+    icon: "fa-solid fa-flask",
+    href: "./laboratorios.html",
+    activePaths: ["/laboratorios.html"],
+    roles: ["*"],
+    title: "Laboratórios AWS",
+  },
   {
     id: "sidebar-btn-resources",
     label: "Recursos",
@@ -283,11 +280,11 @@ function _syncThemeIcon(isDark) {
 export function syncLanguageButtonShell() {
   const lang = getCurrentLanguage();
   const btn = document.getElementById("btn-language");
-  
+
   // Applica tradução para páginas que não carregam app.js diretamente
   try {
     initializeUI(lang);
-  } catch(e) {
+  } catch (e) {
     logger.error("Erro na tradução em shell.js:", e);
   }
 
@@ -300,17 +297,17 @@ export function syncLanguageButtonShell() {
   if (!btn.dataset.boundLangToggle) {
     btn.dataset.boundLangToggle = "true";
     btn.addEventListener("click", () => {
-        if (window.toggleLanguage) {
-            // Se o app.js carregou, o botão já tem um onClick bindado para `toggleLanguage` global (em app.js).
-            // Apenas ignore aqui para evitar concorrência se ele gerenciar estado lá.
-            // Mas o app.js usa bindClick que remove eventListeners? Na verdade o app.js só chama toggleLanguage no onClick inline ou addEventListener.
-            // O app.js também chama syncLanguageButtonShell(). 
-            return;
-        }
-        
-        // Comportamento standalone para cases.html, laboratorios.html, etc.
-        setCurrentLanguage(lang === "pt" ? "en" : "pt");
-        window.location.reload();
+      if (window.toggleLanguage) {
+        // Se o app.js carregou, o botão já tem um onClick bindado para `toggleLanguage` global (em app.js).
+        // Apenas ignore aqui para evitar concorrência se ele gerenciar estado lá.
+        // Mas o app.js usa bindClick que remove eventListeners? Na verdade o app.js só chama toggleLanguage no onClick inline ou addEventListener.
+        // O app.js também chama syncLanguageButtonShell().
+        return;
+      }
+
+      // Comportamento standalone para cases.html, laboratorios.html, etc.
+      setCurrentLanguage(lang === "pt" ? "en" : "pt");
+      window.location.reload();
     });
   }
 }
@@ -356,7 +353,7 @@ export function renderUserMenu(user) {
   if (!container) return;
 
   if (!user) {
-    container.innerHTML = "";
+    container.replaceChildren();
     return;
   }
 
@@ -367,40 +364,88 @@ export function renderUserMenu(user) {
   const roleLabel = _roleLabel(role);
   const roleClass = _roleClass(role);
 
-  container.innerHTML = `
-    <div class="a3-user-menu" id="user-menu-btn" aria-haspopup="true" aria-expanded="false" role="button" tabindex="0" aria-label="Menu do usuário">
-      <div class="a3-avatar" aria-hidden="true">${initial}</div>
-      <div class="a3-user-info">
-        <span class="a3-user-name" title="${displayName}">${displayName}</span>
-        <span class="a3-user-role ${roleClass}">${roleLabel}</span>
-      </div>
-      <i class="fa-solid fa-chevron-down a3-user-chevron" aria-hidden="true"></i>
-    </div>
+  const createElement = (tagName, className, text = "") => {
+    const element = document.createElement(tagName);
+    if (className) element.className = className;
+    if (text) element.textContent = text;
+    return element;
+  };
 
-    <div class="a3-user-dropdown" id="user-dropdown" role="menu" aria-hidden="true">
-      <div class="a3-dropdown-header">
-        <div class="a3-avatar a3-avatar-lg" aria-hidden="true">${initial}</div>
-        <div>
-          <p class="a3-dropdown-name">${displayName}</p>
-          <p class="a3-dropdown-email">${user.email || ""}</p>
-        </div>
-      </div>
-      <div class="a3-dropdown-divider"></div>
-      <button class="a3-dropdown-item" role="menuitem" id="user-menu-profile">
-        <i class="fa-solid fa-user" aria-hidden="true"></i>
-        <span>Meu Perfil</span>
-      </button>
-      <button class="a3-dropdown-item" role="menuitem" id="user-menu-settings">
-        <i class="fa-solid fa-gear" aria-hidden="true"></i>
-        <span>Configurações</span>
-      </button>
-      <div class="a3-dropdown-divider"></div>
-      <button class="a3-dropdown-item a3-dropdown-item-danger" role="menuitem" id="user-menu-logout">
-        <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
-        <span>Sair</span>
-      </button>
-    </div>
-  `;
+  const createIcon = (className) => {
+    const icon = createElement("i", className);
+    icon.setAttribute("aria-hidden", "true");
+    return icon;
+  };
+
+  const createMenuItem = (
+    id,
+    iconClass,
+    label,
+    className = "a3-dropdown-item",
+  ) => {
+    const button = createElement("button", className);
+    button.id = id;
+    button.type = "button";
+    button.setAttribute("role", "menuitem");
+    button.append(createIcon(iconClass), createElement("span", "", label));
+    return button;
+  };
+
+  const menu = createElement("div", "a3-user-menu");
+  menu.id = "user-menu-btn";
+  menu.setAttribute("aria-haspopup", "true");
+  menu.setAttribute("aria-expanded", "false");
+  menu.setAttribute("role", "button");
+  menu.tabIndex = 0;
+  menu.setAttribute("aria-label", "Menu do usuário");
+
+  const avatar = createElement("div", "a3-avatar", initial);
+  avatar.setAttribute("aria-hidden", "true");
+  const userInfo = createElement("div", "a3-user-info");
+  const name = createElement("span", "a3-user-name", displayName);
+  name.title = displayName;
+  const roleElement = createElement(
+    "span",
+    `a3-user-role ${roleClass}`,
+    roleLabel,
+  );
+  userInfo.append(name, roleElement);
+  menu.append(
+    avatar,
+    userInfo,
+    createIcon("fa-solid fa-chevron-down a3-user-chevron"),
+  );
+
+  const dropdown = createElement("div", "a3-user-dropdown");
+  dropdown.id = "user-dropdown";
+  dropdown.setAttribute("role", "menu");
+  dropdown.setAttribute("aria-hidden", "true");
+
+  const dropdownHeader = createElement("div", "a3-dropdown-header");
+  const largeAvatar = createElement("div", "a3-avatar a3-avatar-lg", initial);
+  largeAvatar.setAttribute("aria-hidden", "true");
+  const dropdownIdentity = createElement("div");
+  dropdownIdentity.append(
+    createElement("p", "a3-dropdown-name", displayName),
+    createElement("p", "a3-dropdown-email", user.email || ""),
+  );
+  dropdownHeader.append(largeAvatar, dropdownIdentity);
+
+  dropdown.append(
+    dropdownHeader,
+    createElement("div", "a3-dropdown-divider"),
+    createMenuItem("user-menu-profile", "fa-solid fa-user", "Meu Perfil"),
+    createMenuItem("user-menu-settings", "fa-solid fa-gear", "Configurações"),
+    createElement("div", "a3-dropdown-divider"),
+    createMenuItem(
+      "user-menu-logout",
+      "fa-solid fa-right-from-bracket",
+      "Sair",
+      "a3-dropdown-item a3-dropdown-item-danger",
+    ),
+  );
+
+  container.replaceChildren(menu, dropdown);
 
   _bindUserMenuEvents();
   _applyUserMenuTranslations();
@@ -420,7 +465,9 @@ function _applyUserMenuTranslations() {
   if (roleElement) {
     const roleKey = roleElement.classList.contains("a3-role-admin")
       ? "role_admin"
-      : roleElement.classList.contains("a3-role-validator") ? "role_validator" : "role_student";
+      : roleElement.classList.contains("a3-role-validator")
+        ? "role_validator"
+        : "role_student";
     roleElement.textContent = t(roleKey, language);
   }
 }
@@ -527,9 +574,10 @@ export function buildSidebar(user) {
     if (item.roles.includes("*")) return true;
 
     for (const requiredRole of item.roles) {
-      const allowed = item.id === "sidebar-btn-validation"
-        ? PermissionService.canAccessValidation(user)
-        : PermissionService.hasAccess(user, requiredRole.toLowerCase());
+      const allowed =
+        item.id === "sidebar-btn-validation"
+          ? PermissionService.canAccessValidation(user)
+          : PermissionService.hasAccess(user, requiredRole.toLowerCase());
       if (allowed) {
         return true;
       }
@@ -539,9 +587,10 @@ export function buildSidebar(user) {
   });
 
   const isAdmin = PermissionService.isAdmin(user);
-  const mainItems = allVisible.filter((item) => (
-    !item.footer && (!item.adminGroup || (!isAdmin && !item.adminOnly))
-  ));
+  const mainItems = allVisible.filter(
+    (item) =>
+      !item.footer && (!item.adminGroup || (!isAdmin && !item.adminOnly)),
+  );
   const adminItems = allVisible.filter((item) => item.adminGroup && isAdmin);
   const footerItems = allVisible.filter((item) => item.footer);
 
@@ -590,7 +639,10 @@ export function buildSidebar(user) {
   collapseBtn.id = "sidebar-collapse-btn";
   collapseBtn.className = "sidebar-collapse-btn";
   collapseBtn.title = t("nav_collapse_sidebar", getCurrentLanguage());
-  collapseBtn.setAttribute("aria-label", t("nav_collapse_sidebar", getCurrentLanguage()));
+  collapseBtn.setAttribute(
+    "aria-label",
+    t("nav_collapse_sidebar", getCurrentLanguage()),
+  );
   collapseBtn.setAttribute("aria-expanded", "true");
   collapseBtn.innerHTML = `
     <i class="fa-solid fa-angles-left sidebar-collapse-icon" aria-hidden="true"></i>
@@ -604,9 +656,13 @@ export function buildSidebar(user) {
 }
 
 function _isSidebarItemActive(item) {
-  const pathMatches = item.activePaths?.some((path) => window.location.pathname.endsWith(path));
+  const pathMatches = item.activePaths?.some((path) =>
+    window.location.pathname.endsWith(path),
+  );
   if (!pathMatches) return false;
-  return !item.activeHashes || item.activeHashes.includes(window.location.hash || "");
+  return (
+    !item.activeHashes || item.activeHashes.includes(window.location.hash || "")
+  );
 }
 
 function _createAdminMenu(items) {
@@ -623,7 +679,10 @@ function _createAdminMenu(items) {
     <span class="left-sidebar-item-label">Admin</span>
     <i class="fa-solid fa-chevron-down left-sidebar-admin-chevron" aria-hidden="true"></i>
   `;
-  toggle.querySelector(".left-sidebar-item-label").textContent = t("nav_admin", getCurrentLanguage());
+  toggle.querySelector(".left-sidebar-item-label").textContent = t(
+    "nav_admin",
+    getCurrentLanguage(),
+  );
 
   const menu = document.createElement("div");
   menu.id = "sidebar-admin-menu";
@@ -633,7 +692,8 @@ function _createAdminMenu(items) {
   wrapper.append(toggle, menu);
 
   const hasActiveItem = items.some(_isSidebarItemActive);
-  const savedCollapsed = localStorage.getItem(ADMIN_MENU_STORAGE_KEY) === "true";
+  const savedCollapsed =
+    localStorage.getItem(ADMIN_MENU_STORAGE_KEY) === "true";
   _syncAdminMenuState(wrapper, !hasActiveItem && savedCollapsed);
   toggle.addEventListener("click", () => {
     const collapsed = wrapper.classList.toggle("is-collapsed");
@@ -650,8 +710,15 @@ function _syncAdminMenuState(wrapper, collapsed) {
   wrapper.classList.toggle("is-collapsed", collapsed);
   toggle.setAttribute("aria-expanded", String(!collapsed));
   const language = getCurrentLanguage();
-  toggle.setAttribute("aria-label", collapsed ? t("nav_expand_admin", language) : t("nav_collapse_admin", language));
-  toggle.title = collapsed ? t("nav_expand_admin", language) : t("nav_collapse_admin", language);
+  toggle.setAttribute(
+    "aria-label",
+    collapsed
+      ? t("nav_expand_admin", language)
+      : t("nav_collapse_admin", language),
+  );
+  toggle.title = collapsed
+    ? t("nav_expand_admin", language)
+    : t("nav_collapse_admin", language);
   menu.hidden = collapsed;
 }
 
@@ -675,7 +742,8 @@ function _createSidebarItem(item) {
     el.href = resolvedHref;
     el.addEventListener("click", (event) => {
       const targetUrl = new URL(resolvedHref, window.location.origin);
-      if (targetUrl.pathname !== window.location.pathname || !targetUrl.hash) return;
+      if (targetUrl.pathname !== window.location.pathname || !targetUrl.hash)
+        return;
       event.preventDefault();
       window.location.hash = targetUrl.hash;
     });
@@ -907,7 +975,6 @@ export async function initShell(user) {
 
   renderUserMenu(resolvedUser);
   buildSidebar(resolvedUser);
-
 }
 
 async function _tryRestoreSession() {

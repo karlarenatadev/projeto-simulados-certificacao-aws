@@ -5,68 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Validação de Questões - Cloud Academy A3</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="../css/style.css?v=mt1ppe2f" />
-    <link rel="stylesheet" href="css/admin.css?v=mt1ppe2f" />
+    <link rel="stylesheet" href="../css/style.css?v=9111342e" />
+    <link rel="stylesheet" href="css/admin.css?v=9111342e" />
   </head>
   <body class="has-left-sidebar">
 <header class="a3-header">
-      <div class="flex items-center gap-2 md:gap-3">
-        <button
-          id="cloud-sidebar-toggle"
-          class="btn-sidebar-toggle flex items-center justify-center group/cloud"
-          title="Esconder menu lateral"
-          aria-label="Alternar menu lateral"
-          aria-expanded="true"
-        >
-          <i
-            id="cloud-logo-icon"
-            class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <a href="../index.html" class="a3-header-link" title="Voltar ao início">
-          <div>
-            <h1 class="text-base md:text-xl font-bold leading-tight">
-              Cloud Academy A3
-            </h1>
-            <p class="text-[10px] md:text-xs text-gray-300">
-              Sua jornada para certificações AWS
-            </p>
-          </div>
-        </a>
+  <div class="flex items-center gap-2 md:gap-3">
+    <button
+      id="cloud-sidebar-toggle"
+      class="btn-sidebar-toggle flex items-center justify-center group/cloud"
+      title="Esconder menu lateral"
+      aria-label="Alternar menu lateral"
+      aria-expanded="true"
+    >
+      <i
+        id="cloud-logo-icon"
+        class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
+        aria-hidden="true"
+      ></i>
+    </button>
+    <a href="../index.html" class="a3-header-link" title="Voltar ao início">
+      <div>
+        <h1 class="text-base md:text-xl font-bold leading-tight">
+          Cloud Academy A3
+        </h1>
+        <p class="text-[10px] md:text-xs text-gray-300">
+          Sua jornada para certificações AWS
+        </p>
       </div>
-      <div class="a3-header-actions">
-        <button
-          id="btn-language"
-          class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
-          aria-label="Alternar idioma"
-          title="Alternar idioma"
-        >
-          <span class="text-[10px] md:text-xs font-bold"
-            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
-          >
-        </button>
-        <button
-          id="theme-toggle"
-          class="a3-btn a3-btn-secondary"
-          aria-label="Alternar modo escuro"
-        >
-          <i
-            id="theme-icon"
-            class="fa-solid fa-moon text-base md:text-xl"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <button
-          id="install-app"
-          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
-        >
-          <i class="fa-solid fa-download"></i> Baixar App
-        </button>
-        <!-- User Menu — populado pelo shell.js -->
-        <div id="user-menu-container"></div>
-      </div>
-    </header>
+    </a>
+  </div>
+  <div class="a3-header-actions">
+    <button
+      id="btn-language"
+      class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
+      aria-label="Alternar idioma"
+      title="Alternar idioma"
+    >
+      <span class="text-[10px] md:text-xs font-bold"
+        >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
+      >
+    </button>
+    <button
+      id="theme-toggle"
+      class="a3-btn a3-btn-secondary"
+      aria-label="Alternar modo escuro"
+    >
+      <i
+        id="theme-icon"
+        class="fa-solid fa-moon text-base md:text-xl"
+        aria-hidden="true"
+      ></i>
+    </button>
+    <button
+      id="install-app"
+      class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
+    >
+      <i class="fa-solid fa-download"></i> Baixar App
+    </button>
+    <!-- User Menu — populado pelo shell.js -->
+    <div id="user-menu-container"></div>
+  </div>
+</header>
+<script src="../js/pwa/registerServiceWorker.js?v=9111342e"></script>
 <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
   <!--
     .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
@@ -80,7 +81,10 @@
       aria-label="Learning Hub — Painel Principal"
       title="Learning Hub — Painel Principal"
     >
-      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <i
+        class="fa-solid fa-house left-sidebar-item-icon"
+        aria-hidden="true"
+      ></i>
       <span class="left-sidebar-item-label">Home</span>
     </button>
   </div>
@@ -117,8 +121,8 @@
         </div>
       </div>
     </div>
-    <script src="js/validationStorage.js?v=mt1ppe2f"></script>
-    <script src="js/validationAPI.js?v=mt1ppe2f"></script>
-    <script type="module" src="js/validationUI.js?v=mt1ppe2f"></script>
+    <script src="js/validationStorage.js?v=9111342e"></script>
+    <script src="js/validationAPI.js?v=9111342e"></script>
+    <script type="module" src="js/validationUI.js?v=9111342e"></script>
   </body>
 </html>

@@ -137,10 +137,13 @@ export const AuthService = {
             SessionManager.logout();
             return null;
           }
-          if (!error.apiDisabled && !error.message?.includes("Network")) throw error;
+          if (!error.apiDisabled && !error.message?.includes("Network"))
+            throw error;
         }
       }
-      logger.info(`[AuthService] Sessão restaurada: ${session.user.email} (${session.user.role})`);
+      logger.info(
+        `[AuthService] Sessão restaurada: ${session.user.email} (${session.user.role})`,
+      );
       return session.user;
     }
     return null;
@@ -173,5 +176,5 @@ export const AuthService = {
       });
     }
     SessionManager.logout();
-  }
+  },
 };

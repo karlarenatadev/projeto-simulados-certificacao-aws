@@ -803,7 +803,9 @@ export class StorageManager {
 
     try {
       const gamificationKey = this._getKey(
-        certId ? `gamification_${String(certId).toLowerCase()}` : "gamification",
+        certId
+          ? `gamification_${String(certId).toLowerCase()}`
+          : "gamification",
       );
       const data = localStorage.getItem(gamificationKey);
 
@@ -921,7 +923,9 @@ export class StorageManager {
   saveGamification(gamification, certId = null) {
     try {
       const key = this._getKey(
-        certId ? `gamification_${String(certId).toLowerCase()}` : "gamification",
+        certId
+          ? `gamification_${String(certId).toLowerCase()}`
+          : "gamification",
       );
       localStorage.setItem(key, JSON.stringify(gamification));
       return true;
@@ -1033,14 +1037,16 @@ export class StorageManager {
   }
 
   getAccountModuleState(module, certId = null) {
-    const normalizedModule = String(module || '').toLowerCase();
-    if (normalizedModule === 'sprint') return this.getSprintState(certId);
-    if (normalizedModule === 'flashcards') return { deck: this.getReviewDeck(certId) };
-    if (normalizedModule === 'labs') {
+    const normalizedModule = String(module || "").toLowerCase();
+    if (normalizedModule === "sprint") return this.getSprintState(certId);
+    if (normalizedModule === "flashcards")
+      return { deck: this.getReviewDeck(certId) };
+    if (normalizedModule === "labs") {
       return { completedLabIds: this.getCompletedLabIds(certId) };
     }
-    if (normalizedModule === 'diagnostic') return { history: this.getDiagnosticHistory(certId) };
-    if (normalizedModule === 'journey') {
+    if (normalizedModule === "diagnostic")
+      return { history: this.getDiagnosticHistory(certId) };
+    if (normalizedModule === "journey") {
       const gamification = this.getGamification(certId);
       return {
         completedStages: gamification.completedStages || [],
@@ -1051,33 +1057,51 @@ export class StorageManager {
   }
 
   setAccountModuleState(module, certId, state) {
-    const normalizedModule = String(module || '').toLowerCase();
-    if (!state || typeof state !== 'object') return false;
-    if (normalizedModule === 'sprint') return this.saveSprintState(certId, state);
-    if (normalizedModule === 'flashcards') {
+    const normalizedModule = String(module || "").toLowerCase();
+    if (!state || typeof state !== "object") return false;
+    if (normalizedModule === "sprint")
+      return this.saveSprintState(certId, state);
+    if (normalizedModule === "flashcards") {
       const deckKey = this._getKey(`${certId}_review_deck`);
-      localStorage.setItem(deckKey, JSON.stringify(Array.isArray(state.deck) ? state.deck : []));
-      return true;
-    }
-    if (normalizedModule === 'labs') {
       localStorage.setItem(
-        this._getKey(`completed_labs_${certId}`),
-        JSON.stringify(Array.isArray(state.completedLabIds) ? state.completedLabIds : []),
+        deckKey,
+        JSON.stringify(Array.isArray(state.deck) ? state.deck : []),
       );
       return true;
     }
-    if (normalizedModule === 'diagnostic') {
-      const history = this.getHistory().filter((item) => item?.mode !== 'diagnostic' || item?.certId !== certId);
-      this.saveHistory([...history, ...(Array.isArray(state.history) ? state.history : [])]);
+    if (normalizedModule === "labs") {
+      localStorage.setItem(
+        this._getKey(`completed_labs_${certId}`),
+        JSON.stringify(
+          Array.isArray(state.completedLabIds) ? state.completedLabIds : [],
+        ),
+      );
       return true;
     }
-    if (normalizedModule === 'journey') {
+    if (normalizedModule === "diagnostic") {
+      const history = this.getHistory().filter(
+        (item) => item?.mode !== "diagnostic" || item?.certId !== certId,
+      );
+      this.saveHistory([
+        ...history,
+        ...(Array.isArray(state.history) ? state.history : []),
+      ]);
+      return true;
+    }
+    if (normalizedModule === "journey") {
       const current = this.getGamification(certId);
-      return this.saveGamification({
-        ...current,
-        completedStages: Array.isArray(state.completedStages) ? state.completedStages : current.completedStages,
-        unlockedStages: Array.isArray(state.unlockedStages) ? state.unlockedStages : current.unlockedStages,
-      }, certId);
+      return this.saveGamification(
+        {
+          ...current,
+          completedStages: Array.isArray(state.completedStages)
+            ? state.completedStages
+            : current.completedStages,
+          unlockedStages: Array.isArray(state.unlockedStages)
+            ? state.unlockedStages
+            : current.unlockedStages,
+        },
+        certId,
+      );
     }
     return false;
   }
@@ -1096,7 +1120,7 @@ export class StorageManager {
 
       // Migra o formato antigo, que era uma lista única, somente para a
       // certificação ativa da conta. Não replica esse estado para as demais.
-      const legacy = localStorage.getItem(this._getKey('completed_labs'));
+      const legacy = localStorage.getItem(this._getKey("completed_labs"));
       const parsedLegacy = legacy ? JSON.parse(legacy) : [];
       return Array.isArray(parsedLegacy) ? parsedLegacy : [];
     } catch {

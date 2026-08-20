@@ -1,16 +1,16 @@
 /**
  * PermissionService - CloudAcademy A3
- * 
+ *
  * Centraliza as regras de acesso da plataforma, substituindo verificações
  * espalhadas pela aplicação (ex: `user.role === "admin"`).
- * 
+ *
  * @module services/permissions
  */
 
 export const Roles = {
   STUDENT: "student",
   VALIDATOR: "validator",
-  ADMIN: "admin"
+  ADMIN: "admin",
 };
 
 /**
@@ -20,14 +20,14 @@ export const Roles = {
 const RoleWeights = {
   [Roles.STUDENT]: 10,
   [Roles.VALIDATOR]: 50,
-  [Roles.ADMIN]: 100
+  [Roles.ADMIN]: 100,
 };
 
 export class PermissionService {
   /**
    * Normaliza uma string de role para o contrato estrito.
    * Remove espaços, converte para minúsculas e mapeia aliases.
-   * @param {string} rawRole 
+   * @param {string} rawRole
    * @returns {string} - student | validator | admin
    */
   static normalizeRole(rawRole) {
@@ -40,8 +40,8 @@ export class PermissionService {
 
   /**
    * Compara duas roles.
-   * @param {string} roleA 
-   * @param {string} roleB 
+   * @param {string} roleA
+   * @param {string} roleB
    * @returns {number} Positivo se roleA > roleB, negativo se roleA < roleB, 0 se iguais.
    */
   static compareRoles(roleA, roleB) {
@@ -52,14 +52,16 @@ export class PermissionService {
 
   /**
    * Retorna a role mais alta de um array.
-   * @param {string[]} roles 
+   * @param {string[]} roles
    * @returns {string}
    */
   static getHighestRole(roles) {
     if (!roles || roles.length === 0) return Roles.STUDENT;
-    return roles.map(r => this.normalizeRole(r)).reduce((highest, current) => {
-      return this.compareRoles(current, highest) > 0 ? current : highest;
-    }, Roles.STUDENT);
+    return roles
+      .map((r) => this.normalizeRole(r))
+      .reduce((highest, current) => {
+        return this.compareRoles(current, highest) > 0 ? current : highest;
+      }, Roles.STUDENT);
   }
 
   /**

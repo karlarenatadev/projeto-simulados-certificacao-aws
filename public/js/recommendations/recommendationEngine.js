@@ -108,11 +108,7 @@ export class RecommendationEngine {
         return {
           domainId,
           score: domain.score,
-          priority: isWeak
-            ? domain.score < 50
-              ? "high"
-              : "medium"
-            : "low",
+          priority: isWeak ? (domain.score < 50 ? "high" : "medium") : "low",
           status: isWeak ? "weak" : isStrong ? "strong" : "unclassified",
         };
       })
@@ -242,7 +238,7 @@ export class RecommendationEngine {
         route: resources.documentation,
         icon: "fa-solid fa-book-open",
         style: "outline",
-        isExternal: true
+        isExternal: true,
       });
     }
 

@@ -72,11 +72,15 @@ export const SPRINT_MAPS = {
   },
 };
 
-export function readSprintRecommendation(certId, storage = globalThis.localStorage) {
+export function readSprintRecommendation(
+  certId,
+  storage = globalThis.localStorage,
+) {
   try {
-    const key = storage === globalThis.localStorage
-      ? storageManager.getUserScopedKey("last_diagnostic_recommendation")
-      : "aws_sim_last_diagnostic_recommendation";
+    const key =
+      storage === globalThis.localStorage
+        ? storageManager.getUserScopedKey("last_diagnostic_recommendation")
+        : "aws_sim_last_diagnostic_recommendation";
     const raw = storage?.getItem(key);
     const recommendation = raw ? JSON.parse(raw) : null;
     if (
@@ -174,7 +178,9 @@ export function renderSprintUI(lang, certId) {
 
   if (sprintTitleEl) sprintTitleEl.textContent = labels[lang].title;
   if (sprintSubtitleEl) {
-    const hasFocus = recommendation?.weakDomains?.length || recommendation?.weakServices?.length;
+    const hasFocus =
+      recommendation?.weakDomains?.length ||
+      recommendation?.weakServices?.length;
     sprintSubtitleEl.textContent = hasFocus
       ? `${labels[lang].subtitle} ${lang === "en" ? "Personalized from your latest X-Ray." : "Personalizado pelo seu último Raio-X."}`
       : labels[lang].subtitle;
@@ -183,7 +189,8 @@ export function renderSprintUI(lang, certId) {
     sprintProgressLabel.textContent = labels[lang].progress;
   if (sprintStartBtn) sprintStartBtn.textContent = labels[lang].startBtn;
   if (sprintStartBtn && progress.completed) {
-    sprintStartBtn.textContent = lang === "en" ? "Sprint completed" : "Sprint concluído";
+    sprintStartBtn.textContent =
+      lang === "en" ? "Sprint completed" : "Sprint concluído";
     sprintStartBtn.disabled = true;
   }
 
@@ -221,32 +228,61 @@ export function renderSprintUI(lang, certId) {
     grid.appendChild(dayDiv);
   }
 
-  const actionContainer = document.getElementById("sprint-recommendation-actions");
+  const actionContainer = document.getElementById(
+    "sprint-recommendation-actions",
+  );
   if (actionContainer) {
     actionContainer.innerHTML = "";
     const actions = recommendation?.recommendations;
     if (recommendation?.source === "diagnostic" && actions) {
       const links = [
-        ["flashcards", "./flashcards.html", "fa-layer-group", lang === "en" ? "Review Flashcards" : "Revisar Flashcards"],
-        ["questions", "./simulados.html", "fa-play", lang === "en" ? "Practice Questions" : "Praticar Questões"],
-        ["labs", "./laboratorios.html", "fa-flask", lang === "en" ? "View recommended Labs" : "Ver Laboratórios recomendados"],
-        ["cases", "./cases.html", "fa-diagram-project", lang === "en" ? "View recommended Cases" : "Ver Cases recomendados"],
+        [
+          "flashcards",
+          "./flashcards.html",
+          "fa-layer-group",
+          lang === "en" ? "Review Flashcards" : "Revisar Flashcards",
+        ],
+        [
+          "questions",
+          "./simulados.html",
+          "fa-play",
+          lang === "en" ? "Practice Questions" : "Praticar Questões",
+        ],
+        [
+          "labs",
+          "./laboratorios.html",
+          "fa-flask",
+          lang === "en"
+            ? "View recommended Labs"
+            : "Ver Laboratórios recomendados",
+        ],
+        [
+          "cases",
+          "./cases.html",
+          "fa-diagram-project",
+          lang === "en" ? "View recommended Cases" : "Ver Cases recomendados",
+        ],
       ].filter(([key]) => actions[key]?.enabled);
       actionContainer.innerHTML = links
-        .map(([key, route, icon, label]) => `<a class="a3-btn a3-btn-secondary" data-sprint-recommendation="${key}" href="${route}"><i class="fa-solid ${icon}"></i> ${label}</a>`)
+        .map(
+          ([key, route, icon, label]) =>
+            `<a class="a3-btn a3-btn-secondary" data-sprint-recommendation="${key}" href="${route}"><i class="fa-solid ${icon}"></i> ${label}</a>`,
+        )
         .join("");
-      actionContainer.querySelectorAll("[data-sprint-recommendation]").forEach((link) => {
-        link.addEventListener("click", () => {
-          const key = link.dataset.sprintRecommendation;
-          const context = actions[key]?.context;
-          if (context && (key === "flashcards" || key === "questions")) {
-            sessionStorage.setItem(
-              storageManager.getUserScopedKey("diagnostic_context"),
-              JSON.stringify(context),
-            );
-          }
+      actionContainer
+        .querySelectorAll("[data-sprint-recommendation]")
+        .forEach((link) => {
+          link.addEventListener("click", () => {
+            const key = link.dataset.sprintRecommendation;
+            const context = actions[key]?.context;
+            if (context && (key === "flashcards" || key === "questions")) {
+              sessionStorage.setItem(
+                storageManager.getUserScopedKey("diagnostic_context"),
+                JSON.stringify(context),
+              );
+            }
+          });
         });
-      });
     }
   }
 }
@@ -370,7 +406,10 @@ export function completeSprintDay(completedDay, certId, lang, onComplete) {
   if (!completedStages.has(day)) {
     completedStages.add(day);
   }
-  sprintState.completedStages = [...completedStages].sort((left, right) => left - right).map(String).slice(0, 14);
+  sprintState.completedStages = [...completedStages]
+    .sort((left, right) => left - right)
+    .map(String)
+    .slice(0, 14);
   sprintState.lastCompletedDate = new Date().toDateString();
   sprintState.streakDays += 1;
   storageManager.saveSprintState(certId, sprintState);

@@ -9,8 +9,6 @@
     />
     <title id="page-title">Case de Arquitetura — Simulador AWS</title>
 
-    
-
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -20,8 +18,8 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
 
-    <link rel="stylesheet" href="./css/style.css?v=mt1ppaeq" />
-    <link rel="stylesheet" href="./css/cases.css?v=mt1ppaeq" />
+    <link rel="stylesheet" href="./css/style.css?v=ba1e0410" />
+    <link rel="stylesheet" href="./css/cases.css?v=ba1e0410" />
 
     <!-- Drawflow — node editor for Architecture Builder -->
     <link
@@ -96,10 +94,7 @@
           <i class="fa-solid fa-download"></i> Baixar App
         </button>
 
-        <div
-          id="score-container"
-          class="hidden a3-badge a3-badge-primary"
-        >
+        <div id="score-container" class="hidden a3-badge a3-badge-primary">
           <i
             class="fa-solid fa-bullseye text-green-400 text-xs md:text-base"
             aria-hidden="true"
@@ -528,7 +523,10 @@
       } from "./js/cases/caseManager.js";
       import { renderArchitecture } from "./js/cases/architectureRenderer.js";
       import { AuthService } from "./js/services/authService.js";
-      import { getCurrentLanguage, setCurrentLanguage } from "./js/core/languageManager.js";
+      import {
+        getCurrentLanguage,
+        setCurrentLanguage,
+      } from "./js/core/languageManager.js";
       import { initializeUI } from "./js/i18n/initUI.js";
 
       // ---- Theme ----
@@ -582,7 +580,9 @@
         let running = false;
 
         function formatTime(s) {
-          const m = Math.floor(s / 60).toString().padStart(2, "0");
+          const m = Math.floor(s / 60)
+            .toString()
+            .padStart(2, "0");
           const sec = (s % 60).toString().padStart(2, "0");
           return `${m}:${sec}`;
         }
@@ -601,8 +601,10 @@
 
         function startTimer() {
           running = true;
-          pomodoroBtn.querySelector("i").className = "fa-solid fa-stopwatch fa-beat";
-          pomodoroBtn.title = "Pausar Pomodoro — clique para pausar ou segurar para resetar";
+          pomodoroBtn.querySelector("i").className =
+            "fa-solid fa-stopwatch fa-beat";
+          pomodoroBtn.title =
+            "Pausar Pomodoro — clique para pausar ou segurar para resetar";
           intervalId = setInterval(() => {
             seconds--;
             updateDisplay();
@@ -640,7 +642,11 @@
           if (!pressTimer) return; // long-press foi acionado
           clearTimeout(pressTimer);
           pressTimer = null;
-          if (running) { stopTimer(); } else { startTimer(); }
+          if (running) {
+            stopTimer();
+          } else {
+            startTimer();
+          }
         });
         pomodoroBtn.addEventListener("mouseleave", () => {
           clearTimeout(pressTimer);
@@ -648,11 +654,15 @@
         });
 
         // Solicitar permissão de notificação na primeira interação
-        pomodoroBtn.addEventListener("click", () => {
-          if (Notification && Notification.permission === "default") {
-            Notification.requestPermission();
-          }
-        }, { once: true });
+        pomodoroBtn.addEventListener(
+          "click",
+          () => {
+            if (Notification && Notification.permission === "default") {
+              Notification.requestPermission();
+            }
+          },
+          { once: true },
+        );
       })();
 
       // ---- Tabs ----
@@ -790,7 +800,7 @@
         const rawOptions = Array.isArray(q.options) ? q.options : [];
         const normalizedOptions = rawOptions.map((opt, i) => ({
           id: letters[i] || String(i),
-          text: typeof opt === "string" ? opt : (opt.text || String(opt)),
+          text: typeof opt === "string" ? opt : opt.text || String(opt),
         }));
 
         // correct pode ser número (índice) ou string
@@ -1060,183 +1070,183 @@
     <script>
       /* Legacy builder is retained only as a source-compatible migration guard. */
       if (false) {
-      // ================================================================
-      // Architecture Builder — AWS Service Catalog + Drawflow
-      // ================================================================
+        // ================================================================
+        // Architecture Builder — AWS Service Catalog + Drawflow
+        // ================================================================
 
-      const AWS_PALETTE = [
-        // Compute
-        {
-          slug: "amazon-ec2",
-          name: "Amazon EC2",
-          category: "Compute",
-          icon: "fa-solid fa-server",
-        },
-        {
-          slug: "aws-lambda",
-          name: "AWS Lambda",
-          category: "Compute",
-          icon: "fa-solid fa-bolt",
-        },
-        {
-          slug: "amazon-ecs",
-          name: "Amazon ECS",
-          category: "Compute",
-          icon: "fa-solid fa-box",
-        },
-        {
-          slug: "amazon-auto-scaling",
-          name: "Auto Scaling",
-          category: "Compute",
-          icon: "https://icon.icepanel.io/AWS/svg/Compute/Auto-Scaling.svg",
-        },
-        // Storage
-        {
-          slug: "amazon-s3",
-          name: "Amazon S3",
-          category: "Storage",
-          icon: "fa-solid fa-bucket",
-        },
-        {
-          slug: "amazon-ebs",
-          name: "Amazon EBS",
-          category: "Storage",
-          icon: "fa-solid fa-hard-drive",
-        },
-        {
-          slug: "amazon-efs",
-          name: "Amazon EFS",
-          category: "Storage",
-          icon: "fa-solid fa-folder-tree",
-        },
-        // Database
-        {
-          slug: "amazon-rds",
-          name: "Amazon RDS",
-          category: "Database",
-          icon: "fa-solid fa-database",
-        },
-        {
-          slug: "amazon-dynamodb",
-          name: "DynamoDB",
-          category: "Database",
-          icon: "fa-solid fa-table-list",
-        },
-        {
-          slug: "amazon-elasticache",
-          name: "ElastiCache",
-          category: "Database",
-          icon: "https://icon.icepanel.io/AWS/svg/Database/ElastiCache.svg",
-        },
-        // Networking
-        {
-          slug: "amazon-vpc",
-          name: "Amazon VPC",
-          category: "Networking",
-          icon: "fa-solid fa-network-wired",
-        },
-        {
-          slug: "amazon-cloudfront",
-          name: "CloudFront",
-          category: "Networking",
-          icon: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/CloudFront.svg",
-        },
-        {
-          slug: "amazon-api-gateway",
-          name: "API Gateway",
-          category: "Networking",
-          icon: "https://icon.icepanel.io/AWS/svg/App-Integration/API-Gateway.svg",
-        },
-        {
-          slug: "elastic-load-balancing",
-          name: "Load Balancer",
-          category: "Networking",
-          icon: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/Elastic-Load-Balancing.svg",
-        },
-        {
-          slug: "amazon-route53",
-          name: "Route 53",
-          category: "Networking",
-          icon: "fa-solid fa-route",
-        },
-        // Security
-        {
-          slug: "aws-iam",
-          name: "AWS IAM",
-          category: "Security",
-          icon: "fa-solid fa-id-card",
-        },
-        {
-          slug: "aws-kms",
-          name: "AWS KMS",
-          category: "Security",
-          icon: "fa-solid fa-key",
-        },
-        {
-          slug: "aws-waf",
-          name: "AWS WAF",
-          category: "Security",
-          icon: "fa-solid fa-shield-halved",
-        },
-        // Messaging
-        {
-          slug: "amazon-sqs",
-          name: "Amazon SQS",
-          category: "Messaging",
-          icon: "fa-solid fa-envelope",
-        },
-        {
-          slug: "amazon-sns",
-          name: "Amazon SNS",
-          category: "Messaging",
-          icon: "fa-solid fa-bell",
-        },
-        // Monitoring
-        {
-          slug: "amazon-cloudwatch",
-          name: "CloudWatch",
-          category: "Monitoring",
-          icon: "https://icon.icepanel.io/AWS/svg/Management-Governance/CloudWatch.svg",
-        },
-        {
-          slug: "aws-cloudtrail",
-          name: "CloudTrail",
-          category: "Monitoring",
-          icon: "fa-solid fa-shoe-prints",
-        },
-        // Users / External
-        {
-          slug: "user",
-          name: "Usuário / Client",
-          category: "External",
-          icon: "fa-solid fa-user",
-        },
-        {
-          slug: "internet",
-          name: "Internet",
-          category: "External",
-          icon: "fa-solid fa-cloud",
-        },
-      ];
+        const AWS_PALETTE = [
+          // Compute
+          {
+            slug: "amazon-ec2",
+            name: "Amazon EC2",
+            category: "Compute",
+            icon: "fa-solid fa-server",
+          },
+          {
+            slug: "aws-lambda",
+            name: "AWS Lambda",
+            category: "Compute",
+            icon: "fa-solid fa-bolt",
+          },
+          {
+            slug: "amazon-ecs",
+            name: "Amazon ECS",
+            category: "Compute",
+            icon: "fa-solid fa-box",
+          },
+          {
+            slug: "amazon-auto-scaling",
+            name: "Auto Scaling",
+            category: "Compute",
+            icon: "https://icon.icepanel.io/AWS/svg/Compute/Auto-Scaling.svg",
+          },
+          // Storage
+          {
+            slug: "amazon-s3",
+            name: "Amazon S3",
+            category: "Storage",
+            icon: "fa-solid fa-bucket",
+          },
+          {
+            slug: "amazon-ebs",
+            name: "Amazon EBS",
+            category: "Storage",
+            icon: "fa-solid fa-hard-drive",
+          },
+          {
+            slug: "amazon-efs",
+            name: "Amazon EFS",
+            category: "Storage",
+            icon: "fa-solid fa-folder-tree",
+          },
+          // Database
+          {
+            slug: "amazon-rds",
+            name: "Amazon RDS",
+            category: "Database",
+            icon: "fa-solid fa-database",
+          },
+          {
+            slug: "amazon-dynamodb",
+            name: "DynamoDB",
+            category: "Database",
+            icon: "fa-solid fa-table-list",
+          },
+          {
+            slug: "amazon-elasticache",
+            name: "ElastiCache",
+            category: "Database",
+            icon: "https://icon.icepanel.io/AWS/svg/Database/ElastiCache.svg",
+          },
+          // Networking
+          {
+            slug: "amazon-vpc",
+            name: "Amazon VPC",
+            category: "Networking",
+            icon: "fa-solid fa-network-wired",
+          },
+          {
+            slug: "amazon-cloudfront",
+            name: "CloudFront",
+            category: "Networking",
+            icon: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/CloudFront.svg",
+          },
+          {
+            slug: "amazon-api-gateway",
+            name: "API Gateway",
+            category: "Networking",
+            icon: "https://icon.icepanel.io/AWS/svg/App-Integration/API-Gateway.svg",
+          },
+          {
+            slug: "elastic-load-balancing",
+            name: "Load Balancer",
+            category: "Networking",
+            icon: "https://icon.icepanel.io/AWS/svg/Networking-Content-Delivery/Elastic-Load-Balancing.svg",
+          },
+          {
+            slug: "amazon-route53",
+            name: "Route 53",
+            category: "Networking",
+            icon: "fa-solid fa-route",
+          },
+          // Security
+          {
+            slug: "aws-iam",
+            name: "AWS IAM",
+            category: "Security",
+            icon: "fa-solid fa-id-card",
+          },
+          {
+            slug: "aws-kms",
+            name: "AWS KMS",
+            category: "Security",
+            icon: "fa-solid fa-key",
+          },
+          {
+            slug: "aws-waf",
+            name: "AWS WAF",
+            category: "Security",
+            icon: "fa-solid fa-shield-halved",
+          },
+          // Messaging
+          {
+            slug: "amazon-sqs",
+            name: "Amazon SQS",
+            category: "Messaging",
+            icon: "fa-solid fa-envelope",
+          },
+          {
+            slug: "amazon-sns",
+            name: "Amazon SNS",
+            category: "Messaging",
+            icon: "fa-solid fa-bell",
+          },
+          // Monitoring
+          {
+            slug: "amazon-cloudwatch",
+            name: "CloudWatch",
+            category: "Monitoring",
+            icon: "https://icon.icepanel.io/AWS/svg/Management-Governance/CloudWatch.svg",
+          },
+          {
+            slug: "aws-cloudtrail",
+            name: "CloudTrail",
+            category: "Monitoring",
+            icon: "fa-solid fa-shoe-prints",
+          },
+          // Users / External
+          {
+            slug: "user",
+            name: "Usuário / Client",
+            category: "External",
+            icon: "fa-solid fa-user",
+          },
+          {
+            slug: "internet",
+            name: "Internet",
+            category: "External",
+            icon: "fa-solid fa-cloud",
+          },
+        ];
 
-      // ----------------------------------------------------------------
-      // Build sidebar palette
-      // ----------------------------------------------------------------
-      function buildPalette() {
-        const container = document.getElementById("aws-service-palette");
-        if (!container) return;
+        // ----------------------------------------------------------------
+        // Build sidebar palette
+        // ----------------------------------------------------------------
+        function buildPalette() {
+          const container = document.getElementById("aws-service-palette");
+          if (!container) return;
 
-        const groups = {};
-        for (const svc of AWS_PALETTE) {
-          if (!groups[svc.category]) groups[svc.category] = [];
-          groups[svc.category].push(svc);
-        }
+          const groups = {};
+          for (const svc of AWS_PALETTE) {
+            if (!groups[svc.category]) groups[svc.category] = [];
+            groups[svc.category].push(svc);
+          }
 
-        let html = "";
-        for (const [cat, items] of Object.entries(groups)) {
-          html += `<div class="palette-group-label">${cat}</div>`;
-          for (const item of items) {
-            html += `
+          let html = "";
+          for (const [cat, items] of Object.entries(groups)) {
+            html += `<div class="palette-group-label">${cat}</div>`;
+            for (const item of items) {
+              html += `
               <div
                 class="palette-item"
                 draggable="true"
@@ -1249,309 +1259,316 @@
                 <i class="${item.icon} text-3xl mb-2 text-gray-500"></i>
                 <span class="palette-item-text">${item.name}</span>
               </div>`;
+            }
           }
-        }
-        container.innerHTML = html;
+          container.innerHTML = html;
 
-        // Drag events on palette items
-        container.querySelectorAll(".palette-item").forEach((el) => {
-          el.addEventListener("dragstart", (e) => {
-            e.dataTransfer.setData(
-              "application/aws-service",
-              JSON.stringify({
-                slug: el.dataset.slug,
-                name: el.dataset.name,
-                category: el.dataset.category,
-                icon: el.dataset.icon,
-              }),
-            );
+          // Drag events on palette items
+          container.querySelectorAll(".palette-item").forEach((el) => {
+            el.addEventListener("dragstart", (e) => {
+              e.dataTransfer.setData(
+                "application/aws-service",
+                JSON.stringify({
+                  slug: el.dataset.slug,
+                  name: el.dataset.name,
+                  category: el.dataset.category,
+                  icon: el.dataset.icon,
+                }),
+              );
+            });
           });
-        });
-      }
+        }
 
-      // ----------------------------------------------------------------
-      // Drawflow initializer (lazy — only when builder tab first opens)
-      // ----------------------------------------------------------------
-      let drawflowEditor = null;
-      let builderInitialized = false;
-      let nodeCount = 0;
+        // ----------------------------------------------------------------
+        // Drawflow initializer (lazy — only when builder tab first opens)
+        // ----------------------------------------------------------------
+        let drawflowEditor = null;
+        let builderInitialized = false;
+        let nodeCount = 0;
 
-      function nodeTemplate(svc) {
-        return `
+        function nodeTemplate(svc) {
+          return `
           <div class="aws-node-inner">
             <i class="${svc.icon} text-[32px] text-blue-500 mb-1"></i>
             <div class="aws-node-name">${svc.name}</div>
             <div class="aws-node-cat">${svc.category}</div>
           </div>`;
-      }
+        }
 
-      function initBuilder() {
-        if (builderInitialized) return;
-        builderInitialized = true;
+        function initBuilder() {
+          if (builderInitialized) return;
+          builderInitialized = true;
 
-        const el = document.getElementById("drawflow");
-        drawflowEditor = new Drawflow(el);
-        drawflowEditor.reroute = true;
-        drawflowEditor.reroute_fix_curvature = true;
-        drawflowEditor.start();
+          const el = document.getElementById("drawflow");
+          drawflowEditor = new Drawflow(el);
+          drawflowEditor.reroute = true;
+          drawflowEditor.reroute_fix_curvature = true;
+          drawflowEditor.start();
 
-        // Drop on canvas
-        el.addEventListener("dragover", (e) => e.preventDefault());
-        el.addEventListener("drop", (e) => {
-          e.preventDefault();
-          const raw = e.dataTransfer.getData("application/aws-service");
-          if (!raw) return;
-          const svc = JSON.parse(raw);
-
-          const rect = el.getBoundingClientRect();
-          const zoom = drawflowEditor.zoom;
-          const x =
-            (e.clientX - rect.left) / zoom - drawflowEditor.canvas_x / zoom;
-          const y =
-            (e.clientY - rect.top) / zoom - drawflowEditor.canvas_y / zoom;
-
-          drawflowEditor.addNode(
-            svc.slug,
-            1,
-            1, // inputs, outputs
-            x - 65,
-            y - 55,
-            svc.slug,
-            { svc },
-            nodeTemplate(svc),
-          );
-
-          nodeCount++;
-          updateHint();
-          setStatus(`Nó adicionado: ${svc.name}`);
-        });
-
-        // Right-click to delete node
-        el.addEventListener("contextmenu", (e) => {
-          const nodeEl = e.target.closest(".drawflow-node");
-          if (nodeEl) {
+          // Drop on canvas
+          el.addEventListener("dragover", (e) => e.preventDefault());
+          el.addEventListener("drop", (e) => {
             e.preventDefault();
-            const id = parseInt(nodeEl.id.replace("node-", ""), 10);
-            drawflowEditor.removeNodeId("node-" + id);
-            nodeCount = Math.max(0, nodeCount - 1);
+            const raw = e.dataTransfer.getData("application/aws-service");
+            if (!raw) return;
+            const svc = JSON.parse(raw);
+
+            const rect = el.getBoundingClientRect();
+            const zoom = drawflowEditor.zoom;
+            const x =
+              (e.clientX - rect.left) / zoom - drawflowEditor.canvas_x / zoom;
+            const y =
+              (e.clientY - rect.top) / zoom - drawflowEditor.canvas_y / zoom;
+
+            drawflowEditor.addNode(
+              svc.slug,
+              1,
+              1, // inputs, outputs
+              x - 65,
+              y - 55,
+              svc.slug,
+              { svc },
+              nodeTemplate(svc),
+            );
+
+            nodeCount++;
             updateHint();
-            setStatus("Nó removido.");
-          }
-        });
-      }
-
-      function updateHint() {
-        const hint = document.getElementById("builder-empty-hint");
-        if (hint) hint.style.display = nodeCount === 0 ? "flex" : "none";
-      }
-
-      function setStatus(msg) {
-        const el = document.getElementById("builder-status");
-        if (el) {
-          el.textContent = msg;
-          clearTimeout(el._t);
-          el._t = setTimeout(() => {
-            el.textContent = "";
-          }, 3000);
-        }
-      }
-
-      // ----------------------------------------------------------------
-      // Toolbar actions & Challenge Logic
-      // ----------------------------------------------------------------
-      document
-        .getElementById("builder-btn-clear")
-        .addEventListener("click", () => {
-          if (!drawflowEditor) return;
-          if (!confirm("Limpar todo o canvas?")) return;
-          drawflowEditor.clearModuleSelected();
-          nodeCount = 0;
-          updateHint();
-          setStatus("Canvas limpo.");
-          hideResult();
-        });
-
-      document
-        .getElementById("builder-btn-export")
-        .addEventListener("click", () => {
-          if (!drawflowEditor) {
-            alert("Abra o montador e adicione serviços primeiro.");
-            return;
-          }
-          const data = drawflowEditor.export();
-          const blob = new Blob([JSON.stringify(data, null, 2)], {
-            type: "application/json",
+            setStatus(`Nó adicionado: ${svc.name}`);
           });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = `arquitetura-${Date.now()}.json`;
-          a.click();
-          URL.revokeObjectURL(url);
-          setStatus("JSON exportado!");
-        });
 
-      // Verification Logic
-      document
-        .getElementById("builder-btn-verify")
-        .addEventListener("click", () => {
-          if (!drawflowEditor) return;
-          if (nodeCount === 0) {
-            alert("Adicione pelo menos um serviço ao canvas para verificar.");
-            return;
-          }
-
-          const data = drawflowEditor.export();
-          const nodesOnCanvas = Object.values(data.drawflow.Home.data);
-
-          // extrair slugs
-          const userSlugs = new Set(nodesOnCanvas.map((n) => n.name));
-          const correctSlugsMap = new Map();
-          if (window._caseData && window._caseData.services) {
-            window._caseData.services.forEach((s) => {
-              correctSlugsMap.set(s.slug, s);
-            });
-          }
-
-          const correct = [];
-          const missing = [];
-          const extra = [];
-
-          // Find correct and extra
-          for (const userSlug of userSlugs) {
-            // Find in palette to get nice names/icons
-            let svcInfo = AWS_PALETTE.find((p) => p.slug === userSlug) || {
-              name: userSlug,
-              icon: "",
-            };
-            if (correctSlugsMap.has(userSlug)) {
-              correct.push(svcInfo);
-            } else {
-              extra.push(svcInfo);
+          // Right-click to delete node
+          el.addEventListener("contextmenu", (e) => {
+            const nodeEl = e.target.closest(".drawflow-node");
+            if (nodeEl) {
+              e.preventDefault();
+              const id = parseInt(nodeEl.id.replace("node-", ""), 10);
+              drawflowEditor.removeNodeId("node-" + id);
+              nodeCount = Math.max(0, nodeCount - 1);
+              updateHint();
+              setStatus("Nó removido.");
             }
-          }
-
-          // Find missing
-          for (const [correctSlug, correctSvc] of correctSlugsMap.entries()) {
-            if (!userSlugs.has(correctSlug)) {
-              let svcInfo = AWS_PALETTE.find((p) => p.slug === correctSlug) || {
-                name: correctSvc.name,
-                icon: correctSvc.icon_url,
-              };
-              missing.push(svcInfo);
-            }
-          }
-
-          const totalExpected = correctSlugsMap.size;
-          const score =
-            totalExpected === 0
-              ? 100
-              : Math.round((correct.length / totalExpected) * 100);
-
-          showResult(score, correct, missing, extra);
-          setStatus("Verificação concluída!");
-        });
-
-      function showResult(score, correct, missing, extra) {
-        document.getElementById("builder-phase-banner").style.display = "none";
-        const resultPanel = document.getElementById("builder-result-panel");
-        resultPanel.classList.add("visible");
-
-        const circle = document.getElementById("builder-score-circle");
-        circle.className = "builder-score-circle"; // reset
-        if (score >= 70) {
-          circle.classList.add("builder-score-circle--pass");
-          document.getElementById("builder-score-title").textContent =
-            "Bom trabalho!";
-        } else {
-          circle.classList.add("builder-score-circle--fail");
-          document.getElementById("builder-score-title").textContent =
-            "Precisa melhorar";
+          });
         }
 
-        document.getElementById("builder-score-pct").textContent = `${score}%`;
-        document.getElementById("builder-score-sub").textContent =
-          `Você acertou ${correct.length} de ${correct.length + missing.length} serviços essenciais.`;
+        function updateHint() {
+          const hint = document.getElementById("builder-empty-hint");
+          if (hint) hint.style.display = nodeCount === 0 ? "flex" : "none";
+        }
 
-        let listsHtml = "";
-        if (correct.length > 0) {
-          listsHtml += `<div class="builder-result-group builder-result-group--correct">
+        function setStatus(msg) {
+          const el = document.getElementById("builder-status");
+          if (el) {
+            el.textContent = msg;
+            clearTimeout(el._t);
+            el._t = setTimeout(() => {
+              el.textContent = "";
+            }, 3000);
+          }
+        }
+
+        // ----------------------------------------------------------------
+        // Toolbar actions & Challenge Logic
+        // ----------------------------------------------------------------
+        document
+          .getElementById("builder-btn-clear")
+          .addEventListener("click", () => {
+            if (!drawflowEditor) return;
+            if (!confirm("Limpar todo o canvas?")) return;
+            drawflowEditor.clearModuleSelected();
+            nodeCount = 0;
+            updateHint();
+            setStatus("Canvas limpo.");
+            hideResult();
+          });
+
+        document
+          .getElementById("builder-btn-export")
+          .addEventListener("click", () => {
+            if (!drawflowEditor) {
+              alert("Abra o montador e adicione serviços primeiro.");
+              return;
+            }
+            const data = drawflowEditor.export();
+            const blob = new Blob([JSON.stringify(data, null, 2)], {
+              type: "application/json",
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `arquitetura-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            setStatus("JSON exportado!");
+          });
+
+        // Verification Logic
+        document
+          .getElementById("builder-btn-verify")
+          .addEventListener("click", () => {
+            if (!drawflowEditor) return;
+            if (nodeCount === 0) {
+              alert("Adicione pelo menos um serviço ao canvas para verificar.");
+              return;
+            }
+
+            const data = drawflowEditor.export();
+            const nodesOnCanvas = Object.values(data.drawflow.Home.data);
+
+            // extrair slugs
+            const userSlugs = new Set(nodesOnCanvas.map((n) => n.name));
+            const correctSlugsMap = new Map();
+            if (window._caseData && window._caseData.services) {
+              window._caseData.services.forEach((s) => {
+                correctSlugsMap.set(s.slug, s);
+              });
+            }
+
+            const correct = [];
+            const missing = [];
+            const extra = [];
+
+            // Find correct and extra
+            for (const userSlug of userSlugs) {
+              // Find in palette to get nice names/icons
+              let svcInfo = AWS_PALETTE.find((p) => p.slug === userSlug) || {
+                name: userSlug,
+                icon: "",
+              };
+              if (correctSlugsMap.has(userSlug)) {
+                correct.push(svcInfo);
+              } else {
+                extra.push(svcInfo);
+              }
+            }
+
+            // Find missing
+            for (const [correctSlug, correctSvc] of correctSlugsMap.entries()) {
+              if (!userSlugs.has(correctSlug)) {
+                let svcInfo = AWS_PALETTE.find(
+                  (p) => p.slug === correctSlug,
+                ) || {
+                  name: correctSvc.name,
+                  icon: correctSvc.icon_url,
+                };
+                missing.push(svcInfo);
+              }
+            }
+
+            const totalExpected = correctSlugsMap.size;
+            const score =
+              totalExpected === 0
+                ? 100
+                : Math.round((correct.length / totalExpected) * 100);
+
+            showResult(score, correct, missing, extra);
+            setStatus("Verificação concluída!");
+          });
+
+        function showResult(score, correct, missing, extra) {
+          document.getElementById("builder-phase-banner").style.display =
+            "none";
+          const resultPanel = document.getElementById("builder-result-panel");
+          resultPanel.classList.add("visible");
+
+          const circle = document.getElementById("builder-score-circle");
+          circle.className = "builder-score-circle"; // reset
+          if (score >= 70) {
+            circle.classList.add("builder-score-circle--pass");
+            document.getElementById("builder-score-title").textContent =
+              "Bom trabalho!";
+          } else {
+            circle.classList.add("builder-score-circle--fail");
+            document.getElementById("builder-score-title").textContent =
+              "Precisa melhorar";
+          }
+
+          document.getElementById("builder-score-pct").textContent =
+            `${score}%`;
+          document.getElementById("builder-score-sub").textContent =
+            `Você acertou ${correct.length} de ${correct.length + missing.length} serviços essenciais.`;
+
+          let listsHtml = "";
+          if (correct.length > 0) {
+            listsHtml += `<div class="builder-result-group builder-result-group--correct">
                 <div class="builder-result-group-title"><i class="fa-solid fa-check"></i> Corretos (${correct.length})</div>
                 ${correct.map((s) => `<div class="builder-result-item"><img src="${s.icon}" alt="">${s.name}</div>`).join("")}
             </div>`;
-        }
-        if (missing.length > 0) {
-          listsHtml += `<div class="builder-result-group builder-result-group--missing">
+          }
+          if (missing.length > 0) {
+            listsHtml += `<div class="builder-result-group builder-result-group--missing">
                 <div class="builder-result-group-title"><i class="fa-solid fa-xmark"></i> Faltando (${missing.length})</div>
                 ${missing.map((s) => `<div class="builder-result-item"><img src="${s.icon}" alt="">${s.name}</div>`).join("")}
             </div>`;
-        }
-        if (extra.length > 0) {
-          listsHtml += `<div class="builder-result-group builder-result-group--extra">
+          }
+          if (extra.length > 0) {
+            listsHtml += `<div class="builder-result-group builder-result-group--extra">
                 <div class="builder-result-group-title"><i class="fa-solid fa-triangle-exclamation"></i> Desnecessários (${extra.length})</div>
                 ${extra.map((s) => `<div class="builder-result-item"><img src="${s.icon}" alt="">${s.name}</div>`).join("")}
             </div>`;
-        }
-
-        document.getElementById("builder-result-lists").innerHTML = listsHtml;
-        resultPanel.scrollIntoView({ behavior: "smooth" });
-      }
-
-      function hideResult() {
-        document.getElementById("builder-phase-banner").style.display = "flex";
-        document
-          .getElementById("builder-result-panel")
-          .classList.remove("visible");
-        document.getElementById("builder-gabarito").classList.remove("visible");
-      }
-
-      document
-        .getElementById("builder-btn-retry")
-        .addEventListener("click", () => {
-          hideResult();
-        });
-
-      document
-        .getElementById("builder-btn-gabarito")
-        .addEventListener("click", () => {
-          const gabaritoPanel = document.getElementById("builder-gabarito");
-          gabaritoPanel.classList.add("visible");
-
-          // Renderiza o diagrama oficial no painel de gabarito se ainda não renderizou
-          if (window._caseData && window._caseData.architecture_graph) {
-            const container = document.getElementById(
-              "builder-gabarito-diagram",
-            );
-            if (!container.dataset.rendered) {
-              container.dataset.rendered = "true";
-              // Importa renderArchitecture dinamicamente para usar dentro deste bloco
-              import("./js/cases/architectureRenderer.js").then(
-                ({ renderArchitecture }) => {
-                  renderArchitecture(
-                    container,
-                    window._caseData.architecture_graph,
-                  );
-                },
-              );
-            }
           }
 
-          gabaritoPanel.scrollIntoView({ behavior: "smooth" });
-        });
+          document.getElementById("builder-result-lists").innerHTML = listsHtml;
+          resultPanel.scrollIntoView({ behavior: "smooth" });
+        }
 
-      // ----------------------------------------------------------------
-      // Hook: activate builder when its tab is clicked
-      // ----------------------------------------------------------------
-      document
-        .getElementById("tab-btn-builder")
-        .addEventListener("click", () => {
-          setTimeout(() => {
-            initBuilder();
-          }, 50); // small delay so the tab panel is visible before drawflow measures it
-        });
+        function hideResult() {
+          document.getElementById("builder-phase-banner").style.display =
+            "flex";
+          document
+            .getElementById("builder-result-panel")
+            .classList.remove("visible");
+          document
+            .getElementById("builder-gabarito")
+            .classList.remove("visible");
+        }
 
-      // Build palette immediately
-      buildPalette();
+        document
+          .getElementById("builder-btn-retry")
+          .addEventListener("click", () => {
+            hideResult();
+          });
+
+        document
+          .getElementById("builder-btn-gabarito")
+          .addEventListener("click", () => {
+            const gabaritoPanel = document.getElementById("builder-gabarito");
+            gabaritoPanel.classList.add("visible");
+
+            // Renderiza o diagrama oficial no painel de gabarito se ainda não renderizou
+            if (window._caseData && window._caseData.architecture_graph) {
+              const container = document.getElementById(
+                "builder-gabarito-diagram",
+              );
+              if (!container.dataset.rendered) {
+                container.dataset.rendered = "true";
+                // Importa renderArchitecture dinamicamente para usar dentro deste bloco
+                import("./js/cases/architectureRenderer.js").then(
+                  ({ renderArchitecture }) => {
+                    renderArchitecture(
+                      container,
+                      window._caseData.architecture_graph,
+                    );
+                  },
+                );
+              }
+            }
+
+            gabaritoPanel.scrollIntoView({ behavior: "smooth" });
+          });
+
+        // ----------------------------------------------------------------
+        // Hook: activate builder when its tab is clicked
+        // ----------------------------------------------------------------
+        document
+          .getElementById("tab-btn-builder")
+          .addEventListener("click", () => {
+            setTimeout(() => {
+              initBuilder();
+            }, 50); // small delay so the tab panel is visible before drawflow measures it
+          });
+
+        // Build palette immediately
+        buildPalette();
       }
     </script>
     <script type="module">

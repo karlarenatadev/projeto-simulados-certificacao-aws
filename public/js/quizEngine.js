@@ -63,7 +63,9 @@ function countMetadataSignals(answers, readValues) {
     });
 
   return [...counts.entries()]
-    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+    .sort(
+      (left, right) => right[1] - left[1] || left[0].localeCompare(right[0]),
+    )
     .map(([id, occurrences]) => ({
       id,
       occurrences,
@@ -146,6 +148,20 @@ export function buildPersonalizedQuestionSet(
   return selected;
 }
 
+export function isApprovedQuestion(question) {
+  const dbStatus = String(question?.validation_status || "")
+    .trim()
+    .toUpperCase();
+  const jsonStatus = String(question?.validation?.status || "")
+    .trim()
+    .toLowerCase();
+  return (
+    dbStatus === "APPROVED" ||
+    jsonStatus === "approved" ||
+    jsonStatus === "validated"
+  );
+}
+
 export class QuizEngine {
   constructor(passingScore = 70) {
     this.PASSING_SCORE = passingScore;
@@ -168,6 +184,7 @@ export class QuizEngine {
 
   // 1. CARREGAMENTO E FILTRAGEM
   async _sanitizeQuestions(data, certId) {
+    const approvedData = data.filter(isApprovedQuestion);
     try {
       const manifestRes = await fetch(
         "data/taxonomy/certification-manifest.json",
@@ -176,35 +193,40 @@ export class QuizEngine {
         logger.warn(
           "⚠️ Não foi possível carregar o manifesto. Sanitização ignorada.",
         );
-        return dataRepo.validateQuestions(data);
+        return dataRepo.validateQuestions(approvedData);
       }
       const manifest = await manifestRes.json();
       const config = manifest[certId];
       if (!config) {
         logger.warn(`⚠️ Certificação ${certId} ausente no manifesto.`);
-        return dataRepo.validateQuestions(data);
+        return dataRepo.validateQuestions(approvedData);
       }
 
-      let sanitized = data.filter((q) => {
+      let sanitized = approvedData.filter((q) => {
         if (!q.id && !q.questionId) return false;
-        if (q.certId && normalizeCertificationId(q.certId) !== normalizeCertificationId(certId)) return false;
-        
+        if (
+          q.certId &&
+          normalizeCertificationId(q.certId) !==
+            normalizeCertificationId(certId)
+        )
+          return false;
+
         const qDomain = q.domain || q.domainId;
         const certPath = certificationPaths[certId];
-        
+
         // Verifica se é um allowedDomain (nome em inglês, ex: "Security and Compliance")
         const isAllowedDomainName = config.allowedDomains.includes(qDomain);
-        
+
         // Verifica se é um ID interno de domínio (ex: "seguranca")
         let isAllowedDomainId = false;
         if (certPath && certPath.domains) {
-          isAllowedDomainId = certPath.domains.some(d => d.id === qDomain || d.englishName === qDomain);
+          isAllowedDomainId = certPath.domains.some(
+            (d) => d.id === qDomain || d.englishName === qDomain,
+          );
         }
-        
+
         if (!isAllowedDomainName && !isAllowedDomainId) return false;
 
-        if (q.validation?.status && q.validation.status !== "validated")
-          return false;
         return true;
       });
 
@@ -217,11 +239,17 @@ export class QuizEngine {
       return sanitized;
     } catch (e) {
       logger.error("Erro na sanitização:", e);
-      return dataRepo.validateQuestions(data);
+      return dataRepo.validateQuestions(approvedData);
     }
   }
 
-  async loadQuestions(certId, domainsConfig, filters, language = "pt", preloadedQuestions = null) {
+  async loadQuestions(
+    certId,
+    domainsConfig,
+    filters,
+    language = "pt",
+    preloadedQuestions = null,
+  ) {
     this.resetState();
     this.state.attemptId = this._generateAttemptId();
     this.state.certId = normalizeCertificationId(certId);
@@ -234,7 +262,9 @@ export class QuizEngine {
       if (preloadedQuestions && preloadedQuestions.length > 0) {
         data = preloadedQuestions;
         source = "api";
-        logger.info(`✓ Loaded ${data.length} preloaded questions from QuizManager (API)`);
+        logger.info(
+          `✓ Loaded ${data.length} preloaded questions from QuizManager (API)`,
+        );
       } else {
         // Fallback para arquivo local JSON caso o QuizManager não tenha conseguido fornecer
         const fileSuffix = language === "en" ? "-en" : "";
@@ -246,7 +276,9 @@ export class QuizEngine {
 
         data = await response.json();
         source = "local";
-        logger.info(`✓ Loaded ${data.length} questions from JSON file fallback (Local)`);
+        logger.info(
+          `✓ Loaded ${data.length} questions from JSON file fallback (Local)`,
+        );
       }
 
       // Aplica filtros locais (dificuldade/tópico) SOMENTE se os dados vieram do JSON
@@ -257,8 +289,12 @@ export class QuizEngine {
         }
         if (filters.topic) {
           const domainObj = domainsConfig.find((d) => d.id === filters.topic);
-          const englishTopic = domainObj ? domainObj.englishName : filters.topic;
-          data = data.filter((q) => q.domain === filters.topic || q.domain === englishTopic);
+          const englishTopic = domainObj
+            ? domainObj.englishName
+            : filters.topic;
+          data = data.filter(
+            (q) => q.domain === filters.topic || q.domain === englishTopic,
+          );
         }
       }
 
@@ -443,13 +479,18 @@ export class QuizEngine {
       const response = await fetch(filePath);
 
       if (!response.ok) {
-        throw new Error(`Arquivo de diagnóstico não encontrado para ${certId} (${response.status}).`);
+        throw new Error(
+          `Arquivo de diagnóstico não encontrado para ${certId} (${response.status}).`,
+        );
       }
 
       let data = await response.json();
-      logger.info(`✓ Loaded ${data.length} diagnostic questions from JSON file`);
+      logger.info(
+        `✓ Loaded ${data.length} diagnostic questions from JSON file`,
+      );
 
       // Seleciona a amostra do banco principal sem criar uma segunda fonte.
+      data = data.filter(isApprovedQuestion);
       data = selectDiagnosticQuestions(data, domainsConfig, {
         certId,
         language,
@@ -618,9 +659,7 @@ export class QuizEngine {
     }
 
     const isDiagnostic = this.state.mode === "diagnostic";
-    const weakThreshold = isDiagnostic
-      ? DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD
-      : 70;
+    const weakThreshold = isDiagnostic ? DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD : 70;
     const domainResults = Object.entries(this.state.domainScores).map(
       ([domainId, scoreData]) => {
         const domainScore = scoreData.total
@@ -689,12 +728,13 @@ export class QuizEngine {
     this.state.mode = mode;
     this.state.isReviewMode = mode === "mistakes-review";
 
-    if (!questions || questions.length === 0) {
+    const approvedQuestions = (questions || []).filter(isApprovedQuestion);
+    if (approvedQuestions.length === 0) {
       return { success: false, message: "no_mistakes" };
     }
 
     // Normaliza cada questão do mistakes store para o formato interno do engine.
-    const normalized = questions.map((q) => {
+    const normalized = approvedQuestions.map((q) => {
       const base = this._normalizeQuestion({
         ...q,
         correct:
@@ -781,9 +821,9 @@ export class QuizEngine {
 
     for (const domain of domainsErrados) {
       // Todas as questões do banco neste domínio
-      const questoesDoDominio = allQuestions.filter(
-        (q) => (q.domain || q.domainId) === domain,
-      );
+      const questoesDoDominio = allQuestions
+        .filter(isApprovedQuestion)
+        .filter((q) => (q.domain || q.domainId) === domain);
 
       if (questoesDoDominio.length === 0) continue;
 

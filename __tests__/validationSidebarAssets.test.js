@@ -1,34 +1,36 @@
-import { readFileSync } from 'node:fs';
-import vm from 'node:vm';
-import { describe, expect, test } from '@jest/globals';
+import { readFileSync } from "node:fs";
+import vm from "node:vm";
+import { describe, expect, test } from "@jest/globals";
 
 const validationHtml = readFileSync(
-  new URL('../src/frontend/validation/valid.html', import.meta.url),
-  'utf8',
+  new URL("../src/frontend/validation/valid.html", import.meta.url),
+  "utf8",
 );
 const validationUi = readFileSync(
-  new URL('../src/frontend/validation/js/validationUI.js', import.meta.url),
-  'utf8',
+  new URL("../src/frontend/validation/js/validationUI.js", import.meta.url),
+  "utf8",
 );
 
-describe('Validation sidebar asset contract', () => {
-  test('uses the shared Font Awesome CDN and valid source paths', () => {
+describe("Validation sidebar asset contract", () => {
+  test("uses the shared Font Awesome CDN and valid source paths", () => {
     expect(validationHtml).toContain(
-      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+      "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
     );
     expect(validationHtml).toContain('href="../css/style.css"');
-    expect(validationHtml).not.toContain('validation/index.html');
-    expect(validationHtml).toContain('<!-- {{HEADER_PAGE}} -->');
-    expect(validationHtml).toContain('<!-- {{SIDEBAR}} -->');
+    expect(validationHtml).not.toContain("validation/index.html");
+    expect(validationHtml).toContain("<!-- {{HEADER_PAGE}} -->");
+    expect(validationHtml).toContain("<!-- {{SIDEBAR}} -->");
     expect(validationHtml).toContain('class="has-left-sidebar"');
-    expect(validationHtml).toContain('<script type="module" src="js/validationUI.js"></script>');
-    expect(validationUi).toContain("from '../../js/shell.js'");
-    expect(validationUi).not.toContain('admin-access-section');
-    expect(validationUi).not.toContain('applyAdminHash');
-    expect(validationUi).not.toContain('access-list');
+    expect(validationHtml).toContain(
+      '<script type="module" src="js/validationUI.js"></script>',
+    );
+    expect(validationUi).toMatch(/from ["']\.\.\/\.\.\/js\/shell\.js["']/);
+    expect(validationUi).not.toContain("admin-access-section");
+    expect(validationUi).not.toContain("applyAdminHash");
+    expect(validationUi).not.toContain("access-list");
   });
 
-  test('validationUI permanece sintaticamente parseável como ES module', () => {
+  test("validationUI permanece sintaticamente parseável como ES module", () => {
     expect(() => new vm.SourceTextModule(validationUi)).not.toThrow();
   });
 });

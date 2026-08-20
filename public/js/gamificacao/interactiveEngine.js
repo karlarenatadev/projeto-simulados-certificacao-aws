@@ -102,7 +102,7 @@ class InteractiveEngine {
     // Extrai a ordem atual que o utilizador deixou no ecrã
     const userOrder = Array.from(listItems).map((li) => li.dataset.id);
     const feedbackArea = document.getElementById("interactive-feedback");
-    
+
     if (!feedbackArea) {
       logger.warn("[InteractiveEngine] feedback area not found");
       return;
@@ -139,15 +139,15 @@ class InteractiveEngine {
       logger.warn("[InteractiveEngine] sortableInstance not initialized");
       return;
     }
-    
+
     const userOrder = this.sortableInstance.toArray();
     const feedbackArea = document.getElementById("interactive-feedback");
-    
+
     if (!feedbackArea) {
       logger.warn("[InteractiveEngine] feedback area not found in checkOrder");
       return;
     }
-    
+
     const isCorrect =
       JSON.stringify(userOrder) ===
       JSON.stringify(this.currentChallenge.correct_order);

@@ -61,7 +61,7 @@ export const quizManager = {
             user_id: this.currentUserId,
             certification: certId,
             num_questions: numQuestions,
-            locale: locale
+            locale: locale,
           });
 
           if (response.success && response.data) {
@@ -217,7 +217,9 @@ export const quizManager = {
    */
   _markAnswerSynced(quizId, questionId) {
     try {
-      const key = storageManager.getUserScopedKey(`ans_${quizId}_${questionId}`);
+      const key = storageManager.getUserScopedKey(
+        `ans_${quizId}_${questionId}`,
+      );
       const data = localStorage.getItem(key);
       if (data) {
         const parsed = JSON.parse(data);
@@ -236,7 +238,9 @@ export const quizManager = {
    */
   _getLocalResults() {
     try {
-      const prefix = storageManager.getUserScopedKey(`ans_${this.currentQuizId}_`);
+      const prefix = storageManager.getUserScopedKey(
+        `ans_${this.currentQuizId}_`,
+      );
       const answers = [];
 
       for (let i = 0; i < localStorage.length; i++) {

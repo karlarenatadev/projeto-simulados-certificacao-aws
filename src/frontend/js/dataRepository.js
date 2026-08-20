@@ -39,10 +39,11 @@ export function createDataRepository(storage, _api = null) {
     }
   }
 
-  const ACCOUNT_CERTIFICATIONS = ['clf-c02', 'saa-c03', 'dva-c02', 'aif-c01'];
+  const ACCOUNT_CERTIFICATIONS = ["clf-c02", "saa-c03", "dva-c02", "aif-c01"];
 
   async function syncModuleState(module, certId = null) {
-    if (!_api?.saveModuleState || (module !== 'preferences' && !certId)) return null;
+    if (!_api?.saveModuleState || (module !== "preferences" && !certId))
+      return null;
     const state = storage.getAccountModuleState(module, certId);
     if (!state) return null;
     return _safeApiCall(() => _api.saveModuleState(module, certId, state));
@@ -90,10 +91,16 @@ export function createDataRepository(storage, _api = null) {
 
     saveHistory(history) {
       const saved = storage.saveHistory(history);
-      const diagnosticCertifications = [...new Set((history || [])
-        .filter((item) => item?.mode === 'diagnostic' && item.certId)
-        .map((item) => item.certId))];
-      diagnosticCertifications.forEach((certId) => void syncModuleState('diagnostic', certId));
+      const diagnosticCertifications = [
+        ...new Set(
+          (history || [])
+            .filter((item) => item?.mode === "diagnostic" && item.certId)
+            .map((item) => item.certId),
+        ),
+      ];
+      diagnosticCertifications.forEach(
+        (certId) => void syncModuleState("diagnostic", certId),
+      );
       return saved;
     },
 
@@ -135,7 +142,7 @@ export function createDataRepository(storage, _api = null) {
 
     saveReviewDeck(certId, flaggedQuestionsArray) {
       const saved = storage.saveReviewDeck(certId, flaggedQuestionsArray);
-      void syncModuleState('flashcards', certId);
+      void syncModuleState("flashcards", certId);
       return saved;
     },
 
@@ -145,13 +152,13 @@ export function createDataRepository(storage, _api = null) {
 
     addReviewQuestion(certId, question) {
       const saved = storage.addReviewQuestion(certId, question);
-      void syncModuleState('flashcards', certId);
+      void syncModuleState("flashcards", certId);
       return saved;
     },
 
     removeReviewQuestion(certId, questionId) {
       const saved = storage.removeReviewQuestion(certId, questionId);
-      void syncModuleState('flashcards', certId);
+      void syncModuleState("flashcards", certId);
       return saved;
     },
 
@@ -180,7 +187,7 @@ export function createDataRepository(storage, _api = null) {
 
     saveGamification(gamification, certId = null) {
       const saved = storage.saveGamification(gamification, certId);
-      void syncModuleState('journey', certId);
+      void syncModuleState("journey", certId);
       return saved;
     },
 
@@ -230,7 +237,7 @@ export function createDataRepository(storage, _api = null) {
 
     saveSprintState(certId, state) {
       const saved = storage.saveSprintState(certId, state);
-      void syncModuleState('sprint', certId);
+      void syncModuleState("sprint", certId);
       return saved;
     },
 
@@ -288,18 +295,25 @@ export function createDataRepository(storage, _api = null) {
     async hydrateAccountState() {
       if (!_api?.getMyProfile || !_api?.getModuleState) return null;
       const profile = await _safeApiCall(() => _api.getMyProfile());
-      await Promise.all(['journey', 'sprint', 'flashcards', 'labs', 'diagnostic'].flatMap((module) =>
-        ACCOUNT_CERTIFICATIONS.map(async (certId) => {
-          const local = storage.getAccountModuleState(module, certId);
-          const remote = await _safeApiCall(() => _api.getModuleState(module, certId));
-          const remoteState = remote?.data?.state_json;
-          if (remoteState && typeof remoteState === 'object') {
-            storage.setAccountModuleState(module, certId, remoteState);
-          } else if (local && _api.saveModuleState) {
-            await _safeApiCall(() => _api.saveModuleState(module, certId, local));
-          }
-        }),
-      ));
+      await Promise.all(
+        ["journey", "sprint", "flashcards", "labs", "diagnostic"].flatMap(
+          (module) =>
+            ACCOUNT_CERTIFICATIONS.map(async (certId) => {
+              const local = storage.getAccountModuleState(module, certId);
+              const remote = await _safeApiCall(() =>
+                _api.getModuleState(module, certId),
+              );
+              const remoteState = remote?.data?.state_json;
+              if (remoteState && typeof remoteState === "object") {
+                storage.setAccountModuleState(module, certId, remoteState);
+              } else if (local && _api.saveModuleState) {
+                await _safeApiCall(() =>
+                  _api.saveModuleState(module, certId, local),
+                );
+              }
+            }),
+        ),
+      );
       return profile;
     },
 
@@ -337,7 +351,9 @@ export function createDataRepository(storage, _api = null) {
 
       return questions.filter((q) => {
         // Validação das propriedades obrigatórias segundo o modelo
-        const hasId = (q.id !== undefined && q.id !== null) || (q.questionId !== undefined && q.questionId !== null);
+        const hasId =
+          (q.id !== undefined && q.id !== null) ||
+          (q.questionId !== undefined && q.questionId !== null);
         const hasText =
           typeof q.question === "string" && q.question.trim().length > 0;
         const hasOptions = Array.isArray(q.options) && q.options.length > 1;

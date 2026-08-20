@@ -9,14 +9,20 @@ export const userManager = {
   isValidCorporateEmail(email) {
     if (!email) return false;
     const emailLower = String(email).trim().toLowerCase();
-    return emailLower.endsWith("@a3data.com.br") || emailLower.endsWith("@a3data.com");
+    return (
+      emailLower.endsWith("@a3data.com.br") ||
+      emailLower.endsWith("@a3data.com")
+    );
   },
 
   async login(email, profile = {}) {
     const normalizedEmail = String(email).trim().toLowerCase();
 
     try {
-      const response = await apiService.loginUser({ email: normalizedEmail, ...profile });
+      const response = await apiService.loginUser({
+        email: normalizedEmail,
+        ...profile,
+      });
 
       if (response.success && response.data && response.data.id) {
         const user = UserMapper.fromDTO(response.data);
@@ -31,7 +37,8 @@ export const userManager = {
         if (accountProfile?.data?.preferences) {
           SessionManager.update({
             language: accountProfile.data.preferences.language,
-            certification: accountProfile.data.preferences.certification?.toLowerCase(),
+            certification:
+              accountProfile.data.preferences.certification?.toLowerCase(),
           });
         }
         logger.info(`✓ Login via Backend: ${user.email} (${user.role})`);
@@ -41,13 +48,16 @@ export const userManager = {
       throw new Error(response.message || "Falha no login corporativo.");
     } catch (error) {
       logger.info("[DEBUG] Exception em login corporativo:", error);
-      const isNetworkFailure = error.apiDisabled
-        || error.message?.includes("Failed to fetch")
-        || error.message?.includes("NetworkError")
-        || error.message?.includes("Load failed");
+      const isNetworkFailure =
+        error.apiDisabled ||
+        error.message?.includes("Failed to fetch") ||
+        error.message?.includes("NetworkError") ||
+        error.message?.includes("Load failed");
 
       if (isNetworkFailure && this.isValidCorporateEmail(normalizedEmail)) {
-        logger.warn(`⚠️ API indisponível. Iniciando sessão offline: ${normalizedEmail}`);
+        logger.warn(
+          `⚠️ API indisponível. Iniciando sessão offline: ${normalizedEmail}`,
+        );
         return this.createOfflineUser(normalizedEmail, profile);
       }
 
@@ -67,7 +77,11 @@ export const userManager = {
       provider: "local",
     });
     user.provider = "local";
-    SessionManager.persist({ user, authenticationMode: "offline", provider: "local" });
+    SessionManager.persist({
+      user,
+      authenticationMode: "offline",
+      provider: "local",
+    });
     return user;
   },
 

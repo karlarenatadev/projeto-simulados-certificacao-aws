@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Cases de Arquitetura AWS — Estude arquiteturas reais conectando teoria, prática e questões de certificação." />
+    <meta
+      name="description"
+      content="Cases de Arquitetura AWS — Estude arquiteturas reais conectando teoria, prática e questões de certificação."
+    />
     <title>Cases de Arquitetura — Simulador AWS</title>
-
-    
 
     <link
       rel="stylesheet"
@@ -16,8 +17,8 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=mt1ppaex" />
-    <link rel="stylesheet" href="./css/cases.css?v=mt1ppaex" />
+    <link rel="stylesheet" href="./css/style.css?v=3bbecd49" />
+    <link rel="stylesheet" href="./css/cases.css?v=3bbecd49" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -29,63 +30,64 @@
 
   <body class="cases-page has-left-sidebar" id="cases-page-body">
 <header class="a3-header">
-      <div class="flex items-center gap-2 md:gap-3">
-        <button
-          id="cloud-sidebar-toggle"
-          class="btn-sidebar-toggle flex items-center justify-center group/cloud"
-          title="Esconder menu lateral"
-          aria-label="Alternar menu lateral"
-          aria-expanded="true"
-        >
-          <i
-            id="cloud-logo-icon"
-            class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <a href="index.html" class="a3-header-link" title="Voltar ao início">
-          <div>
-            <h1 class="text-base md:text-xl font-bold leading-tight">
-              Cloud Academy A3
-            </h1>
-            <p class="text-[10px] md:text-xs text-gray-300">
-              Sua jornada para certificações AWS
-            </p>
-          </div>
-        </a>
+  <div class="flex items-center gap-2 md:gap-3">
+    <button
+      id="cloud-sidebar-toggle"
+      class="btn-sidebar-toggle flex items-center justify-center group/cloud"
+      title="Esconder menu lateral"
+      aria-label="Alternar menu lateral"
+      aria-expanded="true"
+    >
+      <i
+        id="cloud-logo-icon"
+        class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
+        aria-hidden="true"
+      ></i>
+    </button>
+    <a href="index.html" class="a3-header-link" title="Voltar ao início">
+      <div>
+        <h1 class="text-base md:text-xl font-bold leading-tight">
+          Cloud Academy A3
+        </h1>
+        <p class="text-[10px] md:text-xs text-gray-300">
+          Sua jornada para certificações AWS
+        </p>
       </div>
-      <div class="a3-header-actions">
-        <button
-          id="btn-language"
-          class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
-          aria-label="Alternar idioma"
-          title="Alternar idioma"
-        >
-          <span class="text-[10px] md:text-xs font-bold"
-            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
-          >
-        </button>
-        <button
-          id="theme-toggle"
-          class="a3-btn a3-btn-secondary"
-          aria-label="Alternar modo escuro"
-        >
-          <i
-            id="theme-icon"
-            class="fa-solid fa-moon text-base md:text-xl"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <button
-          id="install-app"
-          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
-        >
-          <i class="fa-solid fa-download"></i> Baixar App
-        </button>
-        <!-- User Menu — populado pelo shell.js -->
-        <div id="user-menu-container"></div>
-      </div>
-    </header>
+    </a>
+  </div>
+  <div class="a3-header-actions">
+    <button
+      id="btn-language"
+      class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
+      aria-label="Alternar idioma"
+      title="Alternar idioma"
+    >
+      <span class="text-[10px] md:text-xs font-bold"
+        >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
+      >
+    </button>
+    <button
+      id="theme-toggle"
+      class="a3-btn a3-btn-secondary"
+      aria-label="Alternar modo escuro"
+    >
+      <i
+        id="theme-icon"
+        class="fa-solid fa-moon text-base md:text-xl"
+        aria-hidden="true"
+      ></i>
+    </button>
+    <button
+      id="install-app"
+      class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
+    >
+      <i class="fa-solid fa-download"></i> Baixar App
+    </button>
+    <!-- User Menu — populado pelo shell.js -->
+    <div id="user-menu-container"></div>
+  </div>
+</header>
+<script src="./js/pwa/registerServiceWorker.js?v=3bbecd49"></script>
 <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
   <!--
     .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
@@ -99,7 +101,10 @@
       aria-label="Learning Hub — Painel Principal"
       title="Learning Hub — Painel Principal"
     >
-      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <i
+        class="fa-solid fa-house left-sidebar-item-icon"
+        aria-hidden="true"
+      ></i>
       <span class="left-sidebar-item-label">Home</span>
     </button>
   </div>
@@ -110,7 +115,7 @@
 </nav>
 
 
-<!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
+    <!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
 
     <!-- ======================================================
          HERO
@@ -185,9 +190,17 @@
       <span id="cases-count-label" class="cases-count-text"></span>
     </div>
 
-    <div id="cases-diagnostic-context" class="a3-container" aria-live="polite"></div>
+    <div
+      id="cases-diagnostic-context"
+      class="a3-container"
+      aria-live="polite"
+    ></div>
 
-    <div id="cases-diagnostic-context" class="a3-container" aria-live="polite"></div>
+    <div
+      id="cases-diagnostic-context"
+      class="a3-container"
+      aria-live="polite"
+    ></div>
 
     <!-- ======================================================
          GRID DE CASES
@@ -222,12 +235,11 @@
          SCRIPTS
          ====================================================== -->
 <footer
-      class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
-    >
-      Plataforma colaborativa de estudo para certificações AWS construída para a
-      comunidade da Guilda Z-Maguinhos | A3Data.
-    </footer>
-
+  class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
+>
+  Plataforma colaborativa de estudo para certificações AWS construída para a
+  comunidade da Guilda Z-Maguinhos | A3Data.
+</footer>
 
 
     <script type="module">
@@ -255,10 +267,7 @@
             ? [c.certification]
             : [];
         const certTagsHtml = certs
-          .map(
-            (cert) =>
-              `<span class="cert-tag">${cert.toUpperCase()}</span>`,
-          )
+          .map((cert) => `<span class="cert-tag">${cert.toUpperCase()}</span>`)
           .join("");
         const doneHtml = done
           ? `<span class="case-done-badge"><i class="fa-solid fa-circle-check"></i> Concluído</span>`
@@ -285,7 +294,10 @@
       }
 
       // ── Render grid ───────────────────────────────────────────────────────
-      async function renderCasesGrid(filters = {}, recommendationContext = null) {
+      async function renderCasesGrid(
+        filters = {},
+        recommendationContext = null,
+      ) {
         const grid = document.getElementById("cases-grid");
         const countLabel = document.getElementById("cases-count-label");
         if (!grid) return;
@@ -296,7 +308,11 @@
           const ranked = recommendationContext
             ? rankRecommendedCases(cases, recommendationContext)
             : { cases, fallback: false };
-          if (diagnosticContextActive && recommendationContext && !ranked.fallback) {
+          if (
+            diagnosticContextActive &&
+            recommendationContext &&
+            !ranked.fallback
+          ) {
             recommendedCaseIds = new Set(
               ranked.cases.map((caseItem) => caseItem.id || caseItem.slug),
             );
@@ -353,7 +369,8 @@
 
       // ── Filtros ───────────────────────────────────────────────────────────
       function getFilters() {
-        const cert = document.getElementById("filter-certification")?.value || "";
+        const cert =
+          document.getElementById("filter-certification")?.value || "";
         const diff = document.getElementById("filter-difficulty")?.value || "";
         const filters = {};
         if (cert) filters.certification = cert;
@@ -374,14 +391,13 @@
           diagnosticContextActive = true;
           const certSelect = document.getElementById("filter-certification");
           const certOption = Array.from(certSelect?.options || []).find(
-            (option) => option.value.toLowerCase() === diagnosticRecommendationContext.certificationId,
+            (option) =>
+              option.value.toLowerCase() ===
+              diagnosticRecommendationContext.certificationId,
           );
           if (certOption) certSelect.value = certOption.value;
         }
-        await renderCasesGrid(
-          getFilters(),
-          diagnosticRecommendationContext,
-        );
+        await renderCasesGrid(getFilters(), diagnosticRecommendationContext);
 
         // Filtros reativos
         document
@@ -404,7 +420,5 @@
           });
       });
     </script>
-    
-
   </body>
 </html>

@@ -8,7 +8,6 @@ import { getCurrentLanguage as getOfficialLanguage } from "./core/languageManage
 import { AuthService } from "./services/authService.js";
 import { userManager } from "./userManager.js";
 
-
 function getCurrentLanguage() {
   return getOfficialLanguage();
 }
@@ -48,9 +47,11 @@ export function resolveInitialCertification({
     selectedCertification,
     accountCertification,
   ];
-  return candidates
-    .map((candidate) => normalizeCertificationId(candidate))
-    .find((candidate) => isSupportedCertification(candidate)) || null;
+  return (
+    candidates
+      .map((candidate) => normalizeCertificationId(candidate))
+      .find((candidate) => isSupportedCertification(candidate)) || null
+  );
 }
 
 export function getFlashcardState() {
@@ -65,11 +66,12 @@ export function getFlashcardState() {
 export function parseDiagnosticContext(value) {
   try {
     const context = typeof value === "string" ? JSON.parse(value) : value;
-    const certificationId = normalizeCertificationId(
-      context?.certificationId,
-    );
+    const certificationId = normalizeCertificationId(context?.certificationId);
 
-    if (context?.source !== "diagnostic" || !certificationPaths[certificationId]) {
+    if (
+      context?.source !== "diagnostic" ||
+      !certificationPaths[certificationId]
+    ) {
       return null;
     }
 
@@ -100,7 +102,8 @@ export function parseDiagnosticContext(value) {
 export function filterTermsByCertification(terms, certificationId) {
   const certId = normalizeCertificationId(certificationId);
   return terms.filter(
-    (card) => card.cert === "all" || normalizeCertificationId(card.cert) === certId,
+    (card) =>
+      card.cert === "all" || normalizeCertificationId(card.cert) === certId,
   );
 }
 
@@ -138,9 +141,7 @@ export function getDiagnosticContextViewModel(
     description: t("diagnostic_flashcards_desc", language),
     labels: getDiagnosticContextLabels(context, language),
     count: t("diagnostic_flashcards_selected", language, { count }),
-    fallback: fallback
-      ? t("diagnostic_flashcards_fallback", language)
-      : "",
+    fallback: fallback ? t("diagnostic_flashcards_fallback", language) : "",
   };
 }
 
@@ -152,7 +153,9 @@ function renderDiagnosticContext(context, count = 0, fallback = false) {
   const description = banner.querySelector("div > p");
   const domains = document.getElementById("flashcards-diagnostic-domains");
   const countElement = document.getElementById("flashcards-diagnostic-count");
-  const fallbackElement = document.getElementById("flashcards-diagnostic-fallback");
+  const fallbackElement = document.getElementById(
+    "flashcards-diagnostic-fallback",
+  );
   const language = getCurrentLanguage();
 
   if (!context) {
@@ -213,15 +216,21 @@ function getCertificationDisplayName(certificationId, language) {
 }
 
 function renderCertificationPicker() {
-  const optionsContainer = document.getElementById("flashcard-certification-options");
+  const optionsContainer = document.getElementById(
+    "flashcard-certification-options",
+  );
   if (!optionsContainer) return;
 
   const language = getCurrentLanguage();
   const activeCertification = flashcardState.activeStudyCertification;
   const selectedCertification = flashcardState.selectedCertification;
   const title = document.getElementById("flashcard-certification-title");
-  const description = document.getElementById("flashcard-certification-description");
-  const activeStatus = document.getElementById("flashcard-active-certification");
+  const description = document.getElementById(
+    "flashcard-certification-description",
+  );
+  const activeStatus = document.getElementById(
+    "flashcard-active-certification",
+  );
   const emptyState = document.getElementById("flashcard-certification-empty");
 
   optionsContainer.setAttribute(
@@ -229,7 +238,11 @@ function renderCertificationPicker() {
     t("flashcards_all_certifications", language),
   );
   if (title) title.textContent = t("flashcards_choose_certification", language);
-  if (description) description.textContent = t("flashcards_certification_description", language);
+  if (description)
+    description.textContent = t(
+      "flashcards_certification_description",
+      language,
+    );
   if (activeStatus) {
     activeStatus.textContent = activeCertification
       ? `${t("flashcards_studying", language)}: ${activeCertification.toUpperCase()}`
@@ -241,8 +254,12 @@ function renderCertificationPicker() {
   }
 
   optionsContainer.innerHTML = "";
-  for (const [certificationId, certification] of Object.entries(certificationPaths)) {
-    const count = glossaryTerms.filter((card) => card.cert === certificationId).length;
+  for (const [certificationId, certification] of Object.entries(
+    certificationPaths,
+  )) {
+    const count = glossaryTerms.filter(
+      (card) => card.cert === certificationId,
+    ).length;
     const wrapper = document.createElement("div");
     wrapper.className = "fc-certification-option-wrap";
     const option = document.createElement("button");
@@ -252,7 +269,10 @@ function renderCertificationPicker() {
     option.type = "button";
     option.className = `fc-certification-option${isViewing ? " is-viewing" : ""}${isStudying ? " is-studying" : ""}`;
     option.setAttribute("aria-pressed", String(isViewing));
-    option.setAttribute("aria-label", `${certification.code} — ${getCertificationDisplayName(certificationId, language)}`);
+    option.setAttribute(
+      "aria-label",
+      `${certification.code} — ${getCertificationDisplayName(certificationId, language)}`,
+    );
     option.innerHTML = `
       <span class="fc-certification-option-code">${certification.code}</span>
       <span class="fc-certification-option-name">${getCertificationDisplayName(certificationId, language)}</span>
@@ -260,7 +280,9 @@ function renderCertificationPicker() {
       ${isStudying ? `<span class="fc-certification-option-action">${t("flashcards_studying", language)}</span>` : ""}
       ${isViewing && !isStudying ? `<span class="fc-certification-option-action">${t("flashcards_viewing", language)}</span>` : ""}
     `;
-    option.addEventListener("click", () => setFlashcardCertification(certificationId, { clearDiagnostic: true }));
+    option.addEventListener("click", () =>
+      setFlashcardCertification(certificationId, { clearDiagnostic: true }),
+    );
     wrapper.appendChild(option);
 
     if (!isStudying) {
@@ -268,7 +290,9 @@ function renderCertificationPicker() {
       primaryButton.type = "button";
       primaryButton.className = "fc-certification-primary-action";
       primaryButton.textContent = t("flashcards_set_as_primary", language);
-      primaryButton.addEventListener("click", () => setPrimaryFlashcardCertification(certificationId));
+      primaryButton.addEventListener("click", () =>
+        setPrimaryFlashcardCertification(certificationId),
+      );
       wrapper.appendChild(primaryButton);
     }
     optionsContainer.appendChild(wrapper);
@@ -279,7 +303,8 @@ function populateDomainFilter(reset = false) {
   const categorySelect = document.getElementById("flashcard-category");
   if (!categorySelect) return;
 
-  const certification = certificationPaths[flashcardState.selectedCertification];
+  const certification =
+    certificationPaths[flashcardState.selectedCertification];
   const previousValue = reset ? "all" : categorySelect.value;
   categorySelect.innerHTML = `
     <option value="all">${t("all_terms", getCurrentLanguage())}</option>
@@ -289,16 +314,22 @@ function populateDomainFilter(reset = false) {
   for (const domain of certification?.domains || []) {
     const option = document.createElement("option");
     option.value = domain.id;
-    option.textContent = getCurrentLanguage() === "en" ? domain.englishName : domain.name;
+    option.textContent =
+      getCurrentLanguage() === "en" ? domain.englishName : domain.name;
     categorySelect.appendChild(option);
   }
 
-  const hasPreviousValue = [...categorySelect.options].some((option) => option.value === previousValue);
+  const hasPreviousValue = [...categorySelect.options].some(
+    (option) => option.value === previousValue,
+  );
   categorySelect.value = hasPreviousValue ? previousValue : "all";
   flashcardState.currentDomainFilter = categorySelect.value;
 }
 
-export function setFlashcardCertification(certificationId, { clearDiagnostic = false } = {}) {
+export function setFlashcardCertification(
+  certificationId,
+  { clearDiagnostic = false } = {},
+) {
   const normalized = normalizeCertificationId(certificationId);
   if (!isSupportedCertification(normalized)) return false;
 
@@ -347,7 +378,9 @@ export function startFlashcards(showScreenFn) {
 
   const categorySelect = document.getElementById("flashcard-category");
   const diagnosticCtx = parseDiagnosticContext(
-    sessionStorage.getItem(storageManager.getUserScopedKey("diagnostic_context")),
+    sessionStorage.getItem(
+      storageManager.getUserScopedKey("diagnostic_context"),
+    ),
   );
 
   flashcardState.activeStudyCertification = getAccountCertification();
@@ -360,7 +393,7 @@ export function startFlashcards(showScreenFn) {
 
   // --- Lógica do Diagnóstico ---
   const banner = document.getElementById("flashcards-diagnostic-banner");
-  
+
   if (!flashcardState.selectedCertification) {
     if (categorySelect) categorySelect.disabled = true;
     renderDiagnosticContext(null);
@@ -372,23 +405,23 @@ export function startFlashcards(showScreenFn) {
       flashcardState.diagnosticContext = diagnosticCtx;
       flashcardState.diagnosticDomainIds = diagnosticCtx.weakDomains;
       flashcardState.diagnosticFallback = false;
-      
+
       if (banner) banner.classList.remove("hidden");
       if (categorySelect) {
         categorySelect.disabled = false;
         categorySelect.value = "all"; // Force visual selection
       }
-      
+
       const backBtn = document.getElementById("btn-flashcards-back-diagnostic");
-      if(backBtn) {
+      if (backBtn) {
         backBtn.onclick = () => {
           sessionStorage.removeItem(
             storageManager.getUserScopedKey("diagnostic_context"),
           );
-          window.location.href = "./index.html"; 
+          window.location.href = "./index.html";
         };
       }
-    } catch(e) {
+    } catch (e) {
       logger.error(e);
       sessionStorage.removeItem(
         storageManager.getUserScopedKey("diagnostic_context"),
@@ -458,12 +491,12 @@ export function filterFlashcards() {
         domain: "review-deck",
         term: {
           pt: `<span class="text-base font-normal leading-relaxed block">${q.question}</span>`,
-          en: `<span class="text-base font-normal leading-relaxed block">${q.question}</span>`
+          en: `<span class="text-base font-normal leading-relaxed block">${q.question}</span>`,
         },
         definition: {
           pt: `<strong>Resposta:</strong><br>• ${correctText}<br><br><strong>Explicação:</strong><br>${q.explanation}`,
-          en: `<strong>Answer:</strong><br>• ${correctText}<br><br><strong>Explanation:</strong><br>${q.explanation}`
-        }
+          en: `<strong>Answer:</strong><br>• ${correctText}<br><br><strong>Explanation:</strong><br>${q.explanation}`,
+        },
       };
     });
   } else {
@@ -523,14 +556,12 @@ export function renderCurrentFlashcard() {
   const defEl = document.getElementById("flashcard-definition");
   const badgeEl = document.getElementById("flashcard-domain-badge");
 
-  if (termEl) termEl.innerHTML = card.term[currentLang];
-  if (defEl) defEl.innerHTML = card.definition[currentLang];
+  if (termEl) termEl.textContent = String(card.term?.[currentLang] || "");
+  if (defEl) defEl.textContent = String(card.definition?.[currentLang] || "");
 
   if (badgeEl) {
     const certId =
-      card.cert === "all"
-        ? flashcardState.selectedCertification
-        : card.cert;
+      card.cert === "all" ? flashcardState.selectedCertification : card.cert;
     const certInfo = certificationPaths[certId];
     const domainObj = certInfo?.domains.find((d) => d.id === card.domain);
 

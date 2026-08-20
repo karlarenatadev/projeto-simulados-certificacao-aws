@@ -14,7 +14,10 @@ const EXTRA_ALIASES = {
     "design-custo": ["design-cost-optimized-architectures"],
   },
   "dva-c02": {
-    "desenvolvimento-servicos": ["development", "development-with-aws-services"],
+    "desenvolvimento-servicos": [
+      "development",
+      "development-with-aws-services",
+    ],
     "seguranca-app": ["security"],
     implementacao: ["deployment"],
     "resolucao-problemas": ["troubleshooting-performance"],
@@ -24,7 +27,10 @@ const EXTRA_ALIASES = {
     "fundamentals-genai": ["aif-gen-ai"],
     "applications-foundation-models": ["aif-foundation-models"],
     "guidelines-responsible-ai": ["aif-responsible-ai"],
-    "security-compliance-governance": ["aif-security-compliance", "aif-governance"],
+    "security-compliance-governance": [
+      "aif-security-compliance",
+      "aif-governance",
+    ],
   },
 };
 

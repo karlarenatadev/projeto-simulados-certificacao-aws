@@ -24,4 +24,4 @@ export {
   initThemeShell,
   toggleDarkModeShell,
   syncLanguageButtonShell,
-} from '../shell.js';
+} from "../shell.js";

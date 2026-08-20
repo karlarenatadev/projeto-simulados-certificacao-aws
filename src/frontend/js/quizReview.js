@@ -9,7 +9,13 @@ export function getQuestionId(question, fallbackIndex = null) {
 }
 
 export function normalizeReviewQuestionIds(ids) {
-  return [...new Set((Array.isArray(ids) ? ids : []).filter((id) => id !== null && id !== undefined && id !== "").map(String))];
+  return [
+    ...new Set(
+      (Array.isArray(ids) ? ids : [])
+        .filter((id) => id !== null && id !== undefined && id !== "")
+        .map(String),
+    ),
+  ];
 }
 
 export function toggleReviewQuestion(ids, questionId) {
@@ -32,7 +38,9 @@ export function migrateLegacyReviewFlags(flags, questions) {
 export function getReviewIndexes(reviewIds, questions) {
   const ids = new Set(normalizeReviewQuestionIds(reviewIds));
   return (Array.isArray(questions) ? questions : [])
-    .map((question, index) => (ids.has(getQuestionId(question, index)) ? index : -1))
+    .map((question, index) =>
+      ids.has(getQuestionId(question, index)) ? index : -1,
+    )
     .filter((index) => index >= 0);
 }
 

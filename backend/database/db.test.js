@@ -272,6 +272,31 @@ describe('Question CRUD operations', () => {
     expect(canonicalSearch.map((question) => question.id)).not.toContain(legacy.id);
   });
 
+  test('supports explicit approved-only queries without changing administrative defaults', async () => {
+    const approved = await insertQuestion(validQuestion({
+      language: 'pt',
+      source_question_id: 'approved-question',
+      question_text: 'Which approved question is available to the student quiz?',
+      validation_status: 'APPROVED',
+    }));
+    const pending = await insertQuestion(validQuestion({
+      language: 'pt',
+      source_question_id: 'pending-question',
+      question_text: 'Which pending question must remain in validation?',
+      validation_status: 'PENDING',
+    }));
+
+    const official = await getQuestions({ certification: 'CLF-C02', approvedOnly: true });
+    const search = await searchQuestions('question', 10, { approvedOnly: true });
+
+    expect(official.map((question) => question.id)).toContain(approved.id);
+    expect(official.map((question) => question.id)).not.toContain(pending.id);
+    expect(search.map((question) => question.id)).toContain(approved.id);
+    expect(search.map((question) => question.id)).not.toContain(pending.id);
+    expect(await getQuestionById(pending.id)).not.toBeNull();
+    expect(await getQuestionById(pending.id, { approvedOnly: true })).toBeNull();
+  });
+
   test('gets questions by certification and domain', async () => {
     await insertQuestionWithText(
       'Which AWS service helps evaluate IAM permissions before production use?',

@@ -10,7 +10,10 @@
     <title>Cloud Academy A3 — Certificações AWS</title>
 
     <!-- Google tag (gtag.js) -->
-    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-9Z3ZEGD2JC"></script>
+    <script
+      async=""
+      src="https://www.googletagmanager.com/gtag/js?id=G-9Z3ZEGD2JC"
+    ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
@@ -38,8 +41,9 @@
     <meta name="theme-color" content="#001863" />
   </head>
 
-  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
-
+  <body
+    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
+  >
     <!-- {{BOOT_OVERLAY}} -->
 
     <!-- {{LOGIN_OVERLAY}} -->
@@ -56,7 +60,6 @@
         id="main-section"
         class="w-full flex-1 min-w-0 flex flex-col h-full bg-white rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 overflow-hidden transition-colors"
       >
-
         <!-- ================================================================
              LEARNING HUB
              ================================================================ -->
@@ -64,20 +67,22 @@
           id="screen-hub"
           class="hidden p-4 md:p-5 flex flex-col h-full overflow-y-auto"
         >
-
           <!-- 1. COMECE POR AQUI -->
           <section id="hub-start" class="mb-8">
             <div class="lh-banner mb-6">
               <div class="lh-banner-left">
                 <p class="lh-banner-tag">SIMULADOR IA</p>
-                <h2 class="lh-banner-title" data-i18n="start_here">Comece por aqui</h2>
+                <h2 class="lh-banner-title" data-i18n="start_here">
+                  Comece por aqui
+                </h2>
               </div>
               <div class="lh-banner-icon-wrap" aria-hidden="true">
                 <i class="fa-solid fa-brain"></i>
               </div>
               <p class="lh-banner-desc">
                 Seu painel central de estudos: acompanhe seu progresso, veja
-                insights de IA, acesse simulados e muito mais — tudo em um só lugar.
+                insights de IA, acesse simulados e muito mais — tudo em um só
+                lugar.
               </p>
               <div class="lh-banner-actions">
                 <button
@@ -85,21 +90,24 @@
                   onclick="showLearningHubQuickStart()"
                   aria-label="Iniciar simulado agora"
                 >
-                  <i class="fa-solid fa-play" aria-hidden="true"></i> Simular agora
+                  <i class="fa-solid fa-play" aria-hidden="true"></i> Simular
+                  agora
                 </button>
                 <button
                   id="btn-start-journey"
                   class="a3-btn a3-btn-outline lh-banner-btn"
                   aria-label="Ver minha jornada de aprendizado"
                 >
-                  <i class="fa-solid fa-route" aria-hidden="true"></i> Minha Jornada
+                  <i class="fa-solid fa-route" aria-hidden="true"></i> Minha
+                  Jornada
                 </button>
                 <button
                   id="btn-start-diagnostic"
                   class="a3-btn a3-btn-outline lh-banner-btn"
                   aria-label="Iniciar diagnóstico de conhecimento"
                 >
-                  <i class="fa-solid fa-stethoscope" aria-hidden="true"></i> Diagnóstico
+                  <i class="fa-solid fa-stethoscope" aria-hidden="true"></i>
+                  Diagnóstico
                 </button>
               </div>
             </div>
@@ -112,76 +120,119 @@
               <div class="lh-metrics-header mb-2">
                 <div>
                   <p class="lh-metrics-title">GUIA DA PLATAFORMA</p>
-                  <p class="lh-metrics-sub">O que você pode fazer. Escolha como quer continuar seus estudos.</p>
+                  <p class="lh-metrics-sub">
+                    O que você pode fazer. Escolha como quer continuar seus
+                    estudos.
+                  </p>
                 </div>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-
                 <!-- Coluna: Estudos -->
                 <div class="flex flex-col">
-                  <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">
+                  <h3
+                    class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide"
+                  >
                     Estudos
                   </h3>
                   <div class="lh-features-list flex-1">
                     <button
                       class="lh-feature-item"
-                      onclick="document.getElementById('study-now-section')?.scrollIntoView({ behavior: 'smooth' })"
+                      onclick="
+                        document
+                          .getElementById('study-now-section')
+                          ?.scrollIntoView({ behavior: 'smooth' })
+                      "
                       title="Insights de Estudo — recomendações da próxima melhor ação"
                     >
                       <span class="lh-feature-icon lh-feat-pink">
                         <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
                       </span>
                       <div class="lh-feature-info">
-                        <p class="lh-feature-name" data-i18n="study_insight">Insights de Estudo</p>
-                        <p class="lh-feature-desc">Insights IA e recomendações da próxima melhor ação de estudo</p>
+                        <p class="lh-feature-name" data-i18n="study_insight">
+                          Insights de Estudo
+                        </p>
+                        <p class="lh-feature-desc">
+                          Insights IA e recomendações da próxima melhor ação de
+                          estudo
+                        </p>
                       </div>
-                      <i class="fa-solid fa-chevron-right lh-feature-arrow" aria-hidden="true"></i>
+                      <i
+                        class="fa-solid fa-chevron-right lh-feature-arrow"
+                        aria-hidden="true"
+                      ></i>
                     </button>
 
                     <button
                       class="lh-feature-item"
-                      onclick="window.location.href='./study-sprint.html'"
+                      onclick="window.location.href = './study-sprint.html'"
                       title="Sprint de Estudos — Plano de ação de 14 dias"
                     >
                       <span class="lh-feature-icon lh-feat-purple">
-                        <i class="fa-solid fa-person-running" aria-hidden="true"></i>
+                        <i
+                          class="fa-solid fa-person-running"
+                          aria-hidden="true"
+                        ></i>
                       </span>
                       <div class="lh-feature-info">
                         <p class="lh-feature-name">Sprint de Estudos</p>
-                        <p class="lh-feature-desc">Seu plano de ação de 14 dias para dominar os tópicos pendentes</p>
+                        <p class="lh-feature-desc">
+                          Seu plano de ação de 14 dias para dominar os tópicos
+                          pendentes
+                        </p>
                       </div>
-                      <i class="fa-solid fa-chevron-right lh-feature-arrow" aria-hidden="true"></i>
+                      <i
+                        class="fa-solid fa-chevron-right lh-feature-arrow"
+                        aria-hidden="true"
+                      ></i>
                     </button>
 
                     <button
                       class="lh-feature-item"
-                      onclick="window.location.href='./simulados.html'"
+                      onclick="window.location.href = './simulados.html'"
                       title="Simulados — Questões AWS geradas por IA"
                     >
                       <span class="lh-feature-icon lh-feat-blue">
                         <i class="fa-solid fa-play" aria-hidden="true"></i>
                       </span>
                       <div class="lh-feature-info">
-                        <p class="lh-feature-name" data-i18n="simulations">Simulados</p>
-                        <p class="lh-feature-desc">Questões oficiais AWS geradas em tempo real pela IA</p>
+                        <p class="lh-feature-name" data-i18n="simulations">
+                          Simulados
+                        </p>
+                        <p class="lh-feature-desc">
+                          Questões oficiais AWS geradas em tempo real pela IA
+                        </p>
                       </div>
-                      <i class="fa-solid fa-chevron-right lh-feature-arrow" aria-hidden="true"></i>
+                      <i
+                        class="fa-solid fa-chevron-right lh-feature-arrow"
+                        aria-hidden="true"
+                      ></i>
                     </button>
 
                     <button
                       class="lh-feature-item"
-                      onclick="window.location.href='./simulados.html#mistakes'"
+                      onclick="
+                        window.location.href = './simulados.html#mistakes'
+                      "
                       title="Revisão de Erros — Questões que você errou"
                     >
                       <span class="lh-feature-icon lh-feat-warning">
-                        <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                        <i
+                          class="fa-solid fa-triangle-exclamation"
+                          aria-hidden="true"
+                        ></i>
                       </span>
                       <div class="lh-feature-info">
                         <p class="lh-feature-name">Revisão de Erros</p>
-                        <p class="lh-feature-desc">Ataque focado nas questões que você errou nos últimos testes</p>
+                        <p class="lh-feature-desc">
+                          Ataque focado nas questões que você errou nos últimos
+                          testes
+                        </p>
                       </div>
-                      <i class="fa-solid fa-chevron-right lh-feature-arrow" aria-hidden="true"></i>
+                      <i
+                        class="fa-solid fa-chevron-right lh-feature-arrow"
+                        aria-hidden="true"
+                      ></i>
                     </button>
                   </div>
                 </div>
@@ -189,38 +240,56 @@
 
                 <!-- Coluna: Prática -->
                 <div class="flex flex-col">
-                  <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">
+                  <h3
+                    class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide"
+                  >
                     Prática
                   </h3>
                   <div class="lh-features-list flex-1">
                     <button
                       class="lh-feature-item"
-                      onclick="window.location.href='./cases.html'"
+                      onclick="window.location.href = './cases.html'"
                       title="Cases AWS — Simulação prática de arquitetura"
                     >
                       <span class="lh-feature-icon lh-feat-cyan">
-                        <i class="fa-solid fa-diagram-project" aria-hidden="true"></i>
+                        <i
+                          class="fa-solid fa-diagram-project"
+                          aria-hidden="true"
+                        ></i>
                       </span>
                       <div class="lh-feature-info">
                         <p class="lh-feature-name">Cases AWS</p>
-                        <p class="lh-feature-desc">Simulação prática de arquitetura e casos de uso reais</p>
+                        <p class="lh-feature-desc">
+                          Simulação prática de arquitetura e casos de uso reais
+                        </p>
                       </div>
-                      <i class="fa-solid fa-chevron-right lh-feature-arrow" aria-hidden="true"></i>
+                      <i
+                        class="fa-solid fa-chevron-right lh-feature-arrow"
+                        aria-hidden="true"
+                      ></i>
                     </button>
 
                     <button
                       class="lh-feature-item"
-                      onclick="window.location.href='./laboratorios.html'"
+                      onclick="window.location.href = './laboratorios.html'"
                       title="Laboratórios AWS — Prática hands-on"
                     >
                       <span class="lh-feature-icon lh-feat-green">
                         <i class="fa-solid fa-flask" aria-hidden="true"></i>
                       </span>
                       <div class="lh-feature-info">
-                        <p class="lh-feature-name" data-i18n="aws_labs">Laboratórios AWS</p>
-                        <p class="lh-feature-desc" data-i18n="aws_labs_desc">Pratique AWS com laboratórios hands-on e ambientes guiados.</p>
+                        <p class="lh-feature-name" data-i18n="aws_labs">
+                          Laboratórios AWS
+                        </p>
+                        <p class="lh-feature-desc" data-i18n="aws_labs_desc">
+                          Pratique AWS com laboratórios hands-on e ambientes
+                          guiados.
+                        </p>
                       </div>
-                      <i class="fa-solid fa-chevron-right lh-feature-arrow" aria-hidden="true"></i>
+                      <i
+                        class="fa-solid fa-chevron-right lh-feature-arrow"
+                        aria-hidden="true"
+                      ></i>
                     </button>
                   </div>
                 </div>
@@ -228,13 +297,15 @@
 
                 <!-- Coluna: Recursos -->
                 <div class="flex flex-col">
-                  <h3 class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide">
+                  <h3
+                    class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide"
+                  >
                     Recursos
                   </h3>
                   <div class="lh-features-list flex-1">
                     <button
                       class="lh-feature-item"
-                      onclick="window.location.href='./resources.html'"
+                      onclick="window.location.href = './resources.html'"
                       title="Serviços AWS — Glossário e documentação"
                     >
                       <span class="lh-feature-icon lh-feat-blue">
@@ -242,29 +313,42 @@
                       </span>
                       <div class="lh-feature-info">
                         <p class="lh-feature-name">Serviços AWS</p>
-                        <p class="lh-feature-desc">Glossário completo e documentação essencial dos serviços</p>
+                        <p class="lh-feature-desc">
+                          Glossário completo e documentação essencial dos
+                          serviços
+                        </p>
                       </div>
-                      <i class="fa-solid fa-chevron-right lh-feature-arrow" aria-hidden="true"></i>
+                      <i
+                        class="fa-solid fa-chevron-right lh-feature-arrow"
+                        aria-hidden="true"
+                      ></i>
                     </button>
 
                     <button
                       class="lh-feature-item"
-                      onclick="window.location.href='./flashcards.html'"
+                      onclick="window.location.href = './flashcards.html'"
                       title="Flashcards — Revisão por cartões"
                     >
                       <span class="lh-feature-icon lh-feat-purple">
-                        <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                        <i
+                          class="fa-solid fa-layer-group"
+                          aria-hidden="true"
+                        ></i>
                       </span>
                       <div class="lh-feature-info">
                         <p class="lh-feature-name">Flashcards</p>
-                        <p class="lh-feature-desc">Revisão rápida por cartões para absorção mnemônica</p>
+                        <p class="lh-feature-desc">
+                          Revisão rápida por cartões para absorção mnemônica
+                        </p>
                       </div>
-                      <i class="fa-solid fa-chevron-right lh-feature-arrow" aria-hidden="true"></i>
+                      <i
+                        class="fa-solid fa-chevron-right lh-feature-arrow"
+                        aria-hidden="true"
+                      ></i>
                     </button>
                   </div>
                 </div>
                 <!-- /Coluna: Recursos -->
-
               </div>
             </div>
           </section>
@@ -275,153 +359,289 @@
             <div class="lh-metrics-header mb-4">
               <div>
                 <p class="lh-metrics-title">PERFORMANCE</p>
-                <p class="lh-metrics-sub">Acompanhe sua evolução e os principais indicadores.</p>
+                <p class="lh-metrics-sub">
+                  Acompanhe sua evolução e os principais indicadores.
+                </p>
               </div>
             </div>
 
             <div class="home-performance-grid">
               <div class="home-performance-left">
-            <!-- Progresso da Certificação -->
-            <div class="lh-metrics-card home-performance-compact">
-              <div class="lh-metrics-header">
-                <div>
-                  <p class="lh-metrics-title" data-i18n="cert_progress">Progresso da Certificação</p>
-                  <p class="lh-metrics-sub" id="sidebar-cert-label" data-i18n="loading">Carregando...</p>
+                <!-- Progresso da Certificação -->
+                <div class="lh-metrics-card home-performance-compact">
+                  <div class="lh-metrics-header">
+                    <div>
+                      <p class="lh-metrics-title" data-i18n="cert_progress">
+                        Progresso da Certificação
+                      </p>
+                      <p
+                        class="lh-metrics-sub"
+                        id="sidebar-cert-label"
+                        data-i18n="loading"
+                      >
+                        Carregando...
+                      </p>
+                    </div>
+                    <span
+                      class="a3-badge a3-badge-primary"
+                      id="sidebar-cert-badge"
+                      >---</span
+                    >
+                  </div>
+                  <div class="mt-4 p-4 border rounded dark:border-slate-700">
+                    <div class="flex justify-between text-sm mb-2">
+                      <span
+                        class="font-semibold text-gray-700 dark:text-gray-300"
+                        data-i18n="exam_readiness"
+                      >
+                        Prontidão para o Exame
+                      </span>
+                      <span
+                        class="font-bold text-blue-600 dark:text-blue-400"
+                        id="sidebar-pct-text"
+                        aria-live="polite"
+                        >0%</span
+                      >
+                    </div>
+                    <div
+                      class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 mb-3 overflow-hidden"
+                      role="progressbar"
+                      aria-valuenow="0"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      aria-labelledby="sidebar-pct-text"
+                    >
+                      <div
+                        id="sidebar-pct-bar"
+                        class="bg-blue-600 h-3 rounded-full transition-all duration-500"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                    <div
+                      class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2"
+                    >
+                      <span
+                        >Status:
+                        <strong id="sidebar-cert-status"
+                          >Não iniciada</strong
+                        ></span
+                      >
+                      <span
+                        >Ofensiva:
+                        <strong id="sidebar-streak-value">0 dias</strong></span
+                      >
+                    </div>
+                  </div>
                 </div>
-                <span class="a3-badge a3-badge-primary" id="sidebar-cert-badge">---</span>
-              </div>
-              <div class="mt-4 p-4 border rounded dark:border-slate-700">
-                <div class="flex justify-between text-sm mb-2">
-                  <span class="font-semibold text-gray-700 dark:text-gray-300" data-i18n="exam_readiness">
-                    Prontidão para o Exame
-                  </span>
-                  <span
-                    class="font-bold text-blue-600 dark:text-blue-400"
-                    id="sidebar-pct-text"
+
+                <div
+                  id="study-insight-container"
+                  class="lh-metrics-card home-performance-compact"
+                >
+                  <div class="lh-metrics-header">
+                    <div>
+                      <p
+                        id="insight-card-title"
+                        class="lh-metrics-title"
+                        data-i18n="study_insight"
+                      >
+                        Insight de Estudo
+                      </p>
+                      <p
+                        class="lh-metrics-sub"
+                        data-i18n="study_insight_subtitle"
+                      >
+                        Uma leitura rápida do seu momento de estudo.
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    id="dynamic-insight"
+                    data-empty="true"
                     aria-live="polite"
-                  >0%</span>
+                  >
+                    <p
+                      class="text-muted text-sm"
+                      data-i18n="first_quiz_for_insights"
+                    >
+                      Faça seu primeiro simulado para receber insights
+                      personalizados baseados no seu desempenho.
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  id="study-now-section"
+                  class="lh-metrics-card home-performance-compact"
+                >
+                  <div class="lh-metrics-header">
+                    <div>
+                      <p
+                        class="lh-metrics-title"
+                        data-i18n="next_recommendation"
+                      >
+                        Próxima recomendação
+                      </p>
+                      <p
+                        class="lh-metrics-sub"
+                        data-i18n="next_recommendation_subtitle"
+                      >
+                        A melhor ação para continuar agora.
+                      </p>
+                    </div>
+                  </div>
+                  <div id="study-now-compact" aria-live="polite">
+                    <p
+                      class="text-muted text-sm"
+                      data-i18n="common_loading_session"
+                    >
+                      Carregando...
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Performance Geral -->
+              <div class="lh-metrics-card home-performance-card">
+                <div class="lh-metrics-header">
+                  <div>
+                    <p class="lh-metrics-title" data-i18n="general_performance">
+                      Sua performance geral
+                    </p>
+                    <p class="lh-metrics-sub">
+                      Leitura consolidada dos seus simulados
+                    </p>
+                  </div>
                 </div>
                 <div
-                  class="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3 mb-3 overflow-hidden"
-                  role="progressbar"
-                  aria-valuenow="0"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  aria-labelledby="sidebar-pct-text"
+                  class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 home-performance-metrics-grid"
                 >
-                  <div
-                    id="sidebar-pct-bar"
-                    class="bg-blue-600 h-3 rounded-full transition-all duration-500"
-                    style="width: 0%"
-                  ></div>
-                </div>
-                <div class="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
-                  <span>Status: <strong id="sidebar-cert-status">Não iniciada</strong></span>
-                  <span>Ofensiva: <strong id="sidebar-streak-value">0 dias</strong></span>
-                </div>
-              </div>
-            </div>
-
-            <div id="study-insight-container" class="lh-metrics-card home-performance-compact">
-              <div class="lh-metrics-header">
-                <div>
-                  <p id="insight-card-title" class="lh-metrics-title" data-i18n="study_insight">Insight de Estudo</p>
-                  <p class="lh-metrics-sub" data-i18n="study_insight_subtitle">Uma leitura rápida do seu momento de estudo.</p>
-                </div>
-              </div>
-              <div id="dynamic-insight" data-empty="true" aria-live="polite">
-                <p class="text-muted text-sm" data-i18n="first_quiz_for_insights">Faça seu primeiro simulado para receber insights personalizados baseados no seu desempenho.</p>
-              </div>
-            </div>
-
-            <div id="study-now-section" class="lh-metrics-card home-performance-compact">
-              <div class="lh-metrics-header">
-                <div>
-                  <p class="lh-metrics-title" data-i18n="next_recommendation">Próxima recomendação</p>
-                  <p class="lh-metrics-sub" data-i18n="next_recommendation_subtitle">A melhor ação para continuar agora.</p>
-                </div>
-              </div>
-              <div id="study-now-compact" aria-live="polite">
-                <p class="text-muted text-sm" data-i18n="common_loading_session">Carregando...</p>
-              </div>
-            </div>
-              </div>
-
-            <!-- Performance Geral -->
-            <div class="lh-metrics-card home-performance-card">
-              <div class="lh-metrics-header">
-                <div>
-                  <p class="lh-metrics-title" data-i18n="general_performance">Sua performance geral</p>
-                  <p class="lh-metrics-sub">Leitura consolidada dos seus simulados</p>
-                </div>
-              </div>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 home-performance-metrics-grid">
-                <div class="lh-metric-item lh-metric-blue">
-                  <i class="fa-solid fa-chart-line lh-metric-icon" aria-hidden="true"></i>
-                  <div>
-                    <p class="lh-metric-label" data-i18n="best_score">Melhor Nota</p>
-                    <p class="lh-metric-value" id="hub-best-score">--</p>
-                    <p class="lh-metric-hint" id="hub-best-score-hint">escala AWS</p>
+                  <div class="lh-metric-item lh-metric-blue">
+                    <i
+                      class="fa-solid fa-chart-line lh-metric-icon"
+                      aria-hidden="true"
+                    ></i>
+                    <div>
+                      <p class="lh-metric-label" data-i18n="best_score">
+                        Melhor Nota
+                      </p>
+                      <p class="lh-metric-value" id="hub-best-score">--</p>
+                      <p class="lh-metric-hint" id="hub-best-score-hint">
+                        escala AWS
+                      </p>
+                    </div>
+                  </div>
+                  <div class="lh-metric-item lh-metric-green">
+                    <i
+                      class="fa-solid fa-percent lh-metric-icon"
+                      aria-hidden="true"
+                    ></i>
+                    <div>
+                      <p class="lh-metric-label" data-i18n="accuracy_rate">
+                        Taxa Acerto
+                      </p>
+                      <p class="lh-metric-value" id="jornada-accuracy">0%</p>
+                    </div>
+                  </div>
+                  <div class="lh-metric-item lh-metric-cyan">
+                    <i
+                      class="fa-solid fa-bullseye lh-metric-icon"
+                      aria-hidden="true"
+                    ></i>
+                    <div>
+                      <p class="lh-metric-label" data-i18n="general_average">
+                        Média Geral
+                      </p>
+                      <p class="lh-metric-value" id="hub-avg-score">--</p>
+                      <p class="lh-metric-hint" id="hub-avg-score-hint">
+                        escala AWS
+                      </p>
+                    </div>
+                  </div>
+                  <div class="lh-metric-item lh-metric-purple">
+                    <i
+                      class="fa-solid fa-list-ol lh-metric-icon"
+                      aria-hidden="true"
+                    ></i>
+                    <div>
+                      <p class="lh-metric-label" data-i18n="questions">
+                        Questões
+                      </p>
+                      <p class="lh-metric-value" id="jornada-questions">0</p>
+                    </div>
+                  </div>
+                  <div class="lh-metric-item lh-metric-green">
+                    <i
+                      class="fa-solid fa-fire-flame-curved lh-metric-icon"
+                      aria-hidden="true"
+                    ></i>
+                    <div>
+                      <p class="lh-metric-label" data-i18n="streak">
+                        Sequência
+                      </p>
+                      <p class="lh-metric-value" id="hub-streak">0</p>
+                      <p class="lh-metric-hint" data-i18n="consecutive_days">
+                        dias seguidos
+                      </p>
+                    </div>
+                  </div>
+                  <div class="lh-metric-item lh-metric-blue">
+                    <i
+                      class="fa-solid fa-bars-progress lh-metric-icon"
+                      aria-hidden="true"
+                    ></i>
+                    <div>
+                      <p class="lh-metric-label" data-i18n="progress">
+                        Progresso
+                      </p>
+                      <p class="lh-metric-value" id="jornada-progress">0%</p>
+                    </div>
+                  </div>
+                  <div class="lh-metric-item lh-metric-warning">
+                    <i
+                      class="fa-solid fa-triangle-exclamation lh-metric-icon"
+                      aria-hidden="true"
+                    ></i>
+                    <div>
+                      <p class="lh-metric-label" data-i18n="pending_errors">
+                        Erros Pendentes
+                      </p>
+                      <p
+                        class="lh-metric-value text-red-500"
+                        id="hub-mistakes-count"
+                      >
+                        0
+                      </p>
+                      <p class="lh-metric-hint" data-i18n="to_review">
+                        para revisar
+                      </p>
+                    </div>
+                  </div>
+                  <div class="lh-metric-item lh-metric-warning">
+                    <i
+                      class="fa-solid fa-magnifying-glass-chart lh-metric-icon"
+                      aria-hidden="true"
+                    ></i>
+                    <div>
+                      <p class="lh-metric-label" data-i18n="weak_point">
+                        Ponto Fraco
+                      </p>
+                      <p
+                        class="lh-metric-value"
+                        id="jornada-weak-domain"
+                        style="
+                          font-size: 0.85rem;
+                          white-space: normal;
+                          line-height: 1.2;
+                          word-wrap: break-word;
+                        "
+                      >
+                        ...
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <div class="lh-metric-item lh-metric-green">
-                  <i class="fa-solid fa-percent lh-metric-icon" aria-hidden="true"></i>
-                  <div>
-                    <p class="lh-metric-label" data-i18n="accuracy_rate">Taxa Acerto</p>
-                    <p class="lh-metric-value" id="jornada-accuracy">0%</p>
-                  </div>
-                </div>
-                <div class="lh-metric-item lh-metric-cyan">
-                  <i class="fa-solid fa-bullseye lh-metric-icon" aria-hidden="true"></i>
-                  <div>
-                    <p class="lh-metric-label" data-i18n="general_average">Média Geral</p>
-                    <p class="lh-metric-value" id="hub-avg-score">--</p>
-                    <p class="lh-metric-hint" id="hub-avg-score-hint">escala AWS</p>
-                  </div>
-                </div>
-                <div class="lh-metric-item lh-metric-purple">
-                  <i class="fa-solid fa-list-ol lh-metric-icon" aria-hidden="true"></i>
-                  <div>
-                    <p class="lh-metric-label" data-i18n="questions">Questões</p>
-                    <p class="lh-metric-value" id="jornada-questions">0</p>
-                  </div>
-                </div>
-                <div class="lh-metric-item lh-metric-green">
-                  <i class="fa-solid fa-fire-flame-curved lh-metric-icon" aria-hidden="true"></i>
-                  <div>
-                    <p class="lh-metric-label" data-i18n="streak">Sequência</p>
-                    <p class="lh-metric-value" id="hub-streak">0</p>
-                    <p class="lh-metric-hint" data-i18n="consecutive_days">dias seguidos</p>
-                  </div>
-                </div>
-                <div class="lh-metric-item lh-metric-blue">
-                  <i class="fa-solid fa-bars-progress lh-metric-icon" aria-hidden="true"></i>
-                  <div>
-                    <p class="lh-metric-label" data-i18n="progress">Progresso</p>
-                    <p class="lh-metric-value" id="jornada-progress">0%</p>
-                  </div>
-                </div>
-                <div class="lh-metric-item lh-metric-warning">
-                  <i class="fa-solid fa-triangle-exclamation lh-metric-icon" aria-hidden="true"></i>
-                  <div>
-                    <p class="lh-metric-label" data-i18n="pending_errors">Erros Pendentes</p>
-                    <p class="lh-metric-value text-red-500" id="hub-mistakes-count">0</p>
-                    <p class="lh-metric-hint" data-i18n="to_review">para revisar</p>
-                  </div>
-                </div>
-                <div class="lh-metric-item lh-metric-warning">
-                  <i class="fa-solid fa-magnifying-glass-chart lh-metric-icon" aria-hidden="true"></i>
-                  <div>
-                    <p class="lh-metric-label" data-i18n="weak_point">Ponto Fraco</p>
-                    <p
-                      class="lh-metric-value"
-                      id="jornada-weak-domain"
-                      style="font-size: 0.85rem; white-space: normal; line-height: 1.2; word-wrap: break-word;"
-                    >...</p>
-                  </div>
-                </div>
               </div>
-            </div>
             </div>
           </section>
           <!-- /3. PERFORMANCE -->
@@ -432,13 +652,13 @@
               <div>
                 <p class="lh-metrics-title">ANÁLISE</p>
                 <p class="lh-metrics-sub">
-                  Entenda sua evolução. Veja onde você está bem e como seu desempenho está evoluindo.
+                  Entenda sua evolução. Veja onde você está bem e como seu
+                  desempenho está evoluindo.
                 </p>
               </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
               <!-- Análise de Domínios -->
               <div class="lh-metrics-card h-full flex flex-col justify-between">
                 <div class="lh-metrics-header mb-4">
@@ -452,33 +672,55 @@
                   aria-label="Resumo de estatísticas globais"
                 >
                   <div>
-                    <strong id="total-quizzes" class="text-base text-blue-600 dark:text-blue-400">0</strong>
+                    <strong
+                      id="total-quizzes"
+                      class="text-base text-blue-600 dark:text-blue-400"
+                      >0</strong
+                    >
                     <br />
-                    <span class="text-gray-500" data-i18n="simulations">Simulados</span>
+                    <span class="text-gray-500" data-i18n="simulations"
+                      >Simulados</span
+                    >
                   </div>
                   <div>
-                    <strong id="avg-score" class="text-base text-green-600 dark:text-green-400">0%</strong>
+                    <strong
+                      id="avg-score"
+                      class="text-base text-green-600 dark:text-green-400"
+                      >0%</strong
+                    >
                     <br />
                     <span class="text-gray-500" data-i18n="average">Média</span>
                   </div>
                   <div>
-                    <strong id="total-questions" class="text-base text-purple-600 dark:text-purple-400">0</strong>
+                    <strong
+                      id="total-questions"
+                      class="text-base text-purple-600 dark:text-purple-400"
+                      >0</strong
+                    >
                     <br />
-                    <span class="text-gray-500" data-i18n="questions">Questões</span>
+                    <span class="text-gray-500" data-i18n="questions"
+                      >Questões</span
+                    >
                   </div>
                 </div>
                 <div
                   id="global-chart-container"
                   class="relative w-full aspect-square md:aspect-video flex items-center justify-center mt-4"
                 >
-                  <canvas id="globalRadarChart" role="img" aria-label="Gráfico radar de análise de domínios"></canvas>
+                  <canvas
+                    id="globalRadarChart"
+                    role="img"
+                    aria-label="Gráfico radar de análise de domínios"
+                  ></canvas>
                   <div
                     id="global-chart-empty"
                     class="absolute inset-0 flex items-center justify-center bg-gray-50/90 dark:bg-slate-800/90 rounded"
-                    style="display: none;"
+                    style="display: none"
                     aria-hidden="true"
                   >
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                    <p
+                      class="text-gray-500 dark:text-gray-400 text-sm font-medium"
+                    >
                       Realize simulados para gerar o gráfico.
                     </p>
                   </div>
@@ -496,20 +738,25 @@
                   id="global-line-chart-container"
                   class="relative w-full aspect-square md:aspect-video flex items-center justify-center mt-4"
                 >
-                  <canvas id="performanceLineChart" role="img" aria-label="Gráfico de linha com evolução do desempenho"></canvas>
+                  <canvas
+                    id="performanceLineChart"
+                    role="img"
+                    aria-label="Gráfico de linha com evolução do desempenho"
+                  ></canvas>
                   <div
                     id="global-line-chart-empty"
                     class="absolute inset-0 flex items-center justify-center bg-gray-50/90 dark:bg-slate-800/90 rounded"
-                    style="display: none;"
+                    style="display: none"
                     aria-hidden="true"
                   >
-                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                    <p
+                      class="text-gray-500 dark:text-gray-400 text-sm font-medium"
+                    >
                       Realize simulados para gerar o gráfico.
                     </p>
                   </div>
                 </div>
               </div>
-
             </div>
           </section>
           <!-- /4. ANÁLISE DE DESEMPENHO -->
@@ -520,23 +767,32 @@
               <div>
                 <p class="lh-metrics-title">ATIVIDADE</p>
                 <p class="lh-metrics-sub">
-                  Continue de onde parou. Retome seus estudos ou acesse rapidamente uma área da plataforma.
+                  Continue de onde parou. Retome seus estudos ou acesse
+                  rapidamente uma área da plataforma.
                 </p>
               </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
               <!-- Atividades Recentes -->
               <div class="lh-metrics-card mb-4">
-                <div class="lh-metrics-header flex justify-between items-center">
+                <div
+                  class="lh-metrics-header flex justify-between items-center"
+                >
                   <div>
-                    <p class="lh-metrics-title" id="history-card-title" data-i18n="recent_activities">
+                    <p
+                      class="lh-metrics-title"
+                      id="history-card-title"
+                      data-i18n="recent_activities"
+                    >
                       Atividades Recentes
                     </p>
                     <p class="lh-metrics-sub">
                       Ofensiva Atual:
-                      <strong id="streak-counter" class="text-orange-500">0</strong> dias
+                      <strong id="streak-counter" class="text-orange-500"
+                        >0</strong
+                      >
+                      dias
                     </p>
                   </div>
                   <button
@@ -550,7 +806,11 @@
                   </button>
                 </div>
                 <div class="mt-4">
-                  <ul id="history-list" class="space-y-2 max-h-60 overflow-y-auto" aria-live="polite">
+                  <ul
+                    id="history-list"
+                    class="space-y-2 max-h-60 overflow-y-auto"
+                    aria-live="polite"
+                  >
                     <li class="text-gray-500 text-sm italic p-4 text-center">
                       Nenhum simulado registrado no histórico.
                     </li>
@@ -568,50 +828,76 @@
                 <div class="grid grid-cols-2 gap-3 h-[calc(100%-3rem)]">
                   <button
                     class="flex flex-col items-center justify-center p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 transition"
-                    onclick="window.location.href='./simulados.html'"
+                    onclick="window.location.href = './simulados.html'"
                     title="Ir para Simulados"
                     aria-label="Acessar Simulados"
                   >
-                    <i class="fa-solid fa-play text-blue-600 text-xl mb-2" aria-hidden="true"></i>
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Simulado</span>
+                    <i
+                      class="fa-solid fa-play text-blue-600 text-xl mb-2"
+                      aria-hidden="true"
+                    ></i>
+                    <span
+                      class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                      >Simulado</span
+                    >
                   </button>
                   <button
                     class="flex flex-col items-center justify-center p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 transition"
-                    onclick="window.location.href='./flashcards.html'"
+                    onclick="window.location.href = './flashcards.html'"
                     title="Ir para Flashcards"
                     aria-label="Acessar Flashcards"
                   >
-                    <i class="fa-solid fa-layer-group text-purple-600 text-xl mb-2" aria-hidden="true"></i>
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Flashcards</span>
+                    <i
+                      class="fa-solid fa-layer-group text-purple-600 text-xl mb-2"
+                      aria-hidden="true"
+                    ></i>
+                    <span
+                      class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                      >Flashcards</span
+                    >
                   </button>
                   <button
                     class="flex flex-col items-center justify-center p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 transition"
-                    onclick="window.location.href='./cases.html'"
+                    onclick="window.location.href = './cases.html'"
                     title="Ir para Cases AWS"
                     aria-label="Acessar Cases AWS"
                   >
-                    <i class="fa-solid fa-diagram-project text-cyan-600 text-xl mb-2" aria-hidden="true"></i>
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Cases</span>
+                    <i
+                      class="fa-solid fa-diagram-project text-cyan-600 text-xl mb-2"
+                      aria-hidden="true"
+                    ></i>
+                    <span
+                      class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                      >Cases</span
+                    >
                   </button>
                   <button
                     class="flex flex-col items-center justify-center p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700 transition"
-                    onclick="document.getElementById('study-now-section')?.scrollIntoView({ behavior: 'smooth' })"
+                    onclick="
+                      document
+                        .getElementById('study-now-section')
+                        ?.scrollIntoView({ behavior: 'smooth' })
+                    "
                     title="Ir para Insights de Estudo"
                     aria-label="Acessar Insights de Estudo"
                   >
-                    <i class="fa-solid fa-lightbulb text-pink-600 text-xl mb-2" aria-hidden="true"></i>
-                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300" data-i18n="study_insight">Insights de Estudo</span>
+                    <i
+                      class="fa-solid fa-lightbulb text-pink-600 text-xl mb-2"
+                      aria-hidden="true"
+                    ></i>
+                    <span
+                      class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                      data-i18n="study_insight"
+                      >Insights de Estudo</span
+                    >
                   </button>
                 </div>
               </div>
-
             </div>
           </section>
           <!-- /5. ATIVIDADE -->
-
         </div>
         <!-- /LEARNING HUB -->
-
       </section>
 
       <!-- Painel Lateral Direito (side-info) -->
@@ -624,7 +910,6 @@
         <!-- Conteúdo injetado dinamicamente pelo app.js -->
       </aside>
       <!-- /Painel Lateral Direito -->
-
     </main>
 
     <!-- {{FOOTER}} -->
@@ -664,13 +949,18 @@
                 const newWorker = reg.installing;
                 if (!newWorker) return;
                 newWorker.addEventListener("statechange", () => {
-                  if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+                  if (
+                    newWorker.state === "installed" &&
+                    navigator.serviceWorker.controller
+                  ) {
                     console.log("Nova versão do Service Worker disponível.");
                   }
                 });
               });
             })
-            .catch((err) => console.error("Erro ao registar o Service Worker:", err));
+            .catch((err) =>
+              console.error("Erro ao registar o Service Worker:", err),
+            );
         });
       }
     </script>
@@ -680,6 +970,5 @@
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
     <!-- {{POMODORO_WIDGET}} -->
-
   </body>
 </html>

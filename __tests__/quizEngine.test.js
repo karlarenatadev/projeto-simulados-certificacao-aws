@@ -7,8 +7,51 @@ import {
     buildPersonalizedQuestionSet,
     DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD,
     identifyWeakDomains,
+    isApprovedQuestion,
     QuizEngine,
 } from '../src/frontend/js/quizEngine.js';
+import { jest } from '@jest/globals';
+
+describe('QuizEngine - governanca de aprovacao', () => {
+    test('aceita somente status explicitamente aprovado nos formatos local e API', () => {
+        expect(isApprovedQuestion({ validation: { status: 'validated' } })).toBe(true);
+        expect(isApprovedQuestion({ validation_status: 'APPROVED' })).toBe(true);
+        expect(isApprovedQuestion({ validation: { status: 'PENDING' } })).toBe(false);
+        expect(isApprovedQuestion({ validation_status: 'REJECTED' })).toBe(false);
+        expect(isApprovedQuestion({ validation_status: null })).toBe(false);
+        expect(isApprovedQuestion({})).toBe(false);
+    });
+
+    test('_sanitizeQuestions remove pendentes, rejeitadas e status ausente', async () => {
+        const engine = new QuizEngine();
+        global.fetch = jest.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({
+                'clf-c02': {
+                    allowedDomains: ['Cloud Concepts'],
+                },
+            }),
+        });
+        const base = {
+            id: 'q-approved',
+            domain: 'Cloud Concepts',
+            question: 'Approved question text',
+            options: ['A', 'B'],
+            correct: 0,
+            explanation: 'Explanation',
+            validation_status: 'APPROVED',
+        };
+
+        const result = await engine._sanitizeQuestions([
+            base,
+            { ...base, id: 'q-pending', validation_status: 'PENDING' },
+            { ...base, id: 'q-rejected', validation_status: 'REJECTED' },
+            { ...base, id: 'q-unknown', validation_status: null },
+        ], 'clf-c02');
+
+        expect(result.map((question) => question.id)).toEqual(['q-approved']);
+    });
+});
 
 describe('QuizEngine - Testes Base', () => {
     let engine;

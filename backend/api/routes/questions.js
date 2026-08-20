@@ -239,6 +239,7 @@ router.get('/', async (req, res, next) => {
       const results = await searchQuestions(search, parseInt(limit) || 20, {
         language,
         canonicalOnly: true,
+        approvedOnly: true,
       });
       return res.status(200).json({
         success: true,
@@ -256,6 +257,7 @@ router.get('/', async (req, res, next) => {
       limit: parseInt(limit) || 10,
       offset: parseInt(offset) || 0,
       canonicalOnly: true,
+      approvedOnly: true,
     });
 
     res.status(200).json({
@@ -287,7 +289,7 @@ router.get('/:id', async (req, res, next) => {
       });
     }
 
-    const question = await getQuestionById(id);
+    const question = await getQuestionById(id, { approvedOnly: true });
 
     if (!question) {
       return res.status(404).json({

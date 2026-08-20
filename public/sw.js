@@ -1,169 +1,139 @@
-/**
- * Service Worker for the AWS Certification Simulator PWA
- * Strategy:
- * - Network First for JSON data (questions) to ensure users always have the latest dataset.
- * - Cache First for static assets (HTML, CSS, JS) for fast offline load speeds.
- */
-const CACHE_NAME = 'aws-sim-cache-v8'; // Change this to invalidate old caches on deploy.
+/* CloudAcademy A3 Service Worker. The build replaces fd05d8cf472f. */
+const CACHE_PREFIX = "cloudacademy-a3-";
+const CACHE_NAME = `${CACHE_PREFIX}fd05d8cf472f`;
 
-// Removemos os .json daqui para não ficarem trancados para sempre
-const urlsToCache = [
-  './',
-  './index.html',
-  './simulados.html',
-  './jornada.html',
-  './flashcards.html',
-  './diagnostico.html',
-  './profile.html',
-  './settings.html',
-  './resources.html',
-  './cases.html',
-  './case-view.html',
-  './404.html',
-  './css/style.css',
-  './css/cases.css',
-  './js/app.js',
-  './js/data.js',
-  './js/quizEngine.js',
-  './js/storageManager.js',
-  './js/chartManager.js',
-  './js/flashcards.js',
-  './js/shell.js',
-  './js/pomodoroManager.js',
-  './js/sprintData.js',
-  './js/userManager.js',
-  './services/api.js',
-  './manifest.json'
+const PRECACHE_URLS = [
+  "./",
+  "./index.html",
+  "./simulados.html",
+  "./diagnostico.html",
+  "./flashcards.html",
+  "./dicas-prova.html",
+  "./cases.html",
+  "./laboratorios.html",
+  "./resources.html",
+  "./jornada.html",
+  "./study-sprint.html",
+  "./404.html",
+  "./css/style.css",
+  "./css/cases.css",
+  "./js/app.js",
+  "./js/shell.js",
+  "./js/flashcards.js",
+  "./js/examTipsPage.js",
+  "./js/recommendations/examTips.js",
+  "./data/exam-tips.json",
+  "./data/taxonomy/certification-manifest.json",
+  "./manifest.json",
 ];
 
-const publicJsonPaths = [
-  'data/questions/clf-c02.json',
-  'data/questions/clf-c02-en.json',
-  'data/questions/saa-c03.json',
-  'data/questions/saa-c03-en.json',
-  'data/questions/aif-c01.json',
-  'data/questions/aif-c01-en.json',
-  'data/questions/dva-c02.json',
-  'data/questions/dva-c02-en.json',
-  'data/nivelamento/diagnostic-clf-c02.json',
-  'data/nivelamento/diagnostic-clf-c02-en.json',
-  'data/nivelamento/diagnostic-saa-c03.json',
-  'data/nivelamento/diagnostic-saa-c03-en.json',
-  'data/nivelamento/diagnostic-aif-c01.json',
-  'data/nivelamento/diagnostic-aif-c01-en.json',
-  'data/nivelamento/diagnostic-dva-c02.json',
-  'data/nivelamento/diagnostic-dva-c02-en.json',
-  'data/gamificacao/interactive-challenges.json'
-];
+const LAZY_PUBLIC_JSON = new Set([
+  "data/exam-tips.json",
+  "data/taxonomy/certification-manifest.json",
+  "data/questions/clf-c02.json",
+  "data/questions/clf-c02-en.json",
+  "data/questions/saa-c03.json",
+  "data/questions/saa-c03-en.json",
+  "data/questions/aif-c01.json",
+  "data/questions/aif-c01-en.json",
+  "data/questions/dva-c02.json",
+  "data/questions/dva-c02-en.json",
+  "data/nivelamento/diagnostic-clf-c02.json",
+  "data/nivelamento/diagnostic-clf-c02-en.json",
+  "data/nivelamento/diagnostic-saa-c03.json",
+  "data/nivelamento/diagnostic-saa-c03-en.json",
+  "data/nivelamento/diagnostic-aif-c01.json",
+  "data/nivelamento/diagnostic-aif-c01-en.json",
+  "data/nivelamento/diagnostic-dva-c02.json",
+  "data/nivelamento/diagnostic-dva-c02-en.json",
+  "data/gamificacao/interactive-challenges.json",
+]);
 
-function isPublicJsonRequest(requestUrl) {
-  const url = new URL(requestUrl);
-  return publicJsonPaths.some(path => url.pathname.endsWith(`/${path}`));
+function isSameOrigin(url) {
+  return url.origin === self.location.origin;
 }
 
-self.addEventListener('install', event => {
+function isApiRequest(url) {
+  return url.pathname.includes("/api/");
+}
+
+function isLazyPublicJson(url) {
+  const scopePath = new URL(self.registration.scope).pathname;
+  const relativePath = url.pathname.replace(scopePath, "");
+  return LAZY_PUBLIC_JSON.has(relativePath.replace(/^\/+/, ""));
+}
+
+async function cacheNetworkResponse(request) {
+  const response = await fetch(request);
+  if (response.ok) {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.put(request, response.clone());
+  }
+  return response;
+}
+
+self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        // Tenta adicionar todos os recursos, mas não falha se algum não existir
-        return Promise.allSettled(
-          urlsToCache.map(url => 
-            cache.add(url).catch(err => {
-              console.warn(`Falha ao cachear ${url}:`, err);
-              return null;
-            })
-          )
-        );
-      })
-      .catch(err => {
-        console.error('Erro ao criar cache:', err);
-      })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS)),
   );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', event => {
-  // Limpa caches antigos
-  const cacheAllowlist = [CACHE_NAME];
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheAllowlist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    caches
+      .keys()
+      .then((cacheNames) =>
+        Promise.all(
+          cacheNames
+            .filter(
+              (cacheName) =>
+                cacheName.startsWith(CACHE_PREFIX) && cacheName !== CACHE_NAME,
+            )
+            .map((cacheName) => caches.delete(cacheName)),
+        ),
+      )
+      .then(() => self.clients.claim()),
   );
 });
 
-self.addEventListener('fetch', event => {
-  // --- Network First Strategy for JSON data ---
-  // Ensure that if the dataset updates on the server, the user gets it.
-  // If the network fails (offline), it falls back to the cache.
-  if (event.request.url.endsWith('.json') && !event.request.url.includes('manifest.json')) {
-      if (!isPublicJsonRequest(event.request.url)) {
-          event.respondWith(fetch(event.request));
-          return;
-      }
+self.addEventListener("fetch", (event) => {
+  const requestUrl = new URL(event.request.url);
+  if (!isSameOrigin(requestUrl) || isApiRequest(requestUrl)) return;
 
-      event.respondWith(
-          fetch(event.request).then(response => {
-              // Só faz cache se a resposta for válida
-              if (response && response.status === 200) {
-                  const responseClone = response.clone();
-                  caches.open(CACHE_NAME).then(cache => {
-                      cache.put(event.request, responseClone).catch(err => {
-                          console.warn('Erro ao cachear JSON:', err);
-                      });
-                  });
-              }
-              return response;
-          }).catch(err => {
-              console.warn('Erro ao buscar JSON, tentando cache:', err);
-              // Se estiver offline/sem internet, usa a versão do cache
-              return caches.match(event.request).then(cachedResponse => {
-                  if (cachedResponse) {
-                      return cachedResponse;
-                  }
-                  // Se não houver cache, retorna erro 404
-                  return new Response(JSON.stringify({ error: 'Recurso não disponível' }), {
-                      status: 404,
-                      statusText: 'Not Found',
-                      headers: { 'Content-Type': 'application/json' }
-                  });
-              });
-          })
-      );
-      return;
+  if (event.request.method !== "GET") return;
+
+  if (requestUrl.pathname.endsWith(".json") && !isLazyPublicJson(requestUrl)) {
+    return;
   }
 
-  // --- Stale-While-Revalidate Strategy for Static Assets ---
-  // For HTML, CSS, JS, etc., check cache first to load instantly,
-  // but always fetch from network in background to update the cache for next time.
-  event.respondWith(
-    caches.match(event.request)
-      .then(cachedResponse => {
-        const fetchPromise = fetch(event.request).then(networkResponse => {
-          if (networkResponse && networkResponse.status === 200) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(event.request, responseClone).catch(err => console.warn('Erro ao cachear recurso estático:', err));
-            });
-          }
-          return networkResponse;
-        }).catch(err => {
-            console.warn('Erro ao buscar recurso no background:', event.request.url, err);
-            // Retorna uma resposta vazia em caso de erro se não houver cache
-            if (!cachedResponse) {
-                return new Response('', { status: 404, statusText: 'Not Found' });
-            }
-        });
+  if (requestUrl.pathname.endsWith(".json")) {
+    event.respondWith(
+      cacheNetworkResponse(event.request).catch(() =>
+        caches.match(event.request).then(
+          (cachedResponse) =>
+            cachedResponse ||
+            new Response(JSON.stringify({ error: "Offline" }), {
+              status: 503,
+              headers: { "Content-Type": "application/json" },
+            }),
+        ),
+      ),
+    );
+    return;
+  }
 
-        // Retorna a resposta em cache imediatamente se existir, 
-        // caso contrário aguarda o fetch
-        return cachedResponse || fetchPromise;
-      })
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      const update = cacheNetworkResponse(event.request).catch(() => null);
+      if (cachedResponse) return cachedResponse;
+      return update.then(
+        (networkResponse) =>
+          networkResponse ||
+          (event.request.mode === "navigate"
+            ? caches.match(new URL("./index.html", self.registration.scope))
+            : new Response("Offline", { status: 503 })),
+      );
+    }),
   );
 });

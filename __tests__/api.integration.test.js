@@ -70,6 +70,7 @@ describe('Express API integration', () => {
       correct_answer: [0],
       explanation: 'On-Demand pricing charges only for the capacity that is actually used.',
       tags: ['integration-test'],
+      validation_status: 'APPROVED',
     });
     englishQuestion = await insertQuestion({
       certification: 'CLF-C02',
@@ -82,6 +83,7 @@ describe('Express API integration', () => {
       correct_answer: [0],
       explanation: 'On-Demand pricing charges only for the capacity that is actually used.',
       tags: ['integration-test'],
+      validation_status: 'APPROVED',
     });
     legacyQuestion = await insertQuestion({
       certification: 'CLF-C02',
@@ -121,6 +123,53 @@ describe('Express API integration', () => {
     expect(body.success).toBe(true);
     expect(body.data.some((item) => item.id === question.id)).toBe(true);
     expect(body.data.every((item) => item.correct_answer === undefined)).toBe(true);
+  });
+
+  test('student catalog and quiz exclude non-approved questions', async () => {
+    const pending = await insertQuestion({
+      certification: 'CLF-C02',
+      language: 'pt',
+      source_question_id: `integration-pending-${Date.now()}`,
+      domain: 'faturamento',
+      difficulty: 'easy',
+      question_text: 'Pending question must not be offered to students.',
+      options: ['A', 'B'],
+      correct_answer: [0],
+      explanation: 'Pending fixture.',
+      validation_status: 'PENDING',
+    });
+    const rejected = await insertQuestion({
+      certification: 'CLF-C02',
+      language: 'pt',
+      source_question_id: `integration-rejected-${Date.now()}`,
+      domain: 'faturamento',
+      difficulty: 'easy',
+      question_text: 'Rejected question must not be offered to students.',
+      options: ['A', 'B'],
+      correct_answer: [0],
+      explanation: 'Rejected fixture.',
+      validation_status: 'REJECTED',
+    });
+
+    const catalog = await request(
+      baseUrl,
+      `/api/questions?certification=CLF-C02&language=pt&limit=100&validation_status=PENDING`,
+      { headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id } },
+    );
+    const singlePending = await request(baseUrl, `/api/questions/${pending.id}`);
+    const quiz = await request(baseUrl, '/api/quiz/start', {
+      method: 'POST',
+      body: JSON.stringify({ certification: 'CLF-C02', num_questions: 20, language: 'pt' }),
+      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
+    });
+
+    expect(catalog.response.status).toBe(200);
+    expect(catalog.body.data.some((item) => item.id === pending.id)).toBe(false);
+    expect(catalog.body.data.some((item) => item.id === rejected.id)).toBe(false);
+    expect(singlePending.response.status).toBe(404);
+    expect(quiz.response.status).toBe(201);
+    expect(quiz.body.data.questions.some((item) => item.id === pending.id)).toBe(false);
+    expect(quiz.body.data.questions.some((item) => item.id === rejected.id)).toBe(false);
   });
 
   test('GET /api/questions filters by the structured language', async () => {

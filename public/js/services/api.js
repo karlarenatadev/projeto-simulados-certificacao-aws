@@ -4,11 +4,11 @@ import { SessionManager } from "../core/sessionManager.js";
 /**
  * API Service Layer
  * Centralized HTTP client for all backend API calls
- * 
+ *
  * This service encapsulates all fetch calls to the REST API,
  * providing a single source of truth for API configuration,
  * error handling, and response parsing.
- * 
+ *
  * @module api
  * @author AWS Exam Simulator Team
  */
@@ -17,20 +17,23 @@ import { SessionManager } from "../core/sessionManager.js";
  * Base configuration for the API service
  */
 function getConfiguredApiUrl() {
-  if (typeof window !== 'undefined' && window.sessionStorage?.getItem('force_offline') === 'true') {
-    return '';
+  if (
+    typeof window !== "undefined" &&
+    window.sessionStorage?.getItem("force_offline") === "true"
+  ) {
+    return "";
   }
 
-  if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_URL) {
+  if (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
 
-  if (typeof window !== 'undefined') {
-    const hostname = window.location?.hostname || '';
-    if (hostname.endsWith('github.io')) return '';
+  if (typeof window !== "undefined") {
+    const hostname = window.location?.hostname || "";
+    if (hostname.endsWith("github.io")) return "";
   }
 
-  return 'http://localhost:3001';
+  return "http://localhost:3001";
 }
 
 const API_CONFIG = {
@@ -70,13 +73,12 @@ function createError(message, statusCode = 0, details = {}) {
  * @returns {object} Stable client response
  */
 function normalizeResponse(body, status) {
-  const isEnvelope = (
-    body !== null
-    && typeof body === 'object'
-    && !Array.isArray(body)
-    && Object.prototype.hasOwnProperty.call(body, 'success')
-    && Object.prototype.hasOwnProperty.call(body, 'data')
-  );
+  const isEnvelope =
+    body !== null &&
+    typeof body === "object" &&
+    !Array.isArray(body) &&
+    Object.prototype.hasOwnProperty.call(body, "success") &&
+    Object.prototype.hasOwnProperty.call(body, "data");
 
   if (!isEnvelope) {
     return {
@@ -106,7 +108,7 @@ function normalizeResponse(body, status) {
  */
 async function fetchWithRetry(endpoint, options = {}) {
   if (!API_CONFIG.BASE_URL) {
-    throw createError('API disabled for static deployment', 0, {
+    throw createError("API disabled for static deployment", 0, {
       apiDisabled: true,
       endpoint,
     });
@@ -114,11 +116,11 @@ async function fetchWithRetry(endpoint, options = {}) {
 
   const url = `${API_CONFIG.BASE_URL}${endpoint}`;
   const { timeout = API_CONFIG.TIMEOUT, ...fetchOptions } = options;
-  
+
   // Default options
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...getSessionHeaders(),
       ...fetchOptions.headers,
     },
@@ -152,37 +154,40 @@ async function fetchWithRetry(endpoint, options = {}) {
       if (!response.ok) {
         const errorMessage = data?.message || `HTTP ${response.status}`;
         lastError = createError(errorMessage, response.status, data ?? {});
-        if (response.status === 401 && !endpoint.includes('/auth/login')) {
+        if (response.status === 401 && !endpoint.includes("/auth/login")) {
           SessionManager.logout();
         }
-        
+
         // Don't retry on client errors (4xx)
         if (response.status >= 400 && response.status < 500) {
           throw lastError;
         }
-        
+
         // Retry on server errors (5xx)
         if (attempt === API_CONFIG.RETRY_ATTEMPTS) {
           throw lastError;
         }
-        
+
         // Wait before retrying
-        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+        await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
         continue;
       }
 
       return normalizeResponse(data, response.status);
-
     } catch (error) {
       // Network error or timeout
-      if (error instanceof Error && error.name === 'AbortError') {
-        lastError = createError('Request timeout', 0, { originalError: error.message });
+      if (error instanceof Error && error.name === "AbortError") {
+        lastError = createError("Request timeout", 0, {
+          originalError: error.message,
+        });
       } else if (error.message || error.statusCode) {
         // Our structured error
         lastError = error;
       } else {
         // Network error
-        lastError = createError('Network error', 0, { originalError: error.message });
+        lastError = createError("Network error", 0, {
+          originalError: error.message,
+        });
       }
 
       // Retry on network errors
@@ -190,11 +195,11 @@ async function fetchWithRetry(endpoint, options = {}) {
         throw lastError;
       }
 
-      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+      await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
     }
   }
 
-  throw lastError || createError('Unknown error');
+  throw lastError || createError("Unknown error");
 }
 
 function getSessionHeaders() {
@@ -218,10 +223,11 @@ export const apiService = {
    */
   async checkHealth() {
     try {
-      const response = await fetchWithRetry('/api/health');
+      const response = await fetchWithRetry("/api/health");
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Health check failed:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Health check failed:", error);
       throw error;
     }
   },
@@ -233,7 +239,7 @@ export const apiService = {
   /**
    * Load questions with optional filters
    * GET /api/questions
-   * 
+   *
    * @param {object} options - Query parameters
    * @param {string} [options.certification] - Filter by certification ID
    * @param {string} [options.domain] - Filter by domain
@@ -241,7 +247,7 @@ export const apiService = {
    * @param {number} [options.limit] - Max number of questions (default: 10)
    * @param {number} [options.offset] - Pagination offset (default: 0)
    * @param {string} [options.search] - Search term
-   * 
+   *
    * @returns {Promise<object>} { success, data: [], count, pagination }
    */
   async loadQuestions(options = {}) {
@@ -250,20 +256,22 @@ export const apiService = {
     }
     try {
       const params = new URLSearchParams();
-      
-      if (options.certification) params.append('certification', options.certification);
-      if (options.domain) params.append('domain', options.domain);
-      if (options.difficulty) params.append('difficulty', options.difficulty);
-      if (options.limit) params.append('limit', options.limit);
-      if (options.offset) params.append('offset', options.offset);
-      if (options.search) params.append('search', options.search);
-      if (options.locale) params.append('locale', options.locale);
-      if (options.language) params.append('language', options.language);
+
+      if (options.certification)
+        params.append("certification", options.certification);
+      if (options.domain) params.append("domain", options.domain);
+      if (options.difficulty) params.append("difficulty", options.difficulty);
+      if (options.limit) params.append("limit", options.limit);
+      if (options.offset) params.append("offset", options.offset);
+      if (options.search) params.append("search", options.search);
+      if (options.locale) params.append("locale", options.locale);
+      if (options.language) params.append("language", options.language);
 
       const response = await fetchWithRetry(`/api/questions?${params}`);
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Failed to load questions:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to load questions:", error);
       throw error;
     }
   },
@@ -271,7 +279,7 @@ export const apiService = {
   /**
    * Get single question by ID
    * GET /api/questions/:id
-   * 
+   *
    * @param {string} questionId - Question ID
    * @returns {Promise<object>} { success, data }
    */
@@ -280,7 +288,8 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/questions/${questionId}`);
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Failed to get question:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to get question:", error);
       throw error;
     }
   },
@@ -301,8 +310,8 @@ export const apiService = {
    */
   async loginUser(options = {}) {
     try {
-      const response = await fetchWithRetry('/api/auth/login', {
-        method: 'POST',
+      const response = await fetchWithRetry("/api/auth/login", {
+        method: "POST",
         body: JSON.stringify({
           email: options.email,
           full_name: options.full_name || undefined,
@@ -311,7 +320,7 @@ export const apiService = {
       });
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Login failed:', error);
+      if (!error || !error.apiDisabled) logger.error("Login failed:", error);
       throw error;
     }
   },
@@ -325,47 +334,54 @@ export const apiService = {
    */
   async getMe(_userId) {
     try {
-      const response = await fetchWithRetry('/api/auth/me', {
-      });
+      const response = await fetchWithRetry("/api/auth/me", {});
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('getMe failed:', error);
+      if (!error || !error.apiDisabled) logger.error("getMe failed:", error);
       throw error;
     }
   },
 
   async getMyProfile() {
-    return fetchWithRetry('/api/me/profile');
+    return fetchWithRetry("/api/me/profile");
   },
 
   async updateMyProfile(payload = {}) {
-    return fetchWithRetry('/api/me/profile', {
-      method: 'PATCH',
+    return fetchWithRetry("/api/me/profile", {
+      method: "PATCH",
       body: JSON.stringify(payload),
     });
   },
 
   async getModuleState(module, certification = null) {
-    const query = certification ? `?certification=${encodeURIComponent(certification)}` : '';
-    return fetchWithRetry(`/api/me/state/${encodeURIComponent(module)}${query}`);
+    const query = certification
+      ? `?certification=${encodeURIComponent(certification)}`
+      : "";
+    return fetchWithRetry(
+      `/api/me/state/${encodeURIComponent(module)}${query}`,
+    );
   },
 
   async saveModuleState(module, certification, state, version = null) {
     return fetchWithRetry(`/api/me/state/${encodeURIComponent(module)}`, {
-      method: 'PUT',
-      body: JSON.stringify({ certification, state, ...(version === null ? {} : { version }) }),
+      method: "PUT",
+      body: JSON.stringify({
+        certification,
+        state,
+        ...(version === null ? {} : { version }),
+      }),
     });
   },
 
   async createValidatorRequest(payload) {
-    return fetchWithRetry('/api/access/validator-requests', {
-      method: 'POST',
+    return fetchWithRetry("/api/access/validator-requests", {
+      method: "POST",
       body: JSON.stringify(payload),
     });
   },
 
   async getValidatorRequests() {
-    return fetchWithRetry('/api/access/validator-requests');
+    return fetchWithRetry("/api/access/validator-requests");
   },
 
   /**
@@ -382,14 +398,15 @@ export const apiService = {
         anonymous_name: options.anonymous_name || undefined,
       };
 
-      const response = await fetchWithRetry('/api/users', {
-        method: 'POST',
+      const response = await fetchWithRetry("/api/users", {
+        method: "POST",
         body: JSON.stringify(payload),
       });
 
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Failed to create user:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to create user:", error);
       throw error;
     }
   },
@@ -397,7 +414,7 @@ export const apiService = {
   /**
    * Get user statistics
    * GET /api/users/:id/stats
-   * 
+   *
    * @param {string} userId - User ID
    * @returns {Promise<object>} { success, data: { total_quizzes, avg_score, ... } }
    */
@@ -406,7 +423,8 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/users/${userId}/stats`);
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Failed to get user stats:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to get user stats:", error);
       throw error;
     }
   },
@@ -414,18 +432,21 @@ export const apiService = {
   /**
    * Get user's weak domains
    * GET /api/users/:id/weak-domains
-   * 
+   *
    * @param {string} userId - User ID
    * @param {number} threshold - Accuracy threshold in % (default: 70)
-   * 
+   *
    * @returns {Promise<object>} { success, data: { weak_domains: [] } }
    */
   async getWeakDomains(userId, threshold = 70) {
     try {
-      const response = await fetchWithRetry(`/api/users/${userId}/weak-domains?threshold=${threshold}`);
+      const response = await fetchWithRetry(
+        `/api/users/${userId}/weak-domains?threshold=${threshold}`,
+      );
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Failed to get weak domains:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to get weak domains:", error);
       throw error;
     }
   },
@@ -437,11 +458,11 @@ export const apiService = {
   /**
    * Start new quiz session
    * POST /api/quiz/start
-   * 
+   *
    * @param {object} options - Quiz configuration
    * @param {string} options.certification - Certification ID (e.g., 'clf-c02')
    * @param {number} [options.num_questions] - Number of questions (default: 10)
-   * 
+   *
    * @returns {Promise<object>} { success, data: { quiz_id, questions: [], total_questions } }
    */
   async startQuiz(options = {}) {
@@ -450,23 +471,24 @@ export const apiService = {
     }
     try {
       if (!options.certification) {
-        throw createError('certification is required', 400);
+        throw createError("certification is required", 400);
       }
 
       const payload = {
         certification: options.certification,
         num_questions: options.num_questions || 10,
-        language: options.language || options.locale || 'pt',
+        language: options.language || options.locale || "pt",
       };
 
-      const response = await fetchWithRetry('/api/quiz/start', {
-        method: 'POST',
+      const response = await fetchWithRetry("/api/quiz/start", {
+        method: "POST",
         body: JSON.stringify(payload),
       });
 
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Failed to start quiz:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to start quiz:", error);
       throw error;
     }
   },
@@ -474,19 +496,26 @@ export const apiService = {
   /**
    * Record answer for quiz question
    * POST /api/quiz/:id/answer
-   * 
+   *
    * @param {object} options - Answer data
    * @param {string} options.quiz_id - Quiz ID
    * @param {string} options.question_id - Question ID
    * @param {array|string} options.user_answer - User's answer (index or array of indices)
    * @param {number} [options.time_secs] - Time spent on question in seconds
-   * 
+   *
    * @returns {Promise<object>} { success, data: { answer_id } }
    */
   async recordAnswer(options = {}) {
     try {
-      if (!options.quiz_id || !options.question_id || options.user_answer === undefined) {
-        throw createError('quiz_id, question_id, and user_answer are required', 400);
+      if (
+        !options.quiz_id ||
+        !options.question_id ||
+        options.user_answer === undefined
+      ) {
+        throw createError(
+          "quiz_id, question_id, and user_answer are required",
+          400,
+        );
       }
 
       const payload = {
@@ -495,14 +524,18 @@ export const apiService = {
         time_secs: options.time_secs || 0,
       };
 
-      const response = await fetchWithRetry(`/api/quiz/${options.quiz_id}/answer`, {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
+      const response = await fetchWithRetry(
+        `/api/quiz/${options.quiz_id}/answer`,
+        {
+          method: "POST",
+          body: JSON.stringify(payload),
+        },
+      );
 
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Failed to record answer:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to record answer:", error);
       throw error;
     }
   },
@@ -510,7 +543,7 @@ export const apiService = {
   /**
    * Get quiz results
    * GET /api/quiz/:id/results
-   * 
+   *
    * @param {string} quizId - Quiz ID
    * @returns {Promise<object>} { success, data: { total_questions, score, percentage, ... } }
    */
@@ -519,7 +552,8 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/quiz/${quizId}/results`);
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Failed to get quiz results:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to get quiz results:", error);
       throw error;
     }
   },
@@ -527,7 +561,7 @@ export const apiService = {
   /**
    * Get quiz details
    * GET /api/quiz/:id
-   * 
+   *
    * @param {string} quizId - Quiz ID
    * @returns {Promise<object>} { success, data }
    */
@@ -536,7 +570,8 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/quiz/${quizId}`);
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Failed to get quiz:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to get quiz:", error);
       throw error;
     }
   },
@@ -548,15 +583,17 @@ export const apiService = {
   async getCases(filters = {}) {
     try {
       const params = new URLSearchParams();
-      if (filters.certification) params.append('certification', filters.certification);
-      if (filters.difficulty) params.append('difficulty', filters.difficulty);
-      if (filters.limit) params.append('limit', filters.limit);
-      if (filters.offset) params.append('offset', filters.offset);
+      if (filters.certification)
+        params.append("certification", filters.certification);
+      if (filters.difficulty) params.append("difficulty", filters.difficulty);
+      if (filters.limit) params.append("limit", filters.limit);
+      if (filters.offset) params.append("offset", filters.offset);
 
-      const qs = params.toString() ? `?${params.toString()}` : '';
+      const qs = params.toString() ? `?${params.toString()}` : "";
       return await fetchWithRetry(`/api/cases${qs}`);
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Failed to get cases:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to get cases:", error);
       throw error;
     }
   },
@@ -565,28 +602,33 @@ export const apiService = {
     try {
       return await fetchWithRetry(`/api/cases/${encodeURIComponent(idOrSlug)}`);
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Failed to get case:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to get case:", error);
       throw error;
     }
   },
 
   async markCaseComplete(caseId, _userId) {
     try {
-      return await fetchWithRetry(`/api/cases/${encodeURIComponent(caseId)}/complete`, {
-        method: 'POST',
-      });
+      return await fetchWithRetry(
+        `/api/cases/${encodeURIComponent(caseId)}/complete`,
+        {
+          method: "POST",
+        },
+      );
     } catch (error) {
-      logger.error('Failed to mark case complete:', error);
+      logger.error("Failed to mark case complete:", error);
       throw error;
     }
   },
 
   async getAwsServices(category) {
     try {
-      const qs = category ? `?category=${encodeURIComponent(category)}` : '';
+      const qs = category ? `?category=${encodeURIComponent(category)}` : "";
       return await fetchWithRetry(`/api/services${qs}`);
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Failed to get services:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to get services:", error);
       throw error;
     }
   },
@@ -598,7 +640,7 @@ export const apiService = {
   /**
    * Get leaderboard
    * GET /api/leaderboard
-   * 
+   *
    * @param {number} [limit] - Number of entries (default: 100)
    * @returns {Promise<object>} { success, data: [], count }
    */
@@ -607,7 +649,8 @@ export const apiService = {
       const response = await fetchWithRetry(`/api/leaderboard?limit=${limit}`);
       return response;
     } catch (error) {
-      if (!error || !error.apiDisabled) logger.error('Failed to get leaderboard:', error);
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to get leaderboard:", error);
       throw error;
     }
   },
@@ -615,14 +658,14 @@ export const apiService = {
   /**
    * Check if API is available
    * Useful for determining fallback behavior
-   * 
+   *
    * @returns {Promise<boolean>} True if API is reachable
    */
   async isAvailable() {
     if (!API_CONFIG.BASE_URL) return false;
 
     try {
-      const response = await fetchWithRetry('/api/health', {
+      const response = await fetchWithRetry("/api/health", {
         // Timeout mais generoso para o health check: PGlite em WSL pode
         // levar alguns segundos para responder logo após inicializar.
         timeout: 5000,

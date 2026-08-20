@@ -14,4 +14,4 @@
  * @module core/auth
  */
 
-export { AuthService } from '../services/authService.js';
+export { AuthService } from "../services/authService.js";

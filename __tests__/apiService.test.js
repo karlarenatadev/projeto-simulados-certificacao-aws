@@ -183,6 +183,7 @@ describe('apiService response normalization', () => {
       options: ['EC2', 'S3'],
       correct: 1,
       explanation: 'Amazon S3 provides object storage.',
+      validation: { status: 'validated' },
     }];
 
     global.fetch.mockResolvedValueOnce(jsonResponse(fallbackQuestions));

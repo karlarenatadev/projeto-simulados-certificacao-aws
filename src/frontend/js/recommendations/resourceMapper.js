@@ -9,132 +9,152 @@
 const RESOURCE_MAP = {
   "clf-c02": {
     "cloud-concepts": {
-      documentation: "https://aws.amazon.com/pt/getting-started/cloud-essentials/",
-      labs: []
+      documentation:
+        "https://aws.amazon.com/pt/getting-started/cloud-essentials/",
+      labs: [],
     },
     "security-compliance": {
-      documentation: "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/security-and-compliance.html",
-      labs: []
+      documentation:
+        "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/security-and-compliance.html",
+      labs: [],
     },
-    "technology": {
+    technology: {
       documentation: "https://aws.amazon.com/pt/products/",
-      labs: []
+      labs: [],
     },
     "billing-pricing": {
-      documentation: "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-what-is.html",
-      labs: []
+      documentation:
+        "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-what-is.html",
+      labs: [],
     },
     "conceitos-cloud": {
-      documentation: "https://aws.amazon.com/pt/getting-started/cloud-essentials/",
-      labs: []
+      documentation:
+        "https://aws.amazon.com/pt/getting-started/cloud-essentials/",
+      labs: [],
     },
-    "seguranca": {
-      documentation: "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
-      labs: []
+    seguranca: {
+      documentation:
+        "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
+      labs: [],
     },
-    "tecnologia": {
+    tecnologia: {
       documentation: "https://aws.amazon.com/pt/products/",
-      labs: []
+      labs: [],
     },
-    "faturamento": {
-      documentation: "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-what-is.html",
-      labs: []
-    }
+    faturamento: {
+      documentation:
+        "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-what-is.html",
+      labs: [],
+    },
   },
   "saa-c03": {
     "design-secure-architectures": {
-      documentation: "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
-      labs: []
+      documentation:
+        "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
+      labs: [],
     },
     "design-resilient-architectures": {
-      documentation: "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
-      labs: []
+      documentation:
+        "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+      labs: [],
     },
     "design-high-performing-architectures": {
-      documentation: "https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/welcome.html",
-      labs: []
+      documentation:
+        "https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/welcome.html",
+      labs: [],
     },
     "design-cost-optimized-architectures": {
-      documentation: "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
-      labs: []
+      documentation:
+        "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
+      labs: [],
     },
     "seguranca-aplicacoes": {
-      documentation: "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
-      labs: []
+      documentation:
+        "https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html",
+      labs: [],
     },
     "design-resiliente": {
-      documentation: "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
-      labs: []
+      documentation:
+        "https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html",
+      labs: [],
     },
     "design-performance": {
-      documentation: "https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/welcome.html",
-      labs: []
+      documentation:
+        "https://docs.aws.amazon.com/wellarchitected/latest/performance-efficiency-pillar/welcome.html",
+      labs: [],
     },
     "design-custo": {
-      documentation: "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
-      labs: []
-    }
+      documentation:
+        "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/welcome.html",
+      labs: [],
+    },
   },
   "dva-c02": {
-    "development": {
+    development: {
       documentation: "https://aws.amazon.com/pt/developer/",
-      labs: []
+      labs: [],
     },
-    "security": {
-      documentation: "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html",
-      labs: []
+    security: {
+      documentation:
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html",
+      labs: [],
     },
-    "deployment": {
+    deployment: {
       documentation: "https://aws.amazon.com/pt/products/developer-tools/",
-      labs: []
+      labs: [],
     },
     "troubleshooting-optimization": {
-      documentation: "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html",
-      labs: []
+      documentation:
+        "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html",
+      labs: [],
     },
     "desenvolvimento-servicos": {
       documentation: "https://aws.amazon.com/pt/developer/",
-      labs: []
+      labs: [],
     },
     "seguranca-app": {
-      documentation: "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html",
-      labs: []
+      documentation:
+        "https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html",
+      labs: [],
     },
-    "implementacao": {
+    implementacao: {
       documentation: "https://aws.amazon.com/pt/products/developer-tools/",
-      labs: []
+      labs: [],
     },
     "resolucao-problemas": {
-      documentation: "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html",
-      labs: []
-    }
+      documentation:
+        "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html",
+      labs: [],
+    },
   },
   "ai-practitioner": {
     "fundamentals-ai-ml": {
       documentation: "https://aws.amazon.com/pt/machine-learning/learn/",
-      labs: []
+      labs: [],
     },
     "fundamentals-genai": {
       documentation: "https://aws.amazon.com/pt/generative-ai/",
-      labs: []
+      labs: [],
     },
     "applications-foundation-models": {
       documentation: "https://aws.amazon.com/pt/bedrock/",
-      labs: []
+      labs: [],
     },
     "guidelines-responsible-ai": {
-      documentation: "https://aws.amazon.com/pt/machine-learning/responsible-ai/",
-      labs: []
+      documentation:
+        "https://aws.amazon.com/pt/machine-learning/responsible-ai/",
+      labs: [],
     },
     "security-compliance-governance": {
-      documentation: "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/security-and-compliance.html",
-      labs: []
+      documentation:
+        "https://docs.aws.amazon.com/whitepapers/latest/aws-overview/security-and-compliance.html",
+      labs: [],
     },
     "inteligencia-artificial": {
       documentation: "https://aws.amazon.com/pt/machine-learning/learn/",
-      labs: []
-    }
-  }
+      labs: [],
+    },
+  },
 };
 
 export class ResourceMapper {
@@ -147,15 +167,18 @@ export class ResourceMapper {
    */
   getResources(certId, domainId) {
     if (!certId || !domainId) return null;
-    
+
     // Fallback normalizer
     const normalizedCert = certId.toLowerCase();
     const normalizedDomain = domainId.toLowerCase();
 
-    if (RESOURCE_MAP[normalizedCert] && RESOURCE_MAP[normalizedCert][normalizedDomain]) {
+    if (
+      RESOURCE_MAP[normalizedCert] &&
+      RESOURCE_MAP[normalizedCert][normalizedDomain]
+    ) {
       return RESOURCE_MAP[normalizedCert][normalizedDomain];
     }
-    
+
     // Tenta encontrar em qualquer certificação se não achar na específica
     // (usado para mapeamento legado ou casos genéricos)
     for (const cert of Object.values(RESOURCE_MAP)) {

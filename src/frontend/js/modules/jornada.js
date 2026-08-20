@@ -45,11 +45,12 @@ export function renderJornadaDashboard(certId) {
   if (titleEl) titleEl.textContent = `Jornada ${certName}`;
 
   const certificationProgress = getCertificationProgress(normalizedCertId);
-  if (progressEl) progressEl.textContent = `${certificationProgress.percentage}%`;
+  if (progressEl)
+    progressEl.textContent = `${certificationProgress.percentage}%`;
 
   // Obter histórico
   const history = storageManager.getHistory();
-  const certHistory = history.filter(h => h.certId === normalizedCertId);
+  const certHistory = history.filter((h) => h.certId === normalizedCertId);
 
   if (certHistory.length === 0) {
     if (accuracyEl) accuracyEl.textContent = "0%";
@@ -59,15 +60,19 @@ export function renderJornadaDashboard(certId) {
   }
 
   // Quantidade de questões
-  const totalQuestions = certHistory.reduce((acc, curr) => acc + (curr.total || 0), 0);
+  const totalQuestions = certHistory.reduce(
+    (acc, curr) => acc + (curr.total || 0),
+    0,
+  );
   if (questionsEl) questionsEl.textContent = totalQuestions.toString();
 
   // Taxa de acerto global
   let totalScore = 0;
-  certHistory.forEach(h => {
+  certHistory.forEach((h) => {
     totalScore += h.score || 0;
   });
-  const accuracy = totalQuestions > 0 ? Math.round((totalScore / totalQuestions) * 100) : 0;
+  const accuracy =
+    totalQuestions > 0 ? Math.round((totalScore / totalQuestions) * 100) : 0;
   if (accuracyEl) accuracyEl.textContent = `${accuracy}%`;
 
   // Domínio mais fraco (agregando erros por domínio usando os mistakes)
@@ -81,11 +86,11 @@ export function renderJornadaDashboard(certId) {
   } else {
     // Conta erros por domínio (mistake = { domain: "..." })
     const domainErrors = {};
-    mistakes.forEach(m => {
+    mistakes.forEach((m) => {
       const dom = m.domain || "Desconhecido";
       domainErrors[dom] = (domainErrors[dom] || 0) + 1;
     });
-    
+
     let worstDomain = "-";
     let maxErrors = -1;
     for (const [dom, count] of Object.entries(domainErrors)) {
@@ -94,7 +99,7 @@ export function renderJornadaDashboard(certId) {
         worstDomain = dom;
       }
     }
-    
+
     if (weakDomainEl) {
       weakDomainEl.textContent = worstDomain;
       weakDomainEl.title = worstDomain;

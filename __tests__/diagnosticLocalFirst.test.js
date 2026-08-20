@@ -16,6 +16,7 @@ function diagnosticFixture() {
       question_text: `Question ${domain.id} ${index}`,
       options: ['A', 'B', 'C'],
       correct_answer: 0,
+      validation: { status: 'validated' },
     })),
   );
 }

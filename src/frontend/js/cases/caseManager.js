@@ -18,9 +18,10 @@ let apiStatus = {
 
 export function readCasesRecommendation(storage = globalThis.localStorage) {
   try {
-    const key = storage === globalThis.localStorage
-      ? storageManager.getUserScopedKey("last_diagnostic_recommendation")
-      : "aws_sim_last_diagnostic_recommendation";
+    const key =
+      storage === globalThis.localStorage
+        ? storageManager.getUserScopedKey("last_diagnostic_recommendation")
+        : "aws_sim_last_diagnostic_recommendation";
     const raw = storage?.getItem(key);
     const recommendation = raw ? JSON.parse(raw) : null;
     const context = recommendation?.recommendations?.cases?.context;
@@ -53,7 +54,10 @@ function getCaseServiceIds(caseItem) {
       normalizeServiceId(
         typeof service === "string"
           ? service
-          : service?.service_slug || service?.slug || service?.service_name || service?.name,
+          : service?.service_slug ||
+              service?.slug ||
+              service?.service_name ||
+              service?.name,
       ),
     )
     .filter(Boolean);
@@ -66,10 +70,9 @@ function asTranslationObject(value) {
 
 function mergeLocalizedServices(baseServices, localizedServices) {
   const localizedBySlug = new Map(
-    (Array.isArray(localizedServices) ? localizedServices : []).map((service) => [
-      service?.service_slug || service?.slug,
-      service,
-    ]),
+    (Array.isArray(localizedServices) ? localizedServices : []).map(
+      (service) => [service?.service_slug || service?.slug, service],
+    ),
   );
   return (Array.isArray(baseServices) ? baseServices : []).map((service) => {
     const key = service?.service_slug || service?.slug;
@@ -80,12 +83,14 @@ function mergeLocalizedServices(baseServices, localizedServices) {
 
 function mergeLocalizedResources(baseResources, localizedResources) {
   const localized = Array.isArray(localizedResources) ? localizedResources : [];
-  return (Array.isArray(baseResources) ? baseResources : []).map((resource, index) => ({
-    ...resource,
-    ...(localized[index] || {}),
-    url: resource?.url || localized[index]?.url,
-    type: resource?.type || localized[index]?.type,
-  }));
+  return (Array.isArray(baseResources) ? baseResources : []).map(
+    (resource, index) => ({
+      ...resource,
+      ...(localized[index] || {}),
+      url: resource?.url || localized[index]?.url,
+      type: resource?.type || localized[index]?.type,
+    }),
+  );
 }
 
 /**
@@ -94,14 +99,23 @@ function mergeLocalizedResources(baseResources, localizedResources) {
  */
 export function localizeCase(caseItem, language = getCurrentLanguage()) {
   if (!caseItem || typeof caseItem !== "object") return caseItem;
-  const normalizedLanguage = String(language || "pt").toLowerCase() === "en" ? "en" : "pt";
-  const source = normalizedLanguage === "en"
-    ? asTranslationObject(caseItem.content_en)
-    : asTranslationObject(caseItem.content_pt);
+  const normalizedLanguage =
+    String(language || "pt").toLowerCase() === "en" ? "en" : "pt";
+  const source =
+    normalizedLanguage === "en"
+      ? asTranslationObject(caseItem.content_en)
+      : asTranslationObject(caseItem.content_pt);
   const localized = { ...caseItem, ...source };
-  localized.services = mergeLocalizedServices(caseItem.services, source.services);
-  localized.resources = mergeLocalizedResources(caseItem.resources, source.resources);
-  localized.architecture_graph = source.architecture_graph || caseItem.architecture_graph;
+  localized.services = mergeLocalizedServices(
+    caseItem.services,
+    source.services,
+  );
+  localized.resources = mergeLocalizedResources(
+    caseItem.resources,
+    source.resources,
+  );
+  localized.architecture_graph =
+    source.architecture_graph || caseItem.architecture_graph;
   localized.questions = source.questions || caseItem.questions || [];
   return localized;
 }
@@ -112,20 +126,27 @@ export function rankRecommendedCases(cases, context, limit = 3) {
   }
 
   const certificationId = normalizeCertificationId(context.certificationId);
-  const services = new Set((context.services || []).map(normalizeServiceId).filter(Boolean));
+  const services = new Set(
+    (context.services || []).map(normalizeServiceId).filter(Boolean),
+  );
   const strongServices = new Set(
     (context.strongServices || []).map(normalizeServiceId).filter(Boolean),
   );
   const sameCertification = cases.filter((caseItem) =>
     getCaseCertifications(caseItem).some(
-      (certification) => normalizeCertificationId(certification) === certificationId,
+      (certification) =>
+        normalizeCertificationId(certification) === certificationId,
     ),
   );
   const matches = sameCertification
-    .filter((caseItem) => getCaseServiceIds(caseItem).some((service) => services.has(service)))
+    .filter((caseItem) =>
+      getCaseServiceIds(caseItem).some((service) => services.has(service)),
+    )
     .map((caseItem) => ({
       caseItem,
-      strong: getCaseServiceIds(caseItem).some((service) => strongServices.has(service)),
+      strong: getCaseServiceIds(caseItem).some((service) =>
+        strongServices.has(service),
+      ),
     }))
     .sort(
       (left, right) =>
@@ -251,7 +272,9 @@ export async function getCaseById(idOrSlug) {
     apiStatus.fallbackUsed = true;
 
     const fallbackCases = await fetchFallbackCases();
-    const caseItem = fallbackCases.find((c) => c.id === idOrSlug || c.slug === idOrSlug) || null;
+    const caseItem =
+      fallbackCases.find((c) => c.id === idOrSlug || c.slug === idOrSlug) ||
+      null;
     return localizeCase(caseItem);
   }
 }

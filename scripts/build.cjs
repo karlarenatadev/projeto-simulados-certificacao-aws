@@ -12,6 +12,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 
 function copyDirectoryRecursive(src, dest) {
@@ -65,6 +66,50 @@ function copyFile(src, dest) {
     dest
   );
 
+}
+
+function hashGeneratedOutput(rootDir) {
+  const hash = crypto.createHash('sha1');
+  const files = [];
+
+  function collect(directory) {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const filePath = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        collect(filePath);
+      } else if (filePath !== path.join(rootDir, 'sw.js')) {
+        files.push(filePath);
+      }
+    }
+  }
+
+  collect(rootDir);
+  files.sort();
+  for (const filePath of files) {
+    hash.update(path.relative(rootDir, filePath).replaceAll(path.sep, '/'));
+    hash.update(fs.readFileSync(filePath));
+  }
+  return hash.digest('hex').slice(0, 12);
+}
+
+function cleanGeneratedOutput() {
+  const generatedDirectories = ['public/js', 'public/css', 'public/data', 'public/img', 'public/partials', 'public/validation'];
+  const preservedValidationCss = fs.existsSync('public/validation/css/valid.css')
+    ? fs.readFileSync('public/validation/css/valid.css')
+    : null;
+  for (const directory of generatedDirectories) {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+
+  if (fs.existsSync('public')) {
+    for (const entry of fs.readdirSync('public')) {
+      if (entry.endsWith('.html') || ['404.html', 'manifest.json', 'sw.js', '.nojekyll'].includes(entry)) {
+        fs.rmSync(path.join('public', entry), { force: true });
+      }
+    }
+  }
+
+  return { preservedValidationCss };
 }
 
 
@@ -137,7 +182,7 @@ function processHTMLTemplates() {
     }
 
     // --- START CACHE BUSTING ---
-    const buildHash = Date.now().toString(36);
+    const buildHash = crypto.createHash('sha1').update(html).digest('hex').slice(0, 8);
 
     const metaTags = `
     <!-- Cache Busting Meta Tags -->
@@ -178,6 +223,9 @@ try {
   const { execSync } = require('child_process');
   execSync('node scripts/validate-question-bank.js', { stdio: 'inherit' });
   console.log('✅ Validação concluída.\n');
+
+  console.log('🧹 Limpando artefatos gerados obsoletos...');
+  const preservedGeneratedAssets = cleanGeneratedOutput();
 
   // ============================================================
   // JAVASCRIPT
@@ -335,6 +383,34 @@ try {
 
   }
 
+  // ============================================================
+  // PWA STATIC SOURCES
+  // ============================================================
+
+  console.log('📱 Copiando fontes PWA...');
+  const pwaSourceDir = 'src/frontend/pwa';
+  for (const file of ['manifest.json', '404.html', '.nojekyll']) {
+    copyFile(path.join(pwaSourceDir, file), path.join('public', file));
+  }
+  copyFile(path.join(pwaSourceDir, 'sw.js'), path.join('public', 'sw.js'));
+
+  if (fs.existsSync('img')) {
+    copyDirectoryRecursive('img', 'public/img');
+  }
+
+  const pwaCacheVersion = crypto
+    .createHash('sha1')
+    .update(hashGeneratedOutput('public'))
+    .update(fs.readFileSync(path.join(pwaSourceDir, 'sw.js')))
+    .digest('hex')
+    .slice(0, 12);
+  const serviceWorkerPath = path.join('public', 'sw.js');
+  const serviceWorker = fs
+    .readFileSync(serviceWorkerPath, 'utf8')
+    .replaceAll('__CACHE_VERSION__', pwaCacheVersion);
+  fs.writeFileSync(serviceWorkerPath, serviceWorker, 'utf8');
+  console.log(`  ✅ Service Worker (cache ${pwaCacheVersion})`);
+
 
 
   // ============================================================
@@ -345,6 +421,11 @@ try {
   // under src/frontend/validation and generated here with the other assets.
   if (fs.existsSync('src/frontend/validation')) {
     copyDirectoryRecursive('src/frontend/validation', 'public/validation');
+
+    if (preservedGeneratedAssets.preservedValidationCss && !fs.existsSync('public/validation/css/valid.css')) {
+      fs.mkdirSync('public/validation/css', { recursive: true });
+      fs.writeFileSync('public/validation/css/valid.css', preservedGeneratedAssets.preservedValidationCss);
+    }
 
     // Validation lives outside src/frontend/pages, but uses the same official
     // App Shell partials. Process its entry page after copying the source so
@@ -363,7 +444,11 @@ try {
         validationHtml = validationHtml.replace(simplePlaceholder, content);
       }
       validationHtml = validationHtml.replace(/href="index\.html"/g, 'href="../index.html"');
-      const buildHash = Date.now().toString(36);
+      validationHtml = validationHtml.replace(
+        /src="\.\/js\/pwa\/registerServiceWorker\.js"/g,
+        'src="../js/pwa/registerServiceWorker.js"',
+      );
+      const buildHash = crypto.createHash('sha1').update(validationHtml).digest('hex').slice(0, 8);
       validationHtml = validationHtml.replace(/(src|href)="([^"?]+\.(js|css))"/g, (match, attr, filePath) => {
         if (filePath.startsWith('http')) return match;
         return `${attr}="${filePath}?v=${buildHash}"`;

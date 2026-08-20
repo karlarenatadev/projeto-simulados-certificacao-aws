@@ -1,7 +1,11 @@
 /** @jest-environment jsdom */
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ADMIN_MENU_STORAGE_KEY, buildSidebar } from '../src/frontend/js/shell.js';
+import {
+  ADMIN_MENU_STORAGE_KEY,
+  buildSidebar,
+  renderUserMenu,
+} from '../src/frontend/js/shell.js';
 
 describe('role-aware administrative sidebar', () => {
   beforeEach(() => {
@@ -63,5 +67,68 @@ describe('role-aware administrative sidebar', () => {
     buildSidebar({ role: 'ADMIN' });
     expect(document.getElementById('sidebar-admin-toggle').getAttribute('aria-expanded')).toBe('false');
     expect(document.getElementById('sidebar-admin-menu').hidden).toBe(true);
+  });
+});
+
+describe('secure user menu rendering', () => {
+  beforeEach(() => {
+    document.body.innerHTML = '<div id="user-menu-container"></div>';
+    localStorage.clear();
+  });
+
+  test('renders profile values as text and preserves the menu structure', () => {
+    renderUserMenu({
+      nickname: 'Karla Renata',
+      full_name: 'Karla Renata',
+      email: 'karla@a3data.com.br',
+      role: 'STUDENT',
+    });
+
+    expect(document.querySelector('.a3-user-name').textContent).toBe('Karla Renata');
+    expect(document.querySelector('.a3-dropdown-email').textContent).toBe('karla@a3data.com.br');
+    expect(document.querySelector('.a3-user-menu')).not.toBeNull();
+    expect(document.getElementById('user-menu-profile')).not.toBeNull();
+    expect(document.getElementById('user-menu-settings')).not.toBeNull();
+    expect(document.getElementById('user-menu-logout')).not.toBeNull();
+  });
+
+  test.each([
+    '<b>Karla</b>',
+    '<img src=x onerror="window.__xss = true">',
+    'Karla & Renata <AWS>',
+  ])('does not parse profile HTML payload %s', (payload) => {
+    renderUserMenu({ nickname: payload, email: 'user@a3data.com.br', role: 'ADMIN' });
+
+    expect(document.querySelector('.a3-user-name').textContent).toBe(payload);
+    expect(document.querySelector('.a3-dropdown-name').textContent).toBe(payload);
+    expect(document.querySelector('img')).toBeNull();
+    expect(document.querySelector('b')).toBeNull();
+    expect(window.__xss).toBeUndefined();
+  });
+
+  test('sets title through the DOM API and keeps quotes as text', () => {
+    const displayName = 'Karla "Cloud"';
+    renderUserMenu({ nickname: displayName, email: 'user@a3data.com.br' });
+
+    const name = document.querySelector('.a3-user-name');
+    expect(name.textContent).toBe(displayName);
+    expect(name.title).toBe(displayName);
+  });
+
+  test.each([
+    ['STUDENT', 'a3-role-student'],
+    ['VALIDATOR', 'a3-role-validator'],
+    ['ADMIN', 'a3-role-admin'],
+  ])('preserves the safe role class for %s', (role, expectedClass) => {
+    renderUserMenu({ email: 'user@a3data.com.br', role });
+
+    expect(document.querySelector('.a3-user-role').classList.contains(expectedClass)).toBe(true);
+  });
+
+  test('keeps the existing fallback for empty profile values and Unicode initials', () => {
+    renderUserMenu({ nickname: '', full_name: '', email: 'ø@a3data.com.br' });
+
+    expect(document.querySelector('.a3-user-name').textContent).toBe('ø@a3data.com.br');
+    expect(document.querySelector('.a3-avatar').textContent).toBe('Ø');
   });
 });

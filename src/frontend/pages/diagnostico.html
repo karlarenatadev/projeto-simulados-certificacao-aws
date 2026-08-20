@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Diagnóstico de nivelamento AWS — identifique pontos fortes e fracos." />
+    <meta
+      name="description"
+      content="Diagnóstico de nivelamento AWS — identifique pontos fortes e fracos."
+    />
     <title>Raio-X da Nuvem — Cloud Academy A3</title>
-
-    
 
     <link
       rel="stylesheet"
@@ -21,45 +22,66 @@
     <meta name="theme-color" content="#001863" />
   </head>
 
-  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
-
+  <body
+    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
+  >
     <!-- {{HEADER_PAGE}} -->
 
     <!-- {{SIDEBAR}} -->
 
     <main class="flex-1 a3-container py-6 main-content-container">
-
       <!-- 1. TELA INICIAL (Filtro e Botão de Iniciar) -->
       <!-- Mudei o ID para screen-start para o app.js conseguir escondê-la automaticamente -->
       <section
         id="screen-start"
         class="flex flex-col items-center justify-center text-center"
       >
-        <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6 shadow-inner">
-          <i class="fa-solid fa-stethoscope text-a3-primary text-4xl" aria-hidden="true"></i>
+        <div
+          class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mb-6 shadow-inner"
+        >
+          <i
+            class="fa-solid fa-stethoscope text-a3-primary text-4xl"
+            aria-hidden="true"
+          ></i>
         </div>
         <h2 class="text-3xl font-bold mb-4 text-strong">Raio-X da Nuvem</h2>
         <p class="text-muted mb-8 max-w-lg leading-relaxed">
-          Descubra seus pontos fortes e domínios a melhorar. O diagnóstico avalia seu nível
-          em cada área de conhecimento da certificação selecionada.
+          Descubra seus pontos fortes e domínios a melhorar. O diagnóstico
+          avalia seu nível em cada área de conhecimento da certificação
+          selecionada.
         </p>
 
         <!-- Seleção de certificação -->
         <div class="a3-card w-full max-w-md mb-6">
-          <div class="a3-card-header text-lg font-bold text-strong mb-4 flex items-center gap-2">
-            <h3 class="m-0"><i class="fa-solid fa-certificate text-a3-primary" aria-hidden="true"></i>
-            Selecione sua Certificação</h3>
+          <div
+            class="a3-card-header text-lg font-bold text-strong mb-4 flex items-center gap-2"
+          >
+            <h3 class="m-0">
+              <i
+                class="fa-solid fa-certificate text-a3-primary"
+                aria-hidden="true"
+              ></i>
+              Selecione sua Certificação
+            </h3>
           </div>
           <div class="a3-card-body">
             <select
-            id="certification-select"
-            class="w-full px-4 py-3 border-2 border-gray-300 dark:border-slate-500 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all outline-none text-gray-700 dark:text-gray-200 font-medium bg-white cursor-pointer"
-            aria-label="Selecionar certificação AWS para o diagnóstico"
-          >
-            <option value="clf-c02">AWS Certified Cloud Practitioner (CLF-C02)</option>
-            <option value="saa-c03">AWS Certified Solutions Architect (SAA-C03)</option>
-            <option value="aif-c01">AWS Certified AI Practitioner (AIF-C01)</option>
-            <option value="dva-c02">AWS Certified Developer Associate (DVA-C02)</option>
+              id="certification-select"
+              class="w-full px-4 py-3 border-2 border-gray-300 dark:border-slate-500 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all outline-none text-gray-700 dark:text-gray-200 font-medium bg-white cursor-pointer"
+              aria-label="Selecionar certificação AWS para o diagnóstico"
+            >
+              <option value="clf-c02">
+                AWS Certified Cloud Practitioner (CLF-C02)
+              </option>
+              <option value="saa-c03">
+                AWS Certified Solutions Architect (SAA-C03)
+              </option>
+              <option value="aif-c01">
+                AWS Certified AI Practitioner (AIF-C01)
+              </option>
+              <option value="dva-c02">
+                AWS Certified Developer Associate (DVA-C02)
+              </option>
             </select>
           </div>
         </div>
@@ -71,7 +93,8 @@
             class="a3-btn a3-btn-primary a3-btn-lg shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 flex items-center justify-center w-full"
             aria-label="Iniciar diagnóstico de nivelamento"
           >
-            <i class="fa-solid fa-microscope mr-2" aria-hidden="true"></i> Iniciar Diagnóstico
+            <i class="fa-solid fa-microscope mr-2" aria-hidden="true"></i>
+            Iniciar Diagnóstico
           </button>
         </div>
       </section>
@@ -79,47 +102,76 @@
       <!-- 2. TELA DO QUIZ (Onde o diagnóstico acontece) -->
       <div id="screen-quiz" class="hidden flex-col h-full relative p-6 md:p-8">
         <div class="absolute top-0 left-0 h-2 w-full bg-gray-200">
-          <div id="progress-bar" class="h-2 aws-bg-orange transition-all duration-500" style="width: 0%"></div>
+          <div
+            id="progress-bar"
+            class="h-2 aws-bg-orange transition-all duration-500"
+            style="width: 0%"
+          ></div>
         </div>
 
-        <div class="flex flex-wrap justify-between items-center mb-6 mt-4 gap-3">
-          <span id="question-category" class="text-xs font-bold uppercase tracking-wider text-muted bg-gray-100 border border-gray-200 px-4 py-1.5 rounded-full shadow-sm">
+        <div
+          class="flex flex-wrap justify-between items-center mb-6 mt-4 gap-3"
+        >
+          <span
+            id="question-category"
+            class="text-xs font-bold uppercase tracking-wider text-muted bg-gray-100 border border-gray-200 px-4 py-1.5 rounded-full shadow-sm"
+          >
             Categoria
           </span>
           <div class="a3-card flex items-center gap-4 shadow-sm">
             <span class="text-sm font-semibold text-muted">
-              Questão <span id="current-q-num" class="text-aws-dark text-base mx-1">1</span>
+              Questão
+              <span id="current-q-num" class="text-aws-dark text-base mx-1"
+                >1</span
+              >
               de <span id="total-q-num" class="ml-1">10</span>
             </span>
           </div>
         </div>
 
-        <h3 id="question-text" class="text-xl md:text-2xl font-semibold text-strong mb-8 leading-snug">
+        <h3
+          id="question-text"
+          class="text-xl md:text-2xl font-semibold text-strong mb-8 leading-snug"
+        >
           Carregando questão...
         </h3>
         <div id="options-container" class="flex flex-col gap-3 mb-8"></div>
 
-        <div class="mt-auto pt-6 flex flex-wrap justify-end gap-3 items-center w-full border-t border-gray-100">
+        <div
+          class="mt-auto pt-6 flex flex-wrap justify-end gap-3 items-center w-full border-t border-gray-100"
+        >
           <button id="btn-cancel" class="a3-btn a3-btn-secondary shadow-sm">
             <i class="fa-solid fa-xmark mr-2" aria-hidden="true"></i> Cancelar
           </button>
-          <button id="btn-submit" disabled class="a3-btn a3-btn-secondary a3-btn-lg shadow-md">
+          <button
+            id="btn-submit"
+            disabled
+            class="a3-btn a3-btn-secondary a3-btn-lg shadow-md"
+          >
             Confirmar Resposta
           </button>
-          <button id="btn-next" class="a3-btn a3-btn-primary a3-btn-lg hidden shadow-md">
+          <button
+            id="btn-next"
+            class="a3-btn a3-btn-primary a3-btn-lg hidden shadow-md"
+          >
             Próxima <i class="fa-solid fa-arrow-right ml-2"></i>
           </button>
-          <button id="btn-finish" class="a3-btn a3-btn-secondary hidden shadow-md">
+          <button
+            id="btn-finish"
+            class="a3-btn a3-btn-secondary hidden shadow-md"
+          >
             Ver Resultado <i class="fa-solid fa-flag-checkered ml-2"></i>
           </button>
         </div>
       </div>
 
       <!-- 3. TELA DE RESULTADOS (Onde o gráfico radar aparece no final) -->
-      <div id="screen-results" class="hidden p-8 md:p-12 flex flex-col items-center justify-center text-center h-full overflow-y-auto custom-scroll">
+      <div
+        id="screen-results"
+        class="hidden p-8 md:p-12 flex flex-col items-center justify-center text-center h-full overflow-y-auto custom-scroll"
+      >
         <!-- O app.js vai injetar o relatório de domínios aqui automaticamente -->
       </div>
-
     </main>
 
     <!-- {{FOOTER}} -->
@@ -136,8 +188,7 @@
         initShell(user);
       });
     </script>
-    
 
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  </body>
 </html>

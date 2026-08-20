@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Trilha de aprendizado AWS — acompanhe sua jornada, conquistas e progresso." />
+    <meta
+      name="description"
+      content="Trilha de aprendizado AWS — acompanhe sua jornada, conquistas e progresso."
+    />
     <title>Minha Jornada — Cloud Academy A3</title>
-
-    
 
     <link
       rel="stylesheet"
@@ -16,7 +17,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=mt1ppag8" />
+    <link rel="stylesheet" href="./css/style.css?v=657a70f0" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -26,65 +27,68 @@
     <meta http-equiv="Expires" content="0">
 </head>
 
-  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
+  <body
+    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
+  >
 <header class="a3-header">
-      <div class="flex items-center gap-2 md:gap-3">
-        <button
-          id="cloud-sidebar-toggle"
-          class="btn-sidebar-toggle flex items-center justify-center group/cloud"
-          title="Esconder menu lateral"
-          aria-label="Alternar menu lateral"
-          aria-expanded="true"
-        >
-          <i
-            id="cloud-logo-icon"
-            class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <a href="index.html" class="a3-header-link" title="Voltar ao início">
-          <div>
-            <h1 class="text-base md:text-xl font-bold leading-tight">
-              Cloud Academy A3
-            </h1>
-            <p class="text-[10px] md:text-xs text-gray-300">
-              Sua jornada para certificações AWS
-            </p>
-          </div>
-        </a>
+  <div class="flex items-center gap-2 md:gap-3">
+    <button
+      id="cloud-sidebar-toggle"
+      class="btn-sidebar-toggle flex items-center justify-center group/cloud"
+      title="Esconder menu lateral"
+      aria-label="Alternar menu lateral"
+      aria-expanded="true"
+    >
+      <i
+        id="cloud-logo-icon"
+        class="fa-solid fa-cloud text-2xl md:text-3xl group-hover/cloud:scale-110 transition-transform"
+        aria-hidden="true"
+      ></i>
+    </button>
+    <a href="index.html" class="a3-header-link" title="Voltar ao início">
+      <div>
+        <h1 class="text-base md:text-xl font-bold leading-tight">
+          Cloud Academy A3
+        </h1>
+        <p class="text-[10px] md:text-xs text-gray-300">
+          Sua jornada para certificações AWS
+        </p>
       </div>
-      <div class="a3-header-actions">
-        <button
-          id="btn-language"
-          class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
-          aria-label="Alternar idioma"
-          title="Alternar idioma"
-        >
-          <span class="text-[10px] md:text-xs font-bold"
-            >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
-          >
-        </button>
-        <button
-          id="theme-toggle"
-          class="a3-btn a3-btn-secondary"
-          aria-label="Alternar modo escuro"
-        >
-          <i
-            id="theme-icon"
-            class="fa-solid fa-moon text-base md:text-xl"
-            aria-hidden="true"
-          ></i>
-        </button>
-        <button
-          id="install-app"
-          class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
-        >
-          <i class="fa-solid fa-download"></i> Baixar App
-        </button>
-        <!-- User Menu — populado pelo shell.js -->
-        <div id="user-menu-container"></div>
-      </div>
-    </header>
+    </a>
+  </div>
+  <div class="a3-header-actions">
+    <button
+      id="btn-language"
+      class="a3-btn a3-btn-secondary flex items-center gap-1 md:gap-2"
+      aria-label="Alternar idioma"
+      title="Alternar idioma"
+    >
+      <span class="text-[10px] md:text-xs font-bold"
+        >🇧🇷 <span class="hidden sm:inline">PT-BR</span></span
+      >
+    </button>
+    <button
+      id="theme-toggle"
+      class="a3-btn a3-btn-secondary"
+      aria-label="Alternar modo escuro"
+    >
+      <i
+        id="theme-icon"
+        class="fa-solid fa-moon text-base md:text-xl"
+        aria-hidden="true"
+      ></i>
+    </button>
+    <button
+      id="install-app"
+      class="a3-btn a3-btn-secondary hidden md:flex items-center gap-2"
+    >
+      <i class="fa-solid fa-download"></i> Baixar App
+    </button>
+    <!-- User Menu — populado pelo shell.js -->
+    <div id="user-menu-container"></div>
+  </div>
+</header>
+<script src="./js/pwa/registerServiceWorker.js?v=657a70f0"></script>
 <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
   <!--
     .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
@@ -98,7 +102,10 @@
       aria-label="Learning Hub — Painel Principal"
       title="Learning Hub — Painel Principal"
     >
-      <i class="fa-solid fa-house left-sidebar-item-icon" aria-hidden="true"></i>
+      <i
+        class="fa-solid fa-house left-sidebar-item-icon"
+        aria-hidden="true"
+      ></i>
       <span class="left-sidebar-item-label">Home</span>
     </button>
   </div>
@@ -110,34 +117,43 @@
 
 
     <main class="flex-1 a3-container py-6 main-content-container">
+      <div
+        id="screen-jornada"
+        class="p-8 md:p-12 flex flex-col items-center h-full overflow-y-auto custom-scroll fade-in"
+      >
+        <div class="w-full max-w-2xl text-center mb-10">
+          <h2 class="text-3xl font-bold text-strong mb-2">
+            <i class="fa-solid fa-map-location-dot text-aws-orange mr-2"></i>
+            Jornada AWS
+          </h2>
+          <p class="text-muted dark:text-gray-400">
+            Complete os módulos para desbloquear novas certificações e ganhar
+            insígnias.
+          </p>
+          <p
+            id="jornada-cert-title"
+            class="text-lg font-semibold text-aws-orange mt-2"
+          ></p>
+        </div>
+
+        <div class="trail-container custom-scroll" id="gamificacao-trail"></div>
+
         <div
-          id="screen-jornada"
-          class="p-8 md:p-12 flex flex-col items-center h-full overflow-y-auto custom-scroll fade-in"
+          id="jornada-recommendation"
+          class="w-full max-w-5xl"
+          aria-live="polite"
+        ></div>
+
+        <div
+          class="w-full max-w-5xl mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start"
         >
-          <div class="w-full max-w-2xl text-center mb-10">
-            <h2 class="text-3xl font-bold text-strong mb-2">
-              <i class="fa-solid fa-map-location-dot text-aws-orange mr-2"></i>
-              Jornada AWS
-            </h2>
-            <p class="text-muted dark:text-gray-400">
-              Complete os módulos para desbloquear novas certificações e ganhar
-              insígnias.
-            </p>
-            <p id="jornada-cert-title" class="text-lg font-semibold text-aws-orange mt-2"></p>
-          </div>
-
-          <div
-            class="trail-container custom-scroll"
-            id="gamificacao-trail"
-          ></div>
-
-          <div id="jornada-recommendation" class="w-full max-w-5xl" aria-live="polite"></div>
-
-          <div class="w-full max-w-5xl mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-  
           <!-- CARD 1: SUAS CONQUISTAS -->
-          <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow border border-gray-200 dark:border-slate-700 w-full">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2">
+          <div
+            class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow border border-gray-200 dark:border-slate-700 w-full"
+          >
+            <h3
+              class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2"
+            >
               <i class="fa-solid fa-medal text-yellow-500"></i> Suas Conquistas
             </h3>
             <div
@@ -147,42 +163,65 @@
           </div>
 
           <!-- CARD 2: PLACAR DA GUILDA -->
-          <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow border border-gray-200 dark:border-slate-700 w-full">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2">
+          <div
+            class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow border border-gray-200 dark:border-slate-700 w-full"
+          >
+            <h3
+              class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2"
+            >
               <i class="fa-solid fa-users text-blue-500"></i> Placar da Guilda
             </h3>
-            <div class="flex justify-around mb-6 border-b pb-4 border-gray-200 dark:border-slate-700">
+            <div
+              class="flex justify-around mb-6 border-b pb-4 border-gray-200 dark:border-slate-700"
+            >
               <div class="text-center">
-                <p class="text-sm text-gray-500 dark:text-gray-400">Questões Totais</p>
-                <p id="guild-total-questions" class="text-2xl font-bold text-blue-600 dark:text-blue-400">0</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  Questões Totais
+                </p>
+                <p
+                  id="guild-total-questions"
+                  class="text-2xl font-bold text-blue-600 dark:text-blue-400"
+                >
+                  0
+                </p>
               </div>
               <div class="text-center">
-                <p class="text-sm text-gray-500 dark:text-gray-400">Média Semanal</p>
-                <p id="guild-weekly-avg" class="text-2xl font-bold text-green-600 dark:text-green-400">0%</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  Média Semanal
+                </p>
+                <p
+                  id="guild-weekly-avg"
+                  class="text-2xl font-bold text-green-600 dark:text-green-400"
+                >
+                  0%
+                </p>
               </div>
             </div>
             <ul id="guild-leaderboard" class="space-y-3">
-              <li class="text-center text-gray-500 text-sm">Carregando placar...</li>
+              <li class="text-center text-gray-500 text-sm">
+                Carregando placar...
+              </li>
             </ul>
           </div>
-
         </div>
+      </div>
+    </main>
 <footer
-      class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
-    >
-      Plataforma colaborativa de estudo para certificações AWS construída para a
-      comunidade da Guilda Z-Maguinhos | A3Data.
-    </footer>
+  class="w-full relative z-20 shrink-0 text-center py-6 text-sm text-muted dark:text-gray-400 mt-auto border-t border-gray-200 dark:border-slate-800 bg-white transition-colors"
+>
+  Plataforma colaborativa de estudo para certificações AWS construída para a
+  comunidade da Guilda Z-Maguinhos | A3Data.
+</footer>
 
 
-    <script src="./js/sprintData.js?v=mt1ppag8" type="module"></script>
-    <script src="./js/app.js?v=mt1ppag8" type="module"></script>
+    <script src="./js/sprintData.js?v=657a70f0" type="module"></script>
+    <script src="./js/app.js?v=657a70f0" type="module"></script>
     <script type="module">
       import { authGuard } from "./js/core/authGuard.js";
       document.addEventListener("DOMContentLoaded", () => {
         const session = authGuard();
         if (!session) return;
-        
+
         // Inicia a jornada apenas se estivermos na página correta
         setTimeout(() => {
           if (typeof window.startJornada === "function") {
@@ -191,11 +230,10 @@
         }, 100);
       });
     </script>
-    
 
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </body>
 </html>

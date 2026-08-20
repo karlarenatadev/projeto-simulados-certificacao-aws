@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Simulados AWS — Pratique com questões no estilo oficial dos exames AWS." />
+    <meta
+      name="description"
+      content="Simulados AWS — Pratique com questões no estilo oficial dos exames AWS."
+    />
     <title>Sprint de Estudos — Cloud Academy A3</title>
-
-    
 
     <link
       rel="stylesheet"
@@ -21,29 +22,27 @@
     <meta name="theme-color" content="#001863" />
   </head>
 
-  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
-
+  <body
+    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
+  >
     <!-- {{HEADER_PAGE}} -->
 
     <!-- {{SIDEBAR}} -->
 
-    <main id="main-section" class="flex flex-row gap-6 flex-1 a3-container py-6 main-content-container">
-
+    <main
+      id="main-section"
+      class="flex flex-row gap-6 flex-1 a3-container py-6 main-content-container"
+    >
       <!-- CONTENT AREA -->
-      <section class="flex-1 min-w-0 flex flex-col gap-6 overflow-y-auto p-4" id="study-sprint-content">
-        <div
-          id="sprint-module"
-          class="a3-card w-full"
-        >
+      <section
+        class="flex-1 min-w-0 flex flex-col gap-6 overflow-y-auto p-4"
+        id="study-sprint-content"
+      >
+        <div id="sprint-module" class="a3-card w-full">
           <div class="a3-card-header">
             <div class="flex items-center gap-2">
               <i class="fa-solid fa-calendar-check text-aws-orange"></i>
-              <h3
-                id="sprint-module-title"
-                class="m-0"
-              >
-                Sprint de Estudos
-              </h3>
+              <h3 id="sprint-module-title" class="m-0">Sprint de Estudos</h3>
             </div>
             <span
               id="sprint-current-cert-badge"
@@ -64,7 +63,11 @@
               >
             </div>
             <div id="sprint-days-grid" class="w-full"></div>
-            <div id="sprint-recommendation-actions" class="flex flex-wrap gap-2 mt-4" aria-live="polite"></div>
+            <div
+              id="sprint-recommendation-actions"
+              class="flex flex-wrap gap-2 mt-4"
+              aria-live="polite"
+            ></div>
             <div
               class="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700 text-center"
             >
@@ -83,36 +86,46 @@
             </div>
           </div>
         </div>
-</section>
-<!-- /CONTENT AREA -->
+      </section>
+      <!-- /CONTENT AREA -->
 
-      
       <!-- /SIDE INFO -->
-
     </main>
-    
+
     <!-- Sprint Reader Overlay -->
-    <div id="sprint-reader-overlay" class="hidden fixed inset-0 z-[9999] bg-black/95 overflow-y-auto">
+    <div
+      id="sprint-reader-overlay"
+      class="hidden fixed inset-0 z-[9999] bg-black/95 overflow-y-auto"
+    >
       <div class="container mx-auto px-4 py-8">
-        <button id="close-sprint-reader" class="fixed top-4 right-4 a3-btn a3-btn-secondary z-[10000]">
+        <button
+          id="close-sprint-reader"
+          class="fixed top-4 right-4 a3-btn a3-btn-secondary z-[10000]"
+        >
           <i class="fa-solid fa-xmark mr-2"></i> Fechar
         </button>
-        <div id="sprint-reader-content" class="max-w-3xl mx-auto bg-white dark:bg-slate-800 rounded-lg p-8 mt-16">
+        <div
+          id="sprint-reader-content"
+          class="max-w-3xl mx-auto bg-white dark:bg-slate-800 rounded-lg p-8 mt-16"
+        >
           <!-- Conteúdo do dia será carregado aqui dinamicamente -->
         </div>
       </div>
     </div>
-
 
     <!-- {{FOOTER}} -->
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
       window.chartJsLoaded = new Promise((resolve) => {
-        if (typeof Chart !== "undefined") { resolve(); }
-        else {
+        if (typeof Chart !== "undefined") {
+          resolve();
+        } else {
           const checkChart = setInterval(() => {
-            if (typeof Chart !== "undefined") { clearInterval(checkChart); resolve(); }
+            if (typeof Chart !== "undefined") {
+              clearInterval(checkChart);
+              resolve();
+            }
           }, 50);
         }
       });
@@ -132,8 +145,7 @@
         initShell(user);
       });
     </script>
-    
 
     <script type="module" src="js/gamificacao/sprintManager.js"></script>
-</body>
+  </body>
 </html>

@@ -297,7 +297,10 @@ export function initializeUI(language) {
     const translated = t(key, lang);
     if (translated && translated !== key) {
       // Allow HTML in translation only if it's safe or explicitly handled
-      if (el.matches('input, textarea') && el.dataset.i18nAttr === 'placeholder') {
+      if (
+        el.matches("input, textarea") &&
+        el.dataset.i18nAttr === "placeholder"
+      ) {
         el.placeholder = translated;
       } else if (el.dataset.i18nAttr) {
         el.setAttribute(el.dataset.i18nAttr, translated);
@@ -310,13 +313,36 @@ export function initializeUI(language) {
   // Standalone Validation pages share the shell but do not load app.js.
   updateElement("#validator-status", t("admin_validation_auth_waiting", lang));
   updateElement(".validator-section h2", t("admin_validation_identity", lang));
-  updateElement("#login-section .mock-notice", t("admin_validation_restrict", lang));
-  updateElement("#questions-list .loading-msg", t("admin_validation_loading", lang));
-  updateElement(".dashboard-section .stat-card.pending h3", t("admin_validation_pending_count", lang));
-  updateElement(".dashboard-section .stat-card.approved h3", t("admin_validation_approved_count", lang));
-  updateElement(".dashboard-section .stat-card.rejected h3", t("admin_validation_rejected_count", lang));
-  updateAttribute("#login-email", "placeholder", lang === "en" ? "your.name@a3data.com.br" : "seu.nome@a3data.com.br");
-  updateAttribute("#rejection-reason", "placeholder", lang === "en" ? "At least 10 characters" : "Mínimo de 10 caracteres");
+  updateElement(
+    "#login-section .mock-notice",
+    t("admin_validation_restrict", lang),
+  );
+  updateElement(
+    "#questions-list .loading-msg",
+    t("admin_validation_loading", lang),
+  );
+  updateElement(
+    ".dashboard-section .stat-card.pending h3",
+    t("admin_validation_pending_count", lang),
+  );
+  updateElement(
+    ".dashboard-section .stat-card.approved h3",
+    t("admin_validation_approved_count", lang),
+  );
+  updateElement(
+    ".dashboard-section .stat-card.rejected h3",
+    t("admin_validation_rejected_count", lang),
+  );
+  updateAttribute(
+    "#login-email",
+    "placeholder",
+    lang === "en" ? "your.name@a3data.com.br" : "seu.nome@a3data.com.br",
+  );
+  updateAttribute(
+    "#rejection-reason",
+    "placeholder",
+    lang === "en" ? "At least 10 characters" : "Mínimo de 10 caracteres",
+  );
   updateElement("#btn-login", t("common_login", lang));
   updateElement("#btn-confirm-reject", t("admin_validation_reject", lang));
   updateElement("#btn-cancel-reject", t("cancel", lang));
@@ -327,14 +353,21 @@ export function initializeUI(language) {
     ["#profile-stats-title", "profile_statistics"],
     ["#profile-certs-title", "profile_certifications"],
     ["#profile-badges-title", "profile_badges"],
-  ].forEach(([selector, key]) => updateElement(selector, null, (el) => {
-    const icon = el.querySelector("i");
-    el.textContent = "";
-    if (icon) el.appendChild(icon);
-    el.append(` ${t(key, lang)}`);
-  }));
+  ].forEach(([selector, key]) =>
+    updateElement(selector, null, (el) => {
+      const icon = el.querySelector("i");
+      el.textContent = "";
+      if (icon) el.appendChild(icon);
+      el.append(` ${t(key, lang)}`);
+    }),
+  );
   const profileLabels = document.querySelectorAll(".profile-stat-label");
-  ["profile_quizzes", "profile_best_score", "profile_streak", "profile_xp"].forEach((key, index) => {
+  [
+    "profile_quizzes",
+    "profile_best_score",
+    "profile_streak",
+    "profile_xp",
+  ].forEach((key, index) => {
     if (profileLabels[index]) profileLabels[index].textContent = t(key, lang);
   });
   updateElement("#resources-main h2", null, (el) => {
@@ -344,8 +377,18 @@ export function initializeUI(language) {
     el.append(` ${t("resources_title", lang)}`);
   });
   updateElement("#resources-main > div > p", t("resources_subtitle", lang));
-  const resourceTitles = document.querySelectorAll("#resources-main .a3-card-header h3");
-  ["resources_aws", "resources_certifications", "resources_architecture", "resources_channels", "resources_community", "resources_blogs", "resources_references"].forEach((key, index) => {
+  const resourceTitles = document.querySelectorAll(
+    "#resources-main .a3-card-header h3",
+  );
+  [
+    "resources_aws",
+    "resources_certifications",
+    "resources_architecture",
+    "resources_channels",
+    "resources_community",
+    "resources_blogs",
+    "resources_references",
+  ].forEach((key, index) => {
     if (resourceTitles[index]) {
       const icon = resourceTitles[index].querySelector("i");
       resourceTitles[index].textContent = "";
@@ -353,21 +396,47 @@ export function initializeUI(language) {
       resourceTitles[index].append(` ${t(key, lang)}`);
     }
   });
-  const settingsGroups = document.querySelectorAll("#settings-page .settings-group-title");
-  ["settings_account", "settings_appearance", "settings_study", "settings_platform"].forEach((key, index) => {
+  const settingsGroups = document.querySelectorAll(
+    "#settings-page .settings-group-title",
+  );
+  [
+    "settings_account",
+    "settings_appearance",
+    "settings_study",
+    "settings_platform",
+  ].forEach((key, index) => {
     if (settingsGroups[index]) settingsGroups[index].textContent = t(key, lang);
   });
-  const displayNameLabel = document.querySelector('#setting-display-name')?.closest('.settings-item')?.querySelector('.settings-item-label');
-  const displayNameHint = document.querySelector('#setting-display-name')?.closest('.settings-item')?.querySelector('.settings-item-hint');
-  if (displayNameLabel) displayNameLabel.textContent = t('settings_display_name', lang);
-  if (displayNameHint) displayNameHint.textContent = t('settings_display_name_hint', lang);
-  const languageLabel = document.querySelector('#setting-lang')?.closest('.settings-item')?.querySelector('.settings-item-label');
-  const languageHint = document.querySelector('#setting-lang')?.closest('.settings-item')?.querySelector('.settings-item-hint');
-  if (languageLabel) languageLabel.textContent = t('settings_language', lang);
-  if (languageHint) languageHint.textContent = t('settings_language_hint', lang);
-  updateAttribute('#setting-display-name', 'placeholder', t('settings_display_name', lang));
-  updateAttribute('#setting-lang', 'aria-label', t('settings_language', lang));
-  updateAttribute('#settings-btn-save', 'aria-label', t('settings_save', lang));
+  const displayNameLabel = document
+    .querySelector("#setting-display-name")
+    ?.closest(".settings-item")
+    ?.querySelector(".settings-item-label");
+  const displayNameHint = document
+    .querySelector("#setting-display-name")
+    ?.closest(".settings-item")
+    ?.querySelector(".settings-item-hint");
+  if (displayNameLabel)
+    displayNameLabel.textContent = t("settings_display_name", lang);
+  if (displayNameHint)
+    displayNameHint.textContent = t("settings_display_name_hint", lang);
+  const languageLabel = document
+    .querySelector("#setting-lang")
+    ?.closest(".settings-item")
+    ?.querySelector(".settings-item-label");
+  const languageHint = document
+    .querySelector("#setting-lang")
+    ?.closest(".settings-item")
+    ?.querySelector(".settings-item-hint");
+  if (languageLabel) languageLabel.textContent = t("settings_language", lang);
+  if (languageHint)
+    languageHint.textContent = t("settings_language_hint", lang);
+  updateAttribute(
+    "#setting-display-name",
+    "placeholder",
+    t("settings_display_name", lang),
+  );
+  updateAttribute("#setting-lang", "aria-label", t("settings_language", lang));
+  updateAttribute("#settings-btn-save", "aria-label", t("settings_save", lang));
   if (document.getElementById("btn-start-diagnostic")) {
     updateElement("#screen-start h2", null, (el) => {
       const icon = el.querySelector("i");
@@ -429,7 +498,11 @@ function translateStaticSurface(lang) {
   const portuguese = translations.pt || {};
   const keyByText = new Map();
   Object.entries(portuguese).forEach(([key, value]) => {
-    if (typeof value === "string" && value.trim() && !keyByText.has(value.trim())) {
+    if (
+      typeof value === "string" &&
+      value.trim() &&
+      !keyByText.has(value.trim())
+    ) {
       keyByText.set(value.trim(), key);
     }
   });
@@ -440,23 +513,27 @@ function translateStaticSurface(lang) {
   while (walker.nextNode()) textNodes.push(walker.currentNode);
   textNodes.forEach((node) => {
     const parent = node.parentElement;
-    if (!parent || ["SCRIPT", "STYLE", "NOSCRIPT"].includes(parent.tagName)) return;
+    if (!parent || ["SCRIPT", "STYLE", "NOSCRIPT"].includes(parent.tagName))
+      return;
     const value = node.nodeValue?.trim();
     const key = keyByText.get(value);
     if (!key) return;
     const translated = t(key, lang);
-    if (translated && translated !== value) node.nodeValue = node.nodeValue.replace(value, translated);
+    if (translated && translated !== value)
+      node.nodeValue = node.nodeValue.replace(value, translated);
   });
 
-  ["title", "aria-label", "aria-description", "placeholder", "alt"].forEach((attribute) => {
-    document.querySelectorAll(`[${attribute}]`).forEach((element) => {
-      const value = element.getAttribute(attribute)?.trim();
-      const key = keyByText.get(value);
-      if (!key) return;
-      const translated = t(key, lang);
-      if (translated) element.setAttribute(attribute, translated);
-    });
-  });
+  ["title", "aria-label", "aria-description", "placeholder", "alt"].forEach(
+    (attribute) => {
+      document.querySelectorAll(`[${attribute}]`).forEach((element) => {
+        const value = element.getAttribute(attribute)?.trim();
+        const key = keyByText.get(value);
+        if (!key) return;
+        const translated = t(key, lang);
+        if (translated) element.setAttribute(attribute, translated);
+      });
+    },
+  );
 }
 
 // Helper functions

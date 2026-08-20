@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Perfil do usuário — histórico, certificações e conquistas." />
+    <meta
+      name="description"
+      content="Perfil do usuário — histórico, certificações e conquistas."
+    />
     <title>Meu Perfil — Cloud Academy A3</title>
-
-    
 
     <link
       rel="stylesheet"
@@ -21,13 +22,14 @@
     <meta name="theme-color" content="#001863" />
   </head>
 
-  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
-
+  <body
+    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
+  >
     <!-- {{HEADER_PAGE}} -->
 
     <!-- {{SIDEBAR}} -->
 
-<!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
+    <!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
 
     <!-- ===== CONTEÚDO PRINCIPAL ===== -->
     <main class="main-content-container profile-main" id="profile-page">
@@ -153,10 +155,38 @@
         speed: "profile_badge_speed_desc",
       };
       const BADGE_CATALOG = [
-        { id: "perfect", icon: "fa-star", color: "text-yellow-400", bg: "bg-yellow-500/10", title: "100% Perfeita", desc: "Gabaritou um simulado inteiro." },
-        { id: "dedicated", icon: "fa-book-open", color: "text-blue-400", bg: "bg-blue-500/10", title: "Dedicada", desc: "Completou 10 simulados." },
-        { id: "streak", icon: "fa-fire", color: "text-orange-500", bg: "bg-orange-500/10", title: "No Foco", desc: "5 aprovações consecutivas." },
-        { id: "speed", icon: "fa-stopwatch", color: "text-rose-400", bg: "bg-rose-500/10", title: "The Flash", desc: "Terminou na metade do tempo." },
+        {
+          id: "perfect",
+          icon: "fa-star",
+          color: "text-yellow-400",
+          bg: "bg-yellow-500/10",
+          title: "100% Perfeita",
+          desc: "Gabaritou um simulado inteiro.",
+        },
+        {
+          id: "dedicated",
+          icon: "fa-book-open",
+          color: "text-blue-400",
+          bg: "bg-blue-500/10",
+          title: "Dedicada",
+          desc: "Completou 10 simulados.",
+        },
+        {
+          id: "streak",
+          icon: "fa-fire",
+          color: "text-orange-500",
+          bg: "bg-orange-500/10",
+          title: "No Foco",
+          desc: "5 aprovações consecutivas.",
+        },
+        {
+          id: "speed",
+          icon: "fa-stopwatch",
+          color: "text-rose-400",
+          bg: "bg-rose-500/10",
+          title: "The Flash",
+          desc: "Terminou na metade do tempo.",
+        },
       ];
 
       function setText(id, val) {
@@ -166,7 +196,12 @@
 
       // ── Render user header ────────────────────────────────────────────────
       function renderUserHeader(user) {
-        const displayName = user.name || user.nickname || user.full_name || user.email || "Usuário";
+        const displayName =
+          user.name ||
+          user.nickname ||
+          user.full_name ||
+          user.email ||
+          "Usuário";
         const initial = displayName.charAt(0).toUpperCase();
         const role = (user.role || "STUDENT").toUpperCase();
 
@@ -176,7 +211,9 @@
 
         const roleBadge = document.getElementById("profile-role-badge");
         if (roleBadge) {
-          roleBadge.textContent = ROLE_LABELS[role] ? t(ROLE_LABELS[role], getCurrentLanguage()) : role;
+          roleBadge.textContent = ROLE_LABELS[role]
+            ? t(ROLE_LABELS[role], getCurrentLanguage())
+            : role;
           roleBadge.className = `a3-badge ${ROLE_CLASSES[role] || "a3-role-student"}`;
         }
       }
@@ -192,7 +229,9 @@
             ? `${Math.round(gam.bestScore)}%`
             : "—";
         const streak = gam.currentStreak || 0;
-        const xp = Math.round((gam.totalQuizzes || 0) * 10 + (gam.bestScore || 0) * 2);
+        const xp = Math.round(
+          (gam.totalQuizzes || 0) * 10 + (gam.bestScore || 0) * 2,
+        );
 
         setText("stat-total-quizzes", totalQuizzes);
         setText("stat-best-score", bestScore);
@@ -206,16 +245,23 @@
         if (!container) return;
 
         const history = storageManager.getHistory() || [];
-        const certIds = [...new Set(history.map((h) => h.certId).filter(Boolean))];
+        const certIds = [
+          ...new Set(history.map((h) => h.certId).filter(Boolean)),
+        ];
 
         if (certIds.length === 0) {
-          container.textContent = t("profile_empty_certifications", getCurrentLanguage());
+          container.textContent = t(
+            "profile_empty_certifications",
+            getCurrentLanguage(),
+          );
           return;
         }
         container.innerHTML = certIds
           .map((certId) => {
             const certSessions = history.filter((h) => h.certId === certId);
-            const bestPct = Math.max(...certSessions.map((h) => Number(h.percentage) || 0));
+            const bestPct = Math.max(
+              ...certSessions.map((h) => Number(h.percentage) || 0),
+            );
             const label = CERT_LABELS[certId] || certId.toUpperCase();
             return `
               <div class="a3-card profile-cert-card">
@@ -240,9 +286,13 @@
 
         container.innerHTML = BADGE_CATALOG.map((badge) => {
           const earned = earnedBadges.has(badge.id);
-          const opacity = earned ? "" : "opacity-40 grayscale cursor-not-allowed";
-          const title = t(BADGE_TITLE_KEYS[badge.id], getCurrentLanguage()) || badge.title;
-          const description = t(BADGE_DESC_KEYS[badge.id], getCurrentLanguage()) || badge.desc;
+          const opacity = earned
+            ? ""
+            : "opacity-40 grayscale cursor-not-allowed";
+          const title =
+            t(BADGE_TITLE_KEYS[badge.id], getCurrentLanguage()) || badge.title;
+          const description =
+            t(BADGE_DESC_KEYS[badge.id], getCurrentLanguage()) || badge.desc;
           return `
             <div class="a3-card relative ${opacity} ${badge.bg} p-4 flex flex-col items-center text-center profile-badge-card">
               ${!earned ? '<div class="profile-badge-lock"><i class="fa-solid fa-lock"></i></div>' : ""}
@@ -265,7 +315,5 @@
         renderBadgesGrid();
       });
     </script>
-    
-
   </body>
 </html>

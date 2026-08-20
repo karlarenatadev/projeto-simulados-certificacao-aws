@@ -5,6 +5,13 @@ import { ModalService } from "../services/modalService.js";
 import { getCurrentLanguage } from "../core/languageManager.js";
 import { t } from "../i18n/useTranslation.js";
 
+function createTextElement(tagName, className, value) {
+  const element = document.createElement(tagName);
+  if (className) element.className = className;
+  element.textContent = String(value ?? "");
+  return element;
+}
+
 export class SimulatorEngineClient {
   constructor(level, caseId) {
     this.level = level;
@@ -50,15 +57,20 @@ export class SimulatorEngineClient {
     } catch (err) {
       logger.error("Failed to init simulator", err);
       const status = document.getElementById("simulatorStatus");
-      if (status) status.textContent = `${this.tr("simulator_unavailable")} ${err.message}`;
-      NotificationService.error(`${this.tr("simulator_load_error")} ${err.message}`);
+      if (status)
+        status.textContent = `${this.tr("simulator_unavailable")} ${err.message}`;
+      NotificationService.error(
+        `${this.tr("simulator_load_error")} ${err.message}`,
+      );
     }
   }
 
   async loadCaseData() {
-    let response = await fetch('./api/cases?limit=100').catch(() => null);
+    let response = await fetch("./api/cases?limit=100").catch(() => null);
     if (!response || !response.ok) {
-        response = await fetch('./data/cases/architecture_cases.json').catch(() => null);
+      response = await fetch("./data/cases/architecture_cases.json").catch(
+        () => null,
+      );
     }
     if (!response || !response.ok) {
       throw new Error("Case catalog unavailable");
@@ -70,16 +82,18 @@ export class SimulatorEngineClient {
     }
 
     if (this.caseId) {
-      this.caseData = cases.find(c => c.id === this.caseId);
+      this.caseData = cases.find((c) => c.id === this.caseId);
     } else {
-      this.caseData = cases.find(c => c.difficulty === this.level);
+      this.caseData = cases.find((c) => c.difficulty === this.level);
     }
     if (!this.caseData) throw new Error("Caso não encontrado");
     this.caseId = this.caseData.id;
   }
 
   async loadDialogues() {
-    const res = await fetch(`/api/cases/${this.caseId}/dialogues`).catch(() => null);
+    const res = await fetch(`/api/cases/${this.caseId}/dialogues`).catch(
+      () => null,
+    );
     if (res && res.ok) {
       const data = await res.json();
       if (data.success) {
@@ -89,10 +103,10 @@ export class SimulatorEngineClient {
     }
     // Fallback: build dialogues from the JSON's questions
     if (this.caseData.questions) {
-      this.dialogues = this.caseData.questions.map(q => ({
+      this.dialogues = this.caseData.questions.map((q) => ({
         question: q.question_text,
         answer: q.explanation || "Sem explicação detalhada disponível.",
-        hints: q.options.map(o => o.text)
+        hints: q.options.map((o) => o.text),
       }));
     } else {
       this.dialogues = [];
@@ -183,23 +197,31 @@ export class SimulatorEngineClient {
 
   renderBriefing() {
     const container = document.getElementById("briefingContent");
-    container.innerHTML = `
-            <h2>${this.caseData.title}</h2>
-            <p><strong>${this.tr("simulator_objective")}</strong> ${this.caseData.objective}</p>
-            <p><strong>${this.tr("simulator_scenario")}</strong> ${this.caseData.scenario}</p>
-            ${
-              this.caseData.constraints
-                ? `
-            <h4>${this.tr("simulator_constraints")}</h4>
-            <ul>
-                ${this.caseData.constraints
-                  .map((c) => `<li>${c}</li>`)
-                  .join("")}
-            </ul>
-            `
-                : ""
-            }
-        `;
+    container.replaceChildren();
+    container.appendChild(document.createElement("h2"));
+    container.lastElementChild.textContent = this.caseData.title || "";
+
+    const appendLabeledText = (label, value) => {
+      const paragraph = document.createElement("p");
+      const strong = document.createElement("strong");
+      strong.textContent = label;
+      paragraph.append(strong, document.createTextNode(` ${value || ""}`));
+      container.appendChild(paragraph);
+    };
+
+    appendLabeledText(this.tr("simulator_objective"), this.caseData.objective);
+    appendLabeledText(this.tr("simulator_scenario"), this.caseData.scenario);
+
+    if (this.caseData.constraints?.length) {
+      container.appendChild(
+        createTextElement("h4", "", this.tr("simulator_constraints")),
+      );
+      const list = document.createElement("ul");
+      this.caseData.constraints.forEach((constraint) => {
+        list.appendChild(createTextElement("li", "", constraint));
+      });
+      container.appendChild(list);
+    }
   }
 
   renderInterviewOptions() {
@@ -236,10 +258,18 @@ export class SimulatorEngineClient {
     setTimeout(() => {
       const aDiv = document.createElement("div");
       aDiv.className = "chat-msg chat-client";
-      aDiv.innerHTML = dialogue.answer.replace(/\n/g, "<br>");
+      const answerLines = String(dialogue.answer ?? "").split("\n");
+      answerLines.forEach((line, index) => {
+        if (index > 0) aDiv.appendChild(document.createElement("br"));
+        aDiv.appendChild(document.createTextNode(line));
+      });
 
       if (dialogue.hints && dialogue.hints.length > 0) {
-        aDiv.innerHTML += `<br><br><small style="color:var(--primary-color)">💡 ${this.tr("simulator_hint")} ${dialogue.hints.join(", ")}</small>`;
+        aDiv.append(document.createElement("br"), document.createElement("br"));
+        const hint = document.createElement("small");
+        hint.style.color = "var(--primary-color)";
+        hint.textContent = `💡 ${this.tr("simulator_hint")} ${dialogue.hints.join(", ")}`;
+        aDiv.appendChild(hint);
       }
 
       history.appendChild(aDiv);
@@ -274,7 +304,7 @@ export class SimulatorEngineClient {
         const card = document.createElement("div");
         card.className = "service-card";
         if (this.selectedServices.has(id)) {
-            card.classList.add("selected");
+          card.classList.add("selected");
         }
         card.onclick = () => {
           if (this.selectedServices.has(id)) {
@@ -287,12 +317,15 @@ export class SimulatorEngineClient {
           this.saveState();
         };
 
-        card.innerHTML = `
-                    <div>
-                        <strong>${s.name || s.service_name}</strong>
-                        <div style="font-size: 0.8rem; color: var(--text-secondary)">${s.short_desc || s.category}</div>
-                    </div>
-                `;
+        const content = document.createElement("div");
+        const name = document.createElement("strong");
+        name.textContent = s.name || s.service_name || "";
+        const description = document.createElement("div");
+        description.style.fontSize = "0.8rem";
+        description.style.color = "var(--text-secondary)";
+        description.textContent = s.short_desc || s.category || "";
+        content.append(name, description);
+        card.appendChild(content);
         grid.appendChild(card);
       });
 
@@ -303,9 +336,7 @@ export class SimulatorEngineClient {
 
   async submitDesign() {
     if (this.selectedServices.size === 0) {
-      NotificationService.error(
-        this.tr("simulator_select_service"),
-      );
+      NotificationService.error(this.tr("simulator_select_service"));
       return;
     }
 
@@ -317,34 +348,40 @@ export class SimulatorEngineClient {
           selected_service_ids: Array.from(this.selectedServices),
         }),
       }).catch(() => null);
-      
+
       if (res && res.ok) {
-          const data = await res.json();
-          if (data.success) {
-            this.renderEvaluation(data.data);
-            this.saveState(data.data);
-            return;
-          }
+        const data = await res.json();
+        if (data.success) {
+          this.renderEvaluation(data.data);
+          this.saveState(data.data);
+          return;
+        }
       }
 
       // Local Fallback Evaluation
-      const expected = this.caseData.services.map(s => s.id || s.slug || s.service_slug);
+      const expected = this.caseData.services.map(
+        (s) => s.id || s.slug || s.service_slug,
+      );
       const selected = Array.from(this.selectedServices);
-      const correct = selected.filter(s => expected.includes(s));
-      const score = expected.length > 0 ? Math.round((correct.length / expected.length) * 100) : 100;
+      const correct = selected.filter((s) => expected.includes(s));
+      const score =
+        expected.length > 0
+          ? Math.round((correct.length / expected.length) * 100)
+          : 100;
       const passed = score >= 80;
 
       const evalData = {
         score,
         passed,
-        feedback: passed ? this.tr("simulator_passed_feedback") : this.tr("simulator_review_feedback"),
-        missing_services: expected.filter(e => !selected.includes(e)),
-        extra_services: selected.filter(s => !expected.includes(s))
+        feedback: passed
+          ? this.tr("simulator_passed_feedback")
+          : this.tr("simulator_review_feedback"),
+        missing_services: expected.filter((e) => !selected.includes(e)),
+        extra_services: selected.filter((s) => !expected.includes(s)),
       };
 
       this.renderEvaluation(evalData);
       this.saveState(evalData);
-
     } catch (err) {
       logger.error("Failed to submit design", err);
       NotificationService.error(this.tr("simulator_evaluation_error"));
@@ -355,46 +392,65 @@ export class SimulatorEngineClient {
     const container = document.getElementById("evaluationContent");
     if (!container) return;
 
-    let html = `
-            <h3 class="${data.passed ? "text-green-600" : "text-red-600"}">
-                ${this.tr("simulator_evaluation_label")} ${data.score}% - ${data.passed ? this.tr("simulator_passed") : this.tr("simulator_review")}
-            </h3>
-            <p style="margin: 1rem 0">${data.feedback}</p>
-        `;
+    container.replaceChildren();
+    const heading = createTextElement(
+      "h3",
+      data.passed ? "text-green-600" : "text-red-600",
+      `${this.tr("simulator_evaluation_label")} ${data.score}% - ${data.passed ? this.tr("simulator_passed") : this.tr("simulator_review")}`,
+    );
+    const feedback = createTextElement("p", "", data.feedback);
+    feedback.style.margin = "1rem 0";
+    container.append(heading, feedback);
 
     if (data.missing_services && data.missing_services.length > 0) {
-      html += `
-                <div class="feedback-alert warning">
-                    <strong>${this.tr("simulator_missing")}</strong> ${data.missing_services.join(", ")}
-                </div>
-            `;
+      const alert = createTextElement("div", "feedback-alert warning", "");
+      const label = createTextElement(
+        "strong",
+        "",
+        this.tr("simulator_missing"),
+      );
+      alert.append(
+        label,
+        document.createTextNode(` ${data.missing_services.join(", ")}`),
+      );
+      container.appendChild(alert);
     }
 
     if (data.extra_services && data.extra_services.length > 0) {
-      html += `
-                <div class="feedback-alert info">
-                    <strong>${this.tr("simulator_extra")}</strong> ${data.extra_services.join(", ")}
-                </div>
-            `;
+      const alert = createTextElement("div", "feedback-alert info", "");
+      const label = createTextElement("strong", "", this.tr("simulator_extra"));
+      alert.append(
+        label,
+        document.createTextNode(` ${data.extra_services.join(", ")}`),
+      );
+      container.appendChild(alert);
     }
 
     // Always show the reference graph if available
-    if (this.caseData.architecture_graph && this.caseData.architecture_graph.type === 'mermaid') {
-       html += `
-           <div style="margin-top:2rem">
-               <h4>${this.tr("simulator_reference")}</h4>
-               <div class="mermaid" style="background:#f0f2f5; padding:1rem; border-radius:8px;">
-                   ${this.caseData.architecture_graph.content}
-               </div>
-           </div>
-       `;
+    if (
+      this.caseData.architecture_graph &&
+      this.caseData.architecture_graph.type === "mermaid"
+    ) {
+      const graphSection = document.createElement("div");
+      graphSection.style.marginTop = "2rem";
+      graphSection.appendChild(
+        createTextElement("h4", "", this.tr("simulator_reference")),
+      );
+      const graph = createTextElement(
+        "div",
+        "mermaid",
+        this.caseData.architecture_graph.content,
+      );
+      graph.style.background = "#f0f2f5";
+      graph.style.padding = "1rem";
+      graph.style.borderRadius = "8px";
+      graphSection.appendChild(graph);
+      container.appendChild(graphSection);
     }
 
-    container.innerHTML = html;
-    
     // Tell mermaid to re-render if loaded
     if (window.mermaid) {
-        window.mermaid.init(undefined, container.querySelectorAll('.mermaid'));
+      window.mermaid.init(undefined, container.querySelectorAll(".mermaid"));
     }
   }
 }

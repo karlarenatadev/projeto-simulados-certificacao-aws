@@ -21,4 +21,4 @@
  * @module core/storage
  */
 
-export { storageManager, StorageManager } from '../storageManager.js';
+export { storageManager, StorageManager } from "../storageManager.js";

@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Configurações da plataforma CloudAcademy A3." />
+    <meta
+      name="description"
+      content="Configurações da plataforma CloudAcademy A3."
+    />
     <title>Configurações — Cloud Academy A3</title>
-
-    
 
     <link
       rel="stylesheet"
@@ -21,13 +22,14 @@
     <meta name="theme-color" content="#001863" />
   </head>
 
-  <body class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar">
-
+  <body
+    class="min-h-screen flex flex-col bg-gray-100 transition-colors duration-300 has-left-sidebar"
+  >
     <!-- {{HEADER_PAGE}} -->
 
     <!-- {{SIDEBAR}} -->
 
-<!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
+    <!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->
 
     <!-- ===== CONTEÚDO PRINCIPAL ===== -->
     <main class="main-content-container settings-main" id="settings-page">
@@ -287,21 +289,44 @@
         <div class="settings-card">
           <div class="settings-item">
             <div class="settings-item-body">
-              <p class="settings-item-label">Solicitar acesso por certificação</p>
-              <p class="settings-item-hint">Envie Credential ID ou URL para análise de um Admin.</p>
+              <p class="settings-item-label">
+                Solicitar acesso por certificação
+              </p>
+              <p class="settings-item-hint">
+                Envie Credential ID ou URL para análise de um Admin.
+              </p>
             </div>
           </div>
           <div class="validator-request-fields">
-            <select id="validator-request-certification" class="settings-select" aria-label="Certificação">
+            <select
+              id="validator-request-certification"
+              class="settings-select"
+              aria-label="Certificação"
+            >
               <option value="CLF-C02">CLF-C02</option>
               <option value="SAA-C03">SAA-C03</option>
               <option value="DVA-C02">DVA-C02</option>
               <option value="AIF-C01">AIF-C01</option>
             </select>
-            <input id="validator-request-credential-id" class="settings-input" placeholder="Credential ID (opcional)" />
-            <input id="validator-request-credential-url" class="settings-input" placeholder="URL da credencial (opcional)" />
-            <textarea id="validator-request-notes" class="settings-input validator-request-notes" rows="2" placeholder="Observação (opcional)"></textarea>
-            <button id="validator-request-submit" class="a3-btn a3-btn-outline">Solicitar</button>
+            <input
+              id="validator-request-credential-id"
+              class="settings-input"
+              placeholder="Credential ID (opcional)"
+            />
+            <input
+              id="validator-request-credential-url"
+              class="settings-input"
+              placeholder="URL da credencial (opcional)"
+            />
+            <textarea
+              id="validator-request-notes"
+              class="settings-input validator-request-notes"
+              rows="2"
+              placeholder="Observação (opcional)"
+            ></textarea>
+            <button id="validator-request-submit" class="a3-btn a3-btn-outline">
+              Solicitar
+            </button>
           </div>
           <p id="validator-request-status" class="settings-item-hint"></p>
         </div>
@@ -336,12 +361,14 @@
 
     <!-- {{FOOTER}} -->
 
-
     <script type="module">
       import { storageManager } from "./js/storageManager.js";
       import { initShell } from "./js/shell.js";
       import { authGuard } from "./js/core/authGuard.js";
-      import { getCurrentLanguage, setCurrentLanguage } from "./js/core/languageManager.js";
+      import {
+        getCurrentLanguage,
+        setCurrentLanguage,
+      } from "./js/core/languageManager.js";
       import { t } from "./js/i18n/useTranslation.js";
       import apiService from "./js/services/api.js";
 
@@ -400,15 +427,13 @@
         // Pomodoro
         const pomodoroSelect = document.getElementById("setting-pomodoro");
         if (pomodoroSelect) {
-          pomodoroSelect.value =
-            localStorage.getItem(POMODORO_KEY) || "25";
+          pomodoroSelect.value = localStorage.getItem(POMODORO_KEY) || "25";
         }
 
         // Meta diária
         const dailyGoalSelect = document.getElementById("setting-daily-goal");
         if (dailyGoalSelect) {
-          dailyGoalSelect.value =
-            localStorage.getItem(DAILY_GOAL_KEY) || "20";
+          dailyGoalSelect.value = localStorage.getItem(DAILY_GOAL_KEY) || "20";
         }
       }
 
@@ -468,8 +493,12 @@
         initShell(user);
         loadPreferences(user);
         const requestGroup = document.getElementById("validator-request-group");
-        const requestStatus = document.getElementById("validator-request-status");
-        const normalizedRole = String(user.role || "").trim().toUpperCase();
+        const requestStatus = document.getElementById(
+          "validator-request-status",
+        );
+        const normalizedRole = String(user.role || "")
+          .trim()
+          .toUpperCase();
         const canRequestValidatorAccess = normalizedRole === "STUDENT";
         requestGroup?.classList.toggle("hidden", !canRequestValidatorAccess);
         if (canRequestValidatorAccess) {
@@ -477,25 +506,36 @@
             const response = await apiService.getValidatorRequests();
             const ownRequests = response.data || [];
             requestStatus.textContent = ownRequests.length
-              ? ownRequests.map((item) => `${item.certification_id}: ${item.status}`).join(" · ")
+              ? ownRequests
+                  .map((item) => `${item.certification_id}: ${item.status}`)
+                  .join(" · ")
               : tr("settings_request_empty");
           } catch {
             requestStatus.textContent = tr("settings_request_offline");
           }
         }
-        document.getElementById("validator-request-submit")?.addEventListener("click", async () => {
-          try {
-            await apiService.createValidatorRequest({
-              certification_id: document.getElementById("validator-request-certification").value,
-              credential_id: document.getElementById("validator-request-credential-id").value,
-              credential_url: document.getElementById("validator-request-credential-url").value,
-              notes: document.getElementById("validator-request-notes").value,
-            });
-            requestStatus.textContent = tr("settings_request_sent");
-          } catch (error) {
-            requestStatus.textContent = error.message || tr("settings_request_error");
-          }
-        });
+        document
+          .getElementById("validator-request-submit")
+          ?.addEventListener("click", async () => {
+            try {
+              await apiService.createValidatorRequest({
+                certification_id: document.getElementById(
+                  "validator-request-certification",
+                ).value,
+                credential_id: document.getElementById(
+                  "validator-request-credential-id",
+                ).value,
+                credential_url: document.getElementById(
+                  "validator-request-credential-url",
+                ).value,
+                notes: document.getElementById("validator-request-notes").value,
+              });
+              requestStatus.textContent = tr("settings_request_sent");
+            } catch (error) {
+              requestStatus.textContent =
+                error.message || tr("settings_request_error");
+            }
+          });
 
         // Salvar
         document
@@ -506,12 +546,7 @@
         document
           .getElementById("setting-btn-clear-history")
           ?.addEventListener("click", () => {
-            if (
-              !confirm(
-                tr("settings_clear_history_confirm"),
-              )
-            )
-              return;
+            if (!confirm(tr("settings_clear_history_confirm"))) return;
             storageManager.clearHistory();
             showToast(tr("settings_clear_history_done"));
           });
@@ -520,12 +555,7 @@
         document
           .getElementById("setting-btn-reset-all")
           ?.addEventListener("click", () => {
-            if (
-              !confirm(
-                tr("settings_reset_confirm"),
-              )
-            )
-              return;
+            if (!confirm(tr("settings_reset_confirm"))) return;
             storageManager.clearAll();
             showToast(tr("settings_reset_done"));
           });
@@ -535,9 +565,8 @@
           .getElementById("setting-btn-logout")
           ?.addEventListener("click", async () => {
             try {
-              const { AuthService: AS } = await import(
-                "./js/services/authService.js"
-              );
+              const { AuthService: AS } =
+                await import("./js/services/authService.js");
               await AS.logout();
             } catch (_) {
               /* offline */
@@ -546,7 +575,5 @@
           });
       });
     </script>
-    
-
   </body>
 </html>

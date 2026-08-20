@@ -35,13 +35,19 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Audit production dependencies
         run: npm audit --omit=dev
 
       - name: Run lint
-        run: npm run lint --if-present
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Validate datasets
+        run: npm run validate:data
 
       - name: Seed Database
         run: npm run db:seed
@@ -50,7 +56,13 @@ jobs:
         run: npm run test:coverage -- --runInBand
 
       - name: Build frontend
-        run: npm run build --if-present
+        run: npm run build
+
+      - name: Validate PWA artifact
+        run: npm run validate:pwa
+
+      - name: Verify generated frontend is synchronized
+        run: git diff --exit-code -- public/
 
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium

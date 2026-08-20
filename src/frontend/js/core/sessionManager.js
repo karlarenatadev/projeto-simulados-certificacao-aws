@@ -3,7 +3,7 @@ import { logger } from "../utils/logger.js";
 
 /**
  * SessionManager
- * 
+ *
  * Responsável por persistir e recuperar o estado da Sessão.
  * Implementa cache local e migração de dados legados via soft-delete.
  */
@@ -15,12 +15,12 @@ export class SessionManager {
   /**
    * Tenta restaurar a Sessão. Se não encontrar a nova chave,
    * aciona a migração de chaves antigas.
-   * 
+   *
    * @returns {Object|null} Objeto Session ou null
    */
   static restore() {
     let sessionRaw = localStorage.getItem(SESSION_KEY);
-    
+
     if (sessionRaw) {
       try {
         const session = JSON.parse(sessionRaw);
@@ -42,17 +42,17 @@ export class SessionManager {
 
   /**
    * Persiste uma sessão válida.
-   * 
+   *
    * @param {Object} session - Objeto no formato Session
    */
   static persist(session) {
     if (!session || !session.user) return;
-    
+
     // Assegura campos de sessão
     const safeSession = {
       ...session,
       version: SESSION_SCHEMA_VERSION,
-      lastActivity: new Date().toISOString()
+      lastActivity: new Date().toISOString(),
     };
 
     localStorage.setItem(SESSION_KEY, JSON.stringify(safeSession));
@@ -65,7 +65,7 @@ export class SessionManager {
   static update(userUpdates) {
     const session = this.restore();
     if (!session) return;
-    
+
     session.user = { ...session.user, ...userUpdates };
     this.persist(session);
   }
@@ -100,7 +100,12 @@ export class SessionManager {
     this.persist({
       ...session,
       ...(Object.keys(remaining).length > 0
-        ? { pendingPreferenceSync: { ...remaining, updatedAt: pending.updatedAt } }
+        ? {
+            pendingPreferenceSync: {
+              ...remaining,
+              updatedAt: pending.updatedAt,
+            },
+          }
         : { pendingPreferenceSync: null }),
     });
   }
@@ -111,7 +116,7 @@ export class SessionManager {
   static touch() {
     const raw = localStorage.getItem(SESSION_KEY);
     if (!raw) return;
-    
+
     try {
       const session = JSON.parse(raw);
       session.lastActivity = new Date().toISOString();
@@ -123,7 +128,7 @@ export class SessionManager {
 
   /**
    * Limpa a sessão oficial atual.
-   * (Não limpa as chaves legadas se elas estiverem em fase de soft-delete, 
+   * (Não limpa as chaves legadas se elas estiverem em fase de soft-delete,
    * mas o restore() garantirá que sem a cloudacademy_user principal ele não migrará fantasma)
    */
   static logout() {
@@ -133,7 +138,7 @@ export class SessionManager {
 
   /**
    * Verifica se a sessão expirou por inatividade ou timeout absoluto.
-   * @param {Object} session 
+   * @param {Object} session
    * @returns {boolean}
    */
   static isExpired(_session) {
@@ -144,7 +149,7 @@ export class SessionManager {
 
   /**
    * Migração das chaves legadas (Sprint 0.1)
-   * 
+   *
    * @returns {Object|null} Sessão migrada ou null se não havia usuário
    */
   static migrate() {
@@ -153,10 +158,16 @@ export class SessionManager {
 
     try {
       const legacyUser = JSON.parse(legacyUserRaw);
-      
+
       // Resgata configurações perdidas no localStorage
-      const legacyLang = localStorage.getItem("language") || localStorage.getItem("aws_sim_lang") || "pt";
-      const legacyCert = localStorage.getItem("activeCertification") || localStorage.getItem("aws_sim_cert") || "clf-c02";
+      const legacyLang =
+        localStorage.getItem("language") ||
+        localStorage.getItem("aws_sim_lang") ||
+        "pt";
+      const legacyCert =
+        localStorage.getItem("activeCertification") ||
+        localStorage.getItem("aws_sim_cert") ||
+        "clf-c02";
 
       // Adiciona ao payload para o Mapper
       legacyUser.language = legacyLang;
@@ -166,10 +177,11 @@ export class SessionManager {
 
       const session = {
         user: mappedUser,
-        authenticationMode: mappedUser.provider === "backend" ? "online" : "offline",
+        authenticationMode:
+          mappedUser.provider === "backend" ? "online" : "offline",
         provider: mappedUser.provider || "local", // Fallback
         version: SESSION_SCHEMA_VERSION,
-        migrationVersion: 1 // Flag de soft-delete para auditoria futura
+        migrationVersion: 1, // Flag de soft-delete para auditoria futura
       };
 
       this.persist(session);
@@ -181,7 +193,9 @@ export class SessionManager {
       localStorage.removeItem("aws_sim_cert");
 
       // Soft-Delete: Manteremos as chaves antigas de usuário por enquanto (fallback de auditoria).
-      logger.info("Migração para cloudacademy_session concluída. Chaves de UI legadas expurgadas.");
+      logger.info(
+        "Migração para cloudacademy_session concluída. Chaves de UI legadas expurgadas.",
+      );
 
       return session;
     } catch (err) {

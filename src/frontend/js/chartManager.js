@@ -422,8 +422,7 @@ export async function renderGlobalRadarChart() {
   });
 }
 
-
-export function renderPerformanceLineChart(history, domainFilter = 'geral') {
+export function renderPerformanceLineChart(history, domainFilter = "geral") {
   const canvas = document.getElementById("performanceLineChart");
   if (!canvas) {
     logger.error("Canvas element 'performanceLineChart' not found.");
@@ -434,9 +433,15 @@ export function renderPerformanceLineChart(history, domainFilter = 'geral') {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.font = "14px 'Inter', sans-serif";
-    ctx.fillStyle = document.documentElement.classList.contains("dark") ? "#9CA3AF" : "#6B7280";
+    ctx.fillStyle = document.documentElement.classList.contains("dark")
+      ? "#9CA3AF"
+      : "#6B7280";
     ctx.textAlign = "center";
-    ctx.fillText("Nenhum simulado finalizado ainda.", canvas.width / 2, canvas.height / 2);
+    ctx.fillText(
+      "Nenhum simulado finalizado ainda.",
+      canvas.width / 2,
+      canvas.height / 2,
+    );
     if (window.performanceLineChartInstance) {
       window.performanceLineChartInstance.destroy();
       window.performanceLineChartInstance = null;
@@ -454,36 +459,42 @@ export function renderPerformanceLineChart(history, domainFilter = 'geral') {
   const ctx = canvas.getContext("2d");
 
   const labels = history.map((_, index) => `Simulado ${index + 1}`);
-  const dataPoints = domainFilter === 'geral'
-    ? history.map(h => h.percentage || 0)
-    : history.map(h => {
-      if (!h.domainScores || !h.domainScores[domainFilter]) return 0;
-      return h.domainScores[domainFilter].percentage || 0;
-    });
+  const dataPoints =
+    domainFilter === "geral"
+      ? history.map((h) => h.percentage || 0)
+      : history.map((h) => {
+          if (!h.domainScores || !h.domainScores[domainFilter]) return 0;
+          return h.domainScores[domainFilter].percentage || 0;
+        });
 
   let gradient = ctx.createLinearGradient(0, 0, 0, 300);
   gradient.addColorStop(0, chartColors.fill);
   gradient.addColorStop(1, "rgba(0,0,0,0)");
 
   window.performanceLineChartInstance = new Chart(ctx, {
-    type: 'line',
+    type: "line",
     data: {
       labels: labels,
-      datasets: [{
-        label: domainFilter === 'geral' ? 'Nota Geral (%)' : `Nota: ${domainFilter} (%)`,
-        data: dataPoints,
-        borderColor: chartColors.line,
-        backgroundColor: gradient,
-        borderWidth: 3,
-        fill: true,
-        pointBackgroundColor: chartColors.point,
-        pointBorderColor: chartColors.pointBorder,
-        pointHoverBackgroundColor: chartColors.pointBorder,
-        pointHoverBorderColor: chartColors.point,
-        pointRadius: 5,
-        pointHoverRadius: 7,
-        tension: 0.3
-      }]
+      datasets: [
+        {
+          label:
+            domainFilter === "geral"
+              ? "Nota Geral (%)"
+              : `Nota: ${domainFilter} (%)`,
+          data: dataPoints,
+          borderColor: chartColors.line,
+          backgroundColor: gradient,
+          borderWidth: 3,
+          fill: true,
+          pointBackgroundColor: chartColors.point,
+          pointBorderColor: chartColors.pointBorder,
+          pointHoverBackgroundColor: chartColors.pointBorder,
+          pointHoverBorderColor: chartColors.point,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          tension: 0.3,
+        },
+      ],
     },
     options: {
       responsive: true,
@@ -493,12 +504,12 @@ export function renderPerformanceLineChart(history, domainFilter = 'geral') {
           beginAtZero: true,
           max: 100,
           grid: { color: chartColors.grid, drawBorder: false },
-          ticks: { color: chartColors.text, padding: 10 }
+          ticks: { color: chartColors.text, padding: 10 },
         },
         x: {
           grid: { display: false },
-          ticks: { color: chartColors.text, padding: 10 }
-        }
+          ticks: { color: chartColors.text, padding: 10 },
+        },
       },
       plugins: {
         legend: { display: false },
@@ -511,17 +522,16 @@ export function renderPerformanceLineChart(history, domainFilter = 'geral') {
           padding: 12,
           displayColors: false,
           callbacks: {
-            label: function(context) {
+            label: function (context) {
               return `Nota: ${context.parsed.y}%`;
-            }
-          }
-        }
+            },
+          },
+        },
       },
       interaction: {
-        mode: 'index',
+        mode: "index",
         intersect: false,
-      }
-    }
+      },
+    },
   });
 }
-

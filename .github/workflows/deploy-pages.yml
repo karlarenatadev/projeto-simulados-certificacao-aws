@@ -64,6 +64,9 @@ jobs:
 
           test -f public/manifest.json
           test -f public/sw.js
+          test -f public/dicas-prova.html
+          test -f public/data/exam-tips.json
+          node scripts/validation/validate_pwa_build.mjs
 
           echo "Artifact validation passed."
 

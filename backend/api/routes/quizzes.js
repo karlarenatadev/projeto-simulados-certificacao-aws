@@ -55,6 +55,7 @@ router.post('/start', requireAuth, async (req, res, next) => {
       limit: num_questions,
       offset: 0,
       canonicalOnly: true,
+      approvedOnly: true,
     });
 
     if (questions.length === 0) {

@@ -3,18 +3,22 @@ export const translations = {
     sidebar_exam_tips: "Dicas de Prova",
     exam_tips_title: "Dicas de Prova",
     exam_tips_kicker: "Revisão rápida",
-    exam_tips_subtitle: "Reconheça pistas, diferencie serviços e revise conceitos importantes para o exame.",
+    exam_tips_subtitle:
+      "Reconheça pistas, diferencie serviços e revise conceitos importantes para o exame.",
     exam_tips_search_label: "Buscar serviço, conceito ou palavra-chave",
-    exam_tips_search_placeholder: "Buscar serviço, conceito ou palavra-chave...",
+    exam_tips_search_placeholder:
+      "Buscar serviço, conceito ou palavra-chave...",
     exam_tips_certification: "Certificação",
     exam_tips_clear: "Limpar filtros",
     review_recommended_exam_tips: "Revisar dicas recomendadas",
     // Labs
     domain_filter: "Domínio:",
     aws_labs: "Laboratórios AWS",
-    aws_labs_desc: "Pratique AWS com laboratórios hands-on e ambientes guiados.",
+    aws_labs_desc:
+      "Pratique AWS com laboratórios hands-on e ambientes guiados.",
     labs_hero_title: "Laboratórios AWS",
-    labs_hero_desc: "Pratique os serviços e conceitos da AWS em ambientes hands-on. Os laboratórios são realizados no AWS Skill Builder. O Cloud Academy organiza recomendações de prática de acordo com sua certificação e seus estudos.",
+    labs_hero_desc:
+      "Pratique os serviços e conceitos da AWS em ambientes hands-on. Os laboratórios são realizados no AWS Skill Builder. O Cloud Academy organiza recomendações de prática de acordo com sua certificação e seus estudos.",
     cert_filter: "Certificação:",
     all: "Todas/Todos",
     service_filter: "Serviço:",
@@ -310,13 +314,16 @@ export const translations = {
     practice_makes_perfect: "💡 A prática leva à perfeição",
     quiz_singular: "",
     quiz_plural: "s",
-    
+
     // StudyNow Recommendations
     "studyNow.loading": "Analisando dados...",
-    "studyNow.empty_state_no_history": "Complete seu primeiro simulado para receber recomendações",
-    "studyNow.empty_state_doing_great": "Mandando bem! Nenhum domínio fraco detectado.",
+    "studyNow.empty_state_no_history":
+      "Complete seu primeiro simulado para receber recomendações",
+    "studyNow.empty_state_doing_great":
+      "Mandando bem! Nenhum domínio fraco detectado.",
     "studyNow.review_domain": "Revisar {{domain}}",
-    "studyNow.review_domain_desc": "Seu desempenho está abaixo de {{threshold}}%",
+    "studyNow.review_domain_desc":
+      "Seu desempenho está abaixo de {{threshold}}%",
     "studyNow.start_quiz_action": "Estudar Pontos Fracos",
     "studyNow.study_docs_action": "Estudar Documentação",
     "studyNow.diagnostic_title": "Baseado no seu último Raio-X",
@@ -332,13 +339,16 @@ export const translations = {
     study_insight_subtitle: "Uma leitura rápida do seu momento de estudo.",
     next_recommendation: "Próxima recomendação",
     next_recommendation_subtitle: "A melhor ação para continuar agora.",
-    "cases_diagnostic_title": "Recomendado pelo seu Raio-X",
-    "cases_diagnostic_services": "Cases selecionados pelos serviços identificados no diagnóstico.",
-    "cases_diagnostic_fallback": "Não encontramos um Case específico para esse ponto. Exibindo Cases disponíveis para sua certificação."
-    ,"labs_diagnostic_title": "Recomendado com base no seu Raio-X"
-    ,"labs_diagnostic_service": "Foco em: {{service}}"
-    ,"labs_diagnostic_fallback": "Não há um Lab específico para este serviço. Exibindo o conteúdo disponível desta certificação."
-    ,nav_home: "Início",
+    cases_diagnostic_title: "Recomendado pelo seu Raio-X",
+    cases_diagnostic_services:
+      "Cases selecionados pelos serviços identificados no diagnóstico.",
+    cases_diagnostic_fallback:
+      "Não encontramos um Case específico para esse ponto. Exibindo Cases disponíveis para sua certificação.",
+    labs_diagnostic_title: "Recomendado com base no seu Raio-X",
+    labs_diagnostic_service: "Foco em: {{service}}",
+    labs_diagnostic_fallback:
+      "Não há um Lab específico para este serviço. Exibindo o conteúdo disponível desta certificação.",
+    nav_home: "Início",
     nav_simulations: "Simulados",
     nav_journey: "Jornada",
     nav_diagnostic: "Raio-X",
@@ -372,7 +382,8 @@ export const translations = {
     admin_validation_pending: "Questões aguardando validação",
     admin_validation_identity: "Identificação do Validador",
     admin_validation_auth_waiting: "Status: Aguardando autenticação...",
-    admin_validation_restrict: "Acesso restrito a usuários com role VALIDATOR ou ADMIN.",
+    admin_validation_restrict:
+      "Acesso restrito a usuários com role VALIDATOR ou ADMIN.",
     admin_validation_approve: "Aprovar",
     admin_validation_reject: "Rejeitar",
     admin_validation_pending_count: "Pendentes",
@@ -404,7 +415,8 @@ export const translations = {
     admin_users_reject: "Rejeitar",
     admin_users_updated: "Usuário atualizado.",
     admin_users_update_error: "Não foi possível atualizar o usuário.",
-    admin_users_last_admin_error: "O último administrador ativo não pode ser desativado ou rebaixado.",
+    admin_users_last_admin_error:
+      "O último administrador ativo não pode ser desativado ou rebaixado.",
     admin_users_request_updated: "Solicitação atualizada.",
     admin_users_request_error: "Não foi possível atualizar a solicitação.",
     admin_users_request_date: "Solicitada em",
@@ -435,12 +447,16 @@ export const translations = {
     confirm: "Confirmar",
     common_login_error: "Falha no login.",
     common_api_error: "Não foi possível conectar à API.",
-    validation_session_required: "O painel de validação requer uma sessão autenticada e conexão com a API.",
-    validation_role_denied: "Acesso negado. Sua role ({{role}}) não permite validação.",
+    validation_session_required:
+      "O painel de validação requer uma sessão autenticada e conexão com a API.",
+    validation_role_denied:
+      "Acesso negado. Sua role ({{role}}) não permite validação.",
     validation_authenticated_as: "Autenticado como",
     validation_api_required: "O painel de validação requer conexão com a API.",
-    validation_rejection_min: "O motivo da rejeição deve ter ao menos 10 caracteres.",
-    common_rejection_reason: "O motivo da rejeição deve ter ao menos 10 caracteres.",
+    validation_rejection_min:
+      "O motivo da rejeição deve ter ao menos 10 caracteres.",
+    common_rejection_reason:
+      "O motivo da rejeição deve ter ao menos 10 caracteres.",
     profile_title: "Perfil",
     profile_statistics: "Estatísticas",
     profile_certifications: "Certificações",
@@ -462,15 +478,19 @@ export const translations = {
     settings_save: "Salvar configurações",
     settings_saved: "Configurações salvas!",
     settings_request_empty: "Nenhuma solicitação enviada.",
-    settings_request_offline: "Solicitações disponíveis somente com o backend ativo.",
+    settings_request_offline:
+      "Solicitações disponíveis somente com o backend ativo.",
     settings_request_sent: "Solicitação enviada: PENDING",
     settings_request_error: "Não foi possível enviar a solicitação.",
-    settings_clear_history_confirm: "Tem certeza? O histórico de simulados será removido (XP e conquistas são mantidos).",
+    settings_clear_history_confirm:
+      "Tem certeza? O histórico de simulados será removido (XP e conquistas são mantidos).",
     settings_clear_history_done: "Histórico de simulados removido.",
-    settings_reset_confirm: "Tem certeza? Todo o progresso (histórico, XP, sequência e conquistas) será removido permanentemente.",
+    settings_reset_confirm:
+      "Tem certeza? Todo o progresso (histórico, XP, sequência e conquistas) será removido permanentemente.",
     settings_reset_done: "Progresso resetado com sucesso.",
     resources_title: "Recursos de estudo",
-    resources_subtitle: "Materiais oficiais e recomendações para sua preparação.",
+    resources_subtitle:
+      "Materiais oficiais e recomendações para sua preparação.",
     diagnostic_title: "Raio-X da Nuvem",
     diagnostic_start: "Iniciar diagnóstico",
     flashcards_definition: "Clique para ver a definição",
@@ -491,30 +511,38 @@ export const translations = {
     simulator_constraints: "Restrições",
     simulator_no_questions: "Nenhuma pergunta adicional disponível.",
     simulator_hint: "Dica:",
-    simulator_select_service: "Selecione pelo menos um serviço para a sua arquitetura.",
+    simulator_select_service:
+      "Selecione pelo menos um serviço para a sua arquitetura.",
     simulator_evaluation_label: "Avaliação:",
     simulator_passed: "Aprovado",
     simulator_review: "Revisar",
     simulator_missing: "Faltou incluir:",
     simulator_extra: "Incluído a mais (avalie se é necessário):",
     simulator_reference: "Gabarito de Arquitetura",
-    simulator_resume: "Você tem um caso prático em andamento. Deseja retomá-lo?",
+    simulator_resume:
+      "Você tem um caso prático em andamento. Deseja retomá-lo?",
     simulator_unavailable: "Simulador indisponível:",
     simulator_load_error: "Erro ao carregar simulação:",
     simulator_no_explanation: "Sem explicação detalhada disponível.",
-    simulator_passed_feedback: "Parabéns, sua arquitetura está bem aderente aos requisitos do caso!",
-    simulator_review_feedback: "Atenção: faltaram serviços cruciais para atingir todos os requisitos. Revise o gabarito.",
+    simulator_passed_feedback:
+      "Parabéns, sua arquitetura está bem aderente aos requisitos do caso!",
+    simulator_review_feedback:
+      "Atenção: faltaram serviços cruciais para atingir todos os requisitos. Revise o gabarito.",
     simulator_hub_title: "Simulador Interativo de Arquitetura",
-    simulator_hub_subtitle: "Aprenda na prática projetando soluções reais para desafios da nuvem AWS.",
-    simulator_interview_description: "Faça perguntas para coletar mais requisitos e restrições antes de desenhar a solução.",
-    simulator_design_description: "Selecione os serviços que farão parte da sua solução.",
+    simulator_hub_subtitle:
+      "Aprenda na prática projetando soluções reais para desafios da nuvem AWS.",
+    simulator_interview_description:
+      "Faça perguntas para coletar mais requisitos e restrições antes de desenhar a solução.",
+    simulator_design_description:
+      "Selecione os serviços que farão parte da sua solução.",
     simulator_client_greeting: "Olá! Como posso ajudar a detalhar o projeto?",
     simulator_start: "Iniciar Simulação",
     simulator_coming_soon: "Em breve",
     simulator_catalog_error: "Não foi possível carregar os Cases agora.",
     simulator_evaluation_error: "Erro ao avaliar a arquitetura.",
     home_guide_title: "GUIA DA PLATAFORMA",
-    home_guide_subtitle: "O que você pode fazer. Escolha como quer continuar seus estudos.",
+    home_guide_subtitle:
+      "O que você pode fazer. Escolha como quer continuar seus estudos.",
     home_studies: "Estudos",
     home_practice: "Prática",
     home_resources: "Recursos",
@@ -523,7 +551,8 @@ export const translations = {
     home_activity: "Atividade",
     home_quick_access: "ACESSO RÁPIDO",
     home_welcome: "Bem-vindo à Cloud Academy A3!",
-    home_no_simulation: "Você ainda não realizou nenhum simulado. Comece agora e acompanhe sua evolução para as certificações AWS.",
+    home_no_simulation:
+      "Você ainda não realizou nenhum simulado. Comece agora e acompanhe sua evolução para as certificações AWS.",
     home_first_simulation: "Iniciar primeiro simulado",
     home_accuracy: "de acerto",
     home_average: "média",
@@ -561,10 +590,12 @@ export const translations = {
     ui_continue: "Continuar",
     ui_close: "Fechar",
     cases_title: "Aprenda Arquitetura AWS com Casos Reais",
-    diagnostic_flashcards_subtitle: "Filtrando apenas os seus pontos fracos identificados no Diagnóstico.",
+    diagnostic_flashcards_subtitle:
+      "Filtrando apenas os seus pontos fracos identificados no Diagnóstico.",
     auth_loading: "Autenticando...",
     auth_email_required: "Informe seu email corporativo.",
-    auth_corporate_email: "Acesso restrito a emails @a3data.com.br ou @a3data.com.",
+    auth_corporate_email:
+      "Acesso restrito a emails @a3data.com.br ou @a3data.com.",
     resume_session_title: "Sessão ativa encontrada",
     resume_session_confirm: "Retomar",
     resume_session_cancel: "Descartar",
@@ -591,7 +622,8 @@ export const translations = {
     sidebar_exam_tips: "Exam Tips",
     exam_tips_title: "Exam Tips",
     exam_tips_kicker: "Quick review",
-    exam_tips_subtitle: "Recognize question clues, distinguish AWS services, and review important exam concepts.",
+    exam_tips_subtitle:
+      "Recognize question clues, distinguish AWS services, and review important exam concepts.",
     exam_tips_search_label: "Search service, concept, or keyword",
     exam_tips_search_placeholder: "Search service, concept, or keyword...",
     exam_tips_certification: "Certification",
@@ -602,7 +634,8 @@ export const translations = {
     aws_labs: "AWS Labs",
     aws_labs_desc: "Practice AWS with hands-on labs and guided environments.",
     labs_hero_title: "AWS Labs",
-    labs_hero_desc: "Practice AWS services and concepts in hands-on environments. Labs are hosted on AWS Skill Builder. Cloud Academy organizes practice recommendations according to your certification and studies.",
+    labs_hero_desc:
+      "Practice AWS services and concepts in hands-on environments. Labs are hosted on AWS Skill Builder. Cloud Academy organizes practice recommendations according to your certification and studies.",
     cert_filter: "Certification:",
     all: "All",
     service_filter: "Service:",
@@ -892,8 +925,10 @@ export const translations = {
 
     // StudyNow Recommendations
     "studyNow.loading": "Analyzing data...",
-    "studyNow.empty_state_no_history": "Complete your first simulation to receive recommendations",
-    "studyNow.empty_state_doing_great": "Doing great! No weak domains detected.",
+    "studyNow.empty_state_no_history":
+      "Complete your first simulation to receive recommendations",
+    "studyNow.empty_state_doing_great":
+      "Doing great! No weak domains detected.",
     "studyNow.review_domain": "Review {{domain}}",
     "studyNow.review_domain_desc": "Your performance is below {{threshold}}%",
     "studyNow.start_quiz_action": "Study Weak Points",
@@ -911,13 +946,16 @@ export const translations = {
     study_insight_subtitle: "A quick read of your current study moment.",
     next_recommendation: "Next recommendation",
     next_recommendation_subtitle: "The best action to take next.",
-    "cases_diagnostic_title": "Recommended by your X-Ray",
-    "cases_diagnostic_services": "Cases selected from the services identified by your diagnosis.",
-    "cases_diagnostic_fallback": "No specific Case was found for this point. Showing Cases available for your certification."
-    ,"labs_diagnostic_title": "Recommended based on your X-Ray"
-    ,"labs_diagnostic_service": "Focus: {{service}}"
-    ,"labs_diagnostic_fallback": "There is no Lab specific to this service. Showing the content available for this certification."
-    ,nav_home: "Home",
+    cases_diagnostic_title: "Recommended by your X-Ray",
+    cases_diagnostic_services:
+      "Cases selected from the services identified by your diagnosis.",
+    cases_diagnostic_fallback:
+      "No specific Case was found for this point. Showing Cases available for your certification.",
+    labs_diagnostic_title: "Recommended based on your X-Ray",
+    labs_diagnostic_service: "Focus: {{service}}",
+    labs_diagnostic_fallback:
+      "There is no Lab specific to this service. Showing the content available for this certification.",
+    nav_home: "Home",
     nav_simulations: "Simulations",
     nav_journey: "Journey",
     nav_diagnostic: "X-Ray",
@@ -951,7 +989,8 @@ export const translations = {
     admin_validation_pending: "Questions awaiting validation",
     admin_validation_identity: "Validator identification",
     admin_validation_auth_waiting: "Status: Waiting for authentication...",
-    admin_validation_restrict: "Restricted to users with VALIDATOR or ADMIN role.",
+    admin_validation_restrict:
+      "Restricted to users with VALIDATOR or ADMIN role.",
     admin_validation_approve: "Approve",
     admin_validation_reject: "Reject",
     admin_validation_pending_count: "Pending",
@@ -983,7 +1022,8 @@ export const translations = {
     admin_users_reject: "Reject",
     admin_users_updated: "User updated.",
     admin_users_update_error: "Could not update the user.",
-    admin_users_last_admin_error: "The last active administrator cannot be disabled or demoted.",
+    admin_users_last_admin_error:
+      "The last active administrator cannot be disabled or demoted.",
     admin_users_request_updated: "Request updated.",
     admin_users_request_error: "Could not update the request.",
     admin_users_request_date: "Requested on",
@@ -1014,12 +1054,16 @@ export const translations = {
     confirm: "Confirm",
     common_login_error: "Login failed.",
     common_api_error: "Could not connect to the API.",
-    validation_session_required: "The validation panel requires an authenticated session and API connection.",
-    validation_role_denied: "Access denied. Your role ({{role}}) cannot validate questions.",
+    validation_session_required:
+      "The validation panel requires an authenticated session and API connection.",
+    validation_role_denied:
+      "Access denied. Your role ({{role}}) cannot validate questions.",
     validation_authenticated_as: "Authenticated as",
     validation_api_required: "The validation panel requires an API connection.",
-    validation_rejection_min: "The rejection reason must be at least 10 characters.",
-    common_rejection_reason: "The rejection reason must have at least 10 characters.",
+    validation_rejection_min:
+      "The rejection reason must be at least 10 characters.",
+    common_rejection_reason:
+      "The rejection reason must have at least 10 characters.",
     profile_title: "Profile",
     profile_statistics: "Statistics",
     profile_certifications: "Certifications",
@@ -1041,15 +1085,19 @@ export const translations = {
     settings_save: "Save settings",
     settings_saved: "Settings saved!",
     settings_request_empty: "No request submitted.",
-    settings_request_offline: "Requests are available only with the backend enabled.",
+    settings_request_offline:
+      "Requests are available only with the backend enabled.",
     settings_request_sent: "Request submitted: PENDING",
     settings_request_error: "Could not submit the request.",
-    settings_clear_history_confirm: "Are you sure? Simulation history will be removed (XP and achievements are kept).",
+    settings_clear_history_confirm:
+      "Are you sure? Simulation history will be removed (XP and achievements are kept).",
     settings_clear_history_done: "Simulation history removed.",
-    settings_reset_confirm: "Are you sure? All progress (history, XP, streak and achievements) will be permanently removed.",
+    settings_reset_confirm:
+      "Are you sure? All progress (history, XP, streak and achievements) will be permanently removed.",
     settings_reset_done: "Progress reset successfully.",
     resources_title: "Study resources",
-    resources_subtitle: "Official materials and recommendations for your preparation.",
+    resources_subtitle:
+      "Official materials and recommendations for your preparation.",
     diagnostic_title: "Cloud X-Ray",
     diagnostic_start: "Start diagnosis",
     flashcards_definition: "Click to see the definition",
@@ -1070,7 +1118,8 @@ export const translations = {
     simulator_constraints: "Constraints",
     simulator_no_questions: "No additional questions available.",
     simulator_hint: "Hint:",
-    simulator_select_service: "Select at least one service for your architecture.",
+    simulator_select_service:
+      "Select at least one service for your architecture.",
     simulator_evaluation_label: "Evaluation:",
     simulator_passed: "Passed",
     simulator_review: "Review",
@@ -1081,19 +1130,25 @@ export const translations = {
     simulator_unavailable: "Simulator unavailable:",
     simulator_load_error: "Error loading simulation:",
     simulator_no_explanation: "No detailed explanation available.",
-    simulator_passed_feedback: "Congratulations, your architecture matches the case requirements well!",
-    simulator_review_feedback: "Attention: some crucial services are missing. Review the reference solution.",
+    simulator_passed_feedback:
+      "Congratulations, your architecture matches the case requirements well!",
+    simulator_review_feedback:
+      "Attention: some crucial services are missing. Review the reference solution.",
     simulator_hub_title: "Interactive Architecture Simulator",
-    simulator_hub_subtitle: "Learn by designing real solutions for cloud challenges on AWS.",
-    simulator_interview_description: "Ask questions to gather more requirements and constraints before designing the solution.",
-    simulator_design_description: "Select the services that will be part of your solution.",
+    simulator_hub_subtitle:
+      "Learn by designing real solutions for cloud challenges on AWS.",
+    simulator_interview_description:
+      "Ask questions to gather more requirements and constraints before designing the solution.",
+    simulator_design_description:
+      "Select the services that will be part of your solution.",
     simulator_client_greeting: "Hello! How can I help detail the project?",
     simulator_start: "Start Simulation",
     simulator_coming_soon: "Coming soon",
     simulator_catalog_error: "Unable to load simulator cases right now.",
     simulator_evaluation_error: "Error evaluating the architecture.",
     home_guide_title: "PLATFORM GUIDE",
-    home_guide_subtitle: "What you can do. Choose how you want to continue studying.",
+    home_guide_subtitle:
+      "What you can do. Choose how you want to continue studying.",
     home_studies: "Study",
     home_practice: "Practice",
     home_resources: "Resources",
@@ -1102,7 +1157,8 @@ export const translations = {
     home_activity: "Activity",
     home_quick_access: "QUICK ACCESS",
     home_welcome: "Welcome to Cloud Academy A3!",
-    home_no_simulation: "You have not completed a simulation yet. Start now and track your progress toward AWS certifications.",
+    home_no_simulation:
+      "You have not completed a simulation yet. Start now and track your progress toward AWS certifications.",
     home_first_simulation: "Start your first simulation",
     home_accuracy: "accuracy",
     home_average: "average",
@@ -1140,10 +1196,12 @@ export const translations = {
     ui_continue: "Continue",
     ui_close: "Close",
     cases_title: "Learn AWS Architecture with Real Cases",
-    diagnostic_flashcards_subtitle: "Showing only the weak points identified in your Diagnostic.",
+    diagnostic_flashcards_subtitle:
+      "Showing only the weak points identified in your Diagnostic.",
     auth_loading: "Authenticating...",
     auth_email_required: "Enter your corporate email.",
-    auth_corporate_email: "Access is restricted to @a3data.com.br or @a3data.com emails.",
+    auth_corporate_email:
+      "Access is restricted to @a3data.com.br or @a3data.com emails.",
     resume_session_title: "Active session found",
     resume_session_confirm: "Resume",
     resume_session_cancel: "Discard",

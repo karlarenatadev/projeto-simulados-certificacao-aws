@@ -62,12 +62,7 @@ function allocateQuotas(groups, requestedQuantity) {
 export function selectDiagnosticQuestions(
   questions,
   domainsConfig,
-  {
-    certId,
-    language = "pt",
-    quantity = 12,
-    random = Math.random,
-  } = {},
+  { certId, language = "pt", quantity = 12, random = Math.random } = {},
 ) {
   if (!Array.isArray(questions) || !Array.isArray(domainsConfig)) return [];
 
