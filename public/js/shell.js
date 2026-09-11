@@ -24,7 +24,7 @@ import {
   getCurrentLanguage,
   setCurrentLanguage,
 } from "./core/languageManager.js";
-import { resolveAppUrl } from "./core/navigation.js";
+import { resolveAppLinks, resolveAppUrl } from "./core/navigation.js";
 import { t } from "./i18n/useTranslation.js";
 
 // 🔹 CONSTANTES 🔹──────────────────────────────────────────────────────────────
@@ -122,13 +122,14 @@ export const SIDEBAR_ITEMS = [
   },
   {
     id: "sidebar-btn-exam-tips",
-    label: "Dicas de Prova",
+    label: "Dicas",
     icon: "fa-solid fa-bullseye",
     href: "./dicas-prova.html",
     activePaths: ["/dicas-prova.html"],
     roles: ["*"],
     i18n: "sidebar_exam_tips",
-    title: "Dicas de Prova",
+    accessibleI18n: "sidebar_exam_tips_description",
+    title: "Dicas de prova e certificação",
   },
   {
     id: "sidebar-btn-cases",
@@ -728,8 +729,15 @@ function _createSidebarItem(item) {
 
   el.id = item.id;
   const itemLabel = _sidebarLabel(item);
-  el.title = itemLabel;
-  el.setAttribute("aria-label", itemLabel);
+  const accessibleLabel = item.accessibleI18n
+    ? t(item.accessibleI18n, getCurrentLanguage())
+    : itemLabel;
+  el.title = accessibleLabel;
+  el.setAttribute("aria-label", accessibleLabel);
+  if (item.accessibleI18n) {
+    el.setAttribute("data-i18n-title", item.accessibleI18n);
+    el.setAttribute("data-i18n-aria-label", item.accessibleI18n);
+  }
 
   let classes = "left-sidebar-item";
   if (item.primary) classes += " left-sidebar-item-primary";
@@ -799,6 +807,7 @@ function _sidebarLabel(item) {
     "sidebar-btn-journey": "nav_journey",
     "sidebar-btn-diagnostic": "nav_diagnostic",
     "sidebar-btn-flashcards": "nav_flashcards",
+    "sidebar-btn-exam-tips": "sidebar_exam_tips",
     "sidebar-btn-cases": "nav_cases",
     "sidebar-btn-labs": "nav_labs",
     "sidebar-btn-resources": "nav_resources",
@@ -967,6 +976,7 @@ export function initLeftSidebarToggleShell() {
 export async function initShell(user) {
   initThemeShell();
   syncLanguageButtonShell();
+  resolveAppLinks();
   initPWAInstallShell();
   initLeftSidebarToggleShell();
 

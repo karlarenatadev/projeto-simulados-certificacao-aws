@@ -646,6 +646,19 @@ html.dark #screen-results {
   transform: translateX(1px) scale(0.99) !important;
 }
 
+.lh-feature-item-static,
+.lh-feature-item-static:hover {
+  cursor: default;
+  background: var(--bg-card);
+  border-color: var(--border-theme);
+  transform: none !important;
+}
+
+.lh-feat-warning {
+  background: var(--a3-surface-danger);
+  color: var(--a3-danger);
+}
+
 /* HUB — quick actions active e focus */
 .lh-quick-btn {
   transition:

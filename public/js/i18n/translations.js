@@ -1,6 +1,7 @@
 export const translations = {
   pt: {
-    sidebar_exam_tips: "Dicas de Prova",
+    sidebar_exam_tips: "Dicas",
+    sidebar_exam_tips_description: "Dicas de prova e certificação",
     exam_tips_title: "Dicas de Prova",
     exam_tips_kicker: "Revisão rápida",
     exam_tips_subtitle:
@@ -560,8 +561,50 @@ export const translations = {
     home_last_simulation: "Último simulado",
     rejected: "REPROVADO",
     home_simulate_now: "Simular agora",
+    home_simulate_now_accessible: "Abrir Simulados e iniciar uma nova sessão",
     home_my_journey: "Minha Jornada",
+    home_my_journey_accessible: "Abrir minha Jornada de estudos",
     home_diagnostic: "Diagnóstico",
+    home_diagnostic_accessible: "Abrir o Raio-X de conhecimento",
+    home_guide_simulations_desc:
+      "Pratique com questões por certificação, domínio e dificuldade.",
+    home_guide_simulations_accessible: "Abrir Simulados",
+    home_guide_journey_desc:
+      "Acompanhe trilhas, etapas e atividades da sua certificação.",
+    home_guide_journey_accessible: "Abrir minha Jornada de estudos",
+    home_guide_diagnostic_title: "Raio-X / Diagnóstico",
+    home_guide_diagnostic_desc:
+      "Mapeie seus pontos fortes e os domínios que precisam de revisão.",
+    home_guide_diagnostic_accessible: "Abrir o Raio-X de conhecimento",
+    home_guide_sprint_desc:
+      "Siga um plano concentrado de 14 dias para a certificação selecionada.",
+    home_guide_sprint_accessible: "Abrir Sprint de estudos",
+    home_guide_flashcards_desc:
+      "Revise conceitos e questões marcadas no seu deck.",
+    home_guide_flashcards_accessible: "Abrir Flashcards",
+    home_guide_tips_desc:
+      "Consulte pistas e comparações para provas e certificações.",
+    home_guide_tips_accessible: "Abrir Dicas de prova e certificação",
+    home_guide_cases_desc:
+      "Resolva cases e monte arquiteturas para cenários AWS.",
+    home_guide_cases_accessible: "Abrir Prática de arquitetura",
+    home_guide_labs_desc:
+      "Pratique AWS com laboratórios hands-on e ambientes guiados.",
+    home_guide_labs_accessible: "Abrir Labs",
+    home_guide_resources_desc:
+      "Acesse glossários, documentação e materiais oficiais.",
+    home_guide_resources_accessible: "Abrir Recursos de estudo",
+    home_guide_pomodoro_title: "Pomodoro",
+    home_guide_pomodoro_desc:
+      "Abra a sessão de foco disponível no cabeçalho da plataforma.",
+    home_guide_pomodoro_accessible: "Abrir o temporizador Pomodoro",
+    home_guide_insights_desc:
+      "Veja a recomendação da home baseada na sua atividade de estudo.",
+    home_guide_insights_accessible: "Ir para Insights de estudo",
+    home_guide_mistakes_desc:
+      "As questões erradas ficam disponíveis para prática dentro dos simulados.",
+    home_guide_mistakes_accessible:
+      "Erros: recurso disponível atualmente dentro dos Simulados",
     home_no_quiz: "Nenhum simulado realizado ainda. Que tal começar agora?",
     ui_all: "Todos",
     ui_all_feminine: "Todas",
@@ -619,7 +662,8 @@ export const translations = {
   },
 
   en: {
-    sidebar_exam_tips: "Exam Tips",
+    sidebar_exam_tips: "Tips",
+    sidebar_exam_tips_description: "Exam and certification tips",
     exam_tips_title: "Exam Tips",
     exam_tips_kicker: "Quick review",
     exam_tips_subtitle:
@@ -1166,8 +1210,50 @@ export const translations = {
     home_last_simulation: "Last simulation",
     rejected: "FAILED",
     home_simulate_now: "Simulate now",
+    home_simulate_now_accessible: "Open Simulations and start a new session",
     home_my_journey: "My Journey",
+    home_my_journey_accessible: "Open my study Journey",
     home_diagnostic: "Diagnostic",
+    home_diagnostic_accessible: "Open the knowledge X-Ray",
+    home_guide_simulations_desc:
+      "Practice with questions by certification, domain, and difficulty.",
+    home_guide_simulations_accessible: "Open Simulations",
+    home_guide_journey_desc:
+      "Track the learning paths, stages, and activities for your certification.",
+    home_guide_journey_accessible: "Open my study Journey",
+    home_guide_diagnostic_title: "X-Ray / Diagnostic",
+    home_guide_diagnostic_desc:
+      "Map your strengths and the domains that need review.",
+    home_guide_diagnostic_accessible: "Open the knowledge X-Ray",
+    home_guide_sprint_desc:
+      "Follow a focused 14-day plan for the selected certification.",
+    home_guide_sprint_accessible: "Open Study Sprint",
+    home_guide_flashcards_desc:
+      "Review concepts and questions saved to your deck.",
+    home_guide_flashcards_accessible: "Open Flashcards",
+    home_guide_tips_desc:
+      "Review clues and comparisons for exams and certifications.",
+    home_guide_tips_accessible: "Open exam and certification tips",
+    home_guide_cases_desc:
+      "Solve cases and build architectures for AWS scenarios.",
+    home_guide_cases_accessible: "Open Architecture Practice",
+    home_guide_labs_desc:
+      "Practice AWS with hands-on labs and guided environments.",
+    home_guide_labs_accessible: "Open Labs",
+    home_guide_resources_desc:
+      "Access glossaries, documentation, and official study materials.",
+    home_guide_resources_accessible: "Open Study Resources",
+    home_guide_pomodoro_title: "Pomodoro",
+    home_guide_pomodoro_desc:
+      "Open the focus session available in the platform header.",
+    home_guide_pomodoro_accessible: "Open the Pomodoro timer",
+    home_guide_insights_desc:
+      "View the home recommendation based on your study activity.",
+    home_guide_insights_accessible: "Go to Study Insights",
+    home_guide_mistakes_desc:
+      "Incorrect questions are currently available for practice inside Simulations.",
+    home_guide_mistakes_accessible:
+      "Mistakes: feature currently available inside Simulations",
     home_no_quiz: "No simulation completed yet. How about starting now?",
     ui_all: "All",
     ui_all_feminine: "All",

@@ -19,3 +19,28 @@ export function resolveAppUrl(target, pathname = window.location.pathname) {
   const basePath = getAppBasePath(pathname);
   return `${basePath || ""}/${cleanTarget}`;
 }
+
+/**
+ * Resolve links declarativos da aplicação sem remover o fallback HTML.
+ *
+ * O atributo href continua funcional sem JavaScript. Quando o shell inicia,
+ * data-app-route garante que a mesma navegação respeite o base path usado no
+ * localhost, em páginas aninhadas e no GitHub Pages.
+ *
+ * @param {ParentNode} root
+ * @param {string} pathname
+ * @returns {HTMLAnchorElement[]} Links atualizados.
+ */
+export function resolveAppLinks(
+  root = document,
+  pathname = window.location.pathname,
+) {
+  if (!root?.querySelectorAll) return [];
+
+  const links = Array.from(root.querySelectorAll("a[data-app-route]"));
+  links.forEach((link) => {
+    const target = link.getAttribute("data-app-route");
+    if (target) link.setAttribute("href", resolveAppUrl(target, pathname));
+  });
+  return links;
+}

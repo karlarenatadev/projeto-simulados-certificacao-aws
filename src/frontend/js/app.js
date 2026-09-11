@@ -674,7 +674,6 @@ function wireUIActions() {
   bindClick("btn-language", toggleLanguage);
   bindClick("theme-toggle", toggleDarkMode);
   bindClick("btn-start-quiz", startQuiz);
-  bindClick("btn-start-journey", startJornada);
   bindClick("btn-start-flashcards", startFlashcards);
   bindClick("btn-practice-mistakes", startMistakesQuiz);
   bindClick("btn-clear-mistakes", clearMistakes);
@@ -692,6 +691,7 @@ function wireUIActions() {
   bindClick("btn-flashcards-home", goHome);
   bindClick("btn-clear-history", clearHistory);
   bindClick("btn-start-diagnostic", startDiagnostic);
+  bindClick("home-guide-pomodoro", togglePomodoroWidget);
   bindClick(
     "btn-start-personalized-diagnostic-quiz",
     startPersonalizedDiagnosticQuiz,
@@ -1883,13 +1883,13 @@ function renderLearningHubData() {
   const mistakes = storageManager.getMistakes(certId);
 
   // ── Empty state para primeiro acesso ──
-  const metricsCard = document.querySelector(".lh-metrics-card");
+  const performanceSection = document.getElementById("hub-performance");
   const emptyStateId = "lh-empty-state";
   const existingEmpty = document.getElementById(emptyStateId);
 
   if (safeHistory.length === 0) {
-    // Injeta empty state acima do metrics card se ainda não existe
-    if (metricsCard && !existingEmpty) {
+    // Mantém navegação e guia visíveis; substitui apenas a área de performance.
+    if (performanceSection && !existingEmpty) {
       const emptyEl = document.createElement("div");
       emptyEl.id = emptyStateId;
       emptyEl.className = "lh-empty-state";
@@ -1906,14 +1906,13 @@ function renderLearningHubData() {
           ${t("home_first_simulation", uiState.language)}
         </button>
       `;
-      metricsCard.parentNode.insertBefore(emptyEl, metricsCard);
+      performanceSection.parentNode.insertBefore(emptyEl, performanceSection);
     }
-    // Esconde o metrics card quando não há dados
-    if (metricsCard) metricsCard.classList.add("hidden");
+    if (performanceSection) performanceSection.classList.add("hidden");
   } else {
     // Remove o empty state se já foi realizado algum simulado
     if (existingEmpty) existingEmpty.remove();
-    if (metricsCard) metricsCard.classList.remove("hidden");
+    if (performanceSection) performanceSection.classList.remove("hidden");
   }
 
   // ── Melhor nota ──

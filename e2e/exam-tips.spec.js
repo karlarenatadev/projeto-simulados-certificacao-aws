@@ -15,6 +15,17 @@ test("exam tips filters and language switch work on mobile-sized viewport", asyn
   await expect(
     page.locator("#exam-tips-grid .exam-tip-card").first(),
   ).toBeVisible();
+  await expect(
+    page.locator("#sidebar-btn-exam-tips .left-sidebar-item-label"),
+  ).toHaveText("Dicas");
+  await expect(page.locator("#sidebar-btn-exam-tips")).toHaveAttribute(
+    "aria-label",
+    "Dicas de prova e certificação",
+  );
+  await expect(page.locator("#sidebar-btn-exam-tips")).toHaveAttribute(
+    "title",
+    "Dicas de prova e certificação",
+  );
   await expect(page.locator("#exam-tips-count")).toHaveText("143 dicas");
   await page.locator("#exam-tips-certification").selectOption("SAA-C03");
   await expect(page.locator("#exam-tips-grid .exam-tip-card")).toHaveCount(38);
@@ -40,6 +51,17 @@ test("exam tips filters and language switch work on mobile-sized viewport", asyn
   await toggleLanguage(page);
   await expect(page.locator('h1[data-i18n="exam_tips_title"]')).toHaveText(
     "Exam Tips",
+  );
+  await expect(
+    page.locator("#sidebar-btn-exam-tips .left-sidebar-item-label"),
+  ).toHaveText("Tips");
+  await expect(page.locator("#sidebar-btn-exam-tips")).toHaveAttribute(
+    "aria-label",
+    "Exam and certification tips",
+  );
+  await expect(page.locator("#sidebar-btn-exam-tips")).toHaveAttribute(
+    "title",
+    "Exam and certification tips",
   );
   await expect(page.locator("#exam-tips-search")).toHaveAttribute(
     "placeholder",

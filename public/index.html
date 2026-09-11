@@ -36,7 +36,7 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
 
-    <link rel="stylesheet" href="./css/style.css?v=e5cfa8c0" />
+    <link rel="stylesheet" href="./css/style.css?v=59b4489a" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -305,30 +305,45 @@
                 lugar.
               </p>
               <div class="lh-banner-actions">
-                <button
+                <a
+                  id="home-start-simulation"
+                  href="./simulados.html"
+                  data-app-route="simulados.html"
                   class="a3-btn a3-btn-secondary lh-banner-btn"
-                  onclick="showLearningHubQuickStart()"
                   aria-label="Iniciar simulado agora"
+                  title="Iniciar simulado agora"
+                  data-i18n-aria-label="home_simulate_now_accessible"
+                  data-i18n-title="home_simulate_now_accessible"
                 >
-                  <i class="fa-solid fa-play" aria-hidden="true"></i> Simular
-                  agora
-                </button>
-                <button
-                  id="btn-start-journey"
+                  <i class="fa-solid fa-play" aria-hidden="true"></i>
+                  <span data-i18n="home_simulate_now">Simular agora</span>
+                </a>
+                <a
+                  id="home-start-journey"
+                  href="./jornada.html"
+                  data-app-route="jornada.html"
                   class="a3-btn a3-btn-outline lh-banner-btn"
                   aria-label="Ver minha jornada de aprendizado"
+                  title="Ver minha jornada de aprendizado"
+                  data-i18n-aria-label="home_my_journey_accessible"
+                  data-i18n-title="home_my_journey_accessible"
                 >
-                  <i class="fa-solid fa-route" aria-hidden="true"></i> Minha
-                  Jornada
-                </button>
-                <button
-                  id="btn-start-diagnostic"
+                  <i class="fa-solid fa-route" aria-hidden="true"></i>
+                  <span data-i18n="home_my_journey">Minha Jornada</span>
+                </a>
+                <a
+                  id="home-start-diagnostic"
+                  href="./diagnostico.html"
+                  data-app-route="diagnostico.html"
                   class="a3-btn a3-btn-outline lh-banner-btn"
                   aria-label="Iniciar diagnóstico de conhecimento"
+                  title="Iniciar diagnóstico de conhecimento"
+                  data-i18n-aria-label="home_diagnostic_accessible"
+                  data-i18n-title="home_diagnostic_accessible"
                 >
                   <i class="fa-solid fa-stethoscope" aria-hidden="true"></i>
-                  Diagnóstico
-                </button>
+                  <span data-i18n="home_diagnostic">Diagnóstico</span>
+                </a>
               </div>
             </div>
           </section>
@@ -339,8 +354,10 @@
             <div class="lh-metrics-card">
               <div class="lh-metrics-header mb-2">
                 <div>
-                  <p class="lh-metrics-title">GUIA DA PLATAFORMA</p>
-                  <p class="lh-metrics-sub">
+                  <p class="lh-metrics-title" data-i18n="home_guide_title">
+                    GUIA DA PLATAFORMA
+                  </p>
+                  <p class="lh-metrics-sub" data-i18n="home_guide_subtitle">
                     O que você pode fazer. Escolha como quer continuar seus
                     estudos.
                   </p>
@@ -352,41 +369,119 @@
                 <div class="flex flex-col">
                   <h3
                     class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide"
+                    data-i18n="home_studies"
                   >
                     Estudos
                   </h3>
                   <div class="lh-features-list flex-1">
-                    <button
+                    <a
+                      href="./simulados.html"
+                      data-app-route="simulados.html"
+                      data-guide-feature="simulations"
                       class="lh-feature-item"
-                      onclick="
-                        document
-                          .getElementById('study-now-section')
-                          ?.scrollIntoView({ behavior: 'smooth' })
-                      "
-                      title="Insights de Estudo — recomendações da próxima melhor ação"
+                      aria-label="Abrir Simulados"
+                      title="Abrir Simulados"
+                      data-i18n-aria-label="home_guide_simulations_accessible"
+                      data-i18n-title="home_guide_simulations_accessible"
                     >
-                      <span class="lh-feature-icon lh-feat-pink">
-                        <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+                      <span class="lh-feature-icon lh-feat-blue">
+                        <i class="fa-solid fa-play" aria-hidden="true"></i>
                       </span>
                       <div class="lh-feature-info">
-                        <p class="lh-feature-name" data-i18n="study_insight">
-                          Insights de Estudo
+                        <p class="lh-feature-name" data-i18n="nav_simulations">
+                          Simulados
                         </p>
-                        <p class="lh-feature-desc">
-                          Insights IA e recomendações da próxima melhor ação de
-                          estudo
+                        <p
+                          class="lh-feature-desc"
+                          data-i18n="home_guide_simulations_desc"
+                        >
+                          Pratique com questões por certificação, domínio e
+                          dificuldade.
                         </p>
                       </div>
                       <i
                         class="fa-solid fa-chevron-right lh-feature-arrow"
                         aria-hidden="true"
                       ></i>
-                    </button>
+                    </a>
 
-                    <button
+                    <a
+                      href="./jornada.html"
+                      data-app-route="jornada.html"
+                      data-guide-feature="journey"
                       class="lh-feature-item"
-                      onclick="window.location.href = './study-sprint.html'"
-                      title="Sprint de Estudos — Plano de ação de 14 dias"
+                      aria-label="Abrir minha Jornada de estudos"
+                      title="Abrir minha Jornada de estudos"
+                      data-i18n-aria-label="home_guide_journey_accessible"
+                      data-i18n-title="home_guide_journey_accessible"
+                    >
+                      <span class="lh-feature-icon lh-feat-purple">
+                        <i class="fa-solid fa-route" aria-hidden="true"></i>
+                      </span>
+                      <div class="lh-feature-info">
+                        <p class="lh-feature-name" data-i18n="nav_journey">
+                          Jornada
+                        </p>
+                        <p
+                          class="lh-feature-desc"
+                          data-i18n="home_guide_journey_desc"
+                        >
+                          Acompanhe trilhas, etapas e atividades da sua
+                          certificação.
+                        </p>
+                      </div>
+                      <i
+                        class="fa-solid fa-chevron-right lh-feature-arrow"
+                        aria-hidden="true"
+                      ></i>
+                    </a>
+
+                    <a
+                      href="./diagnostico.html"
+                      data-app-route="diagnostico.html"
+                      data-guide-feature="diagnostic"
+                      class="lh-feature-item"
+                      aria-label="Abrir o Raio-X de conhecimento"
+                      title="Abrir o Raio-X de conhecimento"
+                      data-i18n-aria-label="home_guide_diagnostic_accessible"
+                      data-i18n-title="home_guide_diagnostic_accessible"
+                    >
+                      <span class="lh-feature-icon lh-feat-green">
+                        <i
+                          class="fa-solid fa-stethoscope"
+                          aria-hidden="true"
+                        ></i>
+                      </span>
+                      <div class="lh-feature-info">
+                        <p
+                          class="lh-feature-name"
+                          data-i18n="home_guide_diagnostic_title"
+                        >
+                          Raio-X / Diagnóstico
+                        </p>
+                        <p
+                          class="lh-feature-desc"
+                          data-i18n="home_guide_diagnostic_desc"
+                        >
+                          Mapeie seus pontos fortes e os domínios que precisam
+                          de revisão.
+                        </p>
+                      </div>
+                      <i
+                        class="fa-solid fa-chevron-right lh-feature-arrow"
+                        aria-hidden="true"
+                      ></i>
+                    </a>
+
+                    <a
+                      href="./study-sprint.html"
+                      data-app-route="study-sprint.html"
+                      data-guide-feature="sprint"
+                      class="lh-feature-item"
+                      aria-label="Abrir Sprint de estudos"
+                      title="Abrir Sprint de estudos"
+                      data-i18n-aria-label="home_guide_sprint_accessible"
+                      data-i18n-title="home_guide_sprint_accessible"
                     >
                       <span class="lh-feature-icon lh-feat-purple">
                         <i
@@ -395,65 +490,56 @@
                         ></i>
                       </span>
                       <div class="lh-feature-info">
-                        <p class="lh-feature-name">Sprint de Estudos</p>
-                        <p class="lh-feature-desc">
-                          Seu plano de ação de 14 dias para dominar os tópicos
-                          pendentes
+                        <p class="lh-feature-name" data-i18n="nav_sprint">
+                          Sprint
+                        </p>
+                        <p
+                          class="lh-feature-desc"
+                          data-i18n="home_guide_sprint_desc"
+                        >
+                          Siga um plano concentrado de 14 dias para a
+                          certificação selecionada.
                         </p>
                       </div>
                       <i
                         class="fa-solid fa-chevron-right lh-feature-arrow"
                         aria-hidden="true"
                       ></i>
-                    </button>
+                    </a>
 
-                    <button
+                    <a
+                      href="./dicas-prova.html"
+                      data-app-route="dicas-prova.html"
+                      data-guide-feature="tips"
                       class="lh-feature-item"
-                      onclick="window.location.href = './simulados.html'"
-                      title="Simulados — Questões AWS geradas por IA"
+                      aria-label="Abrir Dicas de prova e certificação"
+                      title="Abrir Dicas de prova e certificação"
+                      data-i18n-aria-label="home_guide_tips_accessible"
+                      data-i18n-title="home_guide_tips_accessible"
                     >
-                      <span class="lh-feature-icon lh-feat-blue">
-                        <i class="fa-solid fa-play" aria-hidden="true"></i>
+                      <span class="lh-feature-icon lh-feat-pink">
+                        <i class="fa-solid fa-bullseye" aria-hidden="true"></i>
                       </span>
                       <div class="lh-feature-info">
-                        <p class="lh-feature-name" data-i18n="simulations">
-                          Simulados
+                        <p
+                          class="lh-feature-name"
+                          data-i18n="sidebar_exam_tips"
+                        >
+                          Dicas
                         </p>
-                        <p class="lh-feature-desc">
-                          Questões oficiais AWS geradas em tempo real pela IA
-                        </p>
-                      </div>
-                      <i
-                        class="fa-solid fa-chevron-right lh-feature-arrow"
-                        aria-hidden="true"
-                      ></i>
-                    </button>
-
-                    <button
-                      class="lh-feature-item"
-                      onclick="
-                        window.location.href = './simulados.html#mistakes'
-                      "
-                      title="Revisão de Erros — Questões que você errou"
-                    >
-                      <span class="lh-feature-icon lh-feat-warning">
-                        <i
-                          class="fa-solid fa-triangle-exclamation"
-                          aria-hidden="true"
-                        ></i>
-                      </span>
-                      <div class="lh-feature-info">
-                        <p class="lh-feature-name">Revisão de Erros</p>
-                        <p class="lh-feature-desc">
-                          Ataque focado nas questões que você errou nos últimos
-                          testes
+                        <p
+                          class="lh-feature-desc"
+                          data-i18n="home_guide_tips_desc"
+                        >
+                          Consulte pistas e comparações para provas e
+                          certificações.
                         </p>
                       </div>
                       <i
                         class="fa-solid fa-chevron-right lh-feature-arrow"
                         aria-hidden="true"
                       ></i>
-                    </button>
+                    </a>
                   </div>
                 </div>
                 <!-- /Coluna: Estudos -->
@@ -462,14 +548,20 @@
                 <div class="flex flex-col">
                   <h3
                     class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide"
+                    data-i18n="home_practice"
                   >
                     Prática
                   </h3>
                   <div class="lh-features-list flex-1">
-                    <button
+                    <a
+                      href="./cases.html"
+                      data-app-route="cases.html"
+                      data-guide-feature="practice"
                       class="lh-feature-item"
-                      onclick="window.location.href = './cases.html'"
-                      title="Cases AWS — Simulação prática de arquitetura"
+                      aria-label="Abrir Prática de arquitetura"
+                      title="Abrir Prática de arquitetura"
+                      data-i18n-aria-label="home_guide_cases_accessible"
+                      data-i18n-title="home_guide_cases_accessible"
                     >
                       <span class="lh-feature-icon lh-feat-cyan">
                         <i
@@ -478,30 +570,41 @@
                         ></i>
                       </span>
                       <div class="lh-feature-info">
-                        <p class="lh-feature-name">Cases AWS</p>
-                        <p class="lh-feature-desc">
-                          Simulação prática de arquitetura e casos de uso reais
+                        <p class="lh-feature-name" data-i18n="nav_cases">
+                          Prática
+                        </p>
+                        <p
+                          class="lh-feature-desc"
+                          data-i18n="home_guide_cases_desc"
+                        >
+                          Resolva cases e monte arquiteturas para cenários AWS.
                         </p>
                       </div>
                       <i
                         class="fa-solid fa-chevron-right lh-feature-arrow"
                         aria-hidden="true"
                       ></i>
-                    </button>
+                    </a>
 
-                    <button
+                    <a
+                      href="./laboratorios.html"
+                      data-app-route="laboratorios.html"
+                      data-guide-feature="labs"
                       class="lh-feature-item"
-                      onclick="window.location.href = './laboratorios.html'"
-                      title="Laboratórios AWS — Prática hands-on"
+                      aria-label="Abrir Labs"
+                      title="Abrir Labs"
+                      data-i18n-aria-label="home_guide_labs_accessible"
+                      data-i18n-title="home_guide_labs_accessible"
                     >
                       <span class="lh-feature-icon lh-feat-green">
                         <i class="fa-solid fa-flask" aria-hidden="true"></i>
                       </span>
                       <div class="lh-feature-info">
-                        <p class="lh-feature-name" data-i18n="aws_labs">
-                          Laboratórios AWS
-                        </p>
-                        <p class="lh-feature-desc" data-i18n="aws_labs_desc">
+                        <p class="lh-feature-name" data-i18n="nav_labs">Labs</p>
+                        <p
+                          class="lh-feature-desc"
+                          data-i18n="home_guide_labs_desc"
+                        >
                           Pratique AWS com laboratórios hands-on e ambientes
                           guiados.
                         </p>
@@ -510,7 +613,66 @@
                         class="fa-solid fa-chevron-right lh-feature-arrow"
                         aria-hidden="true"
                       ></i>
-                    </button>
+                    </a>
+
+                    <a
+                      href="./flashcards.html"
+                      data-app-route="flashcards.html"
+                      data-guide-feature="flashcards"
+                      class="lh-feature-item"
+                      aria-label="Abrir Flashcards"
+                      title="Abrir Flashcards"
+                      data-i18n-aria-label="home_guide_flashcards_accessible"
+                      data-i18n-title="home_guide_flashcards_accessible"
+                    >
+                      <span class="lh-feature-icon lh-feat-purple">
+                        <i
+                          class="fa-solid fa-layer-group"
+                          aria-hidden="true"
+                        ></i>
+                      </span>
+                      <div class="lh-feature-info">
+                        <p class="lh-feature-name" data-i18n="nav_flashcards">
+                          Flashcards
+                        </p>
+                        <p
+                          class="lh-feature-desc"
+                          data-i18n="home_guide_flashcards_desc"
+                        >
+                          Revise conceitos e questões marcadas no seu deck.
+                        </p>
+                      </div>
+                      <i
+                        class="fa-solid fa-chevron-right lh-feature-arrow"
+                        aria-hidden="true"
+                      ></i>
+                    </a>
+
+                    <article
+                      class="lh-feature-item lh-feature-item-static"
+                      data-guide-feature="mistakes"
+                      aria-label="Erros: recurso disponível atualmente dentro dos Simulados"
+                      data-i18n-aria-label="home_guide_mistakes_accessible"
+                    >
+                      <span class="lh-feature-icon lh-feat-warning">
+                        <i
+                          class="fa-solid fa-triangle-exclamation"
+                          aria-hidden="true"
+                        ></i>
+                      </span>
+                      <div class="lh-feature-info">
+                        <p class="lh-feature-name" data-i18n="nav_mistakes">
+                          Erros
+                        </p>
+                        <p
+                          class="lh-feature-desc"
+                          data-i18n="home_guide_mistakes_desc"
+                        >
+                          As questões erradas ficam disponíveis para prática
+                          dentro dos simulados.
+                        </p>
+                      </div>
+                    </article>
                   </div>
                 </div>
                 <!-- /Coluna: Prática -->
@@ -519,23 +681,67 @@
                 <div class="flex flex-col">
                   <h3
                     class="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wide"
+                    data-i18n="home_resources"
                   >
                     Recursos
                   </h3>
                   <div class="lh-features-list flex-1">
-                    <button
+                    <a
+                      href="./resources.html"
+                      data-app-route="resources.html"
+                      data-guide-feature="resources"
                       class="lh-feature-item"
-                      onclick="window.location.href = './resources.html'"
-                      title="Serviços AWS — Glossário e documentação"
+                      aria-label="Abrir Recursos de estudo"
+                      title="Abrir Recursos de estudo"
+                      data-i18n-aria-label="home_guide_resources_accessible"
+                      data-i18n-title="home_guide_resources_accessible"
                     >
                       <span class="lh-feature-icon lh-feat-blue">
                         <i class="fa-brands fa-aws" aria-hidden="true"></i>
                       </span>
                       <div class="lh-feature-info">
-                        <p class="lh-feature-name">Serviços AWS</p>
-                        <p class="lh-feature-desc">
-                          Glossário completo e documentação essencial dos
-                          serviços
+                        <p class="lh-feature-name" data-i18n="nav_resources">
+                          Recursos
+                        </p>
+                        <p
+                          class="lh-feature-desc"
+                          data-i18n="home_guide_resources_desc"
+                        >
+                          Acesse glossários, documentação e materiais oficiais.
+                        </p>
+                      </div>
+                      <i
+                        class="fa-solid fa-chevron-right lh-feature-arrow"
+                        aria-hidden="true"
+                      ></i>
+                    </a>
+
+                    <button
+                      id="home-guide-pomodoro"
+                      type="button"
+                      data-guide-feature="pomodoro"
+                      class="lh-feature-item"
+                      aria-label="Abrir o temporizador Pomodoro"
+                      title="Abrir o temporizador Pomodoro"
+                      data-i18n-aria-label="home_guide_pomodoro_accessible"
+                      data-i18n-title="home_guide_pomodoro_accessible"
+                    >
+                      <span class="lh-feature-icon lh-feat-cyan">
+                        <i class="fa-solid fa-stopwatch" aria-hidden="true"></i>
+                      </span>
+                      <div class="lh-feature-info">
+                        <p
+                          class="lh-feature-name"
+                          data-i18n="home_guide_pomodoro_title"
+                        >
+                          Pomodoro
+                        </p>
+                        <p
+                          class="lh-feature-desc"
+                          data-i18n="home_guide_pomodoro_desc"
+                        >
+                          Abra a sessão de foco disponível no cabeçalho da
+                          plataforma.
                         </p>
                       </div>
                       <i
@@ -545,20 +751,32 @@
                     </button>
 
                     <button
+                      type="button"
+                      data-guide-feature="insights"
                       class="lh-feature-item"
-                      onclick="window.location.href = './flashcards.html'"
-                      title="Flashcards — Revisão por cartões"
+                      aria-label="Ir para Insights de estudo"
+                      title="Ir para Insights de estudo"
+                      data-i18n-aria-label="home_guide_insights_accessible"
+                      data-i18n-title="home_guide_insights_accessible"
+                      onclick="
+                        document
+                          .getElementById('study-now-section')
+                          ?.scrollIntoView({ behavior: 'smooth' })
+                      "
                     >
-                      <span class="lh-feature-icon lh-feat-purple">
-                        <i
-                          class="fa-solid fa-layer-group"
-                          aria-hidden="true"
-                        ></i>
+                      <span class="lh-feature-icon lh-feat-pink">
+                        <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
                       </span>
                       <div class="lh-feature-info">
-                        <p class="lh-feature-name">Flashcards</p>
-                        <p class="lh-feature-desc">
-                          Revisão rápida por cartões para absorção mnemônica
+                        <p class="lh-feature-name" data-i18n="study_insight">
+                          Insights de Estudo
+                        </p>
+                        <p
+                          class="lh-feature-desc"
+                          data-i18n="home_guide_insights_desc"
+                        >
+                          Veja a recomendação da home baseada na sua atividade
+                          de estudo.
                         </p>
                       </div>
                       <i
@@ -1158,9 +1376,9 @@
     </script>
 
     <!-- Módulos da aplicação -->
-    <script src="./js/sprintData.js?v=e5cfa8c0" type="module"></script>
-    <script src="./js/pomodoroManager.js?v=e5cfa8c0" type="module"></script>
-    <script src="./js/app.js?v=e5cfa8c0" type="module"></script>
+    <script src="./js/sprintData.js?v=59b4489a" type="module"></script>
+    <script src="./js/pomodoroManager.js?v=59b4489a" type="module"></script>
+    <script src="./js/app.js?v=59b4489a" type="module"></script>
 
     <!-- Service Worker (PWA) -->
     <script>

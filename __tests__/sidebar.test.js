@@ -6,10 +6,12 @@ import {
   buildSidebar,
   renderUserMenu,
 } from '../src/frontend/js/shell.js';
+import { initializeUI } from '../src/frontend/js/i18n/initUI.js';
 
 describe('role-aware administrative sidebar', () => {
   beforeEach(() => {
     document.body.innerHTML = '<nav id="left-sidebar"><div class="left-sidebar-nav"></div></nav>';
+    document.body.className = '';
     localStorage.clear();
     window.history.replaceState({}, '', '/index.html');
   });
@@ -20,6 +22,42 @@ describe('role-aware administrative sidebar', () => {
     expect(document.getElementById('sidebar-admin-toggle')).toBeNull();
     expect(document.getElementById('sidebar-btn-users')).toBeNull();
     expect(document.getElementById('sidebar-btn-history')).toBeNull();
+  });
+
+  test.each([
+    ['pt', 'Dicas', 'Dicas de prova e certificação'],
+    ['en', 'Tips', 'Exam and certification tips'],
+  ])('renders the Exam Tips item in %s with an accessible description', (
+    language,
+    visualLabel,
+    accessibleLabel,
+  ) => {
+    localStorage.setItem('language', language);
+    buildSidebar({ role: 'STUDENT' });
+
+    const item = document.getElementById('sidebar-btn-exam-tips');
+    expect(item.tagName).toBe('A');
+    expect(item.querySelector('.left-sidebar-item-label').textContent).toBe(visualLabel);
+    expect(item.getAttribute('aria-label')).toBe(accessibleLabel);
+    expect(item.getAttribute('title')).toBe(accessibleLabel);
+
+    document.body.classList.add('sidebar-closed');
+    expect(item.getAttribute('aria-label')).toBe(accessibleLabel);
+  });
+
+  test('updates the Exam Tips labels without rebuilding the sidebar', () => {
+    buildSidebar({ role: 'STUDENT' });
+    const item = document.getElementById('sidebar-btn-exam-tips');
+
+    initializeUI('en');
+    expect(item.querySelector('.left-sidebar-item-label').textContent).toBe('Tips');
+    expect(item.getAttribute('aria-label')).toBe('Exam and certification tips');
+    expect(item.getAttribute('title')).toBe('Exam and certification tips');
+
+    initializeUI('pt');
+    expect(item.querySelector('.left-sidebar-item-label').textContent).toBe('Dicas');
+    expect(item.getAttribute('aria-label')).toBe('Dicas de prova e certificação');
+    expect(item.getAttribute('title')).toBe('Dicas de prova e certificação');
   });
 
   test('VALIDATOR sees Validation and History without the admin group', () => {

@@ -310,6 +310,20 @@ export function initializeUI(language) {
     }
   });
 
+  // Attribute translations remain explicit so controls keep an accessible
+  // description even when their short visual label changes with the language.
+  [
+    ["data-i18n-title", "title"],
+    ["data-i18n-aria-label", "aria-label"],
+  ].forEach(([dataAttribute, targetAttribute]) => {
+    document.querySelectorAll(`[${dataAttribute}]`).forEach((el) => {
+      const key = el.getAttribute(dataAttribute);
+      if (!key) return;
+      const translated = t(key, lang);
+      if (translated) el.setAttribute(targetAttribute, translated);
+    });
+  });
+
   // Standalone Validation pages share the shell but do not load app.js.
   updateElement("#validator-status", t("admin_validation_auth_waiting", lang));
   updateElement(".validator-section h2", t("admin_validation_identity", lang));
