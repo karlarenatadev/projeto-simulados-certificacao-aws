@@ -26,6 +26,7 @@ import {
 } from "./core/languageManager.js";
 import { resolveAppLinks, resolveAppUrl } from "./core/navigation.js";
 import { t } from "./i18n/useTranslation.js";
+import { openPomodoroWidget } from "./pomodoroManager.js";
 
 // 🔹 CONSTANTES 🔹──────────────────────────────────────────────────────────────
 
@@ -58,7 +59,7 @@ export function isSPAPage() {
 
 /**
  * Mapa de itens da sidebar por role.
- * Cada entrada: { id, label, icon, href?, action?, roles, conditional?, activePaths? }
+ * Cada entrada: { id, label, icon, href?, action?, handler?, roles, conditional?, activePaths? }
  *
  * - roles: quais roles veem este item ('*' = todos)
  * - conditional: função opcional que recebe o user e retorna bool
@@ -168,6 +169,16 @@ export const SIDEBAR_ITEMS = [
     activePaths: ["/study-sprint.html"],
     roles: ["*"],
     title: "Sprint de Estudos",
+  },
+  {
+    id: "sidebar-btn-pomodoro",
+    label: "Pomodoro",
+    icon: "fa-solid fa-clock",
+    handler: openPomodoroWidget,
+    roles: ["*"],
+    i18n: "sidebar_pomodoro",
+    accessibleI18n: "sidebar_pomodoro_description",
+    title: "Abrir sessão de foco Pomodoro",
   },
   {
     id: "sidebar-btn-mistakes",
@@ -759,7 +770,9 @@ function _createSidebarItem(item) {
 
   if (_isSidebarItemActive(item)) el.classList.add("is-active");
 
-  if (item.action) {
+  if (item.handler) {
+    el.addEventListener("click", item.handler);
+  } else if (item.action) {
     el.addEventListener("click", () => {
       // Usa isSPAPage() exportada para determinar se estamos no SPA principal.
       // Em páginas secundárias (simulados.html, cases.html, etc.) as funções

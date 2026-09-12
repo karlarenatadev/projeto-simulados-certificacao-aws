@@ -3,6 +3,11 @@ import { sanitizeHTML } from "./utils/sanitize.js";
 import { normalizeCertificationId } from "./utils/certUtils.js";
 
 import { DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD, QuizEngine } from "./quizEngine.js";
+import {
+  getStreamlinedQuizActionState,
+  isLastQuestionInFlow,
+  shouldAutoSubmitQuizAnswer,
+} from "./quizFlow.js";
 import { certificationPaths } from "./data.js";
 import { getDomainDefinition, normalizeDomain } from "./domainTaxonomy.js";
 import { TARGETED_PRACTICE_QUESTION_COUNT } from "./targetedQuestionSelector.js";
@@ -51,6 +56,7 @@ import {
   syncLanguageButtonShell,
 } from "./shell.js";
 import {
+  openPomodoroWidget,
   togglePomodoroWidget,
   togglePomodoro,
   resetPomodoro,
@@ -110,6 +116,7 @@ let uiState = {
   reviewQuestionIds: [],
   reviewQueueIndexes: null,
   reviewQueuePosition: 0,
+  isSubmittingAnswer: false,
 };
 
 let lastRenderedResult = null;
@@ -531,7 +538,8 @@ function setFinishButtonLoading(isLoading) {
   const btnFinish = document.getElementById("btn-finish");
   if (!btnFinish) return;
 
-  btnFinish.disabled = isLoading;
+  const currentAnswer = getCurrentQuestionAnswer();
+  btnFinish.disabled = isLoading || (isStreamlinedQuizFlow() && !currentAnswer);
   btnFinish.innerHTML = isLoading
     ? `<i class="fa-solid fa-spinner fa-spin mr-2"></i>${t("loading", uiState.language)}`
     : `${t("quiz_finish", uiState.language)} <i class="fa-solid fa-flag-checkered ml-2" aria-hidden="true"></i>`;
@@ -648,6 +656,58 @@ function getAnsweredQuestionIds() {
   );
 }
 
+function isStreamlinedQuizFlow() {
+  return (
+    document.getElementById("screen-quiz")?.dataset.quizFlow === "streamlined"
+  );
+}
+
+function getCurrentQuestionAnswer(question = engine.getCurrentQuestion()) {
+  if (!question) return null;
+  const questionId = getQuestionId(question);
+  return (
+    engine.state.answers.find(
+      (answer) => getQuestionId(answer) === questionId,
+    ) || null
+  );
+}
+
+function isCurrentQuestionLastInFlow() {
+  const queue = uiState.reviewQueueIndexes;
+  return isLastQuestionInFlow({
+    currentIndex: engine.state.currentIndex,
+    totalQuestions: engine.state.questions.length,
+    reviewQueuePosition: Array.isArray(queue)
+      ? uiState.reviewQueuePosition
+      : null,
+    reviewQueueLength: Array.isArray(queue) ? queue.length : null,
+  });
+}
+
+function updateStreamlinedQuizActions(isAnswered = false) {
+  if (!isStreamlinedQuizFlow()) return;
+
+  const state = getStreamlinedQuizActionState({
+    isLastQuestion: isCurrentQuestionLastInFlow(),
+    isAnswered,
+    isFinishing: uiState.isFinishing,
+    hasFinished: uiState.hasFinished,
+  });
+  const btnNext = document.getElementById("btn-next");
+  const btnFinish = document.getElementById("btn-finish");
+
+  if (btnNext) {
+    btnNext.classList.toggle("hidden", !state.showNext);
+    btnNext.hidden = !state.showNext;
+    btnNext.disabled = state.nextDisabled;
+  }
+  if (btnFinish) {
+    btnFinish.classList.toggle("hidden", !state.showFinish);
+    btnFinish.hidden = !state.showFinish;
+    btnFinish.disabled = state.finishDisabled;
+  }
+}
+
 /**
  * Suprime temporariamente o efeito hover nos option-cards e botões de ação
  * do quiz após navegação por teclado (Enter). Remove a supressão assim que
@@ -691,7 +751,7 @@ function wireUIActions() {
   bindClick("btn-flashcards-home", goHome);
   bindClick("btn-clear-history", clearHistory);
   bindClick("btn-start-diagnostic", startDiagnostic);
-  bindClick("home-guide-pomodoro", togglePomodoroWidget);
+  bindClick("home-guide-pomodoro", openPomodoroWidget);
   bindClick(
     "btn-start-personalized-diagnostic-quiz",
     startPersonalizedDiagnosticQuiz,
@@ -718,7 +778,8 @@ function wireUIActions() {
     });
   }
 
-  // Atalho de teclado: Enter para "Confirmar Resposta" ou "Próxima"
+  // Atalho legado de confirmação, mantido para telas que não usam o fluxo
+  // simplificado (por exemplo, o Diagnóstico dedicado).
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Enter") return;
 
@@ -1354,12 +1415,11 @@ function loadQuestionUI() {
   if (progressBar) progressBar.style.width = `${progress.percentage}%`;
 
   uiState.tempSelectedAnswer = isMulti ? [] : null;
+  uiState.isSubmittingAnswer = false;
 
   renderOptionsUI(q);
 
-  const existingAnswer = engine.state.answers.find(
-    (answer) => getQuestionId(answer) === getQuestionId(q),
-  );
+  const existingAnswer = getCurrentQuestionAnswer(q);
   if (existingAnswer) {
     uiState.tempSelectedAnswer = Array.isArray(existingAnswer.userSelection)
       ? [...existingAnswer.userSelection]
@@ -1379,15 +1439,36 @@ function loadQuestionUI() {
   const btnNext = document.getElementById("btn-next");
   const btnFinish = document.getElementById("btn-finish");
 
-  if (btnSubmit) {
-    btnSubmit.disabled = !existingAnswer;
-    btnSubmit.classList.remove("hidden");
-  }
   if (explanationBox) explanationBox.classList.add("hidden");
-  if (btnNext) btnNext.classList.add("hidden");
-  if (btnFinish) {
-    btnFinish.classList.remove("hidden");
-    setFinishButtonLoading(false);
+
+  if (isStreamlinedQuizFlow()) {
+    if (btnSubmit) btnSubmit.classList.add("hidden");
+    updateStreamlinedQuizActions(Boolean(existingAnswer));
+
+    if (existingAnswer) {
+      uiState.isSubmittingAnswer = true;
+      renderAnswerFeedback(
+        q,
+        {
+          isCorrect: existingAnswer.isCorrect,
+          correctIndex: q.correct,
+          explanation: q.explanation,
+          referenceUrl: q.reference_url,
+          isFinished: isCurrentQuestionLastInFlow(),
+        },
+        uiState.tempSelectedAnswer,
+      );
+    }
+  } else {
+    if (btnSubmit) {
+      btnSubmit.disabled = !existingAnswer;
+      btnSubmit.classList.remove("hidden");
+    }
+    if (btnNext) btnNext.classList.add("hidden");
+    if (btnFinish) {
+      btnFinish.classList.remove("hidden");
+      setFinishButtonLoading(false);
+    }
   }
   const btnPrev = document.getElementById("btn-prev");
   if (btnPrev) {
@@ -1421,9 +1502,11 @@ function renderOptionsUI(question) {
     card.append(letter, text);
 
     card.onclick = () => {
-      const isAnswered = !document
-        .getElementById("explanation-box")
-        .classList.contains("hidden");
+      const explanationBox = document.getElementById("explanation-box");
+      const isAnswered = isStreamlinedQuizFlow()
+        ? Boolean(getCurrentQuestionAnswer(question)) ||
+          uiState.isSubmittingAnswer
+        : explanationBox && !explanationBox.classList.contains("hidden");
       if (isAnswered) return;
 
       if (!isMulti) {
@@ -1434,7 +1517,6 @@ function renderOptionsUI(question) {
         card.classList.add("a3-option-selected");
 
         uiState.tempSelectedAnswer = idx;
-        document.getElementById("btn-submit").disabled = false;
       } else {
         const isSelected = card.classList.contains("a3-option-selected");
 
@@ -1449,8 +1531,27 @@ function renderOptionsUI(question) {
             uiState.tempSelectedAnswer.push(idx);
           }
         }
-        document.getElementById("btn-submit").disabled =
-          uiState.tempSelectedAnswer.length !== question.correct.length;
+      }
+
+      if (
+        shouldAutoSubmitQuizAnswer({
+          isStreamlined: isStreamlinedQuizFlow(),
+          isAnswered: Boolean(getCurrentQuestionAnswer(question)),
+          isSubmitting: uiState.isSubmittingAnswer,
+          selection: uiState.tempSelectedAnswer,
+          isMultiple: isMulti,
+          requiredSelections: isMulti ? question.correct.length : 1,
+        })
+      ) {
+        submitAnswer();
+        return;
+      }
+
+      const btnSubmit = document.getElementById("btn-submit");
+      if (btnSubmit) {
+        btnSubmit.disabled = isMulti
+          ? uiState.tempSelectedAnswer.length !== question.correct.length
+          : !Number.isInteger(uiState.tempSelectedAnswer);
       }
     };
 
@@ -1460,7 +1561,27 @@ function renderOptionsUI(question) {
 
 function submitAnswer() {
   const question = engine.getCurrentQuestion();
+  if (!question || uiState.isSubmittingAnswer) return null;
+
   const isMulti = Array.isArray(question.correct);
+  const existingAnswer = getCurrentQuestionAnswer(question);
+  const streamlined = isStreamlinedQuizFlow();
+
+  if (
+    streamlined &&
+    !shouldAutoSubmitQuizAnswer({
+      isStreamlined: true,
+      isAnswered: Boolean(existingAnswer),
+      isSubmitting: false,
+      selection: uiState.tempSelectedAnswer,
+      isMultiple: isMulti,
+      requiredSelections: isMulti ? question.correct.length : 1,
+    })
+  ) {
+    return null;
+  }
+
+  uiState.isSubmittingAnswer = true;
   const result = engine.submitAnswer(uiState.tempSelectedAnswer);
 
   dispatchBusinessEvent("AnswerSubmitted", {
@@ -1486,6 +1607,10 @@ function submitAnswer() {
       });
   }
 
+  // A resposta e o estado do motor são persistidos antes de qualquer
+  // transição visual ou encerramento antecipado de uma missão.
+  saveCurrentSession();
+
   if (uiState.currentMode === "mission") {
     clearInterval(uiState.qTimerInterval); // Para o relógio enquanto lê a explicação
 
@@ -1498,7 +1623,7 @@ function submitAnswer() {
           () => handleMissionFailure("Você perdeu todos os corações!"),
           500,
         );
-        return; // Interrompe para não deixar avançar
+        return result; // Interrompe para não deixar avançar
       }
     }
   }
@@ -1506,12 +1631,20 @@ function submitAnswer() {
   const btnSubmit = document.getElementById("btn-submit");
   if (btnSubmit) btnSubmit.classList.add("hidden");
 
+  renderAnswerFeedback(question, result, uiState.tempSelectedAnswer);
+  updateScoreDisplayUI();
+  return result;
+}
+
+function renderAnswerFeedback(question, result, selection) {
+  const isMulti = Array.isArray(question.correct);
+
   document
     .querySelectorAll(".a3-option")
     .forEach((card) => card.classList.add("opacity-70"));
 
   if (!isMulti) {
-    const userSelectedIdx = uiState.tempSelectedAnswer;
+    const userSelectedIdx = selection;
     const correctIdx = question.correct;
     const isCorrect = userSelectedIdx === correctIdx;
 
@@ -1522,7 +1655,7 @@ function submitAnswer() {
       applyStyleToOptionCard(correctIdx, "correct");
     }
   } else {
-    const userSelections = uiState.tempSelectedAnswer;
+    const userSelections = Array.isArray(selection) ? selection : [];
     const correctAnswers = question.correct;
 
     question.options.forEach((_, optionIdx) => {
@@ -1541,56 +1674,53 @@ function submitAnswer() {
   }
 
   const expBox = document.getElementById("explanation-box");
-  if (!expBox) return;
+  if (expBox) {
+    const safeReferenceUrl = getSafeReferenceUrl(result.referenceUrl);
+    const docLink = safeReferenceUrl
+      ? `<a href="${safeReferenceUrl}" target="_blank" class="mt-3 inline-block text-orange-600 font-bold hover:underline">
+              <i class="fa-solid fa-book-open mr-1"></i> ${t("see_official_docs", uiState.language)}
+           </a>`
+      : "";
 
-  const safeReferenceUrl = getSafeReferenceUrl(result.referenceUrl);
-  const docLink = safeReferenceUrl
-    ? `<a href="${safeReferenceUrl}" target="_blank" class="mt-3 inline-block text-orange-600 font-bold hover:underline">
-            <i class="fa-solid fa-book-open mr-1"></i> ${t("see_official_docs", uiState.language)}
-         </a>`
-    : "";
+    const titleEl = expBox.querySelector("h4");
+    const textEl = document.getElementById("explanation-text");
 
-  const titleEl = expBox.querySelector("h4");
-  const textEl = document.getElementById("explanation-text");
+    if (titleEl) {
+      titleEl.innerHTML = result.isCorrect
+        ? `<i class="fa-solid fa-check" aria-hidden="true"></i> ${t("correct", uiState.language)}`
+        : `<i class="fa-solid fa-xmark" aria-hidden="true"></i> ${t("incorrect", uiState.language)}`;
+      titleEl.className = result.isCorrect
+        ? "font-bold text-green-600 mb-3"
+        : "font-bold text-red-600 mb-3";
+    }
 
-  if (titleEl) {
-    titleEl.innerHTML = result.isCorrect
-      ? `<i class="fa-solid fa-check"></i> ${t("correct", uiState.language)}`
-      : `<i class="fa-solid fa-xmark"></i> ${t("incorrect", uiState.language)}`;
-    titleEl.className = result.isCorrect
-      ? "font-bold text-green-600 mb-3"
-      : "font-bold text-red-600 mb-3";
+    let feedbackHTML = "";
+    if (!result.isCorrect) {
+      const userText = isMulti
+        ? selection.map((i) => question.options[i]).join("<br>• ")
+        : question.options[selection];
+      feedbackHTML += `<div class="a3-feedback a3-feedback-error mb-2"><strong>${t("your_answer", uiState.language)}</strong><br>• ${userText}</div>`;
+    }
+    const correctText = isMulti
+      ? question.correct.map((i) => question.options[i]).join("<br>• ")
+      : question.options[result.correctIndex];
+    feedbackHTML += `<div class="a3-feedback a3-feedback-success mb-3"><strong>${t("correct_answer", uiState.language)}</strong><br>• ${correctText}</div>`;
+    feedbackHTML += `<div class="a3-feedback mt-2"><strong>${t("why", uiState.language)}</strong><br>${result.explanation}</div>`;
+
+    if (textEl) textEl.innerHTML = `${feedbackHTML} ${docLink}`;
+    expBox.classList.remove("hidden");
   }
-
-  let feedbackHTML = "";
-  if (!result.isCorrect) {
-    let userText = isMulti
-      ? uiState.tempSelectedAnswer
-          .map((i) => question.options[i])
-          .join("<br>• ")
-      : question.options[uiState.tempSelectedAnswer];
-    feedbackHTML += `<div class="a3-feedback a3-feedback-error mb-2"><strong>${t("your_answer", uiState.language)}</strong><br>• ${userText}</div>`;
-  }
-  let correctText = isMulti
-    ? question.correct.map((i) => question.options[i]).join("<br>• ")
-    : question.options[result.correctIndex];
-  feedbackHTML += `<div class="a3-feedback a3-feedback-success mb-3"><strong>${t("correct_answer", uiState.language)}</strong><br>• ${correctText}</div>`;
-  feedbackHTML += `<div class="a3-feedback mt-2"><strong>${t("why", uiState.language)}</strong><br>${result.explanation}</div>`;
-
-  if (textEl) textEl.innerHTML = `${feedbackHTML} ${docLink}`;
-  expBox.classList.remove("hidden");
 
   const btnNext = document.getElementById("btn-next");
   const btnFinish = document.getElementById("btn-finish");
 
-  if (!result.isFinished) {
+  if (isStreamlinedQuizFlow()) {
+    updateStreamlinedQuizActions(true);
+  } else if (!result.isFinished) {
     if (btnNext) btnNext.classList.remove("hidden");
   } else {
     if (btnFinish) btnFinish.classList.remove("hidden");
   }
-
-  updateScoreDisplayUI();
-  saveCurrentSession();
 }
 
 function applyStyleToOptionCard(optionIdx, styleType) {
@@ -1624,22 +1754,28 @@ function saveCurrentSession() {
 }
 
 function nextQuestion() {
+  if (isStreamlinedQuizFlow() && !getCurrentQuestionAnswer()) return false;
+
   const queue = uiState.reviewQueueIndexes;
+  let advanced = false;
   if (Array.isArray(queue)) {
     if (uiState.reviewQueuePosition < queue.length - 1) {
       uiState.reviewQueuePosition++;
       engine.state.currentIndex = queue[uiState.reviewQueuePosition];
       loadQuestionUI();
       saveCurrentSession();
+      advanced = true;
     }
   } else if (engine.nextQuestion()) {
     loadQuestionUI();
     saveCurrentSession();
+    advanced = true;
   }
 
-  if (uiState.currentMode === "mission") {
+  if (advanced && uiState.currentMode === "mission") {
     startQuestionTimer();
   }
+  return advanced;
 }
 
 function previousQuestion() {
@@ -1732,6 +1868,12 @@ function showReviewSummary() {
 function finishQuiz(force = false) {
   // Trava para evitar execução múltipla por cliques rápidos
   if (uiState.isFinishing || uiState.hasFinished) return;
+  if (
+    isStreamlinedQuizFlow() &&
+    (!isCurrentQuestionLastInFlow() || !getCurrentQuestionAnswer())
+  ) {
+    return;
+  }
   const summary = buildReviewSummary(
     engine.state.questions,
     engine.state.answers,
@@ -3597,6 +3739,7 @@ window.clearMistakes = clearMistakes;
 window.showScreen = showScreen;
 window.updateSidebarProgress = updateSidebarProgress;
 window.updateSidebarTexts = updateSidebarTexts;
+window.openPomodoroWidget = openPomodoroWidget;
 window.togglePomodoroWidget = togglePomodoroWidget;
 window.togglePomodoro = togglePomodoro;
 window.resetPomodoro = resetPomodoro;

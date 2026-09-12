@@ -1,4 +1,6 @@
 import { storageManager } from "./storageManager.js";
+import { getCurrentLanguage } from "./core/languageManager.js";
+import { t } from "./i18n/useTranslation.js";
 
 const DEFAULT_DURATION_MINUTES = 15;
 const ALLOWED_DURATIONS = [15, 30, 60];
@@ -8,20 +10,53 @@ let durationMinutes = DEFAULT_DURATION_MINUTES; // duração selecionável: 15 /
 let timeLeft = durationMinutes * 60;
 let isActive = false;
 
+function getPomodoroLabel(key) {
+  return t(key, getCurrentLanguage()) || t(key, "pt");
+}
+
+export function openPomodoroWidget() {
+  const widget = document.getElementById("pomodoro-widget");
+  if (!widget) return false;
+
+  widget.classList.remove("hidden");
+  widget.setAttribute("aria-hidden", "false");
+  updateDisplay();
+  updateDurationButtons();
+  updateToggleButton();
+  document.getElementById("btn-pomodoro-toggle")?.focus();
+  return true;
+}
+
+export function closePomodoroWidget() {
+  const widget = document.getElementById("pomodoro-widget");
+  if (!widget) return false;
+
+  widget.classList.add("hidden");
+  widget.setAttribute("aria-hidden", "true");
+  return true;
+}
+
 export function togglePomodoroWidget() {
   const widget = document.getElementById("pomodoro-widget");
-  if (widget) widget.classList.toggle("hidden");
+  if (!widget) return false;
+  return widget.classList.contains("hidden")
+    ? openPomodoroWidget()
+    : closePomodoroWidget();
 }
 
 export function togglePomodoro() {
   const btn = document.getElementById("btn-pomodoro-toggle");
+  if (!btn) return false;
+
   if (!isActive) {
     isActive = true;
-    btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    if (timer !== null) clearInterval(timer);
     timer = setInterval(tick, 1000);
   } else {
     pausePomodoro();
   }
+  updateToggleButton();
+  return isActive;
 }
 
 function tick() {
@@ -37,15 +72,30 @@ function finishSession() {
   pausePomodoro();
   // Salva no log de séries temporais que criamos no storageManager
   storageManager.saveFocusSession(durationMinutes, "work");
-  alert("Ciclo de Foco Concluído! Que tal uma pausa de 3 minutos?");
+  alert(getPomodoroLabel("pomodoro_complete"));
   resetPomodoro();
 }
 
 function pausePomodoro() {
   isActive = false;
-  clearInterval(timer);
-  document.getElementById("btn-pomodoro-toggle").innerHTML =
-    '<i class="fa-solid fa-play"></i>';
+  if (timer !== null) clearInterval(timer);
+  timer = null;
+  updateToggleButton();
+}
+
+function updateToggleButton() {
+  const btn = document.getElementById("btn-pomodoro-toggle");
+  if (!btn) return;
+
+  const icon = document.createElement("i");
+  icon.className = `fa-solid ${isActive ? "fa-pause" : "fa-play"} text-xl`;
+  icon.setAttribute("aria-hidden", "true");
+  btn.replaceChildren(icon);
+  btn.setAttribute(
+    "aria-label",
+    getPomodoroLabel(isActive ? "pomodoro_pause" : "pomodoro_start"),
+  );
+  btn.setAttribute("aria-pressed", String(isActive));
 }
 
 export function resetPomodoro() {
@@ -103,15 +153,17 @@ function updateDisplay() {
 
   // Atualiza o visor no painel flutuante
   const display = document.getElementById("pomodoro-display");
-  if (display) display.innerText = timeStr;
+  if (display) display.textContent = timeStr;
 
   // Atualiza também o visor no header
   const headerTimer = document.getElementById("header-pomodoro-timer");
-  if (headerTimer) headerTimer.innerText = timeStr;
+  if (headerTimer) headerTimer.textContent = timeStr;
 }
 
 // Expondo para o HTML (onclick)
 window.togglePomodoroWidget = togglePomodoroWidget;
+window.openPomodoroWidget = openPomodoroWidget;
+window.closePomodoroWidget = closePomodoroWidget;
 window.togglePomodoro = togglePomodoro;
 window.resetPomodoro = resetPomodoro;
 window.setPomodoroDuration = setPomodoroDuration;

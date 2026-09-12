@@ -96,10 +96,9 @@ describe("Learning Hub navigation and platform guide", () => {
         .textContent,
     ).toBe("Tips");
     expect(
-      document.querySelector(
-        '[data-guide-feature="pomodoro"] .lh-feature-desc',
-      ).textContent,
-    ).toBe("Open the focus session available in the platform header.");
+      document.querySelector('[data-guide-feature="pomodoro"] .lh-feature-desc')
+        .textContent,
+    ).toBe("Open the platform's Pomodoro focus timer.");
 
     initializeUI("pt");
     expect(
@@ -130,7 +129,7 @@ describe("Learning Hub navigation and platform guide", () => {
 
   test("Pomodoro guide control opens the existing widget through one module listener", () => {
     const pomodoro = homeDocument.getElementById("home-guide-pomodoro");
-    const binding = 'bindClick("home-guide-pomodoro", togglePomodoroWidget);';
+    const binding = 'bindClick("home-guide-pomodoro", openPomodoroWidget);';
 
     expect(pomodoro.tagName).toBe("BUTTON");
     expect(pomodoro.getAttribute("type")).toBe("button");

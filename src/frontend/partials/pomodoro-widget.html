@@ -1,15 +1,27 @@
 <div
   id="pomodoro-widget"
   class="hidden fixed top-20 right-6 z-50 bg-white p-5 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 w-64 animate-fade-in"
+  role="dialog"
+  aria-modal="false"
+  aria-hidden="true"
+  aria-labelledby="pomodoro-widget-title"
 >
   <div class="flex justify-between items-center mb-4">
-    <h4 class="font-bold text-gray-800 text-sm flex items-center gap-2">
-      <i class="fa-solid fa-stopwatch text-aws-orange"></i> Sessão de Foco
+    <h4
+      id="pomodoro-widget-title"
+      class="font-bold text-gray-800 text-sm flex items-center gap-2"
+    >
+      <i class="fa-solid fa-stopwatch text-aws-orange"></i>
+      <span data-i18n="pomodoro_focus_session">Sessão de Foco</span>
     </h4>
     <button
-      onclick="togglePomodoroWidget()"
+      type="button"
+      onclick="closePomodoroWidget()"
       class="a3-btn a3-btn-danger"
       aria-label="Fechar widget Pomodoro"
+      title="Fechar widget Pomodoro"
+      data-i18n-aria-label="pomodoro_close"
+      data-i18n-title="pomodoro_close"
     >
       <i class="fa-solid fa-xmark" aria-hidden="true"></i>
     </button>
@@ -20,8 +32,9 @@
     class="text-5xl font-mono font-black text-center text-gray-800 dark:text-white my-4"
     aria-live="polite"
     aria-label="Tempo restante do Pomodoro"
+    data-i18n-aria-label="pomodoro_time_remaining"
   >
-    25:00
+    15:00
   </div>
 
   <div class="flex justify-center gap-2 mb-4">
@@ -29,7 +42,7 @@
       onclick="setPomodoroDuration(15)"
       data-pomodoro-duration="15"
       aria-pressed="false"
-      class="a3-btn a3-btn-secondary"
+      class="pomodoro-duration-btn a3-btn a3-btn-secondary"
     >
       15 min
     </button>
@@ -37,7 +50,7 @@
       onclick="setPomodoroDuration(30)"
       data-pomodoro-duration="30"
       aria-pressed="false"
-      class="a3-btn a3-btn-secondary"
+      class="pomodoro-duration-btn a3-btn a3-btn-secondary"
     >
       30 min
     </button>
@@ -45,7 +58,7 @@
       onclick="setPomodoroDuration(60)"
       data-pomodoro-duration="60"
       aria-pressed="false"
-      class="a3-btn a3-btn-secondary"
+      class="pomodoro-duration-btn a3-btn a3-btn-secondary"
     >
       60 min
     </button>
@@ -57,6 +70,8 @@
       onclick="togglePomodoro()"
       class="a3-btn a3-btn-primary a3-btn-lg w-14 flex items-center justify-center shadow-md"
       aria-label="Iniciar Pomodoro"
+      aria-pressed="false"
+      data-i18n-aria-label="pomodoro_start"
       type="button"
     >
       <i class="fa-solid fa-play text-xl" aria-hidden="true"></i>
@@ -65,6 +80,9 @@
       onclick="resetPomodoro()"
       class="a3-btn a3-btn-secondary w-14 flex items-center justify-center"
       aria-label="Reiniciar Pomodoro"
+      title="Reiniciar Pomodoro"
+      data-i18n-aria-label="pomodoro_reset"
+      data-i18n-title="pomodoro_reset"
       type="button"
     >
       <i class="fa-solid fa-rotate-right font-bold" aria-hidden="true"></i>

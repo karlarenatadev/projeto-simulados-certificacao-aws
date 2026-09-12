@@ -17,8 +17,8 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=3bbecd49" />
-    <link rel="stylesheet" href="./css/cases.css?v=3bbecd49" />
+    <link rel="stylesheet" href="./css/style.css?v=7a289c52" />
+    <link rel="stylesheet" href="./css/cases.css?v=7a289c52" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -87,7 +87,7 @@
     <div id="user-menu-container"></div>
   </div>
 </header>
-<script src="./js/pwa/registerServiceWorker.js?v=3bbecd49"></script>
+<script src="./js/pwa/registerServiceWorker.js?v=7a289c52"></script>
 <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
   <!--
     .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
@@ -113,6 +113,100 @@
     Contém: divisor, Perfil, Config, divisor, botão Recolher.
   -->
 </nav>
+
+<!-- O build resolve este partial aninhado depois de injetar a sidebar. -->
+<div
+  id="pomodoro-widget"
+  class="hidden fixed top-20 right-6 z-50 bg-white p-5 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 w-64 animate-fade-in"
+  role="dialog"
+  aria-modal="false"
+  aria-hidden="true"
+  aria-labelledby="pomodoro-widget-title"
+>
+  <div class="flex justify-between items-center mb-4">
+    <h4
+      id="pomodoro-widget-title"
+      class="font-bold text-gray-800 text-sm flex items-center gap-2"
+    >
+      <i class="fa-solid fa-stopwatch text-aws-orange"></i>
+      <span data-i18n="pomodoro_focus_session">Sessão de Foco</span>
+    </h4>
+    <button
+      type="button"
+      onclick="closePomodoroWidget()"
+      class="a3-btn a3-btn-danger"
+      aria-label="Fechar widget Pomodoro"
+      title="Fechar widget Pomodoro"
+      data-i18n-aria-label="pomodoro_close"
+      data-i18n-title="pomodoro_close"
+    >
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  <div
+    id="pomodoro-display"
+    class="text-5xl font-mono font-black text-center text-gray-800 dark:text-white my-4"
+    aria-live="polite"
+    aria-label="Tempo restante do Pomodoro"
+    data-i18n-aria-label="pomodoro_time_remaining"
+  >
+    15:00
+  </div>
+
+  <div class="flex justify-center gap-2 mb-4">
+    <button
+      onclick="setPomodoroDuration(15)"
+      data-pomodoro-duration="15"
+      aria-pressed="false"
+      class="pomodoro-duration-btn a3-btn a3-btn-secondary"
+    >
+      15 min
+    </button>
+    <button
+      onclick="setPomodoroDuration(30)"
+      data-pomodoro-duration="30"
+      aria-pressed="false"
+      class="pomodoro-duration-btn a3-btn a3-btn-secondary"
+    >
+      30 min
+    </button>
+    <button
+      onclick="setPomodoroDuration(60)"
+      data-pomodoro-duration="60"
+      aria-pressed="false"
+      class="pomodoro-duration-btn a3-btn a3-btn-secondary"
+    >
+      60 min
+    </button>
+  </div>
+
+  <div class="flex justify-center gap-4">
+    <button
+      id="btn-pomodoro-toggle"
+      onclick="togglePomodoro()"
+      class="a3-btn a3-btn-primary a3-btn-lg w-14 flex items-center justify-center shadow-md"
+      aria-label="Iniciar Pomodoro"
+      aria-pressed="false"
+      data-i18n-aria-label="pomodoro_start"
+      type="button"
+    >
+      <i class="fa-solid fa-play text-xl" aria-hidden="true"></i>
+    </button>
+    <button
+      onclick="resetPomodoro()"
+      class="a3-btn a3-btn-secondary w-14 flex items-center justify-center"
+      aria-label="Reiniciar Pomodoro"
+      title="Reiniciar Pomodoro"
+      data-i18n-aria-label="pomodoro_reset"
+      data-i18n-title="pomodoro_reset"
+      type="button"
+    >
+      <i class="fa-solid fa-rotate-right font-bold" aria-hidden="true"></i>
+    </button>
+  </div>
+</div>
+
 
 
     <!-- ===== FIM DA SIDEBAR ESQUERDA ===== -->

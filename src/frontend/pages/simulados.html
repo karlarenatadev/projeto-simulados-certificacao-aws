@@ -495,6 +495,7 @@
         <!-- ============================================== -->
         <div
           id="screen-quiz"
+          data-quiz-flow="streamlined"
           class="hidden flex-col h-full relative p-6 md:p-8"
         >
           <div class="absolute top-0 left-0 h-2 w-full bg-gray-200">
@@ -598,6 +599,9 @@
           <div
             id="explanation-box"
             class="hidden mt-4 bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-lg shadow-sm"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
           >
             <h4
               class="font-bold text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2"
@@ -615,39 +619,25 @@
             class="mt-auto pt-6 flex flex-wrap justify-end gap-3 items-center w-full border-t border-gray-100 dark:border-slate-700"
           >
             <button
-              id="btn-cancel"
-              class="a3-btn a3-btn-secondary shadow-sm"
-              aria-label="Cancelar simulado"
-            >
-              <i class="fa-solid fa-xmark mr-2" aria-hidden="true"></i> Cancelar
-            </button>
-            <button
-              id="btn-prev"
-              class="a3-btn a3-btn-outline shadow-sm"
-              aria-label="Anterior"
-            >
-              <i class="fa-solid fa-arrow-left mr-2" aria-hidden="true"></i>
-              Anterior
-            </button>
-            <button
-              id="btn-submit"
-              disabled=""
-              class="a3-btn a3-btn-secondary a3-btn-lg shadow-md"
-            >
-              Confirmar Resposta
-            </button>
-            <button
               id="btn-next"
+              type="button"
+              disabled
+              hidden
               class="a3-btn a3-btn-primary a3-btn-lg hidden shadow-md"
+              aria-label="Próxima"
             >
               Próxima
               <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
             </button>
             <button
               id="btn-finish"
+              type="button"
+              disabled
+              hidden
               class="a3-btn a3-btn-secondary hidden shadow-md"
+              aria-label="Finalizar simulado"
             >
-              Ver Resultado
+              Finalizar simulado
               <i class="fa-solid fa-flag-checkered ml-2" aria-hidden="true"></i>
             </button>
           </div>
@@ -791,6 +781,8 @@
         }
       });
     </script>
+    <!-- {{POMODORO_WIDGET}} -->
+
     <script src="./js/sprintData.js" type="module"></script>
     <script src="./js/pomodoroManager.js" type="module"></script>
     <script src="./js/app.js" type="module"></script>

@@ -56,8 +56,12 @@
 
     <button
       id="header-pomodoro-btn"
-      onclick="togglePomodoroWidget()"
+      onclick="openPomodoroWidget()"
       class="a3-btn a3-btn-secondary flex items-center gap-2 group"
+      aria-label="Abrir sessão de foco Pomodoro"
+      title="Abrir sessão de foco Pomodoro"
+      data-i18n-aria-label="pomodoro_open"
+      data-i18n-title="pomodoro_open"
     >
       <i class="fa-solid fa-stopwatch group-hover:animate-pulse"></i>
       <span id="header-pomodoro-timer" class="font-mono">15:00</span>

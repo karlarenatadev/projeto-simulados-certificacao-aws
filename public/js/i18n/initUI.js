@@ -123,10 +123,16 @@ export function initializeUI(language) {
     "#btn-next",
     `${t("next", lang)} <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>`,
   );
+  updateAttribute("#btn-next", "aria-label", t("next", lang));
+  const finishTranslationKey =
+    document.getElementById("screen-quiz")?.dataset.quizFlow === "streamlined"
+      ? "quiz_finish"
+      : "view_result";
   updateElementHTML(
     "#btn-finish",
-    `${t("view_result", lang)} <i class="fa-solid fa-flag-checkered ml-2" aria-hidden="true"></i>`,
+    `${t(finishTranslationKey, lang)} <i class="fa-solid fa-flag-checkered ml-2" aria-hidden="true"></i>`,
   );
+  updateAttribute("#btn-finish", "aria-label", t(finishTranslationKey, lang));
 
   // Explanation box
   updateElement("#explanation-box h4", null, (el) => {
@@ -476,6 +482,10 @@ export function initializeUI(language) {
  */
 function translateStaticSurface(lang) {
   document.documentElement.lang = lang === "en" ? "en" : "pt-BR";
+  const finishTranslationKey =
+    document.getElementById("screen-quiz")?.dataset.quizFlow === "streamlined"
+      ? "quiz_finish"
+      : "view_result";
   const selectorKeys = [
     [".lh-metrics-title", "home_guide_title"],
     [".lh-metrics-sub", "home_guide_subtitle"],
@@ -494,7 +504,7 @@ function translateStaticSurface(lang) {
     ["#btn-submit", "confirm_answer"],
     ["#btn-next", "next"],
     ["#btn-prev", "previous"],
-    ["#btn-finish", "view_result"],
+    ["#btn-finish", finishTranslationKey],
     ["#sprint-progress-label", "progress"],
     ["#guild-total-questions", "questions"],
     ["#guild-weekly-avg", "average"],

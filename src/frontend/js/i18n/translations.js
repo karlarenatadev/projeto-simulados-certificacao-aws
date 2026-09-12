@@ -2,6 +2,17 @@ export const translations = {
   pt: {
     sidebar_exam_tips: "Dicas",
     sidebar_exam_tips_description: "Dicas de prova e certificação",
+    sidebar_pomodoro: "Pomodoro",
+    sidebar_pomodoro_description: "Abrir sessão de foco Pomodoro",
+    pomodoro_open: "Abrir sessão de foco Pomodoro",
+    pomodoro_close: "Fechar widget Pomodoro",
+    pomodoro_focus_session: "Sessão de Foco",
+    pomodoro_time_remaining: "Tempo restante do Pomodoro",
+    pomodoro_start: "Iniciar Pomodoro",
+    pomodoro_pause: "Pausar Pomodoro",
+    pomodoro_reset: "Reiniciar Pomodoro",
+    pomodoro_complete:
+      "Ciclo de foco concluído! Que tal uma pausa de 3 minutos?",
     exam_tips_title: "Dicas de Prova",
     exam_tips_kicker: "Revisão rápida",
     exam_tips_subtitle:
@@ -596,7 +607,7 @@ export const translations = {
     home_guide_resources_accessible: "Abrir Recursos de estudo",
     home_guide_pomodoro_title: "Pomodoro",
     home_guide_pomodoro_desc:
-      "Abra a sessão de foco disponível no cabeçalho da plataforma.",
+      "Abra o temporizador de foco Pomodoro da plataforma.",
     home_guide_pomodoro_accessible: "Abrir o temporizador Pomodoro",
     home_guide_insights_desc:
       "Veja a recomendação da home baseada na sua atividade de estudo.",
@@ -664,6 +675,16 @@ export const translations = {
   en: {
     sidebar_exam_tips: "Tips",
     sidebar_exam_tips_description: "Exam and certification tips",
+    sidebar_pomodoro: "Pomodoro",
+    sidebar_pomodoro_description: "Open the Pomodoro focus session",
+    pomodoro_open: "Open the Pomodoro focus session",
+    pomodoro_close: "Close Pomodoro widget",
+    pomodoro_focus_session: "Focus Session",
+    pomodoro_time_remaining: "Pomodoro time remaining",
+    pomodoro_start: "Start Pomodoro",
+    pomodoro_pause: "Pause Pomodoro",
+    pomodoro_reset: "Reset Pomodoro",
+    pomodoro_complete: "Focus cycle complete! How about a 3-minute break?",
     exam_tips_title: "Exam Tips",
     exam_tips_kicker: "Quick review",
     exam_tips_subtitle:
@@ -1244,8 +1265,7 @@ export const translations = {
       "Access glossaries, documentation, and official study materials.",
     home_guide_resources_accessible: "Open Study Resources",
     home_guide_pomodoro_title: "Pomodoro",
-    home_guide_pomodoro_desc:
-      "Open the focus session available in the platform header.",
+    home_guide_pomodoro_desc: "Open the platform's Pomodoro focus timer.",
     home_guide_pomodoro_accessible: "Open the Pomodoro timer",
     home_guide_insights_desc:
       "View the home recommendation based on your study activity.",
