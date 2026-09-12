@@ -1,6 +1,7 @@
 import { certificationPaths } from "./data.js";
 import { storageManager } from "./storageManager.js";
 import { logger } from "./utils/logger.js";
+import { createHistoryTimeline } from "./utils/historyTimeline.js";
 
 const A3_CHART_COLORS = {
   deepSea: "#001863",
@@ -422,14 +423,22 @@ export async function renderGlobalRadarChart() {
   });
 }
 
-export function renderPerformanceLineChart(history, domainFilter = "geral") {
+export function renderPerformanceLineChart(
+  history,
+  domainFilter = "geral",
+  certificationId,
+) {
   const canvas = document.getElementById("performanceLineChart");
   if (!canvas) {
     logger.error("Canvas element 'performanceLineChart' not found.");
     return;
   }
 
-  if (!history || history.length === 0) {
+  const timeline = createHistoryTimeline(history, { certificationId }).filter(
+    (entry) => entry.hasValidScore,
+  );
+
+  if (timeline.length === 0) {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.font = "14px 'Inter', sans-serif";
@@ -458,13 +467,29 @@ export function renderPerformanceLineChart(history, domainFilter = "geral") {
   const chartColors = getA3ChartColors(isDark);
   const ctx = canvas.getContext("2d");
 
-  const labels = history.map((_, index) => `Simulado ${index + 1}`);
+  const labels = timeline.map((_, index) => `Simulado ${index + 1}`);
   const dataPoints =
     domainFilter === "geral"
-      ? history.map((h) => h.percentage || 0)
-      : history.map((h) => {
-          if (!h.domainScores || !h.domainScores[domainFilter]) return 0;
-          return h.domainScores[domainFilter].percentage || 0;
+      ? timeline.map((entry) => entry.score)
+      : timeline.map((entry) => {
+          const domainScores =
+            entry.attempt.domainScores || entry.attempt.domain_scores;
+          const domainScore = domainScores?.[domainFilter];
+          if (!domainScore) return 0;
+          if (
+            domainScore.percentage !== null &&
+            domainScore.percentage !== undefined &&
+            Number.isFinite(Number(domainScore.percentage))
+          ) {
+            return Number(domainScore.percentage);
+          }
+          if (Number(domainScore.total) > 0) {
+            return (
+              (Number(domainScore.correct || 0) / Number(domainScore.total)) *
+              100
+            );
+          }
+          return 0;
         });
 
   let gradient = ctx.createLinearGradient(0, 0, 0, 300);
@@ -524,6 +549,14 @@ export function renderPerformanceLineChart(history, domainFilter = "geral") {
           callbacks: {
             label: function (context) {
               return `Nota: ${context.parsed.y}%`;
+            },
+            afterLabel(context) {
+              const entry = timeline[context.dataIndex];
+              if (!entry?.hasValidTimestamp) return "";
+              const locale = document.documentElement.lang?.startsWith("en")
+                ? "en-US"
+                : "pt-BR";
+              return new Date(entry.timestamp).toLocaleDateString(locale);
             },
           },
         },

@@ -14,8 +14,17 @@ import { AuthService } from "../services/authService.js";
 import { logger } from "../utils/logger.js";
 import { getDomainDefinition } from "../domainTaxonomy.js";
 import { getCurrentLanguage } from "../core/languageManager.js";
+import { normalizeCertificationId } from "../utils/certUtils.js";
+import { resolveAppUrl } from "../core/navigation.js";
 
 const CONTENT_ID = "weak-domains-content";
+const COMPACT_CONTENT_ID = "study-now-compact";
+export const STUDY_NOW_STATES = Object.freeze({
+  LOADING: "LOADING",
+  READY: "READY",
+  EMPTY: "EMPTY",
+  ERROR: "ERROR",
+});
 export const DIAGNOSTIC_RECOMMENDATION_STORAGE_KEY =
   "aws_sim_last_diagnostic_recommendation";
 
@@ -147,43 +156,190 @@ function getContainer() {
 }
 
 function getCompactContainer() {
-  return document.getElementById("study-now-compact");
+  return document.getElementById(COMPACT_CONTENT_ID);
 }
 
-function renderCompactRecommendation(actions) {
+function appendCompactMessage(container, message, className) {
+  const paragraph = document.createElement("p");
+  paragraph.className = className;
+  paragraph.textContent = message;
+  container.replaceChildren(paragraph);
+}
+
+export function renderStudyNowState(state, recommendation = {}, language) {
   const container = getCompactContainer();
   if (!container) return;
 
-  const lang = getCurrentLanguage();
-  const action = (actions || []).find((item) => item?.type !== "empty_state");
-  if (!action) {
-    container.innerHTML = `
-      <p class="study-now-compact-empty">${t("studyNow.empty_state_no_history", lang)}</p>`;
+  const lang = language || getCurrentLanguage();
+  container.dataset.state = state.toLowerCase();
+
+  if (state === STUDY_NOW_STATES.LOADING) {
+    appendCompactMessage(
+      container,
+      t("studyNow.loading", lang),
+      "study-now-compact-empty",
+    );
     return;
   }
 
-  const title = t(action.title, lang, action.titleVariables || {});
-  const description = t(
-    action.description,
+  if (state === STUDY_NOW_STATES.ERROR) {
+    appendCompactMessage(
+      container,
+      t("studyNow.error", lang),
+      "study-now-compact-empty",
+    );
+    return;
+  }
+
+  if (state === STUDY_NOW_STATES.EMPTY || !recommendation?.title) {
+    appendCompactMessage(
+      container,
+      t("studyNow.empty", lang),
+      "study-now-compact-empty",
+    );
+    return;
+  }
+
+  const title = t(
+    recommendation.title,
     lang,
-    action.descriptionVariables || {},
+    recommendation.titleVariables || {},
   );
-  const route = action.route || "./simulados.html";
-  container.innerHTML = `
-    <div class="study-now-compact-content">
-      <i class="fa-solid fa-lightbulb study-now-compact-icon" aria-hidden="true"></i>
-      <div class="study-now-compact-copy">
-        <strong>${title}</strong>
-        <span>${description}</span>
-      </div>
-      <a class="a3-btn a3-btn-outline study-now-compact-cta" href="${route}">
-        ${t("studyNow.compact_cta", lang)}
-      </a>
-    </div>`;
+  const description = t(
+    recommendation.description,
+    lang,
+    recommendation.descriptionVariables || {},
+  );
+  const content = document.createElement("div");
+  content.className = "study-now-compact-content";
+  content.dataset.recommendation = recommendation.kind || "general";
+
+  const icon = document.createElement("i");
+  icon.className = `${recommendation.icon || "fa-solid fa-lightbulb"} study-now-compact-icon`;
+  icon.setAttribute("aria-hidden", "true");
+
+  const copy = document.createElement("div");
+  copy.className = "study-now-compact-copy";
+  const strong = document.createElement("strong");
+  strong.textContent = title;
+  const span = document.createElement("span");
+  span.textContent = description;
+  copy.append(strong, span);
+  content.append(icon, copy);
+
+  if (recommendation.route) {
+    const link = document.createElement("a");
+    link.className = "a3-btn a3-btn-outline study-now-compact-cta";
+    link.href = resolveAppUrl(recommendation.route);
+    link.textContent = t(recommendation.cta || "studyNow.compact_cta", lang);
+    link.setAttribute("aria-label", `${title}. ${link.textContent}`);
+    content.append(link);
+  }
+
+  container.replaceChildren(content);
 }
 
 export function renderStudyNowCompact(actions) {
-  renderCompactRecommendation(actions);
+  const action = (actions || []).find((item) => item?.type !== "empty_state");
+  if (!action) {
+    renderStudyNowState(STUDY_NOW_STATES.EMPTY);
+    return;
+  }
+  renderStudyNowState(STUDY_NOW_STATES.READY, action);
+}
+
+export function selectStudyNowRecommendation({
+  profile,
+  sprintState,
+  mistakes,
+  reviewStats,
+  studyPlan,
+} = {}) {
+  if (!profile?.overview) return null;
+
+  const certId = normalizeCertificationId(profile.certification) || "clf-c02";
+  if (profile.overview.examsTaken === 0) {
+    return {
+      kind: "first-quiz",
+      title: "studyNow.first_quiz_title",
+      description: "studyNow.first_quiz_description",
+      route: `simulados.html?cert=${certId}`,
+      icon: "fa-solid fa-play",
+    };
+  }
+
+  const completedSprintDays = Array.isArray(sprintState?.completedStages)
+    ? [...new Set(sprintState.completedStages)].length
+    : 0;
+  if (completedSprintDays > 0 && completedSprintDays < 14) {
+    return {
+      kind: "sprint",
+      title: "studyNow.sprint_title",
+      titleVariables: { day: Math.min(completedSprintDays + 1, 14) },
+      description: "studyNow.sprint_description",
+      route: "study-sprint.html",
+      icon: "fa-solid fa-bolt",
+    };
+  }
+
+  if (Array.isArray(mistakes) && mistakes.length > 0) {
+    return {
+      kind: "mistakes",
+      title: "studyNow.mistakes_title",
+      description: "studyNow.mistakes_description",
+      descriptionVariables: { count: mistakes.length },
+      icon: "fa-solid fa-rotate-left",
+    };
+  }
+
+  if (Number(reviewStats?.pending) > 0) {
+    return {
+      kind: "review-deck",
+      title: "studyNow.deck_title",
+      description: "studyNow.deck_description",
+      descriptionVariables: { count: reviewStats.pending },
+      route: "flashcards.html",
+      icon: "fa-solid fa-layer-group",
+    };
+  }
+
+  const criticalDomain = profile.domains?.find(
+    (domain) => domain.status === "critical",
+  );
+  if (criticalDomain) {
+    const practiceAction = studyPlan?.nextActions?.find(
+      (action) => action.type === "practice",
+    );
+    return {
+      kind: "critical-domain",
+      title: "studyNow.critical_domain_title",
+      titleVariables: { domain: criticalDomain.name },
+      description: "studyNow.critical_domain_description",
+      descriptionVariables: { score: criticalDomain.score },
+      route: practiceAction?.route,
+      icon: "fa-solid fa-bullseye",
+    };
+  }
+
+  if (
+    profile.overview.trend === "negative" ||
+    profile.overview.recentDirection === "down"
+  ) {
+    return {
+      kind: "declining",
+      title: "studyNow.declining_title",
+      description: "studyNow.declining_description",
+      icon: "fa-solid fa-chart-line",
+    };
+  }
+
+  return {
+    kind: "new-quiz",
+    title: "studyNow.new_quiz_title",
+    description: "studyNow.new_quiz_description",
+    route: `simulados.html?cert=${certId}`,
+    icon: "fa-solid fa-play",
+  };
 }
 
 function renderEmpty(messageKey, success = false) {
@@ -348,30 +504,75 @@ export function renderDiagnosticRecommendations(recommendation) {
 /**
  * Busca os dominios fracos offline via Analytics Engine e re-renderiza o card.
  */
-export async function refreshStudyNow() {
+export async function refreshStudyNow({
+  projection,
+  certificationId,
+  storage = storageManager,
+  analytics,
+  engine,
+  language,
+} = {}) {
   const container = getContainer();
-  if (!container) return;
+  const compactContainer = getCompactContainer();
+  if (!container && !compactContainer) {
+    return { state: STUDY_NOW_STATES.EMPTY, recommendation: null };
+  }
 
-  const lang = getCurrentLanguage();
-  container.innerHTML = `<p class="study-now-loading">${t("studyNow.loading", lang)}</p>`;
+  const lang = language || getCurrentLanguage();
+  renderStudyNowState(STUDY_NOW_STATES.LOADING, {}, lang);
+  if (container) {
+    container.innerHTML = `<p class="study-now-loading">${t("studyNow.loading", lang)}</p>`;
+  }
 
   try {
-    const certId = AuthService.getCurrentUser()?.certification || "clf-c02";
+    const certId =
+      normalizeCertificationId(
+        certificationId ||
+          projection?.certificationId ||
+          AuthService.getCurrentUser()?.certification,
+      ) || "clf-c02";
 
     // Fallback instantiation if called before initApp (sanity check)
-    if (!learningAnalytics)
-      learningAnalytics = new LearningAnalytics(storageManager);
-    if (!recommendationEngine)
-      recommendationEngine = new RecommendationEngine();
+    const analyticsService =
+      analytics ||
+      learningAnalytics ||
+      (learningAnalytics = new LearningAnalytics(storage));
+    const planEngine =
+      engine ||
+      recommendationEngine ||
+      (recommendationEngine = new RecommendationEngine());
 
-    const profile = learningAnalytics.getLearningProfile(certId);
-    const plan = recommendationEngine.generateStudyPlan(profile);
+    const profile =
+      projection?.profile || analyticsService.getLearningProfile(certId);
+    const plan = planEngine.generateStudyPlan(profile);
+    const mistakes = storage.getMistakes?.(certId) ?? [];
+    const recommendation = selectStudyNowRecommendation({
+      profile,
+      sprintState: storage.getSprintState?.(certId) ?? {},
+      mistakes: Array.isArray(mistakes) ? mistakes : [],
+      reviewStats: storage.getReviewStats?.(certId) ?? {},
+      studyPlan: plan,
+    });
 
     renderActions(plan.nextActions);
-    renderCompactRecommendation(plan.nextActions);
+    if (recommendation) {
+      renderStudyNowState(STUDY_NOW_STATES.READY, recommendation, lang);
+    } else {
+      renderStudyNowState(STUDY_NOW_STATES.EMPTY, {}, lang);
+    }
     renderDiagnosticRecommendations(readDiagnosticRecommendations());
+    return {
+      state: recommendation ? STUDY_NOW_STATES.READY : STUDY_NOW_STATES.EMPTY,
+      recommendation,
+    };
   } catch (error) {
     logger.error("[StudyNow] Erro ao gerar recomendacoes:", error);
     renderEmpty("studyNow.empty_state_no_history");
+    renderStudyNowState(STUDY_NOW_STATES.ERROR, {}, lang);
+    return { state: STUDY_NOW_STATES.ERROR, recommendation: null };
+  } finally {
+    if (compactContainer?.dataset.state === "loading") {
+      renderStudyNowState(STUDY_NOW_STATES.EMPTY, {}, lang);
+    }
   }
 }

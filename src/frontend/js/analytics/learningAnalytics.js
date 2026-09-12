@@ -14,6 +14,7 @@
 
 import { DomainAnalyzer } from "./domainAnalyzer.js";
 import { TrendAnalyzer } from "./trendAnalyzer.js";
+import { createHistoryTimeline } from "../utils/historyTimeline.js";
 
 export class LearningAnalytics {
   /**
@@ -36,22 +37,31 @@ export class LearningAnalytics {
    * @param {string} certId - Ex: 'saa-c03', 'clf-c02'
    * @returns {LearningProfile}
    */
-  getLearningProfile(certId) {
+  getLearningProfile(certId, { timeline: providedTimeline } = {}) {
     if (!certId) throw new Error("[LearningAnalytics] certId é obrigatório.");
 
     const normalizedCertId = certId.toLowerCase();
 
     // 1. Coleta bruta de dados
     const allHistory = this._safeGet(() => this.storage.getHistory(), []);
-    const history = allHistory.filter(
-      (item) => item?.certId?.toLowerCase() === normalizedCertId,
-    );
+    const timeline = createHistoryTimeline(providedTimeline || allHistory, {
+      certificationId: normalizedCertId,
+    });
+    const scoredTimeline = timeline.filter((entry) => entry.hasValidScore);
+    const history = scoredTimeline.map((entry) => ({
+      ...entry.attempt,
+      percentage: entry.score,
+    }));
 
-    const allMistakes = this._safeGet(() => this.storage.getMistakes(), {});
-    // getMistakes retorna um store { certId: { questionId: mistakeRecord } }
-    const certMistakesStore =
-      allMistakes[normalizedCertId] || allMistakes[certId] || {};
-    const mistakes = Object.values(certMistakesStore);
+    const mistakesResult = this._safeGet(
+      () => this.storage.getMistakes(normalizedCertId),
+      [],
+    );
+    const mistakes = Array.isArray(mistakesResult)
+      ? mistakesResult
+      : Object.values(
+          mistakesResult[normalizedCertId] || mistakesResult[certId] || {},
+        );
 
     // 2. Estado vazio — usuário não fez nenhum simulado desta cert ainda
     if (history.length === 0 && mistakes.length === 0) {
@@ -60,8 +70,15 @@ export class LearningAnalytics {
 
     // 3. Processamento
     const domains = this.domainAnalyzer.analyze(history, mistakes);
-    const trend = this.trendAnalyzer.analyze(history);
-    const overview = this._buildOverview(history, domains, trend);
+    const trend = this.trendAnalyzer.analyze(scoredTimeline);
+    const recentDirection =
+      this.trendAnalyzer.getRecentDirection(scoredTimeline);
+    const overview = this._buildOverview(
+      scoredTimeline,
+      domains,
+      trend,
+      recentDirection,
+    );
 
     const strengths = domains
       .filter((d) => d.status === "strong")
@@ -85,14 +102,13 @@ export class LearningAnalytics {
   // Privados
   // ---------------------------------------------------------------------------
 
-  _buildOverview(history, domains, trend) {
-    const examsTaken = history.length;
+  _buildOverview(timeline, domains, trend, recentDirection) {
+    const examsTaken = timeline.length;
     const averageScore =
       examsTaken === 0
         ? 0
         : Math.round(
-            history.reduce((sum, item) => sum + (item.percentage || 0), 0) /
-              examsTaken,
+            timeline.reduce((sum, entry) => sum + entry.score, 0) / examsTaken,
           );
 
     const readiness = this._calculateReadiness(
@@ -102,7 +118,7 @@ export class LearningAnalytics {
       trend,
     );
 
-    return { averageScore, examsTaken, trend, readiness };
+    return { averageScore, examsTaken, trend, recentDirection, readiness };
   }
 
   /**
@@ -137,6 +153,7 @@ export class LearningAnalytics {
         averageScore: 0,
         examsTaken: 0,
         trend: "neutral",
+        recentDirection: "insufficient",
         readiness: 0,
       },
       domains: [],
@@ -158,7 +175,7 @@ export class LearningAnalytics {
 /**
  * @typedef {Object} LearningProfile
  * @property {string} certification
- * @property {{ averageScore: number, examsTaken: number, trend: string, readiness: number }} overview
+ * @property {{ averageScore: number, examsTaken: number, trend: string, recentDirection: string, readiness: number }} overview
  * @property {DomainScore[]} domains
  * @property {string[]} strengths
  * @property {string[]} weakAreas

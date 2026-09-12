@@ -313,6 +313,14 @@ export const translations = {
     scores_declining:
       "Suas últimas pontuações estão caindo. Considere fazer uma pausa e revisar.",
     suggestion_break: "💡 Sugestão: Faça uma pausa e revise",
+    recent_dip: "Pequena queda recente",
+    recent_dip_message:
+      "Sua tentativa mais recente ficou em {{score}}%. A evolução geral pode continuar positiva, mas vale revisar antes da próxima.",
+    recent_dip_action: "Revise os pontos que mais exigiram atenção",
+    trend_insufficient: "Mais dados são necessários",
+    trend_insufficient_message:
+      "Sua primeira tentativa ficou em {{score}}%. Faça mais um simulado para identificarmos uma tendência.",
+    trend_insufficient_action: "A próxima tentativa mostrará sua evolução",
     almost_there: "Quase lá! Falta pouco! 🎯",
     points_to_pass: "Você está a apenas {{points}}% da aprovação!",
     few_more_quizzes: "💪 Mais alguns simulados e estará pronto",
@@ -348,6 +356,34 @@ export const translations = {
     "studyNow.diagnostic_labs": "Ver Laboratórios recomendados",
     "studyNow.diagnostic_cases": "Ver Cases recomendados",
     "studyNow.compact_cta": "Começar",
+    "studyNow.error":
+      "Não foi possível calcular a recomendação agora. Tente novamente mais tarde.",
+    "studyNow.empty": "Nenhuma recomendação disponível para este contexto.",
+    "studyNow.first_quiz_title": "Faça seu primeiro simulado",
+    "studyNow.first_quiz_description":
+      "Crie uma linha de base para receber recomendações personalizadas.",
+    "studyNow.sprint_title": "Continue sua sprint — Dia {{day}}",
+    "studyNow.sprint_description":
+      "Retome a próxima atividade da sua sequência de estudos.",
+    "studyNow.mistakes_title": "Revise as questões que você errou",
+    "studyNow.mistakes_description":
+      "Você tem {{count}} erro(s) pendente(s) para revisar.",
+    "studyNow.deck_title": "Revise seu deck",
+    "studyNow.deck_description":
+      "Há {{count}} flashcard(s) pendente(s) para revisão.",
+    "studyNow.critical_domain_title": "Reforce {{domain}}",
+    "studyNow.critical_domain_description":
+      "Este domínio está em {{score}}% e requer prioridade.",
+    "studyNow.declining_title": "Revise antes do próximo simulado",
+    "studyNow.declining_description":
+      "Seu desempenho recente caiu; retome os pontos fracos antes de tentar novamente.",
+    "studyNow.new_quiz_title": "Faça um novo simulado",
+    "studyNow.new_quiz_description":
+      "Gere uma nova evidência para acompanhar sua evolução.",
+    readiness_not_started: "Não iniciada",
+    readiness_in_progress: "Em andamento",
+    readiness_almost_ready: "Quase pronta",
+    readiness_ready: "Pronta para o exame",
     study_insight_subtitle: "Uma leitura rápida do seu momento de estudo.",
     next_recommendation: "Próxima recomendação",
     next_recommendation_subtitle: "A melhor ação para continuar agora.",
@@ -976,6 +1012,14 @@ export const translations = {
     scores_declining:
       "Your recent scores are declining. Consider taking a break and reviewing.",
     suggestion_break: "💡 Suggestion: Take a break and review",
+    recent_dip: "Small recent dip",
+    recent_dip_message:
+      "Your latest attempt scored {{score}}%. Your overall trend may still be positive, but review before the next attempt.",
+    recent_dip_action: "Review the points that needed the most attention",
+    trend_insufficient: "More data is needed",
+    trend_insufficient_message:
+      "Your first attempt scored {{score}}%. Take one more simulation so we can identify a trend.",
+    trend_insufficient_action: "Your next attempt will reveal your progress",
     almost_there: "Almost there! Just a bit more! 🎯",
     points_to_pass: "You're only {{points}}% away from passing!",
     few_more_quizzes: "💪 A few more quizzes and you'll be ready",
@@ -1008,6 +1052,34 @@ export const translations = {
     "studyNow.diagnostic_labs": "View recommended Labs",
     "studyNow.diagnostic_cases": "View recommended Cases",
     "studyNow.compact_cta": "Start",
+    "studyNow.error":
+      "We could not calculate a recommendation right now. Try again later.",
+    "studyNow.empty": "No recommendation is available for this context.",
+    "studyNow.first_quiz_title": "Take your first simulation",
+    "studyNow.first_quiz_description":
+      "Create a baseline to receive personalized recommendations.",
+    "studyNow.sprint_title": "Continue your sprint — Day {{day}}",
+    "studyNow.sprint_description":
+      "Resume the next activity in your study sequence.",
+    "studyNow.mistakes_title": "Review the questions you missed",
+    "studyNow.mistakes_description":
+      "You have {{count}} pending mistake(s) to review.",
+    "studyNow.deck_title": "Review your deck",
+    "studyNow.deck_description":
+      "There are {{count}} pending flashcard(s) to review.",
+    "studyNow.critical_domain_title": "Reinforce {{domain}}",
+    "studyNow.critical_domain_description":
+      "This domain is at {{score}}% and requires priority.",
+    "studyNow.declining_title": "Review before the next simulation",
+    "studyNow.declining_description":
+      "Your recent performance declined; revisit weak points before trying again.",
+    "studyNow.new_quiz_title": "Take a new simulation",
+    "studyNow.new_quiz_description":
+      "Create new evidence to track your progress.",
+    readiness_not_started: "Not started",
+    readiness_in_progress: "In progress",
+    readiness_almost_ready: "Almost ready",
+    readiness_ready: "Ready for the exam",
     study_insight_subtitle: "A quick read of your current study moment.",
     next_recommendation: "Next recommendation",
     next_recommendation_subtitle: "The best action to take next.",

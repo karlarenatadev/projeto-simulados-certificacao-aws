@@ -17,6 +17,10 @@ import { initUIRenderer } from "./uiRenderer.js";
 import { ShowcaseService } from "./services/showcaseService.js";
 import { initStudyNow, refreshStudyNow } from "./recommendations/studyNow.js";
 import { RecommendationEngine } from "./recommendations/recommendationEngine.js";
+import {
+  createHomePerformanceProjection,
+  getReadinessViewModel,
+} from "./analytics/homePerformanceProjection.js";
 import { storageManager } from "./storageManager.js";
 import { userManager } from "./userManager.js";
 import { AuthService } from "./services/authService.js";
@@ -24,6 +28,7 @@ import {
   getCurrentLanguage,
   setCurrentLanguage,
 } from "./core/languageManager.js";
+import { resolveAppUrl } from "./core/navigation.js";
 import { quizManager } from "./quizManager.js";
 import {
   renderRadarChart,
@@ -431,7 +436,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderJornadaDashboard(certId);
 
         // 3. A SINCRONIZAÇÃO
-        updateSidebarProgress(); // Atualiza a caixa "O Meu Progresso" para o nome correto
+        const homeProjection = getHomePerformanceProjection(certId);
+        updateSidebarProgress(homeProjection);
+        if (document.getElementById("screen-hub")) {
+          renderLearningHubData(homeProjection);
+        }
         if (typeof renderTrail === "function") renderTrail(); // Atualiza a Trilha de Gamificação
         if (typeof renderBadges === "function") renderBadges(); // Atualiza as Insígnias
 
@@ -502,14 +511,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 // RENDERIZAÇÃO ORDENADA E SEQUENCIAL DA SIDEBAR
 async function renderSidebarContent() {
   try {
+    const homeProjection = getHomePerformanceProjection();
+
     // BLOCO 1: Progresso do Usuário
-    updateSidebarProgress();
+    updateSidebarProgress(homeProjection);
 
     // BLOCO 2: Sprint de 14 Dias
     renderSprintUI();
 
     // BLOCO 3: Histórico de Quizzes
-    updateHistoryDisplay();
+    updateHistoryDisplay(homeProjection);
 
     // BLOCO 4: Gráfico Radar Global (aguarda Chart.js)
     if (
@@ -521,7 +532,7 @@ async function renderSidebarContent() {
 
     // BLOCO 5: Insight Dinâmico (Depende do histórico)
     const history = storageManager.getHistory();
-    updateDynamicInsight(Array.isArray(history) ? history : []);
+    updateDynamicInsight(Array.isArray(history) ? homeProjection.timeline : []);
   } catch (error) {
     logger.error("Erro ao renderizar sidebar:", error);
   }
@@ -554,6 +565,10 @@ function getActiveCertificationId() {
     "clf-c02";
 
   return normalizeCertificationId(certValue);
+}
+
+function getHomePerformanceProjection(certId = getActiveCertificationId()) {
+  return createHomePerformanceProjection(storageManager, certId);
 }
 
 function getMistakeSource() {
@@ -1894,9 +1909,10 @@ function finishQuiz(force = false) {
   storageManager.clearActiveSession(engine.state.certId);
 
   saveQuizResult();
-  updateHistoryDisplay();
+  const homeProjection = getHomePerformanceProjection();
+  updateHistoryDisplay(homeProjection);
   loadLastScore();
-  updateSidebarProgress();
+  updateSidebarProgress(homeProjection);
 
   if (typeof renderGlobalRadarChart === "function") {
     renderGlobalRadarChart();
@@ -1936,7 +1952,7 @@ function finishQuiz(force = false) {
   }
 
   showResultsScreen();
-  refreshStudyNow();
+  refreshStudyNow({ projection: homeProjection });
   uiState.isFinishing = false;
 }
 
@@ -2017,11 +2033,15 @@ function showLearningHub() {
   renderLearningHubData();
 }
 
-function renderLearningHubData() {
+function renderLearningHubData(projection) {
   const history = storageManager.getHistory();
   const safeHistory = Array.isArray(history) ? history : [];
   const gamification = storageManager.getGamification();
   const certId = getActiveCertificationId() || "clf-c02";
+  const homeProjection = projection || getHomePerformanceProjection(certId);
+  const certificationTimeline = homeProjection.timeline.filter(
+    (entry) => entry.hasValidScore,
+  );
   const mistakes = storageManager.getMistakes(certId);
 
   // ── Empty state para primeiro acesso ──
@@ -2043,14 +2063,14 @@ function renderLearningHubData() {
         <p class="lh-empty-desc">
           ${t("home_no_simulation", uiState.language)}
         </p>
-        <button class="a3-btn a3-btn-primary lh-empty-cta" onclick="showLearningHubQuickStart()">
+        <a class="a3-btn a3-btn-primary lh-empty-cta" href="${resolveAppUrl(`simulados.html?cert=${certId}`)}">
           <i class="fa-solid fa-play"></i>
           ${t("home_first_simulation", uiState.language)}
-        </button>
+        </a>
       `;
       performanceSection.parentNode.insertBefore(emptyEl, performanceSection);
     }
-    if (performanceSection) performanceSection.classList.add("hidden");
+    if (performanceSection) performanceSection.classList.remove("hidden");
   } else {
     // Remove o empty state se já foi realizado algum simulado
     if (existingEmpty) existingEmpty.remove();
@@ -2123,8 +2143,12 @@ function renderLearningHubData() {
   }
 
   if (typeof renderPerformanceLineChart === "function") {
-    renderPerformanceLineChart(safeHistory);
+    renderPerformanceLineChart(certificationTimeline, "geral", certId);
   }
+
+  updateSidebarProgress(homeProjection);
+  updateDynamicInsight(certificationTimeline);
+  void refreshStudyNow({ projection: homeProjection });
 
   // ── Erros pendentes e Ponto Fraco ──
   const mistakesEl = document.getElementById("hub-mistakes-count");
@@ -2202,8 +2226,8 @@ function renderLearningHubData() {
   // ── Insight IA ──
   const insightEl = document.getElementById("hub-insight-text");
   if (insightEl) {
-    if (safeHistory.length > 0) {
-      const insight = generateSmartInsight(safeHistory);
+    if (certificationTimeline.length > 0) {
+      const insight = generateSmartInsight(certificationTimeline);
       insightEl.textContent =
         insight.message ||
         "Continue praticando para obter insights personalizados.";
@@ -2835,7 +2859,7 @@ function showHistoricalReport(index) {
   displayReportFromResult(result);
 }
 
-function updateHistoryDisplay() {
+function updateHistoryDisplay(projection) {
   const historyList = document.getElementById("history-list");
   if (!historyList) return;
 
@@ -2853,6 +2877,9 @@ function updateHistoryDisplay() {
   if (history.length === 0) {
     historyList.innerHTML = t("no_quizzes_yet", uiState.language);
     updateDynamicInsight([]);
+    if (typeof renderPerformanceLineChart === "function") {
+      renderPerformanceLineChart([], "geral", getActiveCertificationId());
+    }
     return;
   }
 
@@ -2903,10 +2930,15 @@ function updateHistoryDisplay() {
 
   html += "</ul>";
   historyList.innerHTML = html;
-  updateDynamicInsight(history);
+  const homeProjection = projection || getHomePerformanceProjection();
+  updateDynamicInsight(homeProjection.timeline);
 
   if (typeof renderPerformanceLineChart === "function") {
-    renderPerformanceLineChart(history);
+    renderPerformanceLineChart(
+      homeProjection.timeline,
+      "geral",
+      homeProjection.certificationId,
+    );
   }
 }
 
@@ -2926,16 +2958,17 @@ async function removeHistoryItem(event, index) {
   const removed = storageManager.removeHistoryItem(index);
   if (!removed) return;
 
-  updateHistoryDisplay();
+  const homeProjection = getHomePerformanceProjection();
+  updateHistoryDisplay(homeProjection);
   loadLastScore();
-  updateSidebarProgress();
+  updateSidebarProgress(homeProjection);
 
   if (typeof renderGlobalRadarChart === "function") {
     renderGlobalRadarChart();
   }
 
   if (typeof renderBadges === "function") renderBadges();
-  refreshStudyNow();
+  refreshStudyNow({ projection: homeProjection });
 }
 
 async function clearHistory() {
@@ -2948,7 +2981,10 @@ async function clearHistory() {
     })
   ) {
     storageManager.clearHistory();
-    updateHistoryDisplay();
+    const homeProjection = getHomePerformanceProjection();
+    updateHistoryDisplay(homeProjection);
+    updateSidebarProgress(homeProjection);
+    refreshStudyNow({ projection: homeProjection });
 
     if (typeof renderGlobalRadarChart === "function") {
       renderGlobalRadarChart();
@@ -3630,7 +3666,7 @@ function updateSidebarTexts() {
   }
 }
 
-function updateSidebarProgress() {
+function updateSidebarProgress(projection) {
   const gamification = storageManager.getGamification();
   const certSelect = document.getElementById("certification-select");
   const currentLang = uiState.language || getCurrentLanguage();
@@ -3670,33 +3706,26 @@ function updateSidebarProgress() {
     badgeEl.textContent = currentCertId.toUpperCase();
   }
 
-  const certificationProgress = getCertificationProgress(currentCertId);
-  const {
-    completedStages: completedCount,
-    totalStages: totalModules,
-    percentage,
-  } = certificationProgress;
+  const homeProjection =
+    projection?.certificationId === currentCertId
+      ? projection
+      : getHomePerformanceProjection(currentCertId);
+  const readiness = getReadinessViewModel(homeProjection.profile, currentLang);
 
-  // Status da trilha calculado a partir do progresso real disponível (local).
-  // Fallback seguro: sem etapas concluídas -> "Não iniciada".
   const statusEl = document.getElementById("sidebar-cert-status");
   if (statusEl) {
-    let statusText;
-    if (completedCount <= 0) {
-      statusText = currentLang === "en" ? "Not started" : "Não iniciada";
-    } else if (completedCount < totalModules) {
-      statusText = currentLang === "en" ? "In progress" : "Em andamento";
-    } else {
-      statusText = currentLang === "en" ? "Completed" : "Concluída";
-    }
-    statusEl.textContent = statusText;
+    statusEl.textContent = t(readiness.statusKey, currentLang);
   }
 
   const bar = document.getElementById("sidebar-pct-bar");
   const text = document.getElementById("sidebar-pct-text");
+  const progress = document.getElementById("sidebar-readiness-progress");
 
-  if (bar) bar.style.width = `${percentage}%`;
-  if (text) text.textContent = `${percentage}%`;
+  if (bar) bar.style.width = `${readiness.readiness}%`;
+  if (text) text.textContent = `${readiness.readiness}%`;
+  if (progress) {
+    progress.setAttribute("aria-valuenow", String(readiness.readiness));
+  }
 
   const streakValue = document.getElementById("sidebar-streak-value");
   if (streakValue) {

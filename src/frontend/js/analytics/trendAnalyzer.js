@@ -7,6 +7,8 @@
  * @module analytics/trendAnalyzer
  */
 
+import { createHistoryTimeline } from "../utils/historyTimeline.js";
+
 export class TrendAnalyzer {
   /**
    * Analisa o histórico e retorna a tendência e dados de evolução.
@@ -15,11 +17,9 @@ export class TrendAnalyzer {
    * @returns {'positive'|'neutral'|'negative'}
    */
   analyze(history) {
-    if (!history || history.length < 2) return "neutral";
-
-    const scores = history
-      .map((item) => item.percentage || 0)
-      .filter((p) => p > 0);
+    const scores = createHistoryTimeline(history)
+      .filter((entry) => entry.hasValidScore)
+      .map((entry) => entry.score);
 
     if (scores.length < 2) return "neutral";
 
@@ -35,6 +35,19 @@ export class TrendAnalyzer {
     return "neutral";
   }
 
+  getRecentDirection(history) {
+    const scores = createHistoryTimeline(history)
+      .filter((entry) => entry.hasValidScore)
+      .map((entry) => entry.score);
+
+    if (scores.length < 2) return "insufficient";
+
+    const delta = scores.at(-1) - scores.at(-2);
+    if (delta > 0) return "up";
+    if (delta < 0) return "down";
+    return "stable";
+  }
+
   /**
    * Retorna os últimos N pontos de dados para o gráfico de evolução.
    * @param {object[]} history
@@ -42,12 +55,15 @@ export class TrendAnalyzer {
    * @returns {{ date: string, score: number }[]}
    */
   getEvolutionPoints(history, n = 10) {
-    if (!history || history.length === 0) return [];
-
-    return history.slice(-n).map((item) => ({
-      date: item.date || new Date().toISOString(),
-      score: item.percentage || 0,
-      passed: !!item.passed,
-    }));
+    return createHistoryTimeline(history)
+      .filter((entry) => entry.hasValidScore)
+      .slice(-n)
+      .map((entry) => ({
+        date: entry.hasValidTimestamp
+          ? new Date(entry.timestamp).toISOString()
+          : null,
+        score: entry.score,
+        passed: !!entry.attempt.passed,
+      }));
   }
 }
