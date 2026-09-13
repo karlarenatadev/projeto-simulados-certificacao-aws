@@ -2,7 +2,9 @@
  * Quizzes Routes
  * POST   /api/quiz/start         - Start new quiz
  * POST   /api/quiz/:id/answer    - Record answer
- * GET    /api/quiz/:id/results   - Get quiz results
+ * POST   /api/quiz/:id/finish    - Complete quiz exactly once
+ * POST   /api/quiz/:id/abandon   - Explicitly discard an active quiz
+ * GET    /api/quiz/:id/results   - Get completed quiz results
  */
 
 import { Router } from 'express';
@@ -13,7 +15,8 @@ import {
   getQuizById,
   recordAnswer,
   getAnswersByQuiz,
-  calculateQuizStats,
+  completeQuiz,
+  abandonQuiz,
   getUserModuleState,
 } from '../../database/db.js';
 import { requireAuth } from '../middleware/requireRole.js';
@@ -89,6 +92,9 @@ router.post('/start', requireAuth, async (req, res, next) => {
       message: 'Quiz started successfully',
       data: {
         quiz_id: quiz.id,
+        status: quiz.status,
+        started_at: quiz.started_at,
+        completed_at: quiz.completed_at,
         language,
         questions: questions.map(q => ({
           id: q.id,
@@ -134,6 +140,12 @@ router.post('/:id/answer', requireAuth, async (req, res, next) => {
         message: `Quiz with ID ${quiz_id} not found`,
       });
     }
+    if (quiz.status !== 'started') {
+      return res.status(409).json({
+        success: false,
+        message: `Quiz does not accept answers while status is ${quiz.status}`,
+      });
+    }
 
     const question = await getQuestionById(question_id);
     if (!question) {
@@ -145,6 +157,7 @@ router.post('/:id/answer', requireAuth, async (req, res, next) => {
 
     const answer = await recordAnswer({
       quiz_id,
+      user_id: req.user.id,
       question_id,
       user_answer: Array.isArray(user_answer) ? user_answer : [user_answer],
       time_secs: time_secs || 0,
@@ -171,6 +184,47 @@ router.post('/:id/answer', requireAuth, async (req, res, next) => {
 });
 
 // ============================================================================
+// POST /api/quiz/:id/finish - Complete quiz idempotently
+// ============================================================================
+
+router.post('/:id/finish', requireAuth, async (req, res, next) => {
+  try {
+    const result = await completeQuiz(req.params.id, req.user.id);
+    res.status(200).json({
+      success: true,
+      message: 'Quiz completed successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ============================================================================
+// POST /api/quiz/:id/abandon - Explicitly discard an active quiz
+// ============================================================================
+
+router.post('/:id/abandon', requireAuth, async (req, res, next) => {
+  try {
+    const quiz = await abandonQuiz(req.params.id, req.user.id);
+    res.status(200).json({
+      success: true,
+      message: 'Quiz abandoned successfully',
+      data: {
+        quiz_id: quiz.id,
+        status: quiz.status,
+        started_at: quiz.started_at,
+        completed_at: quiz.completed_at,
+        abandoned_at: quiz.abandoned_at,
+        idempotent: quiz.idempotent,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ============================================================================
 // GET /api/quiz/:id/results - Get quiz results
 // ============================================================================
 
@@ -186,17 +240,22 @@ router.get('/:id/results', requireAuth, async (req, res, next) => {
         message: `Quiz with ID ${quiz_id} not found`,
       });
     }
+    if (quiz.status !== 'completed') {
+      return res.status(409).json({
+        success: false,
+        message: 'Quiz results are only available after completion',
+      });
+    }
 
     // Get all answers
     const answers = await getAnswersByQuiz(quiz_id);
-
-    // Calculate statistics
-    const stats = await calculateQuizStats(quiz_id);
 
     res.status(200).json({
       success: true,
       data: {
         quiz_id,
+        status: quiz.status,
+        started_at: quiz.started_at,
         certification: quiz.certification,
         total_questions: quiz.total_questions,
         score: quiz.score,

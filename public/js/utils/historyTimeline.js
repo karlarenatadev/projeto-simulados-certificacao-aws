@@ -121,6 +121,11 @@ export function createHistoryTimeline(history, { certificationId } = {}) {
       };
     })
     .filter((entry) => {
+      // Offline and pre-lifecycle records have no status and remain historical
+      // results. An explicit remote started/abandoned state is never a result.
+      if (entry.attempt?.status && entry.attempt.status !== "completed") {
+        return false;
+      }
       if (!normalizedCertId) return true;
       return getAttemptCertificationId(entry) === normalizedCertId;
     });

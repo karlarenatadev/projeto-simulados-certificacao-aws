@@ -106,6 +106,102 @@ export async function migrateCaseTranslations(database) {
   `);
 }
 
+/**
+ * Adds an explicit lifecycle to quiz attempts in existing databases.
+ *
+ * The legacy schema assigned completed_at when a row was inserted. Because a
+ * legitimate 0% result is indistinguishable from an unfinished legacy row,
+ * existing rows are conservatively preserved as completed.
+ */
+export async function migrateQuizLifecycle(database) {
+  await database.exec(`
+    ALTER TABLE quiz_history ADD COLUMN IF NOT EXISTS status VARCHAR(16);
+    ALTER TABLE quiz_history ADD COLUMN IF NOT EXISTS started_at TIMESTAMP;
+    ALTER TABLE quiz_history ADD COLUMN IF NOT EXISTS abandoned_at TIMESTAMP;
+
+    UPDATE quiz_history
+       SET status = 'completed'
+     WHERE status IS NULL;
+
+    UPDATE quiz_history
+       SET started_at = COALESCE(completed_at, CURRENT_TIMESTAMP)
+     WHERE started_at IS NULL;
+
+    ALTER TABLE quiz_history ALTER COLUMN status SET DEFAULT 'started';
+    ALTER TABLE quiz_history ALTER COLUMN status SET NOT NULL;
+    ALTER TABLE quiz_history ALTER COLUMN started_at SET DEFAULT CURRENT_TIMESTAMP;
+    ALTER TABLE quiz_history ALTER COLUMN started_at SET NOT NULL;
+    ALTER TABLE quiz_history ALTER COLUMN completed_at DROP DEFAULT;
+    ALTER TABLE quiz_history ALTER COLUMN completed_at DROP NOT NULL;
+  `);
+
+  await database.exec(`
+    DO $$
+    BEGIN
+      IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'chk_quiz_history_status'
+          AND conrelid = 'quiz_history'::regclass
+      ) THEN
+        ALTER TABLE quiz_history
+          ADD CONSTRAINT chk_quiz_history_status
+          CHECK (status IN ('started', 'completed', 'abandoned'));
+      END IF;
+
+      IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'chk_quiz_history_lifecycle'
+          AND conrelid = 'quiz_history'::regclass
+      ) THEN
+        ALTER TABLE quiz_history
+          ADD CONSTRAINT chk_quiz_history_lifecycle CHECK (
+            (status = 'started' AND completed_at IS NULL AND abandoned_at IS NULL)
+            OR (status = 'completed' AND completed_at IS NOT NULL AND abandoned_at IS NULL)
+            OR (status = 'abandoned' AND completed_at IS NULL AND abandoned_at IS NOT NULL)
+          );
+      END IF;
+    END $$;
+
+    CREATE INDEX IF NOT EXISTS idx_quiz_history_status ON quiz_history(status);
+
+    CREATE OR REPLACE VIEW user_stats AS
+    WITH quiz_stats AS (
+      SELECT
+        user_id,
+        COUNT(*) AS total_quizzes,
+        COALESCE(AVG(percentage), 0)::DECIMAL(5,2) AS avg_score,
+        COALESCE(MAX(percentage), 0) AS best_score,
+        COALESCE(SUM(time_spent_secs), 0) AS total_time_secs,
+        COUNT(DISTINCT certification) AS certifications_practiced
+      FROM quiz_history
+      WHERE status = 'completed'
+      GROUP BY user_id
+    ),
+    focus_stats AS (
+      SELECT
+        user_id,
+        COALESCE(SUM(minutes) FILTER (WHERE session_type = 'focus'), 0) AS total_focus_minutes
+      FROM focus_sessions
+      GROUP BY user_id
+    )
+    SELECT
+      u.id AS user_id,
+      COALESCE(u.nickname, u.anonymous_name, 'Usuário') AS display_name,
+      u.nickname,
+      u.anonymous_name,
+      u.role,
+      COALESCE(qs.total_quizzes, 0) AS total_quizzes,
+      COALESCE(qs.avg_score, 0)::DECIMAL(5,2) AS avg_score,
+      COALESCE(qs.best_score, 0) AS best_score,
+      COALESCE(qs.total_time_secs, 0) AS total_time_secs,
+      COALESCE(qs.certifications_practiced, 0) AS certifications_practiced,
+      COALESCE(fs.total_focus_minutes, 0) AS total_focus_minutes
+    FROM users u
+    LEFT JOIN quiz_stats qs ON qs.user_id = u.id
+    LEFT JOIN focus_stats fs ON fs.user_id = u.id;
+  `);
+}
+
 loadEnvironment({ quiet: true });
 
 let db = null;
@@ -261,6 +357,7 @@ export async function initializeDatabase(options = {}) {
 
       await migrateQuestionIdentity(database);
       await migrateCaseTranslations(database);
+      await migrateQuizLifecycle(database);
 
       db = database;
       return db;
@@ -291,6 +388,7 @@ export async function initializeDatabase(options = {}) {
           console.log('[database] Schema applied successfully (retry)');
           await migrateQuestionIdentity(database);
           await migrateCaseTranslations(database);
+          await migrateQuizLifecycle(database);
           db = database;
           return db;
         } catch (retryError) {
@@ -1895,7 +1993,7 @@ function normalizeQuizHistoryInput(userIdOrData, certification, answersOrMetadat
   };
 }
 
-function normalizeRecordAnswerInput(quizIdOrData, questionId, userAnswer, timeSecs) {
+function normalizeRecordAnswerInput(quizIdOrData, questionId, userAnswer, timeSecs, userId) {
   const source = isPlainObject(quizIdOrData)
     ? quizIdOrData
     : {
@@ -1903,13 +2001,19 @@ function normalizeRecordAnswerInput(quizIdOrData, questionId, userAnswer, timeSe
         question_id: questionId,
         user_answer: userAnswer,
         time_secs: timeSecs,
+        user_id: userId,
       };
+
+  const ownerId = source.user_id ?? source.userId;
 
   return {
     quiz_id: normalizeRequiredString(source.quiz_id ?? source.quizId, 'quizId'),
     question_id: normalizeRequiredString(source.question_id ?? source.questionId, 'questionId'),
     user_answer: normalizeAnswerPayload(source.user_answer ?? source.userAnswer, 'userAnswer'),
     time_secs: normalizeNonNegativeInteger(source.time_secs ?? source.timeSecs, 'timeSecs', 0),
+    user_id: ownerId === undefined || ownerId === null
+      ? null
+      : normalizeRequiredString(ownerId, 'userId'),
   };
 }
 
@@ -1952,6 +2056,24 @@ function buildQuizSummary(totalQuestions, answerRows, threshold = DEFAULT_WEAK_D
   };
 }
 
+function createQuizLifecycleError(message, statusCode) {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  return error;
+}
+
+function buildQuizResult(quiz, answerRows, { idempotent = false } = {}) {
+  const correctAnswers = answerRows.filter((answer) => answer.is_correct).length;
+
+  return {
+    ...quiz,
+    quiz_id: quiz.id,
+    correct_answers: correctAnswers,
+    incorrect_answers: answerRows.length - correctAnswers,
+    idempotent,
+  };
+}
+
 /**
  * Create a new quiz history record
  * Supports createQuizHistory({ ...quizData }) and
@@ -1973,8 +2095,9 @@ export async function createQuizHistory(userIdOrData, certification, answersOrMe
   const query = `
     INSERT INTO quiz_history (
       user_id, certification, score, total_questions, percentage,
-      time_spent_secs, domain_scores, weak_domains
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      time_spent_secs, domain_scores, weak_domains, status,
+      started_at, completed_at, abandoned_at
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'started', CURRENT_TIMESTAMP, NULL, NULL)
     RETURNING *
   `;
 
@@ -2009,7 +2132,8 @@ export async function getQuizHistory(userId, limit = DEFAULT_HISTORY_LIMIT, offs
   const normalizedOffset = normalizeOffset(offset);
   const query = `
     SELECT * FROM quiz_history 
-    WHERE user_id = $1 
+    WHERE user_id = $1
+      AND status = 'completed'
     ORDER BY completed_at DESC 
     LIMIT $2 OFFSET $3
   `;
@@ -2027,12 +2151,20 @@ export async function getQuizHistory(userId, limit = DEFAULT_HISTORY_LIMIT, offs
  * @param {string} quizId - UUID of the quiz history record
  * @returns {Promise<Object|null>} Quiz history record or null
  */
-export async function getQuizById(quizId) {
-  normalizeRequiredString(quizId, 'quizId');
-  const query = 'SELECT * FROM quiz_history WHERE id = $1';
+export async function getQuizById(quizId, userId = null) {
+  const normalizedQuizId = normalizeRequiredString(quizId, 'quizId');
+  const normalizedUserId = userId === null || userId === undefined
+    ? null
+    : normalizeRequiredString(userId, 'userId');
+  const query = normalizedUserId
+    ? 'SELECT * FROM quiz_history WHERE id = $1 AND user_id = $2'
+    : 'SELECT * FROM quiz_history WHERE id = $1';
+  const params = normalizedUserId
+    ? [normalizedQuizId, normalizedUserId]
+    : [normalizedQuizId];
 
   try {
-    const result = await executeQuery(query, [quizId]);
+    const result = await executeQuery(query, params);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
     console.error('✗ Error fetching quiz:', error.message);
@@ -2043,34 +2175,69 @@ export async function getQuizById(quizId) {
 /**
  * Record a user's answer to a question
  * Supports recordAnswer({ ...answerData }) and
- * recordAnswer(quizId, questionId, userAnswer, timeSecs).
+ * recordAnswer(quizId, questionId, userAnswer, timeSecs, userId).
  * is_correct from callers is intentionally ignored; correctness is computed
  * against questions.correct_answer on the backend.
  * @returns {Promise<Object|null>} Recorded answer
  */
-export async function recordAnswer(quizIdOrData, questionId, userAnswer, timeSecs) {
+export async function recordAnswer(quizIdOrData, questionId, userAnswer, timeSecs, userId) {
   const {
     quiz_id,
     question_id,
     user_answer,
     time_secs,
-  } = normalizeRecordAnswerInput(quizIdOrData, questionId, userAnswer, timeSecs);
+    user_id,
+  } = normalizeRecordAnswerInput(quizIdOrData, questionId, userAnswer, timeSecs, userId);
 
   try {
-    const quiz = await getQuizById(quiz_id);
-    if (!quiz) {
-      throw new Error('Quiz not found');
-    }
-
     const question = await getQuestionById(question_id);
     if (!question) {
-      throw new Error('Question not found');
+      throw createQuizLifecycleError('Question not found', 404);
     }
 
     const isCorrect = answersMatch(user_answer, question.correct_answer);
     const database = getDatabase();
 
     return await database.transaction(async (transaction) => {
+      const quizParams = user_id ? [quiz_id, user_id] : [quiz_id];
+      const quizRows = await queryRows(transaction, `
+        SELECT *
+        FROM quiz_history
+        WHERE id = $1
+          ${user_id ? 'AND user_id = $2' : ''}
+      `, quizParams);
+      const quiz = quizRows[0];
+
+      if (!quiz) {
+        throw createQuizLifecycleError('Quiz not found', 404);
+      }
+      if (quiz.status !== 'started') {
+        throw createQuizLifecycleError(
+          `Quiz does not accept answers while status is ${quiz.status}`,
+          409,
+        );
+      }
+
+      // A resposta pode ter sido gravada antes de um refresh, mas a confirmação
+      // HTTP perdida. Reenviar a mesma escolha não pode duplicar o resultado.
+      const existingAnswers = await queryRows(transaction, `
+        SELECT * FROM answers
+        WHERE quiz_id = $1 AND question_id = $2
+        ORDER BY answered_at ASC
+        LIMIT 1
+      `, [quiz_id, question_id]);
+      if (existingAnswers[0]) {
+        if (!answersMatch(existingAnswers[0].user_answer, user_answer)) {
+          throw createQuizLifecycleError('Question already answered with a different choice', 409);
+        }
+        return {
+          ...existingAnswers[0],
+          explanation: question.explanation,
+          correct_answer: question.correct_answer,
+          idempotent: true,
+        };
+      }
+
       const insertedAnswers = await queryRows(transaction, `
         INSERT INTO answers (quiz_id, question_id, user_answer, is_correct, time_secs)
         VALUES ($1, $2, $3, $4, $5)
@@ -2100,6 +2267,7 @@ export async function recordAnswer(quizIdOrData, questionId, userAnswer, timeSec
             domain_scores = $4,
             weak_domains = $5
         WHERE id = $6
+          AND status = 'started'
         RETURNING *
       `, [
         summary.score,
@@ -2119,6 +2287,138 @@ export async function recordAnswer(quizIdOrData, questionId, userAnswer, timeSec
     });
   } catch (error) {
     console.error('✗ Error recording answer:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Complete a started quiz and persist its final server-calculated result.
+ * Repeated calls for an already completed quiz return the stored result without
+ * changing completed_at.
+ */
+export async function completeQuiz(quizId, userId) {
+  const normalizedQuizId = normalizeRequiredString(quizId, 'quizId');
+  const normalizedUserId = normalizeRequiredString(userId, 'userId');
+  const database = getDatabase();
+
+  try {
+    return await database.transaction(async (transaction) => {
+      const quizRows = await queryRows(transaction, `
+        SELECT *
+        FROM quiz_history
+        WHERE id = $1 AND user_id = $2
+      `, [normalizedQuizId, normalizedUserId]);
+      const quiz = quizRows[0];
+
+      if (!quiz) {
+        throw createQuizLifecycleError('Quiz not found', 404);
+      }
+
+      const answerRows = await queryRows(transaction, `
+        SELECT a.*, q.domain
+        FROM answers a
+        LEFT JOIN questions q ON q.id = a.question_id
+        WHERE a.quiz_id = $1
+        ORDER BY a.answered_at ASC
+      `, [normalizedQuizId]);
+
+      if (quiz.status === 'completed') {
+        return buildQuizResult(quiz, answerRows, { idempotent: true });
+      }
+      if (quiz.status !== 'started') {
+        throw createQuizLifecycleError(
+          `Quiz cannot be completed while status is ${quiz.status}`,
+          409,
+        );
+      }
+
+      const summary = buildQuizSummary(quiz.total_questions, answerRows);
+      const completedRows = await queryRows(transaction, `
+        UPDATE quiz_history
+        SET status = 'completed',
+            score = $1,
+            percentage = $2,
+            time_spent_secs = $3,
+            domain_scores = $4,
+            weak_domains = $5,
+            completed_at = CURRENT_TIMESTAMP,
+            abandoned_at = NULL
+        WHERE id = $6
+          AND user_id = $7
+          AND status = 'started'
+        RETURNING *
+      `, [
+        summary.score,
+        summary.percentage,
+        summary.time_spent_secs,
+        JSON.stringify(summary.domain_scores),
+        summary.weak_domains,
+        normalizedQuizId,
+        normalizedUserId,
+      ]);
+
+      const completedQuiz = completedRows[0];
+      if (!completedQuiz) {
+        throw createQuizLifecycleError('Quiz lifecycle changed during completion', 409);
+      }
+
+      return buildQuizResult(completedQuiz, answerRows);
+    });
+  } catch (error) {
+    console.error('âœ— Error completing quiz:', error.message);
+    throw error;
+  }
+}
+
+/**
+ * Abandon a quiz only after an explicit user discard action.
+ */
+export async function abandonQuiz(quizId, userId) {
+  const normalizedQuizId = normalizeRequiredString(quizId, 'quizId');
+  const normalizedUserId = normalizeRequiredString(userId, 'userId');
+  const database = getDatabase();
+
+  try {
+    return await database.transaction(async (transaction) => {
+      const quizRows = await queryRows(transaction, `
+        SELECT *
+        FROM quiz_history
+        WHERE id = $1 AND user_id = $2
+      `, [normalizedQuizId, normalizedUserId]);
+      const quiz = quizRows[0];
+
+      if (!quiz) {
+        throw createQuizLifecycleError('Quiz not found', 404);
+      }
+      if (quiz.status === 'abandoned') {
+        return { ...quiz, idempotent: true };
+      }
+      if (quiz.status !== 'started') {
+        throw createQuizLifecycleError(
+          `Quiz cannot be abandoned while status is ${quiz.status}`,
+          409,
+        );
+      }
+
+      const abandonedRows = await queryRows(transaction, `
+        UPDATE quiz_history
+        SET status = 'abandoned',
+            abandoned_at = CURRENT_TIMESTAMP,
+            completed_at = NULL
+        WHERE id = $1
+          AND user_id = $2
+          AND status = 'started'
+        RETURNING *
+      `, [normalizedQuizId, normalizedUserId]);
+
+      if (!abandonedRows[0]) {
+        throw createQuizLifecycleError('Quiz lifecycle changed during abandonment', 409);
+      }
+
+      return { ...abandonedRows[0], idempotent: false };
+    });
+  } catch (error) {
+    console.error('âœ— Error abandoning quiz:', error.message);
     throw error;
   }
 }
@@ -2194,6 +2494,7 @@ export async function getUserStats(userId) {
     FROM quiz_history qh
     LEFT JOIN answers a ON a.quiz_id = qh.id
     WHERE qh.user_id = $1
+      AND qh.status = 'completed'
   `;
 
   try {
@@ -2265,6 +2566,7 @@ export async function calculateStats(userId) {
       COALESCE(SUM(score), 0)::int AS correct_answers
     FROM quiz_history
     WHERE user_id = $1
+      AND status = 'completed'
   `;
 
   try {
@@ -2301,7 +2603,10 @@ export async function calculateQuizStats(quizId) {
   try {
     const quiz = await getQuizById(quizId);
     if (!quiz) {
-      throw new Error('Quiz not found');
+      throw createQuizLifecycleError('Quiz not found', 404);
+    }
+    if (quiz.status !== 'completed') {
+      throw createQuizLifecycleError('Quiz results are only available after completion', 409);
     }
 
     const answers = await getAnswersByQuiz(quizId);
@@ -2342,6 +2647,7 @@ export async function getWeakDomains(userId, threshold = DEFAULT_WEAK_DOMAIN_THR
     JOIN quiz_history qh ON qh.id = a.quiz_id
     JOIN questions q ON q.id = a.question_id
     WHERE qh.user_id = $1
+      AND qh.status = 'completed'
     GROUP BY q.domain
     HAVING COUNT(*) > 0
     ORDER BY q.domain ASC
@@ -2501,6 +2807,7 @@ export default {
   // Core functions
   initializeDatabase,
   migrateQuestionIdentity,
+  migrateQuizLifecycle,
   getDatabase,
   closeDatabase,
   executeQuery,
@@ -2530,6 +2837,8 @@ export default {
   getQuizHistory,
   getQuizById,
   recordAnswer,
+  completeQuiz,
+  abandonQuiz,
   getAnswersByQuiz,
   calculateStats,
   calculateQuizStats,

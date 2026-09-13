@@ -293,16 +293,66 @@ CREATE TABLE IF NOT EXISTS quiz_history (
     id               UUID              PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id          UUID              NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     certification    certification_type NOT NULL,
+    status            VARCHAR(16)       NOT NULL DEFAULT 'started',
     score            INTEGER           NOT NULL CHECK (score >= 0),
     total_questions  INTEGER           NOT NULL CHECK (total_questions > 0),
     percentage       DECIMAL(5,2)      NOT NULL CHECK (percentage BETWEEN 0 AND 100),
     domain_scores    JSONB             NOT NULL DEFAULT '{}',  -- {domain: {score, total}}
     weak_domains     TEXT[]            DEFAULT '{}',
     time_spent_secs  INTEGER           CHECK (time_spent_secs >= 0),
-    completed_at     TIMESTAMP         NOT NULL DEFAULT NOW(),
+    started_at       TIMESTAMP         NOT NULL DEFAULT NOW(),
+    completed_at     TIMESTAMP,
+    abandoned_at     TIMESTAMP,
 
-    CONSTRAINT chk_score_lte_total CHECK (score <= total_questions)
+    CONSTRAINT chk_score_lte_total CHECK (score <= total_questions),
+    CONSTRAINT chk_quiz_history_status
+        CHECK (status IN ('started', 'completed', 'abandoned')),
+    CONSTRAINT chk_quiz_history_lifecycle CHECK (
+        (status = 'started' AND completed_at IS NULL AND abandoned_at IS NULL)
+        OR (status = 'completed' AND completed_at IS NOT NULL AND abandoned_at IS NULL)
+        OR (status = 'abandoned' AND completed_at IS NULL AND abandoned_at IS NOT NULL)
+    )
 );
+
+-- Upgrade an existing PostgreSQL/PGlite table before the views below are
+-- recreated. Legacy rows cannot be classified by score or answer count:
+-- completed_at was populated at insertion, so preserve them as completed.
+ALTER TABLE quiz_history ADD COLUMN IF NOT EXISTS status VARCHAR(16);
+ALTER TABLE quiz_history ADD COLUMN IF NOT EXISTS started_at TIMESTAMP;
+ALTER TABLE quiz_history ADD COLUMN IF NOT EXISTS abandoned_at TIMESTAMP;
+UPDATE quiz_history SET status = 'completed' WHERE status IS NULL;
+UPDATE quiz_history
+SET started_at = COALESCE(completed_at, CURRENT_TIMESTAMP)
+WHERE started_at IS NULL;
+ALTER TABLE quiz_history ALTER COLUMN status SET DEFAULT 'started';
+ALTER TABLE quiz_history ALTER COLUMN status SET NOT NULL;
+ALTER TABLE quiz_history ALTER COLUMN started_at SET DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE quiz_history ALTER COLUMN started_at SET NOT NULL;
+ALTER TABLE quiz_history ALTER COLUMN completed_at DROP DEFAULT;
+ALTER TABLE quiz_history ALTER COLUMN completed_at DROP NOT NULL;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'chk_quiz_history_status'
+          AND conrelid = 'quiz_history'::regclass
+    ) THEN
+        ALTER TABLE quiz_history ADD CONSTRAINT chk_quiz_history_status
+            CHECK (status IN ('started', 'completed', 'abandoned'));
+    END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'chk_quiz_history_lifecycle'
+          AND conrelid = 'quiz_history'::regclass
+    ) THEN
+        ALTER TABLE quiz_history ADD CONSTRAINT chk_quiz_history_lifecycle CHECK (
+            (status = 'started' AND completed_at IS NULL AND abandoned_at IS NULL)
+            OR (status = 'completed' AND completed_at IS NOT NULL AND abandoned_at IS NULL)
+            OR (status = 'abandoned' AND completed_at IS NULL AND abandoned_at IS NOT NULL)
+        );
+    END IF;
+END $$;
 
 COMMENT ON TABLE  quiz_history                   IS 'Histórico de quizzes realizados pelos usuários';
 COMMENT ON COLUMN quiz_history.domain_scores     IS 'JSON: {\"EC2\": {\"score\": 3, \"total\": 5}, ...}';
@@ -311,6 +361,7 @@ COMMENT ON COLUMN quiz_history.time_spent_secs   IS 'Tempo total gasto no quiz e
 
 CREATE INDEX IF NOT EXISTS idx_quiz_history_user          ON quiz_history(user_id);
 CREATE INDEX IF NOT EXISTS idx_quiz_history_certification ON quiz_history(certification);
+CREATE INDEX IF NOT EXISTS idx_quiz_history_status        ON quiz_history(status);
 CREATE INDEX IF NOT EXISTS idx_quiz_history_completed     ON quiz_history(completed_at DESC);
 CREATE INDEX IF NOT EXISTS idx_quiz_history_percentage    ON quiz_history(percentage DESC);
 
@@ -433,6 +484,7 @@ WITH quiz_stats AS (
         COALESCE(SUM(time_spent_secs), 0)                    AS total_time_secs,
         COUNT(DISTINCT certification)                        AS certifications_practiced
     FROM quiz_history
+    WHERE status = 'completed'
     GROUP BY user_id
 ),
 focus_stats AS (

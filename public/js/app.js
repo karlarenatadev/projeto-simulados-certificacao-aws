@@ -122,6 +122,7 @@ let uiState = {
   reviewQueueIndexes: null,
   reviewQueuePosition: 0,
   isSubmittingAnswer: false,
+  pendingAnswerWrites: [],
 };
 
 let lastRenderedResult = null;
@@ -624,12 +625,16 @@ function syncMistakeRecord(question, result) {
 }
 
 function resetFinishState() {
+  // Non-exam modes may use this screen without creating a backend quiz.
+  // Never carry a previous remote quiz ID into their answer/finish flow.
+  quizManager.clearCurrentQuiz();
   uiState.isFinishing = false;
   uiState.hasFinished = false;
   uiState.flags = [];
   uiState.reviewQuestionIds = [];
   uiState.reviewQueueIndexes = null;
   uiState.reviewQueuePosition = 0;
+  uiState.pendingAnswerWrites = [];
   setFinishButtonLoading(false);
 }
 
@@ -940,6 +945,7 @@ async function startQuiz() {
       logger.info(`Resuming session for ${certId}`);
     } else {
       if (activeSession) {
+        await quizManager.abandonQuiz(activeSession.quizId);
         storageManager.clearActiveSession(certId);
       }
       uiState.currentMode = modeInput;
@@ -1609,7 +1615,7 @@ function submitAnswer() {
 
   // Record answer to backend asynchronously (don't block UI)
   if (quizManager.currentQuizId && question.id) {
-    quizManager
+    const answerWrite = quizManager
       .recordAnswer({
         question_id: question.id,
         user_answer: uiState.tempSelectedAnswer,
@@ -1619,7 +1625,9 @@ function submitAnswer() {
       .catch((error) => {
         logger.warn("Failed to record answer:", error);
         // UI continues anyway
+        return false;
       });
+    uiState.pendingAnswerWrites.push(answerWrite);
   }
 
   // A resposta e o estado do motor são persistidos antes de qualquer
@@ -1880,7 +1888,7 @@ function showReviewSummary() {
     });
 }
 
-function finishQuiz(force = false) {
+async function finishQuiz(force = false) {
   // Trava para evitar execução múltipla por cliques rápidos
   if (uiState.isFinishing || uiState.hasFinished) return;
   if (
@@ -1905,6 +1913,21 @@ function finishQuiz(force = false) {
 
   if (uiState.timerInterval) clearInterval(uiState.timerInterval);
   if (uiState.qTimerInterval) clearInterval(uiState.qTimerInterval);
+
+  // The final answer can still be in flight when Finish is clicked. Replay
+  // any unacknowledged answers before the remote lifecycle transition.
+  try {
+    await Promise.all(uiState.pendingAnswerWrites);
+    const remoteResult = await quizManager.finishQuiz();
+    if (remoteResult) {
+      logger.info(`Quiz ${remoteResult.quiz_id} completed on backend`);
+    }
+  } catch (error) {
+    logger.warn(
+      "Remote completion failed; preserving the local result:",
+      error,
+    );
+  }
 
   storageManager.clearActiveSession(engine.state.certId);
 
@@ -2748,13 +2771,6 @@ function saveQuizResult() {
     quizId: results.quizId || quizManager?.currentQuizId,
     mode: uiState.currentMode,
   });
-
-  // Confirm backend sync if quiz was started via API
-  if (quizManager && quizManager.currentQuizId) {
-    logger.info(
-      `✓ Quiz ${quizManager.currentQuizId} completed and synced to backend`,
-    );
-  }
 
   if (!saved) {
     logger.warn("Resultado duplicado ignorado no histÃ³rico.");

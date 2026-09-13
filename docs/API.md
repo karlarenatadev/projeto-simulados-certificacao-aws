@@ -137,6 +137,10 @@ POST /api/quiz/start
 POST /api/quizzes/start
 POST /api/quiz/:id/answer
 POST /api/quizzes/:id/answer
+POST /api/quiz/:id/finish
+POST /api/quizzes/:id/finish
+POST /api/quiz/:id/abandon
+POST /api/quizzes/:id/abandon
 GET /api/quiz/:id/results
 GET /api/quizzes/:id/results
 GET /api/quiz/:id
@@ -147,11 +151,15 @@ Iniciar:
 
 ```json
 {
-  "user_id": "uuid-do-usuario",
   "certification": "CLF-C02",
   "num_questions": 10
 }
 ```
+
+O usuário é obtido da sessão autenticada. O retorno inclui `quiz_id`,
+`status: "started"`, `started_at` e `completed_at: null`. Um quiz iniciado
+permanece disponível por `GET /api/quiz/:id` para retomada, mas não entra nas
+estatísticas de concluídos.
 
 Responder:
 
@@ -163,7 +171,21 @@ Responder:
 }
 ```
 
-O backend calcula `is_correct`.
+O backend calcula `is_correct`. Respostas só são aceitas em `started` e para o
+usuário dono da tentativa; uma repetição idêntica não duplica a resposta.
+
+`POST /api/quiz/:id/finish` não exige corpo. Calcula o resultado com as
+respostas persistidas, muda o status para `completed` e preenche `completed_at`.
+Repetições devolvem o resultado existente com `idempotent: true`, sem alterar a
+data. `GET /api/quiz/:id/results` só retorna resultado final em `completed`.
+
+`POST /api/quiz/:id/abandon` só deve ser chamado após descarte explícito da
+sessão pelo usuário. Muda `started` para `abandoned` e preenche `abandoned_at`;
+fechar a aba ou ficar offline não causa abandono automático. Operações
+incompatíveis com o estado retornam HTTP 409.
+
+Iniciar outra tentativa diretamente pela API não abandona a anterior: ambas
+podem ficar `started` até que o usuário conclua ou descarte explicitamente.
 
 ## Usuarios
 

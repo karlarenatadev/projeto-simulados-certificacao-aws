@@ -558,6 +558,32 @@ export const apiService = {
     }
   },
 
+  /** Complete an active quiz; retries are idempotent on the API. */
+  async finishQuiz(quizId) {
+    try {
+      return await fetchWithRetry(`/api/quiz/${quizId}/finish`, {
+        method: "POST",
+      });
+    } catch (error) {
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to finish quiz:", error);
+      throw error;
+    }
+  },
+
+  /** Discard an active quiz only after an explicit user action. */
+  async abandonQuiz(quizId) {
+    try {
+      return await fetchWithRetry(`/api/quiz/${quizId}/abandon`, {
+        method: "POST",
+      });
+    } catch (error) {
+      if (!error || !error.apiDisabled)
+        logger.error("Failed to abandon quiz:", error);
+      throw error;
+    }
+  },
+
   /**
    * Get quiz details
    * GET /api/quiz/:id

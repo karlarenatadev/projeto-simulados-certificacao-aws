@@ -122,6 +122,7 @@ def analyze_gaps(user_id: str, min_attempts: int = 3, top_n: int = 3) -> dict:
             INNER JOIN quiz_history qh ON a.quiz_id = qh.id
             INNER JOIN questions q ON a.question_id = q.id
             WHERE qh.user_id = %s
+              AND qh.status = 'completed'
             GROUP BY q.domain
             HAVING COUNT(*) >= %s
             ORDER BY error_rate DESC

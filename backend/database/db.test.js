@@ -3,9 +3,12 @@
  */
 
 import { randomUUID } from 'node:crypto';
+import { PGlite } from '@electric-sql/pglite';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/globals';
 import {
   calculateStats,
+  completeQuiz,
+  abandonQuiz,
   closeDatabase,
   createQuizHistory,
   createUser,
@@ -25,6 +28,7 @@ import {
   getUserStats,
   getWeakDomains,
   initializeDatabase,
+  migrateQuizLifecycle,
   insertQuestion,
   normalizeCertification,
   recordAnswer,
@@ -620,6 +624,7 @@ describe('User, gamification, leaderboard, and user stats operations', () => {
     }));
     await recordAnswer(quiz.id, firstQuestion.id, ['B'], 30);
     await recordAnswer(quiz.id, secondQuestion.id, ['A'], 45);
+    await completeQuiz(quiz.id, user.id);
     await executeQuery(
       `INSERT INTO focus_sessions (user_id, minutes, session_type, session_date)
        VALUES ($1, 25, 'focus', CURRENT_DATE), ($1, 5, 'short_break', CURRENT_DATE)`,
@@ -720,6 +725,10 @@ describe('Quiz history and answers operations', () => {
     expect(quiz.user_id).toBe(user.id);
     expect(quiz.certification).toBe('CLF-C02');
     expect(quiz.total_questions).toBe(3);
+    expect(quiz.status).toBe('started');
+    expect(quiz.started_at).toBeTruthy();
+    expect(quiz.completed_at).toBeNull();
+    expect(quiz.abandoned_at).toBeNull();
     expect(fetched.id).toBe(quiz.id);
     expect(missing).toBeNull();
     await expect(
@@ -730,11 +739,110 @@ describe('Quiz history and answers operations', () => {
     ).rejects.toThrow('score cannot be greater than total_questions');
   });
 
+  test('started attempts never enter completed history, averages, answers, or leaderboard', async () => {
+    const { user, quiz } = await createQuizForUser({ total_questions: 1 });
+    const question = await insertQuestion(validQuestion());
+    await recordAnswer(quiz.id, question.id, ['B'], 9);
+    await getGamification(user.id);
+
+    expect(await getQuizHistory(user.id)).toEqual([]);
+    expect(await calculateStats(user.id)).toMatchObject({
+      total_quizzes: 0,
+      avg_score: 0,
+      total_questions: 0,
+    });
+    expect(await getUserStats(user.id)).toMatchObject({
+      total_quizzes: 0,
+      total_answers: 0,
+    });
+    expect(await getWeakDomains(user.id)).toEqual([]);
+    const leaderboard = await getLeaderboard();
+    expect(leaderboard.find((entry) => entry.display_name === user.anonymous_name)?.total_quizzes)
+      .toBe(0);
+    expect((await getQuizById(quiz.id)).status).toBe('started');
+  });
+
+  test('finish persists zero percent and is idempotent without changing completed_at', async () => {
+    const { user, quiz } = await createQuizForUser({ total_questions: 1 });
+    const question = await insertQuestion(validQuestion());
+    await recordAnswer(quiz.id, question.id, ['A'], 4);
+
+    const first = await completeQuiz(quiz.id, user.id);
+    const second = await completeQuiz(quiz.id, user.id);
+
+    expect(first).toMatchObject({ status: 'completed', score: 0, correct_answers: 0 });
+    expect(Number(first.percentage)).toBe(0);
+    expect(first.completed_at).toBeTruthy();
+    expect(second.idempotent).toBe(true);
+    expect(second.completed_at).toEqual(first.completed_at);
+    expect((await getQuizHistory(user.id))).toHaveLength(1);
+    expect((await calculateStats(user.id)).total_quizzes).toBe(1);
+    await expect(recordAnswer(quiz.id, question.id, ['A'], 4)).rejects.toMatchObject({
+      statusCode: 409,
+    });
+  });
+
+  test('duplicate answer replay is idempotent while a different choice conflicts', async () => {
+    const { quiz } = await createQuizForUser({ total_questions: 1 });
+    const question = await insertQuestion(validQuestion());
+    const first = await recordAnswer(quiz.id, question.id, ['B'], 3);
+    const repeated = await recordAnswer(quiz.id, question.id, ['B'], 3);
+
+    expect(repeated.id).toBe(first.id);
+    expect(repeated.idempotent).toBe(true);
+    expect(await getAnswersByQuiz(quiz.id)).toHaveLength(1);
+    await expect(recordAnswer(quiz.id, question.id, ['A'], 3)).rejects.toMatchObject({
+      statusCode: 409,
+    });
+  });
+
+  test('only the owner may answer, finish, or abandon an attempt', async () => {
+    const { user, quiz } = await createQuizForUser({ total_questions: 1 });
+    const otherUser = await createTestUser();
+    const question = await insertQuestion(validQuestion());
+
+    await expect(recordAnswer({
+      quiz_id: quiz.id,
+      user_id: otherUser.id,
+      question_id: question.id,
+      user_answer: ['B'],
+    })).rejects.toMatchObject({ statusCode: 404 });
+    await expect(completeQuiz(quiz.id, otherUser.id)).rejects.toMatchObject({ statusCode: 404 });
+    await expect(abandonQuiz(quiz.id, otherUser.id)).rejects.toMatchObject({ statusCode: 404 });
+    expect((await getQuizById(quiz.id, user.id)).status).toBe('started');
+    expect(await getQuizById(quiz.id, otherUser.id)).toBeNull();
+  });
+
+  test('explicit abandonment excludes the attempt and prevents further answers or finish', async () => {
+    const { user, quiz } = await createQuizForUser({ total_questions: 1 });
+    const question = await insertQuestion(validQuestion());
+    await recordAnswer(quiz.id, question.id, ['A'], 2);
+
+    const abandoned = await abandonQuiz(quiz.id, user.id);
+    const repeated = await abandonQuiz(quiz.id, user.id);
+
+    expect(abandoned.status).toBe('abandoned');
+    expect(abandoned.completed_at).toBeNull();
+    expect(abandoned.abandoned_at).toBeTruthy();
+    expect(repeated.idempotent).toBe(true);
+    expect(repeated.abandoned_at).toEqual(abandoned.abandoned_at);
+    expect((await calculateStats(user.id)).total_quizzes).toBe(0);
+    expect(await getWeakDomains(user.id)).toEqual([]);
+    await expect(recordAnswer(quiz.id, question.id, ['A'], 2)).rejects.toMatchObject({
+      statusCode: 409,
+    });
+    await expect(completeQuiz(quiz.id, user.id)).rejects.toMatchObject({ statusCode: 409 });
+  });
+
   test('fetches quiz history by user with pagination', async () => {
     const user = await createTestUser();
-    await createQuizHistory(user.id, 'CLF-C02', { total_questions: 1 });
-    await createQuizHistory(user.id, 'CLF-C02', { total_questions: 1 });
-    await createQuizHistory(user.id, 'CLF-C02', { total_questions: 1 });
+    const started = await createQuizHistory(user.id, 'CLF-C02', { total_questions: 1 });
+    const completed = await Promise.all([
+      createQuizHistory(user.id, 'CLF-C02', { total_questions: 1 }),
+      createQuizHistory(user.id, 'CLF-C02', { total_questions: 1 }),
+      createQuizHistory(user.id, 'CLF-C02', { total_questions: 1 }),
+    ]);
+    for (const quiz of completed) await completeQuiz(quiz.id, user.id);
 
     const firstPage = await getQuizHistory(user.id, 2, 0);
     const secondPage = await getQuizHistory(user.id, 2, 2);
@@ -743,6 +851,7 @@ describe('Quiz history and answers operations', () => {
     expect(firstPage).toHaveLength(2);
     expect(secondPage).toHaveLength(1);
     expect(safeDefaults).toHaveLength(3);
+    expect(safeDefaults.some((quiz) => quiz.id === started.id)).toBe(false);
   });
 
   test('records a correct answer calculated by the backend', async () => {
@@ -836,6 +945,10 @@ describe('Quiz history and answers operations', () => {
     await recordAnswer(quiz.id, securityQuestion.id, ['B'], 5);
     await recordAnswer(quiz.id, billingQuestion.id, ['B'], 9);
 
+    expect((await calculateStats(user.id)).total_quizzes).toBe(0);
+    expect(await getWeakDomains(user.id, 70)).toEqual([]);
+    await completeQuiz(quiz.id, user.id);
+
     const stats = await calculateStats(user.id);
     const weakDomains = await getWeakDomains(user.id, 70);
 
@@ -896,7 +1009,7 @@ describe('Quiz history and answers operations', () => {
 
   test('keeps user_stats aggregates from multiplying quiz and focus rows', async () => {
     const user = await createTestUser();
-    await createQuizHistory({
+    const firstQuiz = await createQuizHistory({
       user_id: user.id,
       certification: 'CLF-C02',
       score: 1,
@@ -904,7 +1017,7 @@ describe('Quiz history and answers operations', () => {
       percentage: 100,
       time_spent_secs: 30,
     });
-    await createQuizHistory({
+    const secondQuiz = await createQuizHistory({
       user_id: user.id,
       certification: 'SAA-C03',
       score: 0,
@@ -912,6 +1025,15 @@ describe('Quiz history and answers operations', () => {
       percentage: 0,
       time_spent_secs: 40,
     });
+    const firstQuestion = await insertQuestion(validQuestion());
+    const secondQuestion = await insertQuestion(validQuestion({
+      certification: 'SAA-C03',
+      question_text: 'Which service is a managed relational database?',
+    }));
+    await recordAnswer(firstQuiz.id, firstQuestion.id, ['B'], 30);
+    await recordAnswer(secondQuiz.id, secondQuestion.id, ['A'], 40);
+    await completeQuiz(firstQuiz.id, user.id);
+    await completeQuiz(secondQuiz.id, user.id);
     await executeQuery(
       `INSERT INTO focus_sessions (user_id, minutes, session_type, session_date)
        VALUES ($1, 10, 'focus', CURRENT_DATE), ($1, 20, 'focus', CURRENT_DATE)`,
@@ -923,5 +1045,62 @@ describe('Quiz history and answers operations', () => {
     expect(Number(stats.total_quizzes)).toBe(2);
     expect(Number(stats.total_time_secs)).toBe(70);
     expect(Number(stats.total_focus_minutes)).toBe(30);
+  });
+});
+
+describe('legacy quiz lifecycle migration', () => {
+  test('preserves legacy 0% as completed and is safe to reapply', async () => {
+    const legacyDb = await PGlite.create({ dataDir: 'memory://' });
+    const userId = randomUUID();
+    const oldQuizId = randomUUID();
+    const newQuizId = randomUUID();
+
+    try {
+      await legacyDb.exec(`
+        CREATE TABLE users (id UUID PRIMARY KEY, nickname TEXT, anonymous_name TEXT, role TEXT);
+        CREATE TABLE focus_sessions (user_id UUID, minutes INTEGER, session_type TEXT);
+        CREATE TABLE quiz_history (
+          id UUID PRIMARY KEY,
+          user_id UUID NOT NULL,
+          score INTEGER NOT NULL,
+          total_questions INTEGER NOT NULL,
+          percentage DECIMAL(5,2) NOT NULL,
+          time_spent_secs INTEGER,
+          certification TEXT,
+          completed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      await legacyDb.query('INSERT INTO users (id, anonymous_name, role) VALUES ($1, $2, $3)', [
+        userId, 'Legacy user', 'STUDENT',
+      ]);
+      await legacyDb.query(`
+        INSERT INTO quiz_history (id, user_id, score, total_questions, percentage, certification)
+        VALUES ($1, $2, 0, 1, 0, 'CLF-C02')
+      `, [oldQuizId, userId]);
+
+      await migrateQuizLifecycle(legacyDb);
+      const oldRow = (await legacyDb.query(
+        'SELECT * FROM quiz_history WHERE id = $1', [oldQuizId],
+      )).rows[0];
+      expect(oldRow).toMatchObject({ status: 'completed', score: 0 });
+      expect(oldRow.started_at).toBeTruthy();
+      expect(oldRow.completed_at).toBeTruthy();
+
+      await legacyDb.query(`
+        INSERT INTO quiz_history (id, user_id, score, total_questions, percentage, certification)
+        VALUES ($1, $2, 0, 1, 0, 'CLF-C02')
+      `, [newQuizId, userId]);
+      await migrateQuizLifecycle(legacyDb);
+      const newRow = (await legacyDb.query(
+        'SELECT * FROM quiz_history WHERE id = $1', [newQuizId],
+      )).rows[0];
+      expect(newRow.status).toBe('started');
+      expect(newRow.completed_at).toBeNull();
+      expect(newRow.started_at).toBeTruthy();
+      expect((await legacyDb.query('SELECT total_quizzes FROM user_stats WHERE user_id = $1', [userId]))
+        .rows[0].total_quizzes).toBe(1);
+    } finally {
+      await legacyDb.close();
+    }
   });
 });

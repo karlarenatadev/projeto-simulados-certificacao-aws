@@ -52,10 +52,14 @@ export const quizManager = {
    * @param {number} numQuestions - Number of questions
    * @returns {Promise<object>} { quizId, questions, totalQuestions }
    */
-  async startQuiz(certId, numQuestions = 10, locale = "pt") {
+  async startQuiz(certId, numQuestions = 10, locale = "pt", mode = "exam") {
     certId = normalizeCertificationId(certId);
     try {
-      if (this.isAPIAvailable && this.currentUserId) {
+      if (
+        mode !== "mistakes-review" &&
+        this.isAPIAvailable &&
+        this.currentUserId
+      ) {
         try {
           const response = await apiService.startQuiz({
             user_id: this.currentUserId,
@@ -113,9 +117,10 @@ export const quizManager = {
    */
   async recordAnswer(options = {}) {
     try {
+      const quizId = this.currentQuizId;
       // Always save to local storage for redundancy
       const localRecord = {
-        quiz_id: this.currentQuizId,
+        quiz_id: quizId,
         question_id: options.question_id,
         user_answer: options.user_answer,
         is_correct: options.is_correct || false,
@@ -129,25 +134,22 @@ export const quizManager = {
       this._saveAnswerLocally(localRecord);
 
       // Try to send to API if available
-      if (
-        this.isAPIAvailable &&
-        this.currentQuizId &&
-        !this.currentQuizId.startsWith("local_")
-      ) {
+      if (this.isAPIAvailable && quizId && !quizId.startsWith("local_")) {
         try {
           await apiService.recordAnswer({
-            quiz_id: this.currentQuizId,
+            quiz_id: quizId,
             question_id: options.question_id,
             user_answer: options.user_answer,
             time_secs: options.time_secs,
           });
-          this._markAnswerSynced(this.currentQuizId, options.question_id);
+          this._markAnswerSynced(quizId, options.question_id);
           logger.info(
             `✓ Answer recorded on backend for Q${options.question_id}`,
           );
         } catch (apiError) {
           logger.warn(`⚠ Failed to record answer on API: ${apiError.message}`);
           // Local backup preserves the answer; synced flag enables future retry
+          return false;
         }
       }
 
@@ -155,6 +157,88 @@ export const quizManager = {
     } catch (error) {
       logger.error("Error recording answer:", error);
       return false;
+    }
+  },
+
+  /** Retry answers whose acknowledgement may have been lost on refresh. */
+  async syncPendingAnswers(quizId = this.currentQuizId) {
+    if (!this.isAPIAvailable || !quizId || quizId.startsWith("local_")) {
+      return false;
+    }
+
+    const prefix = storageManager.getUserScopedKey(`ans_${quizId}_`);
+    const pending = [];
+    try {
+      for (let index = 0; index < localStorage.length; index++) {
+        const key = localStorage.key(index);
+        if (!key?.startsWith(prefix)) continue;
+        const record = JSON.parse(localStorage.getItem(key));
+        if (record && !record.synced && record.question_id)
+          pending.push(record);
+      }
+    } catch (error) {
+      logger.warn("Could not inspect pending quiz answers:", error);
+      return false;
+    }
+
+    const results = await Promise.all(
+      pending.map(async (record) => {
+        try {
+          await apiService.recordAnswer({
+            quiz_id: quizId,
+            question_id: record.question_id,
+            user_answer: record.user_answer,
+            time_secs: record.time_secs,
+          });
+          this._markAnswerSynced(quizId, record.question_id);
+          return true;
+        } catch (error) {
+          logger.warn("Pending quiz answer remains local:", error);
+          return false;
+        }
+      }),
+    );
+
+    return results.every(Boolean);
+  },
+
+  /** Complete a remote attempt without preventing local-only completion. */
+  async finishQuiz() {
+    const quizId = this.currentQuizId;
+    if (!this.isAPIAvailable || !quizId || quizId.startsWith("local_")) {
+      return null;
+    }
+
+    if (!(await this.syncPendingAnswers(quizId))) {
+      logger.warn(
+        "Remote quiz remains started because answers are not synchronized",
+      );
+      return null;
+    }
+
+    try {
+      const response = await apiService.finishQuiz(quizId);
+      return response.success ? response.data : null;
+    } catch (error) {
+      logger.warn(
+        "Remote quiz remains started; local result is preserved:",
+        error,
+      );
+      return null;
+    }
+  },
+
+  /** Abandon a remote attempt after the user explicitly discards it. */
+  async abandonQuiz(quizId) {
+    if (!this.isAPIAvailable || !quizId || quizId.startsWith("local_")) {
+      return null;
+    }
+    try {
+      const response = await apiService.abandonQuiz(quizId);
+      return response.success ? response.data : null;
+    } catch (error) {
+      logger.warn("Could not abandon remote quiz; it remains started:", error);
+      return null;
     }
   },
 
@@ -203,7 +287,7 @@ export const quizManager = {
   _saveAnswerLocally(record) {
     try {
       const key = storageManager.getUserScopedKey(
-        `ans_${this.currentQuizId}_${record.question_id}`,
+        `ans_${record.quiz_id || this.currentQuizId}_${record.question_id}`,
       );
       localStorage.setItem(key, JSON.stringify(record));
     } catch (error) {

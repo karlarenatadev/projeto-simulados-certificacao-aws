@@ -105,4 +105,16 @@ describe("historyTimeline", () => {
 
     expect(scores(timeline)).toEqual([50]);
   });
+
+  test("ignora tentativas remotas iniciadas ou abandonadas sem excluir resultados legados", () => {
+    const timeline = createHistoryTimeline([
+      { id: "started", status: "started", percentage: 0, completed_at: null },
+      { id: "abandoned", status: "abandoned", percentage: 20, date: "2026-09-02" },
+      { id: "completed", status: "completed", percentage: 0, completed_at: "2026-09-03" },
+      { id: "legacy", percentage: 70, date: "2026-09-04" },
+    ]);
+
+    expect(timeline.map((entry) => entry.attempt.id)).toEqual(["completed", "legacy"]);
+    expect(timeline[0].score).toBe(0);
+  });
 });

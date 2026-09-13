@@ -73,12 +73,33 @@ Quiz e estatisticas:
 - `getQuizHistory(userId, limit, offset)`
 - `getQuizById(id)`
 - `recordAnswer(data)`
+- `completeQuiz(quizId, userId)`
+- `abandonQuiz(quizId, userId)`
 - `getAnswersByQuiz(id)`
 - `calculateStats(userId)`
 - `calculateQuizStats(quizId)`
 - `getWeakDomains(userId, threshold)`
 - `getUserStats(userId)`
 - `getLeaderboard(limit)`
+
+## Ciclo de vida de tentativas (BUG-004)
+
+Novas linhas de `quiz_history` começam em `started`, com `started_at` preenchido
+e `completed_at = NULL`. `completeQuiz` calcula o resultado com as respostas do
+banco e faz a transição idempotente para `completed`. `abandonQuiz` é usado apenas
+no descarte explícito de uma sessão local; perda de rede, refresh e fechamento
+da aba não marcam abandono. O histórico de concluídos, a view `user_stats`,
+`calculateStats`, `getUserStats` e `getWeakDomains` filtram `status = 'completed'`.
+
+`migrateQuizLifecycle` roda na inicialização do PGlite, inclusive quando o
+schema já existia. Registros anteriores recebem `completed`, preservando notas
+0% legítimas: o schema antigo atribuía `completed_at` no início e não permite
+distinguir retroativamente conclusão de abandono. A migração é reaplicável e
+passa a usar `started` como default para novos registros. O mesmo upgrade
+aditivo aparece em `schema.sql` antes das views para o caminho PostgreSQL de
+`run_schema.py`. O leaderboard lê a
+tabela independente `gamification`; iniciar uma tentativa não altera seus
+contadores/XP. A reconciliação geral de gamificação permanece fora desta fase.
 
 ## Validacao De Questoes
 

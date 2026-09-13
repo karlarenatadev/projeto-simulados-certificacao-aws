@@ -2,6 +2,24 @@ import { expect, test } from "@playwright/test";
 import { installConsoleGuard, openAuthenticated } from "./helpers/app.js";
 
 async function answerCurrentQuestion(page) {
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const currentNumber = Number(
+          document.getElementById("current-q-num")?.textContent,
+        );
+        const entry = Object.entries(localStorage).find(([key]) =>
+          key.includes("active_session_"),
+        );
+        const session = entry ? JSON.parse(entry[1]) : null;
+        return (
+          currentNumber > 0 &&
+          session?.currentIndex === currentNumber - 1 &&
+          Boolean(session.questions?.[session.currentIndex])
+        );
+      }),
+    )
+    .toBe(true);
   const question = await page.evaluate(() => {
     const entry = Object.entries(localStorage).find(([key]) =>
       key.includes("active_session_"),

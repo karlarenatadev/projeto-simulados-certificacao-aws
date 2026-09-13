@@ -155,8 +155,11 @@ def submit_quiz(submission: QuizSubmission):
                 percentage,
                 domain_scores,
                 weak_domains,
-                time_spent_secs
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                time_spent_secs,
+                status,
+                started_at,
+                completed_at
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'completed', NOW(), NOW())
             RETURNING id
         """,
             (
@@ -237,6 +240,7 @@ def get_history(user_id: str):
                 completed_at
             FROM quiz_history
             WHERE user_id = %s
+              AND status = 'completed'
             ORDER BY completed_at DESC
         """,
             (user_id,),

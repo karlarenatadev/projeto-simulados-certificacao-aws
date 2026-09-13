@@ -208,14 +208,16 @@ describe('Express API integration', () => {
   });
 
   test('quiz lifecycle: start, answer, and fetch results', async () => {
+    const lifecycleUser = await createUser(`LifecycleUser-${Date.now()}`);
+    const headers = { 'X-Test-Role': 'STUDENT', 'X-User-Id': lifecycleUser.id };
     const started = await request(baseUrl, '/api/quiz/start', {
       method: 'POST',
       body: JSON.stringify({
-        user_id: user.id,
+        user_id: lifecycleUser.id,
         certification: 'CLF-C02',
         num_questions: 1,
       }),
-      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
+      headers,
     });
 
     expect(started.response.status).toBe(201);
@@ -223,9 +225,15 @@ describe('Express API integration', () => {
     expect(started.body.data.questions).toHaveLength(1);
     expect(started.body.data.questions[0].correct_answer).toBeUndefined();
     expect(started.body.data.questions[0].source_question_id).toBeTruthy();
+    expect(started.body.data.status).toBe('started');
+    expect(started.body.data.started_at).toBeTruthy();
+    expect(started.body.data.completed_at).toBeNull();
 
     const quizId = started.body.data.quiz_id;
     const questionId = started.body.data.questions[0].id;
+    const statsBeforeAnswer = await request(baseUrl, `/api/users/${lifecycleUser.id}/stats`, { headers });
+    expect(statsBeforeAnswer.body.data.total_quizzes).toBe(0);
+    expect(statsBeforeAnswer.body.data.avg_score).toBe(0);
 
     const answered = await request(baseUrl, `/api/quiz/${quizId}/answer`, {
       method: 'POST',
@@ -235,15 +243,39 @@ describe('Express API integration', () => {
         is_correct: false,
         time_secs: 12,
       }),
-      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
+      headers,
     });
 
     expect(answered.response.status).toBe(200);
     expect(answered.body.success).toBe(true);
     expect(answered.body.data.answer_id).toBeTruthy();
+    const replayed = await request(baseUrl, `/api/quiz/${quizId}/answer`, {
+      method: 'POST',
+      body: JSON.stringify({ question_id: questionId, user_answer: 0, time_secs: 12 }),
+      headers,
+    });
+    expect(replayed.response.status).toBe(200);
+    expect(replayed.body.data.answer_id).toBe(answered.body.data.answer_id);
+    const resumed = await request(baseUrl, `/api/quiz/${quizId}`, { headers });
+    expect(resumed.body.data.id).toBe(quizId);
+    expect(resumed.body.data.status).toBe('started');
+    expect(resumed.body.data.completed_at).toBeNull();
+
+    const statsBeforeFinish = await request(baseUrl, `/api/users/${lifecycleUser.id}/stats`, { headers });
+    expect(statsBeforeFinish.body.data.total_quizzes).toBe(0);
+    const prematureResults = await request(baseUrl, `/api/quiz/${quizId}/results`, { headers });
+    expect(prematureResults.response.status).toBe(409);
+
+    const finished = await request(baseUrl, `/api/quiz/${quizId}/finish`, {
+      method: 'POST',
+      headers,
+    });
+    expect(finished.response.status).toBe(200);
+    expect(finished.body.data.status).toBe('completed');
+    expect(finished.body.data.completed_at).toBeTruthy();
 
     const results = await request(baseUrl, `/api/quiz/${quizId}/results`, {
-      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
+      headers,
     });
 
     expect(results.response.status).toBe(200);
@@ -251,6 +283,24 @@ describe('Express API integration', () => {
     expect(results.body.data.total_questions).toBe(1);
     expect(results.body.data.correct_answers).toBe(1);
     expect(results.body.data.percentage).toBe(100);
+    const statsAfterFinish = await request(baseUrl, `/api/users/${lifecycleUser.id}/stats`, { headers });
+    expect(statsAfterFinish.body.data.total_quizzes).toBe(1);
+    expect(statsAfterFinish.body.data.avg_score).toBe(100);
+
+    const repeated = await request(baseUrl, `/api/quiz/${quizId}/finish`, {
+      method: 'POST',
+      headers,
+    });
+    expect(repeated.body.data.idempotent).toBe(true);
+    expect(repeated.body.data.completed_at).toBe(finished.body.data.completed_at);
+    const statsAfterRepeat = await request(baseUrl, `/api/users/${lifecycleUser.id}/stats`, { headers });
+    expect(statsAfterRepeat.body.data.total_quizzes).toBe(1);
+    const lateAnswer = await request(baseUrl, `/api/quiz/${quizId}/answer`, {
+      method: 'POST',
+      body: JSON.stringify({ question_id: questionId, user_answer: 0 }),
+      headers,
+    });
+    expect(lateAnswer.response.status).toBe(409);
   });
 
   test('quiz routes require authentication and enforce ownership', async () => {
@@ -291,6 +341,36 @@ describe('Express API integration', () => {
       headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': otherUser.id },
     });
     expect(answered.response.status).toBe(404);
+
+    for (const action of ['finish', 'abandon']) {
+      const denied = await request(baseUrl, `/api/quiz/${quizId}/${action}`, {
+        method: 'POST',
+        headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': otherUser.id },
+      });
+      expect(denied.response.status).toBe(404);
+    }
+  });
+
+  test('starting another quiz does not implicitly abandon the earlier one', async () => {
+    const multipleUser = await createUser(`MultipleStartedUser-${Date.now()}`);
+    const headers = { 'X-Test-Role': 'STUDENT', 'X-User-Id': multipleUser.id };
+    const first = await request(baseUrl, '/api/quiz/start', {
+      method: 'POST',
+      body: JSON.stringify({ certification: 'CLF-C02', num_questions: 1 }),
+      headers,
+    });
+    const second = await request(baseUrl, '/api/quiz/start', {
+      method: 'POST',
+      body: JSON.stringify({ certification: 'CLF-C02', num_questions: 1 }),
+      headers,
+    });
+    const firstDetail = await request(baseUrl, `/api/quiz/${first.body.data.quiz_id}`, { headers });
+    const secondDetail = await request(baseUrl, `/api/quiz/${second.body.data.quiz_id}`, { headers });
+    const stats = await request(baseUrl, `/api/users/${multipleUser.id}/stats`, { headers });
+
+    expect(firstDetail.body.data.status).toBe('started');
+    expect(secondDetail.body.data.status).toBe('started');
+    expect(stats.body.data.total_quizzes).toBe(0);
   });
 
   test('quiz correctness is calculated by the server', async () => {
@@ -307,11 +387,51 @@ describe('Express API integration', () => {
       headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
     });
     expect(answered.response.status).toBe(200);
+    const finished = await request(baseUrl, `/api/quiz/${quizId}/finish`, {
+      method: 'POST',
+      headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
+    });
+    expect(finished.body.data.status).toBe('completed');
     const results = await request(baseUrl, `/api/quiz/${quizId}/results`, {
       headers: { 'X-Test-Role': 'STUDENT', 'X-User-Id': user.id },
     });
     expect(results.body.data.correct_answers).toBe(0);
     expect(results.body.data.percentage).toBe(0);
+  });
+
+  test('an unfinished or explicitly abandoned quiz does not contaminate stats', async () => {
+    const lifecycleUser = await createUser(`UnfinishedUser-${Date.now()}`);
+    const headers = { 'X-Test-Role': 'STUDENT', 'X-User-Id': lifecycleUser.id };
+    const started = await request(baseUrl, '/api/quiz/start', {
+      method: 'POST',
+      body: JSON.stringify({ certification: 'CLF-C02', num_questions: 1 }),
+      headers,
+    });
+    const quizId = started.body.data.quiz_id;
+    const questionId = started.body.data.questions[0].id;
+    const statsStarted = await request(baseUrl, `/api/users/${lifecycleUser.id}/stats`, { headers });
+    expect(statsStarted.body.data.total_quizzes).toBe(0);
+
+    const abandoned = await request(baseUrl, `/api/quiz/${quizId}/abandon`, {
+      method: 'POST',
+      headers,
+    });
+    expect(abandoned.body.data.status).toBe('abandoned');
+    expect(abandoned.body.data.completed_at).toBeNull();
+    expect(abandoned.body.data.abandoned_at).toBeTruthy();
+    const lateAnswer = await request(baseUrl, `/api/quiz/${quizId}/answer`, {
+      method: 'POST',
+      body: JSON.stringify({ question_id: questionId, user_answer: 0 }),
+      headers,
+    });
+    expect(lateAnswer.response.status).toBe(409);
+    const lateFinish = await request(baseUrl, `/api/quiz/${quizId}/finish`, {
+      method: 'POST',
+      headers,
+    });
+    expect(lateFinish.response.status).toBe(409);
+    const statsAbandoned = await request(baseUrl, `/api/users/${lifecycleUser.id}/stats`, { headers });
+    expect(statsAbandoned.body.data.total_quizzes).toBe(0);
   });
 
   test('case completion uses the authenticated user instead of body.user_id', async () => {
