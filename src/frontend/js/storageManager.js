@@ -3,6 +3,7 @@ import apiService from "./services/api.js";
 import { createDataRepository } from "./dataRepository.js";
 import { generateQuestionId } from "./utils/questionIdentity.js";
 import { SessionManager } from "./core/sessionManager.js";
+import { normalizeLegacyReviewQuestion } from "./utils/reviewCard.js";
 
 /**
  * StorageManager - Gerencia toda a persistência de dados do simulador
@@ -1186,15 +1187,20 @@ export class StorageManager {
   addReviewQuestion(certId, question) {
     if (!certId || !question) return;
 
+    const cleanQuestion = {
+      ...question,
+      question: normalizeLegacyReviewQuestion(question.question),
+    };
     const deck = this.getReviewDeck(certId);
-    const qId = generateQuestionId(question, certId);
+    const qId = generateQuestionId(cleanQuestion, certId);
 
     const existingIndex = deck.findIndex(
       (q) =>
         q.questionId === qId ||
         (q.question &&
-          question.question &&
-          q.question.substring(0, 50) === question.question.substring(0, 50)),
+          cleanQuestion.question &&
+          q.question.substring(0, 50) ===
+            cleanQuestion.question.substring(0, 50)),
     );
 
     if (existingIndex >= 0) {
@@ -1207,7 +1213,7 @@ export class StorageManager {
     } else {
       // Adiciona nova
       deck.push({
-        ...question,
+        ...cleanQuestion,
         questionId: qId,
         certId: certId,
         flaggedAt: new Date().toISOString(),
@@ -1327,6 +1333,11 @@ export class StorageManager {
       let needsMigration = false;
 
       deck = deck.map((q) => {
+        const cleanQuestion = normalizeLegacyReviewQuestion(q.question);
+        if (cleanQuestion !== q.question) {
+          q = { ...q, question: cleanQuestion };
+          needsMigration = true;
+        }
         if (!q.questionId) {
           needsMigration = true;
           return {
@@ -1345,7 +1356,14 @@ export class StorageManager {
       });
 
       if (needsMigration) {
-        localStorage.setItem(deckKey, JSON.stringify(deck));
+        try {
+          localStorage.setItem(deckKey, JSON.stringify(deck));
+        } catch (error) {
+          logger.warn(
+            "Não foi possível persistir a migração do review deck:",
+            error,
+          );
+        }
       }
 
       return deck;

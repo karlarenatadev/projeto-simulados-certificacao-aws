@@ -161,6 +161,22 @@ export function getTrailState(certId) {
   return getCertificationProgress(certId);
 }
 
+/** The first stage is always available; later stages keep saved unlocks. */
+export function isTrailStageUnlocked(certId, stageId) {
+  const normalizedCertId = normalizeCertificationId(certId) || "clf-c02";
+  const trail = TRAILS_BY_CERT[normalizedCertId];
+  if (!trail) return false;
+  const index = trail.findIndex((stage) => stage.id === stageId);
+  if (index < 0) return false;
+  if (index === 0) return true;
+
+  const progress = getCertificationProgress(normalizedCertId);
+  return (
+    progress.unlockedStages.includes(stageId) ||
+    progress.completedStages.includes(trail[index - 1].id)
+  );
+}
+
 export function readJourneyRecommendation(
   certId,
   storage = globalThis.localStorage,
@@ -286,22 +302,12 @@ export function renderTrail() {
   if (!gamification.completedStages) gamification.completedStages = [];
   if (!gamification.unlockedStages) gamification.unlockedStages = [];
 
-  // 4. Força o desbloqueio do primeiro módulo da trilha atual
-  if (activeTrail && activeTrail.length > 0) {
-    const firstStageId = activeTrail[0].id;
-    if (!gamification.unlockedStages.includes(firstStageId)) {
-      gamification.unlockedStages.push(firstStageId);
-
-      storageManager.saveGamification(gamification, currentCertId);
-    }
-  }
-
   let html = "";
 
   // 5. Monta o HTML
   activeTrail.forEach((stage, index) => {
     const isCompleted = gamification.completedStages.includes(stage.id);
-    const isUnlocked = gamification.unlockedStages.includes(stage.id);
+    const isUnlocked = isTrailStageUnlocked(currentCertId, stage.id);
 
     const stageTitle = stage.title[currentLang] || stage.title["pt"];
     const stateClass = isCompleted

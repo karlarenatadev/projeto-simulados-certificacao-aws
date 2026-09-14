@@ -27,6 +27,7 @@ import {
 import { resolveAppLinks, resolveAppUrl } from "./core/navigation.js";
 import { t } from "./i18n/useTranslation.js";
 import { openPomodoroWidget } from "./pomodoroManager.js";
+import { storageManager } from "./storageManager.js";
 
 // 🔹 CONSTANTES 🔹──────────────────────────────────────────────────────────────
 
@@ -184,12 +185,12 @@ export const SIDEBAR_ITEMS = [
     id: "sidebar-btn-mistakes",
     label: "Erros",
     icon: "fa-solid fa-triangle-exclamation",
-    action: "startMistakesQuiz",
+    href: "./simulados.html?mode=mistakes",
+    activePaths: ["/simulados.html"],
     roles: ["*"],
     i18n: "sidebar_mistakes",
     title: "Praticar Questões Erradas",
     danger: true,
-    hidden: true, // Oculto por padrão; app.js controla visibilidade
     badge: "sidebar-mistakes-count",
   },
   // ── Itens exclusivos para VALIDATOR e ADMIN ─────────────────────────────
@@ -672,6 +673,10 @@ function _isSidebarItemActive(item) {
     window.location.pathname.endsWith(path),
   );
   if (!pathMatches) return false;
+  const isMistakesRoute =
+    new URLSearchParams(window.location.search).get("mode") === "mistakes";
+  if (item.id === "sidebar-btn-mistakes") return isMistakesRoute;
+  if (item.id === "sidebar-btn-quiz" && isMistakesRoute) return false;
   return (
     !item.activeHashes || item.activeHashes.includes(window.location.hash || "")
   );
@@ -806,7 +811,11 @@ function _createSidebarItem(item) {
     const badge = document.createElement("span");
     badge.id = item.badge;
     badge.className = "left-sidebar-badge";
-    badge.textContent = "0";
+    const certificationId =
+      AuthService.getCurrentUser()?.certification || "clf-c02";
+    badge.textContent = String(
+      storageManager.getMistakes(certificationId).length,
+    );
     el.appendChild(badge);
   }
 

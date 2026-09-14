@@ -415,6 +415,33 @@ html.dark .fc-domain--back {
   margin-bottom: 1rem;
 }
 
+.flashcard-container.is-review-deck {
+  height: clamp(25rem, 56vh, 34rem);
+}
+
+.flashcard-container.is-review-deck .flashcard-front,
+.flashcard-container.is-review-deck .flashcard-back {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.flashcard-container.is-review-deck .fc-term {
+  width: 100%;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  font-weight: 600;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.flashcard-container.is-review-deck .fc-definition {
+  width: 100%;
+  font-size: 1rem;
+  line-height: 1.6;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
 @media (min-width: 768px) {
   .fc-term {
     font-size: 1.875rem;

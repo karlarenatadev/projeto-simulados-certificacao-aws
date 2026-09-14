@@ -47,6 +47,7 @@ import {
 } from "./quizReview.js";
 import {
   getCertificationProgress,
+  isTrailStageUnlocked,
   renderTrail,
 } from "./gamificacao/trailManager.js";
 import { renderGuildDashboard } from "./gamificacao/leaderboard.js";
@@ -334,9 +335,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     "/profile.html": "sidebar-btn-profile",
     "/settings.html": "sidebar-btn-settings",
   };
-  const activeId = Object.entries(pathToId).find(([path]) =>
-    currentPath.endsWith(path),
-  )?.[1];
+  const activeId =
+    currentPath.endsWith("/simulados.html") &&
+    urlParams.get("mode") === "mistakes"
+      ? "sidebar-btn-mistakes"
+      : Object.entries(pathToId).find(([path]) =>
+          currentPath.endsWith(path),
+        )?.[1];
   if (activeId) {
     const activeEl = document.getElementById(activeId);
     if (activeEl) activeEl.classList.add("is-active");
@@ -481,6 +486,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  if (!isSPAPage() && urlParams.get("mode") === "mistakes") {
+    const cert = normalizeCertificationId(urlParams.get("cert"));
+    if (cert) {
+      const certSelect = document.getElementById("certification-select");
+      if (certSelect) certSelect.value = cert;
+    }
+    setTimeout(() => startMistakesQuiz(), 150);
+  }
+
   // LÓGICA DO DIAGNÓSTICO (Task 6.2): Auto-start quiz personalizado em simulados.html
   if (!isSPAPage() && window.location.pathname.includes("simulados.html")) {
     const diagnosticCtxStr = sessionStorage.getItem(
@@ -594,7 +608,12 @@ function updateMistakesControls(certId = getActiveCertificationId()) {
 
   if (btnPractice) btnPractice.classList.toggle("hidden", !hasMistakes);
   if (btnClear) btnClear.classList.toggle("hidden", !hasMistakes);
-  if (notice && !hasMistakes) notice.classList.add("hidden");
+  if (
+    notice &&
+    !hasMistakes &&
+    new URLSearchParams(window.location.search).get("mode") !== "mistakes"
+  )
+    notice.classList.add("hidden");
 
   // Sincroniza badge na sidebar esquerda
   syncSidebarMistakesBadge(certId);
@@ -3108,7 +3127,7 @@ function syncSidebarMistakesBadge(certId) {
   const count = mistakes.length;
   const sidebarBtn = document.getElementById("sidebar-btn-mistakes");
   const badge = document.getElementById("sidebar-mistakes-count");
-  if (sidebarBtn) sidebarBtn.classList.toggle("hidden", count === 0);
+  if (sidebarBtn) sidebarBtn.classList.remove("hidden");
   if (badge) badge.textContent = String(count);
 }
 
@@ -3427,6 +3446,10 @@ async function cancelQuiz() {
 }
 
 async function startMistakesQuiz() {
+  if (!document.getElementById("screen-quiz")) {
+    window.location.href = resolveAppUrl("simulados.html?mode=mistakes");
+    return;
+  }
   resetFinishState();
 
   const certId = getActiveCertificationId();
@@ -3438,14 +3461,25 @@ async function startMistakesQuiz() {
   }
 
   const mistakes = storageManager.getMistakes(certId);
+  const notice = document.getElementById("mistakes-feature-notice");
+  const showMistakesNotice = (key) => {
+    if (!notice) return;
+    notice.textContent = t(key, uiState.language);
+    notice.classList.remove("hidden");
+  };
+
+  if (
+    !document.getElementById("question-text") ||
+    !document.getElementById("options-container")
+  ) {
+    logger.error("Mistakes quiz: missing quiz UI containers");
+    showMistakesNotice("mistakes_ui_unavailable");
+    return;
+  }
 
   // Estado vazio: nenhum erro pendente
   if (mistakes.length === 0) {
-    const notice = document.getElementById("mistakes-feature-notice");
-    if (notice) {
-      notice.textContent = t("no_mistakes_to_review", uiState.language);
-      notice.classList.remove("hidden");
-    }
+    showMistakesNotice("no_mistakes_to_review");
     updateMistakesControls(certId);
     return;
   }
@@ -3460,22 +3494,6 @@ async function startMistakesQuiz() {
 
     uiState.currentCertificationInfo = currentCertInfo;
     uiState.currentMode = "mistakes-review";
-
-    // Inicia sessão local (sem backend — erros são locais por definição)
-    try {
-      const quizResponse = await quizManager.startQuiz(
-        certId,
-        mistakes.length,
-        uiState.language,
-        "mistakes-review",
-      );
-      if (!quizResponse.fromAPI) {
-        logger.info("⚠ Mistakes quiz rodando em modo local (API indisponível)");
-      }
-    } catch (err) {
-      logger.warn("Não foi possível registrar sessão no backend:", err);
-      // Continua — o quiz de revisão de erros funciona 100% local
-    }
 
     // Carrega o banco completo de questões para selecionar por domínio
     let allQuestions = [];
@@ -3504,13 +3522,17 @@ async function startMistakesQuiz() {
     );
 
     if (!result.success) {
-      const notice = document.getElementById("mistakes-feature-notice");
-      if (notice) {
-        notice.textContent = t("no_mistakes_to_review", uiState.language);
-        notice.classList.remove("hidden");
-      }
+      showMistakesNotice("mistakes_content_unavailable");
       return;
     }
+
+    // A local review session only exists after the question set is usable.
+    await quizManager.startQuiz(
+      certId,
+      result.totalQuestions,
+      uiState.language,
+      "mistakes-review",
+    );
 
     // Sem timer em revisão de erros
     uiState.timeRemaining = 0;
@@ -3537,8 +3559,9 @@ async function startMistakesQuiz() {
 
     loadQuestionUI();
   } catch (err) {
-    alert(t("error_starting_quiz", uiState.language, { message: err.message }));
     logger.error("Erro ao iniciar revisão de erros:", err);
+    showScreen("start");
+    showMistakesNotice("mistakes_start_failed");
   } finally {
     if (btn) {
       btn.disabled = false;
@@ -3823,15 +3846,16 @@ window.startMission = async function (stageId) {
   // redirecionamos para simulados.html com os parâmetros necessários.
   if (!document.getElementById("question-text")) {
     const certSelect = document.getElementById("certification-select");
-    const certId = certSelect
-      ? certSelect.value
-      : storageManager.getActiveCertification?.() || "clf-c02";
+    const certId =
+      normalizeCertificationId(
+        certSelect?.value || AuthService.getCurrentUser()?.certification,
+      ) || "clf-c02";
     const params = new URLSearchParams({
       mode: "mission",
       stageId,
       cert: certId,
     });
-    window.location.href = `simulados.html?${params.toString()}`;
+    window.location.href = resolveAppUrl(`simulados.html?${params.toString()}`);
     return;
   }
 
@@ -3847,11 +3871,12 @@ async function startMissionInternal(stageId) {
   // ========================================================================
 
   // 1.1 Valida se o módulo está desbloqueado
-  const gamification = storageManager.getGamification();
-  if (
-    !gamification.unlockedStages ||
-    !gamification.unlockedStages.includes(stageId)
-  ) {
+  const certSelect = document.getElementById("certification-select");
+  const currentCertId =
+    normalizeCertificationId(
+      certSelect?.value || AuthService.getCurrentUser()?.certification,
+    ) || "clf-c02";
+  if (!isTrailStageUnlocked(currentCertId, stageId)) {
     alert(
       t("mission_locked", uiState.language) ||
         "Este módulo ainda está bloqueado. Complete os anteriores primeiro!",
@@ -3860,8 +3885,6 @@ async function startMissionInternal(stageId) {
   }
 
   // 1.2 Identifica a certificação e o módulo atual
-  const certSelect = document.getElementById("certification-select");
-  const currentCertId = certSelect ? certSelect.value : "clf-c02";
   const currentCertInfo = certificationPaths[currentCertId];
 
   if (!currentCertInfo) {

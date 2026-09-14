@@ -728,7 +728,18 @@ export class QuizEngine {
     this.state.mode = mode;
     this.state.isReviewMode = mode === "mistakes-review";
 
-    const approvedQuestions = (questions || []).filter(isApprovedQuestion);
+    // Mistake records were created from questions already shown in a quiz.
+    // Older records do not retain validation metadata, but do retain the
+    // original question, options and correct answer.
+    const approvedQuestions = (questions || []).filter(
+      (q) =>
+        isApprovedQuestion(q) ||
+        (q?.questionId &&
+          typeof q.question === "string" &&
+          Array.isArray(q.options) &&
+          q.options.length > 0 &&
+          (q.correct ?? q.correctAnswer) !== undefined),
+    );
     if (approvedQuestions.length === 0) {
       return { success: false, message: "no_mistakes" };
     }
@@ -737,12 +748,7 @@ export class QuizEngine {
     const normalized = approvedQuestions.map((q) => {
       const base = this._normalizeQuestion({
         ...q,
-        correct:
-          q.correct !== undefined
-            ? q.correct
-            : q.correctAnswer !== undefined
-              ? q.correctAnswer
-              : 0,
+        correct: q.correct ?? q.correctAnswer,
       });
 
       if (!base.id && q.questionId) {

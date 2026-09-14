@@ -7,6 +7,7 @@ import {
   renderUserMenu,
 } from "../src/frontend/js/shell.js";
 import { initializeUI } from "../src/frontend/js/i18n/initUI.js";
+import { storageManager } from "../src/frontend/js/storageManager.js";
 
 describe("role-aware administrative sidebar", () => {
   beforeEach(() => {
@@ -23,6 +24,38 @@ describe("role-aware administrative sidebar", () => {
     expect(document.getElementById("sidebar-admin-toggle")).toBeNull();
     expect(document.getElementById("sidebar-btn-users")).toBeNull();
     expect(document.getElementById("sidebar-btn-history")).toBeNull();
+  });
+
+  test("Erros is a visible route to the real quiz UI, including with no mistakes", () => {
+    buildSidebar({ role: "STUDENT" });
+    const item = document.getElementById("sidebar-btn-mistakes");
+    expect(item.tagName).toBe("A");
+    expect(item.getAttribute("href")).toBe("/simulados.html?mode=mistakes");
+    expect(item.classList.contains("hidden")).toBe(false);
+    expect(item.getAttribute("aria-label")).toBeTruthy();
+
+    window.history.replaceState(
+      {},
+      "",
+      "/projeto-simulados-certificacao-aws/index.html",
+    );
+    buildSidebar({ role: "STUDENT" });
+    expect(
+      document.getElementById("sidebar-btn-mistakes").getAttribute("href"),
+    ).toBe("/projeto-simulados-certificacao-aws/simulados.html?mode=mistakes");
+  });
+
+  test("Erros badge reads the saved count on pages that only load the shell", () => {
+    storageManager.recordMistake(
+      { questionId: "error-1", question: "Q", options: ["A", "B"], correct: 0 },
+      1,
+      { certId: "clf-c02" },
+    );
+    window.history.replaceState({}, "", "/dicas-prova.html");
+    buildSidebar({ role: "STUDENT" });
+    expect(document.getElementById("sidebar-mistakes-count").textContent).toBe(
+      "1",
+    );
   });
 
   test.each([

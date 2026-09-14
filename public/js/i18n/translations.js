@@ -233,6 +233,12 @@ export const translations = {
       "Funcionalidade em desenvolvimento! Em breve você poderá revisar suas questões erradas.",
     no_mistakes_to_review:
       "✅ Nenhum erro pendente para revisão nesta certificação. Continue praticando!",
+    mistakes_content_unavailable:
+      "As questões dos erros pendentes não estão disponíveis para revisão neste momento.",
+    mistakes_ui_unavailable:
+      "A interface de revisão está indisponível. Abra Simulados e tente novamente.",
+    mistakes_start_failed:
+      "Não foi possível iniciar a revisão de erros. Tente novamente.",
     clear_mistakes_confirm:
       "Tem certeza que deseja limpar o histórico de erros?",
     mistakes_cleared: "Histórico de erros limpo com sucesso!",
@@ -937,6 +943,11 @@ export const translations = {
       "Feature under development! Soon you'll be able to review your wrong questions.",
     no_mistakes_to_review:
       "✅ No pending mistakes to review for this certification. Keep practicing!",
+    mistakes_content_unavailable:
+      "The questions for pending mistakes are unavailable for review right now.",
+    mistakes_ui_unavailable:
+      "The review interface is unavailable. Open Simulations and try again.",
+    mistakes_start_failed: "Could not start mistake review. Please try again.",
     clear_mistakes_confirm:
       "Are you sure you want to clear the mistakes history?",
     mistakes_cleared: "Mistakes history cleared successfully!",

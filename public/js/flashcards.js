@@ -7,6 +7,7 @@ import { storageManager } from "./storageManager.js";
 import { getCurrentLanguage as getOfficialLanguage } from "./core/languageManager.js";
 import { AuthService } from "./services/authService.js";
 import { userManager } from "./userManager.js";
+import { createReviewDeckTerm } from "./utils/reviewCard.js";
 
 function getCurrentLanguage() {
   return getOfficialLanguage();
@@ -481,22 +482,14 @@ export function filterFlashcards() {
   } else if (selectedDomain === "review-deck") {
     const savedDeck = storageManager.getReviewDeck(selectedCert);
     flashcardState.filteredTerms = savedDeck.map((q) => {
-      const isMulti = Array.isArray(q.correct);
-      const correctText = isMulti
-        ? q.correct.map((i) => q.options[i]).join("<br>• ")
-        : q.options[q.correct];
-
+      const pt = createReviewDeckTerm(q, "pt");
+      const en = createReviewDeckTerm(q, "en");
       return {
         cert: selectedCert,
         domain: "review-deck",
-        term: {
-          pt: `<span class="text-base font-normal leading-relaxed block">${q.question}</span>`,
-          en: `<span class="text-base font-normal leading-relaxed block">${q.question}</span>`,
-        },
-        definition: {
-          pt: `<strong>Resposta:</strong><br>• ${correctText}<br><br><strong>Explicação:</strong><br>${q.explanation}`,
-          en: `<strong>Answer:</strong><br>• ${correctText}<br><br><strong>Explanation:</strong><br>${q.explanation}`,
-        },
+        questionId: q.questionId,
+        term: { pt: pt.term, en: en.term },
+        definition: { pt: pt.definition, en: en.definition },
       };
     });
   } else {
@@ -574,6 +567,10 @@ export function renderCurrentFlashcard() {
 
   const container = document.getElementById("flashcard-container");
   if (container) {
+    container.classList.toggle(
+      "is-review-deck",
+      flashcardState.currentDomainFilter === "review-deck",
+    );
     if (flashcardState.flipped) {
       container.classList.add("flipped");
     } else {
