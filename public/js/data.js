@@ -1646,6 +1646,110 @@ const glossaryTermsSource = [
       en: "To measure generalization on data not used to fit the model.",
     },
   },
+  {
+    id: "fc-11-2-aif-ml-07",
+    cert: "aif-c01",
+    domain: "fundamentals-ai-ml",
+    term: {
+      pt: "Quando usar regressão em Machine Learning?",
+      en: "When should regression be used in Machine Learning?",
+    },
+    definition: {
+      pt: "Quando o objetivo é prever um valor numérico contínuo, como preço, temperatura, receita ou vendas.",
+      en: "When the goal is to predict a continuous numerical value, such as price, temperature, revenue, or sales.",
+    },
+  },
+  {
+    id: "fc-11-2-aif-ml-08",
+    cert: "aif-c01",
+    domain: "fundamentals-ai-ml",
+    term: {
+      pt: "Prever as vendas do próximo mês é classificação ou regressão?",
+      en: "Is predicting next month's sales classification or regression?",
+    },
+    definition: {
+      pt: "Regressão. O resultado esperado é um valor numérico contínuo, como R$ 120.000 em vendas.",
+      en: "Regression. The expected output is a continuous numerical value, such as $120,000 in sales.",
+    },
+  },
+  {
+    id: "fc-11-2-aif-ml-09",
+    cert: "aif-c01",
+    domain: "fundamentals-ai-ml",
+    term: {
+      pt: "Quando usar classificação em Machine Learning?",
+      en: "When should classification be used in Machine Learning?",
+    },
+    definition: {
+      pt: "Quando o objetivo é prever uma classe ou categoria discreta, como fraude/não fraude ou comprar/não comprar.",
+      en: "When the goal is to predict a discrete class or category, such as fraud/not fraud or buy/not buy.",
+    },
+  },
+  {
+    id: "fc-11-2-aif-ml-10",
+    cert: "aif-c01",
+    domain: "fundamentals-ai-ml",
+    term: {
+      pt: "Prever se um cliente vai comprar um produto é regressão ou classificação?",
+      en: "Is predicting whether a customer will buy a product regression or classification?",
+    },
+    definition: {
+      pt: "Classificação. A saída pertence a categorias discretas, como comprar ou não comprar.",
+      en: "Classification. The output belongs to discrete categories, such as buy or not buy.",
+    },
+  },
+  {
+    id: "fc-11-2-aif-ml-11",
+    cert: "aif-c01",
+    domain: "fundamentals-ai-ml",
+    term: {
+      pt: "O que é clustering em Machine Learning?",
+      en: "What is clustering in Machine Learning?",
+    },
+    definition: {
+      pt: "É uma técnica de aprendizado não supervisionado que agrupa dados semelhantes sem usar rótulos previamente definidos.",
+      en: "It is an unsupervised learning technique that groups similar data without predefined labels.",
+    },
+  },
+  {
+    id: "fc-11-2-aif-ml-12",
+    cert: "aif-c01",
+    domain: "fundamentals-ai-ml",
+    term: {
+      pt: "Qual é um exemplo de uso de clustering?",
+      en: "What is an example use case for clustering?",
+    },
+    definition: {
+      pt: "Agrupar clientes por comportamento de compra sem possuir categorias previamente definidas.",
+      en: "Grouping customers by purchasing behavior without having predefined categories.",
+    },
+  },
+  {
+    id: "fc-11-2-aif-ml-13",
+    cert: "aif-c01",
+    domain: "fundamentals-ai-ml",
+    term: {
+      pt: "O que é Reinforcement Learning?",
+      en: "What is Reinforcement Learning?",
+    },
+    definition: {
+      pt: "É um aprendizado em que um agente interage com um ambiente e aprende ações usando recompensas ou penalidades.",
+      en: "It is a learning approach where an agent interacts with an environment and learns actions through rewards or penalties.",
+    },
+  },
+  {
+    id: "fc-11-2-aif-ml-14",
+    cert: "aif-c01",
+    domain: "fundamentals-ai-ml",
+    term: {
+      pt: "Quais são os elementos básicos de Reinforcement Learning?",
+      en: "What are the basic elements of Reinforcement Learning?",
+    },
+    definition: {
+      pt: "Agente, ambiente, ações, estados e recompensas orientam o processo de aprendizado.",
+      en: "Agent, environment, actions, states, and rewards guide the learning process.",
+    },
+  },
   // AIF-C01: fundamentals-genai (7 novos)
   {
     id: "fc-11-2-aif-genai-01",

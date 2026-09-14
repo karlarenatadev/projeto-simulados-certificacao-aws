@@ -26,7 +26,7 @@ test("exam tips filters and language switch work on mobile-sized viewport", asyn
     "title",
     "Dicas de prova e certificação",
   );
-  await expect(page.locator("#exam-tips-count")).toHaveText("143 dicas");
+  await expect(page.locator("#exam-tips-count")).toHaveText("151 dicas");
   await page.locator("#exam-tips-certification").selectOption("SAA-C03");
   await expect(page.locator("#exam-tips-grid .exam-tip-card")).toHaveCount(38);
   await expect(page.locator("#exam-tips-domain option")).toContainText([
