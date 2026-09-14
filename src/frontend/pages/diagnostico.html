@@ -100,7 +100,11 @@
       </section>
 
       <!-- 2. TELA DO QUIZ (Onde o diagnóstico acontece) -->
-      <div id="screen-quiz" class="hidden flex-col h-full relative p-6 md:p-8">
+      <div
+        id="screen-quiz"
+        data-quiz-flow="streamlined"
+        class="hidden flex-col h-full relative p-6 md:p-8"
+      >
         <div class="absolute top-0 left-0 h-2 w-full bg-gray-200">
           <div
             id="progress-bar"
@@ -144,23 +148,19 @@
             <i class="fa-solid fa-xmark mr-2" aria-hidden="true"></i> Cancelar
           </button>
           <button
-            id="btn-submit"
-            disabled
-            class="a3-btn a3-btn-secondary a3-btn-lg shadow-md"
-          >
-            Confirmar Resposta
-          </button>
-          <button
             id="btn-next"
+            disabled
             class="a3-btn a3-btn-primary a3-btn-lg hidden shadow-md"
           >
             Próxima <i class="fa-solid fa-arrow-right ml-2"></i>
           </button>
           <button
             id="btn-finish"
+            disabled
             class="a3-btn a3-btn-secondary hidden shadow-md"
           >
-            Ver Resultado <i class="fa-solid fa-flag-checkered ml-2"></i>
+            Finalizar diagnÃ³stico
+            <i class="fa-solid fa-flag-checkered ml-2"></i>
           </button>
         </div>
       </div>

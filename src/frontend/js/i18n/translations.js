@@ -157,6 +157,11 @@ export const translations = {
     diagnostic_not_enough_data:
       "Ainda não há dados suficientes para gerar uma recomendação personalizada.",
     diagnostic_domain_performance: "{{score}}% de desempenho",
+    diagnostic_finish: "Finalizar diagnóstico",
+    diagnostic_recommendation_priority:
+      "Priorize {{domain}}. Depois, reforce os demais domínios que precisam de atenção.",
+    diagnostic_recommendation_good:
+      "Seu diagnóstico apresentou bom desempenho geral. Continue pela Jornada ou faça um simulado completo para validar sua preparação.",
     diagnostic_review_priority: "Prioridade de revisão",
     review_recommended_flashcards: "Revisar Flashcards recomendados",
     diagnostic_flashcards_title: "Recomendado pelo seu Raio-X",
@@ -869,6 +874,11 @@ export const translations = {
     diagnostic_not_enough_data:
       "There is not enough data yet to generate a personalized recommendation.",
     diagnostic_domain_performance: "{{score}}% performance",
+    diagnostic_finish: "Finish assessment",
+    diagnostic_recommendation_priority:
+      "Prioritize {{domain}}. Then reinforce the other domains that need attention.",
+    diagnostic_recommendation_good:
+      "Your assessment showed strong overall performance. Continue with the Journey or take a full practice exam to validate your preparation.",
     diagnostic_review_priority: "Review priority",
     review_recommended_flashcards: "Review recommended Flashcards",
     diagnostic_flashcards_title: "Recommended by your X-Ray",

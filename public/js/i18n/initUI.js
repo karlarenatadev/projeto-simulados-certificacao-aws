@@ -124,10 +124,13 @@ export function initializeUI(language) {
     `${t("next", lang)} <i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>`,
   );
   updateAttribute("#btn-next", "aria-label", t("next", lang));
+  const quizScreen = document.getElementById("screen-quiz");
   const finishTranslationKey =
-    document.getElementById("screen-quiz")?.dataset.quizFlow === "streamlined"
-      ? "quiz_finish"
-      : "view_result";
+    quizScreen?.dataset.mode === "diagnostic"
+      ? "diagnostic_finish"
+      : quizScreen?.dataset.quizFlow === "streamlined"
+        ? "quiz_finish"
+        : "view_result";
   updateElementHTML(
     "#btn-finish",
     `${t(finishTranslationKey, lang)} <i class="fa-solid fa-flag-checkered ml-2" aria-hidden="true"></i>`,

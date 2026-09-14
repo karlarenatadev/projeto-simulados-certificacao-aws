@@ -8,8 +8,12 @@ import {
   isLastQuestionInFlow,
   shouldAutoSubmitQuizAnswer,
 } from "./quizFlow.js";
+import {
+  createDiagnosticResultProjection,
+  getDiagnosticRecommendationText,
+} from "./diagnosticResult.js";
 import { certificationPaths } from "./data.js";
-import { getDomainDefinition, normalizeDomain } from "./domainTaxonomy.js";
+import { normalizeDomain } from "./domainTaxonomy.js";
 import { TARGETED_PRACTICE_QUESTION_COUNT } from "./targetedQuestionSelector.js";
 import { ModalService } from "./services/modalService.js";
 import { NotificationService } from "./services/notificationService.js";
@@ -566,9 +570,11 @@ function setFinishButtonLoading(isLoading) {
 
   const currentAnswer = getCurrentQuestionAnswer();
   btnFinish.disabled = isLoading || (isStreamlinedQuizFlow() && !currentAnswer);
+  const finishKey =
+    uiState.currentMode === "diagnostic" ? "diagnostic_finish" : "quiz_finish";
   btnFinish.innerHTML = isLoading
     ? `<i class="fa-solid fa-spinner fa-spin mr-2"></i>${t("loading", uiState.language)}`
-    : `${t("quiz_finish", uiState.language)} <i class="fa-solid fa-flag-checkered ml-2" aria-hidden="true"></i>`;
+    : `${t(finishKey, uiState.language)} <i class="fa-solid fa-flag-checkered ml-2" aria-hidden="true"></i>`;
 }
 
 function getActiveCertificationId() {
@@ -1158,6 +1164,10 @@ async function startDiagnostic() {
     const currentCertInfo = certificationPaths[certId];
     uiState.currentCertificationInfo = currentCertInfo;
     uiState.currentMode = "diagnostic";
+    document
+      .getElementById("screen-quiz")
+      ?.setAttribute("data-mode", "diagnostic");
+    setFinishButtonLoading(false);
 
     const result = await engine.loadDiagnostic(
       certId,
@@ -2689,23 +2699,31 @@ function renderDiagnosticReport(results) {
   const resultsScreen = document.getElementById("screen-results");
   resultsScreen.innerHTML = "";
 
-  const weakDomainIds = new Set(results.weakDomains || []);
-  const weakDomains = (results.domainResults || [])
-    .filter((domain) => weakDomainIds.has(domain.domainId || domain.id))
-    .map((domain) => {
-      const domainId = domain.domainId || domain.id;
-      return {
-        id: domainId,
-        domainId,
-        name:
-          getDomainDefinition(results.certId, domainId)?.labelPt || domainId,
-        score: domain.score,
-        percentage: domain.score,
-      };
-    });
+  const diagnosticProjection = createDiagnosticResultProjection(
+    results,
+    uiState.currentCertificationInfo,
+    DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD,
+  );
+
+  const weakDomains = diagnosticProjection.domains
+    .filter((domain) => domain.isWeak)
+    .map((domain) => ({
+      id: domain.domainId,
+      domainId: domain.domainId,
+      name: domain.label,
+      score: domain.percentage,
+      percentage: domain.percentage,
+    }));
 
   const diagnosticRecommendations =
-    recommendationEngine.generateDiagnosticRecommendations(results);
+    recommendationEngine.generateDiagnosticRecommendations({
+      ...results,
+      domainResults: diagnosticProjection.domains,
+      weakDomains: weakDomains.map((domain) => domain.domainId),
+      strongDomains: diagnosticProjection.domains
+        .filter((domain) => domain.isStrong)
+        .map((domain) => domain.domainId),
+    });
   lastDiagnosticRecommendation = diagnosticRecommendations
     ? {
         ...diagnosticRecommendations,
@@ -2720,6 +2738,19 @@ function renderDiagnosticReport(results) {
     );
   }
 
+  const recommendation = getDiagnosticRecommendationText(
+    diagnosticProjection,
+    uiState.language,
+  );
+  const recommendationText =
+    recommendation.kind === "insufficient"
+      ? t("diagnostic_not_enough_data", uiState.language)
+      : recommendation.kind === "priority"
+        ? t("diagnostic_recommendation_priority", uiState.language, {
+            domain: recommendation.domain,
+          })
+        : t("diagnostic_recommendation_good", uiState.language);
+
   const weakDomainsHtml =
     weakDomains.length > 0
       ? `
@@ -2727,6 +2758,7 @@ function renderDiagnosticReport(results) {
             <h3 class="font-black mb-3 flex items-center gap-2">
                 <i class="fa-solid fa-bullseye"></i> ${t("weak_domains_title", uiState.language)}
             </h3>
+            <p class="text-sm text-muted mb-4">${recommendationText}</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 ${weakDomains
                   .map(
@@ -2744,7 +2776,7 @@ function renderDiagnosticReport(results) {
     `
       : `
         <div class="a3-stat-card max-w-4xl mx-auto mb-8 fade-in text-center">
-            <p class="text-sm text-muted">${t("diagnostic_not_enough_data", uiState.language)}</p>
+            <p class="text-sm text-muted">${recommendationText}</p>
         </div>
     `;
 
@@ -2763,26 +2795,24 @@ function renderDiagnosticReport(results) {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto w-full">
     `;
 
-  uiState.currentCertificationInfo.domains.forEach((domain) => {
-    const scoreData = results.domainScores[domain.id];
-    if (scoreData && scoreData.total > 0) {
-      const pct = (scoreData.correct / scoreData.total) * 100;
-      const isWeak = pct < DIAGNOSTIC_WEAK_DOMAIN_THRESHOLD;
+  diagnosticProjection.domains.forEach((domain) => {
+    const pct = domain.percentage;
+    const isWeak = domain.isWeak;
 
-      const cardColor = isWeak
-        ? "a3-stat-card a3-stat-card-warning"
-        : "a3-stat-card a3-stat-card-success";
-      const iconColor = isWeak ? "text-orange-500" : "text-green-500";
-      const icon = isWeak ? "fa-book-open" : "fa-check-circle";
-      const msg = isWeak
-        ? "Recomendamos praticar questões focadas neste domínio."
-        : "Conceito consolidado! Ótimo trabalho.";
+    const cardColor = isWeak
+      ? "a3-stat-card a3-stat-card-warning"
+      : "a3-stat-card a3-stat-card-success";
+    const iconColor = isWeak ? "text-orange-500" : "text-green-500";
+    const icon = isWeak ? "fa-book-open" : "fa-check-circle";
+    const msg = isWeak
+      ? "Recomendamos praticar questões focadas neste domínio."
+      : "Conceito consolidado! Ótimo trabalho.";
 
-      html += `
+    html += `
                 <div class="${cardColor} flex flex-col justify-between transition-all hover:shadow-md h-full">
                     <div>
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-bold text-main text-lg">${domain.name}</h3>
+                        <h3 class="font-bold text-main text-lg">${uiState.language === "en" ? domain.labelEn : domain.label}</h3>
                             <i class="fa-solid ${icon} ${iconColor} text-2xl"></i>
                         </div>
                         <p class="text-sm text-muted mb-4">${msg}</p>
@@ -2790,10 +2820,9 @@ function renderDiagnosticReport(results) {
                     <div class="a3-progress">
                         <div class="a3-progress-bar ${isWeak ? "warning" : "success"}" style="width: ${pct}%"></div>
                     </div>
-                    <div class="text-right text-xs font-bold ${iconColor}">${pct.toFixed(0)}% de Acerto</div>
+                    <div class="text-right text-xs font-bold ${iconColor}">${pct.toFixed(0)}% de Acerto (${domain.correct}/${domain.answered})</div>
                 </div>
             `;
-    }
   });
 
   // CTA para transformar o diagnóstico em prática focada.

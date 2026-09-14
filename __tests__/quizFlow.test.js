@@ -30,8 +30,12 @@ describe("streamlined simulator controls", () => {
     expect(screen.querySelector("#btn-cancel")).toBeNull();
     expect(screen.querySelector("#btn-prev")).toBeNull();
     expect(screen.querySelector("#btn-submit")).toBeNull();
-    expect(diagnosticHtml).toContain('id="btn-cancel"');
-    expect(diagnosticHtml).toContain('id="btn-submit"');
+    const diagnosticScreen = new DOMParser()
+      .parseFromString(diagnosticHtml, "text/html")
+      .getElementById("screen-quiz");
+    expect(diagnosticScreen.dataset.quizFlow).toBe("streamlined");
+    expect(diagnosticScreen.querySelector("#btn-submit")).toBeNull();
+    expect(diagnosticScreen.querySelector("#btn-cancel")).not.toBeNull();
   });
 
   test("keeps accessible Next and Finish controls disabled in source markup", () => {
