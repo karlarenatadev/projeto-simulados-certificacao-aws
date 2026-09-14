@@ -2842,7 +2842,7 @@ function renderDiagnosticReport(results) {
                 </button>`
                 : ""
             }
-            <button onclick="window.location.href='./jornada.html'" class="a3-button-secondary py-3 px-6 text-base w-auto">
+            <button onclick="window.location.href='./jornada.html?cert=${encodeURIComponent(results.certId)}'" class="a3-button-secondary py-3 px-6 text-base w-auto">
                 <i class="fa-solid fa-map mr-2"></i> Ver minha Jornada
             </button>
         </div>
@@ -3542,7 +3542,13 @@ async function startJornada() {
   if (uiState.timerInterval) clearInterval(uiState.timerInterval);
   showScreen("jornada");
 
-  const certId = getActiveCertificationId();
+  const requestedCert = normalizeCertificationId(
+    new URLSearchParams(window.location.search).get("cert"),
+  );
+  const certId = requestedCert || getActiveCertificationId();
+  if (requestedCert && certificationPaths[requestedCert]) {
+    userManager.updatePreferences({ certification: requestedCert });
+  }
   renderJornadaDashboard(certId);
 
   renderTrail();
