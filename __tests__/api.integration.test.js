@@ -311,6 +311,58 @@ describe("Express API integration", () => {
     expect(invalid.body.error).toMatch(/invalid domain/i);
   });
 
+  test.each([
+    ["applications-foundation-models", "Applications of Foundation Models"],
+    [
+      "security-compliance-governance",
+      "Security, Compliance, and Governance for AI Solutions",
+    ],
+  ])(
+    "AIF %s filter persists only matching memberships",
+    async (domainId, domainName) => {
+      const filterUser = await createUser(
+        `AifDomain-${domainId}-${Date.now()}`,
+      );
+      const headers = { "X-Test-Role": "STUDENT", "X-User-Id": filterUser.id };
+      await insertQuestion({
+        certification: "AIF-C01",
+        language: "pt",
+        source_question_id: `aif-b631-${domainId}`,
+        domain: domainId,
+        difficulty: "easy",
+        question_text: `Fixture for ${domainName}`,
+        options: ["Correct", "Incorrect"],
+        correct_answer: [0],
+        explanation: "Fixture",
+        validation_status: "APPROVED",
+      });
+      const started = await request(baseUrl, "/api/quiz/start", {
+        method: "POST",
+        body: JSON.stringify({
+          certification: "AIF-C01",
+          domain: domainId,
+          num_questions: 5,
+        }),
+        headers,
+      });
+      expect(started.response.status).toBe(201);
+      expect(started.body.data.questions.length).toBeGreaterThan(0);
+      expect(
+        started.body.data.questions.every(
+          (question) => question.domain_id === domainId,
+        ),
+      ).toBe(true);
+      const persisted = await getQuizQuestions(
+        started.body.data.quiz_id,
+        filterUser.id,
+      );
+      expect(persisted.length).toBe(started.body.data.questions.length);
+      expect(persisted.every((question) => question.domain === domainId)).toBe(
+        true,
+      );
+    },
+  );
+
   test("quiz lifecycle: start, answer, and fetch results", async () => {
     const lifecycleUser = await createUser(`LifecycleUser-${Date.now()}`);
     const headers = { "X-Test-Role": "STUDENT", "X-User-Id": lifecycleUser.id };

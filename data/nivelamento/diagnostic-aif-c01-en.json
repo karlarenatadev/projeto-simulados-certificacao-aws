@@ -12,7 +12,7 @@
     ],
     "correct": 1,
     "explanation": "First we 'train' the model by giving it a set of data so that it learns patterns and adjusts its weights. Then, we deploy the model for 'inference', which is when it generates answers/predictions for data it has never seen before.",
-    "domain_id": "aif-ai-ml",
+    "domain_id": "fundamentals-ai-ml",
     "global_domain_id": "ai-ml"
   },
   {
@@ -28,7 +28,7 @@
     ],
     "correct": 0,
     "explanation": "Amazon Bedrock is the AWS core service for Generative AI, enabling you to use large language models (LLMs) through a single unified API, without having to manage infrastructure.",
-    "domain_id": "aif-gen-ai",
+    "domain_id": "fundamentals-genai",
     "global_domain_id": "gen-ai"
   },
   {
@@ -44,7 +44,7 @@
     ],
     "correct": 1,
     "explanation": "RAG (Recovery Augmented Generation) fetches data from the company's knowledge base (as a vector base) and injects it into the prompt, reducing hallucinations and ensuring up-to-date and accurate responses.",
-    "domain_id": "aif-gen-ai",
+    "domain_id": "fundamentals-genai",
     "global_domain_id": "gen-ai"
   },
   {
@@ -60,7 +60,103 @@
     ],
     "correct": 2,
     "explanation": "Bias occurs when an AI model makes systematically unfair decisions against certain groups. Mitigating this bias is one of the fundamental pillars of Responsible AI taught by AWS.",
-    "domain_id": "aif-security-compliance",
+    "domain_id": "guidelines-responsible-ai",
+    "global_domain_id": "security"
+  },
+  {
+    "id": "diag-aif-005",
+    "domain": "Applications of Foundation Models",
+    "difficulty": "easy",
+    "question": "In a semantic search application, what are embeddings used for?",
+    "options": [
+      "Representing content as vectors to compare similarity",
+      "Encrypting user credentials",
+      "Creating subnets automatically",
+      "Replacing application authentication"
+    ],
+    "correct": 0,
+    "explanation": "Embeddings transform content into vectors that can be compared for semantic similarity.",
+    "domain_id": "applications-foundation-models",
+    "global_domain_id": "applications"
+  },
+  {
+    "id": "diag-aif-006",
+    "domain": "Applications of Foundation Models",
+    "difficulty": "medium",
+    "question": "Which approach provides updated documents to a model without retraining its weights after every change?",
+    "options": [
+      "RAG, retrieving relevant context before generation",
+      "Retraining the model after every query",
+      "Removing the document repository",
+      "Disabling response validation"
+    ],
+    "correct": 0,
+    "explanation": "RAG retrieves current passages and supplies them as context without continuous retraining.",
+    "domain_id": "applications-foundation-models",
+    "global_domain_id": "applications"
+  },
+  {
+    "id": "diag-aif-007",
+    "domain": "Applications of Foundation Models",
+    "difficulty": "hard",
+    "question": "An application must check inventory and call an API before responding. Which capability is most appropriate?",
+    "options": [
+      "An agent that orchestrates authorized tools",
+      "Image classification only",
+      "Randomly increasing temperature",
+      "Disabling access controls"
+    ],
+    "correct": 0,
+    "explanation": "Agents can coordinate steps and tools while respecting permissions defined for the application.",
+    "domain_id": "applications-foundation-models",
+    "global_domain_id": "applications"
+  },
+  {
+    "id": "diag-aif-008",
+    "domain": "Security, Compliance, and Governance for AI Solutions",
+    "difficulty": "easy",
+    "question": "Which principle should guide permissions for an AI application?",
+    "options": [
+      "Least privilege",
+      "Administrative access for everyone",
+      "A shared password",
+      "Permissions without review"
+    ],
+    "correct": 0,
+    "explanation": "Least privilege limits each identity to the actions required for its role.",
+    "domain_id": "security-compliance-governance",
+    "global_domain_id": "security"
+  },
+  {
+    "id": "diag-aif-009",
+    "domain": "Security, Compliance, and Governance for AI Solutions",
+    "difficulty": "medium",
+    "question": "What is the main purpose of a guardrail in a generative application?",
+    "options": [
+      "Applying content and usage policies to inputs and outputs",
+      "Automatically granting administrative access",
+      "Eliminating the need for monitoring",
+      "Replacing data encryption"
+    ],
+    "correct": 0,
+    "explanation": "Guardrails apply safety and content controls but do not replace authentication or authorization.",
+    "domain_id": "security-compliance-governance",
+    "global_domain_id": "security"
+  },
+  {
+    "id": "diag-aif-010",
+    "domain": "Security, Compliance, and Governance for AI Solutions",
+    "difficulty": "hard",
+    "question": "Why record relevant calls and decisions from an AI solution?",
+    "options": [
+      "For auditing, investigation, and controlled improvement",
+      "To make all data public",
+      "To remove retention policies",
+      "To guarantee every response is deterministic"
+    ],
+    "correct": 0,
+    "explanation": "Records support traceability, auditing, and incident investigation throughout the lifecycle.",
+    "domain_id": "security-compliance-governance",
     "global_domain_id": "security"
   }
 ]

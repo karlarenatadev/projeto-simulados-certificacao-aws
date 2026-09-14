@@ -12,7 +12,7 @@
     ],
     "correct": 1,
     "explanation": "Primeiro nós 'treinamos' o modelo dando-lhe um conjunto de dados para que ele aprenda padrões e ajuste os seus pesos. Depois, fazemos o deploy do modelo para 'inferência', que é quando ele gera respostas/previsões para dados que nunca viu antes.",
-    "domain_id": "aif-ai-ml",
+    "domain_id": "fundamentals-ai-ml",
     "global_domain_id": "ai-ml"
   },
   {
@@ -28,7 +28,7 @@
     ],
     "correct": 0,
     "explanation": "O Amazon Bedrock é o serviço principal da AWS para IA Generativa, permitindo utilizar grandes modelos de linguagem (LLMs) através de uma única API unificada, sem precisar gerir a infraestrutura.",
-    "domain_id": "aif-gen-ai",
+    "domain_id": "fundamentals-genai",
     "global_domain_id": "gen-ai"
   },
   {
@@ -44,7 +44,7 @@
     ],
     "correct": 1,
     "explanation": "O RAG (Geração Aumentada por Recuperação) busca dados na base de conhecimento da empresa (como uma base vetorial) e os injeta no prompt, reduzindo alucinações e garantindo respostas atualizadas e precisas.",
-    "domain_id": "aif-gen-ai",
+    "domain_id": "fundamentals-genai",
     "global_domain_id": "gen-ai"
   },
   {
@@ -60,7 +60,103 @@
     ],
     "correct": 2,
     "explanation": "Viés (Bias) ocorre quando um modelo de IA toma decisões sistematicamente injustas contra determinados grupos. Mitigar esse viés é um dos pilares fundamentais da IA Responsável ensinada pela AWS.",
-    "domain_id": "aif-security-compliance",
+    "domain_id": "guidelines-responsible-ai",
+    "global_domain_id": "security"
+  },
+  {
+    "id": "diag-aif-005",
+    "domain": "Applications of Foundation Models",
+    "difficulty": "easy",
+    "question": "Em uma aplicação de busca semântica, para que servem os embeddings?",
+    "options": [
+      "Representar conteúdo como vetores para comparar similaridade",
+      "Criptografar credenciais de usuários",
+      "Criar sub-redes automaticamente",
+      "Substituir a autenticação da aplicação"
+    ],
+    "correct": 0,
+    "explanation": "Embeddings transformam conteúdo em vetores que podem ser comparados por similaridade semântica.",
+    "domain_id": "applications-foundation-models",
+    "global_domain_id": "applications"
+  },
+  {
+    "id": "diag-aif-006",
+    "domain": "Applications of Foundation Models",
+    "difficulty": "medium",
+    "question": "Qual abordagem fornece documentos atualizados ao modelo sem retreinar seus pesos a cada alteração?",
+    "options": [
+      "RAG, recuperando contexto relevante antes da geração",
+      "Treinar novamente o modelo após cada consulta",
+      "Remover a base documental",
+      "Desativar a validação das respostas"
+    ],
+    "correct": 0,
+    "explanation": "RAG recupera trechos atuais e os fornece como contexto, mantendo o modelo sem retreinamento contínuo.",
+    "domain_id": "applications-foundation-models",
+    "global_domain_id": "applications"
+  },
+  {
+    "id": "diag-aif-007",
+    "domain": "Applications of Foundation Models",
+    "difficulty": "hard",
+    "question": "Uma aplicação precisa consultar estoque e chamar uma API antes de responder. Qual capacidade é mais adequada?",
+    "options": [
+      "Um agente que orquestra ferramentas autorizadas",
+      "Somente classificação de imagens",
+      "Aumentar aleatoriamente a temperatura",
+      "Desativar controles de acesso"
+    ],
+    "correct": 0,
+    "explanation": "Agentes podem coordenar etapas e ferramentas, respeitando as permissões definidas para a aplicação.",
+    "domain_id": "applications-foundation-models",
+    "global_domain_id": "applications"
+  },
+  {
+    "id": "diag-aif-008",
+    "domain": "Security, Compliance, and Governance for AI Solutions",
+    "difficulty": "easy",
+    "question": "Qual princípio deve orientar as permissões de uma aplicação de IA?",
+    "options": [
+      "Menor privilégio",
+      "Acesso administrativo para todos",
+      "Uma senha compartilhada",
+      "Permissões sem revisão"
+    ],
+    "correct": 0,
+    "explanation": "O menor privilégio limita cada identidade às ações necessárias para sua função.",
+    "domain_id": "security-compliance-governance",
+    "global_domain_id": "security"
+  },
+  {
+    "id": "diag-aif-009",
+    "domain": "Security, Compliance, and Governance for AI Solutions",
+    "difficulty": "medium",
+    "question": "Qual é a função principal de um guardrail em uma aplicação generativa?",
+    "options": [
+      "Aplicar políticas de conteúdo e uso às entradas e saídas",
+      "Conceder automaticamente acesso administrativo",
+      "Eliminar a necessidade de monitoramento",
+      "Substituir a criptografia dos dados"
+    ],
+    "correct": 0,
+    "explanation": "Guardrails aplicam controles de segurança e conteúdo, mas não substituem autenticação ou autorização.",
+    "domain_id": "security-compliance-governance",
+    "global_domain_id": "security"
+  },
+  {
+    "id": "diag-aif-010",
+    "domain": "Security, Compliance, and Governance for AI Solutions",
+    "difficulty": "hard",
+    "question": "Por que registrar chamadas e decisões relevantes de uma solução de IA?",
+    "options": [
+      "Para auditoria, investigação e melhoria controlada",
+      "Para tornar todos os dados públicos",
+      "Para remover as políticas de retenção",
+      "Para garantir que toda resposta seja determinística"
+    ],
+    "correct": 0,
+    "explanation": "Registros apoiam rastreabilidade, auditoria e investigação de incidentes ao longo do ciclo de vida.",
+    "domain_id": "security-compliance-governance",
     "global_domain_id": "security"
   }
 ]
