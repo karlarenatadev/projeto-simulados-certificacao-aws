@@ -7,6 +7,8 @@
  * @module analytics/domainAnalyzer
  */
 
+import { getDomainDefinition, normalizeDomain } from "../domainTaxonomy.js";
+
 export class DomainAnalyzer {
   /**
    * Analisa histórico e erros, retornando um array de DomainScore
@@ -16,7 +18,8 @@ export class DomainAnalyzer {
    * @param {object[]} mistakes - Array de erros do storageManager.getMistakes()[certId]
    * @returns {DomainScore[]}
    */
-  analyze(history, mistakes) {
+  analyze(history, mistakes, certificationId = null) {
+    this.certificationId = certificationId;
     const aggregates = this._aggregateFromHistory(history);
     this._mergeMistakes(aggregates, mistakes);
 
@@ -36,11 +39,16 @@ export class DomainAnalyzer {
       if (!session?.domainScores) return;
 
       Object.entries(session.domainScores).forEach(([domain, stats]) => {
-        if (!aggregates[domain]) {
-          aggregates[domain] = { total: 0, correct: 0, mistakesCount: 0 };
+        const canonicalDomain = this._canonicalDomain(domain);
+        if (!aggregates[canonicalDomain]) {
+          aggregates[canonicalDomain] = {
+            total: 0,
+            correct: 0,
+            mistakesCount: 0,
+          };
         }
-        aggregates[domain].total += stats.total || 0;
-        aggregates[domain].correct += stats.correct || 0;
+        aggregates[canonicalDomain].total += stats.total || 0;
+        aggregates[canonicalDomain].correct += stats.correct || 0;
       });
     });
 
@@ -49,15 +57,24 @@ export class DomainAnalyzer {
 
   _mergeMistakes(aggregates, mistakes) {
     mistakes.forEach((mistake) => {
+      const canonicalDomain = this._canonicalDomain(mistake.domain);
       const domain = mistake.domain || "Não categorizado";
-      if (!aggregates[domain]) {
-        aggregates[domain] = { total: 0, correct: 0, mistakesCount: 0 };
+      const aggregateDomain = canonicalDomain || domain;
+      if (!aggregates[aggregateDomain]) {
+        aggregates[aggregateDomain] = {
+          total: 0,
+          correct: 0,
+          mistakesCount: 0,
+        };
       }
-      aggregates[domain].mistakesCount += 1;
+      aggregates[aggregateDomain].mistakesCount += 1;
     });
   }
 
   _buildDomainScore(name, data) {
+    const definition = this.certificationId
+      ? getDomainDefinition(this.certificationId, name)
+      : null;
     let score;
     if (data.total > 0) {
       score = Math.round((data.correct / data.total) * 100);
@@ -70,12 +87,20 @@ export class DomainAnalyzer {
     const recommendation = this._getRecommendation(name, score, status);
 
     return {
-      name,
+      id: definition?.domainId || name,
+      domainId: definition?.domainId || name,
+      name: definition?.labelPt || name,
       score,
       status,
       mistakes: data.mistakesCount,
       recommendation,
     };
+  }
+
+  _canonicalDomain(value) {
+    return this.certificationId
+      ? normalizeDomain(this.certificationId, value) || value
+      : value;
   }
 
   /**

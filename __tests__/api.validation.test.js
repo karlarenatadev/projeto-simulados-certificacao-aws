@@ -95,6 +95,8 @@ jest.unstable_mockModule('../backend/database/db.js', () => ({
   getWeakDomains: jest.fn(),
   getGamification: jest.fn(),
   createQuizHistory: jest.fn(),
+  createQuizWithQuestions: jest.fn(),
+  getQuizQuestions: jest.fn(),
   getQuizById: jest.fn(),
   recordAnswer: jest.fn(),
   completeQuiz: jest.fn(),

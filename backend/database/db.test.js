@@ -11,6 +11,7 @@ import {
   abandonQuiz,
   closeDatabase,
   createQuizHistory,
+  createQuizWithQuestions,
   createUser,
   deleteQuestion,
   executeQuery,
@@ -22,6 +23,7 @@ import {
   getQuestions,
   getQuestionsByDomain,
   getQuizById,
+  getQuizQuestions,
   getQuizHistory,
   getUserById,
   getUserByName,
@@ -29,6 +31,7 @@ import {
   getWeakDomains,
   initializeDatabase,
   migrateQuizLifecycle,
+  migrateQuizMembership,
   insertQuestion,
   normalizeCertification,
   recordAnswer,
@@ -52,6 +55,15 @@ async function resetTestData() {
     DELETE FROM questions;
     DELETE FROM domains;
   `);
+}
+
+async function setTestQuizQuestions(quiz, questions) {
+  for (const [position, question] of questions.entries()) {
+    await executeQuery(
+      'INSERT INTO quiz_questions (quiz_id, question_id, position) VALUES ($1, $2, $3)',
+      [quiz.id, question.id, position],
+    );
+  }
 }
 
 describe('PGlite database lifecycle', () => {
@@ -622,6 +634,7 @@ describe('User, gamification, leaderboard, and user stats operations', () => {
       correct_answer: ['B'],
       explanation: 'Amazon S3 provides object storage designed for high durability.',
     }));
+    await setTestQuizQuestions(quiz, [firstQuestion, secondQuestion]);
     await recordAnswer(quiz.id, firstQuestion.id, ['B'], 30);
     await recordAnswer(quiz.id, secondQuestion.id, ['A'], 45);
     await completeQuiz(quiz.id, user.id);
@@ -742,6 +755,7 @@ describe('Quiz history and answers operations', () => {
   test('started attempts never enter completed history, averages, answers, or leaderboard', async () => {
     const { user, quiz } = await createQuizForUser({ total_questions: 1 });
     const question = await insertQuestion(validQuestion());
+    await setTestQuizQuestions(quiz, [question]);
     await recordAnswer(quiz.id, question.id, ['B'], 9);
     await getGamification(user.id);
 
@@ -765,6 +779,7 @@ describe('Quiz history and answers operations', () => {
   test('finish persists zero percent and is idempotent without changing completed_at', async () => {
     const { user, quiz } = await createQuizForUser({ total_questions: 1 });
     const question = await insertQuestion(validQuestion());
+    await setTestQuizQuestions(quiz, [question]);
     await recordAnswer(quiz.id, question.id, ['A'], 4);
 
     const first = await completeQuiz(quiz.id, user.id);
@@ -785,6 +800,7 @@ describe('Quiz history and answers operations', () => {
   test('duplicate answer replay is idempotent while a different choice conflicts', async () => {
     const { quiz } = await createQuizForUser({ total_questions: 1 });
     const question = await insertQuestion(validQuestion());
+    await setTestQuizQuestions(quiz, [question]);
     const first = await recordAnswer(quiz.id, question.id, ['B'], 3);
     const repeated = await recordAnswer(quiz.id, question.id, ['B'], 3);
 
@@ -816,6 +832,7 @@ describe('Quiz history and answers operations', () => {
   test('explicit abandonment excludes the attempt and prevents further answers or finish', async () => {
     const { user, quiz } = await createQuizForUser({ total_questions: 1 });
     const question = await insertQuestion(validQuestion());
+    await setTestQuizQuestions(quiz, [question]);
     await recordAnswer(quiz.id, question.id, ['A'], 2);
 
     const abandoned = await abandonQuiz(quiz.id, user.id);
@@ -842,6 +859,8 @@ describe('Quiz history and answers operations', () => {
       createQuizHistory(user.id, 'CLF-C02', { total_questions: 1 }),
       createQuizHistory(user.id, 'CLF-C02', { total_questions: 1 }),
     ]);
+    const paginationQuestion = await insertQuestion(validQuestion());
+    for (const quiz of completed) await setTestQuizQuestions(quiz, [paginationQuestion]);
     for (const quiz of completed) await completeQuiz(quiz.id, user.id);
 
     const firstPage = await getQuizHistory(user.id, 2, 0);
@@ -857,6 +876,7 @@ describe('Quiz history and answers operations', () => {
   test('records a correct answer calculated by the backend', async () => {
     const { quiz } = await createQuizForUser({ total_questions: 1 });
     const question = await insertQuestion(validQuestion());
+    await setTestQuizQuestions(quiz, [question]);
 
     const answer = await recordAnswer({
       quiz_id: quiz.id,
@@ -878,6 +898,7 @@ describe('Quiz history and answers operations', () => {
   test('records an incorrect answer calculated by the backend', async () => {
     const { quiz } = await createQuizForUser({ total_questions: 1 });
     const question = await insertQuestion(validQuestion());
+    await setTestQuizQuestions(quiz, [question]);
 
     const answer = await recordAnswer(quiz.id, question.id, ['A'], 8);
     const updatedQuiz = await getQuizById(quiz.id);
@@ -890,6 +911,7 @@ describe('Quiz history and answers operations', () => {
   test('does not trust is_correct sent by the caller', async () => {
     const { quiz } = await createQuizForUser({ total_questions: 1 });
     const question = await insertQuestion(validQuestion());
+    await setTestQuizQuestions(quiz, [question]);
 
     const answer = await recordAnswer({
       quiz_id: quiz.id,
@@ -917,6 +939,7 @@ describe('Quiz history and answers operations', () => {
       explanation: 'Amazon S3 is object storage designed for durability.',
     }));
 
+    await setTestQuizQuestions(quiz, [firstQuestion, secondQuestion]);
     await recordAnswer(quiz.id, firstQuestion.id, ['B'], 5);
     await recordAnswer(quiz.id, secondQuestion.id, ['A'], 7);
 
@@ -942,6 +965,7 @@ describe('Quiz history and answers operations', () => {
       explanation: 'AWS Cost Anomaly Detection identifies unusual spend patterns.',
     }));
 
+    await setTestQuizQuestions(quiz, [securityQuestion, billingQuestion]);
     await recordAnswer(quiz.id, securityQuestion.id, ['B'], 5);
     await recordAnswer(quiz.id, billingQuestion.id, ['B'], 9);
 
@@ -1030,6 +1054,8 @@ describe('Quiz history and answers operations', () => {
       certification: 'SAA-C03',
       question_text: 'Which service is a managed relational database?',
     }));
+    await setTestQuizQuestions(firstQuiz, [firstQuestion]);
+    await setTestQuizQuestions(secondQuiz, [secondQuestion]);
     await recordAnswer(firstQuiz.id, firstQuestion.id, ['B'], 30);
     await recordAnswer(secondQuiz.id, secondQuestion.id, ['A'], 40);
     await completeQuiz(firstQuiz.id, user.id);
@@ -1045,6 +1071,111 @@ describe('Quiz history and answers operations', () => {
     expect(Number(stats.total_quizzes)).toBe(2);
     expect(Number(stats.total_time_secs)).toBe(70);
     expect(Number(stats.total_focus_minutes)).toBe(30);
+  });
+});
+
+describe('B3 quiz membership constraints', () => {
+  beforeAll(async () => {
+    await closeDatabase();
+    await initializeDatabase({ environment: 'test', dataDir: 'memory://' });
+  });
+  beforeEach(resetTestData);
+  afterAll(closeDatabase);
+
+  async function fixture() {
+    const user = await createUser(`Member-${randomUUID()}`);
+    const questions = [];
+    for (let index = 0; index < 2; index++) {
+      questions.push(await insertQuestion({
+        certification: 'CLF-C02', language: 'pt', source_question_id: randomUUID(),
+        domain: 'security', difficulty: 'easy', question_text: `Member fixture ${index}?`,
+        options: ['Yes', 'No'], correct_answer: [0], explanation: 'Yes.',
+        validation_status: 'APPROVED',
+      }));
+    }
+    return { user, questions };
+  }
+
+  test('start atomically persists the exact ordered set and rejects duplicate membership, position and FK', async () => {
+    const { user, questions } = await fixture();
+    const { quiz, questions: selected } = await createQuizWithQuestions({
+      user_id: user.id, certification: 'CLF-C02', language: 'pt', num_questions: 2,
+    });
+    const membership = await getQuizQuestions(quiz.id, user.id);
+    expect(membership).toHaveLength(2);
+    expect(membership.map((q) => q.id)).toEqual(selected.map((q) => q.id));
+    expect(membership.map((q) => q.position)).toEqual([0, 1]);
+    expect(membership.map((q) => q.id).sort()).toEqual(questions.map((q) => q.id).sort());
+    await expect(executeQuery(
+      'INSERT INTO quiz_questions (quiz_id, question_id, position) VALUES ($1, $2, 3)',
+      [quiz.id, selected[0].id],
+    )).rejects.toThrow();
+    await expect(executeQuery(
+      'INSERT INTO quiz_questions (quiz_id, question_id, position) VALUES ($1, $2, 0)',
+      [quiz.id, randomUUID()],
+    )).rejects.toThrow();
+    await expect(executeQuery(
+      'INSERT INTO quiz_questions (quiz_id, question_id, position) VALUES ($1, $2, 3)',
+      [randomUUID(), selected[0].id],
+    )).rejects.toThrow();
+    const outside = await insertQuestion({
+      certification: 'CLF-C02', domain: 'security', difficulty: 'easy',
+      question_text: 'Outside membership?', options: ['Yes', 'No'],
+      correct_answer: [0], explanation: 'Yes.',
+    });
+    await expect(executeQuery(
+      'INSERT INTO quiz_questions (quiz_id, question_id, position) VALUES ($1, $2, 0)',
+      [quiz.id, outside.id],
+    )).rejects.toThrow();
+  });
+
+  test('new answers are unique in the database and denominator comes from membership', async () => {
+    const { user, questions } = await fixture();
+    const { quiz } = await createQuizWithQuestions({
+      user_id: user.id, certification: 'CLF-C02', language: 'pt', num_questions: 2,
+    });
+    const first = await recordAnswer({
+      quiz_id: quiz.id, user_id: user.id, question_id: questions[0].id,
+      user_answer: [0], is_correct: false, score: 100,
+    });
+    expect(first.is_correct).toBe(true);
+    await expect(executeQuery(`
+      INSERT INTO answers (quiz_id, question_id, user_answer, is_correct)
+      VALUES ($1, $2, '[0]', TRUE)
+    `, [quiz.id, questions[0].id])).rejects.toThrow();
+    await executeQuery('UPDATE quiz_history SET total_questions = 1 WHERE id = $1', [quiz.id]);
+    const completed = await completeQuiz(quiz.id, user.id);
+    expect(completed).toMatchObject({
+      score: 1, total_questions: 2, answered_questions: 1,
+      unanswered_questions: 1, correct_answers: 1, incorrect_answers: 0,
+    });
+    expect(Number(completed.percentage)).toBe(50);
+  });
+
+  test('legacy started attempts without a proven set cannot be answered or finished', async () => {
+    const { user, questions } = await fixture();
+    const quiz = await createQuizHistory(user.id, 'CLF-C02', { total_questions: 2 });
+    await expect(recordAnswer(quiz.id, questions[0].id, [0], 0, user.id))
+      .rejects.toMatchObject({ statusCode: 409 });
+    await expect(completeQuiz(quiz.id, user.id)).rejects.toMatchObject({ statusCode: 409 });
+    expect((await getQuizById(quiz.id)).status).toBe('started');
+  });
+
+  test('old completed rows and duplicate legacy answers remain untouched by membership migration', async () => {
+    const { user, questions } = await fixture();
+    const quiz = await createQuizHistory(user.id, 'CLF-C02', { total_questions: 2 });
+    await executeQuery(`
+      UPDATE quiz_history SET status = 'completed', completed_at = CURRENT_TIMESTAMP
+      WHERE id = $1
+    `, [quiz.id]);
+    await executeQuery(`
+      INSERT INTO answers (quiz_id, question_id, user_answer, is_correct, membership_enforced)
+      VALUES ($1, $2, '[0]', TRUE, FALSE), ($1, $2, '[0]', TRUE, FALSE)
+    `, [quiz.id, questions[0].id]);
+    await migrateQuizMembership(getDatabase());
+    expect((await getAnswersByQuiz(quiz.id))).toHaveLength(2);
+    expect((await completeQuiz(quiz.id, user.id)).idempotent).toBe(true);
+    expect(await getQuizQuestions(quiz.id)).toHaveLength(0);
   });
 });
 

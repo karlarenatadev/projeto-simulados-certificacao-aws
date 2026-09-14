@@ -52,7 +52,13 @@ export const quizManager = {
    * @param {number} numQuestions - Number of questions
    * @returns {Promise<object>} { quizId, questions, totalQuestions }
    */
-  async startQuiz(certId, numQuestions = 10, locale = "pt", mode = "exam") {
+  async startQuiz(
+    certId,
+    numQuestions = 10,
+    locale = "pt",
+    mode = "exam",
+    filters = {},
+  ) {
     certId = normalizeCertificationId(certId);
     try {
       if (
@@ -66,6 +72,8 @@ export const quizManager = {
             certification: certId,
             num_questions: numQuestions,
             locale: locale,
+            difficulty: filters.difficulty,
+            domain: filters.topic || filters.domain,
           });
 
           if (response.success && response.data) {
@@ -158,6 +166,41 @@ export const quizManager = {
       logger.error("Error recording answer:", error);
       return false;
     }
+  },
+
+  /** Online correction is acknowledged by the server before local UI state advances. */
+  async submitAuthoritativeAnswer(options = {}) {
+    const quizId = this.currentQuizId;
+    if (!quizId || quizId.startsWith("local_") || !this.isAPIAvailable) {
+      throw new Error("No active online quiz is available for correction");
+    }
+    const response = await apiService.recordAnswer({
+      quiz_id: quizId,
+      question_id: options.question_id,
+      user_answer: options.user_answer,
+      time_secs: options.time_secs || 0,
+    });
+    if (!response.success || typeof response.data?.is_correct !== "boolean") {
+      throw new Error("The server did not return a valid answer result");
+    }
+    this._saveAnswerLocally({
+      quiz_id: quizId,
+      question_id: options.question_id,
+      user_answer: options.user_answer,
+      is_correct: response.data.is_correct,
+      time_secs: options.time_secs || 0,
+      timestamp: new Date().toISOString(),
+      synced: true,
+      syncedAt: new Date().toISOString(),
+    });
+    return response.data;
+  },
+
+  async getRemoteQuiz(quizId) {
+    if (!this.isAPIAvailable || !quizId || quizId.startsWith("local_"))
+      return null;
+    const response = await apiService.getQuiz(quizId);
+    return response.success ? response.data : null;
   },
 
   /** Retry answers whose acknowledgement may have been lost on refresh. */

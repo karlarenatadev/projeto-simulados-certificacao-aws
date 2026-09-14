@@ -41,9 +41,9 @@ describe("Taxonomia canônica de domínios", () => {
 
   test("mantém os cinco domínios oficiais do AIF", () => {
     expect(getDomainTaxonomy("aif-c01")).toHaveLength(5);
-    expect(normalizeDomain("aif-c01", "Applications of Foundation Models")).toBe(
-      "applications-foundation-models",
-    );
+    expect(
+      normalizeDomain("aif-c01", "Applications of Foundation Models"),
+    ).toBe("applications-foundation-models");
     expect(
       normalizeDomain(
         "aif-c01",
@@ -54,8 +54,22 @@ describe("Taxonomia canônica de domínios", () => {
 
   test("retorna null para domínio desconhecido", () => {
     expect(normalizeDomain("clf-c02", "dominio-inexistente")).toBeNull();
-    expect(normalizeDomain("certificacao-inexistente", "Cloud Concepts")).toBeNull();
+    expect(
+      normalizeDomain("certificacao-inexistente", "Cloud Concepts"),
+    ).toBeNull();
   });
+
+  test.each([
+    ["clf-c02", "clf-security-compliance", "seguranca"],
+    ["saa-c03", "saa-design-resilient", "design-resiliente"],
+    ["dva-c02", "dva-deployment", "implementacao"],
+    ["aif-c01", "aif-security-governance", "security-compliance-governance"],
+  ])(
+    "resolve IDs da taxonomia canonica por certificacao",
+    (certification, value, expected) => {
+      expect(normalizeDomain(certification, value)).toBe(expected);
+    },
+  );
 
   test("mantem paridade de dominios entre fonte canonica e runtime", () => {
     for (const certification of ["CLF-C02", "SAA-C03", "DVA-C02", "AIF-C01"]) {
@@ -65,13 +79,19 @@ describe("Taxonomia canônica de domínios", () => {
       const runtime = certificationPaths[certification.toLowerCase()];
 
       expect(runtime.domains).toHaveLength(canonicalCount);
-      expect(runtime.domains.every((domain) => domain.id && domain.name && domain.englishName)).toBe(true);
+      expect(
+        runtime.domains.every(
+          (domain) => domain.id && domain.name && domain.englishName,
+        ),
+      ).toBe(true);
     }
   });
 
   test("normaliza aliases de servico de forma idempotente", () => {
     expect(normalizeServiceId("amazon-route53")).toBe("amazon-route-53");
     expect(normalizeServiceId("Amazon Route 53")).toBe("amazon-route-53");
-    expect(normalizeServiceId(normalizeServiceId("amazon-route53"))).toBe("amazon-route-53");
+    expect(normalizeServiceId(normalizeServiceId("amazon-route53"))).toBe(
+      "amazon-route-53",
+    );
   });
 });

@@ -211,7 +211,9 @@ export class RecommendationEngine {
   // ---------------------------------------------------------------------------
 
   _buildActionsForGap(domain, certId) {
-    const domainSlug = this._slugify(domain.name);
+    const domainSlug =
+      normalizeDomain(certId, domain.domainId || domain.id || domain.name) ||
+      this._slugify(domain.name);
     const resources = this.resourceMapper.getResources(certId, domainSlug);
     const actions = [];
 

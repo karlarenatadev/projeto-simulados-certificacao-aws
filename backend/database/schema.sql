@@ -365,6 +365,17 @@ CREATE INDEX IF NOT EXISTS idx_quiz_history_status        ON quiz_history(status
 CREATE INDEX IF NOT EXISTS idx_quiz_history_completed     ON quiz_history(completed_at DESC);
 CREATE INDEX IF NOT EXISTS idx_quiz_history_percentage    ON quiz_history(percentage DESC);
 
+-- A membership belongs to a specific attempt; legacy completed attempts are
+-- intentionally not reconstructed because their original question set is unknown.
+CREATE TABLE IF NOT EXISTS quiz_questions (
+    quiz_id     UUID    NOT NULL REFERENCES quiz_history(id) ON DELETE CASCADE,
+    question_id UUID    NOT NULL REFERENCES questions(id) ON DELETE RESTRICT,
+    position    INTEGER NOT NULL CHECK (position >= 0),
+    PRIMARY KEY (quiz_id, question_id),
+    UNIQUE (quiz_id, position)
+);
+CREATE INDEX IF NOT EXISTS idx_quiz_questions_question ON quiz_questions(question_id);
+
 -- ============================================================================
 -- TABELA: answers
 -- Respostas individuais de cada questão dentro de um quiz
@@ -376,9 +387,16 @@ CREATE TABLE IF NOT EXISTS answers (
     question_id  UUID      REFERENCES questions(id) ON DELETE SET NULL,
     user_answer  JSONB     NOT NULL,    -- [id] ou [id, id]
     is_correct   BOOLEAN   NOT NULL,
+    membership_enforced BOOLEAN NOT NULL DEFAULT TRUE,
     time_secs    INTEGER   CHECK (time_secs >= 0),
     answered_at  TIMESTAMP NOT NULL DEFAULT NOW()
 );
+
+-- Existing databases can reach this script before the JS migration below.
+ALTER TABLE answers ADD COLUMN IF NOT EXISTS membership_enforced BOOLEAN;
+UPDATE answers SET membership_enforced = FALSE WHERE membership_enforced IS NULL;
+ALTER TABLE answers ALTER COLUMN membership_enforced SET DEFAULT TRUE;
+ALTER TABLE answers ALTER COLUMN membership_enforced SET NOT NULL;
 
 COMMENT ON TABLE  answers             IS 'Respostas individuais de cada questão em um quiz';
 COMMENT ON COLUMN answers.user_answer IS 'Array JSON com ID(s) escolhido(s) pelo usuário: [\"B\"]';
@@ -387,6 +405,9 @@ COMMENT ON COLUMN answers.time_secs   IS 'Tempo gasto nesta questão em segundos
 CREATE INDEX IF NOT EXISTS idx_answers_quiz     ON answers(quiz_id);
 CREATE INDEX IF NOT EXISTS idx_answers_question ON answers(question_id);
 CREATE INDEX IF NOT EXISTS idx_answers_correct  ON answers(is_correct);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_answers_new_quiz_question
+    ON answers(quiz_id, question_id)
+    WHERE membership_enforced = TRUE AND question_id IS NOT NULL;
 
 -- ============================================================================
 -- TABELA: gamification

@@ -346,7 +346,7 @@ export function createDataRepository(storage, _api = null) {
      * @param {Array} questions - Lote de questões a ser validado
      * @returns {Array} Lote contendo apenas as questões válidas (consistentes)
      */
-    validateQuestions(questions) {
+    validateQuestions(questions, { requireCorrect = true } = {}) {
       if (!Array.isArray(questions)) return [];
 
       return questions.filter((q) => {
@@ -370,7 +370,16 @@ export function createDataRepository(storage, _api = null) {
                 typeof idx === "number" && idx >= 0 && idx < q.options.length,
             ));
 
-        if (!hasId || !hasText || !hasOptions || !hasCorrectAnswers) {
+        const hasSelectionCount =
+          Number.isInteger(q.selection_count) &&
+          q.selection_count >= 1 &&
+          q.selection_count <= q.options.length;
+        if (
+          !hasId ||
+          !hasText ||
+          !hasOptions ||
+          (requireCorrect ? !hasCorrectAnswers : !hasSelectionCount)
+        ) {
           logger.warn(
             "[DataRepository] Questão inválida ou corrompida descartada:",
             q,

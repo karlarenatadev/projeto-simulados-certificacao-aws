@@ -69,7 +69,11 @@ export class LearningAnalytics {
     }
 
     // 3. Processamento
-    const domains = this.domainAnalyzer.analyze(history, mistakes);
+    const domains = this.domainAnalyzer.analyze(
+      history,
+      mistakes,
+      normalizedCertId,
+    );
     const trend = this.trendAnalyzer.analyze(scoredTimeline);
     const recentDirection =
       this.trendAnalyzer.getRecentDirection(scoredTimeline);

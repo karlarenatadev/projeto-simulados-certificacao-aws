@@ -179,11 +179,13 @@ export class QuizEngine {
       domainScores: {},
       mode: "exam",
       quizId: null, // Backend quiz ID for tracking
+      authoritative: false,
+      source: "local",
     };
   }
 
   // 1. CARREGAMENTO E FILTRAGEM
-  async _sanitizeQuestions(data, certId) {
+  async _sanitizeQuestions(data, certId, { source = "local" } = {}) {
     const approvedData = data.filter(isApprovedQuestion);
     try {
       const manifestRes = await fetch(
@@ -193,13 +195,17 @@ export class QuizEngine {
         logger.warn(
           "⚠️ Não foi possível carregar o manifesto. Sanitização ignorada.",
         );
-        return dataRepo.validateQuestions(approvedData);
+        return dataRepo.validateQuestions(approvedData, {
+          requireCorrect: source === "local",
+        });
       }
       const manifest = await manifestRes.json();
       const config = manifest[certId];
       if (!config) {
         logger.warn(`⚠️ Certificação ${certId} ausente no manifesto.`);
-        return dataRepo.validateQuestions(approvedData);
+        return dataRepo.validateQuestions(approvedData, {
+          requireCorrect: source === "local",
+        });
       }
 
       let sanitized = approvedData.filter((q) => {
@@ -231,7 +237,9 @@ export class QuizEngine {
       });
 
       // Validar estrutura das propriedades usando dataRepo
-      sanitized = dataRepo.validateQuestions(sanitized);
+      sanitized = dataRepo.validateQuestions(sanitized, {
+        requireCorrect: source === "local",
+      });
 
       logger.info(
         `🛡️ Sanitização: ${sanitized.length}/${data.length} questões aprovadas.`,
@@ -239,7 +247,9 @@ export class QuizEngine {
       return sanitized;
     } catch (e) {
       logger.error("Erro na sanitização:", e);
-      return dataRepo.validateQuestions(approvedData);
+      return dataRepo.validateQuestions(approvedData, {
+        requireCorrect: source === "local",
+      });
     }
   }
 
@@ -305,8 +315,32 @@ export class QuizEngine {
       // API may return different field names, so we map them
       data = data.map((q) => this._normalizeQuestion(q));
 
+      if (source === "api") {
+        const valid = dataRepo.validateQuestions(data, {
+          requireCorrect: false,
+        });
+        if (
+          valid.length !== data.length ||
+          data.some(
+            (q) =>
+              normalizeCertificationId(q.certification) !== this.state.certId ||
+              q.language !== language,
+          )
+        ) {
+          throw new Error("Invalid question set returned by the API.");
+        }
+        this.state.questions = data;
+        this.state.authoritative = true;
+        this.state.source = "online";
+        domainsConfig.forEach((d) => {
+          this.state.domainScores[d.id] = { total: 0, correct: 0 };
+        });
+        return { success: true, totalQuestions: data.length };
+      }
+
       // Aplica a sanitização do manifesto (Blindagem)
-      data = await this._sanitizeQuestions(data, certId);
+      data = await this._sanitizeQuestions(data, certId, { source: "local" });
+      this.state.source = "local";
       if (data.length === 0)
         throw new Error("Nenhuma questão válida restou após a sanitização.");
 
@@ -349,7 +383,9 @@ export class QuizEngine {
         });
 
         if (response.success && response.data && response.data.length > 0) {
-          data = response.data;
+          // The public catalog intentionally omits answer keys. Keep this
+          // flow local rather than mixing public API rows into local scoring.
+          data = [];
           logger.info(
             `✓ Loaded ${data.length} questions from API for personalized quiz`,
           );
@@ -380,7 +416,8 @@ export class QuizEngine {
         );
       }
 
-      data = await this._sanitizeQuestions(data, certId);
+      data = await this._sanitizeQuestions(data, certId, { source: "local" });
+      this.state.source = "local";
 
       data = data.map((q) => this._normalizeQuestion(q));
 
@@ -554,7 +591,7 @@ export class QuizEngine {
   }
 
   // 3. AVALIAÇÃO
-  submitAnswer(selectedIndex) {
+  submitAnswer(selectedIndex, authoritativeFeedback = null) {
     const q = this.getCurrentQuestion();
     const questionId = q.id ?? q.questionId ?? q.uuid ?? null;
     const existingAnswerIndex = this.state.answers.findIndex(
@@ -567,8 +604,19 @@ export class QuizEngine {
         ? this.state.answers.splice(existingAnswerIndex, 1)[0]
         : null;
 
+    if (authoritativeFeedback) {
+      const correctIds = authoritativeFeedback.correct_answer || [];
+      const correctIndexes = correctIds
+        .map((id) => q.optionIds?.indexOf(String(id)))
+        .filter((index) => index >= 0);
+      q.correct = q.selection_count > 1 ? correctIndexes : correctIndexes[0];
+      q.explanation = authoritativeFeedback.explanation || "";
+    }
+
     let isCorrect;
-    if (Array.isArray(q.correct)) {
+    if (authoritativeFeedback) {
+      isCorrect = authoritativeFeedback.is_correct === true;
+    } else if (Array.isArray(q.correct)) {
       const userSorted = Array.isArray(selectedIndex)
         ? [...selectedIndex].sort()
         : [];
@@ -895,16 +943,29 @@ export class QuizEngine {
       );
     }
 
+    const rawOptions = Array.isArray(q.options) ? q.options : [];
+    const optionIds = rawOptions.map((option, index) =>
+      option && typeof option === "object"
+        ? String(option.id ?? index)
+        : String(index),
+    );
+    const options = rawOptions.map((option) =>
+      option && typeof option === "object"
+        ? (option.text ?? option.label ?? "")
+        : option,
+    );
+
     return {
       ...q, // Preserve all original metadata for sanitization/validation
       id:
         q.id ||
         q.questionId ||
         generateQuestionId(q.question || q.question_text),
-      domain: q.domain || q.domainId || "0",
+      domain: q.domain_id || q.domainId || q.domain || "0",
       difficulty: q.difficulty || "medium",
       question: q.question || q.question_text || "",
-      options: q.options || [],
+      options,
+      optionIds,
       correct: correctNormalized,
       explanation: q.explanation || "",
       reference_url: q.reference_url || q.referenceUrl || undefined,

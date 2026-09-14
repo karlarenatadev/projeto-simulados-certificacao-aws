@@ -479,6 +479,10 @@ export const apiService = {
         num_questions: options.num_questions || 10,
         language: options.language || options.locale || "pt",
       };
+      if (options.difficulty && options.difficulty !== "all")
+        payload.difficulty = options.difficulty;
+      if (options.domain || options.topic)
+        payload.domain = options.domain || options.topic;
 
       const response = await fetchWithRetry("/api/quiz/start", {
         method: "POST",

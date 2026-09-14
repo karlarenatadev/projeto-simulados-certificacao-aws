@@ -3,32 +3,36 @@
  * Handles database initialization and configuration
  */
 
-import { PGlite } from '@electric-sql/pglite';
-import { config as loadEnvironment } from 'dotenv';
-import { readFileSync } from 'fs';
-import { dirname, isAbsolute, join, resolve } from 'path';
-import { fileURLToPath } from 'url';
-import { normalizeCertificationId, normalizeLanguage } from './normalizers.js';
+import { PGlite } from "@electric-sql/pglite";
+import { config as loadEnvironment } from "dotenv";
+import { readFileSync } from "fs";
+import { dirname, isAbsolute, join, resolve } from "path";
+import { fileURLToPath } from "url";
+import { normalizeCertificationId, normalizeLanguage } from "./normalizers.js";
+import {
+  hasDomainTaxonomy,
+  normalizeDomain as resolveDomain,
+} from "./domainTaxonomy.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SCHEMA_PATH = join(__dirname, 'schema.sql');
-const MEMORY_DATA_DIR = 'memory://';
+const SCHEMA_PATH = join(__dirname, "schema.sql");
+const MEMORY_DATA_DIR = "memory://";
 const VALID_CERTIFICATIONS = new Set([
-  'CLF-C02',
-  'SAA-C03',
-  'SAP-C02',
-  'DVA-C02',
-  'SOA-C02',
-  'DOP-C02',
-  'ANS-C01',
-  'DAS-C01',
-  'MLS-C01',
-  'SCS-C02',
-  'PAS-C01',
-  'AIF-C01',
+  "CLF-C02",
+  "SAA-C03",
+  "SAP-C02",
+  "DVA-C02",
+  "SOA-C02",
+  "DOP-C02",
+  "ANS-C01",
+  "DAS-C01",
+  "MLS-C01",
+  "SCS-C02",
+  "PAS-C01",
+  "AIF-C01",
 ]);
-const VALID_DIFFICULTIES = new Set(['easy', 'medium', 'hard']);
-const VALID_VALIDATION_STATUSES = new Set(['PENDING', 'APPROVED', 'REJECTED']);
+const VALID_DIFFICULTIES = new Set(["easy", "medium", "hard"]);
+const VALID_VALIDATION_STATUSES = new Set(["PENDING", "APPROVED", "REJECTED"]);
 const DEFAULT_QUESTION_LIMIT = 10;
 const DEFAULT_SEARCH_LIMIT = 20;
 const DEFAULT_HISTORY_LIMIT = 10;
@@ -37,7 +41,12 @@ const MAX_QUESTION_LIMIT = 100;
 const DEFAULT_LEADERBOARD_LIMIT = 100;
 const MAX_LEADERBOARD_LIMIT = 100;
 const USER_MODULES = new Set([
-  'journey', 'sprint', 'flashcards', 'labs', 'diagnostic', 'preferences',
+  "journey",
+  "sprint",
+  "flashcards",
+  "labs",
+  "diagnostic",
+  "preferences",
 ]);
 const MAX_MODULE_STATE_BYTES = 256 * 1024;
 
@@ -202,6 +211,28 @@ export async function migrateQuizLifecycle(database) {
   `);
 }
 
+/** Upgrade existing databases without assigning invented question sets to old quizzes. */
+export async function migrateQuizMembership(database) {
+  await database.exec(`
+    CREATE TABLE IF NOT EXISTS quiz_questions (
+      quiz_id UUID NOT NULL REFERENCES quiz_history(id) ON DELETE CASCADE,
+      question_id UUID NOT NULL REFERENCES questions(id) ON DELETE RESTRICT,
+      position INTEGER NOT NULL CHECK (position >= 0),
+      PRIMARY KEY (quiz_id, question_id),
+      UNIQUE (quiz_id, position)
+    );
+    CREATE INDEX IF NOT EXISTS idx_quiz_questions_question ON quiz_questions(question_id);
+
+    ALTER TABLE answers ADD COLUMN IF NOT EXISTS membership_enforced BOOLEAN;
+    UPDATE answers SET membership_enforced = FALSE WHERE membership_enforced IS NULL;
+    ALTER TABLE answers ALTER COLUMN membership_enforced SET DEFAULT TRUE;
+    ALTER TABLE answers ALTER COLUMN membership_enforced SET NOT NULL;
+    CREATE UNIQUE INDEX IF NOT EXISTS uq_answers_new_quiz_question
+      ON answers(quiz_id, question_id)
+      WHERE membership_enforced = TRUE AND question_id IS NOT NULL;
+  `);
+}
+
 loadEnvironment({ quiet: true });
 
 let db = null;
@@ -210,7 +241,7 @@ let closePromise = null;
 let schemaSql = null;
 
 function isDebugEnabled() {
-  return process.env.DEBUG === 'true' || process.env.DB_DEBUG === 'true';
+  return process.env.DEBUG === "true" || process.env.DB_DEBUG === "true";
 }
 
 function debugQuery(query, params) {
@@ -218,7 +249,7 @@ function debugQuery(query, params) {
     return;
   }
 
-  console.log('[database:query]', query.replace(/\s+/g, ' ').trim(), params);
+  console.log("[database:query]", query.replace(/\s+/g, " ").trim(), params);
 }
 
 function rowsFromResult(result) {
@@ -232,38 +263,40 @@ async function queryRows(executor, query, params = []) {
 }
 
 function resolveDatabaseOptions(options = {}) {
-  const environment = options.environment || process.env.NODE_ENV || 'development';
+  const environment =
+    options.environment || process.env.NODE_ENV || "development";
   const configuredDataDir = options.dataDir || process.env.DB_DATA_DIR;
 
   if (configuredDataDir) {
-    const dataDir = configuredDataDir === MEMORY_DATA_DIR || isAbsolute(configuredDataDir)
-      ? configuredDataDir
-      : resolve(process.cwd(), configuredDataDir);
+    const dataDir =
+      configuredDataDir === MEMORY_DATA_DIR || isAbsolute(configuredDataDir)
+        ? configuredDataDir
+        : resolve(process.cwd(), configuredDataDir);
 
-    if (dataDir === MEMORY_DATA_DIR && environment !== 'test') {
+    if (dataDir === MEMORY_DATA_DIR && environment !== "test") {
       throw new Error(
-        'In-memory PGlite is restricted to tests. Configure DB_DATA_DIR for this environment.',
+        "In-memory PGlite is restricted to tests. Configure DB_DATA_DIR for this environment.",
       );
     }
 
     return {
       dataDir,
       environment,
-      mode: dataDir === MEMORY_DATA_DIR ? 'memory' : 'persistent',
+      mode: dataDir === MEMORY_DATA_DIR ? "memory" : "persistent",
     };
   }
 
-  if (environment === 'test') {
+  if (environment === "test") {
     return {
       dataDir: MEMORY_DATA_DIR,
       environment,
-      mode: 'memory',
+      mode: "memory",
     };
   }
 
   throw new Error(
-    'DB_DATA_DIR is required outside the test environment. '
-    + 'Set it in .env or pass initializeDatabase({ dataDir }).',
+    "DB_DATA_DIR is required outside the test environment. " +
+      "Set it in .env or pass initializeDatabase({ dataDir }).",
   );
 }
 
@@ -272,16 +305,16 @@ function loadSchema() {
     return schemaSql;
   }
 
-  let schema = readFileSync(SCHEMA_PATH, 'utf-8');
+  let schema = readFileSync(SCHEMA_PATH, "utf-8");
 
   schema = schema.replace(
     /CREATE EXTENSION IF NOT EXISTS.*?;/gi,
-    '-- Extension not supported in PGlite\n',
+    "-- Extension not supported in PGlite\n",
   );
   schema = schema.replace(
     /CREATE INDEX IF NOT EXISTS.*?USING GIN.*?;/gi,
-    '-- GIN index not supported in PGlite\n'
-    + 'CREATE INDEX IF NOT EXISTS idx_questions_tags ON questions(tags);\n',
+    "-- GIN index not supported in PGlite\n" +
+      "CREATE INDEX IF NOT EXISTS idx_questions_tags ON questions(tags);\n",
   );
 
   schemaSql = schema;
@@ -289,24 +322,26 @@ function loadSchema() {
 }
 
 const REQUIRED_SCHEMA_TABLES = [
-  'users',
-  'domains',
-  'questions',
-  'quiz_history',
-  'answers',
-  'gamification',
-  'focus_sessions',
-  'aws_services',
-  'cases',
-  'case_progress',
-  'validator_requests',
-  'validator_certifications',
-  'role_audit_log',
-  'user_module_state',
+  "users",
+  "domains",
+  "questions",
+  "quiz_history",
+  "answers",
+  "gamification",
+  "focus_sessions",
+  "aws_services",
+  "cases",
+  "case_progress",
+  "validator_requests",
+  "validator_certifications",
+  "role_audit_log",
+  "user_module_state",
 ];
 
 async function hasCurrentSchema(database) {
-  const placeholders = REQUIRED_SCHEMA_TABLES.map((_, index) => `$${index + 1}`).join(', ');
+  const placeholders = REQUIRED_SCHEMA_TABLES.map(
+    (_, index) => `$${index + 1}`,
+  ).join(", ");
   const result = await database.query(
     `SELECT COUNT(*)::int AS count
        FROM information_schema.tables
@@ -327,7 +362,7 @@ async function hasCurrentSchema(database) {
  */
 export async function initializeDatabase(options = {}) {
   if (db && !db.closed) {
-    console.log('[database] Reusing active PGlite instance');
+    console.log("[database] Reusing active PGlite instance");
     return db;
   }
 
@@ -340,24 +375,27 @@ export async function initializeDatabase(options = {}) {
     let database = null;
 
     console.log(
-      `[database] Initializing PGlite in ${databaseOptions.mode} mode `
-      + `(${databaseOptions.environment})`,
+      `[database] Initializing PGlite in ${databaseOptions.mode} mode ` +
+        `(${databaseOptions.environment})`,
     );
 
     try {
       database = await PGlite.create({ dataDir: databaseOptions.dataDir });
-      console.log('[database] PGlite instance ready');
+      console.log("[database] PGlite instance ready");
 
       if (await hasCurrentSchema(database)) {
-        console.log('[database] Current schema detected; skipped full schema re-application');
+        console.log(
+          "[database] Current schema detected; skipped full schema re-application",
+        );
       } else {
         await database.exec(loadSchema());
-        console.log('[database] Schema applied successfully');
+        console.log("[database] Schema applied successfully");
       }
 
       await migrateQuestionIdentity(database);
       await migrateCaseTranslations(database);
       await migrateQuizLifecycle(database);
+      await migrateQuizMembership(database);
 
       db = database;
       return db;
@@ -373,22 +411,24 @@ export async function initializeDatabase(options = {}) {
       // api:start launched nearly simultaneously by npm run dev).
       const isAbortError =
         error.message &&
-        (error.message.includes('Aborted') || error.message.includes('RuntimeError'));
+        (error.message.includes("Aborted") ||
+          error.message.includes("RuntimeError"));
 
-      if (isAbortError && databaseOptions.mode === 'persistent') {
+      if (isAbortError && databaseOptions.mode === "persistent") {
         console.warn(
-          '[database] PGlite Aborted — another process may have the dataDir open. ' +
-          'Retrying in 2 s...',
+          "[database] PGlite Aborted — another process may have the dataDir open. " +
+            "Retrying in 2 s...",
         );
         await new Promise((resolve) => setTimeout(resolve, 2000));
         try {
           database = await PGlite.create({ dataDir: databaseOptions.dataDir });
-          console.log('[database] PGlite instance ready (retry)');
+          console.log("[database] PGlite instance ready (retry)");
           await database.exec(loadSchema());
-          console.log('[database] Schema applied successfully (retry)');
+          console.log("[database] Schema applied successfully (retry)");
           await migrateQuestionIdentity(database);
           await migrateCaseTranslations(database);
           await migrateQuizLifecycle(database);
+          await migrateQuizMembership(database);
           db = database;
           return db;
         } catch (retryError) {
@@ -396,12 +436,12 @@ export async function initializeDatabase(options = {}) {
             await database.close().catch(() => {});
           }
           db = null;
-          console.error('[database] Retry also failed:', retryError.message);
+          console.error("[database] Retry also failed:", retryError.message);
           throw retryError;
         }
       }
 
-      console.error('[database] Initialization failed:', error.message);
+      console.error("[database] Initialization failed:", error.message);
       throw error;
     }
   })();
@@ -419,7 +459,9 @@ export async function initializeDatabase(options = {}) {
  */
 export function getDatabase() {
   if (!db) {
-    throw new Error('Database not initialized. Call initializeDatabase() first.');
+    throw new Error(
+      "Database not initialized. Call initializeDatabase() first.",
+    );
   }
   return db;
 }
@@ -443,14 +485,14 @@ export async function closeDatabase() {
 
     if (activeDatabase && !activeDatabase.closed) {
       await activeDatabase.close();
-      console.log('[database] PGlite instance closed');
+      console.log("[database] PGlite instance closed");
     }
   })();
 
   try {
     await closePromise;
   } catch (error) {
-    console.error('[database] Close failed:', error.message);
+    console.error("[database] Close failed:", error.message);
     throw error;
   } finally {
     closePromise = null;
@@ -477,7 +519,7 @@ export async function executeQuery(query, params = []) {
   try {
     return await queryRows(database, query, params);
   } catch (error) {
-    console.error('✗ Query execution failed:', error.message);
+    console.error("✗ Query execution failed:", error.message);
     throw error;
   }
 }
@@ -492,7 +534,7 @@ export async function executeSql(sql) {
   try {
     await database.exec(sql);
   } catch (error) {
-    console.error('✗ SQL execution failed:', error.message);
+    console.error("✗ SQL execution failed:", error.message);
     throw error;
   }
 }
@@ -502,11 +544,11 @@ export async function executeSql(sql) {
 // ============================================================================
 
 function isPlainObject(value) {
-  return value !== null && typeof value === 'object' && !Array.isArray(value);
+  return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
 function normalizeRequiredString(value, fieldName, { minLength = 1 } = {}) {
-  if (typeof value !== 'string') {
+  if (typeof value !== "string") {
     throw new Error(`${fieldName} must be a string`);
   }
 
@@ -527,7 +569,7 @@ function normalizeMaxLength(value, fieldName, maxLength) {
 }
 
 function normalizeOptionalString(value, fieldName) {
-  if (value === undefined || value === null || value === '') {
+  if (value === undefined || value === null || value === "") {
     return null;
   }
 
@@ -565,15 +607,19 @@ function normalizeOffset(value) {
 }
 
 function validateCertification(certification, { required = false } = {}) {
-  if (certification === undefined || certification === null || certification === '') {
+  if (
+    certification === undefined ||
+    certification === null ||
+    certification === ""
+  ) {
     if (required) {
-      throw new Error('certification is required');
+      throw new Error("certification is required");
     }
     return undefined;
   }
 
   const normalized = normalizeCertificationId(
-    normalizeRequiredString(certification, 'certification'),
+    normalizeRequiredString(certification, "certification"),
   );
 
   if (!VALID_CERTIFICATIONS.has(normalized)) {
@@ -584,32 +630,40 @@ function validateCertification(certification, { required = false } = {}) {
 }
 
 function validateDifficulty(difficulty, { required = false } = {}) {
-  if (difficulty === undefined || difficulty === null || difficulty === '') {
+  if (difficulty === undefined || difficulty === null || difficulty === "") {
     if (required) {
-      throw new Error('difficulty is required');
+      throw new Error("difficulty is required");
     }
     return undefined;
   }
 
-  const normalized = normalizeRequiredString(difficulty, 'difficulty');
+  const normalized = normalizeRequiredString(
+    difficulty,
+    "difficulty",
+  ).toLowerCase();
   if (!VALID_DIFFICULTIES.has(normalized)) {
-    throw new Error('difficulty must be one of: easy, medium, hard');
+    throw new Error("difficulty must be one of: easy, medium, hard");
   }
 
   return normalized;
 }
 
 function validateValidationStatus(status, { required = false } = {}) {
-  if (status === undefined || status === null || status === '') {
+  if (status === undefined || status === null || status === "") {
     if (required) {
-      throw new Error('validation_status is required');
+      throw new Error("validation_status is required");
     }
     return undefined;
   }
 
-  const normalized = normalizeRequiredString(status, 'validation_status').toUpperCase();
+  const normalized = normalizeRequiredString(
+    status,
+    "validation_status",
+  ).toUpperCase();
   if (!VALID_VALIDATION_STATUSES.has(normalized)) {
-    throw new Error('validation_status must be one of: PENDING, APPROVED, REJECTED');
+    throw new Error(
+      "validation_status must be one of: PENDING, APPROVED, REJECTED",
+    );
   }
 
   return normalized;
@@ -621,7 +675,7 @@ function normalizeValidationLogs(logs) {
   }
 
   if (!Array.isArray(logs)) {
-    throw new Error('validation_logs must be an array');
+    throw new Error("validation_logs must be an array");
   }
 
   return logs;
@@ -633,25 +687,27 @@ function normalizeTags(tags) {
   }
 
   if (!Array.isArray(tags)) {
-    throw new Error('tags must be an array');
+    throw new Error("tags must be an array");
   }
 
-  return tags.map((tag, index) => normalizeRequiredString(tag, `tags[${index}]`));
+  return tags.map((tag, index) =>
+    normalizeRequiredString(tag, `tags[${index}]`),
+  );
 }
 
 function normalizeOptions(options) {
   if (!Array.isArray(options) || options.length < 2) {
-    throw new Error('options must be an array with at least 2 items');
+    throw new Error("options must be an array with at least 2 items");
   }
 
   return options.map((option, index) => {
-    if (typeof option === 'string') {
+    if (typeof option === "string") {
       return normalizeRequiredString(option, `options[${index}]`);
     }
 
     if (isPlainObject(option)) {
       const normalizedOption = { ...option };
-      if ('id' in normalizedOption) {
+      if ("id" in normalizedOption) {
         normalizedOption.id = normalizeRequiredString(
           String(normalizedOption.id),
           `options[${index}].id`,
@@ -669,10 +725,15 @@ function normalizeOptions(options) {
 }
 
 function normalizeCorrectAnswer(correctAnswer, options) {
-  const answers = Array.isArray(correctAnswer) ? correctAnswer : [correctAnswer];
+  const answers = Array.isArray(correctAnswer)
+    ? correctAnswer
+    : [correctAnswer];
 
-  if (answers.length === 0 || answers.some((answer) => answer === undefined || answer === null)) {
-    throw new Error('correct_answer must contain at least one answer');
+  if (
+    answers.length === 0 ||
+    answers.some((answer) => answer === undefined || answer === null)
+  ) {
+    throw new Error("correct_answer must contain at least one answer");
   }
 
   const optionIds = options
@@ -680,18 +741,22 @@ function normalizeCorrectAnswer(correctAnswer, options) {
     .map((option) => option.id);
 
   answers.forEach((answer, index) => {
-    if (typeof answer === 'number') {
+    if (typeof answer === "number") {
       if (!Number.isInteger(answer) || answer < 0 || answer >= options.length) {
-        throw new Error(`correct_answer[${index}] must reference a valid option index`);
+        throw new Error(
+          `correct_answer[${index}] must reference a valid option index`,
+        );
       }
       return;
     }
 
-    if (typeof answer === 'string') {
+    if (typeof answer === "string") {
       if (optionIds.length > 0 && optionIds.includes(answer)) {
         return;
       }
-      throw new Error(`correct_answer[${index}] must reference a valid option id`);
+      throw new Error(
+        `correct_answer[${index}] must reference a valid option id`,
+      );
     }
 
     throw new Error(`correct_answer[${index}] must be a number or string`);
@@ -702,7 +767,7 @@ function normalizeCorrectAnswer(correctAnswer, options) {
 
 function normalizeQuestionInput(questionData, { partial = false } = {}) {
   if (!isPlainObject(questionData)) {
-    throw new Error('questionData must be an object');
+    throw new Error("questionData must be an object");
   }
 
   const normalized = {};
@@ -715,7 +780,9 @@ function normalizeQuestionInput(questionData, { partial = false } = {}) {
   const correctAnswer = questionData.correct_answer ?? questionData.correct;
 
   if (!partial || certification !== undefined) {
-    normalized.certification = validateCertification(certification, { required: !partial });
+    normalized.certification = validateCertification(certification, {
+      required: !partial,
+    });
   }
 
   if (!partial || language !== undefined) {
@@ -723,23 +790,26 @@ function normalizeQuestionInput(questionData, { partial = false } = {}) {
   }
 
   if (!partial || sourceQuestionId !== undefined) {
-    normalized.source_question_id = sourceQuestionId === undefined || sourceQuestionId === null
-      ? undefined
-      : normalizeRequiredString(sourceQuestionId, 'source_question_id');
+    normalized.source_question_id =
+      sourceQuestionId === undefined || sourceQuestionId === null
+        ? undefined
+        : normalizeRequiredString(sourceQuestionId, "source_question_id");
   }
 
   if (!partial || domain !== undefined) {
-    normalized.domain = normalizeRequiredString(domain, 'domain');
+    normalized.domain = normalizeRequiredString(domain, "domain");
   }
 
   if (!partial || difficulty !== undefined) {
-    normalized.difficulty = validateDifficulty(difficulty, { required: !partial });
+    normalized.difficulty = validateDifficulty(difficulty, {
+      required: !partial,
+    });
   }
 
   if (!partial || questionText !== undefined) {
     normalized.question_text = normalizeRequiredString(
       questionText,
-      'question_text',
+      "question_text",
       { minLength: 10 },
     );
   }
@@ -750,7 +820,10 @@ function normalizeQuestionInput(questionData, { partial = false } = {}) {
 
   if (!partial || correctAnswer !== undefined) {
     if (normalized.options) {
-      normalized.correct_answer = normalizeCorrectAnswer(correctAnswer, normalized.options);
+      normalized.correct_answer = normalizeCorrectAnswer(
+        correctAnswer,
+        normalized.options,
+      );
     } else {
       normalized.correct_answer = Array.isArray(correctAnswer)
         ? correctAnswer
@@ -759,13 +832,20 @@ function normalizeQuestionInput(questionData, { partial = false } = {}) {
   }
 
   if (!partial || questionData.explanation !== undefined) {
-    normalized.explanation = normalizeRequiredString(questionData.explanation, 'explanation');
+    normalized.explanation = normalizeRequiredString(
+      questionData.explanation,
+      "explanation",
+    );
   }
 
-  if (questionData.reference_url !== undefined || questionData.reference !== undefined || !partial) {
+  if (
+    questionData.reference_url !== undefined ||
+    questionData.reference !== undefined ||
+    !partial
+  ) {
     normalized.reference_url = normalizeOptionalString(
       questionData.reference_url ?? questionData.reference,
-      'reference_url',
+      "reference_url",
     );
   }
 
@@ -774,18 +854,22 @@ function normalizeQuestionInput(questionData, { partial = false } = {}) {
   }
 
   if (questionData.validation_status !== undefined) {
-    normalized.validation_status = validateValidationStatus(questionData.validation_status);
+    normalized.validation_status = validateValidationStatus(
+      questionData.validation_status,
+    );
   }
 
   if (questionData.rejection_reason !== undefined) {
     normalized.rejection_reason = normalizeOptionalString(
       questionData.rejection_reason,
-      'rejection_reason',
+      "rejection_reason",
     );
   }
 
   if (questionData.validation_logs !== undefined) {
-    normalized.validation_logs = normalizeValidationLogs(questionData.validation_logs);
+    normalized.validation_logs = normalizeValidationLogs(
+      questionData.validation_logs,
+    );
   }
 
   return Object.fromEntries(
@@ -797,34 +881,41 @@ async function normalizeQuestionUpdate(updates, existingQuestion) {
   const candidate = {
     ...existingQuestion,
     ...updates,
-    correct_answer: updates.correct_answer ?? updates.correct ?? existingQuestion.correct_answer,
-    question_text: updates.question_text ?? updates.question ?? existingQuestion.question_text,
+    correct_answer:
+      updates.correct_answer ??
+      updates.correct ??
+      existingQuestion.correct_answer,
+    question_text:
+      updates.question_text ??
+      updates.question ??
+      existingQuestion.question_text,
   };
   const normalizedCandidate = normalizeQuestionInput(candidate);
   const allowedFields = new Set([
-    'certification',
-    'domain',
-    'difficulty',
-    'question_text',
-    'options',
-    'correct_answer',
-    'explanation',
-    'reference_url',
-    'tags',
-    'validation_status',
-    'rejection_reason',
-    'validation_logs',
-    'validated_by',
-    'validated_at',
+    "certification",
+    "domain",
+    "difficulty",
+    "question_text",
+    "options",
+    "correct_answer",
+    "explanation",
+    "reference_url",
+    "tags",
+    "validation_status",
+    "rejection_reason",
+    "validation_logs",
+    "validated_by",
+    "validated_at",
   ]);
   const normalizedUpdates = {};
 
   Object.keys(updates).forEach((key) => {
-    const storageKey = key === 'question'
-      ? 'question_text'
-      : key === 'correct'
-        ? 'correct_answer'
-        : key;
+    const storageKey =
+      key === "question"
+        ? "question_text"
+        : key === "correct"
+          ? "correct_answer"
+          : key;
 
     if (!allowedFields.has(storageKey)) {
       return;
@@ -838,13 +929,18 @@ async function normalizeQuestionUpdate(updates, existingQuestion) {
   });
 
   if (Object.keys(normalizedUpdates).length === 0) {
-    throw new Error('No valid fields to update');
+    throw new Error("No valid fields to update");
   }
 
   return normalizedUpdates;
 }
 
-function normalizeQuestionFilters(certificationOrFilters, domain, difficulty, options) {
+function normalizeQuestionFilters(
+  certificationOrFilters,
+  domain,
+  difficulty,
+  options,
+) {
   if (isPlainObject(certificationOrFilters)) {
     return {
       certification: certificationOrFilters.certification,
@@ -886,18 +982,43 @@ function escapeLikePattern(value) {
  * @param {number} [options.offset] - Pagination offset (default: 0)
  * @returns {Promise<Array>} Array of questions
  */
-export async function getQuestions(certificationOrFilters = {}, domain, difficulty, options = {}) {
-  const filters = normalizeQuestionFilters(certificationOrFilters, domain, difficulty, options);
+export async function getQuestions(
+  certificationOrFilters = {},
+  domain,
+  difficulty,
+  options = {},
+) {
+  const filters = normalizeQuestionFilters(
+    certificationOrFilters,
+    domain,
+    difficulty,
+    options,
+  );
   const normalizedCertification = validateCertification(filters.certification);
   const normalizedLanguage = normalizeLanguage(filters.language);
-  const normalizedDomain = filters.domain
-    ? normalizeRequiredString(filters.domain, 'domain')
-    : undefined;
+  let normalizedDomain;
+  let domainValues;
+  if (filters.domain) {
+    const requestedDomain = normalizeRequiredString(filters.domain, "domain");
+    const resolvedDomain = resolveDomain(
+      normalizedCertification,
+      requestedDomain,
+    );
+    if (hasDomainTaxonomy(normalizedCertification) && !resolvedDomain) {
+      throw new Error(
+        `Invalid domain for certification: ${normalizedCertification}`,
+      );
+    }
+    normalizedDomain = resolvedDomain?.officialName || requestedDomain;
+    domainValues = resolvedDomain
+      ? [normalizedDomain, ...resolvedDomain.aliases]
+      : [normalizedDomain];
+  }
   const normalizedDifficulty = validateDifficulty(filters.difficulty);
   const limit = normalizeLimit(filters.limit, DEFAULT_QUESTION_LIMIT);
   const offset = normalizeOffset(filters.offset);
 
-  let query = 'SELECT * FROM questions WHERE is_active = TRUE';
+  let query = "SELECT * FROM questions WHERE is_active = TRUE";
   if (filters.canonicalOnly) {
     query += " AND source_question_id IS NOT NULL AND language IN ('pt', 'en')";
   }
@@ -918,8 +1039,8 @@ export async function getQuestions(certificationOrFilters = {}, domain, difficul
   }
 
   if (normalizedDomain) {
-    query += ` AND domain = $${paramIndex++}`;
-    params.push(normalizedDomain);
+    query += ` AND domain = ANY($${paramIndex++})`;
+    params.push(domainValues);
   }
 
   if (normalizedDifficulty) {
@@ -933,7 +1054,7 @@ export async function getQuestions(certificationOrFilters = {}, domain, difficul
   try {
     return await executeQuery(query, params);
   } catch (error) {
-    console.error('✗ Error fetching questions:', error.message);
+    console.error("✗ Error fetching questions:", error.message);
     throw error;
   }
 }
@@ -944,17 +1065,16 @@ export async function getQuestions(certificationOrFilters = {}, domain, difficul
  * @returns {Promise<Object|null>} Question object or null if not found
  */
 export async function getQuestionById(questionId, options = {}) {
-  normalizeRequiredString(questionId, 'questionId');
-  const approvedClause = options.approvedOnly === true
-    ? " AND validation_status = 'APPROVED'"
-    : '';
+  normalizeRequiredString(questionId, "questionId");
+  const approvedClause =
+    options.approvedOnly === true ? " AND validation_status = 'APPROVED'" : "";
   const query = `SELECT * FROM questions WHERE id = $1 AND is_active = TRUE${approvedClause}`;
 
   try {
     const result = await executeQuery(query, [questionId]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('✗ Error fetching question by ID:', error.message);
+    console.error("✗ Error fetching question by ID:", error.message);
     throw error;
   }
 }
@@ -966,17 +1086,20 @@ export async function getQuestionById(questionId, options = {}) {
  * @returns {Promise<Array>} Array of matching questions
  */
 export async function searchQuestions(searchTerm, limit = 20, options = {}) {
-  const normalizedSearchTerm = normalizeRequiredString(searchTerm, 'searchTerm');
+  const normalizedSearchTerm = normalizeRequiredString(
+    searchTerm,
+    "searchTerm",
+  );
   const normalizedLimit = normalizeLimit(limit, DEFAULT_SEARCH_LIMIT);
   const pattern = `%${escapeLikePattern(normalizedSearchTerm)}%`;
   const normalizedLanguage = normalizeLanguage(options.language);
-  const languageClause = normalizedLanguage ? 'AND language = $3' : '';
-  const canonicalClause = options.canonicalOnly === true
-    ? "AND source_question_id IS NOT NULL AND language IN ('pt', 'en')"
-    : '';
-  const approvedClause = options.approvedOnly === true
-    ? "AND validation_status = 'APPROVED'"
-    : '';
+  const languageClause = normalizedLanguage ? "AND language = $3" : "";
+  const canonicalClause =
+    options.canonicalOnly === true
+      ? "AND source_question_id IS NOT NULL AND language IN ('pt', 'en')"
+      : "";
+  const approvedClause =
+    options.approvedOnly === true ? "AND validation_status = 'APPROVED'" : "";
   const query = `
     SELECT * FROM questions 
     WHERE is_active = TRUE 
@@ -995,10 +1118,12 @@ export async function searchQuestions(searchTerm, limit = 20, options = {}) {
   try {
     return await executeQuery(
       query,
-      normalizedLanguage ? [pattern, normalizedLimit, normalizedLanguage] : [pattern, normalizedLimit],
+      normalizedLanguage
+        ? [pattern, normalizedLimit, normalizedLanguage]
+        : [pattern, normalizedLimit],
     );
   } catch (error) {
-    console.error('✗ Error searching questions:', error.message);
+    console.error("✗ Error searching questions:", error.message);
     throw error;
   }
 }
@@ -1059,7 +1184,7 @@ export async function insertQuestion(questionData) {
     ]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('✗ Error inserting question:', error.message);
+    console.error("✗ Error inserting question:", error.message);
     throw error;
   }
 }
@@ -1071,10 +1196,10 @@ export async function insertQuestion(questionData) {
  * @returns {Promise<Object|null>} Updated question or null if not found
  */
 export async function updateQuestion(questionId, updates) {
-  normalizeRequiredString(questionId, 'questionId');
+  normalizeRequiredString(questionId, "questionId");
 
   if (!isPlainObject(updates)) {
-    throw new Error('questionData must be an object');
+    throw new Error("questionData must be an object");
   }
 
   const existingQuestion = await getQuestionById(questionId);
@@ -1082,12 +1207,15 @@ export async function updateQuestion(questionId, updates) {
     return null;
   }
 
-  const filteredUpdates = await normalizeQuestionUpdate(updates, existingQuestion);
+  const filteredUpdates = await normalizeQuestionUpdate(
+    updates,
+    existingQuestion,
+  );
 
   // Build dynamic query
   const setClause = Object.keys(filteredUpdates)
     .map((key, index) => `${key} = $${index + 1}`)
-    .join(', ');
+    .join(", ");
 
   const query = `
     UPDATE questions 
@@ -1099,7 +1227,11 @@ export async function updateQuestion(questionId, updates) {
   try {
     const params = [
       ...Object.entries(filteredUpdates).map(([key, value]) => {
-        if (key === 'options' || key === 'correct_answer' || key === 'validation_logs') {
+        if (
+          key === "options" ||
+          key === "correct_answer" ||
+          key === "validation_logs"
+        ) {
           return JSON.stringify(value);
         }
         return value;
@@ -1109,7 +1241,7 @@ export async function updateQuestion(questionId, updates) {
     const result = await executeQuery(query, params);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('✗ Error updating question:', error.message);
+    console.error("✗ Error updating question:", error.message);
     throw error;
   }
 }
@@ -1121,11 +1253,22 @@ export async function updateQuestion(questionId, updates) {
  * @param {Object} options - Pagination options
  * @returns {Promise<Array>} Array of questions
  */
-export async function getQuestionsByDomain(certification, domain, options = {}) {
-  const normalizedCertification = validateCertification(certification, { required: true });
-  const normalizedDomain = normalizeRequiredString(domain, 'domain');
+export async function getQuestionsByDomain(
+  certification,
+  domain,
+  options = {},
+) {
+  const normalizedCertification = validateCertification(certification, {
+    required: true,
+  });
+  const normalizedDomain = normalizeRequiredString(domain, "domain");
 
-  return getQuestions(normalizedCertification, normalizedDomain, undefined, options);
+  return getQuestions(
+    normalizedCertification,
+    normalizedDomain,
+    undefined,
+    options,
+  );
 }
 
 /**
@@ -1134,14 +1277,15 @@ export async function getQuestionsByDomain(certification, domain, options = {}) 
  * @returns {Promise<Object|null>} Deactivated question or null if not found
  */
 export async function deleteQuestion(questionId) {
-  normalizeRequiredString(questionId, 'questionId');
-  const query = 'UPDATE questions SET is_active = FALSE WHERE id = $1 AND is_active = TRUE RETURNING *';
+  normalizeRequiredString(questionId, "questionId");
+  const query =
+    "UPDATE questions SET is_active = FALSE WHERE id = $1 AND is_active = TRUE RETURNING *";
 
   try {
     const result = await executeQuery(query, [questionId]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('✗ Error deleting question:', error.message);
+    console.error("✗ Error deleting question:", error.message);
     throw error;
   }
 }
@@ -1151,38 +1295,40 @@ export async function deleteQuestion(questionId) {
 // ============================================================================
 
 function normalizeUserId(userId) {
-  return normalizeRequiredString(userId, 'userId');
+  return normalizeRequiredString(userId, "userId");
 }
 
 /** Mantido para testes legados e seed — aceita string simples como anonymous_name */
 function normalizeAnonymousName(anonymousName) {
   return normalizeMaxLength(
-    normalizeRequiredString(anonymousName, 'anonymousName'),
-    'anonymousName',
+    normalizeRequiredString(anonymousName, "anonymousName"),
+    "anonymousName",
     100,
   );
 }
 
 function normalizeEmail(email) {
-  const normalized = normalizeRequiredString(email, 'email');
+  const normalized = normalizeRequiredString(email, "email");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)) {
-    throw new Error('email must be a valid email address');
+    throw new Error("email must be a valid email address");
   }
   return normalized.toLowerCase().trim();
 }
 
 function normalizeRole(role) {
-  const valid = new Set(['STUDENT', 'VALIDATOR', 'ADMIN']);
-  const normalized = String(role || 'STUDENT').toUpperCase().trim();
+  const valid = new Set(["STUDENT", "VALIDATOR", "ADMIN"]);
+  const normalized = String(role || "STUDENT")
+    .toUpperCase()
+    .trim();
   if (!valid.has(normalized)) {
-    throw new Error(`role must be one of: ${[...valid].join(', ')}`);
+    throw new Error(`role must be one of: ${[...valid].join(", ")}`);
   }
   return normalized;
 }
 
 function normalizeUserUpdate(data) {
   if (!isPlainObject(data)) {
-    throw new Error('data must be an object');
+    throw new Error("data must be an object");
   }
 
   const updates = {};
@@ -1214,7 +1360,7 @@ function normalizeUserUpdate(data) {
   }
 
   if (Object.keys(updates).length === 0) {
-    throw new Error('No valid fields to update');
+    throw new Error("No valid fields to update");
   }
 
   return updates;
@@ -1233,29 +1379,39 @@ function normalizeUserUpdate(data) {
 export async function createUser(dataOrName) {
   try {
     // Modo legado — string simples como anonymous_name
-    if (typeof dataOrName === 'string') {
+    if (typeof dataOrName === "string") {
       const normalizedName = normalizeAnonymousName(dataOrName);
-      const query = 'INSERT INTO users (anonymous_name) VALUES ($1) RETURNING *';
+      const query =
+        "INSERT INTO users (anonymous_name) VALUES ($1) RETURNING *";
       const result = await executeQuery(query, [normalizedName]);
       return result.length > 0 ? result[0] : null;
     }
 
     // Modo corporativo — objeto com email obrigatório
     const data = dataOrName || {};
-    const email = normalizeEmail(data.email ?? '');
-    const nickname = data.nickname ? String(data.nickname).trim().slice(0, 60) : null;
-    const full_name = data.full_name ? String(data.full_name).trim().slice(0, 150) : null;
-    const role = normalizeRole(data.role ?? 'STUDENT');
+    const email = normalizeEmail(data.email ?? "");
+    const nickname = data.nickname
+      ? String(data.nickname).trim().slice(0, 60)
+      : null;
+    const full_name = data.full_name
+      ? String(data.full_name).trim().slice(0, 150)
+      : null;
+    const role = normalizeRole(data.role ?? "STUDENT");
 
     const query = `
       INSERT INTO users (email, full_name, nickname, role)
       VALUES ($1, $2, $3, $4)
       RETURNING *
     `;
-    const result = await executeQuery(query, [email, full_name, nickname, role]);
+    const result = await executeQuery(query, [
+      email,
+      full_name,
+      nickname,
+      role,
+    ]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('✗ Error creating user:', error.message);
+    console.error("✗ Error creating user:", error.message);
     throw error;
   }
 }
@@ -1287,7 +1443,7 @@ export async function upsertUserByEmail(email, profile = {}) {
 
     if (existing.length > 0) {
       // Atualiza last_login (e opcionalmente nome/nickname se ainda não preenchidos)
-      const updateFields = ['last_login = NOW()'];
+      const updateFields = ["last_login = NOW()"];
       const params = [];
 
       if (profile.full_name && !existing[0].full_name) {
@@ -1301,7 +1457,7 @@ export async function upsertUserByEmail(email, profile = {}) {
 
       params.push(existing[0].id);
       const updated = await executeQuery(
-        `UPDATE users SET ${updateFields.join(', ')}
+        `UPDATE users SET ${updateFields.join(", ")}
           WHERE id = $${params.length}
           RETURNING *`,
         params,
@@ -1312,7 +1468,7 @@ export async function upsertUserByEmail(email, profile = {}) {
     // Cria novo usuário como STUDENT
     const nickname = profile.nickname
       ? String(profile.nickname).trim().slice(0, 60)
-      : normalizedEmail.split('@')[0];
+      : normalizedEmail.split("@")[0];
     const full_name = profile.full_name
       ? String(profile.full_name).trim().slice(0, 150)
       : null;
@@ -1325,7 +1481,7 @@ export async function upsertUserByEmail(email, profile = {}) {
     );
     return { user: inserted[0], created: true };
   } catch (error) {
-    console.error('✗ Error upserting user by email:', error.message);
+    console.error("✗ Error upserting user by email:", error.message);
     throw error;
   }
 }
@@ -1340,19 +1496,21 @@ export async function getUserById(userId) {
   // PGlite can expose UUID columns created by a persistent/migrated schema as
   // text for parameter binding. Comparing their canonical text form keeps
   // token `sub` lookups stable across fresh and existing databases.
-  const query = 'SELECT * FROM users WHERE id::text = $1';
+  const query = "SELECT * FROM users WHERE id::text = $1";
 
   try {
     const result = await executeQuery(query, [normalizedUserId]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('✗ Error fetching user:', error.message);
+    console.error("✗ Error fetching user:", error.message);
     throw error;
   }
 }
 
 function normalizeModuleScope(module, certificationId = null) {
-  const normalizedModule = String(module || '').trim().toLowerCase();
+  const normalizedModule = String(module || "")
+    .trim()
+    .toLowerCase();
   if (!USER_MODULES.has(normalizedModule)) {
     const error = new Error(`Unsupported user module: ${module}`);
     error.statusCode = 400;
@@ -1361,54 +1519,76 @@ function normalizeModuleScope(module, certificationId = null) {
 
   const normalizedCertification = certificationId
     ? normalizeCertificationId(certificationId)
-    : '';
+    : "";
   return { module: normalizedModule, certificationId: normalizedCertification };
 }
 
 function normalizeModuleState(state) {
   if (state === undefined || state === null) return {};
-  if (typeof state !== 'object' || Array.isArray(state)) {
-    const error = new Error('state must be a JSON object');
+  if (typeof state !== "object" || Array.isArray(state)) {
+    const error = new Error("state must be a JSON object");
     error.statusCode = 400;
     throw error;
   }
   const serialized = JSON.stringify(state);
-  if (Buffer.byteLength(serialized, 'utf8') > MAX_MODULE_STATE_BYTES) {
-    const error = new Error('state exceeds the maximum allowed size');
+  if (Buffer.byteLength(serialized, "utf8") > MAX_MODULE_STATE_BYTES) {
+    const error = new Error("state exceeds the maximum allowed size");
     error.statusCode = 413;
     throw error;
   }
   return JSON.parse(serialized);
 }
 
-export async function getUserModuleState(userId, module, certificationId = null) {
+export async function getUserModuleState(
+  userId,
+  module,
+  certificationId = null,
+) {
   const normalizedUserId = normalizeUserId(userId);
   const scope = normalizeModuleScope(module, certificationId);
-  const rows = await executeQuery(`
+  const rows = await executeQuery(
+    `
     SELECT id, user_id, module, certification_id, state_json, version, updated_at
     FROM user_module_state
     WHERE user_id = $1 AND module = $2
       AND certification_id = $3
     LIMIT 1
-  `, [normalizedUserId, scope.module, scope.certificationId]);
+  `,
+    [normalizedUserId, scope.module, scope.certificationId],
+  );
   return rows[0] || null;
 }
 
-export async function upsertUserModuleState(userId, module, certificationId, state, expectedVersion = null) {
+export async function upsertUserModuleState(
+  userId,
+  module,
+  certificationId,
+  state,
+  expectedVersion = null,
+) {
   const normalizedUserId = normalizeUserId(userId);
   const scope = normalizeModuleScope(module, certificationId);
   const normalizedState = normalizeModuleState(state);
-  const existing = await getUserModuleState(normalizedUserId, scope.module, scope.certificationId);
+  const existing = await getUserModuleState(
+    normalizedUserId,
+    scope.module,
+    scope.certificationId,
+  );
 
-  if (expectedVersion !== null && existing && Number(expectedVersion) !== Number(existing.version)) {
-    const error = new Error('module state version conflict');
+  if (
+    expectedVersion !== null &&
+    existing &&
+    Number(expectedVersion) !== Number(existing.version)
+  ) {
+    const error = new Error("module state version conflict");
     error.statusCode = 409;
     error.current = existing;
     throw error;
   }
 
   const nextVersion = existing ? Number(existing.version) + 1 : 1;
-  const rows = await executeQuery(`
+  const rows = await executeQuery(
+    `
     INSERT INTO user_module_state (user_id, module, certification_id, state_json, version)
     VALUES ($1, $2, $3, $4, $5)
     ON CONFLICT (user_id, module, certification_id) DO UPDATE SET
@@ -1416,7 +1596,15 @@ export async function upsertUserModuleState(userId, module, certificationId, sta
       version = EXCLUDED.version,
       updated_at = NOW()
     RETURNING id, user_id, module, certification_id, state_json, version, updated_at
-  `, [normalizedUserId, scope.module, scope.certificationId, JSON.stringify(normalizedState), nextVersion]);
+  `,
+    [
+      normalizedUserId,
+      scope.module,
+      scope.certificationId,
+      JSON.stringify(normalizedState),
+      nextVersion,
+    ],
+  );
   return rows[0] || null;
 }
 
@@ -1440,7 +1628,7 @@ export async function getUserByEmail(email) {
     const result = await executeQuery(query, [normalizedEmail]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('✗ Error fetching user by email:', error.message);
+    console.error("✗ Error fetching user by email:", error.message);
     throw error;
   }
 }
@@ -1452,13 +1640,13 @@ export async function getUserByEmail(email) {
  */
 export async function getUserByName(anonymousName) {
   const normalizedName = normalizeAnonymousName(anonymousName);
-  const query = 'SELECT * FROM users WHERE anonymous_name = $1';
+  const query = "SELECT * FROM users WHERE anonymous_name = $1";
 
   try {
     const result = await executeQuery(query, [normalizedName]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('✗ Error fetching user by name:', error.message);
+    console.error("✗ Error fetching user by name:", error.message);
     throw error;
   }
 }
@@ -1474,7 +1662,7 @@ export async function updateUser(userId, data) {
   const updates = normalizeUserUpdate(data);
   const setClause = Object.keys(updates)
     .map((key, index) => `${key} = $${index + 1}`)
-    .join(', ');
+    .join(", ");
   const query = `
     UPDATE users
     SET ${setClause}
@@ -1483,21 +1671,31 @@ export async function updateUser(userId, data) {
   `;
 
   try {
-    const result = await executeQuery(query, [...Object.values(updates), normalizedUserId]);
+    const result = await executeQuery(query, [
+      ...Object.values(updates),
+      normalizedUserId,
+    ]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('Error updating user:', error.message);
+    console.error("Error updating user:", error.message);
     throw error;
   }
 }
 
-const ACCESS_CERTIFICATIONS = new Set(['CLF-C02', 'SAA-C03', 'DVA-C02', 'AIF-C01']);
-const ACCESS_ROLES = new Set(['STUDENT', 'VALIDATOR', 'ADMIN']);
+const ACCESS_CERTIFICATIONS = new Set([
+  "CLF-C02",
+  "SAA-C03",
+  "DVA-C02",
+  "AIF-C01",
+]);
+const ACCESS_ROLES = new Set(["STUDENT", "VALIDATOR", "ADMIN"]);
 
 function normalizeAccessCertification(certificationId) {
   const normalized = normalizeCertificationId(certificationId);
   if (!ACCESS_CERTIFICATIONS.has(normalized)) {
-    const error = new Error(`Unsupported validator certification: ${certificationId}`);
+    const error = new Error(
+      `Unsupported validator certification: ${certificationId}`,
+    );
     error.statusCode = 400;
     throw error;
   }
@@ -1505,16 +1703,23 @@ function normalizeAccessCertification(certificationId) {
 }
 
 function normalizeAccessRole(role) {
-  const normalized = String(role || '').toUpperCase().trim();
-  if (!ACCESS_ROLES.has(normalized)) throw new Error(`role must be one of: ${[...ACCESS_ROLES].join(', ')}`);
+  const normalized = String(role || "")
+    .toUpperCase()
+    .trim();
+  if (!ACCESS_ROLES.has(normalized))
+    throw new Error(`role must be one of: ${[...ACCESS_ROLES].join(", ")}`);
   return normalized;
 }
 
-export async function listUsers({ search = '', limit = 50, offset = 0 } = {}) {
-  const normalizedLimit = Math.min(Math.max(Number.parseInt(limit, 10) || 50, 1), 100);
+export async function listUsers({ search = "", limit = 50, offset = 0 } = {}) {
+  const normalizedLimit = Math.min(
+    Math.max(Number.parseInt(limit, 10) || 50, 1),
+    100,
+  );
   const normalizedOffset = Math.max(Number.parseInt(offset, 10) || 0, 0);
-  const term = String(search || '').trim();
-  return executeQuery(`
+  const term = String(search || "").trim();
+  return executeQuery(
+    `
     SELECT u.id, u.email, u.full_name, u.nickname, u.role, u.is_active,
            u.last_login, u.created_at, u.updated_at,
            COALESCE(json_agg(json_build_object(
@@ -1530,31 +1735,51 @@ export async function listUsers({ search = '', limit = 50, offset = 0 } = {}) {
     GROUP BY u.id
     ORDER BY u.created_at DESC
     LIMIT $2 OFFSET $3
-  `, [term, normalizedLimit, normalizedOffset]);
+  `,
+    [term, normalizedLimit, normalizedOffset],
+  );
 }
 
 export async function getValidatorCertifications(userId, activeOnly = true) {
   const normalizedUserId = normalizeUserId(userId);
-  return executeQuery(`
+  return executeQuery(
+    `
     SELECT user_id, certification_id, verified_by, verified_at, source_request_id, is_active
     FROM validator_certifications
-    WHERE user_id = $1 ${activeOnly ? 'AND is_active = TRUE' : ''}
+    WHERE user_id = $1 ${activeOnly ? "AND is_active = TRUE" : ""}
     ORDER BY certification_id
-  `, [normalizedUserId]);
+  `,
+    [normalizedUserId],
+  );
 }
 
-export async function removeValidatorCertification(actorUserId, targetUserId, certificationId) {
+export async function removeValidatorCertification(
+  actorUserId,
+  targetUserId,
+  certificationId,
+) {
   const actor = await getUserById(actorUserId);
-  if (!actor || actor.role !== 'ADMIN') throw new Error('ADMIN access required');
+  if (!actor || actor.role !== "ADMIN")
+    throw new Error("ADMIN access required");
   const normalizedCertification = normalizeAccessCertification(certificationId);
-  const result = await executeQuery(`
+  const result = await executeQuery(
+    `
     UPDATE validator_certifications
     SET is_active = FALSE
     WHERE user_id = $1 AND certification_id = $2 AND is_active = TRUE
     RETURNING *
-  `, [normalizeUserId(targetUserId), normalizedCertification]);
+  `,
+    [normalizeUserId(targetUserId), normalizedCertification],
+  );
   if (result[0]) {
-    await recordRoleAudit(actorUserId, targetUserId, 'VALIDATOR_CERTIFICATION_REMOVED', null, null, normalizedCertification);
+    await recordRoleAudit(
+      actorUserId,
+      targetUserId,
+      "VALIDATOR_CERTIFICATION_REMOVED",
+      null,
+      null,
+      normalizedCertification,
+    );
   }
   return result[0] || null;
 }
@@ -1563,10 +1788,10 @@ export async function canUserValidateCertification(userId, certificationId) {
   const normalizedCertification = normalizeAccessCertification(certificationId);
   const user = await getUserById(userId);
   if (!user || user.is_active === false) return false;
-  if (user.role === 'ADMIN') return true;
-  if (user.role !== 'VALIDATOR') return false;
+  if (user.role === "ADMIN") return true;
+  if (user.role !== "VALIDATOR") return false;
   const rows = await executeQuery(
-    'SELECT 1 FROM validator_certifications WHERE user_id = $1 AND certification_id = $2 AND is_active = TRUE LIMIT 1',
+    "SELECT 1 FROM validator_certifications WHERE user_id = $1 AND certification_id = $2 AND is_active = TRUE LIMIT 1",
     [normalizeUserId(userId), normalizedCertification],
   );
   return rows.length > 0;
@@ -1574,126 +1799,258 @@ export async function canUserValidateCertification(userId, certificationId) {
 
 export async function createValidatorRequest(userId, data = {}) {
   const normalizedUserId = normalizeUserId(userId);
-  const certificationId = normalizeAccessCertification(data.certification_id ?? data.certificationId);
+  const certificationId = normalizeAccessCertification(
+    data.certification_id ?? data.certificationId,
+  );
   const user = await getUserById(normalizedUserId);
   if (!user || user.is_active === false) {
-    const error = new Error('Active user is required');
+    const error = new Error("Active user is required");
     error.statusCode = 403;
     throw error;
   }
-  if (user.role !== 'STUDENT') {
-    const error = new Error('Only STUDENT users can request validator access');
+  if (user.role !== "STUDENT") {
+    const error = new Error("Only STUDENT users can request validator access");
     error.statusCode = 403;
     throw error;
   }
 
   const existing = await executeQuery(
-    'SELECT id FROM validator_requests WHERE user_id = $1 AND certification_id = $2 AND status = \'PENDING\' LIMIT 1',
+    "SELECT id FROM validator_requests WHERE user_id = $1 AND certification_id = $2 AND status = 'PENDING' LIMIT 1",
     [normalizedUserId, certificationId],
   );
   if (existing.length > 0) {
-    const error = new Error('A pending request already exists for this certification');
+    const error = new Error(
+      "A pending request already exists for this certification",
+    );
     error.statusCode = 409;
     throw error;
   }
 
-  const result = await executeQuery(`
+  const result = await executeQuery(
+    `
     INSERT INTO validator_requests (user_id, certification_id, credential_id, credential_url, notes)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING *
-  `, [
-    normalizedUserId,
-    certificationId,
-    data.credential_id ? String(data.credential_id).trim().slice(0, 200) : null,
-    data.credential_url ? String(data.credential_url).trim() : null,
-    data.notes ? String(data.notes).trim() : null,
-  ]);
+  `,
+    [
+      normalizedUserId,
+      certificationId,
+      data.credential_id
+        ? String(data.credential_id).trim().slice(0, 200)
+        : null,
+      data.credential_url ? String(data.credential_url).trim() : null,
+      data.notes ? String(data.notes).trim() : null,
+    ],
+  );
   return result[0] || null;
 }
 
-export async function listValidatorRequests({ userId = null, status = null } = {}) {
+export async function listValidatorRequests({
+  userId = null,
+  status = null,
+} = {}) {
   const params = [];
   const filters = [];
-  if (userId) { params.push(normalizeUserId(userId)); filters.push(`vr.user_id = $${params.length}`); }
-  if (status) { params.push(String(status).toUpperCase()); filters.push(`vr.status = $${params.length}`); }
-  return executeQuery(`
+  if (userId) {
+    params.push(normalizeUserId(userId));
+    filters.push(`vr.user_id = $${params.length}`);
+  }
+  if (status) {
+    params.push(String(status).toUpperCase());
+    filters.push(`vr.status = $${params.length}`);
+  }
+  return executeQuery(
+    `
     SELECT vr.*, u.email, u.full_name, u.nickname, u.role
     FROM validator_requests vr
     JOIN users u ON u.id = vr.user_id
-    ${filters.length ? `WHERE ${filters.join(' AND ')}` : ''}
+    ${filters.length ? `WHERE ${filters.join(" AND ")}` : ""}
     ORDER BY vr.requested_at DESC
-  `, params);
+  `,
+    params,
+  );
 }
 
-export async function reviewValidatorRequest(requestId, reviewerId, status, reviewNotes = null) {
-  const normalizedStatus = String(status || '').toUpperCase();
-  if (!['APPROVED', 'REJECTED'].includes(normalizedStatus)) {
-    const error = new Error('status must be APPROVED or REJECTED');
+export async function reviewValidatorRequest(
+  requestId,
+  reviewerId,
+  status,
+  reviewNotes = null,
+) {
+  const normalizedStatus = String(status || "").toUpperCase();
+  if (!["APPROVED", "REJECTED"].includes(normalizedStatus)) {
+    const error = new Error("status must be APPROVED or REJECTED");
     error.statusCode = 400;
     throw error;
   }
-  const requestRows = await executeQuery('SELECT * FROM validator_requests WHERE id = $1 LIMIT 1', [normalizeRequiredString(requestId, 'requestId')]);
+  const requestRows = await executeQuery(
+    "SELECT * FROM validator_requests WHERE id = $1 LIMIT 1",
+    [normalizeRequiredString(requestId, "requestId")],
+  );
   const request = requestRows[0];
-  if (!request) { const error = new Error('Validator request not found'); error.statusCode = 404; throw error; }
-  if (request.status !== 'PENDING') { const error = new Error('Only PENDING requests can be reviewed'); error.statusCode = 409; throw error; }
+  if (!request) {
+    const error = new Error("Validator request not found");
+    error.statusCode = 404;
+    throw error;
+  }
+  if (request.status !== "PENDING") {
+    const error = new Error("Only PENDING requests can be reviewed");
+    error.statusCode = 409;
+    throw error;
+  }
 
   const reviewer = await getUserById(reviewerId);
-  if (!reviewer || reviewer.role !== 'ADMIN') throw new Error('ADMIN reviewer required');
-  const updatedRows = await executeQuery(`
+  if (!reviewer || reviewer.role !== "ADMIN")
+    throw new Error("ADMIN reviewer required");
+  const updatedRows = await executeQuery(
+    `
     UPDATE validator_requests
     SET status = $1, reviewed_at = CURRENT_TIMESTAMP, reviewed_by = $2, review_notes = $3
     WHERE id = $4 AND status = 'PENDING'
     RETURNING *
-  `, [normalizedStatus, normalizeUserId(reviewerId), reviewNotes ? String(reviewNotes).trim() : null, request.id]);
+  `,
+    [
+      normalizedStatus,
+      normalizeUserId(reviewerId),
+      reviewNotes ? String(reviewNotes).trim() : null,
+      request.id,
+    ],
+  );
   const updated = updatedRows[0];
 
-  if (normalizedStatus === 'APPROVED') {
-    await executeQuery(`
+  if (normalizedStatus === "APPROVED") {
+    await executeQuery(
+      `
       INSERT INTO validator_certifications (user_id, certification_id, verified_by, source_request_id, is_active)
       VALUES ($1, $2, $3, $4, TRUE)
       ON CONFLICT (user_id, certification_id)
       DO UPDATE SET verified_by = EXCLUDED.verified_by, verified_at = CURRENT_TIMESTAMP,
                     source_request_id = EXCLUDED.source_request_id, is_active = TRUE
-    `, [request.user_id, request.certification_id, normalizeUserId(reviewerId), request.id]);
+    `,
+      [
+        request.user_id,
+        request.certification_id,
+        normalizeUserId(reviewerId),
+        request.id,
+      ],
+    );
     const target = await getUserById(request.user_id);
-    if (target?.role === 'STUDENT') {
-      await updateUser(target.id, { role: 'VALIDATOR' });
-      await recordRoleAudit(reviewerId, target.id, 'VALIDATOR_REQUEST_APPROVED', 'STUDENT', 'VALIDATOR', request.certification_id, { requestId: request.id });
+    if (target?.role === "STUDENT") {
+      await updateUser(target.id, { role: "VALIDATOR" });
+      await recordRoleAudit(
+        reviewerId,
+        target.id,
+        "VALIDATOR_REQUEST_APPROVED",
+        "STUDENT",
+        "VALIDATOR",
+        request.certification_id,
+        { requestId: request.id },
+      );
     }
-    await recordRoleAudit(reviewerId, request.user_id, 'VALIDATOR_CERTIFICATION_ADDED', target?.role || null, target?.role || null, request.certification_id, { requestId: request.id });
+    await recordRoleAudit(
+      reviewerId,
+      request.user_id,
+      "VALIDATOR_CERTIFICATION_ADDED",
+      target?.role || null,
+      target?.role || null,
+      request.certification_id,
+      { requestId: request.id },
+    );
   } else {
-    await recordRoleAudit(reviewerId, request.user_id, 'VALIDATOR_REQUEST_REJECTED', null, null, request.certification_id, { requestId: request.id });
+    await recordRoleAudit(
+      reviewerId,
+      request.user_id,
+      "VALIDATOR_REQUEST_REJECTED",
+      null,
+      null,
+      request.certification_id,
+      { requestId: request.id },
+    );
   }
   return updated;
 }
 
-export async function recordRoleAudit(actorUserId, targetUserId, action, oldRole = null, newRole = null, certificationId = null, metadata = {}) {
-  const result = await executeQuery(`
+export async function recordRoleAudit(
+  actorUserId,
+  targetUserId,
+  action,
+  oldRole = null,
+  newRole = null,
+  certificationId = null,
+  metadata = {},
+) {
+  const result = await executeQuery(
+    `
     INSERT INTO role_audit_log (actor_user_id, target_user_id, action, old_role, new_role, certification_id, metadata)
     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
     RETURNING *
-  `, [normalizeUserId(actorUserId), normalizeUserId(targetUserId), String(action), oldRole, newRole, certificationId, JSON.stringify(metadata)]);
+  `,
+    [
+      normalizeUserId(actorUserId),
+      normalizeUserId(targetUserId),
+      String(action),
+      oldRole,
+      newRole,
+      certificationId,
+      JSON.stringify(metadata),
+    ],
+  );
   return result[0] || null;
 }
 
-export async function changeUserAccess(actorUserId, targetUserId, { role, is_active } = {}) {
+export async function changeUserAccess(
+  actorUserId,
+  targetUserId,
+  { role, is_active } = {},
+) {
   const actor = await getUserById(actorUserId);
   const target = await getUserById(targetUserId);
-  if (!actor || actor.role !== 'ADMIN') throw new Error('ADMIN access required');
-  if (!target) { const error = new Error('Target user not found'); error.statusCode = 404; throw error; }
+  if (!actor || actor.role !== "ADMIN")
+    throw new Error("ADMIN access required");
+  if (!target) {
+    const error = new Error("Target user not found");
+    error.statusCode = 404;
+    throw error;
+  }
   const nextRole = role === undefined ? target.role : normalizeAccessRole(role);
-  const nextActive = is_active === undefined ? target.is_active : Boolean(is_active);
-  if (target.role === 'ADMIN' && target.is_active && (nextRole !== 'ADMIN' || !nextActive)) {
-    const admins = await executeQuery("SELECT COUNT(*)::int AS count FROM users WHERE role = 'ADMIN' AND is_active = TRUE");
+  const nextActive =
+    is_active === undefined ? target.is_active : Boolean(is_active);
+  if (
+    target.role === "ADMIN" &&
+    target.is_active &&
+    (nextRole !== "ADMIN" || !nextActive)
+  ) {
+    const admins = await executeQuery(
+      "SELECT COUNT(*)::int AS count FROM users WHERE role = 'ADMIN' AND is_active = TRUE",
+    );
     if (Number(admins[0]?.count || 0) <= 1) {
-      const error = new Error('The last active ADMIN cannot be demoted or disabled');
+      const error = new Error(
+        "The last active ADMIN cannot be demoted or disabled",
+      );
       error.statusCode = 409;
       throw error;
     }
   }
-  const updated = await updateUser(target.id, { role: nextRole, is_active: nextActive });
-  if (target.role !== nextRole) await recordRoleAudit(actor.id, target.id, 'ROLE_CHANGED', target.role, nextRole);
-  if (target.is_active !== nextActive) await recordRoleAudit(actor.id, target.id, nextActive ? 'USER_ENABLED' : 'USER_DISABLED', target.role, target.role);
+  const updated = await updateUser(target.id, {
+    role: nextRole,
+    is_active: nextActive,
+  });
+  if (target.role !== nextRole)
+    await recordRoleAudit(
+      actor.id,
+      target.id,
+      "ROLE_CHANGED",
+      target.role,
+      nextRole,
+    );
+  if (target.is_active !== nextActive)
+    await recordRoleAudit(
+      actor.id,
+      target.id,
+      nextActive ? "USER_ENABLED" : "USER_DISABLED",
+      target.role,
+      target.role,
+    );
   return updated;
 }
 
@@ -1706,7 +2063,7 @@ function normalizeGamificationDate(value, fieldName) {
     return undefined;
   }
 
-  if (value === null || value === '') {
+  if (value === null || value === "") {
     return null;
   }
 
@@ -1724,18 +2081,18 @@ function normalizeGamificationDate(value, fieldName) {
 
 function normalizeGamificationUpdates(updates) {
   if (!isPlainObject(updates)) {
-    throw new Error('updates must be an object');
+    throw new Error("updates must be an object");
   }
 
   const normalized = {};
   const integerFields = [
-    'total_quizzes',
-    'current_streak',
-    'longest_streak',
-    'labs_completed',
-    'xp_points',
+    "total_quizzes",
+    "current_streak",
+    "longest_streak",
+    "labs_completed",
+    "xp_points",
   ];
-  const arrayFields = ['badges', 'completed_stages', 'unlocked_stages'];
+  const arrayFields = ["badges", "completed_stages", "unlocked_stages"];
 
   integerFields.forEach((field) => {
     if (updates[field] !== undefined) {
@@ -1744,7 +2101,10 @@ function normalizeGamificationUpdates(updates) {
   });
 
   if (updates.best_score !== undefined) {
-    normalized.best_score = normalizePercentage(updates.best_score, 'best_score');
+    normalized.best_score = normalizePercentage(
+      updates.best_score,
+      "best_score",
+    );
   }
 
   arrayFields.forEach((field) => {
@@ -1753,13 +2113,16 @@ function normalizeGamificationUpdates(updates) {
     }
   });
 
-  const lastDate = normalizeGamificationDate(updates.last_date ?? updates.lastDate, 'last_date');
+  const lastDate = normalizeGamificationDate(
+    updates.last_date ?? updates.lastDate,
+    "last_date",
+  );
   if (lastDate !== undefined) {
     normalized.last_date = lastDate;
   }
 
   if (Object.keys(normalized).length === 0) {
-    throw new Error('No valid fields to update');
+    throw new Error("No valid fields to update");
   }
 
   return normalized;
@@ -1767,7 +2130,7 @@ function normalizeGamificationUpdates(updates) {
 
 function assertStreakConsistency(candidate) {
   if (Number(candidate.current_streak) > Number(candidate.longest_streak)) {
-    throw new Error('current_streak cannot be greater than longest_streak');
+    throw new Error("current_streak cannot be greater than longest_streak");
   }
 }
 
@@ -1780,10 +2143,10 @@ export async function getGamification(userId) {
   const normalizedUserId = normalizeUserId(userId);
   const user = await getUserById(normalizedUserId);
   if (!user) {
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
 
-  const query = 'SELECT * FROM gamification WHERE user_id = $1';
+  const query = "SELECT * FROM gamification WHERE user_id = $1";
 
   try {
     const result = await executeQuery(query, [normalizedUserId]);
@@ -1798,7 +2161,7 @@ export async function getGamification(userId) {
     }
     return result[0];
   } catch (error) {
-    console.error('✗ Error fetching gamification:', error.message);
+    console.error("✗ Error fetching gamification:", error.message);
     throw error;
   }
 }
@@ -1818,7 +2181,7 @@ export async function updateGamification(userId, updates) {
 
   const setClause = Object.keys(normalizedUpdates)
     .map((key, index) => `${key} = $${index + 1}`)
-    .join(', ');
+    .join(", ");
 
   const query = `
     UPDATE gamification 
@@ -1832,7 +2195,7 @@ export async function updateGamification(userId, updates) {
     const result = await executeQuery(query, params);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('✗ Error updating gamification:', error.message);
+    console.error("✗ Error updating gamification:", error.message);
     throw error;
   }
 }
@@ -1865,7 +2228,11 @@ function normalizeNonNegativeInteger(value, fieldName, defaultValue = 0) {
 function normalizePercentage(value, fieldName) {
   const numericValue = Number.parseFloat(value);
 
-  if (!Number.isFinite(numericValue) || numericValue < 0 || numericValue > 100) {
+  if (
+    !Number.isFinite(numericValue) ||
+    numericValue < 0 ||
+    numericValue > 100
+  ) {
     throw new Error(`${fieldName} must be between 0 and 100`);
   }
 
@@ -1893,20 +2260,28 @@ function normalizeStringArray(value, fieldName, defaultValue = []) {
     throw new Error(`${fieldName} must be an array`);
   }
 
-  return value.map((item, index) => normalizeRequiredString(item, `${fieldName}[${index}]`));
+  return value.map((item, index) =>
+    normalizeRequiredString(item, `${fieldName}[${index}]`),
+  );
 }
 
 function normalizeThreshold(value = DEFAULT_WEAK_DOMAIN_THRESHOLD) {
-  const numericValue = Number.parseFloat(value ?? DEFAULT_WEAK_DOMAIN_THRESHOLD);
+  const numericValue = Number.parseFloat(
+    value ?? DEFAULT_WEAK_DOMAIN_THRESHOLD,
+  );
 
-  if (!Number.isFinite(numericValue) || numericValue < 0 || numericValue > 100) {
-    throw new Error('threshold must be between 0 and 100');
+  if (
+    !Number.isFinite(numericValue) ||
+    numericValue < 0 ||
+    numericValue > 100
+  ) {
+    throw new Error("threshold must be between 0 and 100");
   }
 
   return numericValue;
 }
 
-function normalizeAnswerPayload(value, fieldName = 'userAnswer') {
+function normalizeAnswerPayload(value, fieldName = "userAnswer") {
   if (value === undefined || value === null) {
     throw new Error(`${fieldName} is required`);
   }
@@ -1917,14 +2292,14 @@ function normalizeAnswerPayload(value, fieldName = 'userAnswer') {
   }
 
   return answers.map((answer, index) => {
-    if (typeof answer === 'number') {
+    if (typeof answer === "number") {
       if (!Number.isInteger(answer)) {
         throw new Error(`${fieldName}[${index}] must be a string or integer`);
       }
       return answer;
     }
 
-    if (typeof answer === 'string') {
+    if (typeof answer === "string") {
       return normalizeRequiredString(answer, `${fieldName}[${index}]`);
     }
 
@@ -1933,7 +2308,7 @@ function normalizeAnswerPayload(value, fieldName = 'userAnswer') {
 }
 
 function answerComparisonKey(value) {
-  return normalizeAnswerPayload(value, 'answer')
+  return normalizeAnswerPayload(value, "answer")
     .map((answer) => String(answer))
     .sort();
 }
@@ -1942,11 +2317,52 @@ function answersMatch(userAnswer, correctAnswer) {
   const userKeys = answerComparisonKey(userAnswer);
   const correctKeys = answerComparisonKey(correctAnswer);
 
-  return userKeys.length === correctKeys.length
-    && userKeys.every((answer, index) => answer === correctKeys[index]);
+  return (
+    userKeys.length === correctKeys.length &&
+    userKeys.every((answer, index) => answer === correctKeys[index])
+  );
 }
 
-function normalizeQuizHistoryInput(userIdOrData, certification, answersOrMetadata) {
+function answersMatchForQuestion(userAnswer, correctAnswer, options) {
+  const optionIds = Array.isArray(options)
+    ? options.map((option, index) =>
+        isPlainObject(option) ? String(option.id ?? index) : String(index),
+      )
+    : [];
+  const canonicalize = (value) =>
+    normalizeAnswerPayload(value, "answer")
+      .map((answer) => {
+        if (typeof answer === "number" && optionIds[answer] !== undefined)
+          return optionIds[answer];
+        const text = String(answer);
+        return optionIds.includes(text) ? text : text;
+      })
+      .sort();
+  const userKeys = canonicalize(userAnswer);
+  const correctKeys = canonicalize(correctAnswer);
+  return (
+    userKeys.length === correctKeys.length &&
+    userKeys.every((answer, index) => answer === correctKeys[index])
+  );
+}
+
+function publicCorrectAnswer(question) {
+  if (!Array.isArray(question.correct_answer)) return question.correct_answer;
+  return question.correct_answer.map((answer) => {
+    if (typeof answer === "number" && Array.isArray(question.options)) {
+      const option = question.options[answer];
+      if (isPlainObject(option) && option.id !== undefined)
+        return String(option.id);
+    }
+    return answer;
+  });
+}
+
+function normalizeQuizHistoryInput(
+  userIdOrData,
+  certification,
+  answersOrMetadata,
+) {
   const source = isPlainObject(userIdOrData)
     ? { ...userIdOrData }
     : {
@@ -1961,21 +2377,27 @@ function normalizeQuizHistoryInput(userIdOrData, certification, answersOrMetadat
       ? source.answers
       : undefined;
 
-  const userId = normalizeRequiredString(source.user_id ?? source.userId, 'userId');
-  const normalizedCertification = validateCertification(source.certification, { required: true });
+  const userId = normalizeRequiredString(
+    source.user_id ?? source.userId,
+    "userId",
+  );
+  const normalizedCertification = validateCertification(source.certification, {
+    required: true,
+  });
   const totalQuestions = normalizePositiveInteger(
     source.total_questions ?? source.totalQuestions ?? answers?.length,
-    'total_questions',
+    "total_questions",
   );
-  const score = normalizeNonNegativeInteger(source.score, 'score', 0);
+  const score = normalizeNonNegativeInteger(source.score, "score", 0);
 
   if (score > totalQuestions) {
-    throw new Error('score cannot be greater than total_questions');
+    throw new Error("score cannot be greater than total_questions");
   }
 
-  const percentage = source.percentage === undefined || source.percentage === null
-    ? Number(((score / totalQuestions) * 100).toFixed(2))
-    : normalizePercentage(source.percentage, 'percentage');
+  const percentage =
+    source.percentage === undefined || source.percentage === null
+      ? Number(((score / totalQuestions) * 100).toFixed(2))
+      : normalizePercentage(source.percentage, "percentage");
 
   return {
     user_id: userId,
@@ -1985,15 +2407,27 @@ function normalizeQuizHistoryInput(userIdOrData, certification, answersOrMetadat
     percentage,
     time_spent_secs: normalizeNonNegativeInteger(
       source.time_spent_secs ?? source.timeSpentSecs,
-      'time_spent_secs',
+      "time_spent_secs",
       0,
     ),
-    domain_scores: normalizePlainObject(source.domain_scores ?? source.domainScores, 'domain_scores'),
-    weak_domains: normalizeStringArray(source.weak_domains ?? source.weakDomains, 'weak_domains'),
+    domain_scores: normalizePlainObject(
+      source.domain_scores ?? source.domainScores,
+      "domain_scores",
+    ),
+    weak_domains: normalizeStringArray(
+      source.weak_domains ?? source.weakDomains,
+      "weak_domains",
+    ),
   };
 }
 
-function normalizeRecordAnswerInput(quizIdOrData, questionId, userAnswer, timeSecs, userId) {
+function normalizeRecordAnswerInput(
+  quizIdOrData,
+  questionId,
+  userAnswer,
+  timeSecs,
+  userId,
+) {
   const source = isPlainObject(quizIdOrData)
     ? quizIdOrData
     : {
@@ -2007,17 +2441,32 @@ function normalizeRecordAnswerInput(quizIdOrData, questionId, userAnswer, timeSe
   const ownerId = source.user_id ?? source.userId;
 
   return {
-    quiz_id: normalizeRequiredString(source.quiz_id ?? source.quizId, 'quizId'),
-    question_id: normalizeRequiredString(source.question_id ?? source.questionId, 'questionId'),
-    user_answer: normalizeAnswerPayload(source.user_answer ?? source.userAnswer, 'userAnswer'),
-    time_secs: normalizeNonNegativeInteger(source.time_secs ?? source.timeSecs, 'timeSecs', 0),
-    user_id: ownerId === undefined || ownerId === null
-      ? null
-      : normalizeRequiredString(ownerId, 'userId'),
+    quiz_id: normalizeRequiredString(source.quiz_id ?? source.quizId, "quizId"),
+    question_id: normalizeRequiredString(
+      source.question_id ?? source.questionId,
+      "questionId",
+    ),
+    user_answer: normalizeAnswerPayload(
+      source.user_answer ?? source.userAnswer,
+      "userAnswer",
+    ),
+    time_secs: normalizeNonNegativeInteger(
+      source.time_secs ?? source.timeSecs,
+      "timeSecs",
+      0,
+    ),
+    user_id:
+      ownerId === undefined || ownerId === null
+        ? null
+        : normalizeRequiredString(ownerId, "userId"),
   };
 }
 
-function buildQuizSummary(totalQuestions, answerRows, threshold = DEFAULT_WEAK_DOMAIN_THRESHOLD) {
+function buildQuizSummary(
+  totalQuestions,
+  answerRows,
+  threshold = DEFAULT_WEAK_DOMAIN_THRESHOLD,
+) {
   const score = answerRows.filter((answer) => answer.is_correct).length;
   const denominator = Math.max(totalQuestions, 1);
   const percentage = Number(((score / denominator) * 100).toFixed(2));
@@ -2044,7 +2493,10 @@ function buildQuizSummary(totalQuestions, answerRows, threshold = DEFAULT_WEAK_D
   });
 
   const weakDomains = Object.entries(domainScores)
-    .filter(([, stats]) => stats.total > 0 && ((stats.correct / stats.total) * 100) < threshold)
+    .filter(
+      ([, stats]) =>
+        stats.total > 0 && (stats.correct / stats.total) * 100 < threshold,
+    )
     .map(([domain]) => domain);
 
   return {
@@ -2063,15 +2515,140 @@ function createQuizLifecycleError(message, statusCode) {
 }
 
 function buildQuizResult(quiz, answerRows, { idempotent = false } = {}) {
-  const correctAnswers = answerRows.filter((answer) => answer.is_correct).length;
+  const correctAnswers = answerRows.filter(
+    (answer) => answer.is_correct,
+  ).length;
+  const answeredQuestions = answerRows.length;
 
   return {
     ...quiz,
     quiz_id: quiz.id,
     correct_answers: correctAnswers,
-    incorrect_answers: answerRows.length - correctAnswers,
+    incorrect_answers: answeredQuestions - correctAnswers,
+    answered_questions: answeredQuestions,
+    unanswered_questions: Math.max(
+      Number(quiz.total_questions) - answeredQuestions,
+      0,
+    ),
     idempotent,
   };
+}
+
+/** Select and persist the exact ordered online question set in one transaction. */
+export async function createQuizWithQuestions({
+  user_id,
+  certification,
+  language = "pt",
+  num_questions = 10,
+  difficulty,
+  domain,
+}) {
+  const userId = normalizeRequiredString(user_id, "userId");
+  const normalizedCertification = validateCertification(certification, {
+    required: true,
+  });
+  const normalizedLanguage = normalizeLanguage(language);
+  const limit = normalizeLimit(num_questions, DEFAULT_QUESTION_LIMIT);
+  const normalizedDifficulty = difficulty
+    ? validateDifficulty(difficulty)
+    : undefined;
+  let normalizedDomain;
+  let domainValues;
+  if (domain) {
+    const requestedDomain = normalizeRequiredString(domain, "domain");
+    const resolvedDomain = resolveDomain(
+      normalizedCertification,
+      requestedDomain,
+    );
+    if (hasDomainTaxonomy(normalizedCertification) && !resolvedDomain) {
+      throw createQuizLifecycleError(
+        `Invalid domain for certification: ${normalizedCertification}`,
+        400,
+      );
+    }
+    normalizedDomain = resolvedDomain?.officialName || requestedDomain;
+    domainValues = resolvedDomain
+      ? [normalizedDomain, ...resolvedDomain.aliases]
+      : [normalizedDomain];
+  }
+  const database = getDatabase();
+
+  return database.transaction(async (transaction) => {
+    const questions = await queryRows(
+      transaction,
+      `
+      SELECT * FROM questions
+      WHERE is_active = TRUE
+        AND validation_status = 'APPROVED'
+        AND source_question_id IS NOT NULL
+        AND language = $1
+        AND certification = $2
+      ${normalizedDifficulty ? "AND difficulty = $3" : ""}
+      ${normalizedDomain ? `AND domain = ANY($${normalizedDifficulty ? 4 : 3})` : ""}
+      ORDER BY created_at DESC, id DESC
+      LIMIT $${normalizedDifficulty && normalizedDomain ? 5 : normalizedDifficulty || normalizedDomain ? 4 : 3}
+    `,
+      [
+        normalizedLanguage,
+        normalizedCertification,
+        ...(normalizedDifficulty ? [normalizedDifficulty] : []),
+        ...(normalizedDomain ? [domainValues] : []),
+        limit,
+      ],
+    );
+
+    if (!questions.length) {
+      throw createQuizLifecycleError(
+        `No questions found for certification: ${normalizedCertification}`,
+        400,
+      );
+    }
+
+    const quizRows = await queryRows(
+      transaction,
+      `
+      INSERT INTO quiz_history (
+        user_id, certification, score, total_questions, percentage,
+        time_spent_secs, domain_scores, weak_domains, status,
+        started_at, completed_at, abandoned_at
+      ) VALUES ($1, $2, 0, $3, 0, 0, '{}', '{}', 'started', CURRENT_TIMESTAMP, NULL, NULL)
+      RETURNING *
+    `,
+      [userId, normalizedCertification, questions.length],
+    );
+    const quiz = quizRows[0];
+
+    for (const [position, question] of questions.entries()) {
+      await queryRows(
+        transaction,
+        `
+        INSERT INTO quiz_questions (quiz_id, question_id, position)
+        VALUES ($1, $2, $3)
+      `,
+        [quiz.id, question.id, position],
+      );
+    }
+
+    return { quiz, questions };
+  });
+}
+
+export async function getQuizQuestions(quizId, userId = null) {
+  const normalizedQuizId = normalizeRequiredString(quizId, "quizId");
+  const params = userId
+    ? [normalizedQuizId, normalizeRequiredString(userId, "userId")]
+    : [normalizedQuizId];
+  return executeQuery(
+    `
+    SELECT q.*, qq.position
+    FROM quiz_questions qq
+    JOIN questions q ON q.id = qq.question_id
+    JOIN quiz_history qh ON qh.id = qq.quiz_id
+    WHERE qq.quiz_id = $1 ${userId ? "AND qh.user_id = $2" : ""}
+    ORDER BY qq.position ASC
+  `,
+    params,
+  );
 }
 
 /**
@@ -2080,7 +2657,11 @@ function buildQuizResult(quiz, answerRows, { idempotent = false } = {}) {
  * createQuizHistory(userId, certification, answersOrMetadata).
  * @returns {Promise<Object|null>} Created quiz history record
  */
-export async function createQuizHistory(userIdOrData, certification, answersOrMetadata) {
+export async function createQuizHistory(
+  userIdOrData,
+  certification,
+  answersOrMetadata,
+) {
   const {
     user_id,
     certification: normalizedCertification,
@@ -2114,7 +2695,7 @@ export async function createQuizHistory(userIdOrData, certification, answersOrMe
     ]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('✗ Error creating quiz history:', error.message);
+    console.error("✗ Error creating quiz history:", error.message);
     throw error;
   }
 }
@@ -2126,8 +2707,12 @@ export async function createQuizHistory(userIdOrData, certification, answersOrMe
  * @param {number} offset - Pagination offset (default: 0)
  * @returns {Promise<Array>} Array of quiz history records
  */
-export async function getQuizHistory(userId, limit = DEFAULT_HISTORY_LIMIT, offset = 0) {
-  const normalizedUserId = normalizeRequiredString(userId, 'userId');
+export async function getQuizHistory(
+  userId,
+  limit = DEFAULT_HISTORY_LIMIT,
+  offset = 0,
+) {
+  const normalizedUserId = normalizeRequiredString(userId, "userId");
   const normalizedLimit = normalizeLimit(limit, DEFAULT_HISTORY_LIMIT);
   const normalizedOffset = normalizeOffset(offset);
   const query = `
@@ -2139,9 +2724,13 @@ export async function getQuizHistory(userId, limit = DEFAULT_HISTORY_LIMIT, offs
   `;
 
   try {
-    return await executeQuery(query, [normalizedUserId, normalizedLimit, normalizedOffset]);
+    return await executeQuery(query, [
+      normalizedUserId,
+      normalizedLimit,
+      normalizedOffset,
+    ]);
   } catch (error) {
-    console.error('✗ Error fetching quiz history:', error.message);
+    console.error("✗ Error fetching quiz history:", error.message);
     throw error;
   }
 }
@@ -2152,13 +2741,14 @@ export async function getQuizHistory(userId, limit = DEFAULT_HISTORY_LIMIT, offs
  * @returns {Promise<Object|null>} Quiz history record or null
  */
 export async function getQuizById(quizId, userId = null) {
-  const normalizedQuizId = normalizeRequiredString(quizId, 'quizId');
-  const normalizedUserId = userId === null || userId === undefined
-    ? null
-    : normalizeRequiredString(userId, 'userId');
+  const normalizedQuizId = normalizeRequiredString(quizId, "quizId");
+  const normalizedUserId =
+    userId === null || userId === undefined
+      ? null
+      : normalizeRequiredString(userId, "userId");
   const query = normalizedUserId
-    ? 'SELECT * FROM quiz_history WHERE id = $1 AND user_id = $2'
-    : 'SELECT * FROM quiz_history WHERE id = $1';
+    ? "SELECT * FROM quiz_history WHERE id = $1 AND user_id = $2"
+    : "SELECT * FROM quiz_history WHERE id = $1";
   const params = normalizedUserId
     ? [normalizedQuizId, normalizedUserId]
     : [normalizedQuizId];
@@ -2167,7 +2757,7 @@ export async function getQuizById(quizId, userId = null) {
     const result = await executeQuery(query, params);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('✗ Error fetching quiz:', error.message);
+    console.error("✗ Error fetching quiz:", error.message);
     throw error;
   }
 }
@@ -2180,113 +2770,188 @@ export async function getQuizById(quizId, userId = null) {
  * against questions.correct_answer on the backend.
  * @returns {Promise<Object|null>} Recorded answer
  */
-export async function recordAnswer(quizIdOrData, questionId, userAnswer, timeSecs, userId) {
-  const {
-    quiz_id,
-    question_id,
-    user_answer,
-    time_secs,
-    user_id,
-  } = normalizeRecordAnswerInput(quizIdOrData, questionId, userAnswer, timeSecs, userId);
+export async function recordAnswer(
+  quizIdOrData,
+  questionId,
+  userAnswer,
+  timeSecs,
+  userId,
+) {
+  const { quiz_id, question_id, user_answer, time_secs, user_id } =
+    normalizeRecordAnswerInput(
+      quizIdOrData,
+      questionId,
+      userAnswer,
+      timeSecs,
+      userId,
+    );
 
   try {
-    const question = await getQuestionById(question_id);
-    if (!question) {
-      throw createQuizLifecycleError('Question not found', 404);
-    }
-
-    const isCorrect = answersMatch(user_answer, question.correct_answer);
     const database = getDatabase();
 
     return await database.transaction(async (transaction) => {
       const quizParams = user_id ? [quiz_id, user_id] : [quiz_id];
-      const quizRows = await queryRows(transaction, `
+      const quizRows = await queryRows(
+        transaction,
+        `
         SELECT *
         FROM quiz_history
         WHERE id = $1
-          ${user_id ? 'AND user_id = $2' : ''}
-      `, quizParams);
+          ${user_id ? "AND user_id = $2" : ""}
+      `,
+        quizParams,
+      );
       const quiz = quizRows[0];
 
       if (!quiz) {
-        throw createQuizLifecycleError('Quiz not found', 404);
+        throw createQuizLifecycleError("Quiz not found", 404);
       }
-      if (quiz.status !== 'started') {
+      if (quiz.status !== "started") {
         throw createQuizLifecycleError(
           `Quiz does not accept answers while status is ${quiz.status}`,
           409,
         );
       }
 
+      const questionRows = await queryRows(
+        transaction,
+        "SELECT * FROM questions WHERE id = $1",
+        [question_id],
+      );
+      const question = questionRows[0];
+      if (!question) {
+        throw createQuizLifecycleError("Question not found", 404);
+      }
+      if (question.certification !== quiz.certification) {
+        throw createQuizLifecycleError(
+          "Question certification does not match quiz",
+          409,
+        );
+      }
+
+      const memberships = await queryRows(
+        transaction,
+        `
+        SELECT position FROM quiz_questions
+        WHERE quiz_id = $1 AND question_id = $2
+      `,
+        [quiz_id, question_id],
+      );
+      if (!memberships.length) {
+        throw createQuizLifecycleError(
+          "Question does not belong to this quiz",
+          409,
+        );
+      }
+
+      const isCorrect = answersMatchForQuestion(
+        user_answer,
+        question.correct_answer,
+        question.options,
+      );
+
       // A resposta pode ter sido gravada antes de um refresh, mas a confirmação
       // HTTP perdida. Reenviar a mesma escolha não pode duplicar o resultado.
-      const existingAnswers = await queryRows(transaction, `
+      const existingAnswers = await queryRows(
+        transaction,
+        `
         SELECT * FROM answers
         WHERE quiz_id = $1 AND question_id = $2
         ORDER BY answered_at ASC
         LIMIT 1
-      `, [quiz_id, question_id]);
+      `,
+        [quiz_id, question_id],
+      );
       if (existingAnswers[0]) {
-        if (!answersMatch(existingAnswers[0].user_answer, user_answer)) {
-          throw createQuizLifecycleError('Question already answered with a different choice', 409);
+        if (
+          !answersMatchForQuestion(
+            existingAnswers[0].user_answer,
+            user_answer,
+            question.options,
+          )
+        ) {
+          throw createQuizLifecycleError(
+            "Question already answered with a different choice",
+            409,
+          );
         }
         return {
           ...existingAnswers[0],
           explanation: question.explanation,
-          correct_answer: question.correct_answer,
+          correct_answer: publicCorrectAnswer(question),
           idempotent: true,
         };
       }
 
-      const insertedAnswers = await queryRows(transaction, `
-        INSERT INTO answers (quiz_id, question_id, user_answer, is_correct, time_secs)
-        VALUES ($1, $2, $3, $4, $5)
+      const insertedAnswers = await queryRows(
+        transaction,
+        `
+        INSERT INTO answers (quiz_id, question_id, user_answer, is_correct, time_secs, membership_enforced)
+        VALUES ($1, $2, $3, $4, $5, TRUE)
         RETURNING *
-      `, [
-        quiz_id,
-        question_id,
-        JSON.stringify(user_answer),
-        isCorrect,
-        time_secs,
-      ]);
+      `,
+        [
+          quiz_id,
+          question_id,
+          JSON.stringify(user_answer),
+          isCorrect,
+          time_secs,
+        ],
+      );
       const answer = insertedAnswers[0] || null;
 
-      const answerRows = await queryRows(transaction, `
+      const answerRows = await queryRows(
+        transaction,
+        `
         SELECT a.is_correct, a.time_secs, q.domain
-        FROM answers a
-        LEFT JOIN questions q ON q.id = a.question_id
-        WHERE a.quiz_id = $1
-      `, [quiz_id]);
-      const summary = buildQuizSummary(quiz.total_questions, answerRows);
+        FROM quiz_questions qq
+        JOIN answers a ON a.quiz_id = qq.quiz_id AND a.question_id = qq.question_id
+        JOIN questions q ON q.id = qq.question_id
+        WHERE qq.quiz_id = $1
+      `,
+        [quiz_id],
+      );
+      const counts = await queryRows(
+        transaction,
+        "SELECT COUNT(*)::int AS total FROM quiz_questions WHERE quiz_id = $1",
+        [quiz_id],
+      );
+      const summary = buildQuizSummary(Number(counts[0].total), answerRows);
 
-      await queryRows(transaction, `
+      await queryRows(
+        transaction,
+        `
         UPDATE quiz_history
         SET score = $1,
             percentage = $2,
             time_spent_secs = $3,
             domain_scores = $4,
-            weak_domains = $5
+            weak_domains = $5,
+            total_questions = $7
         WHERE id = $6
           AND status = 'started'
         RETURNING *
-      `, [
-        summary.score,
-        summary.percentage,
-        summary.time_spent_secs,
-        JSON.stringify(summary.domain_scores),
-        summary.weak_domains,
-        quiz_id,
-      ]);
+      `,
+        [
+          summary.score,
+          summary.percentage,
+          summary.time_spent_secs,
+          JSON.stringify(summary.domain_scores),
+          summary.weak_domains,
+          quiz_id,
+          Number(counts[0].total),
+        ],
+      );
 
       return {
         ...answer,
         is_correct: isCorrect,
         explanation: question.explanation,
-        correct_answer: question.correct_answer,
+        correct_answer: publicCorrectAnswer(question),
       };
     });
   } catch (error) {
-    console.error('✗ Error recording answer:', error.message);
+    console.error("✗ Error recording answer:", error.message);
     throw error;
   }
 }
@@ -2297,43 +2962,70 @@ export async function recordAnswer(quizIdOrData, questionId, userAnswer, timeSec
  * changing completed_at.
  */
 export async function completeQuiz(quizId, userId) {
-  const normalizedQuizId = normalizeRequiredString(quizId, 'quizId');
-  const normalizedUserId = normalizeRequiredString(userId, 'userId');
+  const normalizedQuizId = normalizeRequiredString(quizId, "quizId");
+  const normalizedUserId = normalizeRequiredString(userId, "userId");
   const database = getDatabase();
 
   try {
     return await database.transaction(async (transaction) => {
-      const quizRows = await queryRows(transaction, `
+      const quizRows = await queryRows(
+        transaction,
+        `
         SELECT *
         FROM quiz_history
         WHERE id = $1 AND user_id = $2
-      `, [normalizedQuizId, normalizedUserId]);
+      `,
+        [normalizedQuizId, normalizedUserId],
+      );
       const quiz = quizRows[0];
 
       if (!quiz) {
-        throw createQuizLifecycleError('Quiz not found', 404);
+        throw createQuizLifecycleError("Quiz not found", 404);
       }
 
-      const answerRows = await queryRows(transaction, `
+      const membershipCountRows = await queryRows(
+        transaction,
+        "SELECT COUNT(*)::int AS total FROM quiz_questions WHERE quiz_id = $1",
+        [normalizedQuizId],
+      );
+      const membershipTotal = Number(membershipCountRows[0].total);
+      const answerRows = await queryRows(
+        transaction,
+        `
         SELECT a.*, q.domain
         FROM answers a
         LEFT JOIN questions q ON q.id = a.question_id
         WHERE a.quiz_id = $1
+          AND ($2::int = 0 OR EXISTS (
+            SELECT 1 FROM quiz_questions qq
+            WHERE qq.quiz_id = a.quiz_id AND qq.question_id = a.question_id
+          ))
         ORDER BY a.answered_at ASC
-      `, [normalizedQuizId]);
+      `,
+        [normalizedQuizId, membershipTotal],
+      );
 
-      if (quiz.status === 'completed') {
+      if (quiz.status === "completed") {
         return buildQuizResult(quiz, answerRows, { idempotent: true });
       }
-      if (quiz.status !== 'started') {
+      if (quiz.status !== "started") {
         throw createQuizLifecycleError(
           `Quiz cannot be completed while status is ${quiz.status}`,
           409,
         );
       }
 
-      const summary = buildQuizSummary(quiz.total_questions, answerRows);
-      const completedRows = await queryRows(transaction, `
+      if (membershipTotal === 0) {
+        throw createQuizLifecycleError(
+          "This legacy started quiz has no verified question set; restart the quiz",
+          409,
+        );
+      }
+
+      const summary = buildQuizSummary(membershipTotal, answerRows);
+      const completedRows = await queryRows(
+        transaction,
+        `
         UPDATE quiz_history
         SET status = 'completed',
             score = $1,
@@ -2341,31 +3033,38 @@ export async function completeQuiz(quizId, userId) {
             time_spent_secs = $3,
             domain_scores = $4,
             weak_domains = $5,
+            total_questions = $8,
             completed_at = CURRENT_TIMESTAMP,
             abandoned_at = NULL
         WHERE id = $6
           AND user_id = $7
           AND status = 'started'
         RETURNING *
-      `, [
-        summary.score,
-        summary.percentage,
-        summary.time_spent_secs,
-        JSON.stringify(summary.domain_scores),
-        summary.weak_domains,
-        normalizedQuizId,
-        normalizedUserId,
-      ]);
+      `,
+        [
+          summary.score,
+          summary.percentage,
+          summary.time_spent_secs,
+          JSON.stringify(summary.domain_scores),
+          summary.weak_domains,
+          normalizedQuizId,
+          normalizedUserId,
+          membershipTotal,
+        ],
+      );
 
       const completedQuiz = completedRows[0];
       if (!completedQuiz) {
-        throw createQuizLifecycleError('Quiz lifecycle changed during completion', 409);
+        throw createQuizLifecycleError(
+          "Quiz lifecycle changed during completion",
+          409,
+        );
       }
 
       return buildQuizResult(completedQuiz, answerRows);
     });
   } catch (error) {
-    console.error('âœ— Error completing quiz:', error.message);
+    console.error("âœ— Error completing quiz:", error.message);
     throw error;
   }
 }
@@ -2374,33 +3073,39 @@ export async function completeQuiz(quizId, userId) {
  * Abandon a quiz only after an explicit user discard action.
  */
 export async function abandonQuiz(quizId, userId) {
-  const normalizedQuizId = normalizeRequiredString(quizId, 'quizId');
-  const normalizedUserId = normalizeRequiredString(userId, 'userId');
+  const normalizedQuizId = normalizeRequiredString(quizId, "quizId");
+  const normalizedUserId = normalizeRequiredString(userId, "userId");
   const database = getDatabase();
 
   try {
     return await database.transaction(async (transaction) => {
-      const quizRows = await queryRows(transaction, `
+      const quizRows = await queryRows(
+        transaction,
+        `
         SELECT *
         FROM quiz_history
         WHERE id = $1 AND user_id = $2
-      `, [normalizedQuizId, normalizedUserId]);
+      `,
+        [normalizedQuizId, normalizedUserId],
+      );
       const quiz = quizRows[0];
 
       if (!quiz) {
-        throw createQuizLifecycleError('Quiz not found', 404);
+        throw createQuizLifecycleError("Quiz not found", 404);
       }
-      if (quiz.status === 'abandoned') {
+      if (quiz.status === "abandoned") {
         return { ...quiz, idempotent: true };
       }
-      if (quiz.status !== 'started') {
+      if (quiz.status !== "started") {
         throw createQuizLifecycleError(
           `Quiz cannot be abandoned while status is ${quiz.status}`,
           409,
         );
       }
 
-      const abandonedRows = await queryRows(transaction, `
+      const abandonedRows = await queryRows(
+        transaction,
+        `
         UPDATE quiz_history
         SET status = 'abandoned',
             abandoned_at = CURRENT_TIMESTAMP,
@@ -2409,16 +3114,21 @@ export async function abandonQuiz(quizId, userId) {
           AND user_id = $2
           AND status = 'started'
         RETURNING *
-      `, [normalizedQuizId, normalizedUserId]);
+      `,
+        [normalizedQuizId, normalizedUserId],
+      );
 
       if (!abandonedRows[0]) {
-        throw createQuizLifecycleError('Quiz lifecycle changed during abandonment', 409);
+        throw createQuizLifecycleError(
+          "Quiz lifecycle changed during abandonment",
+          409,
+        );
       }
 
       return { ...abandonedRows[0], idempotent: false };
     });
   } catch (error) {
-    console.error('âœ— Error abandoning quiz:', error.message);
+    console.error("âœ— Error abandoning quiz:", error.message);
     throw error;
   }
 }
@@ -2429,13 +3139,24 @@ export async function abandonQuiz(quizId, userId) {
  * @returns {Promise<Array>} Array of answers
  */
 export async function getAnswersByQuiz(quizId) {
-  normalizeRequiredString(quizId, 'quizId');
-  const query = 'SELECT * FROM answers WHERE quiz_id = $1 ORDER BY answered_at ASC';
+  normalizeRequiredString(quizId, "quizId");
+  const query = `
+    SELECT a.* FROM answers a
+    WHERE a.quiz_id = $1
+      AND (
+        NOT EXISTS (SELECT 1 FROM quiz_questions WHERE quiz_id = $1)
+        OR EXISTS (
+          SELECT 1 FROM quiz_questions qq
+          WHERE qq.quiz_id = a.quiz_id AND qq.question_id = a.question_id
+        )
+      )
+    ORDER BY a.answered_at ASC
+  `;
 
   try {
     return await executeQuery(query, [quizId]);
   } catch (error) {
-    console.error('✗ Error fetching answers:', error.message);
+    console.error("✗ Error fetching answers:", error.message);
     throw error;
   }
 }
@@ -2465,7 +3186,7 @@ export async function getLeaderboard(limit = 100) {
   try {
     return await executeQuery(query, [normalizedLimit]);
   } catch (error) {
-    console.error('✗ Error fetching leaderboard:', error.message);
+    console.error("✗ Error fetching leaderboard:", error.message);
     throw error;
   }
 }
@@ -2483,10 +3204,10 @@ export async function getUserStats(userId) {
   const normalizedUserId = normalizeUserId(userId);
   const user = await getUserById(normalizedUserId);
   if (!user) {
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
 
-  const query = 'SELECT * FROM user_stats WHERE user_id = $1';
+  const query = "SELECT * FROM user_stats WHERE user_id = $1";
   const answerQuery = `
     SELECT
       COUNT(a.id)::int AS total_answers,
@@ -2495,6 +3216,13 @@ export async function getUserStats(userId) {
     LEFT JOIN answers a ON a.quiz_id = qh.id
     WHERE qh.user_id = $1
       AND qh.status = 'completed'
+      AND (
+        NOT EXISTS (SELECT 1 FROM quiz_questions qq0 WHERE qq0.quiz_id = qh.id)
+        OR EXISTS (
+          SELECT 1 FROM quiz_questions qq
+          WHERE qq.quiz_id = a.quiz_id AND qq.question_id = a.question_id
+        )
+      )
   `;
 
   try {
@@ -2505,7 +3233,7 @@ export async function getUserStats(userId) {
     ]);
     const stats = statsResult[0] || {
       user_id: user.id,
-      display_name: user.nickname ?? user.anonymous_name ?? 'Usuário',
+      display_name: user.nickname ?? user.anonymous_name ?? "Usuário",
       nickname: user.nickname,
       anonymous_name: user.anonymous_name,
       role: user.role,
@@ -2530,9 +3258,10 @@ export async function getUserStats(userId) {
       total_focus_minutes: Number(stats.total_focus_minutes || 0),
       total_answers: totalAnswers,
       correct_answers: correctAnswers,
-      answer_accuracy: totalAnswers > 0
-        ? Number(((correctAnswers / totalAnswers) * 100).toFixed(2))
-        : 0,
+      answer_accuracy:
+        totalAnswers > 0
+          ? Number(((correctAnswers / totalAnswers) * 100).toFixed(2))
+          : 0,
       xp_points: Number(gamification.xp_points || 0),
       current_streak: Number(gamification.current_streak || 0),
       longest_streak: Number(gamification.longest_streak || 0),
@@ -2543,7 +3272,7 @@ export async function getUserStats(userId) {
       gamification,
     };
   } catch (error) {
-    console.error('✗ Error fetching user stats:', error.message);
+    console.error("✗ Error fetching user stats:", error.message);
     throw error;
   }
 }
@@ -2554,7 +3283,7 @@ export async function getUserStats(userId) {
  * @returns {Promise<Object>} Aggregated user quiz statistics
  */
 export async function calculateStats(userId) {
-  const normalizedUserId = normalizeRequiredString(userId, 'userId');
+  const normalizedUserId = normalizeRequiredString(userId, "userId");
   const query = `
     SELECT
       COUNT(*)::int AS total_quizzes,
@@ -2584,12 +3313,13 @@ export async function calculateStats(userId) {
       certifications_practiced: Number(stats.certifications_practiced || 0),
       total_questions: totalQuestions,
       correct_answers: correctAnswers,
-      accuracy: totalQuestions > 0
-        ? Number(((correctAnswers / totalQuestions) * 100).toFixed(2))
-        : 0,
+      accuracy:
+        totalQuestions > 0
+          ? Number(((correctAnswers / totalQuestions) * 100).toFixed(2))
+          : 0,
     };
   } catch (error) {
-    console.error('✗ Error calculating user stats:', error.message);
+    console.error("✗ Error calculating user stats:", error.message);
     throw error;
   }
 }
@@ -2603,10 +3333,13 @@ export async function calculateQuizStats(quizId) {
   try {
     const quiz = await getQuizById(quizId);
     if (!quiz) {
-      throw createQuizLifecycleError('Quiz not found', 404);
+      throw createQuizLifecycleError("Quiz not found", 404);
     }
-    if (quiz.status !== 'completed') {
-      throw createQuizLifecycleError('Quiz results are only available after completion', 409);
+    if (quiz.status !== "completed") {
+      throw createQuizLifecycleError(
+        "Quiz results are only available after completion",
+        409,
+      );
     }
 
     const answers = await getAnswersByQuiz(quizId);
@@ -2624,7 +3357,7 @@ export async function calculateQuizStats(quizId) {
       completed_at: quiz.completed_at,
     };
   } catch (error) {
-    console.error('✗ Error calculating quiz stats:', error.message);
+    console.error("✗ Error calculating quiz stats:", error.message);
     throw error;
   }
 }
@@ -2635,8 +3368,11 @@ export async function calculateQuizStats(quizId) {
  * @param {number} threshold - Accuracy threshold percentage (default: 70)
  * @returns {Promise<Array>} Array of domain names with low scores
  */
-export async function getWeakDomains(userId, threshold = DEFAULT_WEAK_DOMAIN_THRESHOLD) {
-  const normalizedUserId = normalizeRequiredString(userId, 'userId');
+export async function getWeakDomains(
+  userId,
+  threshold = DEFAULT_WEAK_DOMAIN_THRESHOLD,
+) {
+  const normalizedUserId = normalizeRequiredString(userId, "userId");
   const normalizedThreshold = normalizeThreshold(threshold);
   const query = `
     SELECT
@@ -2648,6 +3384,13 @@ export async function getWeakDomains(userId, threshold = DEFAULT_WEAK_DOMAIN_THR
     JOIN questions q ON q.id = a.question_id
     WHERE qh.user_id = $1
       AND qh.status = 'completed'
+      AND (
+        NOT EXISTS (SELECT 1 FROM quiz_questions qq0 WHERE qq0.quiz_id = qh.id)
+        OR EXISTS (
+          SELECT 1 FROM quiz_questions qq
+          WHERE qq.quiz_id = a.quiz_id AND qq.question_id = a.question_id
+        )
+      )
     GROUP BY q.domain
     HAVING COUNT(*) > 0
     ORDER BY q.domain ASC
@@ -2659,14 +3402,16 @@ export async function getWeakDomains(userId, threshold = DEFAULT_WEAK_DOMAIN_THR
     return rows
       .map((row) => ({
         domain: row.domain,
-        accuracy: Number(((row.correct_answers / row.total_questions) * 100).toFixed(2)),
+        accuracy: Number(
+          ((row.correct_answers / row.total_questions) * 100).toFixed(2),
+        ),
         total_questions: Number(row.total_questions),
         correct_answers: Number(row.correct_answers),
       }))
       .filter((row) => row.accuracy < normalizedThreshold)
       .sort((a, b) => a.accuracy - b.accuracy);
   } catch (error) {
-    console.error('✗ Error calculating weak domains:', error.message);
+    console.error("✗ Error calculating weak domains:", error.message);
     throw error;
   }
 }
@@ -2680,7 +3425,8 @@ export async function getPendingQuestions(options = {}) {
     : null;
 
   try {
-    return await executeQuery(`
+    return await executeQuery(
+      `
       SELECT *
       FROM questions
       WHERE is_active = TRUE
@@ -2688,29 +3434,38 @@ export async function getPendingQuestions(options = {}) {
         AND ($3::text IS NULL OR certification::text = $3)
       ORDER BY created_at ASC
       LIMIT $1 OFFSET $2
-    `, [limit, offset, certification]);
+    `,
+      [limit, offset, certification],
+    );
   } catch (error) {
     console.error("Erro ao buscar questões pendentes:", error);
     throw error;
   }
 }
 
-export async function getValidationHistory({ status = null, validatorId = null } = {}) {
+export async function getValidationHistory({
+  status = null,
+  validatorId = null,
+} = {}) {
   const normalizedStatus = status ? String(status).toUpperCase() : null;
-  if (normalizedStatus && !['APPROVED', 'REJECTED'].includes(normalizedStatus)) {
-    const error = new Error('status must be APPROVED or REJECTED');
+  if (
+    normalizedStatus &&
+    !["APPROVED", "REJECTED"].includes(normalizedStatus)
+  ) {
+    const error = new Error("status must be APPROVED or REJECTED");
     error.statusCode = 400;
     throw error;
   }
 
   const params = [normalizedStatus];
-  let validatorFilter = '';
+  let validatorFilter = "";
   if (validatorId) {
     params.push(normalizeUserId(validatorId));
     validatorFilter = `AND COALESCE(q.validated_by_id::text, q.validated_by) = $${params.length}`;
   }
 
-  return executeQuery(`
+  return executeQuery(
+    `
     SELECT q.id, q.certification, q.domain, q.question_text,
            q.validation_status, q.rejection_reason, q.validated_at,
            COALESCE(u.full_name, u.nickname, u.email, q.validated_by) AS validator_name,
@@ -2724,11 +3479,18 @@ export async function getValidationHistory({ status = null, validatorId = null }
        ${validatorFilter}
      ORDER BY q.validated_at DESC NULLS LAST, q.updated_at DESC
      LIMIT 200
-  `, params);
+  `,
+    params,
+  );
 }
 
 // Atualiza o status da questão (Aprova ou Rejeita)
-function normalizeValidationInput(questionIdOrData, validatorId, status, rejectionReason) {
+function normalizeValidationInput(
+  questionIdOrData,
+  validatorId,
+  status,
+  rejectionReason,
+) {
   const source = isPlainObject(questionIdOrData)
     ? questionIdOrData
     : {
@@ -2738,29 +3500,45 @@ function normalizeValidationInput(questionIdOrData, validatorId, status, rejecti
         rejection_reason: rejectionReason,
       };
 
-  const normalizedStatus = validateValidationStatus(source.status, { required: true });
+  const normalizedStatus = validateValidationStatus(source.status, {
+    required: true,
+  });
   const normalizedRejectionReason = normalizeOptionalString(
     source.rejection_reason ?? source.rejectionReason ?? source.feedback,
-    'rejection_reason',
+    "rejection_reason",
   );
 
-  if (normalizedStatus === 'REJECTED' && !normalizedRejectionReason) {
-    throw new Error('rejection_reason is required when rejecting a question');
+  if (normalizedStatus === "REJECTED" && !normalizedRejectionReason) {
+    throw new Error("rejection_reason is required when rejecting a question");
   }
 
   return {
-    question_id: normalizeRequiredString(source.question_id ?? source.questionId, 'questionId'),
+    question_id: normalizeRequiredString(
+      source.question_id ?? source.questionId,
+      "questionId",
+    ),
     validator_id: normalizeRequiredString(
       source.validator_id ?? source.validatorId ?? source.validated_by,
-      'validatorId',
+      "validatorId",
     ),
     status: normalizedStatus,
-    rejection_reason: normalizedStatus === 'REJECTED' ? normalizedRejectionReason : null,
+    rejection_reason:
+      normalizedStatus === "REJECTED" ? normalizedRejectionReason : null,
   };
 }
 
-export async function validateQuestion(questionId, validatorId, status, rejectionReason = null) {
-  const validation = normalizeValidationInput(questionId, validatorId, status, rejectionReason);
+export async function validateQuestion(
+  questionId,
+  validatorId,
+  status,
+  rejectionReason = null,
+) {
+  const validation = normalizeValidationInput(
+    questionId,
+    validatorId,
+    status,
+    rejectionReason,
+  );
 
   try {
     const existingQuestion = await getQuestionById(validation.question_id);
@@ -2786,7 +3564,7 @@ export async function validateQuestion(questionId, validatorId, status, rejectio
         AND is_active = TRUE
       RETURNING *
     `;
-    
+
     const values = [
       validation.status,
       validation.rejection_reason,
@@ -2795,7 +3573,7 @@ export async function validateQuestion(questionId, validatorId, status, rejectio
       validation.question_id,
     ];
     const result = await executeQuery(query, values);
-    
+
     return result[0] || null;
   } catch (error) {
     console.error(`Erro ao validar questão ${questionId}:`, error);
@@ -2808,6 +3586,7 @@ export default {
   initializeDatabase,
   migrateQuestionIdentity,
   migrateQuizLifecycle,
+  migrateQuizMembership,
   getDatabase,
   closeDatabase,
   executeQuery,
@@ -2834,8 +3613,10 @@ export default {
   updateGamification,
   // Quiz History
   createQuizHistory,
+  createQuizWithQuestions,
   getQuizHistory,
   getQuizById,
+  getQuizQuestions,
   recordAnswer,
   completeQuiz,
   abandonQuiz,
@@ -2919,7 +3700,7 @@ export async function getCases(filters = {}) {
   try {
     return await executeQuery(query, params);
   } catch (error) {
-    console.error('✗ Error fetching cases:', error.message);
+    console.error("✗ Error fetching cases:", error.message);
     throw error;
   }
 }
@@ -2930,10 +3711,13 @@ export async function getCases(filters = {}) {
  * @returns {Promise<Object|null>} Case object with services and questions, or null
  */
 export async function getCaseById(idOrSlug) {
-  normalizeRequiredString(idOrSlug, 'idOrSlug');
+  normalizeRequiredString(idOrSlug, "idOrSlug");
 
-  const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(idOrSlug);
-  const whereClause = isUUID ? 'c.id = $1' : 'c.slug = $1';
+  const isUUID =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      idOrSlug,
+    );
+  const whereClause = isUUID ? "c.id = $1" : "c.slug = $1";
 
   const caseQuery = `
     SELECT
@@ -2982,7 +3766,7 @@ export async function getCaseById(idOrSlug) {
 
     return caseRow;
   } catch (error) {
-    console.error('✗ Error fetching case by id/slug:', error.message);
+    console.error("✗ Error fetching case by id/slug:", error.message);
     throw error;
   }
 }
@@ -2994,20 +3778,20 @@ export async function getCaseById(idOrSlug) {
  * @returns {Promise<Array>} Array of aws_service rows
  */
 export async function getAwsServices(filters = {}) {
-  let query = 'SELECT * FROM aws_services WHERE is_active = TRUE';
+  let query = "SELECT * FROM aws_services WHERE is_active = TRUE";
   const params = [];
 
   if (filters.category) {
-    query += ' AND category = $1';
+    query += " AND category = $1";
     params.push(filters.category);
   }
 
-  query += ' ORDER BY category ASC, name ASC';
+  query += " ORDER BY category ASC, name ASC";
 
   try {
     return await executeQuery(query, params);
   } catch (error) {
-    console.error('✗ Error fetching AWS services:', error.message);
+    console.error("✗ Error fetching AWS services:", error.message);
     throw error;
   }
 }
@@ -3023,7 +3807,7 @@ export async function insertCase(caseData) {
     title,
     scenario,
     objective,
-    difficulty = 'intermediate',
+    difficulty = "intermediate",
     certifications = [],
     architecture_graph = {},
     resources = [],
@@ -3033,10 +3817,10 @@ export async function insertCase(caseData) {
     constraints = [],
   } = caseData;
 
-  normalizeRequiredString(slug, 'slug');
-  normalizeRequiredString(title, 'title');
-  normalizeRequiredString(scenario, 'scenario');
-  normalizeRequiredString(objective, 'objective');
+  normalizeRequiredString(slug, "slug");
+  normalizeRequiredString(title, "title");
+  normalizeRequiredString(scenario, "scenario");
+  normalizeRequiredString(objective, "objective");
 
   const query = `
     INSERT INTO cases (slug, title, scenario, objective, difficulty, certifications, architecture_graph, resources, tags, budget_usd, client_persona, constraints)
@@ -3077,10 +3861,10 @@ export async function insertAwsService(serviceData) {
     doc_url = null,
   } = serviceData;
 
-  normalizeRequiredString(slug, 'slug');
-  normalizeRequiredString(name, 'name');
-  normalizeRequiredString(category, 'category');
-  normalizeRequiredString(short_desc, 'short_desc');
+  normalizeRequiredString(slug, "slug");
+  normalizeRequiredString(name, "name");
+  normalizeRequiredString(category, "category");
+  normalizeRequiredString(short_desc, "short_desc");
 
   const query = `
     INSERT INTO aws_services (slug, name, category, short_desc, icon_url, doc_url)
@@ -3088,7 +3872,14 @@ export async function insertAwsService(serviceData) {
     ON CONFLICT (slug) DO NOTHING
     RETURNING *`;
 
-  const rows = await executeQuery(query, [slug, name, category, short_desc, icon_url, doc_url]);
+  const rows = await executeQuery(query, [
+    slug,
+    name,
+    category,
+    short_desc,
+    icon_url,
+    doc_url,
+  ]);
   return rows[0] ?? null;
 }
 
@@ -3099,8 +3890,8 @@ export async function insertAwsService(serviceData) {
  * @returns {Promise<Object>} Updated progress row
  */
 export async function markCaseCompleted(userId, caseId) {
-  normalizeRequiredString(userId, 'userId');
-  normalizeRequiredString(caseId, 'caseId');
+  normalizeRequiredString(userId, "userId");
+  normalizeRequiredString(caseId, "caseId");
 
   const query = `
     INSERT INTO case_progress (user_id, case_id, completed, completed_at)
@@ -3118,15 +3909,27 @@ export async function markCaseCompleted(userId, caseId) {
  * @returns {Promise<Object>} Inserted dialogue row
  */
 export async function insertCaseDialogue(dialogueData) {
-  const { case_id, question, answer, hints = [], sort_order = 0 } = dialogueData;
-  normalizeRequiredString(question, 'question');
-  normalizeRequiredString(answer, 'answer');
+  const {
+    case_id,
+    question,
+    answer,
+    hints = [],
+    sort_order = 0,
+  } = dialogueData;
+  normalizeRequiredString(question, "question");
+  normalizeRequiredString(answer, "answer");
 
   const query = `
     INSERT INTO case_dialogues (case_id, question, answer, hints, sort_order)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING *`;
-  const rows = await executeQuery(query, [case_id, question, answer, hints, sort_order]);
+  const rows = await executeQuery(query, [
+    case_id,
+    question,
+    answer,
+    hints,
+    sort_order,
+  ]);
   return rows[0] ?? null;
 }
 
@@ -3136,15 +3939,29 @@ export async function insertCaseDialogue(dialogueData) {
  * @returns {Promise<Object>} Inserted event row
  */
 export async function insertCaseEvent(eventData) {
-  const { case_id, title, description, impact_type, trigger_condition = {}, sort_order = 0 } = eventData;
-  normalizeRequiredString(title, 'title');
-  normalizeRequiredString(description, 'description');
+  const {
+    case_id,
+    title,
+    description,
+    impact_type,
+    trigger_condition = {},
+    sort_order = 0,
+  } = eventData;
+  normalizeRequiredString(title, "title");
+  normalizeRequiredString(description, "description");
 
   const query = `
     INSERT INTO case_events (case_id, title, description, impact_type, trigger_condition, sort_order)
     VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING *`;
-  const rows = await executeQuery(query, [case_id, title, description, impact_type, JSON.stringify(trigger_condition), sort_order]);
+  const rows = await executeQuery(query, [
+    case_id,
+    title,
+    description,
+    impact_type,
+    JSON.stringify(trigger_condition),
+    sort_order,
+  ]);
   return rows[0] ?? null;
 }
 
@@ -3154,13 +3971,17 @@ export async function insertCaseEvent(eventData) {
  * @returns {Promise<Object>} Inserted criteria row
  */
 export async function insertCaseEvaluationCriteria(criteriaData) {
-  const { case_id, service_slug, pillar, score_impact, feedback_msg } = criteriaData;
-  normalizeRequiredString(service_slug, 'service_slug');
-  normalizeRequiredString(pillar, 'pillar');
-  normalizeRequiredString(feedback_msg, 'feedback_msg');
+  const { case_id, service_slug, pillar, score_impact, feedback_msg } =
+    criteriaData;
+  normalizeRequiredString(service_slug, "service_slug");
+  normalizeRequiredString(pillar, "pillar");
+  normalizeRequiredString(feedback_msg, "feedback_msg");
 
   // We need to resolve service_slug to service_id
-  const serviceRows = await executeQuery('SELECT id FROM aws_services WHERE slug = $1', [service_slug]);
+  const serviceRows = await executeQuery(
+    "SELECT id FROM aws_services WHERE slug = $1",
+    [service_slug],
+  );
   if (serviceRows.length === 0) {
     throw new Error(`AWS Service with slug ${service_slug} not found`);
   }
@@ -3169,6 +3990,12 @@ export async function insertCaseEvaluationCriteria(criteriaData) {
     INSERT INTO case_evaluation_criteria (case_id, service_id, pillar, score_impact, feedback_msg)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING *`;
-  const rows = await executeQuery(query, [case_id, serviceRows[0].id, pillar, score_impact, feedback_msg]);
+  const rows = await executeQuery(query, [
+    case_id,
+    serviceRows[0].id,
+    pillar,
+    score_impact,
+    feedback_msg,
+  ]);
   return rows[0] ?? null;
 }

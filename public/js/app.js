@@ -932,6 +932,39 @@ async function startQuiz() {
         confirmText: "Retomar",
         cancelText: "Descartar",
       });
+      if (
+        resumeAgreed &&
+        activeSession.quizId &&
+        !activeSession.quizId.startsWith("local_")
+      ) {
+        try {
+          const remote = await quizManager.getRemoteQuiz(activeSession.quizId);
+          const matchesRemoteSet =
+            remote?.resumable &&
+            Array.isArray(activeSession.questions) &&
+            activeSession.questions.length === remote.questions.length &&
+            activeSession.questions.every(
+              (question, index) =>
+                getQuestionId(question) === remote.questions[index].id,
+            );
+          if (remote && !matchesRemoteSet) {
+            resumeAgreed = false;
+            await ModalService.confirm({
+              title:
+                uiState.language === "en"
+                  ? "Session unavailable"
+                  : "Sessão indisponível",
+              message:
+                uiState.language === "en"
+                  ? "This older quiz has no verified question set and cannot be resumed. A new quiz will start."
+                  : "Este simulado antigo não possui um conjunto de questões verificável e não pode ser retomado. Um novo simulado será iniciado.",
+              confirmText: "OK",
+            });
+          }
+        } catch (error) {
+          logger.warn("Could not verify remote quiz on resume:", error);
+        }
+      }
     }
 
     // 2. AGORA SIM, O USUÁRIO JÁ RESPONDEU! PODEMOS ATIVAR O LOADING E TRAVAR O BOTÃO
@@ -950,6 +983,14 @@ async function startQuiz() {
       engine.state.currentIndex = activeSession.currentIndex;
       engine.state.score = activeSession.score;
       engine.state.domainScores = activeSession.domainScores || {};
+      engine.state.authoritative =
+        Boolean(activeSession.authoritative) ||
+        Boolean(
+          activeSession.quizId && !activeSession.quizId.startsWith("local_"),
+        );
+      engine.state.source =
+        activeSession.source ||
+        (engine.state.authoritative ? "online" : "local");
 
       uiState.currentMode = activeSession.mode || "exam";
       uiState.timeRemaining = activeSession.timeRemaining;
@@ -979,6 +1020,8 @@ async function startQuiz() {
           certId,
           parseInt(quantityInput),
           uiState.language,
+          modeInput,
+          { difficulty: difficultyInput, topic: topicSelect },
         );
         preloadedQuestions = quizResponse.questions;
 
@@ -1374,10 +1417,22 @@ function initValidationBadgeTooltip(badge, text) {
   );
 }
 
+function getRequiredSelections(question) {
+  return Number.isInteger(question?.selection_count)
+    ? question.selection_count
+    : Array.isArray(question?.correct)
+      ? question.correct.length
+      : 1;
+}
+
+function isMultiSelectQuestion(question) {
+  return getRequiredSelections(question) > 1;
+}
+
 function loadQuestionUI() {
   const q = engine.getCurrentQuestion();
   const progress = engine.getProgress();
-  const isMulti = Array.isArray(q.correct);
+  const isMulti = isMultiSelectQuestion(q);
 
   // ==========================================
   // TRAVA DE SEGURANÇA DO HUD DE MISSÃO
@@ -1443,7 +1498,7 @@ function loadQuestionUI() {
   }
 
   const questionText = isMulti
-    ? `${q.question} <br><span class="text-sm text-aws-orange italic mt-2 block">(${t("choose_options", uiState.language, { count: q.correct.length })})</span>`
+    ? `${q.question} <br><span class="text-sm text-aws-orange italic mt-2 block">(${t("choose_options", uiState.language, { count: getRequiredSelections(q) })})</span>`
     : q.question;
   document.getElementById("question-text").innerHTML =
     sanitizeHTML(questionText);
@@ -1526,7 +1581,7 @@ function loadQuestionUI() {
 function renderOptionsUI(question) {
   const container = document.getElementById("options-container");
   container.innerHTML = "";
-  const isMulti = Array.isArray(question.correct);
+  const isMulti = isMultiSelectQuestion(question);
 
   question.options.forEach((opt, idx) => {
     const card = document.createElement("div");
@@ -1566,7 +1621,9 @@ function renderOptionsUI(question) {
             (i) => i !== idx,
           );
         } else {
-          if (uiState.tempSelectedAnswer.length < question.correct.length) {
+          if (
+            uiState.tempSelectedAnswer.length < getRequiredSelections(question)
+          ) {
             card.classList.add("a3-option-selected");
             uiState.tempSelectedAnswer.push(idx);
           }
@@ -1580,7 +1637,7 @@ function renderOptionsUI(question) {
           isSubmitting: uiState.isSubmittingAnswer,
           selection: uiState.tempSelectedAnswer,
           isMultiple: isMulti,
-          requiredSelections: isMulti ? question.correct.length : 1,
+          requiredSelections: getRequiredSelections(question),
         })
       ) {
         submitAnswer();
@@ -1590,7 +1647,8 @@ function renderOptionsUI(question) {
       const btnSubmit = document.getElementById("btn-submit");
       if (btnSubmit) {
         btnSubmit.disabled = isMulti
-          ? uiState.tempSelectedAnswer.length !== question.correct.length
+          ? uiState.tempSelectedAnswer.length !==
+            getRequiredSelections(question)
           : !Number.isInteger(uiState.tempSelectedAnswer);
       }
     };
@@ -1599,11 +1657,11 @@ function renderOptionsUI(question) {
   });
 }
 
-function submitAnswer() {
+async function submitAnswer() {
   const question = engine.getCurrentQuestion();
   if (!question || uiState.isSubmittingAnswer) return null;
 
-  const isMulti = Array.isArray(question.correct);
+  const isMulti = isMultiSelectQuestion(question);
   const existingAnswer = getCurrentQuestionAnswer(question);
   const streamlined = isStreamlinedQuizFlow();
 
@@ -1615,14 +1673,45 @@ function submitAnswer() {
       isSubmitting: false,
       selection: uiState.tempSelectedAnswer,
       isMultiple: isMulti,
-      requiredSelections: isMulti ? question.correct.length : 1,
+      requiredSelections: getRequiredSelections(question),
     })
   ) {
     return null;
   }
 
   uiState.isSubmittingAnswer = true;
-  const result = engine.submitAnswer(uiState.tempSelectedAnswer);
+  const selection = Array.isArray(uiState.tempSelectedAnswer)
+    ? [...uiState.tempSelectedAnswer]
+    : uiState.tempSelectedAnswer;
+  const serverSelection = engine.state.authoritative
+    ? Array.isArray(selection)
+      ? selection.map((index) => question.optionIds?.[index] ?? String(index))
+      : (question.optionIds?.[selection] ?? String(selection))
+    : selection;
+  let authoritativeFeedback = null;
+  if (engine.state.authoritative) {
+    try {
+      authoritativeFeedback = await quizManager.submitAuthoritativeAnswer({
+        question_id: question.id,
+        user_answer: serverSelection,
+        time_secs: 0,
+      });
+    } catch (error) {
+      logger.warn("Online answer could not be validated:", error);
+      uiState.isSubmittingAnswer = false;
+      const explanationBox = document.getElementById("explanation-box");
+      const explanationText = document.getElementById("explanation-text");
+      if (explanationText) {
+        explanationText.textContent =
+          uiState.language === "en"
+            ? "Could not validate this answer online. Select it again to retry."
+            : "Não foi possível validar esta resposta online. Selecione novamente para tentar.";
+      }
+      if (explanationBox) explanationBox.classList.remove("hidden");
+      return null;
+    }
+  }
+  const result = engine.submitAnswer(selection, authoritativeFeedback);
 
   dispatchBusinessEvent("AnswerSubmitted", {
     questionId: question.id,
@@ -1633,11 +1722,11 @@ function submitAnswer() {
   syncMistakeRecord(question, result);
 
   // Record answer to backend asynchronously (don't block UI)
-  if (quizManager.currentQuizId && question.id) {
+  if (!engine.state.authoritative && quizManager.currentQuizId && question.id) {
     const answerWrite = quizManager
       .recordAnswer({
         question_id: question.id,
-        user_answer: uiState.tempSelectedAnswer,
+        user_answer: selection,
         is_correct: result.isCorrect,
         time_secs: 0, // Could be enhanced with actual timer
       })
@@ -1673,13 +1762,13 @@ function submitAnswer() {
   const btnSubmit = document.getElementById("btn-submit");
   if (btnSubmit) btnSubmit.classList.add("hidden");
 
-  renderAnswerFeedback(question, result, uiState.tempSelectedAnswer);
+  renderAnswerFeedback(question, result, selection);
   updateScoreDisplayUI();
   return result;
 }
 
 function renderAnswerFeedback(question, result, selection) {
-  const isMulti = Array.isArray(question.correct);
+  const isMulti = isMultiSelectQuestion(question);
 
   document
     .querySelectorAll(".a3-option")
@@ -1789,6 +1878,8 @@ function saveCurrentSession() {
     currentIndex: engine.state.currentIndex,
     score: engine.state.score,
     domainScores: engine.state.domainScores,
+    authoritative: engine.state.authoritative,
+    source: engine.state.source,
     timeRemaining: uiState.timeRemaining,
     flags: uiState.flags,
     reviewQuestionIds: uiState.reviewQuestionIds,
