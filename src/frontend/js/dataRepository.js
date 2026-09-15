@@ -13,6 +13,7 @@
 
 import { logger } from "./utils/logger.js";
 import { reconcileModuleState } from "./progressSync.js";
+import { SessionManager } from "./core/sessionManager.js";
 
 /**
  * Cria um repositório de dados que combina storage local e API.
@@ -50,6 +51,14 @@ export function createDataRepository(storage, _api = null) {
       (module !== "preferences" && module !== "gamification" && !certId)
     )
       return null;
+    const session = SessionManager.restore();
+    if (
+      !_api?.saveModuleState ||
+      !session?.accessToken ||
+      session.authenticationMode !== "online"
+    ) {
+      return { syncPending: true, authRequired: true };
+    }
     const key = `${module}:${certId || "global"}`;
     const previous = syncLocks.get(key) || Promise.resolve();
     const operation = previous
@@ -379,6 +388,10 @@ export function createDataRepository(storage, _api = null) {
     async hydrateAccountState() {
       if (syncInProgress) return null;
       if (!_api?.getMyProfile || !_api?.getModuleState) return null;
+      const session = SessionManager.restore();
+      if (!session?.accessToken || session.authenticationMode !== "online") {
+        return { syncPending: true, authRequired: true };
+      }
       syncInProgress = true;
       try {
         const profile = await _safeApiCall(() => _api.getMyProfile());

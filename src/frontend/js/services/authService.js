@@ -134,8 +134,8 @@ export const AuthService = {
           }
         } catch (error) {
           if (error.statusCode === 401 || error.status === 401) {
-            SessionManager.logout();
-            return null;
+            SessionManager.markRemoteExpired();
+            return SessionManager.restore()?.user || session.user;
           }
           if (!error.apiDisabled && !error.message?.includes("Network"))
             throw error;

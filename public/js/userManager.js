@@ -4,6 +4,18 @@ import { SessionManager } from "./core/sessionManager.js";
 import { UserMapper } from "./core/contracts/userMapper.js";
 import { storageManager } from "./storageManager.js";
 import { normalizeCertificationId } from "./utils/certUtils.js";
+import { reconcileModuleState } from "./progressSync.js";
+
+const ACCOUNT_CERTIFICATIONS = ["clf-c02", "saa-c03", "dva-c02", "aif-c01"];
+const ACCOUNT_MODULES = [
+  "journey",
+  "sprint",
+  "flashcards",
+  "mistakes",
+  "labs",
+  "diagnostic",
+  "gamification",
+];
 
 export const userManager = {
   isValidCorporateEmail(email) {
@@ -67,6 +79,20 @@ export const userManager = {
   },
 
   async loginWithGoogle(credential) {
+    const previousSession = SessionManager.restore();
+    const eligibleLocal =
+      previousSession?.authenticationMode === "offline" &&
+      previousSession?.provider === "local" &&
+      String(previousSession.user?.id || "").startsWith("local_");
+    const localSnapshot = eligibleLocal
+      ? ACCOUNT_MODULES.flatMap((module) =>
+          ACCOUNT_CERTIFICATIONS.map((certId) => ({
+            module,
+            certId,
+            state: storageManager.getAccountModuleState(module, certId),
+          })),
+        )
+      : [];
     const response = await apiService.loginWithGoogle(credential);
     if (!response.success || !response.data?.id) {
       throw new Error(response.message || "Falha no login Google.");
@@ -79,6 +105,24 @@ export const userManager = {
       authenticationMode: "online",
       provider: "google",
     });
+    for (const item of localSnapshot) {
+      if (!item.state) continue;
+      const target = storageManager.getAccountModuleState(
+        item.module,
+        item.certId,
+      );
+      const merged = reconcileModuleState(item.module, target, item.state);
+      storageManager.setAccountModuleState(
+        item.module,
+        item.certId,
+        merged.state,
+      );
+    }
+    if (eligibleLocal) {
+      SessionManager.updateSession({
+        linkedLocalUserId: previousSession.user.id,
+      });
+    }
     await storageManager.hydrateAccountState();
     return user;
   },

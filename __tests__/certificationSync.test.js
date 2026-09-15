@@ -18,6 +18,7 @@ describe("sincronização da certificação em estudo", () => {
         certification: "clf-c02",
       },
       accessToken: "token-sync",
+      tokenExpiresIn: 3600,
       authenticationMode: "online",
     });
     jest.spyOn(apiService, "updateMyProfile").mockResolvedValue({
@@ -31,14 +32,19 @@ describe("sincronização da certificação em estudo", () => {
     localStorage.clear();
   });
 
-  test.each(certifications)("persiste %s na sessão oficial", async (certification) => {
-    await userManager.updatePreferences({ certification: certification.toUpperCase() });
+  test.each(certifications)(
+    "persiste %s na sessão oficial",
+    async (certification) => {
+      await userManager.updatePreferences({
+        certification: certification.toUpperCase(),
+      });
 
-    expect(SessionManager.restore()?.user?.certification).toBe(certification);
-    expect(apiService.updateMyProfile).toHaveBeenCalledWith({
-      preferences: { certification },
-    });
-  });
+      expect(SessionManager.restore()?.user?.certification).toBe(certification);
+      expect(apiService.updateMyProfile).toHaveBeenCalledWith({
+        preferences: { certification },
+      });
+    },
+  );
 
   test("não deixa profile remoto stale sobrescrever uma escolha recente", async () => {
     SessionManager.update({ certification: "saa-c03" });

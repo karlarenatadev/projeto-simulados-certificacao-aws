@@ -25,8 +25,18 @@ export class SessionManager {
       try {
         const session = JSON.parse(sessionRaw);
         if (this.isExpired(session)) {
-          this.logout();
-          return null;
+          if (session.authenticationMode === "online" && session.accessToken) {
+            const expiredSession = {
+              ...session,
+              accessToken: null,
+              authenticationMode: "offline-expired",
+              sessionExpired: true,
+              sessionExpiredAt: new Date().toISOString(),
+            };
+            this.persist(expiredSession);
+            return expiredSession;
+          }
+          return session;
         }
         this.touch(); // Atualiza a atividade
         return session;
@@ -54,6 +64,16 @@ export class SessionManager {
       version: SESSION_SCHEMA_VERSION,
       lastActivity: new Date().toISOString(),
     };
+    if (
+      safeSession.authenticationMode === "online" &&
+      safeSession.accessToken &&
+      !safeSession.expiresAt &&
+      Number.isFinite(Number(safeSession.tokenExpiresIn))
+    ) {
+      safeSession.expiresAt = new Date(
+        Date.now() + Number(safeSession.tokenExpiresIn) * 1000,
+      ).toISOString();
+    }
 
     localStorage.setItem(SESSION_KEY, JSON.stringify(safeSession));
   }
@@ -142,9 +162,15 @@ export class SessionManager {
    * @returns {boolean}
    */
   static isExpired(_session) {
+    const session = _session;
+    if (!session || session.authenticationMode !== "online") return false;
+    if (!session.accessToken || !session.expiresAt) return true;
+    const expiresAt = Date.parse(session.expiresAt);
+    return !Number.isFinite(expiresAt) || expiresAt <= Date.now();
+    /*
     // Para a Sprint 0.1, assumimos que sessões offline locais não expiram de forma dura,
     // apenas quando deslogadas. Expiração dura poderá ser atrelada ao token depois.
-    return false;
+    return false; */
   }
 
   /**
@@ -152,6 +178,26 @@ export class SessionManager {
    *
    * @returns {Object|null} Sessão migrada ou null se não havia usuário
    */
+  static markRemoteExpired() {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return;
+    try {
+      const session = JSON.parse(raw);
+      this.persist({
+        ...session,
+        accessToken: null,
+        authenticationMode:
+          session.authenticationMode === "online"
+            ? "offline-expired"
+            : session.authenticationMode,
+        sessionExpired: true,
+        sessionExpiredAt: new Date().toISOString(),
+      });
+    } catch {
+      // Keep malformed-session handling in restore().
+    }
+  }
+
   static migrate() {
     const legacyUserRaw = localStorage.getItem("cloudacademy_user");
     if (!legacyUserRaw) return null;

@@ -733,6 +733,11 @@ export const translations = {
     auth_email_required: "Informe seu email corporativo.",
     auth_corporate_email:
       "Acesso restrito a emails @a3data.com.br ou @a3data.com.",
+    auth_session_expired: "Sua sessão expirou.",
+    auth_sign_in_again: "Entrar novamente",
+    auth_continue_offline: "Continuar offline",
+    auth_sync_paused: "Sincronização pausada até a autenticação.",
+    auth_local_progress_preserved: "Seu progresso local foi preservado.",
     resume_session_title: "Sessão ativa encontrada",
     resume_session_confirm: "Retomar",
     resume_session_cancel: "Descartar",
@@ -1473,6 +1478,11 @@ export const translations = {
     auth_email_required: "Enter your corporate email.",
     auth_corporate_email:
       "Access is restricted to @a3data.com.br or @a3data.com emails.",
+    auth_session_expired: "Your session has expired.",
+    auth_sign_in_again: "Sign in again",
+    auth_continue_offline: "Continue offline",
+    auth_sync_paused: "Sync is paused until authentication.",
+    auth_local_progress_preserved: "Your local progress was preserved.",
     resume_session_title: "Active session found",
     resume_session_confirm: "Resume",
     resume_session_cancel: "Discard",

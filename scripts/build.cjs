@@ -13,6 +13,8 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env'), quiet: true });
+const { renderPublicConfig, assertNoPublicSecrets } = require('./public-runtime-config.cjs');
 
 
 function copyDirectoryRecursive(src, dest) {
@@ -240,10 +242,7 @@ try {
   // Public runtime configuration contains only non-secret client settings.
   fs.writeFileSync(
     path.join('public/js', 'runtimeConfig.js'),
-    `globalThis.__APP_CONFIG__ = Object.assign({}, globalThis.__APP_CONFIG__, ${JSON.stringify({
-      googleClientId: process.env.GOOGLE_CLIENT_ID || '',
-      allowDevEmailLogin: process.env.ALLOW_DEV_EMAIL_LOGIN === 'true',
-    })});\n`,
+    renderPublicConfig(process.env),
     'utf8',
   );
 
@@ -504,6 +503,9 @@ try {
   console.log('     - taxonomy');
   console.log('     - questions');
 
+
+  assertNoPublicSecrets(path.resolve('public'), process.env);
+  console.log('Public secret audit: PASS');
 
 } catch (error) {
 

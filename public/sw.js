@@ -1,6 +1,6 @@
-/* CloudAcademy A3 Service Worker. The build replaces 033e88582a0d. */
+/* CloudAcademy A3 Service Worker. The build replaces fd05bff68519. */
 const CACHE_PREFIX = "cloudacademy-a3-";
-const CACHE_NAME = `${CACHE_PREFIX}033e88582a0d`;
+const CACHE_NAME = `${CACHE_PREFIX}fd05bff68519`;
 
 const PRECACHE_URLS = [
   "./",

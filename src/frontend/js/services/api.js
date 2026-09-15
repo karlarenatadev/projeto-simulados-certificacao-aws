@@ -154,8 +154,12 @@ async function fetchWithRetry(endpoint, options = {}) {
       if (!response.ok) {
         const errorMessage = data?.message || `HTTP ${response.status}`;
         lastError = createError(errorMessage, response.status, data ?? {});
-        if (response.status === 401 && !endpoint.includes("/auth/login")) {
-          SessionManager.logout();
+        if (
+          response.status === 401 &&
+          !endpoint.includes("/auth/login") &&
+          !endpoint.includes("/auth/google")
+        ) {
+          SessionManager.markRemoteExpired();
         }
 
         // Don't retry on client errors (4xx)

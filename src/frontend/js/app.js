@@ -315,6 +315,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Sessão garantida a partir daqui
       authenticatedUser = user;
+      if (AuthService.getSession()?.sessionExpired) {
+        NotificationService.info(
+          `${t("auth_session_expired", uiState.language)} ${t("auth_local_progress_preserved", uiState.language)}`,
+        );
+      }
       await quizManager.initialize(user.id);
 
       logger.info(`✓ Sessão ativa: ${user.email || user.id} (${user.role})`);
