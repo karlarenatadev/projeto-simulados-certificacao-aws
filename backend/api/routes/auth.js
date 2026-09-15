@@ -13,9 +13,10 @@
  */
 
 import { Router } from 'express';
-import { upsertUserByEmail, getGamification } from '../../database/db.js';
+import * as database from '../../database/db.js';
 import { requireAuth } from '../middleware/requireRole.js';
 import { createSessionToken, SESSION_TTL_SECONDS } from '../services/sessionToken.js';
+import { verifyGoogleIdToken } from '../services/googleIdentity.js';
 
 const router = Router();
 
@@ -36,6 +37,11 @@ router.post('/login', async (req, res, next) => {
   try {
     const { email, full_name, nickname } = req.body || {};
 
+    const emailLoginAllowed =
+      process.env.NODE_ENV === 'test' || process.env.ALLOW_DEV_EMAIL_LOGIN === 'true';
+    if (process.env.NODE_ENV === 'production' || !emailLoginAllowed) {
+      return res.status(403).json({ error: 'Email-only login is disabled.', status: 403 });
+    }
     if (!email) {
       return res.status(400).json({
         error: 'email é obrigatório.',
@@ -50,7 +56,7 @@ router.post('/login', async (req, res, next) => {
       });
     }
 
-    const { user, created } = await upsertUserByEmail(email.trim().toLowerCase(), {
+    const { user, created } = await database.upsertUserByEmail(email.trim().toLowerCase(), {
       full_name: full_name || null,
       nickname: nickname || null,
     });
@@ -61,7 +67,7 @@ router.post('/login', async (req, res, next) => {
 
     // Inicializa gamification se ainda não existir (ignora erro de "não encontrado")
     try {
-      await getGamification(user.id);
+      await database.getGamification(user.id);
     } catch (_err) {
       // getGamification já faz INSERT quando não existe — ignora erros não críticos
     }
@@ -86,6 +92,43 @@ router.post('/login', async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+});
+
+router.post('/google', async (req, res, next) => {
+  try {
+    const payload = await verifyGoogleIdToken(req.body?.credential);
+    if (typeof database.resolveGoogleIdentity !== "function") {
+      const error = new Error("Google identity service unavailable");
+      error.statusCode = 503;
+      throw error;
+    }
+    const resolved = await database.resolveGoogleIdentity({
+      subject: payload.sub,
+      email: payload.email,
+      profile: { full_name: payload.name, nickname: payload.given_name },
+    });
+    const user = resolved.user;
+    return res.status(200).json({
+      success: true,
+      data: {
+        access_token: createSessionToken(user.id),
+        token_type: 'Bearer',
+        expires_in: SESSION_TTL_SECONDS,
+        id: user.id,
+        email: user.email,
+        full_name: user.full_name,
+        nickname: user.nickname,
+        role: user.role,
+        is_active: user.is_active,
+        created_at: user.created_at,
+        provider: 'google',
+      },
+      created: resolved.created,
+      linked: resolved.linked,
+    });
+  } catch (error) {
+    return next(error);
   }
 });
 

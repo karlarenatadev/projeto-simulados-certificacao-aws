@@ -29,6 +29,10 @@ import { storageManager } from "./storageManager.js";
 import { userManager } from "./userManager.js";
 import { AuthService } from "./services/authService.js";
 import {
+  initializeGoogleLogin,
+  isDevEmailLoginEnabled,
+} from "./services/googleIdentity.js";
+import {
   getCurrentLanguage,
   setCurrentLanguage,
 } from "./core/languageManager.js";
@@ -152,6 +156,8 @@ function showLoginUI() {
     const btnText = document.getElementById("login-btn-text");
     const spinner = document.getElementById("login-btn-spinner");
     const errorMsg = document.getElementById("login-error-msg");
+    const devEmailSection = document.getElementById("dev-email-login-section");
+    const googleSection = document.getElementById("google-login-section");
 
     if (!overlay || !form) {
       reject(new Error("Login overlay não encontrado no DOM."));
@@ -159,8 +165,11 @@ function showLoginUI() {
     }
 
     // Torna o overlay visível
+    const devEmailEnabled = isDevEmailLoginEnabled();
+    devEmailSection?.classList.toggle("hidden", !devEmailEnabled);
+    googleSection?.classList.toggle("hidden", devEmailEnabled);
     overlay.classList.remove("hidden");
-    emailInput?.focus();
+    if (devEmailEnabled) emailInput?.focus();
 
     function showError(msg) {
       if (!errorMsg) return;
@@ -245,6 +254,25 @@ function showLoginUI() {
     }
 
     form.addEventListener("submit", handleSubmit);
+
+    if (!devEmailEnabled) {
+      initializeGoogleLogin({
+        onSuccess: (user) => {
+          overlay.classList.add("hidden");
+          resolve(user);
+        },
+        onError: (error) =>
+          showError(error?.message || "Erro ao autenticar com Google."),
+      }).catch((error) => {
+        const configError = document.getElementById(
+          "google-login-config-error",
+        );
+        if (configError) {
+          configError.textContent = error.message;
+          configError.classList.remove("hidden");
+        }
+      });
+    }
   });
 }
 

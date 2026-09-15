@@ -160,6 +160,22 @@ export const AuthService = {
     return user;
   },
 
+  async loginWithGoogle(credential) {
+    const response = await apiService.loginWithGoogle(credential);
+    if (!response.success || !response.data?.id) {
+      throw new Error(response.message || "Falha na autenticação Google.");
+    }
+    const user = UserMapper.fromDTO(response.data);
+    SessionManager.persist({
+      user,
+      accessToken: response.data.access_token,
+      tokenExpiresIn: response.data.expires_in,
+      authenticationMode: "online",
+      provider: "google",
+    });
+    return user;
+  },
+
   /**
    * Encerra a sessão atual.
    */

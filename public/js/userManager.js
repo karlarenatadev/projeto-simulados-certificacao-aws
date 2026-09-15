@@ -66,6 +66,23 @@ export const userManager = {
     }
   },
 
+  async loginWithGoogle(credential) {
+    const response = await apiService.loginWithGoogle(credential);
+    if (!response.success || !response.data?.id) {
+      throw new Error(response.message || "Falha no login Google.");
+    }
+    const user = UserMapper.fromDTO(response.data);
+    SessionManager.persist({
+      user,
+      accessToken: response.data.access_token,
+      tokenExpiresIn: response.data.expires_in,
+      authenticationMode: "online",
+      provider: "google",
+    });
+    await storageManager.hydrateAccountState();
+    return user;
+  },
+
   createOfflineUser(email, profile = {}) {
     const user = UserMapper.fromDTO({
       id: `local_${Date.now()}`,

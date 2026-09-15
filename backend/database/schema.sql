@@ -56,6 +56,19 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_users_nickname ON users(nickname) WHERE ni
 CREATE INDEX        IF NOT EXISTS idx_users_role     ON users(role);
 CREATE INDEX        IF NOT EXISTS idx_users_active   ON users(is_active) WHERE is_active = TRUE;
 
+CREATE TABLE IF NOT EXISTS user_identities (
+    id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id        UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    provider       VARCHAR(40) NOT NULL,
+    subject        VARCHAR(255) NOT NULL,
+    email_at_link  VARCHAR(120),
+    created_at     TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at     TIMESTAMP NOT NULL DEFAULT NOW(),
+    last_login_at  TIMESTAMP,
+    UNIQUE (provider, subject)
+);
+CREATE INDEX IF NOT EXISTS idx_user_identities_user ON user_identities(user_id);
+
 -- ============================================================================
 -- TABELA: user_module_state
 -- Estado substituível de módulos por conta/certificação. Dados transacionais

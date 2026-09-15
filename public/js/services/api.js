@@ -325,6 +325,19 @@ export const apiService = {
     }
   },
 
+  async loginWithGoogle(credential) {
+    try {
+      return await fetchWithRetry("/api/auth/google", {
+        method: "POST",
+        body: JSON.stringify({ credential }),
+      });
+    } catch (error) {
+      if (!error || !error.apiDisabled)
+        logger.error("Google login failed:", error);
+      throw error;
+    }
+  },
+
   /**
    * Retorna o perfil do usuário autenticado — GET /api/auth/me
    * Envia o user_id via header X-User-Id.

@@ -234,6 +234,23 @@ export async function migrateQuizMembership(database) {
   `);
 }
 
+export async function migrateUserIdentities(database) {
+  await database.exec(`
+    CREATE TABLE IF NOT EXISTS user_identities (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      provider VARCHAR(40) NOT NULL,
+      subject VARCHAR(255) NOT NULL,
+      email_at_link VARCHAR(120),
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      last_login_at TIMESTAMP,
+      UNIQUE (provider, subject)
+    );
+    CREATE INDEX IF NOT EXISTS idx_user_identities_user ON user_identities(user_id);
+  `);
+}
+
 loadEnvironment({ quiet: true });
 
 let db = null;
@@ -324,6 +341,7 @@ function loadSchema() {
 
 const REQUIRED_SCHEMA_TABLES = [
   "users",
+  "user_identities",
   "domains",
   "questions",
   "quiz_history",
@@ -397,6 +415,7 @@ export async function initializeDatabase(options = {}) {
       await migrateCaseTranslations(database);
       await migrateQuizLifecycle(database);
       await migrateQuizMembership(database);
+      await migrateUserIdentities(database);
 
       db = database;
       return db;
@@ -430,6 +449,7 @@ export async function initializeDatabase(options = {}) {
           await migrateCaseTranslations(database);
           await migrateQuizLifecycle(database);
           await migrateQuizMembership(database);
+          await migrateUserIdentities(database);
           db = database;
           return db;
         } catch (retryError) {
@@ -1485,6 +1505,126 @@ export async function upsertUserByEmail(email, profile = {}) {
     console.error("✗ Error upserting user by email:", error.message);
     throw error;
   }
+}
+
+/** Resolve a verified external identity without changing an existing UUID/role. */
+export async function resolveGoogleIdentity({ subject, email, profile = {} }) {
+  const normalizedSubject = String(subject || "").trim();
+  const normalizedEmail = normalizeEmail(email);
+  if (!normalizedSubject || !normalizedEmail) {
+    const error = new Error("Google identity requires subject and email");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const database = getDatabase();
+  return database.transaction(async (transaction) => {
+    const identityRows = await queryRows(
+      transaction,
+      `SELECT u.*, i.email_at_link
+         FROM user_identities i
+         JOIN users u ON u.id = i.user_id
+        WHERE i.provider = 'google' AND i.subject = $1
+        LIMIT 1`,
+      [normalizedSubject],
+    );
+
+    if (identityRows.length > 0) {
+      const existing = identityRows[0];
+      if (existing.is_active === false) {
+        const error = new Error("Usuário desativado.");
+        error.statusCode = 403;
+        throw error;
+      }
+      const conflict = await queryRows(
+        transaction,
+        "SELECT id FROM users WHERE LOWER(email) = LOWER($1) AND id::text <> $2 LIMIT 1",
+        [normalizedEmail, String(existing.id)],
+      );
+      if (conflict.length > 0) {
+        const error = new Error("identity_link_conflict");
+        error.statusCode = 409;
+        throw error;
+      }
+      const updated = await queryRows(
+        transaction,
+        `UPDATE users
+            SET email = $1,
+                full_name = COALESCE(full_name, $2),
+                nickname = COALESCE(nickname, $3),
+                last_login = NOW()
+          WHERE id = $4
+          RETURNING *`,
+        [
+          normalizedEmail,
+          profile.full_name || null,
+          profile.nickname || null,
+          existing.id,
+        ],
+      );
+      await queryRows(
+        transaction,
+        "UPDATE user_identities SET email_at_link = $1, last_login_at = NOW(), updated_at = NOW() WHERE provider = 'google' AND subject = $2 RETURNING id",
+        [normalizedEmail, normalizedSubject],
+      );
+      return { user: updated[0] || existing, created: false, linked: false };
+    }
+
+    const existingByEmail = await queryRows(
+      transaction,
+      `SELECT * FROM users
+        WHERE LOWER(email) = LOWER($1)
+        ORDER BY CASE role WHEN 'ADMIN' THEN 1 WHEN 'VALIDATOR' THEN 2 ELSE 3 END, created_at ASC
+        LIMIT 1`,
+      [normalizedEmail],
+    );
+    let user = existingByEmail[0];
+    let created = false;
+    if (user) {
+      const linked = await queryRows(
+        transaction,
+        "SELECT id FROM user_identities WHERE provider = 'google' AND user_id = $1 LIMIT 1",
+        [user.id],
+      );
+      if (linked.length > 0) {
+        const error = new Error("identity_link_conflict");
+        error.statusCode = 409;
+        throw error;
+      }
+      if (user.is_active === false) {
+        const error = new Error("Usuário desativado.");
+        error.statusCode = 403;
+        throw error;
+      }
+      const updated = await queryRows(
+        transaction,
+        "UPDATE users SET last_login = NOW() WHERE id = $1 RETURNING *",
+        [user.id],
+      );
+      user = updated[0] || user;
+    } else {
+      const inserted = await queryRows(
+        transaction,
+        `INSERT INTO users (email, full_name, nickname, role, last_login)
+         VALUES ($1, $2, $3, 'STUDENT', NOW()) RETURNING *`,
+        [
+          normalizedEmail,
+          profile.full_name || null,
+          profile.nickname || normalizedEmail.split("@")[0],
+        ],
+      );
+      user = inserted[0];
+      created = true;
+    }
+
+    await queryRows(
+      transaction,
+      `INSERT INTO user_identities (user_id, provider, subject, email_at_link, last_login_at)
+       VALUES ($1, 'google', $2, $3, NOW())`,
+      [user.id, normalizedSubject, normalizedEmail],
+    );
+    return { user, created, linked: true };
+  });
 }
 
 /**

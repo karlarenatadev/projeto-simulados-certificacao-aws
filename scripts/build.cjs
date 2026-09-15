@@ -237,6 +237,15 @@ try {
     'src/frontend/js',
     'public/js'
   );
+  // Public runtime configuration contains only non-secret client settings.
+  fs.writeFileSync(
+    path.join('public/js', 'runtimeConfig.js'),
+    `globalThis.__APP_CONFIG__ = Object.assign({}, globalThis.__APP_CONFIG__, ${JSON.stringify({
+      googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+      allowDevEmailLogin: process.env.ALLOW_DEV_EMAIL_LOGIN === 'true',
+    })});\n`,
+    'utf8',
+  );
 
   // ============================================================
   // HTML TEMPLATES — build-time partial injection
