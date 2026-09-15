@@ -1801,6 +1801,24 @@
     .sm\:inline {
       display: inline;
     }
+    .sm\:w-auto {
+      width: auto;
+    }
+    .sm\:grid-cols-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .sm\:grid-cols-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .sm\:flex-row {
+      flex-direction: row;
+    }
+    .sm\:items-center {
+      align-items: center;
+    }
+    .sm\:justify-between {
+      justify-content: space-between;
+    }
   }
   @media (width >= 48rem) {
     .md\:col-span-2 {
@@ -1897,6 +1915,11 @@
     }
     .lg\:flex-row {
       flex-direction: row;
+    }
+  }
+  @media (width >= 80rem) {
+    .xl\:grid-cols-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
   .dark\:border-blue-700:where(.dark, .dark *) {

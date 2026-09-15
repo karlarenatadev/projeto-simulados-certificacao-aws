@@ -23,7 +23,7 @@ function render() {
   ]
     .map(
       ([label, value]) =>
-        `<div class="a3-card p-4"><div class="text-xs text-muted">${escapeHtml(label)}</div><strong class="text-xl text-main">${escapeHtml(value)}</strong></div>`,
+        `<div class="a3-stat-card h-full flex flex-col justify-center"><div class="text-xs font-semibold uppercase tracking-wide text-muted">${escapeHtml(label)}</div><strong class="text-2xl font-bold text-strong mt-2">${escapeHtml(value)}</strong></div>`,
     )
     .join("");
 

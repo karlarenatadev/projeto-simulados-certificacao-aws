@@ -17,7 +17,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=88d1cdc0" />
+    <link rel="stylesheet" href="./css/style.css?v=b787ae2f" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -88,7 +88,7 @@
     <div id="user-menu-container"></div>
   </div>
 </header>
-<script src="./js/pwa/registerServiceWorker.js?v=88d1cdc0"></script>
+<script src="./js/pwa/registerServiceWorker.js?v=b787ae2f"></script>
 <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
   <!--
     .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
@@ -329,31 +329,40 @@
 
         <section
           id="review-deck-summary"
-          class="a3-card p-4 mb-4 hidden"
+          class="a3-card p-5 mb-4 hidden"
           aria-live="polite"
           aria-label="Resumo do deck"
         >
-          <div class="grid grid-cols-3 gap-3 text-center">
-            <div>
-              <strong id="review-deck-total">0</strong
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+            <div class="a3-stat-card">
+              <strong
+                id="review-deck-total"
+                class="block text-2xl font-bold text-strong"
+                >0</strong
               ><span
-                class="block text-xs text-muted"
+                class="block mt-2 text-xs font-semibold uppercase tracking-wide text-muted"
                 data-i18n="review_deck_total"
                 >Total</span
               >
             </div>
-            <div>
-              <strong id="review-deck-pending">0</strong
+            <div class="a3-stat-card">
+              <strong
+                id="review-deck-pending"
+                class="block text-2xl font-bold text-strong"
+                >0</strong
               ><span
-                class="block text-xs text-muted"
+                class="block mt-2 text-xs font-semibold uppercase tracking-wide text-muted"
                 data-i18n="review_deck_pending"
                 >Pendentes</span
               >
             </div>
-            <div>
-              <strong id="review-deck-mastered">0</strong
+            <div class="a3-stat-card">
+              <strong
+                id="review-deck-mastered"
+                class="block text-2xl font-bold text-strong"
+                >0</strong
               ><span
-                class="block text-xs text-muted"
+                class="block mt-2 text-xs font-semibold uppercase tracking-wide text-muted"
                 data-i18n="review_deck_mastered"
                 >Dominados</span
               >
@@ -469,8 +478,8 @@
 </footer>
 
 
-    <script src="./js/pomodoroManager.js?v=88d1cdc0" type="module"></script>
-    <script src="./js/app.js?v=88d1cdc0" type="module"></script>
+    <script src="./js/pomodoroManager.js?v=b787ae2f" type="module"></script>
+    <script src="./js/app.js?v=b787ae2f" type="module"></script>
     <script type="module">
       import { initShell } from "./js/shell.js";
       import { authGuard } from "./js/core/authGuard.js";
