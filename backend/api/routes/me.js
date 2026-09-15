@@ -1,17 +1,30 @@
-import { Router } from 'express';
+import { Router } from "express";
 import {
   getUserModuleState,
   updateUser,
   upsertUserModuleState,
-} from '../../database/db.js';
-import { requireAuth } from '../middleware/requireRole.js';
+} from "../../database/db.js";
+import { requireAuth } from "../middleware/requireRole.js";
 
 const router = Router();
-const ALLOWED_MODULES = new Set(['journey', 'sprint', 'flashcards', 'labs', 'diagnostic', 'preferences']);
-const ALLOWED_CERTIFICATIONS = new Set(['CLF-C02', 'SAA-C03', 'DVA-C02', 'AIF-C01']);
+const ALLOWED_MODULES = new Set([
+  "journey",
+  "sprint",
+  "flashcards",
+  "labs",
+  "diagnostic",
+  "gamification",
+  "preferences",
+]);
+const ALLOWED_CERTIFICATIONS = new Set([
+  "CLF-C02",
+  "SAA-C03",
+  "DVA-C02",
+  "AIF-C01",
+]);
 
 function normalizeCertification(value) {
-  if (value === undefined || value === null || value === '') return null;
+  if (value === undefined || value === null || value === "") return null;
   const normalized = String(value).trim().toUpperCase();
   if (!ALLOWED_CERTIFICATIONS.has(normalized)) {
     const error = new Error(`Unsupported certification: ${value}`);
@@ -22,7 +35,9 @@ function normalizeCertification(value) {
 }
 
 function assertModule(module) {
-  const normalized = String(module || '').trim().toLowerCase();
+  const normalized = String(module || "")
+    .trim()
+    .toLowerCase();
   if (!ALLOWED_MODULES.has(normalized)) {
     const error = new Error(`Unsupported user module: ${module}`);
     error.statusCode = 400;
@@ -42,16 +57,16 @@ function profilePayload(user, preferences = {}) {
     last_login: user.last_login,
     created_at: user.created_at,
     preferences: {
-      language: preferences.language || 'pt',
-      certification: preferences.certification || 'CLF-C02',
-      theme: preferences.theme || 'light',
+      language: preferences.language || "pt",
+      certification: preferences.certification || "CLF-C02",
+      theme: preferences.theme || "light",
     },
   };
 }
 
-router.get('/profile', requireAuth, async (req, res, next) => {
+router.get("/profile", requireAuth, async (req, res, next) => {
   try {
-    const preferences = await getUserModuleState(req.user.id, 'preferences');
+    const preferences = await getUserModuleState(req.user.id, "preferences");
     res.json({
       success: true,
       data: profilePayload(req.user, preferences?.state_json || {}),
@@ -61,14 +76,15 @@ router.get('/profile', requireAuth, async (req, res, next) => {
   }
 });
 
-router.patch('/profile', requireAuth, async (req, res, next) => {
+router.patch("/profile", requireAuth, async (req, res, next) => {
   try {
     const body = req.body || {};
-    const forbidden = ['id', 'email', 'role', 'is_active'];
+    const forbidden = ["id", "email", "role", "is_active"];
     if (forbidden.some((field) => body[field] !== undefined)) {
       return res.status(400).json({
         success: false,
-        error: 'Only full_name, nickname and allowed preferences can be changed.',
+        error:
+          "Only full_name, nickname and allowed preferences can be changed.",
         status: 400,
       });
     }
@@ -76,25 +92,48 @@ router.patch('/profile', requireAuth, async (req, res, next) => {
     const userUpdates = {};
     if (body.full_name !== undefined) userUpdates.full_name = body.full_name;
     if (body.nickname !== undefined) userUpdates.nickname = body.nickname;
-    const updatedUser = Object.keys(userUpdates).length > 0
-      ? await updateUser(req.user.id, userUpdates)
-      : req.user;
+    const updatedUser =
+      Object.keys(userUpdates).length > 0
+        ? await updateUser(req.user.id, userUpdates)
+        : req.user;
 
-    const current = await getUserModuleState(req.user.id, 'preferences');
+    const current = await getUserModuleState(req.user.id, "preferences");
     const preferences = {
       ...(current?.state_json || {}),
       ...(body.preferences || {}),
     };
-    if (preferences.language && !['pt', 'en'].includes(String(preferences.language).toLowerCase())) {
-      return res.status(400).json({ success: false, error: 'language must be pt or en', status: 400 });
+    if (
+      preferences.language &&
+      !["pt", "en"].includes(String(preferences.language).toLowerCase())
+    ) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          error: "language must be pt or en",
+          status: 400,
+        });
     }
-    preferences.language = String(preferences.language || 'pt').toLowerCase();
-    preferences.certification = normalizeCertification(preferences.certification) || 'CLF-C02';
-    if (preferences.theme && !['light', 'dark'].includes(preferences.theme)) {
-      return res.status(400).json({ success: false, error: 'theme must be light or dark', status: 400 });
+    preferences.language = String(preferences.language || "pt").toLowerCase();
+    preferences.certification =
+      normalizeCertification(preferences.certification) || "CLF-C02";
+    if (preferences.theme && !["light", "dark"].includes(preferences.theme)) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          error: "theme must be light or dark",
+          status: 400,
+        });
     }
-    preferences.theme = preferences.theme || 'light';
-    await upsertUserModuleState(req.user.id, 'preferences', null, preferences, current?.version ?? null);
+    preferences.theme = preferences.theme || "light";
+    await upsertUserModuleState(
+      req.user.id,
+      "preferences",
+      null,
+      preferences,
+      current?.version ?? null,
+    );
 
     const savedUser = updatedUser || req.user;
     res.json({ success: true, data: profilePayload(savedUser, preferences) });
@@ -103,7 +142,7 @@ router.patch('/profile', requireAuth, async (req, res, next) => {
   }
 });
 
-router.get('/state/:module', requireAuth, async (req, res, next) => {
+router.get("/state/:module", requireAuth, async (req, res, next) => {
   try {
     const module = assertModule(req.params.module);
     const certification = normalizeCertification(req.query.certification);
@@ -114,13 +153,19 @@ router.get('/state/:module', requireAuth, async (req, res, next) => {
   }
 });
 
-router.put('/state/:module', requireAuth, async (req, res, next) => {
+router.put("/state/:module", requireAuth, async (req, res, next) => {
   try {
     const module = assertModule(req.params.module);
     const body = req.body || {};
     const certification = normalizeCertification(body.certification);
-    if (module !== 'preferences' && !certification) {
-      return res.status(400).json({ success: false, error: 'certification is required', status: 400 });
+    if (module !== "preferences" && !certification) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          error: "certification is required",
+          status: 400,
+        });
     }
     const state = body.state;
     const saved = await upsertUserModuleState(

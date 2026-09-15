@@ -308,7 +308,7 @@ describe("Study Now — recomendação compacta da home", () => {
     });
   });
 
-  test("prioriza erros pendentes sem criar link para erros.html", () => {
+  test("prioriza erros pendentes e direciona para a Central de Erros", () => {
     const result = selectStudyNowRecommendation({
       profile: learningProfile(),
       sprintState: { completedStages: [] },
@@ -317,7 +317,7 @@ describe("Study Now — recomendação compacta da home", () => {
     });
 
     expect(result).toMatchObject({ kind: "mistakes" });
-    expect(result.route).toBeUndefined();
+    expect(result.route).toBe("erros.html");
   });
 
   test("recomenda deck pendente quando não há sprint ou erros", () => {

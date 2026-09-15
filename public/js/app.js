@@ -643,7 +643,7 @@ function syncMistakeRecord(question, result) {
     uiState.currentMode === "review" ||
     uiState.currentMode === "mistakes-review"
   ) {
-    storageManager.removeMistake(question, certId);
+    storageManager.resolveMistake(question, certId);
   }
 
   updateMistakesControls(certId);

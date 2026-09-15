@@ -43,7 +43,7 @@ test("public sidebar destinations and local actions work", async ({ page }) => {
     "sidebar-btn-labs": "laboratorios.html",
     "sidebar-btn-sprint": "study-sprint.html",
     "sidebar-btn-resources": "resources.html",
-    "sidebar-btn-mistakes": "simulados.html\\?mode=mistakes",
+    "sidebar-btn-mistakes": "erros.html",
   };
   for (const [id, target] of Object.entries(hrefs))
     await expect(page.locator(`#${id}`)).toHaveAttribute(
@@ -71,8 +71,8 @@ test("public sidebar destinations and local actions work", async ({ page }) => {
   await page.locator("#sidebar-btn-mistakes").waitFor({ state: "visible" });
   await page.locator("#sidebar-btn-mistakes").scrollIntoViewIfNeeded();
   await page.locator("#sidebar-btn-mistakes").click();
-  await expect(page).toHaveURL(/\/simulados\.html\?mode=mistakes$/);
-  await expect(page.locator("body")).toBeVisible();
+  await expect(page).toHaveURL(/\/erros\.html$/);
+  await expect(page.locator("#mistakes-summary")).toBeVisible();
 
   await page.goto("index.html");
   await page.locator("#cloud-sidebar-toggle").waitFor({ state: "attached" });

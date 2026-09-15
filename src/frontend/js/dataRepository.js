@@ -12,6 +12,7 @@
  */
 
 import { logger } from "./utils/logger.js";
+import { reconcileModuleState } from "./progressSync.js";
 
 /**
  * Cria um repositório de dados que combina storage local e API.
@@ -21,6 +22,8 @@ import { logger } from "./utils/logger.js";
  * @returns {object} Interface única de acesso a dados
  */
 export function createDataRepository(storage, _api = null) {
+  let syncInProgress = false;
+  const syncLocks = new Map();
   /**
    * Helper que tenta sincronizar com a API.
    * Se falhar (modo offline, timeout, etc), engole o erro silenciosamente
@@ -42,11 +45,61 @@ export function createDataRepository(storage, _api = null) {
   const ACCOUNT_CERTIFICATIONS = ["clf-c02", "saa-c03", "dva-c02", "aif-c01"];
 
   async function syncModuleState(module, certId = null) {
-    if (!_api?.saveModuleState || (module !== "preferences" && !certId))
+    if (
+      !_api?.saveModuleState ||
+      (module !== "preferences" && module !== "gamification" && !certId)
+    )
       return null;
-    const state = storage.getAccountModuleState(module, certId);
-    if (!state) return null;
-    return _safeApiCall(() => _api.saveModuleState(module, certId, state));
+    const key = `${module}:${certId || "global"}`;
+    const previous = syncLocks.get(key) || Promise.resolve();
+    const operation = previous
+      .then(async () => {
+        for (let attempt = 0; attempt < 3; attempt += 1) {
+          const state = storage.getAccountModuleState(module, certId);
+          if (!state) return null;
+          const remote = _api.getModuleState
+            ? await _safeApiCall(() => _api.getModuleState(module, certId))
+            : null;
+          const remoteState = remote?.data?.state_json;
+          if (remoteState && typeof remoteState === "object") {
+            const merged = reconcileModuleState(module, state, remoteState);
+            storage.setAccountModuleState(module, certId, merged.state);
+            if (JSON.stringify(merged.state) === JSON.stringify(remoteState)) {
+              return merged;
+            }
+            try {
+              return await _api.saveModuleState(
+                module,
+                certId,
+                merged.state,
+                remote?.data?.version ?? null,
+              );
+            } catch (error) {
+              if (error?.statusCode === 409 && attempt < 2) continue;
+              logger.warn(
+                "[DataRepository] Sync conflict remains pending after retries:",
+                error?.message,
+              );
+              return { ...merged, syncPending: true };
+            }
+          }
+          if (attempt > 0) {
+            logger.warn(
+              "[DataRepository] Remote state unavailable during conflict retry; keeping local state pending",
+            );
+            return { state, outcome: "conflict-pending", syncPending: true };
+          }
+          return _safeApiCall(() =>
+            _api.saveModuleState(module, certId, state),
+          );
+        }
+        return null;
+      })
+      .finally(() => {
+        if (syncLocks.get(key) === operation) syncLocks.delete(key);
+      });
+    syncLocks.set(key, operation);
+    return operation;
   }
 
   return {
@@ -117,7 +170,12 @@ export function createDataRepository(storage, _api = null) {
     // -------------------------------------------------------------------------
 
     recordMistake(question, userAnswer, context = {}) {
-      return storage.recordMistake(question, userAnswer, context);
+      const saved = storage.recordMistake(question, userAnswer, context);
+      void syncModuleState(
+        "mistakes",
+        context.certId || context.certification || question?.certId,
+      );
+      return saved;
     },
 
     getMistakes(certificationId) {
@@ -129,11 +187,15 @@ export function createDataRepository(storage, _api = null) {
     },
 
     removeMistake(questionOrId, certificationId) {
-      return storage.removeMistake(questionOrId, certificationId);
+      const saved = storage.removeMistake(questionOrId, certificationId);
+      void syncModuleState("mistakes", certificationId);
+      return saved;
     },
 
     clearMistakes(certificationId) {
-      return storage.clearMistakes(certificationId);
+      const saved = storage.clearMistakes(certificationId);
+      void syncModuleState("mistakes", certificationId);
+      return saved;
     },
 
     // -------------------------------------------------------------------------
@@ -158,6 +220,12 @@ export function createDataRepository(storage, _api = null) {
 
     removeReviewQuestion(certId, questionId) {
       const saved = storage.removeReviewQuestion(certId, questionId);
+      void syncModuleState("flashcards", certId);
+      return saved;
+    },
+
+    updateReviewStatus(certId, questionId, status) {
+      const saved = storage.updateReviewStatus(certId, questionId, status);
       void syncModuleState("flashcards", certId);
       return saved;
     },
@@ -189,6 +257,16 @@ export function createDataRepository(storage, _api = null) {
       const saved = storage.saveGamification(gamification, certId);
       void syncModuleState("journey", certId);
       return saved;
+    },
+
+    awardXpEvent(input) {
+      const result = storage.awardXpEvent(input);
+      if (result.added) void syncModuleState("gamification");
+      return result;
+    },
+
+    getTotalXp() {
+      return storage.getTotalXp();
     },
 
     recalculateGamificationFromHistory() {
@@ -293,28 +371,43 @@ export function createDataRepository(storage, _api = null) {
     },
 
     async hydrateAccountState() {
+      if (syncInProgress) return null;
       if (!_api?.getMyProfile || !_api?.getModuleState) return null;
-      const profile = await _safeApiCall(() => _api.getMyProfile());
-      await Promise.all(
-        ["journey", "sprint", "flashcards", "labs", "diagnostic"].flatMap(
-          (module) =>
+      syncInProgress = true;
+      try {
+        const profile = await _safeApiCall(() => _api.getMyProfile());
+        await Promise.all(
+          [
+            "journey",
+            "sprint",
+            "flashcards",
+            "mistakes",
+            "labs",
+            "diagnostic",
+          ].flatMap((module) =>
             ACCOUNT_CERTIFICATIONS.map(async (certId) => {
               const local = storage.getAccountModuleState(module, certId);
               const remote = await _safeApiCall(() =>
                 _api.getModuleState(module, certId),
               );
+              if (remote === null) return;
               const remoteState = remote?.data?.state_json;
               if (remoteState && typeof remoteState === "object") {
-                storage.setAccountModuleState(module, certId, remoteState);
+                const merged = reconcileModuleState(module, local, remoteState);
+                storage.setAccountModuleState(module, certId, merged.state);
               } else if (local && _api.saveModuleState) {
                 await _safeApiCall(() =>
                   _api.saveModuleState(module, certId, local),
                 );
               }
             }),
-        ),
-      );
-      return profile;
+          ),
+        );
+        await syncModuleState("gamification");
+        return profile;
+      } finally {
+        syncInProgress = false;
+      }
     },
 
     removeUserData(key, storageBackend) {

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Central de Erros — Cloud Academy A3</title>
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#001863" />
+  </head>
+  <body class="min-h-screen bg-gray-100 has-left-sidebar">
+    <!-- {{HEADER_PAGE}} -->
+    <!-- {{SIDEBAR}} -->
+    <main class="max-w-6xl mx-auto w-full px-4 py-8">
+      <header class="mb-6">
+        <h1
+          class="text-3xl font-bold text-main"
+          data-i18n="mistakes_center_title"
+        >
+          Central de Erros
+        </h1>
+        <p class="text-muted" data-i18n="mistakes_center_subtitle">
+          Revise as questões que mais precisam da sua atenção.
+        </p>
+      </header>
+      <section
+        id="mistakes-summary"
+        class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6"
+        aria-label="Resumo de erros"
+      ></section>
+      <section class="a3-card p-4 mb-6 flex flex-wrap gap-3 items-end">
+        <label
+          ><span data-i18n="mistakes_certification">Certificação</span
+          ><select id="mistakes-cert" class="block p-2 rounded border">
+            <option value="all">Todas</option>
+            <option value="clf-c02">CLF-C02</option>
+            <option value="saa-c03">SAA-C03</option>
+            <option value="dva-c02">DVA-C02</option>
+            <option value="aif-c01">AIF-C01</option>
+          </select></label
+        >
+        <label
+          ><span data-i18n="mistakes_status">Status</span
+          ><select id="mistakes-status" class="block p-2 rounded border">
+            <option value="pending">Pendentes</option>
+            <option value="resolved">Resolvidos</option>
+            <option value="all">Todos</option>
+          </select></label
+        >
+        <label
+          ><span data-i18n="mistakes_domain">Domínio</span
+          ><select id="mistakes-domain" class="block p-2 rounded border">
+            <option value="all">Todos</option>
+          </select></label
+        >
+        <button
+          id="mistakes-clear-filters"
+          type="button"
+          class="a3-btn a3-btn-secondary"
+        >
+          <span data-i18n="mistakes_clear_filters">Limpar filtros</span>
+        </button>
+      </section>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold text-main" data-i18n="mistakes_list_title">
+          Questões para revisar
+        </h2>
+        <a
+          id="mistakes-practice"
+          class="a3-btn a3-btn-primary"
+          href="./simulados.html?mode=mistakes"
+          ><span data-i18n="mistakes_practice_pending"
+            >Praticar erros pendentes</span
+          ></a
+        >
+      </div>
+      <section
+        id="mistakes-empty"
+        class="a3-card p-8 text-center hidden"
+        role="status"
+      ></section>
+      <section
+        id="mistakes-list"
+        class="space-y-3"
+        aria-live="polite"
+      ></section>
+    </main>
+    <!-- {{FOOTER}} -->
+    <script type="module">
+      import { initShell } from "./js/shell.js";
+      import { authGuard } from "./js/core/authGuard.js";
+      import "./js/mistakesCenter.js";
+      document.addEventListener("DOMContentLoaded", () => {
+        const session = authGuard();
+        if (session) initShell(session.user);
+      });
+    </script>
+  </body>
+</html>

@@ -13,7 +13,7 @@ const dataset = JSON.parse(
 describe("exam tips dataset and filters", () => {
   test("normalizes the bilingual dataset with unique IDs and valid types", () => {
     const tips = normalizeExamTips(dataset);
-    expect(tips).toHaveLength(143);
+    expect(tips).toHaveLength(151);
     expect(new Set(tips.map((tip) => tip.id)).size).toBe(tips.length);
     expect(new Set(tips.map((tip) => tip.type)).size).toBe(4);
     expect(
@@ -28,13 +28,13 @@ describe("exam tips dataset and filters", () => {
   });
 
   test.each([
-    [{ certificationId: "" }, 143],
+    [{ certificationId: "" }, 151],
     [{ certificationId: "CLF-C02" }, 30],
     [{ certificationId: "SAA-C03" }, 38],
     [{ certificationId: "DVA-C02" }, 36],
-    [{ certificationId: "AIF-C01" }, 39],
+    [{ certificationId: "AIF-C01" }, 47],
     [{ certificationId: "SAA-C03", query: "CloudTrail" }, 0],
-    [{ certificationId: "AIF-C01", query: "Bedrock" }, 20],
+    [{ certificationId: "AIF-C01", query: "Bedrock" }, 21],
     [{ certificationId: "DVA-C02", query: "DynamoDB" }, 6],
     [{ certificationId: "CLF-C02", domain: "seguranca" }, 15],
     [{ certificationId: "CLF-C02", type: "comparison" }, 13],

@@ -4,6 +4,11 @@ import { createDataRepository } from "./dataRepository.js";
 import { generateQuestionId } from "./utils/questionIdentity.js";
 import { SessionManager } from "./core/sessionManager.js";
 import { normalizeLegacyReviewQuestion } from "./utils/reviewCard.js";
+import {
+  awardXpEvent as appendXpEvent,
+  mergeXpEvents,
+} from "./gamificationService.js";
+import { projectGamification } from "./gamificationProjection.js";
 
 /**
  * StorageManager - Gerencia toda a persistência de dados do simulador
@@ -719,6 +724,12 @@ export class StorageManager {
   }
 
   getMistakes(certificationId) {
+    return this.getAllMistakes(certificationId).filter(
+      (mistake) => mistake.resolved !== true,
+    );
+  }
+
+  getAllMistakes(certificationId) {
     const store = this._getMistakesStore();
     const certId = this._normalizeCertId(certificationId);
 
@@ -727,7 +738,7 @@ export class StorageManager {
       : Object.values(store).flatMap((items) => Object.values(items || {}));
 
     return mistakes
-      .filter((mistake) => mistake && mistake.resolved !== true)
+      .filter(Boolean)
       .sort(
         (a, b) => new Date(b.lastWrongAt || 0) - new Date(a.lastWrongAt || 0),
       );
@@ -738,6 +749,10 @@ export class StorageManager {
   }
 
   removeMistake(questionOrId, certificationId) {
+    return this.resolveMistake(questionOrId, certificationId);
+  }
+
+  resolveMistake(questionOrId, certificationId) {
     try {
       const certId = this._normalizeCertId(certificationId);
       if (!certId) return false;
@@ -752,10 +767,8 @@ export class StorageManager {
       const store = this._getMistakesStore();
       if (!store[certId] || !store[certId][questionId]) return false;
 
-      delete store[certId][questionId];
-      if (Object.keys(store[certId]).length === 0) {
-        delete store[certId];
-      }
+      store[certId][questionId].resolved = true;
+      store[certId][questionId].resolvedAt = new Date().toISOString();
 
       return this._saveMistakesStore(store);
     } catch (error) {
@@ -781,6 +794,45 @@ export class StorageManager {
       logger.error("Erro ao limpar erros registrados:", error);
       return false;
     }
+  }
+
+  getXpState() {
+    try {
+      const eventsRaw = localStorage.getItem(
+        this._getKey("gamification_xp_events"),
+      );
+      const legacyRaw = localStorage.getItem(this._getKey("gamification"));
+      const events = eventsRaw ? JSON.parse(eventsRaw) : [];
+      const legacy = legacyRaw ? JSON.parse(legacyRaw) : {};
+      return {
+        events: Array.isArray(events) ? events : [],
+        legacyBaselineXp:
+          legacy.legacyBaselineXp ?? legacy.xp ?? legacy.xp_points ?? 0,
+      };
+    } catch (error) {
+      logger.warn("Erro ao carregar eventos de XP:", error.message);
+      return { events: [], legacyBaselineXp: 0 };
+    }
+  }
+
+  getTotalXp() {
+    return projectGamification(this.getXpState()).totalXp;
+  }
+
+  awardXpEvent(input) {
+    const current = this.getXpState();
+    const result = appendXpEvent(current.events, input);
+    if (!result.event) return result;
+    const merged = mergeXpEvents(current.events, result.events);
+    localStorage.setItem(
+      this._getKey("gamification_xp_events"),
+      JSON.stringify(merged),
+    );
+    return {
+      ...result,
+      events: merged,
+      totalXp: projectGamification({ ...current, events: merged }).totalXp,
+    };
   }
 
   /**
@@ -928,7 +980,17 @@ export class StorageManager {
           ? `gamification_${String(certId).toLowerCase()}`
           : "gamification",
       );
-      localStorage.setItem(key, JSON.stringify(gamification));
+      const previous = JSON.parse(localStorage.getItem(key) || "{}");
+      const legacyBaselineXp =
+        previous.legacyBaselineXp ??
+        gamification.legacyBaselineXp ??
+        gamification.xp ??
+        gamification.xp_points ??
+        0;
+      localStorage.setItem(
+        key,
+        JSON.stringify({ ...gamification, legacyBaselineXp }),
+      );
       return true;
     } catch (error) {
       logger.error("Erro ao salvar gamificação:", error);
@@ -1042,11 +1104,14 @@ export class StorageManager {
     if (normalizedModule === "sprint") return this.getSprintState(certId);
     if (normalizedModule === "flashcards")
       return { deck: this.getReviewDeck(certId) };
+    if (normalizedModule === "mistakes")
+      return { mistakes: this.getAllMistakes(certId) };
     if (normalizedModule === "labs") {
       return { completedLabIds: this.getCompletedLabIds(certId) };
     }
     if (normalizedModule === "diagnostic")
       return { history: this.getDiagnosticHistory(certId) };
+    if (normalizedModule === "gamification") return this.getXpState();
     if (normalizedModule === "journey") {
       const gamification = this.getGamification(certId);
       return {
@@ -1070,6 +1135,17 @@ export class StorageManager {
       );
       return true;
     }
+    if (normalizedModule === "mistakes") {
+      const certId = this._normalizeCertId(certId);
+      if (!certId || !Array.isArray(state.mistakes)) return false;
+      const store = this._getMistakesStore();
+      store[certId] = state.mistakes.reduce((items, mistake) => {
+        const id = mistake.questionId || mistake.id;
+        if (id) items[id] = mistake;
+        return items;
+      }, {});
+      return this._saveMistakesStore(store);
+    }
     if (normalizedModule === "labs") {
       localStorage.setItem(
         this._getKey(`completed_labs_${certId}`),
@@ -1087,6 +1163,13 @@ export class StorageManager {
         ...history,
         ...(Array.isArray(state.history) ? state.history : []),
       ]);
+      return true;
+    }
+    if (normalizedModule === "gamification") {
+      localStorage.setItem(
+        this._getKey("gamification_xp_events"),
+        JSON.stringify(Array.isArray(state.events) ? state.events : []),
+      );
       return true;
     }
     if (normalizedModule === "journey") {
@@ -1209,6 +1292,7 @@ export class StorageManager {
         ...deck[existingIndex],
         flaggedCount: (deck[existingIndex].flaggedCount || 1) + 1,
         flaggedAt: new Date().toISOString(),
+        reviewStatus: deck[existingIndex].reviewStatus || "pending",
       };
     } else {
       // Adiciona nova
@@ -1219,6 +1303,9 @@ export class StorageManager {
         flaggedAt: new Date().toISOString(),
         flaggedCount: 1,
         reviewStatus: "pending",
+        reviewCount: 0,
+        lastReviewedAt: null,
+        masteredAt: null,
         resolvedAt: null,
         // Garante domain e services
         domain: question.domain || question.domainId || "",
@@ -1273,6 +1360,28 @@ export class StorageManager {
       } catch (e) {
         logger.error("Erro ao remover review question:", e);
       }
+    }
+  }
+
+  updateReviewStatus(certId, questionId, status) {
+    if (!certId || !questionId || !["pending", "mastered"].includes(status))
+      return false;
+    const deck = this.getReviewDeck(certId);
+    const card = deck.find((item) => item.questionId === questionId);
+    if (!card) return false;
+    card.reviewStatus = status;
+    card.reviewCount = Math.max(0, Number(card.reviewCount) || 0) + 1;
+    card.lastReviewedAt = new Date().toISOString();
+    card.masteredAt = status === "mastered" ? card.lastReviewedAt : null;
+    try {
+      localStorage.setItem(
+        this._getKey(`${certId}_review_deck`),
+        JSON.stringify(deck),
+      );
+      return true;
+    } catch (error) {
+      logger.error("Erro ao atualizar status do review deck:", error);
+      return false;
     }
   }
 
@@ -1347,10 +1456,23 @@ export class StorageManager {
             flaggedAt: new Date().toISOString(),
             flaggedCount: 1,
             reviewStatus: "pending",
+            reviewCount: 0,
+            lastReviewedAt: null,
+            masteredAt: null,
             resolvedAt: null,
             domain: q.domain || q.domainId || "",
             services: Array.isArray(q.services) ? q.services : [],
           };
+        }
+        if (!q.reviewStatus) {
+          q = {
+            ...q,
+            reviewStatus: "pending",
+            reviewCount: 0,
+            lastReviewedAt: null,
+            masteredAt: null,
+          };
+          needsMigration = true;
         }
         return q;
       });

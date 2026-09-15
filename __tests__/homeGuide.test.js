@@ -121,8 +121,8 @@ describe("Learning Hub navigation and platform guide", () => {
       '[data-guide-feature="mistakes"]',
     );
 
-    expect(mistakes.tagName).toBe("ARTICLE");
-    expect(mistakes.hasAttribute("href")).toBe(false);
+    expect(mistakes.tagName).toBe("A");
+    expect(mistakes.getAttribute("href")).toBe("./erros.html");
     expect(mistakes.hasAttribute("onclick")).toBe(false);
     expect(homeHtml).not.toContain("simulados.html#mistakes");
   });

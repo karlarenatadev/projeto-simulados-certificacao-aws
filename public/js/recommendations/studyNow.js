@@ -288,6 +288,7 @@ export function selectStudyNowRecommendation({
       title: "studyNow.mistakes_title",
       description: "studyNow.mistakes_description",
       descriptionVariables: { count: mistakes.length },
+      route: "erros.html",
       icon: "fa-solid fa-rotate-left",
     };
   }

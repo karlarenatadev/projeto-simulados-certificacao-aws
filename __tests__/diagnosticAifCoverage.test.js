@@ -3,6 +3,10 @@ import {
   createDiagnosticResultProjection,
   getDiagnosticRecommendationText,
 } from "../src/frontend/js/diagnosticResult.js";
+import {
+  getDiagnosticDomainDistribution,
+  selectDiagnosticQuestions,
+} from "../src/frontend/js/diagnosticQuestionSelector.js";
 import { certificationPaths } from "../src/frontend/js/data.js";
 
 const expectedDomains = new Set(
@@ -47,5 +51,22 @@ describe("AIF diagnostic coverage", () => {
       kind: "priority",
       domain: "Security, Compliance, and Governance for AI Solutions",
     });
+  });
+
+  test("V2 selector samples the main AIF bank across all five domains", () => {
+    const bank = JSON.parse(
+      fs.readFileSync("data/questions/aif-c01.json", "utf8"),
+    );
+    const selected = selectDiagnosticQuestions(
+      bank,
+      certificationPaths["aif-c01"].domains,
+      { certId: "aif-c01", language: "pt", quantity: 12, random: () => 0.5 },
+    );
+    const distribution = getDiagnosticDomainDistribution(selected);
+    expect(selected).toHaveLength(12);
+    expect(Object.keys(distribution)).toEqual(
+      expect.arrayContaining([...expectedDomains]),
+    );
+    expect(Object.values(distribution).every((count) => count >= 1)).toBe(true);
   });
 });

@@ -96,6 +96,24 @@ describe('account persistence API', () => {
       body: JSON.stringify({ certification: 'CLF-C02', version: 0, state: { completedStages: ['2'] } }),
     });
     expect(conflict.response.status).toBe(409);
+
+    const otherClientUpdate = await request(baseUrl, '/api/me/state/sprint', {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify({ certification: 'CLF-C02', version: 1, state: { currentDay: 3 } }),
+    });
+    expect(otherClientUpdate.response.status).toBe(200);
+    expect(otherClientUpdate.body.data.version).toBe(2);
+
+    const concurrent = await request(baseUrl, '/api/me/state/sprint', {
+      method: 'PUT',
+      headers: authHeaders(),
+      body: JSON.stringify({ certification: 'CLF-C02', version: 1, state: { currentDay: 4 } }),
+    });
+    expect(concurrent.response.status).toBe(409);
+    const preserved = await request(baseUrl, '/api/me/state/sprint?certification=clf-c02', { headers: authHeaders() });
+    expect(preserved.body.data.version).toBe(2);
+    expect(preserved.body.data.state_json).toEqual({ currentDay: 3 });
   });
 
   test('module state rejects unauthenticated and arbitrary modules', async () => {

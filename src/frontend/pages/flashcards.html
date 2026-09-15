@@ -120,6 +120,23 @@
               </option>
             </select>
           </div>
+          <div id="review-deck-status-filter" class="fc-toolbar-group hidden">
+            <label
+              for="review-status"
+              class="fc-label"
+              data-i18n="review_deck_status"
+              >Status:</label
+            >
+            <select id="review-status" class="fc-select">
+              <option value="pending" data-i18n="review_deck_pending">
+                Pendentes
+              </option>
+              <option value="mastered" data-i18n="review_deck_mastered">
+                Dominados
+              </option>
+              <option value="all" data-i18n="review_deck_all">Todos</option>
+            </select>
+          </div>
 
           <div class="fc-counter">
             Cartão
@@ -128,6 +145,45 @@
             >
           </div>
         </div>
+
+        <section
+          id="review-deck-summary"
+          class="a3-card p-4 mb-4 hidden"
+          aria-live="polite"
+          aria-label="Resumo do deck"
+        >
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div>
+              <strong id="review-deck-total">0</strong
+              ><span
+                class="block text-xs text-muted"
+                data-i18n="review_deck_total"
+                >Total</span
+              >
+            </div>
+            <div>
+              <strong id="review-deck-pending">0</strong
+              ><span
+                class="block text-xs text-muted"
+                data-i18n="review_deck_pending"
+                >Pendentes</span
+              >
+            </div>
+            <div>
+              <strong id="review-deck-mastered">0</strong
+              ><span
+                class="block text-xs text-muted"
+                data-i18n="review_deck_mastered"
+                >Dominados</span
+              >
+            </div>
+          </div>
+          <p
+            id="review-deck-empty"
+            class="hidden text-center text-muted mt-4"
+            data-i18n="review_deck_empty"
+          ></p>
+        </section>
 
         <!-- Container do Flashcard -->
         <div class="fc-wrapper">
@@ -181,6 +237,37 @@
             aria-label="Próximo cartão"
           >
             Próximo <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <div
+          id="review-deck-actions"
+          class="hidden flex flex-wrap justify-center gap-3 mt-4"
+          aria-live="polite"
+        >
+          <button
+            id="review-deck-pending-btn"
+            type="button"
+            class="a3-btn a3-btn-secondary"
+            data-i18n="review_deck_still_pending"
+          >
+            Ainda preciso revisar
+          </button>
+          <button
+            id="review-deck-mastered-btn"
+            type="button"
+            class="a3-btn a3-btn-primary"
+            data-i18n="review_deck_mastered_action"
+          >
+            Já domino
+          </button>
+          <button
+            id="review-deck-again-btn"
+            type="button"
+            class="a3-btn a3-btn-secondary hidden"
+            data-i18n="review_deck_review_again"
+          >
+            Revisar novamente
           </button>
         </div>
 

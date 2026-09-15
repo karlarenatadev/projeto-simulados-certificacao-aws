@@ -170,6 +170,13 @@ class InteractiveEngine {
 
     gamification.labsCompleted++;
 
+    if (this.currentChallenge?.id) {
+      storageManager.awardXpEvent({
+        eventType: "interactive_lab_completed",
+        sourceId: this.currentChallenge.id,
+      });
+    }
+
     // Se completou 5 labs, ganha a badge 'lab_master'
     if (
       gamification.labsCompleted === 5 &&

@@ -8,6 +8,7 @@ import { getCurrentLanguage as getOfficialLanguage } from "./core/languageManage
 import { AuthService } from "./services/authService.js";
 import { userManager } from "./userManager.js";
 import { createReviewDeckTerm } from "./utils/reviewCard.js";
+import { projectReviewDeck } from "./reviewDeckProjection.js";
 
 function getCurrentLanguage() {
   return getOfficialLanguage();
@@ -24,6 +25,7 @@ let flashcardState = {
   diagnosticFallback: false,
   selectedCertification: null,
   activeStudyCertification: null,
+  reviewDeckStatus: "pending",
 };
 
 function isSupportedCertification(certificationId) {
@@ -480,7 +482,14 @@ export function filterFlashcards() {
       );
     }
   } else if (selectedDomain === "review-deck") {
-    const savedDeck = storageManager.getReviewDeck(selectedCert);
+    const savedDeck = projectReviewDeck(
+      storageManager.getReviewDeck(selectedCert),
+      {
+        certification: selectedCert,
+        status: flashcardState.reviewDeckStatus,
+        language: getCurrentLanguage(),
+      },
+    ).records;
     flashcardState.filteredTerms = savedDeck.map((q) => {
       const pt = createReviewDeckTerm(q, "pt");
       const en = createReviewDeckTerm(q, "en");
@@ -488,11 +497,18 @@ export function filterFlashcards() {
         cert: selectedCert,
         domain: "review-deck",
         questionId: q.questionId,
+        reviewStatus: q.reviewStatus || "pending",
         term: { pt: pt.term, en: en.term },
         definition: { pt: pt.definition, en: en.definition },
       };
     });
+    updateReviewDeckSummary(selectedCert);
   } else {
+    document.getElementById("review-deck-summary")?.classList.add("hidden");
+    document.getElementById("review-deck-actions")?.classList.add("hidden");
+    document
+      .getElementById("review-deck-status-filter")
+      ?.classList.add("hidden");
     flashcardState.filteredTerms = filterTermsByCertification(
       glossaryTerms,
       selectedCert,
@@ -509,6 +525,10 @@ export function filterFlashcards() {
   flashcardState.flipped = false;
 
   if (flashcardState.filteredTerms.length === 0) {
+    if (selectedDomain === "review-deck") {
+      renderReviewDeckEmptyState();
+      return;
+    }
     const errorMsg =
       getCurrentLanguage() === "en"
         ? "No cards found for this category."
@@ -533,6 +553,20 @@ export function filterFlashcards() {
   }
 
   renderCurrentFlashcard();
+}
+
+function renderReviewDeckEmptyState() {
+  const term = document.getElementById("flashcard-term");
+  const definition = document.getElementById("flashcard-definition");
+  if (term)
+    term.textContent = t("review_deck_empty_pending", getCurrentLanguage());
+  if (definition)
+    definition.textContent = t(
+      "review_deck_empty_pending_desc",
+      getCurrentLanguage(),
+    );
+  document.getElementById("review-deck-actions")?.classList.add("hidden");
+  updateCounterAndButtons();
 }
 
 // ==========================================
@@ -579,6 +613,52 @@ export function renderCurrentFlashcard() {
   }
 
   updateCounterAndButtons();
+  updateReviewDeckActions();
+}
+
+function updateReviewDeckSummary(certId) {
+  const summary = projectReviewDeck(storageManager.getReviewDeck(certId), {
+    certification: certId,
+    status: "all",
+    language: getCurrentLanguage(),
+  });
+  document.getElementById("review-deck-summary")?.classList.remove("hidden");
+  document
+    .getElementById("review-deck-status-filter")
+    ?.classList.remove("hidden");
+  document.getElementById("review-deck-total").textContent = String(
+    summary.total,
+  );
+  document.getElementById("review-deck-pending").textContent = String(
+    summary.pending,
+  );
+  document.getElementById("review-deck-mastered").textContent = String(
+    summary.mastered,
+  );
+  const empty = document.getElementById("review-deck-empty");
+  if (empty) {
+    empty.classList.toggle("hidden", summary.total > 0);
+    empty.textContent = summary.total
+      ? ""
+      : t("review_deck_empty", getCurrentLanguage());
+  }
+}
+
+function updateReviewDeckActions() {
+  const actions = document.getElementById("review-deck-actions");
+  if (!actions || flashcardState.currentDomainFilter !== "review-deck") return;
+  actions.classList.remove("hidden");
+  const card = flashcardState.filteredTerms[flashcardState.index];
+  const mastered = card?.reviewStatus === "mastered";
+  const masteredButton = document.getElementById("review-deck-mastered-btn");
+  const pendingButton = document.getElementById("review-deck-pending-btn");
+  const againButton = document.getElementById("review-deck-again-btn");
+  masteredButton?.classList.toggle("hidden", mastered);
+  pendingButton?.classList.remove("hidden");
+  againButton?.classList.toggle("hidden", !mastered);
+  [masteredButton, pendingButton, againButton].forEach((button) => {
+    if (button) button.disabled = !flashcardState.flipped;
+  });
 }
 
 // ==========================================
@@ -682,6 +762,35 @@ function setupFlashcardListeners() {
     categorySelect.addEventListener("change", handleManualFlashcardFilter);
     categorySelect.dataset.bound = "true";
   }
+  const statusSelect = document.getElementById("review-status");
+  if (statusSelect && !statusSelect.dataset.bound) {
+    statusSelect.addEventListener("change", (event) => {
+      flashcardState.reviewDeckStatus = event.target.value;
+      filterFlashcards();
+    });
+    statusSelect.dataset.bound = "true";
+  }
+  [
+    "review-deck-pending-btn",
+    "review-deck-mastered-btn",
+    "review-deck-again-btn",
+  ].forEach((id) => {
+    const button = document.getElementById(id);
+    if (button && !button.dataset.bound) {
+      button.addEventListener("click", () => {
+        const card = flashcardState.filteredTerms[flashcardState.index];
+        if (!card?.questionId) return;
+        storageManager.updateReviewStatus(
+          flashcardState.selectedCertification,
+          card.questionId,
+          id === "review-deck-mastered-btn" ? "mastered" : "pending",
+        );
+        updateReviewDeckSummary(flashcardState.selectedCertification);
+        filterFlashcards();
+      });
+      button.dataset.bound = "true";
+    }
+  });
 }
 
 // ==========================================

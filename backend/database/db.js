@@ -46,6 +46,7 @@ const USER_MODULES = new Set([
   "flashcards",
   "labs",
   "diagnostic",
+  "gamification",
   "preferences",
 ]);
 const MAX_MODULE_STATE_BYTES = 256 * 1024;
@@ -1575,14 +1576,35 @@ export async function upsertUserModuleState(
     scope.certificationId,
   );
 
-  if (
-    expectedVersion !== null &&
-    existing &&
-    Number(expectedVersion) !== Number(existing.version)
-  ) {
+  if (expectedVersion !== null && existing) {
+    const conditionalUpdate = await executeQuery(
+      `
+      UPDATE user_module_state
+      SET state_json = $4, version = version + 1, updated_at = NOW()
+      WHERE user_id = $1
+        AND module = $2
+        AND certification_id IS NOT DISTINCT FROM $3
+        AND version = $5
+      RETURNING id, user_id, module, certification_id, state_json, version, updated_at
+    `,
+      [
+        normalizedUserId,
+        scope.module,
+        scope.certificationId,
+        JSON.stringify(normalizedState),
+        Number(expectedVersion),
+      ],
+    );
+    if (conditionalUpdate[0]) return conditionalUpdate[0];
+
+    const current = await getUserModuleState(
+      normalizedUserId,
+      scope.module,
+      scope.certificationId,
+    );
     const error = new Error("module state version conflict");
     error.statusCode = 409;
-    error.current = existing;
+    error.current = current;
     throw error;
   }
 

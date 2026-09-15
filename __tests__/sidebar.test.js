@@ -26,11 +26,11 @@ describe("role-aware administrative sidebar", () => {
     expect(document.getElementById("sidebar-btn-history")).toBeNull();
   });
 
-  test("Erros is a visible route to the real quiz UI, including with no mistakes", () => {
+  test("Erros is a visible route to the mistakes center", () => {
     buildSidebar({ role: "STUDENT" });
     const item = document.getElementById("sidebar-btn-mistakes");
     expect(item.tagName).toBe("A");
-    expect(item.getAttribute("href")).toBe("/simulados.html?mode=mistakes");
+    expect(item.getAttribute("href")).toBe("/erros.html");
     expect(item.classList.contains("hidden")).toBe(false);
     expect(item.getAttribute("aria-label")).toBeTruthy();
 
@@ -42,7 +42,7 @@ describe("role-aware administrative sidebar", () => {
     buildSidebar({ role: "STUDENT" });
     expect(
       document.getElementById("sidebar-btn-mistakes").getAttribute("href"),
-    ).toBe("/projeto-simulados-certificacao-aws/simulados.html?mode=mistakes");
+    ).toBe("/projeto-simulados-certificacao-aws/erros.html");
   });
 
   test("Erros badge reads the saved count on pages that only load the shell", () => {

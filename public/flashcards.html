@@ -17,7 +17,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./css/style.css?v=cb911766" />
+    <link rel="stylesheet" href="./css/style.css?v=88d1cdc0" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -88,7 +88,7 @@
     <div id="user-menu-container"></div>
   </div>
 </header>
-<script src="./js/pwa/registerServiceWorker.js?v=cb911766"></script>
+<script src="./js/pwa/registerServiceWorker.js?v=88d1cdc0"></script>
 <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
   <!--
     .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
@@ -301,6 +301,23 @@
               </option>
             </select>
           </div>
+          <div id="review-deck-status-filter" class="fc-toolbar-group hidden">
+            <label
+              for="review-status"
+              class="fc-label"
+              data-i18n="review_deck_status"
+              >Status:</label
+            >
+            <select id="review-status" class="fc-select">
+              <option value="pending" data-i18n="review_deck_pending">
+                Pendentes
+              </option>
+              <option value="mastered" data-i18n="review_deck_mastered">
+                Dominados
+              </option>
+              <option value="all" data-i18n="review_deck_all">Todos</option>
+            </select>
+          </div>
 
           <div class="fc-counter">
             Cartão
@@ -309,6 +326,45 @@
             >
           </div>
         </div>
+
+        <section
+          id="review-deck-summary"
+          class="a3-card p-4 mb-4 hidden"
+          aria-live="polite"
+          aria-label="Resumo do deck"
+        >
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div>
+              <strong id="review-deck-total">0</strong
+              ><span
+                class="block text-xs text-muted"
+                data-i18n="review_deck_total"
+                >Total</span
+              >
+            </div>
+            <div>
+              <strong id="review-deck-pending">0</strong
+              ><span
+                class="block text-xs text-muted"
+                data-i18n="review_deck_pending"
+                >Pendentes</span
+              >
+            </div>
+            <div>
+              <strong id="review-deck-mastered">0</strong
+              ><span
+                class="block text-xs text-muted"
+                data-i18n="review_deck_mastered"
+                >Dominados</span
+              >
+            </div>
+          </div>
+          <p
+            id="review-deck-empty"
+            class="hidden text-center text-muted mt-4"
+            data-i18n="review_deck_empty"
+          ></p>
+        </section>
 
         <!-- Container do Flashcard -->
         <div class="fc-wrapper">
@@ -365,6 +421,37 @@
           </button>
         </div>
 
+        <div
+          id="review-deck-actions"
+          class="hidden flex flex-wrap justify-center gap-3 mt-4"
+          aria-live="polite"
+        >
+          <button
+            id="review-deck-pending-btn"
+            type="button"
+            class="a3-btn a3-btn-secondary"
+            data-i18n="review_deck_still_pending"
+          >
+            Ainda preciso revisar
+          </button>
+          <button
+            id="review-deck-mastered-btn"
+            type="button"
+            class="a3-btn a3-btn-primary"
+            data-i18n="review_deck_mastered_action"
+          >
+            Já domino
+          </button>
+          <button
+            id="review-deck-again-btn"
+            type="button"
+            class="a3-btn a3-btn-secondary hidden"
+            data-i18n="review_deck_review_again"
+          >
+            Revisar novamente
+          </button>
+        </div>
+
         <!-- Ação Extra -->
         <button
           onclick="exportToAnki()"
@@ -382,8 +469,8 @@
 </footer>
 
 
-    <script src="./js/pomodoroManager.js?v=cb911766" type="module"></script>
-    <script src="./js/app.js?v=cb911766" type="module"></script>
+    <script src="./js/pomodoroManager.js?v=88d1cdc0" type="module"></script>
+    <script src="./js/app.js?v=88d1cdc0" type="module"></script>
     <script type="module">
       import { initShell } from "./js/shell.js";
       import { authGuard } from "./js/core/authGuard.js";

@@ -59,14 +59,10 @@ test("Erros sidebar opens a clear empty state without a quiz or TypeError", asyn
   await openAuthenticated(page, "index.html");
   await expect(page.locator("#sidebar-btn-mistakes")).toBeVisible();
   await page.locator("#sidebar-btn-mistakes").click();
-  await expect(page).toHaveURL(/simulados\.html\?mode=mistakes$/);
-  await expect(page.locator("#mistakes-feature-notice")).toBeVisible();
-  await expect(page.locator("#mistakes-feature-notice")).toContainText(
-    "Nenhum erro pendente",
-  );
-  await expect(page.locator("#screen-quiz")).toBeHidden();
+  await expect(page).toHaveURL(/erros\.html$/);
+  await expect(page.locator("#mistakes-empty")).toBeVisible();
   await page.reload();
-  await expect(page.locator("#mistakes-feature-notice")).toBeVisible();
+  await expect(page.locator("#mistakes-empty")).toBeVisible();
   guard.assertClean();
 });
 
@@ -78,6 +74,8 @@ test("Erros sidebar opens saved questions without a legacy DOM container", async
   await seedMistakes(page, 2);
   await page.reload();
   await page.locator("#sidebar-btn-mistakes").click();
+  await expect(page).toHaveURL(/erros\.html$/);
+  await page.locator("#mistakes-practice").click();
   await expect(page).toHaveURL(/simulados\.html\?mode=mistakes$/);
   await expect(page.locator("#screen-quiz")).toBeVisible();
   await expect(page.locator("#question-text")).not.toBeEmpty();
