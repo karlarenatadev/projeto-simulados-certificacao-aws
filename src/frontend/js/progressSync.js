@@ -1,4 +1,6 @@
 /** Pure reconciliation helpers for account-scoped local/remote state. */
+import { mergeSprintProgress } from "./sprintProgress.js";
+
 const isoTime = (value) => {
   const parsed = Date.parse(value || "");
   return Number.isFinite(parsed) ? parsed : 0;
@@ -127,6 +129,14 @@ export function mergeJourneyProgress(local = {}, remote = {}) {
   return result;
 }
 
+export function mergeGamificationState(local = {}, remote = {}) {
+  const result = { ...remote, ...local };
+  result.activityDays = [
+    ...new Set([...(remote.activityDays || []), ...(local.activityDays || [])]),
+  ].sort();
+  return result;
+}
+
 export function reconcileModuleState(
   module,
   local,
@@ -169,8 +179,12 @@ export function reconcileModuleState(
       },
       outcome: "merged",
     };
-  if (module === "journey" || module === "sprint" || module === "labs")
+  if (module === "sprint")
+    return { state: mergeSprintProgress(local, remote), outcome: "merged" };
+  if (module === "journey" || module === "labs")
     return { state: mergeJourneyProgress(local, remote), outcome: "merged" };
+  if (module === "gamification")
+    return { state: mergeGamificationState(local, remote), outcome: "merged" };
   return {
     state: localDirty ? local : remote,
     outcome: localDirty ? "local-wins" : "remote-wins",

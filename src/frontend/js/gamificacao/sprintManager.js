@@ -4,6 +4,12 @@
 import { storageManager } from "../storageManager.js";
 import { NotificationService } from "../services/notificationService.js";
 import { normalizeCertificationId } from "../utils/certUtils.js";
+import {
+  calculateSprintProgress,
+  getDayStatus,
+  normalizeSprintProgress,
+  SPRINT_TOTAL_DAYS,
+} from "../sprintProgress.js";
 
 export const SPRINT_MAPS = {
   "clf-c02": {
@@ -97,19 +103,15 @@ export function readSprintRecommendation(
 }
 
 export function getSprintProgress(certId) {
-  const state = storageManager.getSprintState(normalizeCertificationId(certId));
-  const completedStages = [
-    ...new Set(
-      (state.completedStages || [])
-        .map((day) => Number.parseInt(day, 10))
-        .filter((day) => day >= 1 && day <= 14),
-    ),
-  ];
+  const state = normalizeSprintProgress(
+    storageManager.getSprintState(normalizeCertificationId(certId)),
+  );
+  const projection = calculateSprintProgress(state);
   return {
-    completedStages,
-    currentDay: Math.min(completedStages.length + 1, 14),
-    percentage: Math.min(Math.round((completedStages.length / 14) * 100), 100),
-    completed: completedStages.length >= 14,
+    completedStages: projection.completedStages.map(Number),
+    currentDay: projection.currentDay,
+    percentage: projection.percentage,
+    completed: projection.completedSprint,
   };
 }
 
@@ -207,13 +209,14 @@ export function renderSprintUI(lang, certId) {
   }
 
   grid.innerHTML = "";
-  for (let i = 1; i <= 14; i++) {
+  for (let i = 1; i <= SPRINT_TOTAL_DAYS; i++) {
     const dayDiv = document.createElement("div");
-    if (i < currentSprintDay) {
+    const status = getDayStatus(i, progress);
+    if (status === "completed") {
       dayDiv.className =
         "w-full aspect-square rounded-lg flex items-center justify-center text-xs font-bold border bg-green-50 border-green-200 text-green-600 dark:bg-green-900/20 dark:border-green-700 dark:text-green-400";
       dayDiv.innerHTML = '<i class="fa-solid fa-check"></i>';
-    } else if (i === currentSprintDay) {
+    } else if (status === "available") {
       dayDiv.className =
         "sprint-day-current w-full aspect-square rounded-lg flex items-center justify-center text-sm border-2 bg-aws-orange border-orange-600 text-white z-10";
       dayDiv.textContent = i;
@@ -395,24 +398,29 @@ export function closeSprintReader() {
 }
 
 export function completeSprintDay(completedDay, certId, lang, onComplete) {
-  const sprintState = storageManager.getSprintState(certId);
+  const normalizedCertId = normalizeCertificationId(certId);
+  const sprintState = normalizeSprintProgress(
+    storageManager.getSprintState(normalizedCertId),
+  );
   const day = Number.parseInt(completedDay, 10);
-  if (!Number.isInteger(day) || day < 1 || day > 14) return;
+  if (!Number.isInteger(day) || day < 1 || day > SPRINT_TOTAL_DAYS) return;
   const completedStages = new Set(
     (sprintState.completedStages || [])
       .map((stage) => Number.parseInt(stage, 10))
       .filter((stage) => stage >= 1 && stage <= 14),
   );
-  if (!completedStages.has(day)) {
-    completedStages.add(day);
-  }
+  if (completedStages.has(day)) return;
+  const expectedDay = calculateSprintProgress(sprintState).nextAvailableDay;
+  if (day !== expectedDay) return;
+  completedStages.add(day);
   sprintState.completedStages = [...completedStages]
     .sort((left, right) => left - right)
     .map(String)
     .slice(0, 14);
   sprintState.lastCompletedDate = new Date().toDateString();
+  sprintState.streakDays = Number(sprintState.streakDays) || 0;
   sprintState.streakDays += 1;
-  storageManager.saveSprintState(certId, sprintState);
+  storageManager.saveSprintState(normalizedCertId, sprintState);
 
   closeSprintReader();
   if (onComplete) onComplete();

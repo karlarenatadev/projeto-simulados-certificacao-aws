@@ -59,7 +59,10 @@ describe("account state synchronization policy", () => {
     expect(storage.setAccountModuleState).toHaveBeenCalledWith(
       "sprint",
       "clf-c02",
-      { currentDay: 4 },
+      expect.objectContaining({
+        completedStages: ["1", "2", "3"],
+        currentDay: 4,
+      }),
     );
     expect(api.saveModuleState).not.toHaveBeenCalledWith("sprint", "clf-c02", {
       currentDay: 2,

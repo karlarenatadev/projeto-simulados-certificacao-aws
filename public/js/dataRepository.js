@@ -249,6 +249,7 @@ export function createDataRepository(storage, _api = null) {
       if (_api?.syncGamification) {
         await _safeApiCall(() => _api.syncGamification(result));
       }
+      await syncModuleState("gamification");
 
       return result;
     },
@@ -256,6 +257,7 @@ export function createDataRepository(storage, _api = null) {
     saveGamification(gamification, certId = null) {
       const saved = storage.saveGamification(gamification, certId);
       void syncModuleState("journey", certId);
+      void syncModuleState("gamification");
       return saved;
     },
 

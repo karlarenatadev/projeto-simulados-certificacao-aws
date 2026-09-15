@@ -3,6 +3,7 @@ import { AuthService } from "../services/authService.js";
 import { logger } from "../utils/logger.js";
 import { normalizeCertificationId } from "../utils/certUtils.js";
 import { getCurrentLanguage } from "../core/languageManager.js";
+import { getCompletedCount, getNextAvailableDay } from "../sprintProgress.js";
 
 // 1. DICIONÁRIO DE TRILHAS (4 Certificações com suporte Bilingue)
 export const TRAILS_BY_CERT = {
@@ -208,14 +209,8 @@ export function renderJourneyRecommendation(certId, lang = "pt") {
   const normalizedCertId = normalizeCertificationId(certId) || "clf-c02";
   const recommendation = readJourneyRecommendation(normalizedCertId);
   const progress = storageManager.getSprintState(normalizedCertId);
-  const completedDays = [
-    ...new Set(
-      (Array.isArray(progress.completedStages) ? progress.completedStages : [])
-        .map((day) => Number.parseInt(day, 10))
-        .filter((day) => day >= 1 && day <= 14),
-    ),
-  ].length;
-  const currentDay = Math.min(completedDays + 1, 14);
+  const completedDays = getCompletedCount(progress);
+  const currentDay = getNextAvailableDay(progress) || 14;
   const hasActiveSprint = completedDays > 0 && completedDays < 14;
   const actions = recommendation?.recommendations || {};
   const availableActions = [

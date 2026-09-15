@@ -67,4 +67,15 @@ describe("progress reconciliation", () => {
       merged,
     );
   });
+
+  test("sprint sync unions completed days and derives the next day", () => {
+    const result = reconcileModuleState(
+      "sprint",
+      { completedStages: ["1", "2"] },
+      { completedStages: ["1", "3"] },
+    );
+    expect(result.state.completedStages).toEqual(["1", "2", "3"]);
+    expect(result.state.currentDay).toBe(4);
+    expect(result.state.unlockedStages).toContain("4");
+  });
 });

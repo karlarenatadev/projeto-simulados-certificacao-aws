@@ -460,11 +460,11 @@ describe("StorageManager - Persistência de Dados", () => {
     expect(gamification.badges).toContain("perfect"); // Ganhou a medalha
   });
 
-  test("updateGamification deve zerar o streak se a nota for menor que 70%", () => {
+  test("updateGamification preserva o último dia válido quando a nota é menor que 70%", () => {
     storage.updateGamification(80); // Streak = 1
     const failedGamification = storage.updateGamification(50); // Nota ruim!
 
-    expect(failedGamification.currentStreak).toBe(0); // Perdeu o streak
+    expect(failedGamification.currentStreak).toBe(1);
   });
 
   test("clearAll deve remover APENAS as chaves com o prefixo do simulador", () => {

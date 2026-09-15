@@ -9,6 +9,12 @@ import {
   mergeXpEvents,
 } from "./gamificationService.js";
 import { projectGamification } from "./gamificationProjection.js";
+import {
+  getActivityDay,
+  getStreakState,
+  normalizeActivityDays,
+} from "./streakProjection.js";
+import { normalizeSprintProgress } from "./sprintProgress.js";
 
 /**
  * StorageManager - Gerencia toda a persistência de dados do simulador
@@ -340,18 +346,18 @@ export class StorageManager {
     try {
       const key = this._getKey(`sprint_state_${certId}`);
       const data = localStorage.getItem(key);
-      if (data) return JSON.parse(data);
+      if (data) return normalizeSprintProgress(JSON.parse(data));
     } catch (error) {
       logger.error("Erro ao carregar SprintState:", error);
     }
-    return {
+    return normalizeSprintProgress({
       userId: this.getCurrentUserId() || "guest",
       activePathId: certId,
       completedStages: [],
       unlockedStages: ["1"],
       currentGoalId: "1",
       streakDays: 0,
-    };
+    });
   }
 
   /**
@@ -361,7 +367,7 @@ export class StorageManager {
   saveSprintState(certId, state) {
     try {
       const key = this._getKey(`sprint_state_${certId}`);
-      localStorage.setItem(key, JSON.stringify(state));
+      localStorage.setItem(key, JSON.stringify(normalizeSprintProgress(state)));
       return true;
     } catch (error) {
       logger.error("Erro ao salvar SprintState:", error);
@@ -852,6 +858,8 @@ export class StorageManager {
       badges: [],
       completedStages: [],
       unlockedStages: [],
+      activityDays: [],
+      longestStreak: 0,
     };
 
     try {
@@ -867,7 +875,7 @@ export class StorageManager {
       }
 
       const parsed = JSON.parse(data);
-      return this._mergeGamificationWithHistory({
+      const gamification = this._mergeGamificationWithHistory({
         totalQuizzes: parsed.totalQuizzes || 0,
         bestScore: parsed.bestScore || 0,
         currentStreak: parsed.currentStreak || 0,
@@ -880,7 +888,14 @@ export class StorageManager {
           ? parsed.unlockedStages
           : [],
         labsCompleted: parsed.labsCompleted || 0,
+        activityDays: normalizeActivityDays(parsed.activityDays || []),
       });
+      const streak = getStreakState({
+        activityDays: gamification.activityDays,
+        legacyCurrentStreak: gamification.currentStreak,
+        legacyLongestStreak: gamification.longestStreak,
+      });
+      return { ...gamification, ...streak };
     } catch (error) {
       logger.error("Erro ao carregar gamificação:", error);
       return this._mergeGamificationWithHistory(fallback);
@@ -899,7 +914,7 @@ export class StorageManager {
   updateGamification(percentage) {
     try {
       const gamification = this.getGamification();
-      const today = new Date().toISOString().split("T")[0];
+      const today = getActivityDay(new Date());
 
       const historyQuizCount = this.getCompletedQuizCount();
       if (
@@ -913,14 +928,16 @@ export class StorageManager {
         gamification.bestScore = percentage;
       }
 
-      // Atualiza streak
+      // Registra no máximo um dia de atividade válida (quiz aprovado).
       if (percentage >= 70) {
-        if (gamification.lastDate !== today) {
-          gamification.currentStreak += 1;
-          gamification.lastDate = today;
-        }
-      } else {
-        gamification.currentStreak = 0;
+        gamification.activityDays = normalizeActivityDays([
+          ...(gamification.activityDays || []),
+          today,
+        ]);
+        const streak = getStreakState(gamification);
+        gamification.currentStreak = streak.currentStreak;
+        gamification.longestStreak = streak.longestStreak;
+        gamification.lastDate = today;
       }
 
       // Adiciona badges baseado em conquistas
@@ -1111,7 +1128,12 @@ export class StorageManager {
     }
     if (normalizedModule === "diagnostic")
       return { history: this.getDiagnosticHistory(certId) };
-    if (normalizedModule === "gamification") return this.getXpState();
+    if (normalizedModule === "gamification") {
+      return {
+        ...this.getXpState(),
+        activityDays: this.getGamification().activityDays || [],
+      };
+    }
     if (normalizedModule === "journey") {
       const gamification = this.getGamification(certId);
       return {
@@ -1170,6 +1192,11 @@ export class StorageManager {
         this._getKey("gamification_xp_events"),
         JSON.stringify(Array.isArray(state.events) ? state.events : []),
       );
+      const current = this.getGamification();
+      this.saveGamification({
+        ...current,
+        activityDays: normalizeActivityDays(state.activityDays || []),
+      });
       return true;
     }
     if (normalizedModule === "journey") {
