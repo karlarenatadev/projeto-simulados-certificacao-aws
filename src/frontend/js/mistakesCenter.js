@@ -52,7 +52,7 @@ function render() {
   qs("mistakes-list").innerHTML = projection.records
     .map(
       (record) =>
-        `<article class="a3-card p-4"><div class="flex justify-between gap-3"><div><p class="font-semibold text-main line-clamp-3">${escapeHtml(record.question)}</p><p class="text-xs text-muted mt-2">${escapeHtml(record.certification.toUpperCase())} · ${escapeHtml(record.domainId || t("mistakes_domain", lang))} · ${escapeHtml(t("mistakes_count", lang, { count: record.wrongCount }))}</p></div><span class="text-xs">${record.resolved ? t("mistakes_status_resolved", lang) : t("mistakes_status_pending", lang)}</span></div><details class="mt-3"><summary class="cursor-pointer">${t("mistakes_view_details", lang)}</summary><div class="mt-2 text-sm text-muted"><p><strong>${t("mistakes_your_answer", lang)}:</strong> ${escapeHtml(String(record.selectedAnswerText || record.selectedAnswer || "—"))}</p><p><strong>${t("mistakes_correct_answer", lang)}:</strong> ${escapeHtml(String(record.correctAnswerText || record.correctAnswer || "—"))}</p><p>${escapeHtml(record.explanation || "")}</p></div></details></article>`,
+        `<article class="a3-card p-4"><div class="flex justify-between gap-3"><div><p class="font-semibold text-main line-clamp-3">${escapeHtml(record.question)}</p><p class="text-xs text-muted mt-2">${escapeHtml(record.certId.toUpperCase())} · ${escapeHtml(record.domainId || t("mistakes_domain", lang))} · ${escapeHtml(t("mistakes_count", lang, { count: record.wrongCount }))}</p></div><span class="text-xs">${record.resolved ? t("mistakes_status_resolved", lang) : t("mistakes_status_pending", lang)}</span></div><details class="mt-3"><summary class="cursor-pointer">${t("mistakes_view_details", lang)}</summary><div class="mt-2 text-sm text-muted"><p><strong>${t("mistakes_your_answer", lang)}:</strong> ${escapeHtml(String(record.selectedAnswerText || record.selectedAnswer || "—"))}</p><p><strong>${t("mistakes_correct_answer", lang)}:</strong> ${escapeHtml(String(record.correctAnswerText || record.correctAnswer || "—"))}</p><p>${escapeHtml(record.explanation || "")}</p></div></details></article>`,
     )
     .join("");
 
@@ -66,7 +66,9 @@ function render() {
 function init() {
   ["mistakes-cert", "mistakes-status", "mistakes-domain"].forEach((id) =>
     qs(id).addEventListener("change", (event) => {
-      state[id.replace("mistakes-", "")] = event.target.value;
+      const field =
+        id === "mistakes-cert" ? "certification" : id.replace("mistakes-", "");
+      state[field] = event.target.value;
       if (id === "mistakes-cert") state.domain = "all";
       render();
     }),

@@ -32,6 +32,22 @@ describe("progress reconciliation", () => {
     expect(result.resolved).toBe(false);
   });
 
+  test("deduplicates the same question by certification across legacy aliases", () => {
+    const result = reconcileModuleState(
+      "mistakes",
+      {
+        mistakes: [{ questionId: "q", cert: "AIF-C01", wrongCount: 1 }],
+      },
+      {
+        mistakes: [
+          { questionId: "q", certification: "aif-c01", wrongCount: 3 },
+        ],
+      },
+    );
+    expect(result.state.mistakes).toHaveLength(1);
+    expect(result.state.mistakes[0].wrongCount).toBe(3);
+  });
+
   test("uses latest review status and preserves maximum review count", () => {
     const merged = mergeReviewDeck(
       [

@@ -3,7 +3,9 @@ import { installConsoleGuard, openAuthenticated } from "./helpers/app.js";
 
 async function seedMistakes(page) {
   await page.evaluate(() => {
-    const session = JSON.parse(localStorage.getItem("cloudacademy_session") || "{}");
+    const session = JSON.parse(
+      localStorage.getItem("cloudacademy_session") || "{}",
+    );
     localStorage.setItem(
       "cloudacademy_session",
       JSON.stringify({
@@ -29,7 +31,7 @@ async function seedMistakes(page) {
         "clf-c02": {
           clf1: {
             questionId: "clf1",
-            certification: "clf-c02",
+            cert: "CLF-C02",
             domain: "security-and-compliance",
             question: "Protect data?",
             selectedAnswer: 1,
@@ -42,7 +44,7 @@ async function seedMistakes(page) {
           },
           clf2: {
             questionId: "clf2",
-            certification: "clf-c02",
+            certificationId: "clf-c02",
             domain: "cloud-concepts",
             question: "Cloud model?",
             wrongCount: 1,
@@ -59,13 +61,40 @@ async function seedMistakes(page) {
             resolved: true,
             resolvedAt: now,
           },
+          clf4: {
+            questionId: "clf4",
+            certification: "clf-c02",
+            domain: "cloud-concepts",
+            question: "Legacy CLF question",
+            wrongCount: 1,
+            lastWrongAt: now,
+            resolved: false,
+          },
         },
         "aif-c01": {
           aif1: {
             questionId: "aif1",
-            certification: "aif-c01",
+            cert: "AIF-C01",
             domain: "fundamentals-ai-ml",
             question: "Model question",
+            wrongCount: 1,
+            lastWrongAt: now,
+            resolved: false,
+          },
+          aif2: {
+            questionId: "aif2",
+            certification: "aif-c01",
+            domain: "fundamentals-ai-ml",
+            question: "Second model question",
+            wrongCount: 1,
+            lastWrongAt: now,
+            resolved: false,
+          },
+          aif3: {
+            questionId: "aif3",
+            certId: "aif-c01",
+            domain: "fundamentals-ai-ml",
+            question: "Third model question",
             wrongCount: 1,
             lastWrongAt: now,
             resolved: false,
@@ -82,13 +111,17 @@ test("Central de Erros resume, filtra e abre detalhes", async ({ page }) => {
   const guard = installConsoleGuard(page);
   await openAuthenticated(page, "erros.html");
   await seedMistakes(page);
-  await expect(page.locator("#mistakes-summary")).toContainText("3");
-  await expect(page.locator("#mistakes-list article")).toHaveCount(3);
+  await expect(page.locator("#mistakes-summary")).toContainText("6");
+  await expect(page.locator("#mistakes-list article")).toHaveCount(6);
   await page.locator("#mistakes-cert").selectOption("aif-c01");
-  await expect(page.locator("#mistakes-list article")).toHaveCount(1);
+  await expect(page.locator("#mistakes-list article")).toHaveCount(3);
   await page.locator("#mistakes-status").selectOption("resolved");
   await expect(page.locator("#mistakes-list article")).toHaveCount(0);
   await page.locator("#mistakes-clear-filters").click();
+  await page.locator("#mistakes-cert").selectOption("clf-c02");
+  await expect(page.locator("#mistakes-list article")).toHaveCount(3);
+  await page.locator("#mistakes-cert").selectOption("all");
+  await expect(page.locator("#mistakes-list article")).toHaveCount(6);
   await page.locator("#mistakes-list details summary").first().click();
   await expect(page.locator("#mistakes-list details").first()).toBeVisible();
   await expect(page.locator("#mistakes-practice")).toHaveAttribute(

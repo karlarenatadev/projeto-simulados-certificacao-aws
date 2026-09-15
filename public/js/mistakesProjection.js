@@ -5,10 +5,20 @@ function toTimestamp(value) {
   return Number.isFinite(time) ? time : 0;
 }
 
+export function getMistakeCertification(record = {}) {
+  return String(
+    record.certId ||
+      record.certification ||
+      record.cert ||
+      record.certificationId ||
+      "",
+  )
+    .trim()
+    .toLowerCase();
+}
+
 export function normalizeMistakeRecord(record = {}) {
-  const certification = String(
-    record.certification || record.certId || "",
-  ).toLowerCase();
+  const certification = getMistakeCertification(record);
   const domainId = normalizeDomain(
     certification,
     record.domain || record.domainId || "",
@@ -54,7 +64,6 @@ export function projectMistakes(
       record.certification !== String(certification).toLowerCase()
     )
       return false;
-    if (domain !== "all" && record.domainId !== domain) return false;
     if (domain !== "all" && record.domainId !== domain) return false;
     return true;
   });

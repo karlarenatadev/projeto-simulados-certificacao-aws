@@ -7,11 +7,17 @@ const isoTime = (value) => {
 };
 
 function identity(item) {
-  return (
-    item?.questionId ||
-    item?.id ||
-    `${item?.certId || item?.certification || ""}:${item?.question || ""}`
-  );
+  const certification = String(
+    item?.certId ||
+      item?.certification ||
+      item?.cert ||
+      item?.certificationId ||
+      "",
+  )
+    .trim()
+    .toLowerCase();
+  const questionId = item?.questionId || item?.id;
+  return `${certification}:${questionId || item?.question || ""}`;
 }
 
 export function mergeAttempts(local = [], remote = []) {

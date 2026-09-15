@@ -1,4 +1,8 @@
-import { projectMistakes } from "../src/frontend/js/mistakesProjection.js";
+import {
+  getMistakeCertification,
+  normalizeMistakeRecord,
+  projectMistakes,
+} from "../src/frontend/js/mistakesProjection.js";
 
 const records = [
   {
@@ -48,5 +52,29 @@ describe("mistakes projection", () => {
         status: "resolved",
       }).records.map((r) => r.questionId),
     ).toEqual(["q2"]);
+  });
+
+  test("normalizes legacy certification aliases to one canonical certId", () => {
+    const aliases = ["cert", "certification", "certId", "certificationId"];
+    aliases.forEach((field) => {
+      expect(getMistakeCertification({ [field]: "AIF-C01" })).toBe("aif-c01");
+      expect(normalizeMistakeRecord({ [field]: "AIF-C01" }).certId).toBe(
+        "aif-c01",
+      );
+    });
+    const projection = projectMistakes(
+      [
+        { questionId: "a", cert: "aif-c01", question: "A" },
+        { questionId: "b", certification: "AIF-C01", question: "B" },
+        { questionId: "c", certId: "aif-c01", question: "C" },
+        { questionId: "d", certification: "clf-c02", question: "D" },
+      ],
+      { certification: "aif-c01" },
+    );
+    expect(projection.records.map((record) => record.certId)).toEqual([
+      "aif-c01",
+      "aif-c01",
+      "aif-c01",
+    ]);
   });
 });
