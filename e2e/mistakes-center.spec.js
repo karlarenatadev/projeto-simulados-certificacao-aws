@@ -3,6 +3,22 @@ import { installConsoleGuard, openAuthenticated } from "./helpers/app.js";
 
 async function seedMistakes(page) {
   await page.evaluate(() => {
+    const session = JSON.parse(localStorage.getItem("cloudacademy_session") || "{}");
+    localStorage.setItem(
+      "cloudacademy_session",
+      JSON.stringify({
+        ...session,
+        user: {
+          ...(session.user || {}),
+          id: "e2e-smoke-user",
+          role: "STUDENT",
+          language: "pt",
+          certification: "clf-c02",
+        },
+        authenticationMode: "offline",
+        provider: "local",
+      }),
+    );
     const key =
       Object.keys(localStorage).find((item) => item.endsWith(":mistakes")) ||
       "aws_sim_user:e2e-smoke-user:mistakes";

@@ -182,6 +182,10 @@ export function createDataRepository(storage, _api = null) {
       return storage.getMistakes(certificationId);
     },
 
+    getAllMistakes(certificationId) {
+      return storage.getAllMistakes(certificationId);
+    },
+
     hasMistakes(certificationId) {
       return storage.hasMistakes(certificationId);
     },

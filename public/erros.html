@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Central de Erros — Cloud Academy A3</title>
-    <link rel="stylesheet" href="./css/style.css?v=ac14ad8e" />
+    <link rel="stylesheet" href="./css/style.css?v=2577227f" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -78,7 +78,7 @@
     <div id="user-menu-container"></div>
   </div>
 </header>
-<script src="./js/pwa/registerServiceWorker.js?v=ac14ad8e"></script>
+<script src="./js/pwa/registerServiceWorker.js?v=2577227f"></script>
 <nav id="left-sidebar" aria-label="Menu principal" role="navigation">
   <!--
     .left-sidebar-nav é esvaziado e repovoado por buildSidebar(user)
@@ -201,7 +201,7 @@
 
     <main class="flex-1 a3-container py-6 main-content-container">
       <div class="w-full max-w-6xl mx-auto">
-        <header class="mb-6">
+        <div class="mb-6">
           <h1
             class="text-3xl font-bold text-strong"
             data-i18n="mistakes_center_title"
@@ -211,46 +211,48 @@
           <p class="text-muted" data-i18n="mistakes_center_subtitle">
             Revise as questões que mais precisam da sua atenção.
           </p>
-        </header>
+        </div>
         <section
           id="mistakes-summary"
           class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6"
           aria-label="Resumo de erros"
         ></section>
-        <section
-          class="a3-card p-4 mb-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 items-end"
-        >
-          <label
-            ><span data-i18n="mistakes_certification">Certificação</span
-            ><select id="mistakes-cert" class="block p-2 rounded border">
-              <option value="all">Todas</option>
-              <option value="clf-c02">CLF-C02</option>
-              <option value="saa-c03">SAA-C03</option>
-              <option value="dva-c02">DVA-C02</option>
-              <option value="aif-c01">AIF-C01</option>
-            </select></label
+        <section class="a3-card p-4 mb-6">
+          <div
+            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 items-end"
           >
-          <label
-            ><span data-i18n="mistakes_status">Status</span
-            ><select id="mistakes-status" class="block p-2 rounded border">
-              <option value="pending">Pendentes</option>
-              <option value="resolved">Resolvidos</option>
-              <option value="all">Todos</option>
-            </select></label
-          >
-          <label
-            ><span data-i18n="mistakes_domain">Domínio</span
-            ><select id="mistakes-domain" class="block p-2 rounded border">
-              <option value="all">Todos</option>
-            </select></label
-          >
-          <button
-            id="mistakes-clear-filters"
-            type="button"
-            class="a3-btn a3-btn-secondary w-full sm:w-auto"
-          >
-            <span data-i18n="mistakes_clear_filters">Limpar filtros</span>
-          </button>
+            <label
+              ><span data-i18n="mistakes_certification">Certificação</span
+              ><select id="mistakes-cert" class="block p-2 rounded border">
+                <option value="all">Todas</option>
+                <option value="clf-c02">CLF-C02</option>
+                <option value="saa-c03">SAA-C03</option>
+                <option value="dva-c02">DVA-C02</option>
+                <option value="aif-c01">AIF-C01</option>
+              </select></label
+            >
+            <label
+              ><span data-i18n="mistakes_status">Status</span
+              ><select id="mistakes-status" class="block p-2 rounded border">
+                <option value="pending">Pendentes</option>
+                <option value="resolved">Resolvidos</option>
+                <option value="all">Todos</option>
+              </select></label
+            >
+            <label
+              ><span data-i18n="mistakes_domain">Domínio</span
+              ><select id="mistakes-domain" class="block p-2 rounded border">
+                <option value="all">Todos</option>
+              </select></label
+            >
+            <button
+              id="mistakes-clear-filters"
+              type="button"
+              class="a3-btn a3-btn-secondary w-full sm:w-auto"
+            >
+              <span data-i18n="mistakes_clear_filters">Limpar filtros</span>
+            </button>
+          </div>
         </section>
         <div
           class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4"
