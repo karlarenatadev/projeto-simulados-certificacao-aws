@@ -105,6 +105,7 @@ describe("apiService response normalization", () => {
       user: { id: "stale-user", email: "stale@a3data.com.br", role: "ADMIN" },
       accessToken: "stale-token",
       authenticationMode: "online",
+      expiresAt: new Date(Date.now() + 3600000).toISOString(),
     });
     storageManager.saveQuizResult({
       certId: "clf-c02",
@@ -113,6 +114,7 @@ describe("apiService response normalization", () => {
       percentage: 80,
     });
     const historyKey = storageManager.getUserScopedKey("history");
+    expect(SessionManager.restore().authenticationMode).toBe("online");
     global.fetch.mockResolvedValue(
       jsonResponse(
         {
@@ -132,6 +134,28 @@ describe("apiService response normalization", () => {
     );
     expect(SessionManager.restore()?.accessToken).toBeNull();
     expect(localStorage.getItem(historyKey)).not.toBeNull();
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  test("403 preserves a valid remote session and does not retry", async () => {
+    SessionManager.persist({
+      user: { id: "forbidden-user", role: "STUDENT" },
+      accessToken: "fixture-token",
+      authenticationMode: "online",
+      expiresAt: new Date(Date.now() + 3600000).toISOString(),
+    });
+    const before = SessionManager.restore();
+    global.fetch.mockResolvedValue(jsonResponse({ error: "Forbidden" }, 403));
+    await expect(apiService.getMe("forbidden-user")).rejects.toMatchObject({
+      statusCode: 403,
+    });
+    expect(SessionManager.restore()).toMatchObject({
+      user: before.user,
+      accessToken: before.accessToken,
+      expiresAt: before.expiresAt,
+      authenticationMode: "online",
+    });
+    expect(SessionManager.restore().sessionExpired).not.toBe(true);
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 

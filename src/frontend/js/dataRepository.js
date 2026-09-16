@@ -45,17 +45,26 @@ export function createDataRepository(storage, _api = null) {
 
   const ACCOUNT_CERTIFICATIONS = ["clf-c02", "saa-c03", "dva-c02", "aif-c01"];
 
-  async function syncModuleState(module, certId = null) {
+  async function syncModuleState(module, certId = null, options = {}) {
     if (
       !_api?.saveModuleState ||
       (module !== "preferences" && module !== "gamification" && !certId)
     )
       return null;
     const session = SessionManager.restore();
+    const contextValid = () => {
+      const current = SessionManager.restore();
+      return (
+        current?.accessToken &&
+        current.authenticationMode === "online" &&
+        (!options.expectedUserId || current.user?.id === options.expectedUserId)
+      );
+    };
     if (
       !_api?.saveModuleState ||
       !session?.accessToken ||
-      session.authenticationMode !== "online"
+      session.authenticationMode !== "online" ||
+      !contextValid()
     ) {
       return { syncPending: true, authRequired: true };
     }
@@ -64,25 +73,56 @@ export function createDataRepository(storage, _api = null) {
     const operation = previous
       .then(async () => {
         for (let attempt = 0; attempt < 3; attempt += 1) {
+          if (options.confirmRemote && !contextValid())
+            return { syncPending: true, authRequired: true };
           const state = storage.getAccountModuleState(module, certId);
           if (!state) return null;
           const remote = _api.getModuleState
             ? await _safeApiCall(() => _api.getModuleState(module, certId))
             : null;
           const remoteState = remote?.data?.state_json;
+          if (options.confirmRemote) {
+            if (!contextValid())
+              return { syncPending: true, authRequired: true };
+            if (
+              !remote ||
+              remote.success === false ||
+              remote.data === undefined
+            )
+              return { syncPending: true };
+            if (
+              remote.data !== null &&
+              (!remoteState ||
+                !Number.isSafeInteger(Number(remote.data.version)) ||
+                Number(remote.data.version) < 1)
+            )
+              return { syncPending: true };
+          }
           if (remoteState && typeof remoteState === "object") {
             const merged = reconcileModuleState(module, state, remoteState);
             storage.setAccountModuleState(module, certId, merged.state);
             if (JSON.stringify(merged.state) === JSON.stringify(remoteState)) {
-              return merged;
+              return options.confirmRemote
+                ? {
+                    ...merged,
+                    remoteConfirmed: true,
+                    version: Number(remote.data.version),
+                  }
+                : merged;
             }
             try {
-              return await _api.saveModuleState(
+              const saved = await _api.saveModuleState(
                 module,
                 certId,
                 merged.state,
                 remote?.data?.version ?? null,
               );
+              if (!options.confirmRemote) return saved;
+              if (!contextValid())
+                return { syncPending: true, authRequired: true };
+              return saved?.success && Number(saved.data?.version) > 0
+                ? { remoteConfirmed: true, version: Number(saved.data.version) }
+                : { syncPending: true };
             } catch (error) {
               if (error?.statusCode === 409 && attempt < 2) continue;
               logger.warn(
@@ -90,6 +130,24 @@ export function createDataRepository(storage, _api = null) {
                 error?.message,
               );
               return { ...merged, syncPending: true };
+            }
+          }
+          if (options.confirmRemote && remote?.data === null) {
+            try {
+              const saved = await _api.saveModuleState(
+                module,
+                certId,
+                state,
+                0,
+              );
+              if (!contextValid())
+                return { syncPending: true, authRequired: true };
+              return saved?.success && Number(saved.data?.version) > 0
+                ? { remoteConfirmed: true, version: Number(saved.data.version) }
+                : { syncPending: true };
+            } catch (error) {
+              if (error?.statusCode === 409 && attempt < 2) continue;
+              return { syncPending: true };
             }
           }
           if (attempt > 0) {
@@ -381,8 +439,27 @@ export function createDataRepository(storage, _api = null) {
       return storage.setUserData(key, value, storageBackend);
     },
 
-    syncAccountModuleState(module, certId = null) {
-      return syncModuleState(module, certId);
+    // Local-only module access in the current session's namespace. Capturing a
+    // source snapshot must happen before switching the session to the target.
+    // These methods intentionally do not hydrate, authenticate or schedule sync.
+    getLocalModuleState(module, certId = null) {
+      return storage.getAccountModuleState(module, certId);
+    },
+
+    setLocalModuleState(module, certId, state) {
+      return storage.setAccountModuleState(module, certId, state);
+    },
+
+    saveLocalLinkSnapshot(snapshot) {
+      return storage.saveLocalLinkSnapshot(snapshot);
+    },
+
+    getLocalLinkSnapshot(localIdentityId) {
+      return storage.getLocalLinkSnapshot(localIdentityId);
+    },
+
+    syncAccountModuleState(module, certId = null, options = {}) {
+      return syncModuleState(module, certId, options);
     },
 
     async hydrateAccountState() {

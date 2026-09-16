@@ -9,6 +9,7 @@ import { readFileSync } from "fs";
 import { dirname, isAbsolute, join, resolve } from "path";
 import { fileURLToPath } from "url";
 import { normalizeCertificationId, normalizeLanguage } from "./normalizers.js";
+import { migrateLocalLinks } from "./localLinks.js";
 import {
   hasDomainTaxonomy,
   normalizeDomain as resolveDomain,
@@ -41,6 +42,7 @@ const MAX_QUESTION_LIMIT = 100;
 const DEFAULT_LEADERBOARD_LIMIT = 100;
 const MAX_LEADERBOARD_LIMIT = 100;
 const USER_MODULES = new Set([
+  "mistakes",
   "journey",
   "sprint",
   "flashcards",
@@ -416,6 +418,7 @@ export async function initializeDatabase(options = {}) {
       await migrateQuizLifecycle(database);
       await migrateQuizMembership(database);
       await migrateUserIdentities(database);
+      await migrateLocalLinks(database);
 
       db = database;
       return db;
@@ -1710,13 +1713,39 @@ export async function upsertUserModuleState(
   const normalizedUserId = normalizeUserId(userId);
   const scope = normalizeModuleScope(module, certificationId);
   const normalizedState = normalizeModuleState(state);
+  if (
+    expectedVersion !== null &&
+    (!Number.isSafeInteger(expectedVersion) || expectedVersion < 0)
+  ) {
+    throw Object.assign(new Error("invalid expected version"), {
+      statusCode: 400,
+    });
+  }
+  // Version zero means create only. It must never overwrite a concurrent insert.
+  if (expectedVersion === 0) {
+    const inserted = await executeQuery(
+      `INSERT INTO user_module_state(user_id,module,certification_id,state_json,version)
+      VALUES ($1,$2,$3,$4,1) ON CONFLICT (user_id,module,certification_id) DO NOTHING
+      RETURNING id,user_id,module,certification_id,state_json,version,updated_at`,
+      [
+        normalizedUserId,
+        scope.module,
+        scope.certificationId,
+        JSON.stringify(normalizedState),
+      ],
+    );
+    if (inserted[0]) return inserted[0];
+    throw Object.assign(new Error("module state version conflict"), {
+      statusCode: 409,
+    });
+  }
   const existing = await getUserModuleState(
     normalizedUserId,
     scope.module,
     scope.certificationId,
   );
 
-  if (expectedVersion !== null && existing) {
+  if (expectedVersion !== null) {
     const conditionalUpdate = await executeQuery(
       `
       UPDATE user_module_state

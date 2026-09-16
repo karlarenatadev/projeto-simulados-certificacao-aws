@@ -363,6 +363,29 @@ export const apiService = {
     return fetchWithRetry("/api/me/profile");
   },
 
+  async claimLocalIdentity(localIdentityId) {
+    return fetchWithRetry("/api/me/local-links/claim", {
+      method: "POST",
+      body: JSON.stringify({ localIdentityId }),
+    });
+  },
+
+  async getLocalIdentityLink(localIdentityId) {
+    return fetchWithRetry(
+      `/api/me/local-links/${encodeURIComponent(localIdentityId)}`,
+    );
+  },
+
+  async completeLocalIdentityLink(localIdentityId, receipts) {
+    return fetchWithRetry(
+      `/api/me/local-links/${encodeURIComponent(localIdentityId)}/complete`,
+      {
+        method: "POST",
+        body: JSON.stringify({ receipts }),
+      },
+    );
+  },
+
   async updateMyProfile(payload = {}) {
     return fetchWithRetry("/api/me/profile", {
       method: "PATCH",

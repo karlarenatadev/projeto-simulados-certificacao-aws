@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, test } from "@jest/globals";
+import { afterEach, describe, expect, jest, test } from "@jest/globals";
 import { SessionManager } from "../src/frontend/js/core/sessionManager.js";
 
 const user = {
@@ -8,10 +8,43 @@ const user = {
 };
 
 afterEach(() => {
+  jest.useRealTimers();
   localStorage.clear();
 });
 
 describe("SessionManager expiration", () => {
+  test("online without a token restores as offline-expired in the same namespace", () => {
+    SessionManager.persist({
+      user,
+      authenticationMode: "online",
+      expiresAt: new Date(Date.now() + 3600000).toISOString(),
+    });
+    expect(SessionManager.restore()).toMatchObject({
+      user,
+      accessToken: null,
+      authenticationMode: "offline-expired",
+      sessionExpired: true,
+    });
+    expect(SessionManager.restore().user.id).toBe(user.id);
+  });
+
+  test("touch and restore do not renew absolute expiry, including the boundary", () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date("2026-09-15T12:00:00Z"));
+    SessionManager.persist({
+      user,
+      accessToken: "fixture-token",
+      authenticationMode: "online",
+      tokenExpiresIn: 3600,
+    });
+    const expiresAt = SessionManager.restore().expiresAt;
+    jest.setSystemTime(new Date("2026-09-15T12:30:00Z"));
+    SessionManager.touch();
+    expect(SessionManager.restore().expiresAt).toBe(expiresAt);
+    jest.setSystemTime(new Date(expiresAt));
+    expect(SessionManager.restore().authenticationMode).toBe("offline-expired");
+    expect(SessionManager.restore().expiresAt).toBe(expiresAt);
+  });
   test("persists and accepts a future online expiry", () => {
     SessionManager.persist({
       user,

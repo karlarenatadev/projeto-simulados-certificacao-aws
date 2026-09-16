@@ -15,6 +15,7 @@ import {
   normalizeActivityDays,
 } from "./streakProjection.js";
 import { normalizeSprintProgress } from "./sprintProgress.js";
+import { isLocalIdentityId } from "./core/contracts/localLinkMigration.js";
 
 /**
  * StorageManager - Gerencia toda a persistência de dados do simulador
@@ -1116,6 +1117,36 @@ export class StorageManager {
     }
   }
 
+  // A durable source snapshot, not ownership authority. Never stores credentials.
+  saveLocalLinkSnapshot(snapshot) {
+    const session = SessionManager.restore();
+    if (
+      session?.provider !== "local" ||
+      session.authenticationMode !== "offline" ||
+      !isLocalIdentityId(snapshot?.localIdentityId) ||
+      session.user?.id !== snapshot.localIdentityId
+    )
+      return false;
+    const key = this._getKey("local_link_snapshot_v1");
+    // Keep the original migration snapshot stable across a crash/retry.
+    if (!localStorage.getItem(key))
+      localStorage.setItem(key, JSON.stringify(snapshot));
+    return true;
+  }
+
+  getLocalLinkSnapshot(localIdentityId) {
+    if (!isLocalIdentityId(localIdentityId)) return null;
+    try {
+      return JSON.parse(
+        localStorage.getItem(
+          `${this.prefix}user:${encodeURIComponent(localIdentityId)}:local_link_snapshot_v1`,
+        ),
+      );
+    } catch {
+      return null;
+    }
+  }
+
   getAccountModuleState(module, certId = null) {
     const normalizedModule = String(module || "").toLowerCase();
     if (normalizedModule === "sprint") return this.getSprintState(certId);
@@ -1158,10 +1189,10 @@ export class StorageManager {
       return true;
     }
     if (normalizedModule === "mistakes") {
-      const certId = this._normalizeCertId(certId);
-      if (!certId || !Array.isArray(state.mistakes)) return false;
+      const normalizedCertId = this._normalizeCertId(certId);
+      if (!normalizedCertId || !Array.isArray(state.mistakes)) return false;
       const store = this._getMistakesStore();
-      store[certId] = state.mistakes.reduce((items, mistake) => {
+      store[normalizedCertId] = state.mistakes.reduce((items, mistake) => {
         const id = mistake.questionId || mistake.id;
         if (id) items[id] = mistake;
         return items;

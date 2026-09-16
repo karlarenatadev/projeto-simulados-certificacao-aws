@@ -25,7 +25,7 @@ export class SessionManager {
       try {
         const session = JSON.parse(sessionRaw);
         if (this.isExpired(session)) {
-          if (session.authenticationMode === "online" && session.accessToken) {
+          if (session.authenticationMode === "online") {
             const expiredSession = {
               ...session,
               accessToken: null,

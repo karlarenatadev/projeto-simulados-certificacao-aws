@@ -106,6 +106,7 @@ jest.unstable_mockModule('../backend/database/db.js', () => ({
   getAwsServices: jest.fn(),
   getServiceById: jest.fn(),
   executeQuery: jest.fn(),
+  getDatabase: jest.fn(),
   executeSql: jest.fn(),
   getCases: jest.fn(),
   getCaseById: jest.fn(),

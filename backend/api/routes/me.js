@@ -5,14 +5,17 @@ import {
   upsertUserModuleState,
 } from "../../database/db.js";
 import { requireAuth } from "../middleware/requireRole.js";
+import localLinksRouter from "./localLinks.js";
 
 const router = Router();
+router.use("/local-links", localLinksRouter);
 const ALLOWED_MODULES = new Set([
   "journey",
   "sprint",
   "flashcards",
   "labs",
   "diagnostic",
+  "mistakes",
   "gamification",
   "preferences",
 ]);
