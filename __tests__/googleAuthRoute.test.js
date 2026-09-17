@@ -68,4 +68,31 @@ describe("Google authentication route", () => {
       process.env.NODE_ENV = previous;
     }
   });
+
+  test.each(["http://127.0.0.1:8080", "http://localhost:8080"])(
+    "development CORS allows %s explicitly, not with wildcard",
+    async (origin) => {
+      const previous = process.env.NODE_ENV;
+      process.env.NODE_ENV = "development";
+      try {
+        const response = await fetch(`${baseUrl}/api/auth/google`, {
+          method: "OPTIONS",
+          headers: {
+            Origin: origin,
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+          },
+        });
+        expect(response.status).toBe(204);
+        expect(response.headers.get("access-control-allow-origin")).toBe(
+          origin,
+        );
+        expect(response.headers.get("access-control-allow-headers")).toContain(
+          "Content-Type",
+        );
+      } finally {
+        process.env.NODE_ENV = previous;
+      }
+    },
+  );
 });

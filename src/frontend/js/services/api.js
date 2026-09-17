@@ -1,6 +1,7 @@
 import { logger } from "../utils/logger.js";
 import { normalizeCertificationId } from "../utils/certUtils.js";
 import { SessionManager } from "../core/sessionManager.js";
+import { getApiBaseUrl } from "./apiConfig.js";
 /**
  * API Service Layer
  * Centralized HTTP client for all backend API calls
@@ -16,29 +17,11 @@ import { SessionManager } from "../core/sessionManager.js";
 /**
  * Base configuration for the API service
  */
-function getConfiguredApiUrl() {
-  if (
-    typeof window !== "undefined" &&
-    window.sessionStorage?.getItem("force_offline") === "true"
-  ) {
-    return "";
-  }
-
-  if (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
-  }
-
-  if (typeof window !== "undefined") {
-    const hostname = window.location?.hostname || "";
-    if (hostname.endsWith("github.io")) return "";
-  }
-
-  return "http://localhost:3001";
-}
-
 const API_CONFIG = {
-  // GitHub Pages is static; avoid calling the visitor's own localhost in production.
-  BASE_URL: getConfiguredApiUrl(),
+  // Resolve at request time: secondary pages can load public config on demand.
+  get BASE_URL() {
+    return getApiBaseUrl();
+  },
   // Timeout aumentado para 8s: PGlite em /mnt/c (WSL) pode levar 5-8s
   // para inicializar. Operações de escrita (login, quiz) também são mais lentas.
   TIMEOUT: 8000,
@@ -107,6 +90,15 @@ function normalizeResponse(body, status) {
  * @returns {Promise<object>} Parsed response or error
  */
 async function fetchWithRetry(endpoint, options = {}) {
+  if (
+    endpoint === "/api/me/profile" &&
+    options.method === "PATCH" &&
+    (!SessionManager.restore()?.accessToken ||
+      SessionManager.restore()?.authenticationMode !== "online")
+  ) {
+    globalThis.window?.dispatchEvent(new CustomEvent("app-reauth-required"));
+    throw createError("authentication_required", 401);
+  }
   if (!API_CONFIG.BASE_URL) {
     throw createError("API disabled for static deployment", 0, {
       apiDisabled: true,
@@ -159,7 +151,12 @@ async function fetchWithRetry(endpoint, options = {}) {
           !endpoint.includes("/auth/login") &&
           !endpoint.includes("/auth/google")
         ) {
-          SessionManager.markRemoteExpired();
+          // A delayed 401 for A must not invalidate a new B session.
+          if (
+            requestOptions.headers.Authorization ===
+            getSessionHeaders().Authorization
+          )
+            SessionManager.markRemoteExpired();
         }
 
         // Don't retry on client errors (4xx)
@@ -336,6 +333,16 @@ export const apiService = {
         body: JSON.stringify({ credential }),
       });
     } catch (error) {
+      if (
+        !error?.apiDisabled &&
+        (error?.statusCode === 0 || error instanceof TypeError)
+      ) {
+        const networkError = createError("AUTH_NETWORK_ERROR", 0, {
+          code: "AUTH_NETWORK_ERROR",
+        });
+        logger.error("Google login failed:", { code: "AUTH_NETWORK_ERROR" });
+        throw networkError;
+      }
       if (!error || !error.apiDisabled)
         logger.error("Google login failed:", error);
       throw error;

@@ -9,7 +9,8 @@
  */
 
 import { logger } from "../utils/logger.js";
-import { userManager } from "../userManager.js";
+import { userManager, offlineLinkingService } from "../userManager.js";
+import { createGoogleLoginOrchestrator } from "./googleLoginOrchestrator.js";
 import { SessionManager } from "../core/sessionManager.js";
 import { PermissionService } from "./permissions.js";
 import { storageManager } from "../storageManager.js";
@@ -26,7 +27,19 @@ import { normalizeCertificationId } from "../utils/certUtils.js";
  * @module services/authService
  */
 
+const googleFlow = createGoogleLoginOrchestrator(
+  storageManager,
+  apiService,
+  offlineLinkingService,
+);
 export const AuthService = {
+  getGoogleLoginState: () => googleFlow.getState(),
+  resumeLocalLink: () => googleFlow.resume(),
+  hasPendingLocalLink: () => googleFlow.hasPending(),
+  isRemoteAuthenticated() {
+    const session = SessionManager.restore();
+    return !!session?.accessToken && session.authenticationMode === "online";
+  },
   // ---------------------------------------------------------------------------
   // Leitura de estado
   // ---------------------------------------------------------------------------
@@ -91,6 +104,8 @@ export const AuthService = {
       if (session.accessToken && session.authenticationMode === "online") {
         try {
           const response = await apiService.getMe(session.user.id);
+          if (SessionManager.restore()?.user?.id !== session.user.id)
+            return this.getCurrentUser();
           if (response?.data?.id) {
             const user = UserMapper.fromDTO({
               ...response.data,
@@ -99,6 +114,8 @@ export const AuthService = {
             });
             SessionManager.persist({ ...session, user });
             const profile = await storageManager.hydrateAccountState();
+            if (SessionManager.restore()?.user?.id !== session.user.id)
+              return this.getCurrentUser();
             if (profile?.data?.preferences) {
               const remotePreferences = profile.data.preferences;
               const preferencesToKeep = {
@@ -160,20 +177,8 @@ export const AuthService = {
     return user;
   },
 
-  async loginWithGoogle(credential) {
-    const response = await apiService.loginWithGoogle(credential);
-    if (!response.success || !response.data?.id) {
-      throw new Error(response.message || "Falha na autenticação Google.");
-    }
-    const user = UserMapper.fromDTO(response.data);
-    SessionManager.persist({
-      user,
-      accessToken: response.data.access_token,
-      tokenExpiresIn: response.data.expires_in,
-      authenticationMode: "online",
-      provider: "google",
-    });
-    return user;
+  loginWithGoogle(credential) {
+    return googleFlow.login(credential);
   },
 
   /**

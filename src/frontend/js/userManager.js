@@ -73,22 +73,8 @@ export const userManager = {
   },
 
   async loginWithGoogle(credential) {
-    const source = offlineLinkingService.captureSource();
-    const response = await apiService.loginWithGoogle(credential);
-    if (!response.success || !response.data?.id) {
-      throw new Error(response.message || "Falha no login Google.");
-    }
-    const user = UserMapper.fromDTO(response.data);
-    SessionManager.persist({
-      user,
-      accessToken: response.data.access_token,
-      tokenExpiresIn: response.data.expires_in,
-      authenticationMode: "online",
-      provider: "google",
-    });
-    if (source)
-      await offlineLinkingService.migrateSource(source.localIdentityId);
-    return user;
+    const { AuthService } = await import("./services/authService.js");
+    return AuthService.loginWithGoogle(credential);
   },
 
   createOfflineUser(email, profile = {}) {

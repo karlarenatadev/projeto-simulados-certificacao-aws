@@ -9,7 +9,7 @@ export async function initAdminPage({ roles, message }) {
 
   const content = document.querySelector('.admin-page-content');
   const screenMessage = document.getElementById('screen-message');
-  const allowed = user && roles.includes(String(user.role).toUpperCase());
+  const allowed = user && AuthService.isRemoteAuthenticated() && roles.includes(String(user.role).toUpperCase());
 
   if (!allowed) {
     if (content) content.hidden = true;

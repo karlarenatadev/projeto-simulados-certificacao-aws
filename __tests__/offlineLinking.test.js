@@ -50,6 +50,9 @@ describe("eligible offline progress linking", () => {
       };
     });
     jest.spyOn(storageManager, "hydrateAccountState").mockResolvedValue(null);
+    jest
+      .spyOn(apiService, "getLocalIdentityLink")
+      .mockResolvedValue({ success: true, data: { status: "unclaimed" } });
     jest.spyOn(apiService, "claimLocalIdentity").mockResolvedValue({
       success: true,
       data: {

@@ -80,7 +80,7 @@ class ValidationUI {
   async restoreOfficialSession() {
     try {
       const user = await AuthService.restoreSession();
-      if (!user) {
+      if (!user || !AuthService.isRemoteAuthenticated()) {
         this.showMessage(tr("validation_session_required"), "error");
         return;
       }

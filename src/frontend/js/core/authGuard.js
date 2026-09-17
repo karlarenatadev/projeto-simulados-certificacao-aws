@@ -32,6 +32,13 @@ export function authGuard(config = {}) {
 
   // 3. Verificação de RBAC (se especificado)
   if (requiredRole) {
+    if (
+      ["admin", "validator"].includes(String(requiredRole).toLowerCase()) &&
+      (!session.accessToken || session.authenticationMode !== "online")
+    ) {
+      window.location.replace(redirectTo);
+      return null;
+    }
     if (!PermissionService.hasAccess(session.user, requiredRole)) {
       logger.warn(
         `AuthGuard: Acesso negado. Requisitado: ${requiredRole}, Possui: ${session.user.role}`,

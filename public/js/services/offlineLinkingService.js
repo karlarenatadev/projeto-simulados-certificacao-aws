@@ -6,7 +6,22 @@ import {
   LOCAL_LINK_SCOPES,
 } from "../core/contracts/localLinkMigration.js";
 
-// Deliberately dependency-injected: GIS does not call this service.
+// Only compatible v1 entities count; metadata alone must not claim a local identity.
+export function hasMeaningfulLocalProgress(snapshot) {
+  return (
+    snapshot?.modules?.some(({ module, state }) => {
+      const field = {
+        diagnostic: "history",
+        mistakes: "mistakes",
+        flashcards: "deck",
+        journey: "completedStages",
+        sprint: "completedStages",
+      }[module];
+      return field && Array.isArray(state?.[field]) && state[field].length > 0;
+    }) === true
+  );
+}
+
 export function createOfflineLinkingService(storage, api) {
   const inFlight = new Map();
 
@@ -27,6 +42,8 @@ export function createOfflineLinkingService(storage, api) {
         state: storage.getLocalModuleState(module, certId),
       })),
     };
+    const existing = storage.getLocalLinkSnapshot(snapshot.localIdentityId);
+    if (!hasMeaningfulLocalProgress(existing || snapshot)) return null;
     if (!storage.saveLocalLinkSnapshot(snapshot))
       throw new Error("local_snapshot_not_saved");
     return { localIdentityId: snapshot.localIdentityId };

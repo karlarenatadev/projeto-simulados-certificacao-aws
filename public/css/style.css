@@ -9063,6 +9063,50 @@ select {
   border-radius: 4px;
   cursor: pointer;
 }
+/* Session continuity uses the shared A3 surface/action tokens, not a separate login theme. */
+.auth-session-notice {
+  position: fixed;
+  inset: auto 1rem 1rem auto;
+  z-index: 1000;
+  width: min(32rem, calc(100% - 2rem));
+  padding: 1rem;
+  color: var(--text-main);
+  background: var(--bg-card);
+  border: 1px solid var(--border-theme);
+}
+.auth-session-notice[hidden],
+.auth-session-dialog:not([open]) {
+  display: none;
+}
+.auth-session-dialog {
+  margin: auto;
+  width: min(32rem, calc(100% - 2rem));
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+  padding: 1.5rem;
+  color: var(--text-main);
+  background: var(--bg-card);
+  border: 1px solid var(--border-theme);
+}
+.auth-session-dialog::backdrop {
+  background: color-mix(in srgb, var(--a3-primary-dark) 65%, transparent);
+}
+.auth-session-dialog h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.auth-session-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.auth-google-target {
+  margin: 1rem 0;
+  max-width: 100%;
+  overflow: hidden;
+}
 
 
 /* --- cases.css --- */

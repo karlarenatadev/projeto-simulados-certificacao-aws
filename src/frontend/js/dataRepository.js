@@ -57,7 +57,7 @@ export function createDataRepository(storage, _api = null) {
       return (
         current?.accessToken &&
         current.authenticationMode === "online" &&
-        (!options.expectedUserId || current.user?.id === options.expectedUserId)
+        current.user?.id === (options.expectedUserId || session?.user?.id)
       );
     };
     if (
@@ -73,14 +73,14 @@ export function createDataRepository(storage, _api = null) {
     const operation = previous
       .then(async () => {
         for (let attempt = 0; attempt < 3; attempt += 1) {
-          if (options.confirmRemote && !contextValid())
-            return { syncPending: true, authRequired: true };
+          if (!contextValid()) return { syncPending: true, authRequired: true };
           const state = storage.getAccountModuleState(module, certId);
           if (!state) return null;
           const remote = _api.getModuleState
             ? await _safeApiCall(() => _api.getModuleState(module, certId))
             : null;
           const remoteState = remote?.data?.state_json;
+          if (!contextValid()) return { syncPending: true, authRequired: true };
           if (options.confirmRemote) {
             if (!contextValid())
               return { syncPending: true, authRequired: true };
@@ -470,8 +470,17 @@ export function createDataRepository(storage, _api = null) {
         return { syncPending: true, authRequired: true };
       }
       syncInProgress = true;
+      const contextValid = () => {
+        const current = SessionManager.restore();
+        return (
+          current?.user?.id === session.user.id &&
+          current.authenticationMode === "online" &&
+          !!current.accessToken
+        );
+      };
       try {
         const profile = await _safeApiCall(() => _api.getMyProfile());
+        if (!contextValid()) return { syncPending: true, authRequired: true };
         await Promise.all(
           [
             "journey",
@@ -482,11 +491,12 @@ export function createDataRepository(storage, _api = null) {
             "diagnostic",
           ].flatMap((module) =>
             ACCOUNT_CERTIFICATIONS.map(async (certId) => {
+              if (!contextValid()) return;
               const local = storage.getAccountModuleState(module, certId);
               const remote = await _safeApiCall(() =>
                 _api.getModuleState(module, certId),
               );
-              if (remote === null) return;
+              if (remote === null || !contextValid()) return;
               const remoteState = remote?.data?.state_json;
               if (remoteState && typeof remoteState === "object") {
                 const merged = reconcileModuleState(module, local, remoteState);
@@ -499,7 +509,10 @@ export function createDataRepository(storage, _api = null) {
             }),
           ),
         );
-        await syncModuleState("gamification");
+        if (!contextValid()) return { syncPending: true, authRequired: true };
+        await syncModuleState("gamification", null, {
+          expectedUserId: session.user.id,
+        });
         return profile;
       } finally {
         syncInProgress = false;

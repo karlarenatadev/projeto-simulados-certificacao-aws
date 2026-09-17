@@ -14,7 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env'), quiet: true });
-const { renderPublicConfig, assertNoPublicSecrets } = require('./public-runtime-config.cjs');
+const { renderPublicConfig, injectPublicConfig, assertNoPublicSecrets } = require('./public-runtime-config.cjs');
 
 
 function copyDirectoryRecursive(src, dest) {
@@ -182,6 +182,9 @@ function processHTMLTemplates() {
       html = html.replace(commentPlaceholder, '\n' + content);
       html = html.replace(simplePlaceholder,  content);
     }
+
+    // Public API configuration must precede clients on direct secondary-page access.
+    html = injectPublicConfig(html);
 
     // --- START CACHE BUSTING ---
     const buildHash = crypto.createHash('sha1').update(html).digest('hex').slice(0, 8);
@@ -456,6 +459,7 @@ try {
         /src="\.\/js\/pwa\/registerServiceWorker\.js"/g,
         'src="../js/pwa/registerServiceWorker.js"',
       );
+      validationHtml = injectPublicConfig(validationHtml, '../');
       const buildHash = crypto.createHash('sha1').update(validationHtml).digest('hex').slice(0, 8);
       validationHtml = validationHtml.replace(/(src|href)="([^"?]+\.(js|css))"/g, (match, attr, filePath) => {
         if (filePath.startsWith('http')) return match;

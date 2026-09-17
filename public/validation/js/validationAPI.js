@@ -1,22 +1,25 @@
-const VALIDATION_API_BASE_URL = window.VALIDATION_API_BASE_URL
-  || (['localhost', '127.0.0.1'].includes(window.location.hostname)
-    ? 'http://localhost:3001'
-    : '');
-
 async function validationFetch(path, options = {}) {
+  const { getApiBaseUrl } = await import('../../js/services/apiConfig.js');
+  const apiBaseUrl = getApiBaseUrl(window.VALIDATION_API_BASE_URL);
+  const { SessionManager } = await import('../../js/core/sessionManager.js');
   let authHeaders = {};
   try {
-    const session = JSON.parse(localStorage.getItem('cloudacademy_session') || 'null');
-    if (session?.accessToken) authHeaders = { Authorization: `Bearer ${session.accessToken}` };
+    const session = SessionManager.restore();
+    if (session?.authenticationMode === 'online' && session.accessToken) authHeaders = { Authorization: `Bearer ${session.accessToken}` };
   } catch {
     // Sessão inválida será rejeitada pela API.
   }
-  const response = await fetch(`${VALIDATION_API_BASE_URL}${path}`, {
+  if (!authHeaders.Authorization && path !== '/api/auth/login') {
+    window.dispatchEvent(new CustomEvent('app-reauth-required'));
+    throw Object.assign(new Error('authentication_required'), { status: 401 });
+  }
+  const response = await fetch(`${apiBaseUrl}${path}`, {
     ...options,
     headers: { 'Content-Type': 'application/json', ...authHeaders, ...(options.headers || {}) },
   });
   const body = await response.json().catch(() => ({}));
   if (!response.ok) {
+    if (response.status === 401 && authHeaders.Authorization === `Bearer ${SessionManager.restore()?.accessToken}`) SessionManager.markRemoteExpired();
     const error = new Error(body.error || body.message || `HTTP ${response.status}`);
     error.status = response.status;
     throw error;

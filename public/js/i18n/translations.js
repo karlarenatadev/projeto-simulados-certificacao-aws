@@ -738,6 +738,22 @@ export const translations = {
     auth_continue_offline: "Continuar offline",
     auth_sync_paused: "Sincronização pausada até a autenticação.",
     auth_local_progress_preserved: "Seu progresso local foi preservado.",
+    auth_session_status: "Sessão e sincronização",
+    auth_local_login:
+      "Estudo local ativo. Entre com Google para sincronizar progresso compatível.",
+    auth_link_loading: "Sincronizando progresso local compatível...",
+    auth_link_pending:
+      "Seu login foi concluído, mas parte do progresso local ainda aguarda sincronização.",
+    auth_link_completed: "Seu progresso local compatível foi sincronizado.",
+    auth_link_conflict: "Este progresso local já foi vinculado a outra conta.",
+    auth_link_retry: "Tentar sincronizar novamente",
+    auth_continue_account: "Continuar com esta conta",
+    auth_account_changed:
+      "Há progresso local associado à sessão anterior e ele não foi transferido.",
+    auth_google_failed:
+      "Não foi possível entrar com Google. Seu progresso local permanece preservado. Tente novamente.",
+    auth_google_denied:
+      "Acesso não autorizado. Use uma conta Google corporativa permitida.",
     resume_session_title: "Sessão ativa encontrada",
     resume_session_confirm: "Retomar",
     resume_session_cancel: "Descartar",
@@ -1483,6 +1499,23 @@ export const translations = {
     auth_continue_offline: "Continue offline",
     auth_sync_paused: "Sync is paused until authentication.",
     auth_local_progress_preserved: "Your local progress was preserved.",
+    auth_session_status: "Session and sync",
+    auth_local_login:
+      "Local study is available. Sign in with Google to sync compatible progress.",
+    auth_link_loading: "Syncing compatible local progress...",
+    auth_link_pending:
+      "You are signed in, but some local progress is still waiting to sync.",
+    auth_link_completed: "Your compatible local progress was synced.",
+    auth_link_conflict:
+      "This local progress has already been linked to another account.",
+    auth_link_retry: "Retry sync",
+    auth_continue_account: "Continue with this account",
+    auth_account_changed:
+      "Local progress belongs to the previous session and was not transferred.",
+    auth_google_failed:
+      "Could not sign in with Google. Your local progress is preserved. Please try again.",
+    auth_google_denied:
+      "Access denied. Use an allowed corporate Google account.",
     resume_session_title: "Active session found",
     resume_session_confirm: "Resume",
     resume_session_cancel: "Discard",

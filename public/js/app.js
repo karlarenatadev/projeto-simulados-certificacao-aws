@@ -257,12 +257,32 @@ function showLoginUI() {
 
     if (!devEmailEnabled) {
       initializeGoogleLogin({
+        onProgress: (phase) => {
+          const status = document.getElementById("google-login-status");
+          if (status)
+            status.textContent = phase
+              ? t(
+                  phase === "syncing" ? "auth_link_loading" : "auth_loading",
+                  uiState.language,
+                )
+              : "";
+        },
         onSuccess: (user) => {
           overlay.classList.add("hidden");
           resolve(user);
         },
-        onError: (error) =>
-          showError(error?.message || "Erro ao autenticar com Google."),
+        onError: (error) => {
+          const status = document.getElementById("google-login-config-error");
+          if (status) {
+            status.textContent = t(
+              error?.statusCode === 403
+                ? "auth_google_denied"
+                : "auth_google_failed",
+              uiState.language,
+            );
+            status.classList.remove("hidden");
+          }
+        },
       }).catch((error) => {
         const configError = document.getElementById(
           "google-login-config-error",
@@ -315,11 +335,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Sessão garantida a partir daqui
       authenticatedUser = user;
-      if (AuthService.getSession()?.sessionExpired) {
-        NotificationService.info(
-          `${t("auth_session_expired", uiState.language)} ${t("auth_local_progress_preserved", uiState.language)}`,
-        );
-      }
       await quizManager.initialize(user.id);
 
       logger.info(`✓ Sessão ativa: ${user.email || user.id} (${user.role})`);

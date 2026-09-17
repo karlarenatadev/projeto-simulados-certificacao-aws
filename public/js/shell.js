@@ -28,6 +28,8 @@ import { resolveAppLinks, resolveAppUrl } from "./core/navigation.js";
 import { t } from "./i18n/useTranslation.js";
 import { openPomodoroWidget } from "./pomodoroManager.js";
 import { storageManager } from "./storageManager.js";
+import { mountSessionUX } from "./services/sessionUX.js";
+let disposeSessionUX;
 
 // 🔹 CONSTANTES 🔹──────────────────────────────────────────────────────────────
 
@@ -1007,6 +1009,17 @@ export async function initShell(user) {
 
   renderUserMenu(resolvedUser);
   buildSidebar(resolvedUser);
+  if (!disposeSessionUX) {
+    disposeSessionUX = mountSessionUX();
+    window.addEventListener(
+      "pagehide",
+      () => {
+        disposeSessionUX?.();
+        disposeSessionUX = null;
+      },
+      { once: true },
+    );
+  }
 }
 
 async function _tryRestoreSession() {

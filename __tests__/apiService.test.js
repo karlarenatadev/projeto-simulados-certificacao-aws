@@ -53,6 +53,22 @@ describe("apiService response normalization", () => {
     expect(response.meta.count).toBe(1);
   });
 
+  test("Google transport failure is AUTH_NETWORK_ERROR, not invalid credential", async () => {
+    jest.useFakeTimers();
+    global.fetch.mockRejectedValueOnce(new TypeError("Failed to fetch"));
+    try {
+      await expect(
+        apiService.loginWithGoogle("opaque-fixture"),
+      ).rejects.toMatchObject({
+        statusCode: 0,
+        details: { code: "AUTH_NETWORK_ERROR" },
+      });
+    } finally {
+      jest.clearAllTimers();
+      jest.useRealTimers();
+    }
+  });
+
   test("preserves a direct response body", async () => {
     const payload = { id: "record-1", data: { value: "domain data" } };
     global.fetch.mockResolvedValue(jsonResponse(payload));

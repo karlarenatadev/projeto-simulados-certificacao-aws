@@ -75,7 +75,22 @@ export class SessionManager {
       ).toISOString();
     }
 
+    const before = localStorage.getItem(SESSION_KEY);
     localStorage.setItem(SESSION_KEY, JSON.stringify(safeSession));
+    // UI subscription only; touch/lastActivity never schedules renewal.
+    try {
+      const previous = before ? JSON.parse(before) : null;
+      if (
+        previous?.authenticationMode !== safeSession.authenticationMode ||
+        previous?.user?.id !== safeSession.user.id ||
+        previous?.expiresAt !== safeSession.expiresAt
+      )
+        globalThis.window?.dispatchEvent(
+          new CustomEvent("app-session-changed"),
+        );
+    } catch {
+      /* Malformed previous state is handled by restore. */
+    }
   }
 
   /**
