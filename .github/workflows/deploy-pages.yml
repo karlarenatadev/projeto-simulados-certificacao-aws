@@ -21,6 +21,11 @@ jobs:
   build:
     name: Build Frontend
     runs-on: ubuntu-latest
+    # Public frontend settings: repository Variables, never backend secrets.
+    env:
+      PUBLIC_BUILD_TARGET: pages
+      GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+      PUBLIC_API_BASE_URL: ${{ vars.PUBLIC_API_BASE_URL }}
 
     steps:
       - name: Checkout repository
@@ -53,6 +58,8 @@ jobs:
           test -f public/.nojekyll
 
           test -f public/js/app.js
+          test -f public/js/runtimeConfig.js
+          node -e "require('./scripts/public-runtime-config.cjs').assertPublicConfigArtifact('public/js/runtimeConfig.js', process.env)"
           test -f public/css/style.css
 
           test -f public/data/questions/clf-c02.json
@@ -117,6 +124,7 @@ jobs:
           for path in \
             "" \
             "js/app.js" \
+            "js/runtimeConfig.js" \
             "css/style.css" \
             "manifest.json" \
             "sw.js" \

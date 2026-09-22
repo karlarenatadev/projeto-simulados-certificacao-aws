@@ -79,7 +79,7 @@ export function createGoogleLoginOrchestrator(storage, api, linking) {
     if (loginInFlight) return loginInFlight;
     loginInFlight = (async () => {
       const previous = SessionManager.restore();
-      const source = linking.captureSource(); // Must precede POST and session replacement.
+      let source = linking.captureSource(); // Must precede POST and session replacement.
       publish({ migration: "none", phase: "authenticating" });
       const response = await api.loginWithGoogle(credential);
       if (
@@ -92,6 +92,9 @@ export function createGoogleLoginOrchestrator(storage, api, linking) {
       // Do not apply a delayed login to a session changed in another tab.
       if (SessionManager.restore()?.user?.id !== previous?.user?.id)
         throw new Error("auth_context_changed");
+      // Include study performed while Google authentication was pending, still
+      // in the original namespace and before replacing the session.
+      source = linking.captureSource() || source;
       const user = UserMapper.fromDTO(response.data);
       SessionManager.persist({
         user,

@@ -1,5 +1,6 @@
 const fs = require("node:fs");
 const path = require("node:path");
+const vm = require("node:vm");
 
 const SECRET_NAMES = [
   "AUTH_SESSION_SECRET",
@@ -10,7 +11,20 @@ const SECRET_NAMES = [
 ];
 
 function createPublicConfig(env) {
+  const distribution = env.PUBLIC_BUILD_TARGET === "pages";
+  const googleClientId = String(env.GOOGLE_CLIENT_ID || "").trim();
   const apiBaseUrl = String(env.PUBLIC_API_BASE_URL || "").trim();
+  if (distribution) {
+    for (const [name, value] of Object.entries({
+      GOOGLE_CLIENT_ID: googleClientId,
+      PUBLIC_API_BASE_URL: apiBaseUrl,
+    })) {
+      if (!value)
+        throw new Error(
+          `Pages build requires ${name}. Configure the GitHub Actions repository variable ${name}.`,
+        );
+    }
+  }
   if (apiBaseUrl) {
     let url;
     try {
@@ -24,16 +38,34 @@ function createPublicConfig(env) {
       url.password ||
       url.search ||
       url.hash ||
-      (env.NODE_ENV === "production" &&
+      ((distribution || env.NODE_ENV === "production") &&
+        url.protocol !== "https:") ||
+      ((distribution || env.NODE_ENV === "production") &&
         ["localhost", "127.0.0.1", "[::1]", "0.0.0.0"].includes(url.hostname))
     )
       throw new Error("Unsafe PUBLIC_API_BASE_URL");
   }
   return {
-    googleClientId: String(env.GOOGLE_CLIENT_ID || "").trim(),
+    googleClientId,
     apiBaseUrl,
     allowDevEmailLogin: env.ALLOW_DEV_EMAIL_LOGIN === "true",
   };
+}
+
+// Inspect the emitted file, not just the environment used to generate it.
+function assertPublicConfigArtifact(file, env) {
+  const expected = createPublicConfig(env);
+  const context = {};
+  vm.runInNewContext(fs.readFileSync(file, "utf8"), context, { timeout: 1000 });
+  const actual = context.__APP_CONFIG__;
+  if (
+    !actual ||
+    Object.keys(actual).length !== Object.keys(expected).length ||
+    Object.entries(expected).some(([key, value]) => actual[key] !== value)
+  )
+    throw new Error(
+      "Generated runtimeConfig.js does not match public build configuration",
+    );
 }
 
 function renderPublicConfig(env) {
@@ -78,4 +110,5 @@ module.exports = {
   renderPublicConfig,
   injectPublicConfig,
   assertNoPublicSecrets,
+  assertPublicConfigArtifact,
 };

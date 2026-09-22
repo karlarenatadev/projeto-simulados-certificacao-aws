@@ -45,6 +45,39 @@ export function createDataRepository(storage, _api = null) {
 
   const ACCOUNT_CERTIFICATIONS = ["clf-c02", "saa-c03", "dva-c02", "aif-c01"];
 
+  async function readRemoteModuleState(module, certId) {
+    if (!_api?.getModuleState) return { syncPending: true };
+    try {
+      const response = await _api.getModuleState(module, certId);
+      if (response?.success !== true || response.status >= 400)
+        return { syncPending: true };
+      // This API reports an absent state as 200/success + data:null. An HTTP
+      // 404 (possibly a missing route), failed GET or malformed body is not proof.
+      if (response.data === null) return { state: null, version: 0 };
+      const { state_json: state, version } = response.data || {};
+      if (
+        !state ||
+        typeof state !== "object" ||
+        Array.isArray(state) ||
+        !Number.isSafeInteger(version) ||
+        version < 1
+      )
+        return { syncPending: true };
+      return { state, version };
+    } catch (error) {
+      logger.warn(
+        "[DataRepository] Remote read failed; sync remains pending:",
+        error?.message,
+      );
+      return {
+        syncPending: true,
+        ...([401, 403].includes(error?.statusCode || error?.status)
+          ? { authRequired: true }
+          : {}),
+      };
+    }
+  }
+
   async function syncModuleState(module, certId = null, options = {}) {
     if (
       !_api?.saveModuleState ||
@@ -74,39 +107,31 @@ export function createDataRepository(storage, _api = null) {
       .then(async () => {
         for (let attempt = 0; attempt < 3; attempt += 1) {
           if (!contextValid()) return { syncPending: true, authRequired: true };
-          const state = storage.getAccountModuleState(module, certId);
-          if (!state) return null;
-          const remote = _api.getModuleState
-            ? await _safeApiCall(() => _api.getModuleState(module, certId))
-            : null;
-          const remoteState = remote?.data?.state_json;
+          if (
+            !storage.getAccountModuleState(module, certId) &&
+            !options.hydrateOnly
+          )
+            return null;
+          const remote = await readRemoteModuleState(module, certId);
           if (!contextValid()) return { syncPending: true, authRequired: true };
-          if (options.confirmRemote) {
-            if (!contextValid())
-              return { syncPending: true, authRequired: true };
-            if (
-              !remote ||
-              remote.success === false ||
-              remote.data === undefined
-            )
-              return { syncPending: true };
-            if (
-              remote.data !== null &&
-              (!remoteState ||
-                !Number.isSafeInteger(Number(remote.data.version)) ||
-                Number(remote.data.version) < 1)
-            )
-              return { syncPending: true };
-          }
+          if (remote.syncPending) return remote;
+          const remoteState = remote.state;
+          // Study may continue while GET is pending. Merge the current local
+          // state, with no await between this read and the local write.
+          const state = storage.getAccountModuleState(module, certId);
+          if (!state && !remoteState) return null;
           if (remoteState && typeof remoteState === "object") {
             const merged = reconcileModuleState(module, state, remoteState);
             storage.setAccountModuleState(module, certId, merged.state);
+            // Hydration merges existing remote state locally. A create conflict
+            // still follows the retry/merge/conditional-write path below.
+            if (options.hydrateOnly && attempt === 0) return merged;
             if (JSON.stringify(merged.state) === JSON.stringify(remoteState)) {
               return options.confirmRemote
                 ? {
                     ...merged,
                     remoteConfirmed: true,
-                    version: Number(remote.data.version),
+                    version: remote.version,
                   }
                 : merged;
             }
@@ -115,7 +140,7 @@ export function createDataRepository(storage, _api = null) {
                 module,
                 certId,
                 merged.state,
-                remote?.data?.version ?? null,
+                remote.version,
               );
               if (!options.confirmRemote) return saved;
               if (!contextValid())
@@ -132,7 +157,7 @@ export function createDataRepository(storage, _api = null) {
               return { ...merged, syncPending: true };
             }
           }
-          if (options.confirmRemote && remote?.data === null) {
+          if (remote.version === 0) {
             try {
               const saved = await _api.saveModuleState(
                 module,
@@ -142,6 +167,7 @@ export function createDataRepository(storage, _api = null) {
               );
               if (!contextValid())
                 return { syncPending: true, authRequired: true };
+              if (!options.confirmRemote) return saved;
               return saved?.success && Number(saved.data?.version) > 0
                 ? { remoteConfirmed: true, version: Number(saved.data.version) }
                 : { syncPending: true };
@@ -150,15 +176,6 @@ export function createDataRepository(storage, _api = null) {
               return { syncPending: true };
             }
           }
-          if (attempt > 0) {
-            logger.warn(
-              "[DataRepository] Remote state unavailable during conflict retry; keeping local state pending",
-            );
-            return { state, outcome: "conflict-pending", syncPending: true };
-          }
-          return _safeApiCall(() =>
-            _api.saveModuleState(module, certId, state),
-          );
         }
         return null;
       })
@@ -492,20 +509,10 @@ export function createDataRepository(storage, _api = null) {
           ].flatMap((module) =>
             ACCOUNT_CERTIFICATIONS.map(async (certId) => {
               if (!contextValid()) return;
-              const local = storage.getAccountModuleState(module, certId);
-              const remote = await _safeApiCall(() =>
-                _api.getModuleState(module, certId),
-              );
-              if (remote === null || !contextValid()) return;
-              const remoteState = remote?.data?.state_json;
-              if (remoteState && typeof remoteState === "object") {
-                const merged = reconcileModuleState(module, local, remoteState);
-                storage.setAccountModuleState(module, certId, merged.state);
-              } else if (local && _api.saveModuleState) {
-                await _safeApiCall(() =>
-                  _api.saveModuleState(module, certId, local),
-                );
-              }
+              await syncModuleState(module, certId, {
+                expectedUserId: session.user.id,
+                hydrateOnly: true,
+              });
             }),
           ),
         );

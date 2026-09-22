@@ -14,7 +14,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env'), quiet: true });
-const { renderPublicConfig, injectPublicConfig, assertNoPublicSecrets } = require('./public-runtime-config.cjs');
+const { renderPublicConfig, injectPublicConfig, assertNoPublicSecrets, assertPublicConfigArtifact } = require('./public-runtime-config.cjs');
 
 
 function copyDirectoryRecursive(src, dest) {
@@ -224,6 +224,8 @@ console.log('🔨 Building...');
 
 
 try {
+  // Validate distribution settings before cleaning or generating any artifact.
+  const runtimeConfig = renderPublicConfig(process.env);
   console.log('🛡️ Validando Banco de Questões...');
   const { execSync } = require('child_process');
   execSync('node scripts/validate-question-bank.js', { stdio: 'inherit' });
@@ -245,9 +247,10 @@ try {
   // Public runtime configuration contains only non-secret client settings.
   fs.writeFileSync(
     path.join('public/js', 'runtimeConfig.js'),
-    renderPublicConfig(process.env),
+    runtimeConfig,
     'utf8',
   );
+  assertPublicConfigArtifact(path.join('public/js', 'runtimeConfig.js'), process.env);
 
   // ============================================================
   // HTML TEMPLATES — build-time partial injection

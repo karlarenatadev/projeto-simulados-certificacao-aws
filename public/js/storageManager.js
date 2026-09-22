@@ -1128,9 +1128,22 @@ export class StorageManager {
     )
       return false;
     const key = this._getKey("local_link_snapshot_v1");
-    // Keep the original migration snapshot stable across a crash/retry.
-    if (!localStorage.getItem(key))
-      localStorage.setItem(key, JSON.stringify(snapshot));
+    const existingRaw = localStorage.getItem(key);
+    const existing = existingRaw ? JSON.parse(existingRaw) : null;
+    if (
+      existing &&
+      (existing.localIdentityId !== snapshot.localIdentityId ||
+        existing.migrationVersion !== snapshot.migrationVersion)
+    )
+      return false;
+    // Keep the base stable for pending/crashed migrations. New captures are
+    // additive candidates; only a server-confirmed owner may import them.
+    localStorage.setItem(
+      key,
+      JSON.stringify(
+        existing ? { ...existing, pendingModules: snapshot.modules } : snapshot,
+      ),
+    );
     return true;
   }
 

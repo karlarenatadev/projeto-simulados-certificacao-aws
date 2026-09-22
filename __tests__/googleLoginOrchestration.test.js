@@ -4,6 +4,7 @@ import { StorageManager } from "../src/frontend/js/storageManager.js";
 import { createDataRepository } from "../src/frontend/js/dataRepository.js";
 import { createOfflineLinkingService } from "../src/frontend/js/services/offlineLinkingService.js";
 import { createGoogleLoginOrchestrator } from "../src/frontend/js/services/googleLoginOrchestrator.js";
+import { LOCAL_LINK_SCOPES } from "../src/frontend/js/core/contracts/localLinkMigration.js";
 
 let raw, storage, api, linking, flow, owner, status, remote, sequence, failSync;
 const userId = () => SessionManager.restore()?.user?.id;
@@ -85,6 +86,9 @@ beforeEach(() => {
     })),
     saveModuleState: jest.fn(async (module, cert, state, version) => {
       if (failSync) throw new Error("network offline");
+      const current = remote.get(`${userId()}:${module}:${cert}`);
+      if (version !== (current?.version || 0))
+        throw Object.assign(new Error("version conflict"), { statusCode: 409 });
       const value = { state_json: state, version: version + 1 };
       remote.set(`${userId()}:${module}:${cert}`, value);
       return { success: true, data: value };
@@ -93,6 +97,193 @@ beforeEach(() => {
   storage = createDataRepository(raw, api);
   linking = createOfflineLinkingService(storage, api);
   flow = createGoogleLoginOrchestrator(storage, api, linking);
+});
+
+function scopeState(module, certId, ids) {
+  if (module === "diagnostic")
+    return {
+      history: ids.map((id) => ({
+        certId,
+        mode: "diagnostic",
+        date: `2026-09-${20 + Number(id)}T10:00:00Z`,
+        score: Number(id),
+        total: 10,
+      })),
+    }; // Deliberately legacy/no ID: D4.2.1 must survive recapture/resume.
+  if (module === "mistakes")
+    return {
+      mistakes: ids.map((questionId) => ({
+        questionId,
+        cert: certId.toUpperCase(),
+        wrongCount: 2,
+      })),
+    };
+  if (module === "flashcards")
+    return {
+      deck: ids.map((questionId) => ({ questionId, certId, reviewCount: 2 })),
+    };
+  return { completedStages: ids };
+}
+
+describe("D4.2.2 additive local snapshots", () => {
+  test.each([1, 2])(
+    "successful login after %i failures imports every intervening study session",
+    async (failures) => {
+      local(false);
+      for (let attempt = 1; attempt <= failures; attempt++) {
+        raw.setAccountModuleState("journey", "aif-c01", {
+          completedStages: [String(attempt)],
+        });
+        api.loginWithGoogle.mockRejectedValueOnce({ statusCode: 0 });
+        await expect(flow.login("A")).rejects.toMatchObject({ statusCode: 0 });
+      }
+      raw.setAccountModuleState("journey", "aif-c01", {
+        completedStages: [String(failures + 1)],
+      });
+      await flow.login("A");
+      expect(
+        remote.get("A:journey:aif-c01").state_json.completedStages.sort(),
+      ).toEqual(
+        Array.from({ length: failures + 1 }, (_, index) => String(index + 1)),
+      );
+      expect(api.claimLocalIdentity).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  test.each(LOCAL_LINK_SCOPES)(
+    "$module/$certId retains A + B + C through repeated failed logins",
+    async ({ module, certId }) => {
+      local(false);
+      raw.setAccountModuleState(
+        module,
+        certId,
+        scopeState(module, certId, ["1"]),
+      );
+      api.loginWithGoogle.mockRejectedValueOnce({ statusCode: 0 });
+      await expect(flow.login("A")).rejects.toMatchObject({ statusCode: 0 });
+      const base = storage.getLocalLinkSnapshot("local_source").modules;
+      for (const id of ["2", "3"]) {
+        // Keep only the new item in the live source to also prove that recapture
+        // cannot erase items already protected by the original snapshot.
+        raw.setAccountModuleState(
+          module,
+          certId,
+          scopeState(module, certId, [id]),
+        );
+        api.loginWithGoogle.mockRejectedValueOnce({ statusCode: 503 });
+        await expect(flow.login("A")).rejects.toMatchObject({
+          statusCode: 503,
+        });
+        const captured = storage.getLocalLinkSnapshot("local_source");
+        expect(captured.modules).toEqual(base);
+        const candidate = captured.pendingModules.find(
+          (s) => s.module === module && s.certId === certId,
+        ).state;
+        const field =
+          { diagnostic: "history", mistakes: "mistakes", flashcards: "deck" }[
+            module
+          ] || "completedStages";
+        expect(candidate[field]).toHaveLength(Number(id));
+        expect(api.claimLocalIdentity).not.toHaveBeenCalled();
+      }
+      await flow.login("A");
+      expect(flow.getState().migration).toBe("completed");
+      const final = remote.get(`A:${module}:${certId}`).state_json;
+      const field =
+        { diagnostic: "history", mistakes: "mistakes", flashcards: "deck" }[
+          module
+        ] || "completedStages";
+      expect(final[field]).toHaveLength(3);
+      expect(storage.getLocalLinkSnapshot("local_source").modules).toEqual(
+        base,
+      );
+    },
+  );
+
+  test("partial remote writes resume with fresh captures, confirmed versions and recent account study", async () => {
+    local();
+    const save = api.saveModuleState.getMockImplementation();
+    let loseReply = true;
+    api.saveModuleState.mockImplementation(async (...args) => {
+      const result = await save(...args);
+      if (loseReply && args[0] === "flashcards") {
+        loseReply = false;
+        throw new Error("reply lost after commit");
+      }
+      return result;
+    });
+    await flow.login("A");
+    expect(flow.getState().migration).toBe("pending");
+    expect(remote.size).toBe(9);
+    const base = storage.getLocalLinkSnapshot("local_source").modules;
+    const diagnosticVersion = remote.get("A:diagnostic:clf-c02").version;
+    const deckVersion = remote.get("A:flashcards:clf-c02").version;
+    raw.setAccountModuleState("journey", "aif-c01", {
+      completedStages: ["account-new"],
+    });
+    local(false);
+    raw.setAccountModuleState(
+      "mistakes",
+      "clf-c02",
+      scopeState("mistakes", "clf-c02", ["2"]),
+    );
+    const remoteMistakes = remote.get("A:mistakes:clf-c02");
+    remoteMistakes.version = 7;
+    remoteMistakes.state_json.mistakes.push({
+      questionId: "other-device",
+      certId: "clf-c02",
+      wrongCount: 4,
+    });
+    api.saveModuleState.mockClear();
+    flow = createGoogleLoginOrchestrator(
+      storage,
+      api,
+      createOfflineLinkingService(storage, api),
+    );
+    await flow.login("A");
+    expect(flow.getState().migration).toBe("completed");
+    expect(remote.size).toBe(20);
+    expect(remote.get("A:diagnostic:clf-c02").version).toBe(diagnosticVersion);
+    expect(remote.get("A:flashcards:clf-c02").version).toBe(deckVersion);
+    expect(
+      remote
+        .get("A:mistakes:clf-c02")
+        .state_json.mistakes.map((m) => m.questionId)
+        .sort(),
+    ).toEqual(["2", "other-device", "q1"]);
+    expect(api.saveModuleState).toHaveBeenCalledWith(
+      "mistakes",
+      "clf-c02",
+      expect.any(Object),
+      7,
+    );
+    expect(
+      remote.get("A:journey:aif-c01").state_json.completedStages,
+    ).toContain("account-new");
+    const receipts = api.completeLocalIdentityLink.mock.calls[0][1];
+    expect(new Set(receipts.map((r) => `${r.module}:${r.certId}`)).size).toBe(
+      20,
+    );
+    expect(storage.getLocalLinkSnapshot("local_source").modules).toEqual(base);
+    const writes = api.saveModuleState.mock.calls.length;
+    await flow.resume();
+    expect(api.saveModuleState).toHaveBeenCalledTimes(writes);
+  });
+
+  test("includes progress produced during authentication before switching namespaces", async () => {
+    local();
+    const login = api.loginWithGoogle.getMockImplementation();
+    api.loginWithGoogle.mockImplementationOnce(async (...args) => {
+      raw.setAccountModuleState("journey", "aif-c01", {
+        completedStages: ["during-login"],
+      });
+      return login(...args);
+    });
+    await flow.login("A");
+    expect(
+      remote.get("A:journey:aif-c01").state_json.completedStages,
+    ).toContain("during-login");
+  });
 });
 afterEach(() => {
   jest.restoreAllMocks();

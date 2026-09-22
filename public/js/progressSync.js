@@ -20,24 +20,71 @@ function identity(item) {
   return `${certification}:${questionId || item?.question || ""}`;
 }
 
+function stableAttemptValue(value) {
+  if (Array.isArray(value)) return value.map(stableAttemptValue);
+  if (value && typeof value === "object")
+    return Object.fromEntries(
+      Object.keys(value)
+        .sort()
+        .map((key) => [key, stableAttemptValue(value[key])]),
+    );
+  return value;
+}
+
+function legacyAttemptIdentity(item) {
+  const certification = String(
+    item.certId ||
+      item.certification ||
+      item.cert ||
+      item.certificationId ||
+      "",
+  )
+    .trim()
+    .toLowerCase();
+  const timestamp = [item.completedAt, item.date, item.timestamp]
+    .map((value) => (value ? Date.parse(value) : NaN))
+    .find(Number.isFinite);
+  const hasResult =
+    [item.score, item.percentage, item.correctAnswers, item.overallScore].some(
+      (value) => typeof value === "number" && Number.isFinite(value),
+    ) ||
+    (Array.isArray(item.answers) && item.answers.length > 0);
+  // A score alone cannot distinguish repeated attempts. Keep sparse records
+  // independently instead of guessing that they represent the same attempt.
+  if (!certification || timestamp === undefined || !hasResult) return null;
+  const snapshot = { ...item };
+  delete snapshot.status;
+  // Compare the complete recorded payload conservatively: different answers,
+  // scores or other attempt details must not collapse, even at the same time.
+  return JSON.stringify(["legacy", stableAttemptValue(snapshot)]);
+}
+
 export function mergeAttempts(local = [], remote = []) {
-  const merged = new Map();
+  const merged = [];
+  const positions = new Map();
   [...local, ...remote].forEach((item) => {
-    const key = item?.attemptId || item?.quizId || item?.id;
-    if (!key) return;
-    const previous = merged.get(key);
-    if (!previous) merged.set(key, item);
-    else
-      merged.set(key, {
+    if (!item || typeof item !== "object" || Array.isArray(item)) return;
+    const canonicalId = item.attemptId || item.quizId || item.id;
+    const key = canonicalId
+      ? JSON.stringify(["canonical", canonicalId])
+      : legacyAttemptIdentity(item);
+    const position = key === null ? undefined : positions.get(key);
+    if (position === undefined) {
+      if (key !== null) positions.set(key, merged.length);
+      merged.push(item);
+    } else {
+      const previous = merged[position];
+      merged[position] = {
         ...previous,
         ...item,
         status:
           previous.status === "completed" || item.status === "completed"
             ? "completed"
             : item.status || previous.status,
-      });
+      };
+    }
   });
-  return [...merged.values()];
+  return merged;
 }
 
 export function mergeMistake(local = {}, remote = {}) {

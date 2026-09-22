@@ -25,6 +25,21 @@ export function hasMeaningfulLocalProgress(snapshot) {
 export function createOfflineLinkingService(storage, api) {
   const inFlight = new Map();
 
+  function snapshotState(snapshot, module, certId) {
+    const entry = (modules) => {
+      const matches = modules?.filter(
+        (item) => item.module === module && item.certId === certId,
+      );
+      if (matches?.length !== 1 || !matches[0].state)
+        throw new Error("source_snapshot_incomplete");
+      return matches[0].state;
+    };
+    const base = entry(snapshot.modules);
+    return snapshot.pendingModules
+      ? reconcileModuleState(module, base, entry(snapshot.pendingModules)).state
+      : base;
+  }
+
   function captureSource() {
     const session = SessionManager.restore();
     if (
@@ -43,7 +58,20 @@ export function createOfflineLinkingService(storage, api) {
       })),
     };
     const existing = storage.getLocalLinkSnapshot(snapshot.localIdentityId);
-    if (!hasMeaningfulLocalProgress(existing || snapshot)) return null;
+    if (existing) {
+      if (existing.migrationVersion !== LOCAL_LINK_MIGRATION_VERSION)
+        throw new Error("unsupported_migration_version");
+      snapshot.modules = snapshot.modules.map(({ module, certId, state }) => ({
+        module,
+        certId,
+        state: reconcileModuleState(
+          module,
+          snapshotState(existing, module, certId),
+          state,
+        ).state,
+      }));
+    }
+    if (!hasMeaningfulLocalProgress(snapshot)) return null;
     if (!storage.saveLocalLinkSnapshot(snapshot))
       throw new Error("local_snapshot_not_saved");
     return { localIdentityId: snapshot.localIdentityId };
@@ -92,17 +120,11 @@ export function createOfflineLinkingService(storage, api) {
         const receipts = [];
         for (const { module, certId } of LOCAL_LINK_SCOPES) {
           if (!validSession()) return { status: "pending", authRequired: true };
-          const entries = snapshot.modules.filter(
-            (item) => item.module === module && item.certId === certId,
-          );
-          if (entries.length !== 1 || !entries[0].state)
-            return { status: "pending", reason: "source_snapshot_incomplete" };
+          // The claim above confirmed pending + ownership. Consume additive
+          // captures without replacing the base or resetting remote versions.
+          const sourceState = snapshotState(snapshot, module, certId);
           const current = storage.getLocalModuleState(module, certId);
-          const merged = reconcileModuleState(
-            module,
-            entries[0].state,
-            current,
-          );
+          const merged = reconcileModuleState(module, sourceState, current);
           if (!storage.setLocalModuleState(module, certId, merged.state))
             return { status: "pending", reason: "local_write_failed" };
           const result = await storage.syncAccountModuleState(module, certId, {

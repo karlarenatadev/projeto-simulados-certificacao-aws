@@ -8,6 +8,76 @@ import {
 } from "../src/frontend/js/progressSync.js";
 
 describe("progress reconciliation", () => {
+  describe("D4.2.1 legacy diagnostic attempts", () => {
+    const legacy = {
+      mode: "diagnostic",
+      certId: "aif-c01",
+      date: "2026-09-21T10:00:00.000Z",
+      score: 0,
+      total: 2,
+      answers: [{ id: "q1", userSelection: 0, isCorrect: false }],
+    };
+
+    test("keeps a legacy diagnostic without IDs when remote history is empty", () => {
+      const result = reconcileModuleState(
+        "diagnostic",
+        { history: [legacy] },
+        { history: [] },
+      );
+      expect(result.state.history).toEqual([legacy]);
+      expect(result.state.history[0]).not.toHaveProperty("attemptId");
+    });
+
+    test("deduplicates the same legacy attempt regardless of object key order", () => {
+      const remote = {
+        answers: [{ isCorrect: false, userSelection: 0, id: "q1" }],
+        total: 2,
+        score: 0,
+        date: legacy.date,
+        certId: "aif-c01",
+        mode: "diagnostic",
+        status: "completed",
+      };
+      const result = mergeAttempts([legacy], [remote]);
+      expect(result).toEqual([{ ...legacy, status: "completed" }]);
+      expect(mergeAttempts(result, [remote])).toEqual(result);
+      expect(legacy).not.toHaveProperty("status");
+    });
+
+    test.each([
+      { date: "2026-09-21T11:00:00.000Z" },
+      { score: 1 },
+      { answers: [{ id: "q2", userSelection: 0, isCorrect: false }] },
+      { certId: "clf-c02" },
+    ])("keeps distinct legacy attempts: %j", (difference) => {
+      const other = { ...legacy, ...difference };
+      expect(mergeAttempts([legacy], [other])).toEqual([legacy, other]);
+    });
+
+    test.each(["attemptId", "quizId", "id"])(
+      "prioritizes canonical %s over the legacy fingerprint",
+      (field) => {
+        const local = { ...legacy, [field]: "canonical", status: "started" };
+        const remote = { ...local, date: "2026-09-22", status: "completed" };
+        expect(mergeAttempts([local], [remote])).toEqual([remote]);
+        expect(
+          mergeAttempts([local], [{ ...local, [field]: "another" }]),
+        ).toHaveLength(2);
+      },
+    );
+
+    test.each([
+      { mode: "diagnostic", score: 1 },
+      { certId: "aif-c01", date: "invalid", score: 1 },
+      { certId: "aif-c01", date: legacy.date },
+    ])("preserves entries with insufficient identity data: %j", (sparse) => {
+      expect(mergeAttempts([sparse], [{ ...sparse }])).toEqual([
+        sparse,
+        sparse,
+      ]);
+    });
+  });
+
   test("unions history and completes the same attempt monotonically", () => {
     expect(
       mergeAttempts(

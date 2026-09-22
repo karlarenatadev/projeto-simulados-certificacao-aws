@@ -44,6 +44,131 @@ function createStorage(localStates = {}) {
 
 describe("account state synchronization policy", () => {
   beforeEach(() => authenticateSyncFixture());
+  test.each(["sync", "confirmed sync", "hydrate"])(
+    "D4.2.1 %s preserves mistakes recorded while GET is pending",
+    async (operation) => {
+      const storage = new StorageManager();
+      const certId = "aif-c01";
+      const localA = {
+        questionId: "A",
+        cert: "AIF-C01",
+        wrongCount: 2,
+        lastWrongAt: "2026-09-21T10:00:00Z",
+        resolved: false,
+      };
+      storage.setAccountModuleState("mistakes", certId, { mistakes: [localA] });
+      let releaseRemote, markStarted;
+      const response = new Promise((resolve) => (releaseRemote = resolve));
+      const started = new Promise((resolve) => (markStarted = resolve));
+      const api = {
+        getMyProfile: jest.fn(async () => ({ success: true, data: {} })),
+        getModuleState: jest.fn(async (module, certification) => {
+          if (module === "mistakes" && certification === certId) {
+            markStarted();
+            return response;
+          }
+          return { success: true, data: null };
+        }),
+        saveModuleState: jest.fn(async () => ({
+          success: true,
+          data: { version: 2 },
+        })),
+      };
+      const repository = createDataRepository(storage, api);
+      const pending =
+        operation === "hydrate"
+          ? repository.hydrateAccountState()
+          : repository.syncAccountModuleState("mistakes", certId, {
+              confirmRemote: operation === "confirmed sync",
+            });
+      await started;
+      storage.recordMistake(
+        {
+          id: "B",
+          question: "New local mistake",
+          options: ["yes", "no"],
+          correct: 1,
+        },
+        0,
+        { certId },
+      );
+      releaseRemote({
+        success: true,
+        data: {
+          version: 1,
+          state_json: {
+            mistakes: [
+              {
+                ...localA,
+                certificationId: certId,
+                wrongCount: 5,
+                resolved: true,
+                resolvedAt: "2026-09-21T11:00:00Z",
+                lastWrongAt: "2026-09-21T10:30:00Z",
+              },
+              { questionId: "remote", certId, wrongCount: 1, resolved: false },
+            ],
+          },
+        },
+      });
+      await pending;
+      const final = storage.getAllMistakes(certId);
+      expect(final.map((mistake) => mistake.questionId).sort()).toEqual([
+        "A",
+        "B",
+        "remote",
+      ]);
+      expect(final.find((mistake) => mistake.questionId === "A")).toMatchObject(
+        {
+          wrongCount: 5,
+          lastWrongAt: "2026-09-21T10:30:00Z",
+          resolved: true,
+          resolvedAt: "2026-09-21T11:00:00Z",
+        },
+      );
+      if (operation !== "hydrate") {
+        expect(api.saveModuleState).toHaveBeenCalledWith(
+          "mistakes",
+          certId,
+          { mistakes: expect.arrayContaining(final) },
+          1,
+        );
+      }
+    },
+  );
+
+  test("D4.2.1 keeps progress recorded while PUT is pending", async () => {
+    const storage = new StorageManager();
+    storage.saveSprintState("clf-c02", { completedStages: ["1"] });
+    let releaseSave, markStarted;
+    const saved = new Promise((resolve) => (releaseSave = resolve));
+    const started = new Promise((resolve) => (markStarted = resolve));
+    const api = {
+      getModuleState: jest.fn(async () => ({
+        success: true,
+        data: { version: 1, state_json: { completedStages: ["2"] } },
+      })),
+      saveModuleState: jest.fn(() => {
+        markStarted();
+        return saved;
+      }),
+    };
+    const pending = createDataRepository(storage, api).syncAccountModuleState(
+      "sprint",
+      "clf-c02",
+      { confirmRemote: true },
+    );
+    await started;
+    storage.saveSprintState("clf-c02", { completedStages: ["1", "2", "3"] });
+    releaseSave({ success: true, data: { version: 2 } });
+    await pending;
+    expect(storage.getSprintState("clf-c02").completedStages).toEqual([
+      "1",
+      "2",
+      "3",
+    ]);
+  });
+
   test("does not push an older local snapshot over newer remote state", async () => {
     const localState = { currentDay: 3 };
     const storage = createStorage({ "sprint:clf-c02": localState });
@@ -72,7 +197,10 @@ describe("account state synchronization policy", () => {
       getMyProfile: jest.fn(async () => ({ success: true, data: {} })),
       getModuleState: jest.fn(async (module, certification) =>
         module === "sprint" && certification === "clf-c02"
-          ? { success: true, data: { state_json: { currentDay: 4 } } }
+          ? {
+              success: true,
+              data: { version: 1, state_json: { currentDay: 4 } },
+            }
           : { success: true, data: null },
       ),
       saveModuleState: jest.fn(),
@@ -108,6 +236,7 @@ describe("account state synchronization policy", () => {
       "sprint",
       "saa-c03",
       localState,
+      0,
     );
     expect(
       api.saveModuleState.mock.calls.filter((call) => call[0] === "sprint"),

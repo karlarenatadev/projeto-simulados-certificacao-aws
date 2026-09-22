@@ -31,6 +31,7 @@ const VALID_CERTIFICATIONS = new Set([
   'SOA-C02', 'DOP-C02', 'ANS-C01', 'DAS-C01',
   'MLS-C01', 'SCS-C02', 'PAS-C01', 'AIF-C01',
 ]);
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function createHttpError(statusCode, message) {
   const error = new Error(message);
@@ -167,24 +168,53 @@ router.get('/:id/events', async (req, res, next) => {
 // POST /api/cases/:id/evaluate — Evaluate architecture
 // ============================================================================
 
-router.post('/:id/evaluate', async (req, res, next) => {
+router.post('/:id/evaluate', requireAuth, async (req, res, next) => {
   try {
     const { id } = req.params;
     const { selected_service_ids } = req.body;
 
-    if (!id) throw createHttpError(400, 'Case ID is required');
+    if (!id || !UUID_PATTERN.test(id)) {
+      throw createHttpError(400, 'invalid_case_id');
+    }
     if (!Array.isArray(selected_service_ids)) {
-      throw createHttpError(400, 'selected_service_ids must be an array of UUIDs');
+      throw createHttpError(400, 'invalid_selected_service_ids');
     }
 
-    const evaluation = await SimulatorEngine.evaluateArchitecture(id, selected_service_ids);
+    const normalizedServiceIds = [...new Set(selected_service_ids)];
+    if (normalizedServiceIds.some((serviceId) => typeof serviceId !== 'string' || !UUID_PATTERN.test(serviceId))) {
+      throw createHttpError(400, 'invalid_selected_service_ids');
+    }
+
+    const caseRows = await executeQuery(
+      'SELECT id FROM cases WHERE id = $1 AND is_active = TRUE',
+      [id],
+    );
+    if (caseRows.length === 0) {
+      throw createHttpError(404, 'case_not_found');
+    }
+
+    if (normalizedServiceIds.length > 0) {
+      const placeholders = normalizedServiceIds.map((_, index) => `$${index + 1}`).join(', ');
+      const serviceRows = await executeQuery(
+        `SELECT id FROM aws_services WHERE is_active = TRUE AND id IN (${placeholders})`,
+        normalizedServiceIds,
+      );
+      if (serviceRows.length !== normalizedServiceIds.length) {
+        throw createHttpError(400, 'unknown_service_id');
+      }
+    }
+
+    const evaluation = await SimulatorEngine.evaluateArchitecture(id, normalizedServiceIds);
 
     res.status(200).json({
       success: true,
       data: evaluation
     });
   } catch (error) {
-    next(error);
+    if (error?.statusCode) {
+      return res.status(error.statusCode).json({ error: error.message, status: error.statusCode });
+    }
+    return next(error);
   }
 });
 
