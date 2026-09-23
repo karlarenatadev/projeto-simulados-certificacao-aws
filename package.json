@@ -43,7 +43,7 @@
   "homepage": "https://github.com/karlarenatadev/projeto-simulados-certificacao-aws#readme",
   "dependencies": {
     "@electric-sql/pglite": "^0.5.1",
-    "@electric-sql/pglite-socket": "^0.2.1",
+    "@electric-sql/pglite-socket": "^0.2.11",
     "@google/generative-ai": "^0.24.1",
     "cors": "^2.8.5",
     "dotenv": "^17.3.1",
