@@ -10,6 +10,7 @@ import { dirname, isAbsolute, join, resolve } from "path";
 import { fileURLToPath } from "url";
 import { normalizeCertificationId, normalizeLanguage } from "./normalizers.js";
 import { migrateLocalLinks } from "./localLinks.js";
+import { safeError } from "../api/services/operationalLogging.js";
 import {
   hasDomainTaxonomy,
   normalizeDomain as resolveDomain,
@@ -265,7 +266,7 @@ function isDebugEnabled() {
 }
 
 function debugQuery(query, params) {
-  if (!isDebugEnabled()) {
+  if (process.env.NODE_ENV === "production" || !isDebugEnabled()) {
     return;
   }
 
@@ -374,6 +375,27 @@ async function hasCurrentSchema(database) {
   return Number(result.rows[0]?.count || 0) === REQUIRED_SCHEMA_TABLES.length;
 }
 
+async function prepareSchema(database) {
+  if (!(await hasCurrentSchema(database))) await database.exec(loadSchema());
+  await migrateQuestionIdentity(database);
+  await migrateCaseTranslations(database);
+  await migrateQuizLifecycle(database);
+  await migrateQuizMembership(database);
+  await migrateUserIdentities(database);
+  await migrateLocalLinks(database);
+}
+
+// db is published only after the entire migration sequence succeeds.
+export async function checkDatabaseReady() {
+  if (!db || db.closed || closePromise) return false;
+  try {
+    await db.query('SELECT 1');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Initialize database connection
  * @param {Object} options - Configuration options
@@ -404,21 +426,7 @@ export async function initializeDatabase(options = {}) {
       database = await PGlite.create({ dataDir: databaseOptions.dataDir });
       console.log("[database] PGlite instance ready");
 
-      if (await hasCurrentSchema(database)) {
-        console.log(
-          "[database] Current schema detected; skipped full schema re-application",
-        );
-      } else {
-        await database.exec(loadSchema());
-        console.log("[database] Schema applied successfully");
-      }
-
-      await migrateQuestionIdentity(database);
-      await migrateCaseTranslations(database);
-      await migrateQuizLifecycle(database);
-      await migrateQuizMembership(database);
-      await migrateUserIdentities(database);
-      await migrateLocalLinks(database);
+      await prepareSchema(database);
 
       db = database;
       return db;
@@ -446,13 +454,7 @@ export async function initializeDatabase(options = {}) {
         try {
           database = await PGlite.create({ dataDir: databaseOptions.dataDir });
           console.log("[database] PGlite instance ready (retry)");
-          await database.exec(loadSchema());
-          console.log("[database] Schema applied successfully (retry)");
-          await migrateQuestionIdentity(database);
-          await migrateCaseTranslations(database);
-          await migrateQuizLifecycle(database);
-          await migrateQuizMembership(database);
-          await migrateUserIdentities(database);
+          await prepareSchema(database);
           db = database;
           return db;
         } catch (retryError) {
@@ -460,12 +462,12 @@ export async function initializeDatabase(options = {}) {
             await database.close().catch(() => {});
           }
           db = null;
-          console.error("[database] Retry also failed:", retryError.message);
+          console.error("[database] Retry also failed:", safeError(retryError));
           throw retryError;
         }
       }
 
-      console.error("[database] Initialization failed:", error.message);
+      console.error("[database] Initialization failed:", safeError(error));
       throw error;
     }
   })();
@@ -516,7 +518,7 @@ export async function closeDatabase() {
   try {
     await closePromise;
   } catch (error) {
-    console.error("[database] Close failed:", error.message);
+    console.error("[database] Close failed:", safeError(error));
     throw error;
   } finally {
     closePromise = null;
@@ -543,7 +545,7 @@ export async function executeQuery(query, params = []) {
   try {
     return await queryRows(database, query, params);
   } catch (error) {
-    console.error("✗ Query execution failed:", error.message);
+    console.error("✗ Query execution failed:", safeError(error));
     throw error;
   }
 }
@@ -558,7 +560,7 @@ export async function executeSql(sql) {
   try {
     await database.exec(sql);
   } catch (error) {
-    console.error("✗ SQL execution failed:", error.message);
+    console.error("✗ SQL execution failed:", safeError(error));
     throw error;
   }
 }
@@ -1078,7 +1080,7 @@ export async function getQuestions(
   try {
     return await executeQuery(query, params);
   } catch (error) {
-    console.error("✗ Error fetching questions:", error.message);
+    console.error("✗ Error fetching questions:", safeError(error));
     throw error;
   }
 }
@@ -1098,7 +1100,7 @@ export async function getQuestionById(questionId, options = {}) {
     const result = await executeQuery(query, [questionId]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("✗ Error fetching question by ID:", error.message);
+    console.error("✗ Error fetching question by ID:", safeError(error));
     throw error;
   }
 }
@@ -1147,7 +1149,7 @@ export async function searchQuestions(searchTerm, limit = 20, options = {}) {
         : [pattern, normalizedLimit],
     );
   } catch (error) {
-    console.error("✗ Error searching questions:", error.message);
+    console.error("✗ Error searching questions:", safeError(error));
     throw error;
   }
 }
@@ -1208,7 +1210,7 @@ export async function insertQuestion(questionData) {
     ]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("✗ Error inserting question:", error.message);
+    console.error("✗ Error inserting question:", safeError(error));
     throw error;
   }
 }
@@ -1265,7 +1267,7 @@ export async function updateQuestion(questionId, updates) {
     const result = await executeQuery(query, params);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("✗ Error updating question:", error.message);
+    console.error("✗ Error updating question:", safeError(error));
     throw error;
   }
 }
@@ -1309,7 +1311,7 @@ export async function deleteQuestion(questionId) {
     const result = await executeQuery(query, [questionId]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("✗ Error deleting question:", error.message);
+    console.error("✗ Error deleting question:", safeError(error));
     throw error;
   }
 }
@@ -1435,7 +1437,7 @@ export async function createUser(dataOrName) {
     ]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("✗ Error creating user:", error.message);
+    console.error("✗ Error creating user:", safeError(error));
     throw error;
   }
 }
@@ -1505,7 +1507,7 @@ export async function upsertUserByEmail(email, profile = {}) {
     );
     return { user: inserted[0], created: true };
   } catch (error) {
-    console.error("✗ Error upserting user by email:", error.message);
+    console.error("✗ Error upserting user by email:", safeError(error));
     throw error;
   }
 }
@@ -1646,7 +1648,7 @@ export async function getUserById(userId) {
     const result = await executeQuery(query, [normalizedUserId]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("✗ Error fetching user:", error.message);
+    console.error("✗ Error fetching user:", safeError(error));
     throw error;
   }
 }
@@ -1819,7 +1821,7 @@ export async function getUserByEmail(email) {
     const result = await executeQuery(query, [normalizedEmail]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("✗ Error fetching user by email:", error.message);
+    console.error("✗ Error fetching user by email:", safeError(error));
     throw error;
   }
 }
@@ -1837,7 +1839,7 @@ export async function getUserByName(anonymousName) {
     const result = await executeQuery(query, [normalizedName]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("✗ Error fetching user by name:", error.message);
+    console.error("✗ Error fetching user by name:", safeError(error));
     throw error;
   }
 }
@@ -1868,7 +1870,7 @@ export async function updateUser(userId, data) {
     ]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("Error updating user:", error.message);
+    console.error("Error updating user:", safeError(error));
     throw error;
   }
 }
@@ -2352,7 +2354,7 @@ export async function getGamification(userId) {
     }
     return result[0];
   } catch (error) {
-    console.error("✗ Error fetching gamification:", error.message);
+    console.error("✗ Error fetching gamification:", safeError(error));
     throw error;
   }
 }
@@ -2386,7 +2388,7 @@ export async function updateGamification(userId, updates) {
     const result = await executeQuery(query, params);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("✗ Error updating gamification:", error.message);
+    console.error("✗ Error updating gamification:", safeError(error));
     throw error;
   }
 }
@@ -2886,7 +2888,7 @@ export async function createQuizHistory(
     ]);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("✗ Error creating quiz history:", error.message);
+    console.error("✗ Error creating quiz history:", safeError(error));
     throw error;
   }
 }
@@ -2921,7 +2923,7 @@ export async function getQuizHistory(
       normalizedOffset,
     ]);
   } catch (error) {
-    console.error("✗ Error fetching quiz history:", error.message);
+    console.error("✗ Error fetching quiz history:", safeError(error));
     throw error;
   }
 }
@@ -2948,7 +2950,7 @@ export async function getQuizById(quizId, userId = null) {
     const result = await executeQuery(query, params);
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error("✗ Error fetching quiz:", error.message);
+    console.error("✗ Error fetching quiz:", safeError(error));
     throw error;
   }
 }
@@ -3142,7 +3144,7 @@ export async function recordAnswer(
       };
     });
   } catch (error) {
-    console.error("✗ Error recording answer:", error.message);
+    console.error("✗ Error recording answer:", safeError(error));
     throw error;
   }
 }
@@ -3255,7 +3257,7 @@ export async function completeQuiz(quizId, userId) {
       return buildQuizResult(completedQuiz, answerRows);
     });
   } catch (error) {
-    console.error("âœ— Error completing quiz:", error.message);
+    console.error("âœ— Error completing quiz:", safeError(error));
     throw error;
   }
 }
@@ -3319,7 +3321,7 @@ export async function abandonQuiz(quizId, userId) {
       return { ...abandonedRows[0], idempotent: false };
     });
   } catch (error) {
-    console.error("âœ— Error abandoning quiz:", error.message);
+    console.error("âœ— Error abandoning quiz:", safeError(error));
     throw error;
   }
 }
@@ -3347,7 +3349,7 @@ export async function getAnswersByQuiz(quizId) {
   try {
     return await executeQuery(query, [quizId]);
   } catch (error) {
-    console.error("✗ Error fetching answers:", error.message);
+    console.error("✗ Error fetching answers:", safeError(error));
     throw error;
   }
 }
@@ -3377,7 +3379,7 @@ export async function getLeaderboard(limit = 100) {
   try {
     return await executeQuery(query, [normalizedLimit]);
   } catch (error) {
-    console.error("✗ Error fetching leaderboard:", error.message);
+    console.error("✗ Error fetching leaderboard:", safeError(error));
     throw error;
   }
 }
@@ -3463,7 +3465,7 @@ export async function getUserStats(userId) {
       gamification,
     };
   } catch (error) {
-    console.error("✗ Error fetching user stats:", error.message);
+    console.error("✗ Error fetching user stats:", safeError(error));
     throw error;
   }
 }
@@ -3510,7 +3512,7 @@ export async function calculateStats(userId) {
           : 0,
     };
   } catch (error) {
-    console.error("✗ Error calculating user stats:", error.message);
+    console.error("✗ Error calculating user stats:", safeError(error));
     throw error;
   }
 }
@@ -3548,7 +3550,7 @@ export async function calculateQuizStats(quizId) {
       completed_at: quiz.completed_at,
     };
   } catch (error) {
-    console.error("✗ Error calculating quiz stats:", error.message);
+    console.error("✗ Error calculating quiz stats:", safeError(error));
     throw error;
   }
 }
@@ -3602,7 +3604,7 @@ export async function getWeakDomains(
       .filter((row) => row.accuracy < normalizedThreshold)
       .sort((a, b) => a.accuracy - b.accuracy);
   } catch (error) {
-    console.error("✗ Error calculating weak domains:", error.message);
+    console.error("✗ Error calculating weak domains:", safeError(error));
     throw error;
   }
 }
@@ -3629,7 +3631,7 @@ export async function getPendingQuestions(options = {}) {
       [limit, offset, certification],
     );
   } catch (error) {
-    console.error("Erro ao buscar questões pendentes:", error);
+    console.error("Erro ao buscar questões pendentes:", safeError(error));
     throw error;
   }
 }
@@ -3767,7 +3769,7 @@ export async function validateQuestion(
 
     return result[0] || null;
   } catch (error) {
-    console.error(`Erro ao validar questão ${questionId}:`, error);
+    console.error(`Erro ao validar questão ${questionId}:`, safeError(error));
     throw error;
   }
 }
@@ -3891,7 +3893,7 @@ export async function getCases(filters = {}) {
   try {
     return await executeQuery(query, params);
   } catch (error) {
-    console.error("✗ Error fetching cases:", error.message);
+    console.error("✗ Error fetching cases:", safeError(error));
     throw error;
   }
 }
@@ -3957,7 +3959,7 @@ export async function getCaseById(idOrSlug) {
 
     return caseRow;
   } catch (error) {
-    console.error("✗ Error fetching case by id/slug:", error.message);
+    console.error("✗ Error fetching case by id/slug:", safeError(error));
     throw error;
   }
 }
@@ -3982,7 +3984,7 @@ export async function getAwsServices(filters = {}) {
   try {
     return await executeQuery(query, params);
   } catch (error) {
-    console.error("✗ Error fetching AWS services:", error.message);
+    console.error("✗ Error fetching AWS services:", safeError(error));
     throw error;
   }
 }

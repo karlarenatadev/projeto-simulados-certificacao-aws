@@ -12,7 +12,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { initializeDatabase, closeDatabase } from '../database/db.js';
+import * as database from '../database/db.js';
 import questionsRoutes from './routes/questions.js';
 import quizzesRoutes from './routes/quizzes.js';
 import usersRoutes from './routes/users.js';
@@ -21,8 +21,13 @@ import casesRoutes, { servicesRouter } from './routes/cases.js';
 import accessRoutes from './routes/access.js';
 import meRoutes from './routes/me.js';
 
+import { validateApiConfig } from './config.js';
+import { installShutdown } from './lifecycle.js';
+import { safeError } from './services/operationalLogging.js';
+
 const app = express();
-const API_PORT = Number.parseInt(process.env.PORT, 10) || 3001;
+let initialized = false;
+let activeServer = null;
 // Escuta em 0.0.0.0 para aceitar conexões de localhost, 127.0.0.1 e
 // do host Windows ao acessar via WSL2 (ex: http://localhost:3001 no browser).
 const API_HOST = '0.0.0.0';
@@ -77,7 +82,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 app.use((req, _res, next) => {
   const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] ${req.method} ${req.path}`);
+  console.log(`[${timestamp}] ${req.method}`);
   next();
 });
 
@@ -87,6 +92,26 @@ app.get('/api/health', (_req, res) => {
     message: 'API is healthy',
     timestamp: new Date().toISOString(),
   });
+});
+
+app.get('/api/ready', async (_req, res) => {
+  let timer;
+  try {
+    validateApiConfig();
+    const ready =
+      initialized &&
+      (await Promise.race([
+        database.checkDatabaseReady(),
+        new Promise((resolve) => {
+          timer = setTimeout(() => resolve(false), 1000);
+        }),
+      ]));
+    return res.status(ready ? 200 : 503).json({ ready: Boolean(ready) });
+  } catch {
+    return res.status(503).json({ ready: false });
+  } finally {
+    clearTimeout(timer);
+  }
 });
 
 app.use('/api/questions', questionsRoutes);
@@ -123,16 +148,12 @@ app.use((req, res) => {
 
 app.use((err, _req, res, _next) => {
   const statusCode = err.statusCode || err.status || 500;
-  if (process.env.NODE_ENV !== 'production' && statusCode >= 500) {
-    console.error(`API error: ${err.message}`);
-    if (err.stack) {
-      console.error(err.stack);
-    }
-  }
+  if (statusCode >= 500) console.error('API request failed', safeError(err));
 
-  const message = process.env.NODE_ENV === 'production' && statusCode >= 500
-    ? 'Internal server error'
-    : err.message || 'Internal server error';
+  const message =
+    process.env.NODE_ENV === 'production' && statusCode >= 500
+      ? 'Internal server error'
+      : err.message || 'Internal server error';
 
   res.status(statusCode).json({
     error: message,
@@ -140,63 +161,49 @@ app.use((err, _req, res, _next) => {
   });
 });
 
-async function gracefulShutdown() {
-  console.log('\nShutting down API server...');
-  try {
-    await closeDatabase();
-    console.log('Database connection closed');
-    process.exit(0);
-  } catch (error) {
-    console.error('Error during shutdown:', error.message);
-    process.exit(1);
-  }
-}
-
 export async function startServer() {
+  if (activeServer) throw new Error('API server already started');
+  // Validate before opening the database or a listening HTTP socket.
+  const config = validateApiConfig();
+  app.set('trust proxy', config.trustProxy);
   try {
-    console.log('Starting Express API server...');
-    await initializeDatabase();
-    console.log('Database initialized');
-
-    const server = app.listen(API_PORT, API_HOST, () => {
-      console.log(`API server running on http://${API_HOST}:${API_PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`Health check: http://${API_HOST}:${API_PORT}/api/health`);
+    await database.initializeDatabase();
+    const server = await new Promise((resolve, reject) => {
+      const candidate = app.listen(config.port, API_HOST, () => {
+        candidate.removeListener('error', reject);
+        resolve(candidate);
+      });
+      candidate.once('error', reject);
     });
-
-    process.on('SIGINT', gracefulShutdown);
-    process.on('SIGTERM', gracefulShutdown);
-
-    // SIGHUP: terminal fechado (WSL, SSH disconnection, etc.)
-    process.on('SIGHUP', gracefulShutdown);
-
-    // Erros não capturados — tenta fechar o banco antes de sair
-    // para evitar corrupção do diretório .pglite-data
-    process.on('uncaughtException', async (error) => {
-      console.error('Uncaught exception:', error.message);
-      await closeDatabase().catch(() => {});
-      process.exit(1);
+    activeServer = server;
+    initialized = true;
+    installShutdown(server, {
+      closeDatabase: database.closeDatabase,
+      onDraining: () => {
+        initialized = false;
+      },
     });
-    process.on('unhandledRejection', async (reason) => {
-      console.error('Unhandled rejection:', reason);
-      await closeDatabase().catch(() => {});
-      process.exit(1);
-    });
-
+    console.log(`API server running on port ${server.address().port}`);
     return server;
   } catch (error) {
-    console.error('Failed to start server:', error.message);
-    console.error(error.stack);
-    process.exit(1);
+    initialized = false;
+    await database.closeDatabase().catch(() => {});
+    throw error;
   }
 }
 
-const isDirectExecution = process.argv[1]
-  && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+const isDirectExecution =
+  process.argv[1] &&
+  resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 
 if (isDirectExecution) {
   startServer().catch((error) => {
-    console.error('Fatal error:', error);
+    console.error(
+      'API startup failed:',
+      error.message?.startsWith('Invalid API configuration:')
+        ? error.message
+        : safeError(error),
+    );
     process.exit(1);
   });
 }
