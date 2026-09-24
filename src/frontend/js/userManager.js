@@ -96,6 +96,12 @@ export const userManager = {
     return user;
   },
 
+  createLocalStudyUser() {
+    return this.createOfflineUser("local@cloudacademy.invalid", {
+      full_name: "Estudo local",
+    });
+  },
+
   getUserId() {
     return SessionManager.restore()?.user?.id || null;
   },

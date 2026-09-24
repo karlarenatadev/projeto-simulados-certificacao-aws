@@ -23,9 +23,10 @@ jobs:
     runs-on: ubuntu-latest
     # Public frontend settings: repository Variables, never backend secrets.
     env:
-      PUBLIC_BUILD_TARGET: pages
-      GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
-      PUBLIC_API_BASE_URL: ${{ vars.PUBLIC_API_BASE_URL }}
+      # The public Pages artifact intentionally runs local-first until a
+      # production API is available. Connected builds keep the strict
+      # `PUBLIC_BUILD_TARGET: pages` contract.
+      PUBLIC_BUILD_TARGET: local-first
 
     steps:
       - name: Checkout repository

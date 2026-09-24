@@ -11,7 +11,10 @@ const SECRET_NAMES = [
 ];
 
 function createPublicConfig(env) {
-  const distribution = env.PUBLIC_BUILD_TARGET === "pages";
+  const localFirst = env.PUBLIC_BUILD_TARGET === "local-first";
+  const distribution = ["pages", "connected"].includes(
+    env.PUBLIC_BUILD_TARGET,
+  );
   const googleClientId = String(env.GOOGLE_CLIENT_ID || "").trim();
   const apiBaseUrl = String(env.PUBLIC_API_BASE_URL || "").trim();
   if (distribution) {
@@ -49,6 +52,7 @@ function createPublicConfig(env) {
     googleClientId,
     apiBaseUrl,
     allowDevEmailLogin: env.ALLOW_DEV_EMAIL_LOGIN === "true",
+    ...(localFirst ? { localFirst: true } : {}),
   };
 }
 

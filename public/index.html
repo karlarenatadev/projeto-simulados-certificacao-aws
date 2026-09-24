@@ -36,7 +36,7 @@
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E☁️%3C/text%3E%3C/svg%3E"
     />
 
-    <link rel="stylesheet" href="./css/style.css?v=92b94f42" />
+    <link rel="stylesheet" href="./css/style.css?v=843422be" />
     <link rel="manifest" href="./manifest.json" />
     <meta name="theme-color" content="#001863" />
   
@@ -104,7 +104,7 @@
         Cloud Academy A3
       </h2>
       <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">
-        Acesso restrito a colaboradores A3Data
+        Estude localmente ou entre para sincronizar seu progresso
       </p>
     </div>
 
@@ -169,10 +169,18 @@
       </form>
     </div>
 
+    <div id="local-first-login-section" class="hidden flex flex-col gap-3">
+      <p class="text-center text-sm text-gray-600 dark:text-slate-300" data-i18n="auth_local_first_description">
+        Seu progresso fica salvo neste navegador. A sincronização entre dispositivos exige uma conta.
+      </p>
+      <button id="local-first-login-btn" type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-all shadow-md" data-i18n="auth_continue_local">
+        Continuar estudando sem conta
+      </button>
+    </div>
+
     <!-- Rodapé -->
     <p class="text-center text-xs text-gray-400 dark:text-slate-500">
-      Uso interno A3Data &mdash; acesso exclusivo com email
-      <span class="font-semibold">@a3data.com.br</span>
+      <span data-i18n="auth_local_first_footer">O modo local mantém o progresso neste navegador.</span>
     </p>
   </div>
 </div>
@@ -1496,10 +1504,10 @@
     </script>
 
     <!-- Módulos da aplicação -->
-    <script src="./js/sprintData.js?v=92b94f42" type="module"></script>
-    <script src="./js/pomodoroManager.js?v=92b94f42" type="module"></script>
-    <script src="./js/runtimeConfig.js?v=92b94f42"></script>
-    <script src="./js/app.js?v=92b94f42" type="module"></script>
+    <script src="./js/sprintData.js?v=843422be" type="module"></script>
+    <script src="./js/pomodoroManager.js?v=843422be" type="module"></script>
+    <script src="./js/runtimeConfig.js?v=843422be"></script>
+    <script src="./js/app.js?v=843422be" type="module"></script>
 
     <!-- Service Worker (PWA) -->
     <script>

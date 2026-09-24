@@ -31,6 +31,7 @@ import { AuthService } from "./services/authService.js";
 import {
   initializeGoogleLogin,
   isDevEmailLoginEnabled,
+  isLocalFirstMode,
 } from "./services/googleIdentity.js";
 import {
   getCurrentLanguage,
@@ -158,6 +159,8 @@ function showLoginUI() {
     const errorMsg = document.getElementById("login-error-msg");
     const devEmailSection = document.getElementById("dev-email-login-section");
     const googleSection = document.getElementById("google-login-section");
+    const localFirstSection = document.getElementById("local-first-login-section");
+    const localFirstButton = document.getElementById("local-first-login-btn");
 
     if (!overlay || !form) {
       reject(new Error("Login overlay não encontrado no DOM."));
@@ -166,10 +169,12 @@ function showLoginUI() {
 
     // Torna o overlay visível
     const devEmailEnabled = isDevEmailLoginEnabled();
-    devEmailSection?.classList.toggle("hidden", !devEmailEnabled);
-    googleSection?.classList.toggle("hidden", devEmailEnabled);
+    const localFirst = isLocalFirstMode();
+    devEmailSection?.classList.toggle("hidden", !devEmailEnabled || localFirst);
+    googleSection?.classList.toggle("hidden", devEmailEnabled || localFirst);
+    localFirstSection?.classList.toggle("hidden", !localFirst);
     overlay.classList.remove("hidden");
-    if (devEmailEnabled) emailInput?.focus();
+    if (devEmailEnabled && !localFirst) emailInput?.focus();
 
     function showError(msg) {
       if (!errorMsg) return;
@@ -254,6 +259,25 @@ function showLoginUI() {
     }
 
     form.addEventListener("submit", handleSubmit);
+
+    async function handleLocalFirst() {
+      clearError();
+      localFirstButton?.setAttribute("disabled", "");
+      try {
+        const user = userManager.createLocalStudyUser();
+        overlay.classList.add("hidden");
+        localFirstButton?.removeEventListener("click", handleLocalFirst);
+        resolve(user);
+      } catch (error) {
+        showError(error?.message || "Não foi possível iniciar o estudo local.");
+        localFirstButton?.removeAttribute("disabled");
+      }
+    }
+
+    if (localFirst) {
+      localFirstButton?.addEventListener("click", handleLocalFirst);
+      return;
+    }
 
     if (!devEmailEnabled) {
       initializeGoogleLogin({
