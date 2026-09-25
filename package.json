@@ -7,6 +7,7 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "test:postgres": "node scripts/testing/postgres-integration.mjs",
     "lint": "eslint src/frontend/js/**/*.js",
     "lint:fix": "eslint src/frontend/js/**/*.js --fix",
     "format": "prettier --write \"src/frontend/js/**/*.js\" src/frontend/styles/style.css src/frontend/styles/cases.css \"src/frontend/pages/*.html\" \"src/frontend/partials/*.html\" src/frontend/pwa/sw.js src/frontend/pwa/404.html src/frontend/pwa/manifest.json",
@@ -54,6 +55,7 @@
     "html2canvas": "^1.4.1",
     "jsdom": "^29.1.1",
     "jspdf": "^4.2.1",
+    "pg": "8.23.0",
     "pino": "^10.3.1",
     "string-similarity": "^4.0.4"
   },
