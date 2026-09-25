@@ -161,16 +161,14 @@ test("local/offline builds retain optional configuration and HTTP loopback suppo
   expect(context.__APP_CONFIG__.allowDevEmailLogin).toBe(true);
 });
 
-test("Pages workflow passes repository variables and validates the emitted configuration", () => {
+test("Pages workflow explicitly publishes the local-first artifact", () => {
   const workflow = fs.readFileSync(
     ".github/workflows/deploy-pages.yml",
     "utf8",
   );
-  expect(workflow).toContain("PUBLIC_BUILD_TARGET: pages");
-  expect(workflow).toContain("GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}");
-  expect(workflow).toContain(
-    "PUBLIC_API_BASE_URL: ${{ vars.PUBLIC_API_BASE_URL }}",
-  );
+  expect(workflow).toContain("PUBLIC_BUILD_TARGET: local-first");
+  expect(workflow).not.toContain("GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}");
+  expect(workflow).not.toContain("PUBLIC_API_BASE_URL: ${{ vars.PUBLIC_API_BASE_URL }}");
   expect(workflow).toContain(
     "assertPublicConfigArtifact('public/js/runtimeConfig.js', process.env)",
   );
