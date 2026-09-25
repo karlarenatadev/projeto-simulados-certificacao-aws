@@ -145,6 +145,17 @@ integration(
       expect(JSON.stringify(error)).not.toContain(url.toString());
     });
 
+    test("TLS negotiation failure remains a connection error", async () => {
+      // Same disposable loopback database; production configuration requires TLS.
+      // The fixture server has no TLS certificate and must not be accepted silently.
+      const db = adapter({ NODE_ENV: "production" });
+      await expect(db.executeQuery("SELECT 1")).rejects.toMatchObject({
+        kind: "connection",
+        phase: "connect",
+        code: "PG_CONNECT_FAILED",
+      });
+    });
+
     test("two simultaneously reserved clients have distinct backend PIDs", async () => {
       const db = adapter();
       const both = deferred();
@@ -442,6 +453,30 @@ integration(
         kind: "connection",
         phase: "idle",
       });
+      expect(
+        (await db.executeQuery("SELECT pg_backend_pid() AS pid"))[0].pid,
+      ).not.toBe(pid);
+    });
+
+    test("lost connection during transaction rolls back and is discarded", async () => {
+      const db = adapter({ DB_POOL_MAX: "1" });
+      const id = randomUUID();
+      let pid;
+      await expect(
+        db.transaction(async (tx) => {
+          pid = (await tx.query("SELECT pg_backend_pid() AS pid")).rows[0].pid;
+          await tx.query(`INSERT INTO ${table} VALUES ($1,$2)`, [
+            id,
+            "connection-rollback",
+          ]);
+          await owner.executeQuery("SELECT pg_terminate_backend($1)", [pid]);
+          await delay(30);
+          await tx.query("SELECT 1");
+        }),
+      ).rejects.toMatchObject({ kind: "connection" });
+      expect(
+        await owner.executeQuery(`SELECT * FROM ${table} WHERE id=$1`, [id]),
+      ).toEqual([]);
       expect(
         (await db.executeQuery("SELECT pg_backend_pid() AS pid"))[0].pid,
       ).not.toBe(pid);

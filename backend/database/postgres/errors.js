@@ -61,6 +61,14 @@ export function classifyPostgresError(error, phase) {
     return new PostgresAdapterError("constraint", code, phase);
   if (["40001", "40P01", "55P03"].includes(code))
     return new PostgresAdapterError("conflict", code, phase);
+  // TLS/protocol negotiation and server capacity errors are connection failures,
+  // even when the driver has no SQLSTATE (e.g. a server without TLS support).
+  if (phase === "connect")
+    return new PostgresAdapterError(
+      "connection",
+      code || "PG_CONNECT_FAILED",
+      phase,
+    );
   return new PostgresAdapterError(
     "query",
     /^[0-9A-Z]{5}$/.test(code) ? code : "PG_QUERY_FAILED",

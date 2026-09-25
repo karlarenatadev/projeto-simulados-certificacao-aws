@@ -6,13 +6,13 @@ do adaptador valida a configuração e cria um pool lazy; a primeira operação 
 a conexão. A aplicação deverá criar uma instância por processo na integração futura.
 
 ```js
-import { createPostgresAdapter } from './backend/database/postgres/index.js';
+import { createPostgresAdapter } from "./backend/database/postgres/index.js";
 
 const db = createPostgresAdapter({ env: isolatedEnvironment });
 try {
-  const rows = await db.executeQuery('SELECT $1::int AS value', [42]);
+  const rows = await db.executeQuery("SELECT $1::int AS value", [42]);
   const result = await db.transaction(async (tx) => {
-    const { rows } = await tx.query('SELECT pg_backend_pid() AS pid');
+    const { rows } = await tx.query("SELECT pg_backend_pid() AS pid");
     return rows[0];
   });
 } finally {
@@ -56,19 +56,19 @@ A configuração é passada explicitamente ou lida de `process.env` **somente na
 chamada ao factory**. Não logar o objeto retornado por `readPostgresConfig`: ele
 contém a credencial necessária ao driver. O adaptador não registra logs.
 
-| Variável | Regra / padrão |
-| --- | --- |
-| `DATABASE_URL` | Obrigatória: `postgres:`/`postgresql:`, host, usuário, senha e um banco explícitos; porta padrão 5432. Rejeita query string/fragmento, controles, escape inválido e caminho aninhado. Não há fallback para `DB_DATA_DIR` ou `PGHOST` |
-| `NODE_ENV` | `development` (padrão), `test` ou `production` |
-| `DB_SSL_MODE` | `verify-full` para produção ou host remoto; `disable` permitido apenas para loopback em dev/test. Não aceita `no-verify` nem parâmetros SSL escondidos na URL |
-| `DB_SSL_CA` | CA opcional, em PEM, para TLS com `rejectUnauthorized:true`; não é aceita com TLS desligado |
-| `DB_POOL_MAX` | 5; inteiro 1–100 |
-| `DB_CONNECTION_TIMEOUT_MS` | 3000; conexão inicial e espera por vaga no pool |
-| `DB_IDLE_TIMEOUT_MS` | 10000; remoção de conexão ociosa |
-| `DB_STATEMENT_TIMEOUT_MS` | 5000; cancelamento no servidor |
-| `DB_QUERY_TIMEOUT_MS` | timeout de statement + 1000; prazo no cliente, obrigatoriamente maior que o do servidor |
-| `DB_TRANSACTION_IDLE_TIMEOUT_MS` | 10000; limite de sessão ociosa dentro de transação |
-| `DB_SHUTDOWN_TIMEOUT_MS` | 10000; prazo de drenagem |
+| Variável                         | Regra / padrão                                                                                                                                                                                                                       |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `DATABASE_URL`                   | Obrigatória: `postgres:`/`postgresql:`, host, usuário, senha e um banco explícitos; porta padrão 5432. Rejeita query string/fragmento, controles, escape inválido e caminho aninhado. Não há fallback para `DB_DATA_DIR` ou `PGHOST` |
+| `NODE_ENV`                       | `development` (padrão), `test` ou `production`                                                                                                                                                                                       |
+| `DB_SSL_MODE`                    | `verify-full` para produção ou host remoto; `disable` permitido apenas para loopback em dev/test. Não aceita `no-verify` nem parâmetros SSL escondidos na URL                                                                        |
+| `DB_SSL_CA`                      | CA opcional, em PEM, para TLS com `rejectUnauthorized:true`; não é aceita com TLS desligado                                                                                                                                          |
+| `DB_POOL_MAX`                    | 5; inteiro 1–100                                                                                                                                                                                                                     |
+| `DB_CONNECTION_TIMEOUT_MS`       | 3000; conexão inicial e espera por vaga no pool                                                                                                                                                                                      |
+| `DB_IDLE_TIMEOUT_MS`             | 10000; remoção de conexão ociosa                                                                                                                                                                                                     |
+| `DB_STATEMENT_TIMEOUT_MS`        | 5000; cancelamento no servidor                                                                                                                                                                                                       |
+| `DB_QUERY_TIMEOUT_MS`            | timeout de statement + 1000; prazo no cliente, obrigatoriamente maior que o do servidor                                                                                                                                              |
+| `DB_TRANSACTION_IDLE_TIMEOUT_MS` | 10000; limite de sessão ociosa dentro de transação                                                                                                                                                                                   |
+| `DB_SHUTDOWN_TIMEOUT_MS`         | 10000; prazo de drenagem                                                                                                                                                                                                             |
 
 Timeouts são inteiros positivos até 300000 ms, exceto o de query, limitado a
 600000 ms. A sessão usa UTC e `application_name=cloudacademy-postgres-adapter`.
