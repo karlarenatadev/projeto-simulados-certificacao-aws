@@ -20,6 +20,15 @@ export function isLocalFirstMode() {
   return globalThis.__APP_CONFIG__?.localFirst === true;
 }
 
+export function isHybridMode() {
+  return globalThis.__APP_CONFIG__?.hybrid === true;
+}
+
+export function isGoogleLoginConfigured() {
+  const config = globalThis.__APP_CONFIG__ || {};
+  return Boolean(config.googleClientId && config.apiBaseUrl);
+}
+
 function loadGoogleScript() {
   if (globalThis.google?.accounts?.id) return Promise.resolve();
   if (scriptPromise) return scriptPromise;

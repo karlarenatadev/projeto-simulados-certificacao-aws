@@ -35,6 +35,20 @@ describe("local-first public runtime configuration", () => {
     });
   });
 
+  test("hybrid builds are explicit and may wait for the public API", () => {
+    expect(
+      createPublicConfig({
+        PUBLIC_BUILD_TARGET: "hybrid",
+        GOOGLE_CLIENT_ID: "client.apps.googleusercontent.com",
+      }),
+    ).toEqual({
+      googleClientId: "client.apps.googleusercontent.com",
+      apiBaseUrl: "",
+      allowDevEmailLogin: false,
+      hybrid: true,
+    });
+  });
+
   test("artifact contains no private configuration", () => {
     const artifact = renderPublicConfig({ PUBLIC_BUILD_TARGET: "local-first" });
     expect(artifact).toContain('"localFirst":true');

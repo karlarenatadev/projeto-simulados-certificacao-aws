@@ -31,6 +31,8 @@ import { AuthService } from "./services/authService.js";
 import {
   initializeGoogleLogin,
   isDevEmailLoginEnabled,
+  isGoogleLoginConfigured,
+  isHybridMode,
   isLocalFirstMode,
 } from "./services/googleIdentity.js";
 import {
@@ -170,9 +172,23 @@ function showLoginUI() {
     // Torna o overlay visível
     const devEmailEnabled = isDevEmailLoginEnabled();
     const localFirst = isLocalFirstMode();
-    devEmailSection?.classList.toggle("hidden", !devEmailEnabled || localFirst);
-    googleSection?.classList.toggle("hidden", devEmailEnabled || localFirst);
-    localFirstSection?.classList.toggle("hidden", !localFirst);
+    const hybrid = isHybridMode();
+    const localAccess = localFirst || hybrid;
+    const googleAvailable =
+      !devEmailEnabled && !localFirst && (!hybrid || isGoogleLoginConfigured());
+    devEmailSection?.classList.toggle("hidden", !devEmailEnabled || localAccess);
+    googleSection?.classList.toggle("hidden", !googleAvailable);
+    localFirstSection?.classList.toggle("hidden", !localAccess);
+    if (hybrid && !googleAvailable) {
+      const description = localFirstSection?.querySelector(
+        "[data-i18n='auth_local_first_description']",
+      );
+      if (description)
+        description.textContent = t(
+          "auth_google_unavailable_local",
+          uiState.language,
+        );
+    }
     overlay.classList.remove("hidden");
     if (devEmailEnabled && !localFirst) emailInput?.focus();
 
@@ -274,12 +290,12 @@ function showLoginUI() {
       }
     }
 
-    if (localFirst) {
+    if (localAccess) {
       localFirstButton?.addEventListener("click", handleLocalFirst);
-      return;
+      if (!googleAvailable) return;
     }
 
-    if (!devEmailEnabled) {
+    if (googleAvailable) {
       initializeGoogleLogin({
         onProgress: (phase) => {
           const status = document.getElementById("google-login-status");

@@ -1,6 +1,39 @@
 import { expect, test } from "@playwright/test";
 
+test.use({ serviceWorkers: "block" });
+
 test.describe("public local-first access", () => {
+  test("hybrid mode exposes local and Google entry points when configured", async ({
+    page,
+  }) => {
+    await page.route("**/js/runtimeConfig.js*", (route) =>
+      route.fulfill({
+        contentType: "text/javascript",
+        body: `globalThis.__APP_CONFIG__ = ${JSON.stringify({
+          googleClientId: "fixture.apps.googleusercontent.com",
+          apiBaseUrl: "https://api.example.test",
+          allowDevEmailLogin: false,
+          hybrid: true,
+        })};`,
+      }),
+    );
+    await page.addInitScript(() => {
+      globalThis.google = {
+        accounts: {
+          id: {
+            initialize: () => {},
+            renderButton: () => {},
+          },
+        },
+      };
+    });
+    await page.goto("index.html");
+    await expect(
+      page.getByRole("button", { name: "Continuar estudando sem conta" }),
+    ).toBeVisible();
+    await expect(page.locator("#google-login-section")).toBeVisible();
+  });
+
   test("starts a local student session without Google or API calls", async ({
     page,
   }) => {
