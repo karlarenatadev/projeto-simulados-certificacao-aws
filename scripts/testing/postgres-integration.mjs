@@ -7,9 +7,11 @@ import { setTimeout as delay } from "node:timers/promises";
 const image =
   "postgres:16-alpine@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777";
 const token = randomUUID();
-const name = `cloudacademy-f1-test-${token}`;
-const label = "io.cloudacademy.f1-test";
-const database = "cloudacademy_f1_test";
+const migrations = process.argv.includes("--migrations");
+const phase = migrations ? "F2" : "F1";
+const name = `cloudacademy-${phase.toLowerCase()}-test-${token}`;
+const label = `io.cloudacademy.${phase.toLowerCase()}-test`;
+const database = migrations ? "cloudacademy_f2_test" : "cloudacademy_f1_test";
 const password = randomBytes(24).toString("hex");
 const cwd = fileURLToPath(new URL("../../", import.meta.url));
 let containerId;
@@ -105,8 +107,25 @@ try {
   }
   if (!ready)
     throw new Error("PostgreSQL 16 test container did not become ready");
+  if (migrations) {
+    inspectOwned();
+    docker([
+      "exec",
+      containerId,
+      "psql",
+      "-X",
+      "-v",
+      "ON_ERROR_STOP=1",
+      "-U",
+      database,
+      "-d",
+      database,
+      "-c",
+      `COMMENT ON DATABASE cloudacademy_f2_test IS 'cloudacademy-f2-test:${token}'`,
+    ]);
+  }
   console.log(
-    `F1 PostgreSQL: ${name}; 127.0.0.1:${binding.HostPort}; database/user=${database}; tmpfs; SCRAM`,
+    `${phase} PostgreSQL: ${name}; 127.0.0.1:${binding.HostPort}; database/user=${database}; tmpfs; SCRAM`,
   );
   const url = `postgresql://${database}:${password}@127.0.0.1:${binding.HostPort}/${database}`;
   const full = process.argv.includes("--full");
@@ -115,12 +134,19 @@ try {
     "node_modules/jest/bin/jest.js",
     "--runInBand",
   ];
-  if (!full)
-    args.push(
-      "--runTestsByPath",
-      "__tests__/postgresConfig.test.js",
-      "__tests__/postgresAdapter.integration.test.js",
-    );
+  if (!full) {
+    if (migrations)
+      args.push(
+        "--runTestsByPath",
+        "__tests__/postgresMigrations.integration.test.js",
+      );
+    else
+      args.push(
+        "--runTestsByPath",
+        "__tests__/postgresConfig.test.js",
+        "__tests__/postgresAdapter.integration.test.js",
+      );
+  }
   child = spawn(process.execPath, args, {
     cwd,
     stdio: "inherit",
@@ -128,8 +154,11 @@ try {
       ...process.env,
       NODE_ENV: "test",
       DB_DATA_DIR: "memory://",
-      PG_ADAPTER_INTEGRATION: "1",
-      PG_ADAPTER_TEST_URL: url,
+      PG_ADAPTER_INTEGRATION: migrations ? "0" : "1",
+      PG_ADAPTER_TEST_URL: migrations ? "" : url,
+      PG_MIGRATIONS_INTEGRATION: migrations ? "1" : "0",
+      PG_MIGRATIONS_TEST_URL: migrations ? url : "",
+      PG_MIGRATIONS_TEST_TOKEN: migrations ? token : "",
     },
   });
   process.exitCode = await new Promise((resolve, reject) => {
@@ -140,7 +169,7 @@ try {
   console.error(
     error.message?.startsWith("Local Docker")
       ? error.message
-      : "F1 PostgreSQL test runner failed; no production connection was used.",
+      : `${phase} PostgreSQL test runner failed; no production connection was used.`,
   );
   process.exitCode = 1;
 } finally {
@@ -149,7 +178,7 @@ try {
       const info = inspectOwned();
       docker(["rm", "--force", info.Id]);
       console.log(
-        "F1 test container removed after ownership/tmpfs verification.",
+        `${phase} test container removed after ownership/tmpfs verification.`,
       );
     } catch {
       console.error(`Test cleanup failed; inspect only container ${name}.`);
