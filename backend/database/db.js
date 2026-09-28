@@ -266,7 +266,11 @@ function isDebugEnabled() {
 }
 
 function debugQuery(query, params) {
-  if (process.env.NODE_ENV === "production" || !isDebugEnabled()) {
+  if (
+    process.env.DB_ENGINE === "postgres-test" ||
+    process.env.NODE_ENV === "production" ||
+    !isDebugEnabled()
+  ) {
     return;
   }
 
@@ -389,6 +393,7 @@ async function prepareSchema(database) {
 export async function checkDatabaseReady() {
   if (!db || db.closed || closePromise) return false;
   try {
+    if (db.checkReady) return await db.checkReady();
     await db.query('SELECT 1');
     return true;
   } catch {
@@ -404,8 +409,12 @@ export async function checkDatabaseReady() {
  * @returns {Promise<PGlite>} Database instance
  */
 export async function initializeDatabase(options = {}) {
+  const engine = process.env.DB_ENGINE || "pglite";
+  if (!["pglite", "postgres-test"].includes(engine)) {
+    throw new Error("Invalid database engine");
+  }
   if (db && !db.closed) {
-    console.log("[database] Reusing active PGlite instance");
+    console.log("[database] Reusing active database instance");
     return db;
   }
 
@@ -414,6 +423,18 @@ export async function initializeDatabase(options = {}) {
   }
 
   initializationPromise = (async () => {
+    if (engine === "postgres-test") {
+      const { createTestPostgresRuntime } = await import("./postgres/runtime.js");
+      const runtime = createTestPostgresRuntime();
+      if (!(await runtime.checkReady())) {
+        await runtime.close();
+        throw Object.assign(new Error("PostgreSQL runtime unavailable"), {
+          statusCode: 503,
+        });
+      }
+      db = runtime;
+      return db;
+    }
     const databaseOptions = resolveDatabaseOptions(options);
     let database = null;
 
@@ -511,7 +532,7 @@ export async function closeDatabase() {
 
     if (activeDatabase && !activeDatabase.closed) {
       await activeDatabase.close();
-      console.log("[database] PGlite instance closed");
+      console.log("[database] Database instance closed");
     }
   })();
 
@@ -1747,6 +1768,13 @@ export async function upsertUserModuleState(
     scope.certificationId,
   );
 
+  // Preserve the numeric HTTP contract and reject before a write could exceed it.
+  if (existing && Number(existing.version) >= Number.MAX_SAFE_INTEGER) {
+    throw Object.assign(new Error("Module state version exceeds supported range"), {
+      statusCode: 503,
+    });
+  }
+
   if (expectedVersion !== null) {
     const conditionalUpdate = await executeQuery(
       `
@@ -1756,6 +1784,7 @@ export async function upsertUserModuleState(
         AND module = $2
         AND certification_id IS NOT DISTINCT FROM $3
         AND version = $5
+        AND version < 9007199254740991
       RETURNING id, user_id, module, certification_id, state_json, version, updated_at
     `,
       [

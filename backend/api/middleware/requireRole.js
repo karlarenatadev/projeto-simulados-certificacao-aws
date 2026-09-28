@@ -17,6 +17,7 @@
 
 import { getUserById } from '../../../backend/database/db.js';
 import { verifySessionToken } from '../services/sessionToken.js';
+import { PostgresAdapterError } from '../../database/postgres/errors.js';
 
 /**
  * Anexa req.user após validar a sessão; credenciais inválidas recebem 401.
@@ -65,6 +66,7 @@ export async function requireAuth(req, res, next) {
     req.user = user;
     return next();
   } catch (_err) {
+    if (_err instanceof PostgresAdapterError || _err.statusCode === 503) return next(_err);
     return res.status(401).json({
       error: 'Falha ao verificar autenticação.',
       status: 401,

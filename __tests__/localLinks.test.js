@@ -186,8 +186,13 @@ describe("durable local links backend (real HMAC and PGlite)", () => {
 
   test("migration is additive/idempotent and keeps owner and users intact", async () => {
     const before = await request("/local-links/local_first");
-    await migrateLocalLinks(getDatabase());
-    await migrateLocalLinks(getDatabase());
+    if (process.env.DB_ENGINE === "postgres-test") {
+      // F2 already prepared this schema; the runtime must reject administrative work.
+      await expect(migrateLocalLinks(getDatabase())).rejects.toThrow();
+    } else {
+      await migrateLocalLinks(getDatabase());
+      await migrateLocalLinks(getDatabase());
+    }
     expect((await request("/local-links/local_first")).data).toEqual(
       before.data,
     );

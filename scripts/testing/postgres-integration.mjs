@@ -7,11 +7,13 @@ import { setTimeout as delay } from "node:timers/promises";
 const image =
   "postgres:16-alpine@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777";
 const token = randomUUID();
+const api = process.argv.includes("--api");
 const migrations = process.argv.includes("--migrations");
-const phase = migrations ? "F2" : "F1";
+const phase = api ? "F3" : migrations ? "F2" : "F1";
 const name = `cloudacademy-${phase.toLowerCase()}-test-${token}`;
 const label = `io.cloudacademy.${phase.toLowerCase()}-test`;
-const database = migrations ? "cloudacademy_f2_test" : "cloudacademy_f1_test";
+const database =
+  migrations || api ? "cloudacademy_f2_test" : "cloudacademy_f1_test";
 const password = randomBytes(24).toString("hex");
 const cwd = fileURLToPath(new URL("../../", import.meta.url));
 let containerId;
@@ -107,7 +109,7 @@ try {
   }
   if (!ready)
     throw new Error("PostgreSQL 16 test container did not become ready");
-  if (migrations) {
+  if (migrations || api) {
     inspectOwned();
     docker([
       "exec",
@@ -128,43 +130,55 @@ try {
     `${phase} PostgreSQL: ${name}; 127.0.0.1:${binding.HostPort}; database/user=${database}; tmpfs; SCRAM`,
   );
   const url = `postgresql://${database}:${password}@127.0.0.1:${binding.HostPort}/${database}`;
-  const full = process.argv.includes("--full");
-  const args = [
-    "--experimental-vm-modules",
-    "node_modules/jest/bin/jest.js",
-    "--runInBand",
-  ];
-  if (!full) {
-    if (migrations)
-      args.push(
-        "--runTestsByPath",
-        "__tests__/postgresMigrations.integration.test.js",
-      );
-    else
-      args.push(
-        "--runTestsByPath",
-        "__tests__/postgresConfig.test.js",
-        "__tests__/postgresAdapter.integration.test.js",
-      );
+  if (api) {
+    const { runApiContracts } = await import("./postgres-api.mjs");
+    process.exitCode = await runApiContracts({
+      url,
+      token,
+      cwd,
+      setChild: (value) => {
+        child = value;
+      },
+    });
+  } else {
+    const full = process.argv.includes("--full");
+    const args = [
+      "--experimental-vm-modules",
+      "node_modules/jest/bin/jest.js",
+      "--runInBand",
+    ];
+    if (!full) {
+      if (migrations)
+        args.push(
+          "--runTestsByPath",
+          "__tests__/postgresMigrations.integration.test.js",
+        );
+      else
+        args.push(
+          "--runTestsByPath",
+          "__tests__/postgresConfig.test.js",
+          "__tests__/postgresAdapter.integration.test.js",
+        );
+    }
+    child = spawn(process.execPath, args, {
+      cwd,
+      stdio: "inherit",
+      env: {
+        ...process.env,
+        NODE_ENV: "test",
+        DB_DATA_DIR: "memory://",
+        PG_ADAPTER_INTEGRATION: migrations ? "0" : "1",
+        PG_ADAPTER_TEST_URL: migrations ? "" : url,
+        PG_MIGRATIONS_INTEGRATION: migrations ? "1" : "0",
+        PG_MIGRATIONS_TEST_URL: migrations ? url : "",
+        PG_MIGRATIONS_TEST_TOKEN: migrations ? token : "",
+      },
+    });
+    process.exitCode = await new Promise((resolve, reject) => {
+      child.once("error", reject);
+      child.once("exit", (code) => resolve(code ?? 1));
+    });
   }
-  child = spawn(process.execPath, args, {
-    cwd,
-    stdio: "inherit",
-    env: {
-      ...process.env,
-      NODE_ENV: "test",
-      DB_DATA_DIR: "memory://",
-      PG_ADAPTER_INTEGRATION: migrations ? "0" : "1",
-      PG_ADAPTER_TEST_URL: migrations ? "" : url,
-      PG_MIGRATIONS_INTEGRATION: migrations ? "1" : "0",
-      PG_MIGRATIONS_TEST_URL: migrations ? url : "",
-      PG_MIGRATIONS_TEST_TOKEN: migrations ? token : "",
-    },
-  });
-  process.exitCode = await new Promise((resolve, reject) => {
-    child.once("error", reject);
-    child.once("exit", (code) => resolve(code ?? 1));
-  });
 } catch (error) {
   console.error(
     error.message?.startsWith("Local Docker")

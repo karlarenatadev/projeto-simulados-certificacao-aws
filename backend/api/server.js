@@ -24,6 +24,7 @@ import meRoutes from './routes/me.js';
 import { validateApiConfig } from './config.js';
 import { installShutdown } from './lifecycle.js';
 import { safeError } from './services/operationalLogging.js';
+import { PostgresAdapterError } from '../database/postgres/errors.js';
 
 const app = express();
 let initialized = false;
@@ -147,10 +148,13 @@ app.use((req, res) => {
 });
 
 app.use((err, _req, res, _next) => {
-  const statusCode = err.statusCode || err.status || 500;
+  const unavailable = err instanceof PostgresAdapterError &&
+    (['connection', 'authentication', 'timeout'].includes(err.kind) || err.code === 'PG_POOL_CLOSED');
+  const statusCode = unavailable ? 503 : err.statusCode || err.status || 500;
   if (statusCode >= 500) console.error('API request failed', safeError(err));
 
   const message =
+    statusCode === 503 ? 'Service unavailable' :
     process.env.NODE_ENV === 'production' && statusCode >= 500
       ? 'Internal server error'
       : err.message || 'Internal server error';
@@ -169,7 +173,8 @@ export async function startServer() {
   try {
     await database.initializeDatabase();
     const server = await new Promise((resolve, reject) => {
-      const candidate = app.listen(config.port, API_HOST, () => {
+      const host = process.env.DB_ENGINE === 'postgres-test' ? '127.0.0.1' : API_HOST;
+      const candidate = app.listen(config.port, host, () => {
         candidate.removeListener('error', reject);
         resolve(candidate);
       });
