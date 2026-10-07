@@ -320,6 +320,9 @@
     white-space: nowrap;
     border-width: 0;
   }
+  .\!absolute {
+    position: absolute !important;
+  }
   .absolute {
     position: absolute;
   }

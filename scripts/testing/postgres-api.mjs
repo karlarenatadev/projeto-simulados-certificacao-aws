@@ -37,6 +37,7 @@ export async function runApiContracts({ url, token, cwd, setChild }) {
       "postgresApi.integration",
       "api.integration",
       "accountPersistence",
+      "gamificationSyncApi",
       "api.access",
       "authRoles",
       "auth401",

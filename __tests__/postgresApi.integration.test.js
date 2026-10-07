@@ -300,6 +300,16 @@ integration(
         ).status,
       ).toBe(401);
       expect((await request("/questions/pending")).status).toBe(403);
+      await admin.query(
+        "REVOKE SELECT ON users FROM cloudacademy_f3_runtime",
+      );
+      try {
+        expect((await request("/auth/me")).status).toBe(500);
+      } finally {
+        await admin.query(
+          "GRANT SELECT ON users TO cloudacademy_f3_runtime",
+        );
+      }
       await admin.query("ALTER ROLE cloudacademy_f3_runtime NOLOGIN");
       await admin.query(
         "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE usename='cloudacademy_f3_runtime'",

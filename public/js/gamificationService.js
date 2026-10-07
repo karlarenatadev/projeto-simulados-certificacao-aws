@@ -1,13 +1,6 @@
 import { createXpEvent } from "./gamificationPolicy.js";
 
-export function mergeXpEvents(local = [], remote = []) {
-  const merged = new Map();
-  [...remote, ...local].forEach((event) => {
-    if (!event?.id) return;
-    if (!merged.has(event.id)) merged.set(event.id, event);
-  });
-  return [...merged.values()];
-}
+export { mergeXpEvents } from "./core/contracts/gamificationState.js";
 
 export function awardXpEvent(events = [], input) {
   const event = createXpEvent(input);

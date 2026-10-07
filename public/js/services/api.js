@@ -2,6 +2,7 @@ import { logger } from "../utils/logger.js";
 import { normalizeCertificationId } from "../utils/certUtils.js";
 import { SessionManager } from "../core/sessionManager.js";
 import { getApiBaseUrl } from "./apiConfig.js";
+import { assertGamificationScope } from "../core/contracts/moduleStateScope.js";
 /**
  * API Service Layer
  * Centralized HTTP client for all backend API calls
@@ -401,6 +402,7 @@ export const apiService = {
   },
 
   async getModuleState(module, certification = null) {
+    assertGamificationScope(module, certification);
     const query = certification
       ? `?certification=${encodeURIComponent(certification)}`
       : "";
@@ -410,6 +412,7 @@ export const apiService = {
   },
 
   async saveModuleState(module, certification, state, version = null) {
+    assertGamificationScope(module, certification);
     return fetchWithRetry(`/api/me/state/${encodeURIComponent(module)}`, {
       method: "PUT",
       body: JSON.stringify({

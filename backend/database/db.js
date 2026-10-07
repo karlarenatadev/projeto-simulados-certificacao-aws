@@ -11,6 +11,7 @@ import { fileURLToPath } from "url";
 import { normalizeCertificationId, normalizeLanguage } from "./normalizers.js";
 import { migrateLocalLinks } from "./localLinks.js";
 import { safeError } from "../api/services/operationalLogging.js";
+import { DatabaseUnavailableError } from "./errors.js";
 import {
   hasDomainTaxonomy,
   normalizeDomain as resolveDomain,
@@ -505,11 +506,7 @@ export async function initializeDatabase(options = {}) {
  * @returns {PGlite} Database instance
  */
 export function getDatabase() {
-  if (!db) {
-    throw new Error(
-      "Database not initialized. Call initializeDatabase() first.",
-    );
-  }
+  if (!db || db.closed || closePromise) throw new DatabaseUnavailableError();
   return db;
 }
 

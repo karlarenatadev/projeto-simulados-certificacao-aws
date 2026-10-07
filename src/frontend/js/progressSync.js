@@ -1,5 +1,7 @@
 /** Pure reconciliation helpers for account-scoped local/remote state. */
 import { mergeSprintProgress } from "./sprintProgress.js";
+import { mergeGamificationState } from "./core/contracts/gamificationState.js";
+export { mergeGamificationState } from "./core/contracts/gamificationState.js";
 
 const isoTime = (value) => {
   const parsed = Date.parse(value || "");
@@ -182,12 +184,18 @@ export function mergeJourneyProgress(local = {}, remote = {}) {
   return result;
 }
 
-export function mergeGamificationState(local = {}, remote = {}) {
-  const result = { ...remote, ...local };
-  result.activityDays = [
-    ...new Set([...(remote.activityDays || []), ...(local.activityDays || [])]),
-  ].sort();
-  return result;
+export function mergeLabsProgress(local = {}, remote = {}) {
+  return {
+    ...remote,
+    ...local,
+    // Lexical order is serialization stability, not completion chronology.
+    completedLabIds: [
+      ...new Set([
+        ...(local.completedLabIds || []),
+        ...(remote.completedLabIds || []),
+      ]),
+    ].sort(),
+  };
 }
 
 export function reconcileModuleState(
@@ -196,6 +204,23 @@ export function reconcileModuleState(
   remote,
   { localDirty = false } = {},
 ) {
+  if (
+    (module === "labs" || module === "gamification") &&
+    (local != null || remote != null)
+  ) {
+    return {
+      state:
+        module === "labs"
+          ? mergeLabsProgress(local ?? {}, remote ?? {})
+          : mergeGamificationState(local ?? {}, remote ?? {}),
+      outcome:
+        remote == null
+          ? "local-wins"
+          : local == null
+            ? "remote-wins"
+            : "merged",
+    };
+  }
   if (remote == null)
     return { state: local, outcome: local ? "local-wins" : "unchanged" };
   if (local == null) return { state: remote, outcome: "remote-wins" };
@@ -234,10 +259,8 @@ export function reconcileModuleState(
     };
   if (module === "sprint")
     return { state: mergeSprintProgress(local, remote), outcome: "merged" };
-  if (module === "journey" || module === "labs")
+  if (module === "journey")
     return { state: mergeJourneyProgress(local, remote), outcome: "merged" };
-  if (module === "gamification")
-    return { state: mergeGamificationState(local, remote), outcome: "merged" };
   return {
     state: localDirty ? local : remote,
     outcome: localDirty ? "local-wins" : "remote-wins",
