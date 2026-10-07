@@ -3017,6 +3017,7 @@ export async function recordAnswer(
         FROM quiz_history
         WHERE id = $1
           ${user_id ? "AND user_id = $2" : ""}
+        FOR UPDATE
       `,
         quizParams,
       );
@@ -3193,6 +3194,7 @@ export async function completeQuiz(quizId, userId) {
         SELECT *
         FROM quiz_history
         WHERE id = $1 AND user_id = $2
+        FOR UPDATE
       `,
         [normalizedQuizId, normalizedUserId],
       );
@@ -3304,6 +3306,7 @@ export async function abandonQuiz(quizId, userId) {
         SELECT *
         FROM quiz_history
         WHERE id = $1 AND user_id = $2
+        FOR UPDATE
       `,
         [normalizedQuizId, normalizedUserId],
       );

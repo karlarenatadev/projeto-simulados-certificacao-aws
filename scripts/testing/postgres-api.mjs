@@ -45,6 +45,7 @@ export async function runApiContracts({ url, token, cwd, setChild }) {
       "googleAuthRoute",
       "localLinks",
       "casesEvaluateAuth",
+      "postgresQuizConcurrency.integration",
     ];
     let failed = false;
     for (const suite of suites) {
@@ -80,8 +81,13 @@ export async function runApiContracts({ url, token, cwd, setChild }) {
             DB_CONNECTION_TIMEOUT_MS: "500",
             PG_ADAPTER_INTEGRATION: "0",
             PG_MIGRATIONS_INTEGRATION: "0",
-            // Only the operational fault suite receives a separate admin connection.
-            PG_F3_ADMIN_URL: suite === "postgresApi.integration" ? url : "",
+            // These suites use a separate connection for isolated fault/concurrency orchestration.
+            PG_F3_ADMIN_URL: [
+              "postgresApi.integration",
+              "postgresQuizConcurrency.integration",
+            ].includes(suite)
+              ? url
+              : "",
           },
         },
       );
