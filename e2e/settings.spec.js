@@ -1,7 +1,9 @@
 import { expect, test } from "@playwright/test";
 import { installConsoleGuard, openAuthenticated } from "./helpers/app.js";
 
-test("settings dark mode updates form controls and persists after reload", async ({ page }) => {
+test("settings dark mode updates form controls and persists after reload", async ({
+  page,
+}) => {
   const guard = installConsoleGuard(page);
   await openAuthenticated(page, "settings.html");
   await page.waitForLoadState("networkidle");
@@ -11,12 +13,43 @@ test("settings dark mode updates form controls and persists after reload", async
   await page.locator('label[aria-label="Ativar tema escuro"]').click();
   await expect(darkMode).toBeChecked();
   await page.locator("#settings-btn-save").click();
-  await expect.poll(() => page.locator("html").evaluate((element) => element.classList.contains("dark"))).toBe(true);
-  const inputBackground = await page.locator("#setting-display-name").evaluate((element) => getComputedStyle(element).backgroundColor);
-  const selectBackground = await page.locator("#setting-pomodoro").evaluate((element) => getComputedStyle(element).backgroundColor);
+  await expect
+    .poll(() =>
+      page
+        .locator("html")
+        .evaluate((element) => element.classList.contains("dark")),
+    )
+    .toBe(true);
+  const inputBackground = await page
+    .locator("#setting-display-name")
+    .evaluate((element) => getComputedStyle(element).backgroundColor);
+  const selectBackground = await page
+    .locator("#setting-pomodoro")
+    .evaluate((element) => getComputedStyle(element).backgroundColor);
   expect(inputBackground).not.toBe("rgb(255, 255, 255)");
   expect(selectBackground).not.toBe("rgb(255, 255, 255)");
   await page.reload();
   await expect(darkMode).toBeChecked();
+  guard.assertClean();
+});
+
+test("session notice does not block saving settings on a narrow viewport", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const guard = installConsoleGuard(page);
+  await openAuthenticated(page, "settings.html");
+  await page.waitForLoadState("networkidle");
+  await expect(page.locator("#auth-session-notice")).toBeVisible();
+  await page.locator('label[aria-label="Ativar tema escuro"]').click();
+  await expect(page.locator("#setting-dark-mode")).toBeChecked();
+  await page.locator("#settings-btn-save").click();
+  await expect
+    .poll(() =>
+      page
+        .locator("html")
+        .evaluate((element) => element.classList.contains("dark")),
+    )
+    .toBe(true);
   guard.assertClean();
 });

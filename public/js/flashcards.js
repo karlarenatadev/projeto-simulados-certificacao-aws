@@ -669,6 +669,7 @@ export function flipFlashcard() {
   if (cardContainer) {
     cardContainer.classList.toggle("flipped");
     flashcardState.flipped = !flashcardState.flipped;
+    updateReviewDeckActions();
   }
 }
 

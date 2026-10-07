@@ -9075,10 +9075,16 @@ select {
   inset: auto 1rem 1rem auto;
   z-index: 1000;
   width: min(32rem, calc(100% - 2rem));
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+  pointer-events: none;
   padding: 1rem;
   color: var(--text-main);
   background: var(--bg-card);
   border: 1px solid var(--border-theme);
+}
+.auth-session-notice button {
+  pointer-events: auto;
 }
 .auth-session-notice[hidden],
 .auth-session-dialog:not([open]) {

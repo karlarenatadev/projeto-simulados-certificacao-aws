@@ -1,1 +1,1 @@
-globalThis.__APP_CONFIG__ = Object.assign({}, globalThis.__APP_CONFIG__, {"googleClientId":"886346698814-3a9gme6hbtd1mcrvu7sj55be22ors5g8.apps.googleusercontent.com","apiBaseUrl":"","allowDevEmailLogin":false});
+globalThis.__APP_CONFIG__ = Object.assign({}, globalThis.__APP_CONFIG__, {"googleClientId":"886346698814-3a9gme6hbtd1mcrvu7sj55be22ors5g8.apps.googleusercontent.com","apiBaseUrl":"","allowDevEmailLogin":false,"localFirst":true});
