@@ -268,7 +268,9 @@ function isDebugEnabled() {
 
 function debugQuery(query, params) {
   if (
+    process.env.DB_ENGINE === "postgres" ||
     process.env.DB_ENGINE === "postgres-test" ||
+    process.env.NODE_ENV === "staging" ||
     process.env.NODE_ENV === "production" ||
     !isDebugEnabled()
   ) {
@@ -411,7 +413,7 @@ export async function checkDatabaseReady() {
  */
 export async function initializeDatabase(options = {}) {
   const engine = process.env.DB_ENGINE || "pglite";
-  if (!["pglite", "postgres-test"].includes(engine)) {
+  if (!["pglite", "postgres-test", "postgres"].includes(engine)) {
     throw new Error("Invalid database engine");
   }
   if (db && !db.closed) {
@@ -434,6 +436,15 @@ export async function initializeDatabase(options = {}) {
         });
       }
       db = runtime;
+      return db;
+    }
+    if (engine === "postgres") {
+      const { createOperationalPostgresRuntime } = await import(
+        "./postgres/operationalRuntime.js"
+      );
+      // Pool creation is lazy. The HTTP process may become live while the DB is
+      // unavailable; readiness remains 503 until schema/privileges recover.
+      db = createOperationalPostgresRuntime();
       return db;
     }
     const databaseOptions = resolveDatabaseOptions(options);

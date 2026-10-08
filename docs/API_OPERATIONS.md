@@ -116,6 +116,45 @@ sobrescrever o arquivo de dump. Esses controles são pré-condições do operado
 não houve alteração nele. Uma evolução separada pode adicionar essas guardas.
 Backup offline do diretório inteiro também exige processo totalmente encerrado.
 
+## Runtime operacional PostgreSQL
+
+`DB_ENGINE=postgres` é o runtime operacional novo e separado de `pglite`
+(local-first) e `DB_ENGINE=postgres-test` (harness F3). Ele aceita somente
+`NODE_ENV=staging` ou `production`, requer `DATABASE_URL`, `AUTH_SESSION_SECRET`,
+`AUTH_ALLOWED_DOMAINS`, `GOOGLE_CLIENT_ID`, `PORT`, `TRUST_PROXY` e
+`CORS_ALLOWED_ORIGINS` explicitamente configurados, além de validar os limites
+de pool/timeouts F1. A URL nunca é impressa. `DB_SSL_MODE=verify-full` é
+obrigatório para staging/produção; `DB_SSL_CA` é o PEM da CA quando necessário.
+A única exceção de TLS sem validação é o harness automatizado, que exige
+simultaneamente token de teste, loopback, database `cloudacademy_f2_test` e
+role `cloudacademy_operational_runtime`; isso não altera as guards F3.
+
+Esse runtime não executa schema, migrations, seeds nem bootstrap no startup.
+Ele verifica PostgreSQL 16, ledger/checksums F2, schema efetivo e privilégios
+da role. A role precisa de DML e leitura do ledger, sem DDL, ownership ou
+privilégios administrativos. `/api/health` mede liveness do processo; `/api/ready`
+retorna 200 somente com banco/schema/permissões compatíveis e 503 durante falha,
+drain ou incompatibilidade. O pool é lazy, de forma que HTTP pode iniciar sem o
+banco e readiness volta a 200 quando a dependência recupera.
+
+O runner F2 atual continua protegido como test-only. Não o aponte a um banco
+operacional nem remova suas guards: um job de migrations com credencial admin
+operacional ainda é gate separado antes de staging AWS. O runtime operacional
+usa deadline de encerramento de pool padrão de 4 s, dentro dos 10 s de drain e
+15 s totais definidos para o processo.
+
+`CORS_ALLOWED_ORIGINS` é uma lista separada por vírgulas de origens HTTPS
+exatas, sem wildcard; `TRUST_PROXY` vazio desabilita proxy trust, ou deve
+enumerar somente IPs/CIDRs confiáveis. Request ID é sempre UUID gerado pelo
+servidor e retornado em `X-Request-Id`; logs JSON usam rota template e omitem
+headers, query, corpo, tokens, URL do banco e dados pessoais. Mensagens internas
+de staging e produção são sanitizadas.
+
+`POST /api/users` (criação anônima legada) é recusado com 403 em `DB_ENGINE=postgres`.
+Não há consumidor ativo identificado no frontend; criação corporativa permanece
+no fluxo autenticado Google. Consumidores externos precisam ser inventariados
+antes de qualquer publicação.
+
 ## Contratos preservados e dívidas
 
 `POST /api/users` ainda é público. Há método `ApiService.createUser()` em

@@ -38,6 +38,15 @@ function generateAnonymousName() {
 
 router.post('/', async (req, res, next) => {
   try {
+    // Anonymous account creation is a legacy local-first endpoint. Operational
+    // PostgreSQL environments provision accounts through Google identity auth.
+    if (process.env.DB_ENGINE === 'postgres') {
+      return res.status(403).json({
+        success: false,
+        error: 'Public user creation is disabled in operational environments.',
+        status: 403,
+      });
+    }
     const { anonymous_name } = req.body;
 
     // Generate name if not provided

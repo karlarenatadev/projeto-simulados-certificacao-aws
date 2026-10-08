@@ -121,6 +121,11 @@ describe('credential failures and sanitized logs', () => {
       databaseCode: '23505',
     });
   });
+  test('also sanitizes operational staging errors', () => {
+    process.env.NODE_ENV = 'staging';
+    const error = Object.assign(new Error('private@example.com password'), { code: '42501' });
+    expect(safeError(error)).toEqual({ category: 'internal_error', databaseCode: '42501' });
+  });
 });
 
 describe('controlled shutdown', () => {

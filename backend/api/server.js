@@ -10,6 +10,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import { randomUUID } from 'node:crypto';
+import { clearTimeout, setTimeout } from 'node:timers';
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
 import * as database from '../database/db.js';
@@ -23,7 +25,7 @@ import meRoutes from './routes/me.js';
 
 import { validateApiConfig } from './config.js';
 import { installShutdown } from './lifecycle.js';
-import { safeError } from './services/operationalLogging.js';
+import { safeError, writeRequestLog } from './services/operationalLogging.js';
 import { PostgresAdapterError } from '../database/postgres/errors.js';
 
 const app = express();
@@ -52,17 +54,48 @@ const corsOptions = {
     if (!origin || process.env.NODE_ENV === 'test') {
       return callback(null, true);
     }
-    if (ALLOWED_ORIGINS.has(origin)) {
+    const configured = process.env.DB_ENGINE === 'postgres'
+      ? new Set((process.env.CORS_ALLOWED_ORIGINS || '').split(',').map((value) => value.trim()).filter(Boolean))
+      : ALLOWED_ORIGINS;
+    if (configured.has(origin)) {
       return callback(null, true);
     }
-    return callback(new Error(`CORS: origin not allowed — ${origin}`));
+    return callback(null, false);
   },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-User-Id'],
+  exposedHeaders: ['X-Request-Id'],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+  const requestId = randomUUID();
+  req.requestId = requestId;
+  res.setHeader('X-Request-Id', requestId);
+  if (process.env.DB_ENGINE !== 'postgres') {
+    console.log(`[${new Date().toISOString()}] ${req.method}`);
+    return next();
+  }
+  const startedAt = process.hrtime.bigint();
+  res.once('finish', () => {
+    const route = req.route?.path;
+    const safeRoute = typeof route === 'string' ? `${req.baseUrl}${route}`.slice(0, 200) : '<unmatched>';
+    const status = res.statusCode;
+    writeRequestLog({
+      level: status >= 500 ? 'error' : status >= 400 ? 'warn' : 'info',
+      request_id: requestId,
+      method: req.method,
+      route: safeRoute,
+      status,
+      duration_ms: Number(process.hrtime.bigint() - startedAt) / 1e6,
+      ...(res.locals.errorClass ? { error_class: res.locals.errorClass } : {}),
+      ...(res.locals.errorCode ? { error_code: res.locals.errorCode } : {}),
+    });
+  });
+  next();
+});
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -80,12 +113,6 @@ const apiLimiter = rateLimit({
 app.use('/api', apiLimiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
-
-app.use((req, _res, next) => {
-  const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] ${req.method}`);
-  next();
-});
 
 app.get('/api/health', (_req, res) => {
   res.status(200).json({
@@ -147,15 +174,22 @@ app.use((req, res) => {
   });
 });
 
-app.use((err, _req, res, _next) => {
+app.use((err, req, res, _next) => {
   const unavailable = err instanceof PostgresAdapterError &&
     (['connection', 'authentication', 'timeout'].includes(err.kind) || err.code === 'PG_POOL_CLOSED');
   const statusCode = unavailable ? 503 : err.statusCode || err.status || 500;
-  if (statusCode >= 500) console.error('API request failed', safeError(err));
+  if (statusCode >= 500 && process.env.DB_ENGINE === 'postgres') {
+    const errorName = typeof err?.name === 'string' && /^[A-Za-z][A-Za-z0-9]{0,63}$/.test(err.name) ? err.name : 'Error';
+    const code = typeof err?.code === 'string' && /^[0-9A-Z]{5}$/.test(err.code) ? err.code : undefined;
+    res.locals.errorClass = errorName;
+    if (code) res.locals.errorCode = code;
+  } else if (statusCode >= 500) {
+    console.error('API request failed', safeError(err));
+  }
 
   const message =
     statusCode === 503 ? 'Service unavailable' :
-    process.env.NODE_ENV === 'production' && statusCode >= 500
+    ['staging', 'production'].includes(process.env.NODE_ENV) && statusCode >= 500
       ? 'Internal server error'
       : err.message || 'Internal server error';
 
@@ -205,7 +239,8 @@ if (isDirectExecution) {
   startServer().catch((error) => {
     console.error(
       'API startup failed:',
-      error.message?.startsWith('Invalid API configuration:')
+      error.message?.startsWith('Invalid API configuration:') ||
+        error.message?.startsWith('Invalid operational PostgreSQL configuration:')
         ? error.message
         : safeError(error),
     );

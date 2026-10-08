@@ -10,6 +10,7 @@
     "test:postgres": "node scripts/testing/postgres-integration.mjs",
     "test:postgres:migrations": "node scripts/testing/postgres-integration.mjs --migrations",
     "test:postgres:api": "node scripts/testing/postgres-integration.mjs --api",
+    "test:postgres:operational": "node scripts/testing/postgres-operational.mjs",
     "db:migrate:postgres": "node scripts/database/migrate-postgres.mjs",
     "lint": "eslint src/frontend/js/**/*.js",
     "lint:fix": "eslint src/frontend/js/**/*.js --fix",
