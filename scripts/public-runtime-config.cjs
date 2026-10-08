@@ -12,6 +12,7 @@ const SECRET_NAMES = [
 
 function createPublicConfig(env) {
   const localFirst = env.PUBLIC_BUILD_TARGET === "local-first";
+  const hybrid = env.PUBLIC_BUILD_TARGET === "hybrid";
   const distribution = ["pages", "connected"].includes(
     env.PUBLIC_BUILD_TARGET,
   );
@@ -53,6 +54,7 @@ function createPublicConfig(env) {
     apiBaseUrl,
     allowDevEmailLogin: env.ALLOW_DEV_EMAIL_LOGIN === "true",
     ...(localFirst ? { localFirst: true } : {}),
+    ...(hybrid ? { hybrid: true } : {}),
   };
 }
 

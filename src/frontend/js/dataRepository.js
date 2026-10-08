@@ -2,11 +2,8 @@
  * DataRepository - Abstração única de acesso a dados
  *
  * Coordena persistência local (StorageManager) e sincronização com a API
- * conforme a estratégia D2: dual-write com leitura API-first.
- *
- * Hoje delega 100% para o storage local. Os pontos marcados com
- * "Ponto de extensão" são onde a sincronização com a API será adicionada
- * quando os endpoints de backend estiverem disponíveis.
+ * com snapshots versionados e reconciliação local-first. Histórico offline de
+ * quizzes e sessões Pomodoro permanecem locais, sem contrato remoto aprovado.
  *
  * @module dataRepository
  */
@@ -14,6 +11,10 @@
 import { logger } from "./utils/logger.js";
 import { reconcileModuleState } from "./progressSync.js";
 import { SessionManager } from "./core/sessionManager.js";
+import {
+  GLOBAL_STATE_MODULES,
+  assertGamificationScope,
+} from "./core/contracts/moduleStateScope.js";
 
 /**
  * Cria um repositório de dados que combina storage local e API.
@@ -79,9 +80,10 @@ export function createDataRepository(storage, _api = null) {
   }
 
   async function syncModuleState(module, certId = null, options = {}) {
+    assertGamificationScope(module, certId);
     if (
       !_api?.saveModuleState ||
-      (module !== "preferences" && module !== "gamification" && !certId)
+      (!GLOBAL_STATE_MODULES.includes(module) && !certId)
     )
       return null;
     const session = SessionManager.restore();
@@ -121,7 +123,16 @@ export function createDataRepository(storage, _api = null) {
           const state = storage.getAccountModuleState(module, certId);
           if (!state && !remoteState) return null;
           if (remoteState && typeof remoteState === "object") {
-            const merged = reconcileModuleState(module, state, remoteState);
+            let merged;
+            try {
+              merged = reconcileModuleState(module, state, remoteState);
+            } catch (error) {
+              // No identity guessing or partial apply for ambiguous legacy XP.
+              return {
+                syncPending: true,
+                reason: error.code || "state_invalid",
+              };
+            }
             storage.setAccountModuleState(module, certId, merged.state);
             // Hydration merges existing remote state locally. A create conflict
             // still follows the retry/merge/conditional-write path below.
@@ -202,10 +213,7 @@ export function createDataRepository(storage, _api = null) {
     async saveQuizResult(result) {
       const saved = storage.saveQuizResult(result);
 
-      // Sincroniza com API silenciosamente (fallback p/ local já garantido na linha acima)
-      if (_api?.syncQuizResult) {
-        await _safeApiCall(() => _api.syncQuizResult(result));
-      }
+      // Offline history remains local; online quiz endpoints are a different contract.
 
       return saved;
     },
@@ -333,10 +341,7 @@ export function createDataRepository(storage, _api = null) {
     async updateGamification(percentage) {
       const result = storage.updateGamification(percentage);
 
-      // Sincroniza com API silenciosamente
-      if (_api?.syncGamification) {
-        await _safeApiCall(() => _api.syncGamification(result));
-      }
+      // Global snapshot uses the existing versioned module-state API only.
       await syncModuleState("gamification");
 
       return result;
@@ -416,10 +421,7 @@ export function createDataRepository(storage, _api = null) {
     async saveFocusSession(minutes, type = "work") {
       const saved = storage.saveFocusSession(minutes, type);
 
-      // Sincroniza silenciosamente
-      if (_api?.syncFocusSession) {
-        await _safeApiCall(() => _api.syncFocusSession({ minutes, type }));
-      }
+      // Pomodoro has no approved remote persistence contract.
 
       return saved;
     },

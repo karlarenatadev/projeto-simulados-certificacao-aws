@@ -303,6 +303,9 @@
   .collapse {
     visibility: collapse;
   }
+  .invisible {
+    visibility: hidden;
+  }
   .visible {
     visibility: visible;
   }
@@ -316,6 +319,9 @@
     clip-path: inset(50%);
     white-space: nowrap;
     border-width: 0;
+  }
+  .\!absolute {
+    position: absolute !important;
   }
   .absolute {
     position: absolute;

@@ -175,6 +175,41 @@ describe("apiService response normalization", () => {
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
+  test("a delayed 401 for account A cannot expire account B", async () => {
+    SessionManager.persist({
+      user: { id: "account-a", role: "STUDENT" },
+      accessToken: "token-a",
+      authenticationMode: "online",
+      expiresAt: new Date(Date.now() + 3600000).toISOString(),
+    });
+    let resolveResponse;
+    global.fetch.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveResponse = resolve;
+        }),
+    );
+
+    const pending = apiService.getMe("account-a");
+    expect(resolveResponse).toEqual(expect.any(Function));
+    SessionManager.persist({
+      user: { id: "account-b", role: "STUDENT" },
+      accessToken: "token-b",
+      authenticationMode: "online",
+      expiresAt: new Date(Date.now() + 3600000).toISOString(),
+    });
+    resolveResponse(
+      jsonResponse({ error: "Credential invalid", status: 401 }, 401),
+    );
+
+    await expect(pending).rejects.toMatchObject({ statusCode: 401 });
+    expect(SessionManager.restore()).toMatchObject({
+      user: { id: "account-b" },
+      accessToken: "token-b",
+      authenticationMode: "online",
+    });
+  });
+
   test("preserves a direct list response", async () => {
     const questions = [{ id: "question-1" }];
     global.fetch.mockResolvedValue(jsonResponse(questions));

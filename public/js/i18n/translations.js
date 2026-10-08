@@ -746,6 +746,8 @@ export const translations = {
       "Seu progresso fica salvo neste navegador. A sincronização entre dispositivos exige uma conta.",
     auth_local_first_footer:
       "O modo local mantém o progresso neste navegador.",
+    auth_google_unavailable_local:
+      "A sincronização está temporariamente indisponível. Você pode continuar estudando localmente.",
     auth_link_loading: "Sincronizando progresso local compatível...",
     auth_link_pending:
       "Seu login foi concluído, mas parte do progresso local ainda aguarda sincronização.",
@@ -1511,6 +1513,8 @@ export const translations = {
     auth_local_first_description:
       "Your progress stays in this browser. Cross-device sync requires an account.",
     auth_local_first_footer: "Local mode keeps progress in this browser.",
+    auth_google_unavailable_local:
+      "Sync is temporarily unavailable. You can continue studying locally.",
     auth_link_loading: "Syncing compatible local progress...",
     auth_link_pending:
       "You are signed in, but some local progress is still waiting to sync.",

@@ -64,11 +64,10 @@ export async function requireAuth(req, res, next) {
 
     req.user = user;
     return next();
-  } catch (_err) {
-    return res.status(401).json({
-      error: 'Falha ao verificar autenticação.',
-      status: 401,
-    });
+  } catch (error) {
+    // Token failures are handled above. Database/infrastructure failures must
+    // reach the API error handler instead of being disguised as invalid auth.
+    return next(error);
   }
 }
 

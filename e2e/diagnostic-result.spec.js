@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { installConsoleGuard, openAuthenticated } from "./helpers/app.js";
 
+test.use({ serviceWorkers: "block" });
+
 const domains = [
   ["Fundamentals of AI and ML", "fundamentals-ai-ml", 3],
   ["Fundamentals of Generative AI", "fundamentals-genai", 4],
@@ -28,6 +30,9 @@ test("diagnostic result uses one multi-domain projection and preserves certifica
 }) => {
   test.setTimeout(60_000);
   const guard = installConsoleGuard(page);
+  await page.route("**/api/leaderboard**", async (route) => {
+    await route.fulfill({ json: { success: true, data: [] } });
+  });
   await page.route("**/data/questions/aif-c01.json", async (route) => {
     const questions = fixtureQuestions().map(
       ({ shouldBeCorrect, ...question }) => ({

@@ -4,10 +4,7 @@ import { createDataRepository } from "./dataRepository.js";
 import { generateQuestionId } from "./utils/questionIdentity.js";
 import { SessionManager } from "./core/sessionManager.js";
 import { normalizeLegacyReviewQuestion } from "./utils/reviewCard.js";
-import {
-  awardXpEvent as appendXpEvent,
-  mergeXpEvents,
-} from "./gamificationService.js";
+import { awardXpEvent as appendXpEvent } from "./gamificationService.js";
 import { projectGamification } from "./gamificationProjection.js";
 import {
   getActivityDay,
@@ -16,6 +13,8 @@ import {
 } from "./streakProjection.js";
 import { normalizeSprintProgress } from "./sprintProgress.js";
 import { isLocalIdentityId } from "./core/contracts/localLinkMigration.js";
+import { mergeGamificationState } from "./core/contracts/gamificationState.js";
+import { assertGamificationScope } from "./core/contracts/moduleStateScope.js";
 
 /**
  * StorageManager - Gerencia toda a persistência de dados do simulador
@@ -830,7 +829,9 @@ export class StorageManager {
     const current = this.getXpState();
     const result = appendXpEvent(current.events, input);
     if (!result.event) return result;
-    const merged = mergeXpEvents(current.events, result.events);
+    // Local awards deduplicate canonical IDs in appendXpEvent. Preserve legacy
+    // unidentified records too; strict remote reconciliation remains pending.
+    const merged = result.events;
     localStorage.setItem(
       this._getKey("gamification_xp_events"),
       JSON.stringify(merged),
@@ -999,12 +1000,17 @@ export class StorageManager {
           : "gamification",
       );
       const previous = JSON.parse(localStorage.getItem(key) || "{}");
-      const legacyBaselineXp =
-        previous.legacyBaselineXp ??
-        gamification.legacyBaselineXp ??
-        gamification.xp ??
-        gamification.xp_points ??
-        0;
+      const legacyBaselineXp = Math.max(
+        Number(
+          previous.legacyBaselineXp ?? previous.xp ?? previous.xp_points,
+        ) || 0,
+        Number(
+          gamification.legacyBaselineXp ??
+            gamification.xp ??
+            gamification.xp_points ??
+            0,
+        ) || 0,
+      );
       localStorage.setItem(
         key,
         JSON.stringify({ ...gamification, legacyBaselineXp }),
@@ -1162,6 +1168,7 @@ export class StorageManager {
 
   getAccountModuleState(module, certId = null) {
     const normalizedModule = String(module || "").toLowerCase();
+    assertGamificationScope(normalizedModule, certId);
     if (normalizedModule === "sprint") return this.getSprintState(certId);
     if (normalizedModule === "flashcards")
       return { deck: this.getReviewDeck(certId) };
@@ -1190,6 +1197,7 @@ export class StorageManager {
 
   setAccountModuleState(module, certId, state) {
     const normalizedModule = String(module || "").toLowerCase();
+    assertGamificationScope(normalizedModule, certId);
     if (!state || typeof state !== "object") return false;
     if (normalizedModule === "sprint")
       return this.saveSprintState(certId, state);
@@ -1213,8 +1221,10 @@ export class StorageManager {
       return this._saveMistakesStore(store);
     }
     if (normalizedModule === "labs") {
+      const normalizedCertId = this._normalizeCertId(certId);
+      if (!normalizedCertId) return false;
       localStorage.setItem(
-        this._getKey(`completed_labs_${certId}`),
+        this._getKey(`completed_labs_${normalizedCertId}`),
         JSON.stringify(
           Array.isArray(state.completedLabIds) ? state.completedLabIds : [],
         ),
@@ -1232,14 +1242,19 @@ export class StorageManager {
       return true;
     }
     if (normalizedModule === "gamification") {
+      const merged = mergeGamificationState(
+        this.getAccountModuleState("gamification"),
+        state,
+      );
       localStorage.setItem(
         this._getKey("gamification_xp_events"),
-        JSON.stringify(Array.isArray(state.events) ? state.events : []),
+        JSON.stringify(merged.events),
       );
       const current = this.getGamification();
       this.saveGamification({
         ...current,
-        activityDays: normalizeActivityDays(state.activityDays || []),
+        legacyBaselineXp: merged.legacyBaselineXp,
+        activityDays: normalizeActivityDays(merged.activityDays),
       });
       return true;
     }

@@ -145,6 +145,20 @@ describe("Express API integration", () => {
     );
   });
 
+  test("question pagination preserves envelope, filters and array fields", async () => {
+    const query = "/api/questions?certification=CLF-C02&limit=1";
+    const first = await request(baseUrl, `${query}&offset=0`);
+    const second = await request(baseUrl, `${query}&offset=1`);
+    expect(first.response.status).toBe(200);
+    expect(first.body.data).toHaveLength(1);
+    expect(second.body.data).toHaveLength(1);
+    expect(first.body.data[0].id).not.toBe(second.body.data[0].id);
+    expect(first.body.data[0].certification).toBe("CLF-C02");
+    expect(Array.isArray(first.body.data[0].options)).toBe(true);
+    expect(first.body.pagination).toMatchObject({ limit: 1, offset: 0 });
+    expect(second.body.pagination).toMatchObject({ limit: 1, offset: 1 });
+  });
+
   test("student catalog and quiz exclude non-approved questions", async () => {
     const pending = await insertQuestion({
       certification: "CLF-C02",

@@ -11,6 +11,7 @@ import { fileURLToPath } from "url";
 import { normalizeCertificationId, normalizeLanguage } from "./normalizers.js";
 import { migrateLocalLinks } from "./localLinks.js";
 import { safeError } from "../api/services/operationalLogging.js";
+import { DatabaseUnavailableError } from "./errors.js";
 import {
   hasDomainTaxonomy,
   normalizeDomain as resolveDomain,
@@ -266,7 +267,11 @@ function isDebugEnabled() {
 }
 
 function debugQuery(query, params) {
-  if (process.env.NODE_ENV === "production" || !isDebugEnabled()) {
+  if (
+    process.env.DB_ENGINE === "postgres-test" ||
+    process.env.NODE_ENV === "production" ||
+    !isDebugEnabled()
+  ) {
     return;
   }
 
@@ -389,6 +394,7 @@ async function prepareSchema(database) {
 export async function checkDatabaseReady() {
   if (!db || db.closed || closePromise) return false;
   try {
+    if (db.checkReady) return await db.checkReady();
     await db.query('SELECT 1');
     return true;
   } catch {
@@ -404,8 +410,12 @@ export async function checkDatabaseReady() {
  * @returns {Promise<PGlite>} Database instance
  */
 export async function initializeDatabase(options = {}) {
+  const engine = process.env.DB_ENGINE || "pglite";
+  if (!["pglite", "postgres-test"].includes(engine)) {
+    throw new Error("Invalid database engine");
+  }
   if (db && !db.closed) {
-    console.log("[database] Reusing active PGlite instance");
+    console.log("[database] Reusing active database instance");
     return db;
   }
 
@@ -414,6 +424,18 @@ export async function initializeDatabase(options = {}) {
   }
 
   initializationPromise = (async () => {
+    if (engine === "postgres-test") {
+      const { createTestPostgresRuntime } = await import("./postgres/runtime.js");
+      const runtime = createTestPostgresRuntime();
+      if (!(await runtime.checkReady())) {
+        await runtime.close();
+        throw Object.assign(new Error("PostgreSQL runtime unavailable"), {
+          statusCode: 503,
+        });
+      }
+      db = runtime;
+      return db;
+    }
     const databaseOptions = resolveDatabaseOptions(options);
     let database = null;
 
@@ -484,11 +506,7 @@ export async function initializeDatabase(options = {}) {
  * @returns {PGlite} Database instance
  */
 export function getDatabase() {
-  if (!db) {
-    throw new Error(
-      "Database not initialized. Call initializeDatabase() first.",
-    );
-  }
+  if (!db || db.closed || closePromise) throw new DatabaseUnavailableError();
   return db;
 }
 
@@ -511,7 +529,7 @@ export async function closeDatabase() {
 
     if (activeDatabase && !activeDatabase.closed) {
       await activeDatabase.close();
-      console.log("[database] PGlite instance closed");
+      console.log("[database] Database instance closed");
     }
   })();
 
@@ -903,7 +921,7 @@ function normalizeQuestionInput(questionData, { partial = false } = {}) {
   );
 }
 
-async function normalizeQuestionUpdate(updates, existingQuestion) {
+function normalizeQuestionUpdate(updates, existingQuestion) {
   const candidate = {
     ...existingQuestion,
     ...updates,
@@ -941,6 +959,8 @@ async function normalizeQuestionUpdate(updates, existingQuestion) {
         ? "question_text"
         : key === "correct"
           ? "correct_answer"
+          : key === "reference"
+            ? "reference_url"
           : key;
 
     if (!allowedFields.has(storageKey)) {
@@ -1316,6 +1336,227 @@ export async function deleteQuestion(questionId) {
   }
 }
 
+const EDITORIAL_CREATE_FIELDS = new Set([
+  "certification",
+  "language",
+  "source_question_id",
+  "domain",
+  "difficulty",
+  "question_text",
+  "question",
+  "options",
+  "correct_answer",
+  "correct",
+  "explanation",
+  "reference_url",
+  "reference",
+  "tags",
+]);
+const EDITORIAL_UPDATE_FIELDS = new Set([
+  "certification",
+  "domain",
+  "difficulty",
+  "question_text",
+  "question",
+  "options",
+  "correct_answer",
+  "correct",
+  "explanation",
+  "reference_url",
+  "reference",
+  "tags",
+]);
+
+function allowEditorialContentFields(payload, allowedFields) {
+  if (!isPlainObject(payload))
+    throw accessError("Editorial payload must be an object", 400);
+  const entries = Object.entries(payload);
+  if (entries.length === 0)
+    throw accessError("Editorial payload must contain writable content", 400);
+  const unsupported = entries.find(([key]) => !allowedFields.has(key));
+  if (unsupported)
+    throw accessError(`Editorial field is not client-writable: ${unsupported[0]}`, 400);
+  return Object.fromEntries(entries);
+}
+
+function normalizeEditorialInput(normalize) {
+  try {
+    return normalize();
+  } catch (error) {
+    if (error.statusCode === undefined) error.statusCode = 400;
+    throw error;
+  }
+}
+
+async function lockEditorialActor(transaction, actorUserId) {
+  const actorId = normalizeUserId(actorUserId);
+  const rows = await queryRows(
+    transaction,
+    "SELECT id, role, is_active FROM users WHERE id = $1 FOR SHARE",
+    [actorId],
+  );
+  const actor = rows[0];
+  if (!actor || actor.is_active !== true || !["VALIDATOR", "ADMIN"].includes(actor.role))
+    throw accessError("Active VALIDATOR or ADMIN is required", 403);
+  return actor;
+}
+
+async function assertEditorialCertificationAccess(
+  transaction,
+  actor,
+  certificationId,
+) {
+  if (actor.role === "ADMIN") return;
+  const certification = normalizeAccessCertification(certificationId);
+  const rows = await queryRows(
+    transaction,
+    `SELECT 1 FROM validator_certifications
+      WHERE user_id = $1 AND certification_id = $2 AND is_active = TRUE
+      FOR SHARE`,
+    [actor.id, certification],
+  );
+  if (rows.length === 0)
+    throw accessError("Validator is not authorized for this certification", 403);
+}
+
+/** HTTP/editorial creation: actor, current role and scope are checked in the write transaction. */
+export async function createEditorialQuestion(actorUserId, questionData) {
+  const safeQuestion = allowEditorialContentFields(
+    questionData,
+    EDITORIAL_CREATE_FIELDS,
+  );
+  const normalized = normalizeEditorialInput(() =>
+    normalizeQuestionInput(safeQuestion),
+  );
+  const database = getDatabase();
+  return database.transaction(async (transaction) => {
+    const actor = await lockEditorialActor(transaction, actorUserId);
+    await assertEditorialCertificationAccess(
+      transaction,
+      actor,
+      normalized.certification,
+    );
+    const rows = await queryRows(
+      transaction,
+      `INSERT INTO questions (
+        certification, language, source_question_id, domain, difficulty,
+        question_text, options, correct_answer, explanation, reference_url,
+        tags, is_active, validation_status
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7::jsonb,$8::jsonb,$9,$10,$11,TRUE,'PENDING')
+      RETURNING *`,
+      [
+        normalizeCertificationId(normalized.certification),
+        normalized.language ?? null,
+        normalized.source_question_id ?? null,
+        normalized.domain,
+        normalized.difficulty,
+        normalized.question_text,
+        JSON.stringify(normalized.options),
+        JSON.stringify(normalized.correct_answer),
+        normalized.explanation,
+        normalized.reference_url ?? null,
+        normalized.tags ?? [],
+      ],
+    );
+    return rows[0] || null;
+  });
+}
+
+/** HTTP/editorial update: lock the resource, then authorize both source and destination scope. */
+export async function updateEditorialQuestion(
+  actorUserId,
+  questionId,
+  updates,
+) {
+  normalizeRequiredString(questionId, "questionId");
+  const safeUpdates = allowEditorialContentFields(
+    updates,
+    EDITORIAL_UPDATE_FIELDS,
+  );
+  const database = getDatabase();
+  return database.transaction(async (transaction) => {
+    const actor = await lockEditorialActor(transaction, actorUserId);
+    const currentRows = await queryRows(
+      transaction,
+      "SELECT * FROM questions WHERE id = $1 AND is_active = TRUE FOR UPDATE",
+      [questionId],
+    );
+    const current = currentRows[0];
+    if (!current) return null;
+
+    const filteredUpdates = normalizeEditorialInput(() =>
+      normalizeQuestionUpdate(safeUpdates, current),
+    );
+    const sourceCertification = normalizeEditorialInput(() =>
+      validateCertification(current.certification, { required: true }),
+    );
+    const destinationCertification = normalizeEditorialInput(() =>
+      validateCertification(filteredUpdates.certification ?? sourceCertification, {
+        required: true,
+      }),
+    );
+    await assertEditorialCertificationAccess(
+      transaction,
+      actor,
+      sourceCertification,
+    );
+    if (destinationCertification !== sourceCertification) {
+      await assertEditorialCertificationAccess(
+        transaction,
+        actor,
+        destinationCertification,
+      );
+    }
+
+    const keys = Object.keys(filteredUpdates);
+    if (keys.length === 0)
+      throw accessError("Editorial payload contains no writable content", 400);
+    const setClause = keys
+      .map((key, index) => `${key} = $${index + 1}`)
+      .join(", ");
+    const values = keys.map((key) => {
+      const value = filteredUpdates[key];
+      return key === "options" || key === "correct_answer"
+        ? JSON.stringify(value)
+        : value;
+    });
+    const rows = await queryRows(
+      transaction,
+      `UPDATE questions SET ${setClause} WHERE id = $${keys.length + 1} AND is_active = TRUE RETURNING *`,
+      [...values, questionId],
+    );
+    return rows[0] || null;
+  });
+}
+
+/** Deletion remains ADMIN-only, rechecked against the database within the write transaction. */
+export async function deleteEditorialQuestion(actorUserId, questionId) {
+  normalizeRequiredString(questionId, "questionId");
+  const database = getDatabase();
+  return database.transaction(async (transaction) => {
+    const actorId = normalizeUserId(actorUserId);
+    const rows = await queryRows(
+      transaction,
+      "SELECT id, role, is_active FROM users WHERE id = $1 FOR SHARE",
+      [actorId],
+    );
+    if (rows[0]?.role !== "ADMIN" || rows[0]?.is_active !== true)
+      throw accessError("ADMIN access required", 403);
+    const question = await queryRows(
+      transaction,
+      "SELECT id FROM questions WHERE id = $1 AND is_active = TRUE FOR UPDATE",
+      [questionId],
+    );
+    if (!question[0]) return null;
+    const deleted = await queryRows(
+      transaction,
+      "UPDATE questions SET is_active = FALSE WHERE id = $1 AND is_active = TRUE RETURNING *",
+      [questionId],
+    );
+    return deleted[0] || null;
+  });
+}
+
 // ============================================================================
 // USERS - CRUD Operations
 // ============================================================================
@@ -1524,13 +1765,29 @@ export async function resolveGoogleIdentity({ subject, email, profile = {} }) {
 
   const database = getDatabase();
   return database.transaction(async (transaction) => {
+    // Serialize only resolutions that share an external subject or normalized
+    // email. Sorting the lock keys gives every request the same acquisition
+    // order when both keys overlap; hash collisions can only add serialization.
+    const identityLockKeys = [
+      `email:${normalizedEmail}`,
+      `provider:google:subject:${normalizedSubject}`,
+    ].sort();
+    for (const lockKey of identityLockKeys) {
+      await queryRows(
+        transaction,
+        "SELECT pg_advisory_xact_lock(hashtextextended($1, 0))",
+        [lockKey],
+      );
+    }
+
     const identityRows = await queryRows(
       transaction,
       `SELECT u.*, i.email_at_link
          FROM user_identities i
          JOIN users u ON u.id = i.user_id
         WHERE i.provider = 'google' AND i.subject = $1
-        LIMIT 1`,
+        LIMIT 1
+        FOR UPDATE OF u, i`,
       [normalizedSubject],
     );
 
@@ -1543,7 +1800,7 @@ export async function resolveGoogleIdentity({ subject, email, profile = {} }) {
       }
       const conflict = await queryRows(
         transaction,
-        "SELECT id FROM users WHERE LOWER(email) = LOWER($1) AND id::text <> $2 LIMIT 1",
+        "SELECT id FROM users WHERE LOWER(TRIM(email)) = $1 AND id::text <> $2 LIMIT 1",
         [normalizedEmail, String(existing.id)],
       );
       if (conflict.length > 0) {
@@ -1578,9 +1835,10 @@ export async function resolveGoogleIdentity({ subject, email, profile = {} }) {
     const existingByEmail = await queryRows(
       transaction,
       `SELECT * FROM users
-        WHERE LOWER(email) = LOWER($1)
+        WHERE LOWER(TRIM(email)) = $1
         ORDER BY CASE role WHEN 'ADMIN' THEN 1 WHEN 'VALIDATOR' THEN 2 ELSE 3 END, created_at ASC
-        LIMIT 1`,
+        LIMIT 1
+        FOR UPDATE`,
       [normalizedEmail],
     );
     let user = existingByEmail[0];
@@ -1747,6 +2005,13 @@ export async function upsertUserModuleState(
     scope.certificationId,
   );
 
+  // Preserve the numeric HTTP contract and reject before a write could exceed it.
+  if (existing && Number(existing.version) >= Number.MAX_SAFE_INTEGER) {
+    throw Object.assign(new Error("Module state version exceeds supported range"), {
+        statusCode: 503,
+    });
+  }
+
   if (expectedVersion !== null) {
     const conditionalUpdate = await executeQuery(
       `
@@ -1756,6 +2021,7 @@ export async function upsertUserModuleState(
         AND module = $2
         AND certification_id IS NOT DISTINCT FROM $3
         AND version = $5
+        AND version < 9007199254740991
       RETURNING id, user_id, module, certification_id, state_json, version, updated_at
     `,
       [
@@ -1864,11 +2130,41 @@ export async function updateUser(userId, data) {
   `;
 
   try {
-    const result = await executeQuery(query, [
-      ...Object.values(updates),
-      normalizedUserId,
-    ]);
-    return result.length > 0 ? result[0] : null;
+    if (updates.role === undefined && updates.is_active === undefined) {
+      const result = await executeQuery(query, [
+        ...Object.values(updates),
+        normalizedUserId,
+      ]);
+      return result.length > 0 ? result[0] : null;
+    }
+
+    return withAdminAccessTransaction(async (transaction) => {
+      const users = await lockAccessUsers(transaction, [normalizedUserId]);
+      const current = users.get(normalizedUserId);
+      if (!current) return null;
+      const nextRole = updates.role ?? current.role;
+      const nextActive = updates.is_active ?? current.is_active;
+      if (
+        current.role === "ADMIN" &&
+        current.is_active &&
+        (nextRole !== "ADMIN" || !nextActive)
+      ) {
+        const admins = await queryRows(
+          transaction,
+          "SELECT COUNT(*)::int AS count FROM users WHERE role = 'ADMIN' AND is_active = TRUE",
+        );
+        if (Number(admins[0]?.count || 0) <= 1)
+          throw accessError(
+            "The last active ADMIN cannot be demoted or disabled",
+            409,
+          );
+      }
+      const result = await queryRows(transaction, query, [
+        ...Object.values(updates),
+        normalizedUserId,
+      ]);
+      return result.length > 0 ? result[0] : null;
+    });
   } catch (error) {
     console.error("Error updating user:", safeError(error));
     throw error;
@@ -1882,6 +2178,36 @@ const ACCESS_CERTIFICATIONS = new Set([
   "AIF-C01",
 ]);
 const ACCESS_ROLES = new Set(["STUDENT", "VALIDATOR", "ADMIN"]);
+// Shared PostgreSQL transaction lock serializing all administrative RBAC writes.
+// The stable bigint key coordinates separate API processes without schema changes.
+const ADMIN_ACCESS_LOCK_KEY = "18930571728208972";
+
+function accessError(message, statusCode) {
+  return Object.assign(new Error(message), { statusCode });
+}
+
+async function withAdminAccessTransaction(work) {
+  const database = getDatabase();
+  return database.transaction(async (transaction) => {
+    await queryRows(transaction, "SELECT pg_advisory_xact_lock($1::bigint)", [
+      ADMIN_ACCESS_LOCK_KEY,
+    ]);
+    return work(transaction);
+  });
+}
+
+async function lockAccessUsers(transaction, userIds) {
+  const normalizedIds = [...new Set(userIds.map(normalizeUserId))];
+  const users = await queryRows(
+    transaction,
+    `SELECT * FROM users
+      WHERE id = ANY($1::uuid[])
+      ORDER BY id
+      FOR UPDATE`,
+    [normalizedIds],
+  );
+  return new Map(users.map((user) => [String(user.id), user]));
+}
 
 function normalizeAccessCertification(certificationId) {
   const normalized = normalizeCertificationId(certificationId);
@@ -1900,8 +2226,17 @@ function normalizeAccessRole(role) {
     .toUpperCase()
     .trim();
   if (!ACCESS_ROLES.has(normalized))
-    throw new Error(`role must be one of: ${[...ACCESS_ROLES].join(", ")}`);
+    throw accessError(
+      `role must be one of: ${[...ACCESS_ROLES].join(", ")}`,
+      400,
+    );
   return normalized;
+}
+
+function normalizeAccessActive(value) {
+  if (typeof value !== "boolean")
+    throw accessError("is_active must be a boolean", 400);
+  return value;
 }
 
 export async function listUsers({ search = "", limit = 50, offset = 0 } = {}) {
@@ -1951,30 +2286,47 @@ export async function removeValidatorCertification(
   targetUserId,
   certificationId,
 ) {
-  const actor = await getUserById(actorUserId);
-  if (!actor || actor.role !== "ADMIN")
-    throw new Error("ADMIN access required");
   const normalizedCertification = normalizeAccessCertification(certificationId);
-  const result = await executeQuery(
-    `
-    UPDATE validator_certifications
-    SET is_active = FALSE
-    WHERE user_id = $1 AND certification_id = $2 AND is_active = TRUE
-    RETURNING *
-  `,
-    [normalizeUserId(targetUserId), normalizedCertification],
-  );
-  if (result[0]) {
-    await recordRoleAudit(
-      actorUserId,
-      targetUserId,
-      "VALIDATOR_CERTIFICATION_REMOVED",
-      null,
-      null,
-      normalizedCertification,
+  const normalizedActorId = normalizeUserId(actorUserId);
+  const normalizedTargetId = normalizeUserId(targetUserId);
+  return withAdminAccessTransaction(async (transaction) => {
+    const users = await lockAccessUsers(transaction, [
+      normalizedActorId,
+      normalizedTargetId,
+    ]);
+    const actor = users.get(normalizedActorId);
+    if (!actor || actor.role !== "ADMIN" || !actor.is_active)
+      throw accessError("ADMIN access required", 403);
+    if (!users.has(normalizedTargetId))
+      throw accessError("Target user not found", 404);
+
+    await queryRows(
+      transaction,
+      `SELECT user_id FROM validator_certifications
+        WHERE user_id = $1 AND certification_id = $2
+        FOR UPDATE`,
+      [normalizedTargetId, normalizedCertification],
     );
-  }
-  return result[0] || null;
+    const result = await queryRows(
+      transaction,
+      `UPDATE validator_certifications
+          SET is_active = FALSE
+        WHERE user_id = $1 AND certification_id = $2 AND is_active = TRUE
+        RETURNING *`,
+      [normalizedTargetId, normalizedCertification],
+    );
+    if (result[0])
+      await insertRoleAudit(
+        transaction,
+        normalizedActorId,
+        normalizedTargetId,
+        "VALIDATOR_CERTIFICATION_REMOVED",
+        null,
+        null,
+        normalizedCertification,
+      );
+    return result[0] || null;
+  });
 }
 
 export async function canUserValidateCertification(userId, certificationId) {
@@ -2076,94 +2428,117 @@ export async function reviewValidatorRequest(
     error.statusCode = 400;
     throw error;
   }
-  const requestRows = await executeQuery(
-    "SELECT * FROM validator_requests WHERE id = $1 LIMIT 1",
-    [normalizeRequiredString(requestId, "requestId")],
-  );
-  const request = requestRows[0];
-  if (!request) {
-    const error = new Error("Validator request not found");
-    error.statusCode = 404;
-    throw error;
-  }
-  if (request.status !== "PENDING") {
-    const error = new Error("Only PENDING requests can be reviewed");
-    error.statusCode = 409;
-    throw error;
-  }
+  const normalizedRequestId = normalizeRequiredString(requestId, "requestId");
+  const normalizedReviewerId = normalizeUserId(reviewerId);
+  return withAdminAccessTransaction(async (transaction) => {
+    const found = await queryRows(
+      transaction,
+      "SELECT user_id FROM validator_requests WHERE id = $1 LIMIT 1",
+      [normalizedRequestId],
+    );
+    if (!found[0]) throw accessError("Validator request not found", 404);
 
-  const reviewer = await getUserById(reviewerId);
-  if (!reviewer || reviewer.role !== "ADMIN")
-    throw new Error("ADMIN reviewer required");
-  const updatedRows = await executeQuery(
-    `
-    UPDATE validator_requests
-    SET status = $1, reviewed_at = CURRENT_TIMESTAMP, reviewed_by = $2, review_notes = $3
-    WHERE id = $4 AND status = 'PENDING'
-    RETURNING *
-  `,
-    [
-      normalizedStatus,
-      normalizeUserId(reviewerId),
-      reviewNotes ? String(reviewNotes).trim() : null,
-      request.id,
-    ],
-  );
-  const updated = updatedRows[0];
+    const users = await lockAccessUsers(transaction, [
+      normalizedReviewerId,
+      found[0].user_id,
+    ]);
+    const reviewer = users.get(normalizedReviewerId);
+    if (!reviewer || reviewer.role !== "ADMIN" || !reviewer.is_active)
+      throw accessError("ADMIN reviewer required", 403);
+    const target = users.get(String(found[0].user_id));
+    if (!target) throw accessError("Target user not found", 404);
 
-  if (normalizedStatus === "APPROVED") {
-    await executeQuery(
-      `
-      INSERT INTO validator_certifications (user_id, certification_id, verified_by, source_request_id, is_active)
-      VALUES ($1, $2, $3, $4, TRUE)
-      ON CONFLICT (user_id, certification_id)
-      DO UPDATE SET verified_by = EXCLUDED.verified_by, verified_at = CURRENT_TIMESTAMP,
-                    source_request_id = EXCLUDED.source_request_id, is_active = TRUE
-    `,
+    const requestRows = await queryRows(
+      transaction,
+      "SELECT * FROM validator_requests WHERE id = $1 FOR UPDATE",
+      [normalizedRequestId],
+    );
+    const request = requestRows[0];
+    if (!request) throw accessError("Validator request not found", 404);
+    if (request.status !== "PENDING")
+      throw accessError("Only PENDING requests can be reviewed", 409);
+
+    const updatedRows = await queryRows(
+      transaction,
+      `UPDATE validator_requests
+          SET status = $1, reviewed_at = CURRENT_TIMESTAMP,
+              reviewed_by = $2, review_notes = $3
+        WHERE id = $4 AND status = 'PENDING'
+        RETURNING *`,
       [
-        request.user_id,
-        request.certification_id,
-        normalizeUserId(reviewerId),
+        normalizedStatus,
+        normalizedReviewerId,
+        reviewNotes ? String(reviewNotes).trim() : null,
         request.id,
       ],
     );
-    const target = await getUserById(request.user_id);
-    if (target?.role === "STUDENT") {
-      await updateUser(target.id, { role: "VALIDATOR" });
-      await recordRoleAudit(
-        reviewerId,
+    if (!updatedRows[0])
+      throw accessError("Only PENDING requests can be reviewed", 409);
+
+    if (normalizedStatus === "APPROVED") {
+      await queryRows(
+        transaction,
+        `INSERT INTO validator_certifications
+          (user_id, certification_id, verified_by, source_request_id, is_active)
+         VALUES ($1, $2, $3, $4, TRUE)
+         ON CONFLICT (user_id, certification_id)
+         DO UPDATE SET verified_by = EXCLUDED.verified_by,
+                       verified_at = CURRENT_TIMESTAMP,
+                       source_request_id = EXCLUDED.source_request_id,
+                       is_active = TRUE`,
+        [
+          request.user_id,
+          request.certification_id,
+          normalizedReviewerId,
+          request.id,
+        ],
+      );
+      const oldRole = target.role;
+      if (target.role === "STUDENT") {
+        await queryRows(
+          transaction,
+          "UPDATE users SET role = 'VALIDATOR' WHERE id = $1 RETURNING id",
+          [target.id],
+        );
+        await insertRoleAudit(
+          transaction,
+          normalizedReviewerId,
+          target.id,
+          "VALIDATOR_REQUEST_APPROVED",
+          oldRole,
+          "VALIDATOR",
+          request.certification_id,
+          { requestId: request.id },
+        );
+      }
+      await insertRoleAudit(
+        transaction,
+        normalizedReviewerId,
         target.id,
-        "VALIDATOR_REQUEST_APPROVED",
-        "STUDENT",
-        "VALIDATOR",
+        "VALIDATOR_CERTIFICATION_ADDED",
+        oldRole,
+        target.role === "STUDENT" ? "VALIDATOR" : target.role,
+        request.certification_id,
+        { requestId: request.id },
+      );
+    } else {
+      await insertRoleAudit(
+        transaction,
+        normalizedReviewerId,
+        request.user_id,
+        "VALIDATOR_REQUEST_REJECTED",
+        null,
+        null,
         request.certification_id,
         { requestId: request.id },
       );
     }
-    await recordRoleAudit(
-      reviewerId,
-      request.user_id,
-      "VALIDATOR_CERTIFICATION_ADDED",
-      target?.role || null,
-      target?.role || null,
-      request.certification_id,
-      { requestId: request.id },
-    );
-  } else {
-    await recordRoleAudit(
-      reviewerId,
-      request.user_id,
-      "VALIDATOR_REQUEST_REJECTED",
-      null,
-      null,
-      request.certification_id,
-      { requestId: request.id },
-    );
-  }
-  return updated;
+    return updatedRows[0];
+  });
 }
 
-export async function recordRoleAudit(
+async function insertRoleAudit(
+  transaction,
   actorUserId,
   targetUserId,
   action,
@@ -2172,12 +2547,12 @@ export async function recordRoleAudit(
   certificationId = null,
   metadata = {},
 ) {
-  const result = await executeQuery(
-    `
-    INSERT INTO role_audit_log (actor_user_id, target_user_id, action, old_role, new_role, certification_id, metadata)
-    VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
-    RETURNING *
-  `,
+  const result = await queryRows(
+    transaction,
+    `INSERT INTO role_audit_log
+      (actor_user_id, target_user_id, action, old_role, new_role, certification_id, metadata)
+     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
+     RETURNING *`,
     [
       normalizeUserId(actorUserId),
       normalizeUserId(targetUserId),
@@ -2191,60 +2566,93 @@ export async function recordRoleAudit(
   return result[0] || null;
 }
 
+export async function recordRoleAudit(
+  actorUserId,
+  targetUserId,
+  action,
+  oldRole = null,
+  newRole = null,
+  certificationId = null,
+  metadata = {},
+) {
+  return insertRoleAudit(
+    getDatabase(),
+    actorUserId,
+    targetUserId,
+    action,
+    oldRole,
+    newRole,
+    certificationId,
+    metadata,
+  );
+}
+
 export async function changeUserAccess(
   actorUserId,
   targetUserId,
   { role, is_active } = {},
 ) {
-  const actor = await getUserById(actorUserId);
-  const target = await getUserById(targetUserId);
-  if (!actor || actor.role !== "ADMIN")
-    throw new Error("ADMIN access required");
-  if (!target) {
-    const error = new Error("Target user not found");
-    error.statusCode = 404;
-    throw error;
-  }
-  const nextRole = role === undefined ? target.role : normalizeAccessRole(role);
-  const nextActive =
-    is_active === undefined ? target.is_active : Boolean(is_active);
-  if (
-    target.role === "ADMIN" &&
-    target.is_active &&
-    (nextRole !== "ADMIN" || !nextActive)
-  ) {
-    const admins = await executeQuery(
-      "SELECT COUNT(*)::int AS count FROM users WHERE role = 'ADMIN' AND is_active = TRUE",
-    );
-    if (Number(admins[0]?.count || 0) <= 1) {
-      const error = new Error(
-        "The last active ADMIN cannot be demoted or disabled",
+  const normalizedActorId = normalizeUserId(actorUserId);
+  const normalizedTargetId = normalizeUserId(targetUserId);
+  return withAdminAccessTransaction(async (transaction) => {
+    const users = await lockAccessUsers(transaction, [
+      normalizedActorId,
+      normalizedTargetId,
+    ]);
+    const actor = users.get(normalizedActorId);
+    if (!actor || actor.role !== "ADMIN" || !actor.is_active)
+      throw accessError("ADMIN access required", 403);
+    const target = users.get(normalizedTargetId);
+    if (!target) throw accessError("Target user not found", 404);
+
+    const nextRole =
+      role === undefined ? target.role : normalizeAccessRole(role);
+    const nextActive =
+      is_active === undefined
+        ? target.is_active
+        : normalizeAccessActive(is_active);
+    if (
+      target.role === "ADMIN" &&
+      target.is_active &&
+      (nextRole !== "ADMIN" || !nextActive)
+    ) {
+      const admins = await queryRows(
+        transaction,
+        "SELECT COUNT(*)::int AS count FROM users WHERE role = 'ADMIN' AND is_active = TRUE",
       );
-      error.statusCode = 409;
-      throw error;
+      if (Number(admins[0]?.count || 0) <= 1)
+        throw accessError(
+          "The last active ADMIN cannot be demoted or disabled",
+          409,
+        );
     }
-  }
-  const updated = await updateUser(target.id, {
-    role: nextRole,
-    is_active: nextActive,
+
+    const updatedRows = await queryRows(
+      transaction,
+      "UPDATE users SET role = $1, is_active = $2 WHERE id = $3 RETURNING *",
+      [nextRole, nextActive, target.id],
+    );
+    const updated = updatedRows[0];
+    if (target.role !== nextRole)
+      await insertRoleAudit(
+        transaction,
+        actor.id,
+        target.id,
+        "ROLE_CHANGED",
+        target.role,
+        nextRole,
+      );
+    if (target.is_active !== nextActive)
+      await insertRoleAudit(
+        transaction,
+        actor.id,
+        target.id,
+        nextActive ? "USER_ENABLED" : "USER_DISABLED",
+        target.role,
+        target.role,
+      );
+    return updated;
   });
-  if (target.role !== nextRole)
-    await recordRoleAudit(
-      actor.id,
-      target.id,
-      "ROLE_CHANGED",
-      target.role,
-      nextRole,
-    );
-  if (target.is_active !== nextActive)
-    await recordRoleAudit(
-      actor.id,
-      target.id,
-      nextActive ? "USER_ENABLED" : "USER_DISABLED",
-      target.role,
-      target.role,
-    );
-  return updated;
 }
 
 // ============================================================================
@@ -2991,6 +3399,7 @@ export async function recordAnswer(
         FROM quiz_history
         WHERE id = $1
           ${user_id ? "AND user_id = $2" : ""}
+        FOR UPDATE
       `,
         quizParams,
       );
@@ -3167,6 +3576,7 @@ export async function completeQuiz(quizId, userId) {
         SELECT *
         FROM quiz_history
         WHERE id = $1 AND user_id = $2
+        FOR UPDATE
       `,
         [normalizedQuizId, normalizedUserId],
       );
@@ -3278,6 +3688,7 @@ export async function abandonQuiz(quizId, userId) {
         SELECT *
         FROM quiz_history
         WHERE id = $1 AND user_id = $2
+        FOR UPDATE
       `,
         [normalizedQuizId, normalizedUserId],
       );
@@ -3718,6 +4129,64 @@ function normalizeValidationInput(
     rejection_reason:
       normalizedStatus === "REJECTED" ? normalizedRejectionReason : null,
   };
+}
+
+/** Validate a question using the actor and resource state from one write transaction. */
+export async function validateEditorialQuestion(
+  actorUserId,
+  questionId,
+  status,
+  rejectionReason = null,
+) {
+  const validation = normalizeValidationInput(
+    questionId,
+    actorUserId,
+    status,
+    rejectionReason,
+  );
+  const database = getDatabase();
+  return database.transaction(async (transaction) => {
+    const actor = await lockEditorialActor(transaction, actorUserId);
+    const questionRows = await queryRows(
+      transaction,
+      "SELECT * FROM questions WHERE id = $1 AND is_active = TRUE FOR UPDATE",
+      [validation.question_id],
+    );
+    const question = questionRows[0];
+    if (!question) return null;
+    await assertEditorialCertificationAccess(
+      transaction,
+      actor,
+      question.certification,
+    );
+
+    const logEntry = {
+      validatorId: String(actor.id),
+      action: validation.status,
+      timestamp: new Date().toISOString(),
+      reason: validation.rejection_reason,
+    };
+    const updated = await queryRows(
+      transaction,
+      `UPDATE questions
+          SET validation_status = $1,
+              rejection_reason = $2,
+              validated_by = $3::text,
+              validated_by_id = $3::uuid,
+              validated_at = CURRENT_TIMESTAMP,
+              validation_logs = validation_logs || $4::jsonb
+        WHERE id = $5 AND is_active = TRUE
+        RETURNING *`,
+      [
+        validation.status,
+        validation.rejection_reason,
+        actor.id,
+        JSON.stringify([logEntry]),
+        validation.question_id,
+      ],
+    );
+    return updated[0] || null;
+  });
 }
 
 export async function validateQuestion(

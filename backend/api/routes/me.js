@@ -6,6 +6,11 @@ import {
 } from "../../database/db.js";
 import { requireAuth } from "../middleware/requireRole.js";
 import localLinksRouter from "./localLinks.js";
+import {
+  GLOBAL_STATE_MODULES,
+  assertGamificationScope,
+} from "../../../src/frontend/js/core/contracts/moduleStateScope.js";
+import { mergeGamificationState } from "../../../src/frontend/js/core/contracts/gamificationState.js";
 
 const router = Router();
 router.use("/local-links", localLinksRouter);
@@ -109,25 +114,21 @@ router.patch("/profile", requireAuth, async (req, res, next) => {
       preferences.language &&
       !["pt", "en"].includes(String(preferences.language).toLowerCase())
     ) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "language must be pt or en",
-          status: 400,
-        });
+      return res.status(400).json({
+        success: false,
+        error: "language must be pt or en",
+        status: 400,
+      });
     }
     preferences.language = String(preferences.language || "pt").toLowerCase();
     preferences.certification =
       normalizeCertification(preferences.certification) || "CLF-C02";
     if (preferences.theme && !["light", "dark"].includes(preferences.theme)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "theme must be light or dark",
-          status: 400,
-        });
+      return res.status(400).json({
+        success: false,
+        error: "theme must be light or dark",
+        status: 400,
+      });
     }
     preferences.theme = preferences.theme || "light";
     await upsertUserModuleState(
@@ -149,6 +150,7 @@ router.get("/state/:module", requireAuth, async (req, res, next) => {
   try {
     const module = assertModule(req.params.module);
     const certification = normalizeCertification(req.query.certification);
+    assertGamificationScope(module, certification);
     const state = await getUserModuleState(req.user.id, module, certification);
     res.json({ success: true, data: state || null });
   } catch (error) {
@@ -161,16 +163,18 @@ router.put("/state/:module", requireAuth, async (req, res, next) => {
     const module = assertModule(req.params.module);
     const body = req.body || {};
     const certification = normalizeCertification(body.certification);
-    if (module !== "preferences" && !certification) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "certification is required",
-          status: 400,
-        });
+    assertGamificationScope(module, certification);
+    if (!GLOBAL_STATE_MODULES.includes(module) && !certification) {
+      return res.status(400).json({
+        success: false,
+        error: "certification is required",
+        status: 400,
+      });
     }
-    const state = body.state;
+    const state =
+      module === "gamification"
+        ? mergeGamificationState(body.state, {})
+        : body.state;
     const saved = await upsertUserModuleState(
       req.user.id,
       module,

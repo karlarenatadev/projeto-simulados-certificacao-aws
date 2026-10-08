@@ -1,0 +1,3690 @@
+{
+  "relations": [
+    {
+      "name": "answers",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "aws_services",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "case_dialogues",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "case_evaluation_criteria",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "case_events",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "case_progress",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "case_questions",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "case_services",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "cases",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "domains",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "focus_sessions",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "gamification",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "leaderboard",
+      "kind": "v",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "local_identity_links",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "questions",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "quiz_history",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "quiz_questions",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "role_audit_log",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "user_identities",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "user_module_state",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "user_stats",
+      "kind": "v",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "users",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "validator_certifications",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    },
+    {
+      "name": "validator_requests",
+      "kind": "r",
+      "persistence": "p",
+      "row_security": false,
+      "force_row_security": false
+    }
+  ],
+  "columns": [
+    {
+      "relation": "answers",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "answers",
+      "name": "quiz_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "answers",
+      "name": "question_id",
+      "position": 3,
+      "type": "uuid",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "answers",
+      "name": "user_answer",
+      "position": 4,
+      "type": "jsonb",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "answers",
+      "name": "is_correct",
+      "position": 5,
+      "type": "boolean",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "answers",
+      "name": "membership_enforced",
+      "position": 6,
+      "type": "boolean",
+      "not_null": true,
+      "default_expression": "true",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "answers",
+      "name": "time_secs",
+      "position": 7,
+      "type": "integer",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "answers",
+      "name": "answered_at",
+      "position": 8,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "aws_services",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "aws_services",
+      "name": "slug",
+      "position": 2,
+      "type": "character varying(80)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "aws_services",
+      "name": "name",
+      "position": 3,
+      "type": "character varying(120)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "aws_services",
+      "name": "category",
+      "position": 4,
+      "type": "character varying(80)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "aws_services",
+      "name": "short_desc",
+      "position": 5,
+      "type": "text",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "aws_services",
+      "name": "icon_url",
+      "position": 6,
+      "type": "text",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "aws_services",
+      "name": "doc_url",
+      "position": 7,
+      "type": "text",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "aws_services",
+      "name": "is_active",
+      "position": 8,
+      "type": "boolean",
+      "not_null": true,
+      "default_expression": "true",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "aws_services",
+      "name": "created_at",
+      "position": 9,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_dialogues",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_dialogues",
+      "name": "case_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_dialogues",
+      "name": "question",
+      "position": 3,
+      "type": "text",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_dialogues",
+      "name": "answer",
+      "position": 4,
+      "type": "text",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_dialogues",
+      "name": "hints",
+      "position": 5,
+      "type": "text[]",
+      "not_null": false,
+      "default_expression": "'{}'::text[]",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_dialogues",
+      "name": "sort_order",
+      "position": 6,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": "0",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_evaluation_criteria",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_evaluation_criteria",
+      "name": "case_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_evaluation_criteria",
+      "name": "service_id",
+      "position": 3,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_evaluation_criteria",
+      "name": "pillar",
+      "position": 4,
+      "type": "character varying(50)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_evaluation_criteria",
+      "name": "score_impact",
+      "position": 5,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_evaluation_criteria",
+      "name": "feedback_msg",
+      "position": 6,
+      "type": "text",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_events",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_events",
+      "name": "case_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_events",
+      "name": "title",
+      "position": 3,
+      "type": "character varying(200)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_events",
+      "name": "description",
+      "position": 4,
+      "type": "text",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_events",
+      "name": "impact_type",
+      "position": 5,
+      "type": "character varying(50)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_events",
+      "name": "trigger_condition",
+      "position": 6,
+      "type": "jsonb",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_events",
+      "name": "sort_order",
+      "position": 7,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": "0",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_progress",
+      "name": "user_id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_progress",
+      "name": "case_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_progress",
+      "name": "completed",
+      "position": 3,
+      "type": "boolean",
+      "not_null": true,
+      "default_expression": "false",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_progress",
+      "name": "completed_at",
+      "position": 4,
+      "type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_progress",
+      "name": "started_at",
+      "position": 5,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_questions",
+      "name": "case_id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_questions",
+      "name": "question_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_questions",
+      "name": "sort_order",
+      "position": 3,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": "0",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_services",
+      "name": "case_id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_services",
+      "name": "service_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "case_services",
+      "name": "role_note",
+      "position": 3,
+      "type": "text",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "slug",
+      "position": 2,
+      "type": "character varying(120)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "title",
+      "position": 3,
+      "type": "character varying(200)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "scenario",
+      "position": 4,
+      "type": "text",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "objective",
+      "position": 5,
+      "type": "text",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "difficulty",
+      "position": 6,
+      "type": "case_difficulty",
+      "not_null": true,
+      "default_expression": "'intermediate'::case_difficulty",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "certifications",
+      "position": 7,
+      "type": "text[]",
+      "not_null": true,
+      "default_expression": "'{}'::text[]",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "architecture_graph",
+      "position": 8,
+      "type": "jsonb",
+      "not_null": true,
+      "default_expression": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "resources",
+      "position": 9,
+      "type": "jsonb",
+      "not_null": true,
+      "default_expression": "'[]'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "content_pt",
+      "position": 10,
+      "type": "jsonb",
+      "not_null": true,
+      "default_expression": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "content_en",
+      "position": 11,
+      "type": "jsonb",
+      "not_null": true,
+      "default_expression": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "tags",
+      "position": 12,
+      "type": "text[]",
+      "not_null": true,
+      "default_expression": "'{}'::text[]",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "is_active",
+      "position": 13,
+      "type": "boolean",
+      "not_null": true,
+      "default_expression": "true",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "budget_usd",
+      "position": 14,
+      "type": "numeric(10,2)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "client_persona",
+      "position": 15,
+      "type": "jsonb",
+      "not_null": true,
+      "default_expression": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "constraints",
+      "position": 16,
+      "type": "text[]",
+      "not_null": true,
+      "default_expression": "'{}'::text[]",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "created_at",
+      "position": 17,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "cases",
+      "name": "updated_at",
+      "position": 18,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "domains",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "domains",
+      "name": "certification",
+      "position": 2,
+      "type": "certification_type",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "domains",
+      "name": "name",
+      "position": 3,
+      "type": "character varying(100)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "domains",
+      "name": "slug",
+      "position": 4,
+      "type": "character varying(100)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "domains",
+      "name": "weight_percent",
+      "position": 5,
+      "type": "numeric(5,2)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "domains",
+      "name": "created_at",
+      "position": 6,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "focus_sessions",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "focus_sessions",
+      "name": "user_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "focus_sessions",
+      "name": "minutes",
+      "position": 3,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "focus_sessions",
+      "name": "session_type",
+      "position": 4,
+      "type": "session_type",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "focus_sessions",
+      "name": "session_date",
+      "position": 5,
+      "type": "date",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "focus_sessions",
+      "name": "created_at",
+      "position": 6,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "user_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "total_quizzes",
+      "position": 3,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": "0",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "best_score",
+      "position": 4,
+      "type": "numeric(5,2)",
+      "not_null": true,
+      "default_expression": "0",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "current_streak",
+      "position": 5,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": "0",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "longest_streak",
+      "position": 6,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": "0",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "last_date",
+      "position": 7,
+      "type": "date",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "badges",
+      "position": 8,
+      "type": "text[]",
+      "not_null": true,
+      "default_expression": "'{}'::text[]",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "completed_stages",
+      "position": 9,
+      "type": "text[]",
+      "not_null": true,
+      "default_expression": "'{}'::text[]",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "unlocked_stages",
+      "position": 10,
+      "type": "text[]",
+      "not_null": true,
+      "default_expression": "'{}'::text[]",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "labs_completed",
+      "position": 11,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": "0",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "xp_points",
+      "position": 12,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": "0",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "created_at",
+      "position": 13,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "gamification",
+      "name": "updated_at",
+      "position": 14,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "leaderboard",
+      "name": "display_name",
+      "position": 1,
+      "type": "character varying",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "leaderboard",
+      "name": "xp_points",
+      "position": 2,
+      "type": "integer",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "leaderboard",
+      "name": "best_score",
+      "position": 3,
+      "type": "numeric(5,2)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "leaderboard",
+      "name": "total_quizzes",
+      "position": 4,
+      "type": "integer",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "leaderboard",
+      "name": "current_streak",
+      "position": 5,
+      "type": "integer",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "leaderboard",
+      "name": "badges",
+      "position": 6,
+      "type": "text[]",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "leaderboard",
+      "name": "rank",
+      "position": 7,
+      "type": "bigint",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "local_identity_id",
+      "position": 2,
+      "type": "character varying(126)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "user_id",
+      "position": 3,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "status",
+      "position": 4,
+      "type": "character varying(16)",
+      "not_null": true,
+      "default_expression": "'pending'::character varying",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "migration_version",
+      "position": 5,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": "1",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "created_at",
+      "position": 6,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "updated_at",
+      "position": 7,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "completed_at",
+      "position": 8,
+      "type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "certification",
+      "position": 2,
+      "type": "certification_type",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "domain",
+      "position": 3,
+      "type": "character varying(100)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "domain_id",
+      "position": 4,
+      "type": "uuid",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "language",
+      "position": 5,
+      "type": "character varying(2)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "source_question_id",
+      "position": 6,
+      "type": "text",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "difficulty",
+      "position": 7,
+      "type": "difficulty_level",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "question_text",
+      "position": 8,
+      "type": "text",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "options",
+      "position": 9,
+      "type": "jsonb",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "correct_answer",
+      "position": 10,
+      "type": "jsonb",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "explanation",
+      "position": 11,
+      "type": "text",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "reference_url",
+      "position": 12,
+      "type": "text",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "tags",
+      "position": 13,
+      "type": "text[]",
+      "not_null": false,
+      "default_expression": "'{}'::text[]",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "is_active",
+      "position": 14,
+      "type": "boolean",
+      "not_null": true,
+      "default_expression": "true",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "validation_status",
+      "position": 15,
+      "type": "character varying(20)",
+      "not_null": true,
+      "default_expression": "'PENDING'::character varying",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "rejection_reason",
+      "position": 16,
+      "type": "text",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "validation_logs",
+      "position": 17,
+      "type": "jsonb",
+      "not_null": true,
+      "default_expression": "'[]'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "validated_by",
+      "position": 18,
+      "type": "character varying(100)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "validated_at",
+      "position": 19,
+      "type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "validated_by_id",
+      "position": 20,
+      "type": "uuid",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "created_at",
+      "position": 21,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "questions",
+      "name": "updated_at",
+      "position": 22,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_history",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_history",
+      "name": "user_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_history",
+      "name": "certification",
+      "position": 3,
+      "type": "certification_type",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_history",
+      "name": "status",
+      "position": 4,
+      "type": "character varying(16)",
+      "not_null": true,
+      "default_expression": "'started'::character varying",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_history",
+      "name": "score",
+      "position": 5,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_history",
+      "name": "total_questions",
+      "position": 6,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_history",
+      "name": "percentage",
+      "position": 7,
+      "type": "numeric(5,2)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_history",
+      "name": "domain_scores",
+      "position": 8,
+      "type": "jsonb",
+      "not_null": true,
+      "default_expression": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_history",
+      "name": "weak_domains",
+      "position": 9,
+      "type": "text[]",
+      "not_null": false,
+      "default_expression": "'{}'::text[]",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_history",
+      "name": "time_spent_secs",
+      "position": 10,
+      "type": "integer",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_history",
+      "name": "started_at",
+      "position": 11,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_history",
+      "name": "completed_at",
+      "position": 12,
+      "type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_history",
+      "name": "abandoned_at",
+      "position": 13,
+      "type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_questions",
+      "name": "quiz_id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_questions",
+      "name": "question_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "quiz_questions",
+      "name": "position",
+      "position": 3,
+      "type": "integer",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "actor_user_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "target_user_id",
+      "position": 3,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "action",
+      "position": 4,
+      "type": "character varying(80)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "old_role",
+      "position": 5,
+      "type": "character varying(20)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "new_role",
+      "position": 6,
+      "type": "character varying(20)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "certification_id",
+      "position": 7,
+      "type": "certification_type",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "metadata",
+      "position": 8,
+      "type": "jsonb",
+      "not_null": true,
+      "default_expression": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "created_at",
+      "position": 9,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_identities",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_identities",
+      "name": "user_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_identities",
+      "name": "provider",
+      "position": 3,
+      "type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_identities",
+      "name": "subject",
+      "position": 4,
+      "type": "character varying(255)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_identities",
+      "name": "email_at_link",
+      "position": 5,
+      "type": "character varying(120)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_identities",
+      "name": "created_at",
+      "position": 6,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_identities",
+      "name": "updated_at",
+      "position": 7,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_identities",
+      "name": "last_login_at",
+      "position": 8,
+      "type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_module_state",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_module_state",
+      "name": "user_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_module_state",
+      "name": "module",
+      "position": 3,
+      "type": "character varying(40)",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_module_state",
+      "name": "certification_id",
+      "position": 4,
+      "type": "character varying(20)",
+      "not_null": true,
+      "default_expression": "''::character varying",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_module_state",
+      "name": "state_json",
+      "position": 5,
+      "type": "jsonb",
+      "not_null": true,
+      "default_expression": "'{}'::jsonb",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_module_state",
+      "name": "version",
+      "position": 6,
+      "type": "bigint",
+      "not_null": true,
+      "default_expression": "1",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_module_state",
+      "name": "updated_at",
+      "position": 7,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_stats",
+      "name": "user_id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_stats",
+      "name": "display_name",
+      "position": 2,
+      "type": "character varying",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_stats",
+      "name": "nickname",
+      "position": 3,
+      "type": "character varying(60)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_stats",
+      "name": "anonymous_name",
+      "position": 4,
+      "type": "character varying(100)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_stats",
+      "name": "role",
+      "position": 5,
+      "type": "character varying(20)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_stats",
+      "name": "total_quizzes",
+      "position": 6,
+      "type": "bigint",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_stats",
+      "name": "avg_score",
+      "position": 7,
+      "type": "numeric(5,2)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_stats",
+      "name": "best_score",
+      "position": 8,
+      "type": "numeric",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_stats",
+      "name": "total_time_secs",
+      "position": 9,
+      "type": "bigint",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_stats",
+      "name": "certifications_practiced",
+      "position": 10,
+      "type": "bigint",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "user_stats",
+      "name": "total_focus_minutes",
+      "position": 11,
+      "type": "bigint",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "users",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "users",
+      "name": "anonymous_name",
+      "position": 2,
+      "type": "character varying(100)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "users",
+      "name": "email",
+      "position": 3,
+      "type": "character varying(120)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "users",
+      "name": "full_name",
+      "position": 4,
+      "type": "character varying(150)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "users",
+      "name": "nickname",
+      "position": 5,
+      "type": "character varying(60)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "users",
+      "name": "role",
+      "position": 6,
+      "type": "character varying(20)",
+      "not_null": true,
+      "default_expression": "'STUDENT'::character varying",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "users",
+      "name": "is_active",
+      "position": 7,
+      "type": "boolean",
+      "not_null": true,
+      "default_expression": "true",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "users",
+      "name": "last_login",
+      "position": 8,
+      "type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "users",
+      "name": "created_at",
+      "position": 9,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "users",
+      "name": "updated_at",
+      "position": 10,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_certifications",
+      "name": "user_id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_certifications",
+      "name": "certification_id",
+      "position": 2,
+      "type": "certification_type",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_certifications",
+      "name": "verified_by",
+      "position": 3,
+      "type": "uuid",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_certifications",
+      "name": "verified_at",
+      "position": 4,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_certifications",
+      "name": "source_request_id",
+      "position": 5,
+      "type": "uuid",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_certifications",
+      "name": "is_active",
+      "position": 6,
+      "type": "boolean",
+      "not_null": true,
+      "default_expression": "true",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_requests",
+      "name": "id",
+      "position": 1,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": "gen_random_uuid()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_requests",
+      "name": "user_id",
+      "position": 2,
+      "type": "uuid",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_requests",
+      "name": "certification_id",
+      "position": 3,
+      "type": "certification_type",
+      "not_null": true,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_requests",
+      "name": "credential_id",
+      "position": 4,
+      "type": "character varying(200)",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_requests",
+      "name": "credential_url",
+      "position": 5,
+      "type": "text",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_requests",
+      "name": "notes",
+      "position": 6,
+      "type": "text",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_requests",
+      "name": "status",
+      "position": 7,
+      "type": "character varying(20)",
+      "not_null": true,
+      "default_expression": "'PENDING'::character varying",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_requests",
+      "name": "requested_at",
+      "position": 8,
+      "type": "timestamp without time zone",
+      "not_null": true,
+      "default_expression": "now()",
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_requests",
+      "name": "reviewed_at",
+      "position": 9,
+      "type": "timestamp without time zone",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_requests",
+      "name": "reviewed_by",
+      "position": 10,
+      "type": "uuid",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    },
+    {
+      "relation": "validator_requests",
+      "name": "review_notes",
+      "position": 11,
+      "type": "text",
+      "not_null": false,
+      "default_expression": null,
+      "identity": "",
+      "generated": ""
+    }
+  ],
+  "constraints": [
+    {
+      "relation": "answers",
+      "name": "answers_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "answers",
+      "name": "answers_question_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE SET NULL",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "answers",
+      "name": "answers_quiz_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (quiz_id) REFERENCES quiz_history(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "answers",
+      "name": "answers_time_secs_check",
+      "type": "c",
+      "definition": "CHECK (time_secs >= 0)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "aws_services",
+      "name": "aws_services_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "aws_services",
+      "name": "aws_services_slug_key",
+      "type": "u",
+      "definition": "UNIQUE (slug)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_dialogues",
+      "name": "case_dialogues_case_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (case_id) REFERENCES cases(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_dialogues",
+      "name": "case_dialogues_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_evaluation_criteria",
+      "name": "case_evaluation_criteria_case_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (case_id) REFERENCES cases(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_evaluation_criteria",
+      "name": "case_evaluation_criteria_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_evaluation_criteria",
+      "name": "case_evaluation_criteria_service_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (service_id) REFERENCES aws_services(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_events",
+      "name": "case_events_case_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (case_id) REFERENCES cases(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_events",
+      "name": "case_events_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_progress",
+      "name": "case_progress_case_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (case_id) REFERENCES cases(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_progress",
+      "name": "case_progress_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (user_id, case_id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_progress",
+      "name": "case_progress_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_questions",
+      "name": "case_questions_case_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (case_id) REFERENCES cases(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_questions",
+      "name": "case_questions_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (case_id, question_id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_questions",
+      "name": "case_questions_question_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE RESTRICT",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_services",
+      "name": "case_services_case_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (case_id) REFERENCES cases(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_services",
+      "name": "case_services_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (case_id, service_id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "case_services",
+      "name": "case_services_service_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (service_id) REFERENCES aws_services(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "cases",
+      "name": "cases_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "cases",
+      "name": "cases_slug_key",
+      "type": "u",
+      "definition": "UNIQUE (slug)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "domains",
+      "name": "domains_certification_slug_key",
+      "type": "u",
+      "definition": "UNIQUE (certification, slug)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "domains",
+      "name": "domains_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "focus_sessions",
+      "name": "focus_sessions_minutes_check",
+      "type": "c",
+      "definition": "CHECK (minutes > 0)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "focus_sessions",
+      "name": "focus_sessions_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "focus_sessions",
+      "name": "focus_sessions_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "gamification",
+      "name": "chk_streak_consistency",
+      "type": "c",
+      "definition": "CHECK (current_streak <= longest_streak)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "gamification",
+      "name": "gamification_best_score_check",
+      "type": "c",
+      "definition": "CHECK (best_score >= 0::numeric AND best_score <= 100::numeric)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "gamification",
+      "name": "gamification_current_streak_check",
+      "type": "c",
+      "definition": "CHECK (current_streak >= 0)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "gamification",
+      "name": "gamification_labs_completed_check",
+      "type": "c",
+      "definition": "CHECK (labs_completed >= 0)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "gamification",
+      "name": "gamification_longest_streak_check",
+      "type": "c",
+      "definition": "CHECK (longest_streak >= 0)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "gamification",
+      "name": "gamification_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "gamification",
+      "name": "gamification_total_quizzes_check",
+      "type": "c",
+      "definition": "CHECK (total_quizzes >= 0)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "gamification",
+      "name": "gamification_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "gamification",
+      "name": "gamification_user_id_key",
+      "type": "u",
+      "definition": "UNIQUE (user_id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "gamification",
+      "name": "gamification_xp_points_check",
+      "type": "c",
+      "definition": "CHECK (xp_points >= 0)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "local_identity_links_check",
+      "type": "c",
+      "definition": "CHECK ((status::text = 'completed'::text) = (completed_at IS NOT NULL))",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "local_identity_links_local_identity_id_key",
+      "type": "u",
+      "definition": "UNIQUE (local_identity_id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "local_identity_links_migration_version_check",
+      "type": "c",
+      "definition": "CHECK (migration_version > 0)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "local_identity_links_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "local_identity_links_status_check",
+      "type": "c",
+      "definition": "CHECK (status::text = ANY (ARRAY['pending'::character varying, 'completed'::character varying]::text[]))",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "local_identity_links_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "questions",
+      "name": "chk_correct_not_empty",
+      "type": "c",
+      "definition": "CHECK (jsonb_array_length(correct_answer) >= 1)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "questions",
+      "name": "chk_options_not_empty",
+      "type": "c",
+      "definition": "CHECK (jsonb_array_length(options) >= 2)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "questions",
+      "name": "chk_question_text_len",
+      "type": "c",
+      "definition": "CHECK (char_length(question_text) >= 10)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "questions",
+      "name": "chk_questions_language",
+      "type": "c",
+      "definition": "CHECK (language IS NULL OR (language::text = ANY (ARRAY['pt'::character varying, 'en'::character varying]::text[])))",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "questions",
+      "name": "chk_validation_status",
+      "type": "c",
+      "definition": "CHECK (validation_status::text = ANY (ARRAY['PENDING'::character varying, 'APPROVED'::character varying, 'REJECTED'::character varying]::text[]))",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "questions",
+      "name": "questions_domain_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (domain_id) REFERENCES domains(id) ON DELETE SET NULL",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "questions",
+      "name": "questions_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "questions",
+      "name": "questions_validated_by_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (validated_by_id) REFERENCES users(id) ON DELETE SET NULL",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_history",
+      "name": "chk_quiz_history_lifecycle",
+      "type": "c",
+      "definition": "CHECK (status::text = 'started'::text AND completed_at IS NULL AND abandoned_at IS NULL OR status::text = 'completed'::text AND completed_at IS NOT NULL AND abandoned_at IS NULL OR status::text = 'abandoned'::text AND completed_at IS NULL AND abandoned_at IS NOT NULL)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_history",
+      "name": "chk_quiz_history_status",
+      "type": "c",
+      "definition": "CHECK (status::text = ANY (ARRAY['started'::character varying, 'completed'::character varying, 'abandoned'::character varying]::text[]))",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_history",
+      "name": "chk_score_lte_total",
+      "type": "c",
+      "definition": "CHECK (score <= total_questions)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_history",
+      "name": "quiz_history_percentage_check",
+      "type": "c",
+      "definition": "CHECK (percentage >= 0::numeric AND percentage <= 100::numeric)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_history",
+      "name": "quiz_history_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_history",
+      "name": "quiz_history_score_check",
+      "type": "c",
+      "definition": "CHECK (score >= 0)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_history",
+      "name": "quiz_history_time_spent_secs_check",
+      "type": "c",
+      "definition": "CHECK (time_spent_secs >= 0)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_history",
+      "name": "quiz_history_total_questions_check",
+      "type": "c",
+      "definition": "CHECK (total_questions > 0)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_history",
+      "name": "quiz_history_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_questions",
+      "name": "quiz_questions_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (quiz_id, question_id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_questions",
+      "name": "quiz_questions_position_check",
+      "type": "c",
+      "definition": "CHECK (\"position\" >= 0)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_questions",
+      "name": "quiz_questions_question_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE RESTRICT",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_questions",
+      "name": "quiz_questions_quiz_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (quiz_id) REFERENCES quiz_history(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "quiz_questions",
+      "name": "quiz_questions_quiz_id_position_key",
+      "type": "u",
+      "definition": "UNIQUE (quiz_id, \"position\")",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "role_audit_log_actor_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (actor_user_id) REFERENCES users(id) ON DELETE RESTRICT",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "role_audit_log_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "role_audit_log_target_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (target_user_id) REFERENCES users(id) ON DELETE RESTRICT",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "user_identities",
+      "name": "user_identities_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "user_identities",
+      "name": "user_identities_provider_subject_key",
+      "type": "u",
+      "definition": "UNIQUE (provider, subject)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "user_identities",
+      "name": "user_identities_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "user_module_state",
+      "name": "chk_user_module_state_module",
+      "type": "c",
+      "definition": "CHECK (module::text = ANY (ARRAY['journey'::character varying, 'sprint'::character varying, 'flashcards'::character varying, 'labs'::character varying, 'diagnostic'::character varying, 'preferences'::character varying, 'gamification'::character varying, 'mistakes'::character varying]::text[]))",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "user_module_state",
+      "name": "user_module_state_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "user_module_state",
+      "name": "user_module_state_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "user_module_state",
+      "name": "user_module_state_version_check",
+      "type": "c",
+      "definition": "CHECK (version > 0)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "users",
+      "name": "users_anonymous_name_key",
+      "type": "u",
+      "definition": "UNIQUE (anonymous_name)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "users",
+      "name": "users_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "users",
+      "name": "users_role_check",
+      "type": "c",
+      "definition": "CHECK (role::text = ANY (ARRAY['STUDENT'::character varying, 'VALIDATOR'::character varying, 'ADMIN'::character varying]::text[]))",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "validator_certifications",
+      "name": "validator_certifications_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (user_id, certification_id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "validator_certifications",
+      "name": "validator_certifications_source_request_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (source_request_id) REFERENCES validator_requests(id) ON DELETE SET NULL",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "validator_certifications",
+      "name": "validator_certifications_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "validator_certifications",
+      "name": "validator_certifications_verified_by_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (verified_by) REFERENCES users(id) ON DELETE SET NULL",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "validator_requests",
+      "name": "validator_requests_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id)",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "validator_requests",
+      "name": "validator_requests_reviewed_by_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (reviewed_by) REFERENCES users(id) ON DELETE SET NULL",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "validator_requests",
+      "name": "validator_requests_status_check",
+      "type": "c",
+      "definition": "CHECK (status::text = ANY (ARRAY['PENDING'::character varying, 'APPROVED'::character varying, 'REJECTED'::character varying]::text[]))",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    },
+    {
+      "relation": "validator_requests",
+      "name": "validator_requests_user_id_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE",
+      "validated": true,
+      "deferrable": false,
+      "deferred": false
+    }
+  ],
+  "indexes": [
+    {
+      "relation": "answers",
+      "name": "answers_pkey",
+      "definition": "CREATE UNIQUE INDEX answers_pkey ON public.answers USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "answers",
+      "name": "idx_answers_correct",
+      "definition": "CREATE INDEX idx_answers_correct ON public.answers USING btree (is_correct)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "answers",
+      "name": "idx_answers_question",
+      "definition": "CREATE INDEX idx_answers_question ON public.answers USING btree (question_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "answers",
+      "name": "idx_answers_quiz",
+      "definition": "CREATE INDEX idx_answers_quiz ON public.answers USING btree (quiz_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "answers",
+      "name": "uq_answers_new_quiz_question",
+      "definition": "CREATE UNIQUE INDEX uq_answers_new_quiz_question ON public.answers USING btree (quiz_id, question_id) WHERE ((membership_enforced = true) AND (question_id IS NOT NULL))",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "aws_services",
+      "name": "aws_services_pkey",
+      "definition": "CREATE UNIQUE INDEX aws_services_pkey ON public.aws_services USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "aws_services",
+      "name": "aws_services_slug_key",
+      "definition": "CREATE UNIQUE INDEX aws_services_slug_key ON public.aws_services USING btree (slug)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "aws_services",
+      "name": "idx_aws_services_active",
+      "definition": "CREATE INDEX idx_aws_services_active ON public.aws_services USING btree (is_active) WHERE (is_active = true)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "aws_services",
+      "name": "idx_aws_services_category",
+      "definition": "CREATE INDEX idx_aws_services_category ON public.aws_services USING btree (category)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "aws_services",
+      "name": "idx_aws_services_slug",
+      "definition": "CREATE INDEX idx_aws_services_slug ON public.aws_services USING btree (slug)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "case_dialogues",
+      "name": "case_dialogues_pkey",
+      "definition": "CREATE UNIQUE INDEX case_dialogues_pkey ON public.case_dialogues USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "case_dialogues",
+      "name": "idx_case_dialogues_case",
+      "definition": "CREATE INDEX idx_case_dialogues_case ON public.case_dialogues USING btree (case_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "case_evaluation_criteria",
+      "name": "case_evaluation_criteria_pkey",
+      "definition": "CREATE UNIQUE INDEX case_evaluation_criteria_pkey ON public.case_evaluation_criteria USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "case_evaluation_criteria",
+      "name": "idx_case_eval_case",
+      "definition": "CREATE INDEX idx_case_eval_case ON public.case_evaluation_criteria USING btree (case_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "case_events",
+      "name": "case_events_pkey",
+      "definition": "CREATE UNIQUE INDEX case_events_pkey ON public.case_events USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "case_events",
+      "name": "idx_case_events_case",
+      "definition": "CREATE INDEX idx_case_events_case ON public.case_events USING btree (case_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "case_progress",
+      "name": "case_progress_pkey",
+      "definition": "CREATE UNIQUE INDEX case_progress_pkey ON public.case_progress USING btree (user_id, case_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "case_questions",
+      "name": "case_questions_pkey",
+      "definition": "CREATE UNIQUE INDEX case_questions_pkey ON public.case_questions USING btree (case_id, question_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "case_questions",
+      "name": "idx_case_questions_case",
+      "definition": "CREATE INDEX idx_case_questions_case ON public.case_questions USING btree (case_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "case_questions",
+      "name": "idx_case_questions_question",
+      "definition": "CREATE INDEX idx_case_questions_question ON public.case_questions USING btree (question_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "case_services",
+      "name": "case_services_pkey",
+      "definition": "CREATE UNIQUE INDEX case_services_pkey ON public.case_services USING btree (case_id, service_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "case_services",
+      "name": "idx_case_services_case",
+      "definition": "CREATE INDEX idx_case_services_case ON public.case_services USING btree (case_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "case_services",
+      "name": "idx_case_services_service",
+      "definition": "CREATE INDEX idx_case_services_service ON public.case_services USING btree (service_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "cases",
+      "name": "cases_pkey",
+      "definition": "CREATE UNIQUE INDEX cases_pkey ON public.cases USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "cases",
+      "name": "cases_slug_key",
+      "definition": "CREATE UNIQUE INDEX cases_slug_key ON public.cases USING btree (slug)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "cases",
+      "name": "idx_cases_active",
+      "definition": "CREATE INDEX idx_cases_active ON public.cases USING btree (is_active) WHERE (is_active = true)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "cases",
+      "name": "idx_cases_difficulty",
+      "definition": "CREATE INDEX idx_cases_difficulty ON public.cases USING btree (difficulty)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "cases",
+      "name": "idx_cases_slug",
+      "definition": "CREATE INDEX idx_cases_slug ON public.cases USING btree (slug)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "domains",
+      "name": "domains_certification_slug_key",
+      "definition": "CREATE UNIQUE INDEX domains_certification_slug_key ON public.domains USING btree (certification, slug)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "domains",
+      "name": "domains_pkey",
+      "definition": "CREATE UNIQUE INDEX domains_pkey ON public.domains USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "domains",
+      "name": "idx_domains_certification",
+      "definition": "CREATE INDEX idx_domains_certification ON public.domains USING btree (certification)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "focus_sessions",
+      "name": "focus_sessions_pkey",
+      "definition": "CREATE UNIQUE INDEX focus_sessions_pkey ON public.focus_sessions USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "focus_sessions",
+      "name": "idx_focus_sessions_date",
+      "definition": "CREATE INDEX idx_focus_sessions_date ON public.focus_sessions USING btree (session_date DESC)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "focus_sessions",
+      "name": "idx_focus_sessions_type",
+      "definition": "CREATE INDEX idx_focus_sessions_type ON public.focus_sessions USING btree (session_type)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "focus_sessions",
+      "name": "idx_focus_sessions_user",
+      "definition": "CREATE INDEX idx_focus_sessions_user ON public.focus_sessions USING btree (user_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "gamification",
+      "name": "gamification_pkey",
+      "definition": "CREATE UNIQUE INDEX gamification_pkey ON public.gamification USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "gamification",
+      "name": "gamification_user_id_key",
+      "definition": "CREATE UNIQUE INDEX gamification_user_id_key ON public.gamification USING btree (user_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "gamification",
+      "name": "idx_gamification_streak",
+      "definition": "CREATE INDEX idx_gamification_streak ON public.gamification USING btree (current_streak DESC)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "gamification",
+      "name": "idx_gamification_user",
+      "definition": "CREATE INDEX idx_gamification_user ON public.gamification USING btree (user_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "gamification",
+      "name": "idx_gamification_xp",
+      "definition": "CREATE INDEX idx_gamification_xp ON public.gamification USING btree (xp_points DESC)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "idx_local_links_user",
+      "definition": "CREATE INDEX idx_local_links_user ON public.local_identity_links USING btree (user_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "local_identity_links_local_identity_id_key",
+      "definition": "CREATE UNIQUE INDEX local_identity_links_local_identity_id_key ON public.local_identity_links USING btree (local_identity_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "local_identity_links",
+      "name": "local_identity_links_pkey",
+      "definition": "CREATE UNIQUE INDEX local_identity_links_pkey ON public.local_identity_links USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "questions",
+      "name": "idx_questions_active",
+      "definition": "CREATE INDEX idx_questions_active ON public.questions USING btree (is_active) WHERE (is_active = true)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "questions",
+      "name": "idx_questions_certification",
+      "definition": "CREATE INDEX idx_questions_certification ON public.questions USING btree (certification)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "questions",
+      "name": "idx_questions_difficulty",
+      "definition": "CREATE INDEX idx_questions_difficulty ON public.questions USING btree (difficulty)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "questions",
+      "name": "idx_questions_domain",
+      "definition": "CREATE INDEX idx_questions_domain ON public.questions USING btree (domain)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "questions",
+      "name": "idx_questions_domain_id",
+      "definition": "CREATE INDEX idx_questions_domain_id ON public.questions USING btree (domain_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "questions",
+      "name": "idx_questions_language",
+      "definition": "CREATE INDEX idx_questions_language ON public.questions USING btree (certification, language)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "questions",
+      "name": "idx_questions_language_domain",
+      "definition": "CREATE INDEX idx_questions_language_domain ON public.questions USING btree (certification, language, domain)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "questions",
+      "name": "idx_questions_tags",
+      "definition": "CREATE INDEX idx_questions_tags ON public.questions USING gin (tags)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "questions",
+      "name": "idx_questions_text_search",
+      "definition": "CREATE INDEX idx_questions_text_search ON public.questions USING gin (to_tsvector('portuguese'::regconfig, question_text))",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "questions",
+      "name": "idx_questions_validated_by_id",
+      "definition": "CREATE INDEX idx_questions_validated_by_id ON public.questions USING btree (validated_by_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "questions",
+      "name": "idx_questions_validation_status",
+      "definition": "CREATE INDEX idx_questions_validation_status ON public.questions USING btree (validation_status)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "questions",
+      "name": "questions_pkey",
+      "definition": "CREATE UNIQUE INDEX questions_pkey ON public.questions USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "questions",
+      "name": "uq_questions_editorial_identity",
+      "definition": "CREATE UNIQUE INDEX uq_questions_editorial_identity ON public.questions USING btree (certification, language, source_question_id) WHERE ((language IS NOT NULL) AND (source_question_id IS NOT NULL))",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "quiz_history",
+      "name": "idx_quiz_history_certification",
+      "definition": "CREATE INDEX idx_quiz_history_certification ON public.quiz_history USING btree (certification)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "quiz_history",
+      "name": "idx_quiz_history_completed",
+      "definition": "CREATE INDEX idx_quiz_history_completed ON public.quiz_history USING btree (completed_at DESC)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "quiz_history",
+      "name": "idx_quiz_history_percentage",
+      "definition": "CREATE INDEX idx_quiz_history_percentage ON public.quiz_history USING btree (percentage DESC)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "quiz_history",
+      "name": "idx_quiz_history_status",
+      "definition": "CREATE INDEX idx_quiz_history_status ON public.quiz_history USING btree (status)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "quiz_history",
+      "name": "idx_quiz_history_user",
+      "definition": "CREATE INDEX idx_quiz_history_user ON public.quiz_history USING btree (user_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "quiz_history",
+      "name": "quiz_history_pkey",
+      "definition": "CREATE UNIQUE INDEX quiz_history_pkey ON public.quiz_history USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "quiz_questions",
+      "name": "idx_quiz_questions_question",
+      "definition": "CREATE INDEX idx_quiz_questions_question ON public.quiz_questions USING btree (question_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "quiz_questions",
+      "name": "quiz_questions_pkey",
+      "definition": "CREATE UNIQUE INDEX quiz_questions_pkey ON public.quiz_questions USING btree (quiz_id, question_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "quiz_questions",
+      "name": "quiz_questions_quiz_id_position_key",
+      "definition": "CREATE UNIQUE INDEX quiz_questions_quiz_id_position_key ON public.quiz_questions USING btree (quiz_id, \"position\")",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "idx_role_audit_target",
+      "definition": "CREATE INDEX idx_role_audit_target ON public.role_audit_log USING btree (target_user_id, created_at)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "role_audit_log",
+      "name": "role_audit_log_pkey",
+      "definition": "CREATE UNIQUE INDEX role_audit_log_pkey ON public.role_audit_log USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "user_identities",
+      "name": "idx_user_identities_user",
+      "definition": "CREATE INDEX idx_user_identities_user ON public.user_identities USING btree (user_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "user_identities",
+      "name": "user_identities_pkey",
+      "definition": "CREATE UNIQUE INDEX user_identities_pkey ON public.user_identities USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "user_identities",
+      "name": "user_identities_provider_subject_key",
+      "definition": "CREATE UNIQUE INDEX user_identities_provider_subject_key ON public.user_identities USING btree (provider, subject)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "user_module_state",
+      "name": "idx_user_module_state_user",
+      "definition": "CREATE INDEX idx_user_module_state_user ON public.user_module_state USING btree (user_id, updated_at DESC)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "user_module_state",
+      "name": "uq_user_module_state_scope",
+      "definition": "CREATE UNIQUE INDEX uq_user_module_state_scope ON public.user_module_state USING btree (user_id, module, certification_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "user_module_state",
+      "name": "user_module_state_pkey",
+      "definition": "CREATE UNIQUE INDEX user_module_state_pkey ON public.user_module_state USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "users",
+      "name": "idx_users_active",
+      "definition": "CREATE INDEX idx_users_active ON public.users USING btree (is_active) WHERE (is_active = true)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "users",
+      "name": "idx_users_email",
+      "definition": "CREATE UNIQUE INDEX idx_users_email ON public.users USING btree (lower(TRIM(BOTH FROM email))) WHERE (email IS NOT NULL)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "users",
+      "name": "idx_users_nickname",
+      "definition": "CREATE UNIQUE INDEX idx_users_nickname ON public.users USING btree (nickname) WHERE (nickname IS NOT NULL)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "users",
+      "name": "idx_users_role",
+      "definition": "CREATE INDEX idx_users_role ON public.users USING btree (role)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "users",
+      "name": "users_anonymous_name_key",
+      "definition": "CREATE UNIQUE INDEX users_anonymous_name_key ON public.users USING btree (anonymous_name)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "users",
+      "name": "users_pkey",
+      "definition": "CREATE UNIQUE INDEX users_pkey ON public.users USING btree (id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "validator_certifications",
+      "name": "validator_certifications_pkey",
+      "definition": "CREATE UNIQUE INDEX validator_certifications_pkey ON public.validator_certifications USING btree (user_id, certification_id)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "validator_requests",
+      "name": "idx_validator_requests_pending",
+      "definition": "CREATE UNIQUE INDEX idx_validator_requests_pending ON public.validator_requests USING btree (user_id, certification_id) WHERE ((status)::text = 'PENDING'::text)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "validator_requests",
+      "name": "idx_validator_requests_status",
+      "definition": "CREATE INDEX idx_validator_requests_status ON public.validator_requests USING btree (status, requested_at)",
+      "valid": true,
+      "ready": true
+    },
+    {
+      "relation": "validator_requests",
+      "name": "validator_requests_pkey",
+      "definition": "CREATE UNIQUE INDEX validator_requests_pkey ON public.validator_requests USING btree (id)",
+      "valid": true,
+      "ready": true
+    }
+  ],
+  "enums": [
+    {
+      "name": "case_difficulty",
+      "labels": "{beginner,intermediate,advanced,level_1_clf,level_2_saa,level_3_dva,level_4_sys,level_5_sec,level_6_data,level_7_ai,level_8_adv,investigative}"
+    },
+    {
+      "name": "certification_type",
+      "labels": "{CLF-C02,SAA-C03,SAP-C02,DVA-C02,SOA-C02,DOP-C02,ANS-C01,DAS-C01,MLS-C01,SCS-C02,PAS-C01,AIF-C01}"
+    },
+    {
+      "name": "difficulty_level",
+      "labels": "{easy,medium,hard}"
+    },
+    {
+      "name": "session_type",
+      "labels": "{focus,short_break,long_break}"
+    }
+  ],
+  "views": [
+    {
+      "name": "leaderboard",
+      "definition": " SELECT COALESCE(u.nickname, u.anonymous_name, 'Usuário'::character varying) AS display_name,\n    g.xp_points,\n    g.best_score,\n    g.total_quizzes,\n    g.current_streak,\n    g.badges,\n    rank() OVER (ORDER BY g.xp_points DESC) AS rank\n   FROM gamification g\n     JOIN users u ON u.id = g.user_id\n  WHERE u.is_active = true OR u.is_active IS NULL\n  ORDER BY g.xp_points DESC;"
+    },
+    {
+      "name": "user_stats",
+      "definition": " WITH quiz_stats AS (\n         SELECT quiz_history.user_id,\n            count(*) AS total_quizzes,\n            COALESCE(avg(quiz_history.percentage), 0::numeric)::numeric(5,2) AS avg_score,\n            COALESCE(max(quiz_history.percentage), 0::numeric) AS best_score,\n            COALESCE(sum(quiz_history.time_spent_secs), 0::bigint) AS total_time_secs,\n            count(DISTINCT quiz_history.certification) AS certifications_practiced\n           FROM quiz_history\n          WHERE quiz_history.status::text = 'completed'::text\n          GROUP BY quiz_history.user_id\n        ), focus_stats AS (\n         SELECT focus_sessions.user_id,\n            COALESCE(sum(focus_sessions.minutes) FILTER (WHERE focus_sessions.session_type = 'focus'::session_type), 0::bigint) AS total_focus_minutes\n           FROM focus_sessions\n          GROUP BY focus_sessions.user_id\n        )\n SELECT u.id AS user_id,\n    COALESCE(u.nickname, u.anonymous_name, 'Usuário'::character varying) AS display_name,\n    u.nickname,\n    u.anonymous_name,\n    u.role,\n    COALESCE(qs.total_quizzes, 0::bigint) AS total_quizzes,\n    COALESCE(qs.avg_score, 0::numeric)::numeric(5,2) AS avg_score,\n    COALESCE(qs.best_score, 0::numeric) AS best_score,\n    COALESCE(qs.total_time_secs, 0::bigint) AS total_time_secs,\n    COALESCE(qs.certifications_practiced, 0::bigint) AS certifications_practiced,\n    COALESCE(fs.total_focus_minutes, 0::bigint) AS total_focus_minutes\n   FROM users u\n     LEFT JOIN quiz_stats qs ON qs.user_id = u.id\n     LEFT JOIN focus_stats fs ON fs.user_id = u.id;"
+    }
+  ],
+  "functions": [
+    {
+      "name": "update_updated_at",
+      "arguments": "",
+      "definition": "CREATE OR REPLACE FUNCTION public.update_updated_at()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n    NEW.updated_at = NOW();\n    RETURN NEW;\nEND;\n$function$\n"
+    }
+  ],
+  "triggers": [
+    {
+      "relation": "cases",
+      "name": "trg_cases_updated_at",
+      "definition": "CREATE TRIGGER trg_cases_updated_at BEFORE UPDATE ON cases FOR EACH ROW EXECUTE FUNCTION update_updated_at()",
+      "enabled": "O"
+    },
+    {
+      "relation": "gamification",
+      "name": "trg_gamification_updated_at",
+      "definition": "CREATE TRIGGER trg_gamification_updated_at BEFORE UPDATE ON gamification FOR EACH ROW EXECUTE FUNCTION update_updated_at()",
+      "enabled": "O"
+    },
+    {
+      "relation": "questions",
+      "name": "trg_questions_updated_at",
+      "definition": "CREATE TRIGGER trg_questions_updated_at BEFORE UPDATE ON questions FOR EACH ROW EXECUTE FUNCTION update_updated_at()",
+      "enabled": "O"
+    },
+    {
+      "relation": "user_module_state",
+      "name": "trg_user_module_state_updated_at",
+      "definition": "CREATE TRIGGER trg_user_module_state_updated_at BEFORE UPDATE ON user_module_state FOR EACH ROW EXECUTE FUNCTION update_updated_at()",
+      "enabled": "O"
+    },
+    {
+      "relation": "users",
+      "name": "trg_users_updated_at",
+      "definition": "CREATE TRIGGER trg_users_updated_at BEFORE UPDATE ON users FOR EACH ROW EXECUTE FUNCTION update_updated_at()",
+      "enabled": "O"
+    }
+  ],
+  "extensions": [
+    {
+      "name": "pg_trgm",
+      "version": "1.6",
+      "schema": "public"
+    },
+    {
+      "name": "pgcrypto",
+      "version": "1.3",
+      "schema": "public"
+    }
+  ]
+}
