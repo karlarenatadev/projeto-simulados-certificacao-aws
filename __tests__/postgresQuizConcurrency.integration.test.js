@@ -46,6 +46,15 @@ integration("F4.1 quiz concurrency on real PostgreSQL", () => {
     const { rows } = await observerA.query("SELECT pg_backend_pid() AS pid");
     const other = await observerB.query("SELECT pg_backend_pid() AS pid");
     expect(rows[0].pid).not.toBe(other.rows[0].pid);
+    const server = await observerA.query(
+      `SELECT current_setting('server_version') AS version,
+              current_setting('server_version_num')::int AS version_num`,
+    );
+    expect(server.rows[0].version_num).toBeGreaterThanOrEqual(160000);
+    expect(server.rows[0].version_num).toBeLessThan(170000);
+    console.info(
+      `F4.1 PostgreSQL ${server.rows[0].version}; independent observer PIDs ${rows[0].pid},${other.rows[0].pid}\n`,
+    );
     await initializeDatabase();
     user = await createUser(`F4.1 owner ${randomUUID()}`);
     otherUser = await createUser(`F4.1 other ${randomUUID()}`);
@@ -84,7 +93,24 @@ integration("F4.1 quiz concurrency on real PostgreSQL", () => {
            AND wait_event_type = 'Lock'
            AND query ILIKE '%FROM quiz_history%FOR UPDATE%'`,
       );
-      if (rows[0].count >= expected) return;
+      if (rows[0].count >= expected) {
+        const waiters = await observerB.query(
+          `SELECT pid
+           FROM pg_stat_activity
+           WHERE datname = current_database()
+             AND wait_event_type = 'Lock'
+             AND query ILIKE '%FROM quiz_history%FOR UPDATE%'
+           ORDER BY pid`,
+        );
+        const pids = waiters.rows.map(({ pid }) => pid);
+        if (expected >= 2) {
+          expect(new Set(pids).size).toBeGreaterThanOrEqual(2);
+          console.info(
+            `F4.1 observed quiz row-lock waiters on PIDs ${pids.join(",")}\n`,
+          );
+        }
+        return pids;
+      }
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
     throw new Error(`Expected ${expected} quiz row-lock waiter(s)`);
@@ -304,5 +330,16 @@ integration("F4.1 quiz concurrency on real PostgreSQL", () => {
         "GRANT UPDATE ON quiz_history TO cloudacademy_f3_runtime",
       );
     }
+    const recovered = await recordAnswer(
+      quiz.id,
+      question.id,
+      ["B"],
+      1,
+      user.id,
+    );
+    expect(recovered.is_correct).toBe(true);
+    expect(
+      await executeQuery("SELECT * FROM answers WHERE quiz_id=$1", [quiz.id]),
+    ).toHaveLength(1);
   });
 });

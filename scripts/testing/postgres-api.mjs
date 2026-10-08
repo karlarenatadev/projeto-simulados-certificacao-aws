@@ -7,7 +7,13 @@ import {
   assertMigrationTarget,
 } from "../../backend/database/migrations/target.js";
 
-export async function runApiContracts({ url, token, cwd, setChild }) {
+export async function runApiContracts({
+  url,
+  token,
+  cwd,
+  suiteName = null,
+  setChild,
+}) {
   const adminEnv = {
     NODE_ENV: "test",
     PG_MIGRATIONS_TEST_URL: url,
@@ -46,9 +52,14 @@ export async function runApiContracts({ url, token, cwd, setChild }) {
       "localLinks",
       "casesEvaluateAuth",
       "postgresQuizConcurrency.integration",
+      "postgresAdminRbacConcurrency.integration",
     ];
+    if (suiteName && !suites.includes(suiteName)) {
+      throw new Error("Unknown PostgreSQL API suite selection");
+    }
+    const selectedSuites = suiteName ? [suiteName] : suites;
     let failed = false;
-    for (const suite of suites) {
+    for (const suite of selectedSuites) {
       await assertMigrationTarget(admin, target);
       const { rows } = await admin.query(
         "SELECT tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename",
@@ -85,6 +96,7 @@ export async function runApiContracts({ url, token, cwd, setChild }) {
             PG_F3_ADMIN_URL: [
               "postgresApi.integration",
               "postgresQuizConcurrency.integration",
+              "postgresAdminRbacConcurrency.integration",
             ].includes(suite)
               ? url
               : "",

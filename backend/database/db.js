@@ -1768,7 +1768,7 @@ export async function upsertUserModuleState(
   // Preserve the numeric HTTP contract and reject before a write could exceed it.
   if (existing && Number(existing.version) >= Number.MAX_SAFE_INTEGER) {
     throw Object.assign(new Error("Module state version exceeds supported range"), {
-      statusCode: 503,
+        statusCode: 503,
     });
   }
 
@@ -1890,11 +1890,41 @@ export async function updateUser(userId, data) {
   `;
 
   try {
-    const result = await executeQuery(query, [
-      ...Object.values(updates),
-      normalizedUserId,
-    ]);
-    return result.length > 0 ? result[0] : null;
+    if (updates.role === undefined && updates.is_active === undefined) {
+      const result = await executeQuery(query, [
+        ...Object.values(updates),
+        normalizedUserId,
+      ]);
+      return result.length > 0 ? result[0] : null;
+    }
+
+    return withAdminAccessTransaction(async (transaction) => {
+      const users = await lockAccessUsers(transaction, [normalizedUserId]);
+      const current = users.get(normalizedUserId);
+      if (!current) return null;
+      const nextRole = updates.role ?? current.role;
+      const nextActive = updates.is_active ?? current.is_active;
+      if (
+        current.role === "ADMIN" &&
+        current.is_active &&
+        (nextRole !== "ADMIN" || !nextActive)
+      ) {
+        const admins = await queryRows(
+          transaction,
+          "SELECT COUNT(*)::int AS count FROM users WHERE role = 'ADMIN' AND is_active = TRUE",
+        );
+        if (Number(admins[0]?.count || 0) <= 1)
+          throw accessError(
+            "The last active ADMIN cannot be demoted or disabled",
+            409,
+          );
+      }
+      const result = await queryRows(transaction, query, [
+        ...Object.values(updates),
+        normalizedUserId,
+      ]);
+      return result.length > 0 ? result[0] : null;
+    });
   } catch (error) {
     console.error("Error updating user:", safeError(error));
     throw error;
@@ -1908,6 +1938,36 @@ const ACCESS_CERTIFICATIONS = new Set([
   "AIF-C01",
 ]);
 const ACCESS_ROLES = new Set(["STUDENT", "VALIDATOR", "ADMIN"]);
+// Shared PostgreSQL transaction lock serializing all administrative RBAC writes.
+// The stable bigint key coordinates separate API processes without schema changes.
+const ADMIN_ACCESS_LOCK_KEY = "18930571728208972";
+
+function accessError(message, statusCode) {
+  return Object.assign(new Error(message), { statusCode });
+}
+
+async function withAdminAccessTransaction(work) {
+  const database = getDatabase();
+  return database.transaction(async (transaction) => {
+    await queryRows(transaction, "SELECT pg_advisory_xact_lock($1::bigint)", [
+      ADMIN_ACCESS_LOCK_KEY,
+    ]);
+    return work(transaction);
+  });
+}
+
+async function lockAccessUsers(transaction, userIds) {
+  const normalizedIds = [...new Set(userIds.map(normalizeUserId))];
+  const users = await queryRows(
+    transaction,
+    `SELECT * FROM users
+      WHERE id = ANY($1::uuid[])
+      ORDER BY id
+      FOR UPDATE`,
+    [normalizedIds],
+  );
+  return new Map(users.map((user) => [String(user.id), user]));
+}
 
 function normalizeAccessCertification(certificationId) {
   const normalized = normalizeCertificationId(certificationId);
@@ -1926,8 +1986,17 @@ function normalizeAccessRole(role) {
     .toUpperCase()
     .trim();
   if (!ACCESS_ROLES.has(normalized))
-    throw new Error(`role must be one of: ${[...ACCESS_ROLES].join(", ")}`);
+    throw accessError(
+      `role must be one of: ${[...ACCESS_ROLES].join(", ")}`,
+      400,
+    );
   return normalized;
+}
+
+function normalizeAccessActive(value) {
+  if (typeof value !== "boolean")
+    throw accessError("is_active must be a boolean", 400);
+  return value;
 }
 
 export async function listUsers({ search = "", limit = 50, offset = 0 } = {}) {
@@ -1977,30 +2046,47 @@ export async function removeValidatorCertification(
   targetUserId,
   certificationId,
 ) {
-  const actor = await getUserById(actorUserId);
-  if (!actor || actor.role !== "ADMIN")
-    throw new Error("ADMIN access required");
   const normalizedCertification = normalizeAccessCertification(certificationId);
-  const result = await executeQuery(
-    `
-    UPDATE validator_certifications
-    SET is_active = FALSE
-    WHERE user_id = $1 AND certification_id = $2 AND is_active = TRUE
-    RETURNING *
-  `,
-    [normalizeUserId(targetUserId), normalizedCertification],
-  );
-  if (result[0]) {
-    await recordRoleAudit(
-      actorUserId,
-      targetUserId,
-      "VALIDATOR_CERTIFICATION_REMOVED",
-      null,
-      null,
-      normalizedCertification,
+  const normalizedActorId = normalizeUserId(actorUserId);
+  const normalizedTargetId = normalizeUserId(targetUserId);
+  return withAdminAccessTransaction(async (transaction) => {
+    const users = await lockAccessUsers(transaction, [
+      normalizedActorId,
+      normalizedTargetId,
+    ]);
+    const actor = users.get(normalizedActorId);
+    if (!actor || actor.role !== "ADMIN" || !actor.is_active)
+      throw accessError("ADMIN access required", 403);
+    if (!users.has(normalizedTargetId))
+      throw accessError("Target user not found", 404);
+
+    await queryRows(
+      transaction,
+      `SELECT user_id FROM validator_certifications
+        WHERE user_id = $1 AND certification_id = $2
+        FOR UPDATE`,
+      [normalizedTargetId, normalizedCertification],
     );
-  }
-  return result[0] || null;
+    const result = await queryRows(
+      transaction,
+      `UPDATE validator_certifications
+          SET is_active = FALSE
+        WHERE user_id = $1 AND certification_id = $2 AND is_active = TRUE
+        RETURNING *`,
+      [normalizedTargetId, normalizedCertification],
+    );
+    if (result[0])
+      await insertRoleAudit(
+        transaction,
+        normalizedActorId,
+        normalizedTargetId,
+        "VALIDATOR_CERTIFICATION_REMOVED",
+        null,
+        null,
+        normalizedCertification,
+      );
+    return result[0] || null;
+  });
 }
 
 export async function canUserValidateCertification(userId, certificationId) {
@@ -2102,94 +2188,117 @@ export async function reviewValidatorRequest(
     error.statusCode = 400;
     throw error;
   }
-  const requestRows = await executeQuery(
-    "SELECT * FROM validator_requests WHERE id = $1 LIMIT 1",
-    [normalizeRequiredString(requestId, "requestId")],
-  );
-  const request = requestRows[0];
-  if (!request) {
-    const error = new Error("Validator request not found");
-    error.statusCode = 404;
-    throw error;
-  }
-  if (request.status !== "PENDING") {
-    const error = new Error("Only PENDING requests can be reviewed");
-    error.statusCode = 409;
-    throw error;
-  }
+  const normalizedRequestId = normalizeRequiredString(requestId, "requestId");
+  const normalizedReviewerId = normalizeUserId(reviewerId);
+  return withAdminAccessTransaction(async (transaction) => {
+    const found = await queryRows(
+      transaction,
+      "SELECT user_id FROM validator_requests WHERE id = $1 LIMIT 1",
+      [normalizedRequestId],
+    );
+    if (!found[0]) throw accessError("Validator request not found", 404);
 
-  const reviewer = await getUserById(reviewerId);
-  if (!reviewer || reviewer.role !== "ADMIN")
-    throw new Error("ADMIN reviewer required");
-  const updatedRows = await executeQuery(
-    `
-    UPDATE validator_requests
-    SET status = $1, reviewed_at = CURRENT_TIMESTAMP, reviewed_by = $2, review_notes = $3
-    WHERE id = $4 AND status = 'PENDING'
-    RETURNING *
-  `,
-    [
-      normalizedStatus,
-      normalizeUserId(reviewerId),
-      reviewNotes ? String(reviewNotes).trim() : null,
-      request.id,
-    ],
-  );
-  const updated = updatedRows[0];
+    const users = await lockAccessUsers(transaction, [
+      normalizedReviewerId,
+      found[0].user_id,
+    ]);
+    const reviewer = users.get(normalizedReviewerId);
+    if (!reviewer || reviewer.role !== "ADMIN" || !reviewer.is_active)
+      throw accessError("ADMIN reviewer required", 403);
+    const target = users.get(String(found[0].user_id));
+    if (!target) throw accessError("Target user not found", 404);
 
-  if (normalizedStatus === "APPROVED") {
-    await executeQuery(
-      `
-      INSERT INTO validator_certifications (user_id, certification_id, verified_by, source_request_id, is_active)
-      VALUES ($1, $2, $3, $4, TRUE)
-      ON CONFLICT (user_id, certification_id)
-      DO UPDATE SET verified_by = EXCLUDED.verified_by, verified_at = CURRENT_TIMESTAMP,
-                    source_request_id = EXCLUDED.source_request_id, is_active = TRUE
-    `,
+    const requestRows = await queryRows(
+      transaction,
+      "SELECT * FROM validator_requests WHERE id = $1 FOR UPDATE",
+      [normalizedRequestId],
+    );
+    const request = requestRows[0];
+    if (!request) throw accessError("Validator request not found", 404);
+    if (request.status !== "PENDING")
+      throw accessError("Only PENDING requests can be reviewed", 409);
+
+    const updatedRows = await queryRows(
+      transaction,
+      `UPDATE validator_requests
+          SET status = $1, reviewed_at = CURRENT_TIMESTAMP,
+              reviewed_by = $2, review_notes = $3
+        WHERE id = $4 AND status = 'PENDING'
+        RETURNING *`,
       [
-        request.user_id,
-        request.certification_id,
-        normalizeUserId(reviewerId),
+        normalizedStatus,
+        normalizedReviewerId,
+        reviewNotes ? String(reviewNotes).trim() : null,
         request.id,
       ],
     );
-    const target = await getUserById(request.user_id);
-    if (target?.role === "STUDENT") {
-      await updateUser(target.id, { role: "VALIDATOR" });
-      await recordRoleAudit(
-        reviewerId,
+    if (!updatedRows[0])
+      throw accessError("Only PENDING requests can be reviewed", 409);
+
+    if (normalizedStatus === "APPROVED") {
+      await queryRows(
+        transaction,
+        `INSERT INTO validator_certifications
+          (user_id, certification_id, verified_by, source_request_id, is_active)
+         VALUES ($1, $2, $3, $4, TRUE)
+         ON CONFLICT (user_id, certification_id)
+         DO UPDATE SET verified_by = EXCLUDED.verified_by,
+                       verified_at = CURRENT_TIMESTAMP,
+                       source_request_id = EXCLUDED.source_request_id,
+                       is_active = TRUE`,
+        [
+          request.user_id,
+          request.certification_id,
+          normalizedReviewerId,
+          request.id,
+        ],
+      );
+      const oldRole = target.role;
+      if (target.role === "STUDENT") {
+        await queryRows(
+          transaction,
+          "UPDATE users SET role = 'VALIDATOR' WHERE id = $1 RETURNING id",
+          [target.id],
+        );
+        await insertRoleAudit(
+          transaction,
+          normalizedReviewerId,
+          target.id,
+          "VALIDATOR_REQUEST_APPROVED",
+          oldRole,
+          "VALIDATOR",
+          request.certification_id,
+          { requestId: request.id },
+        );
+      }
+      await insertRoleAudit(
+        transaction,
+        normalizedReviewerId,
         target.id,
-        "VALIDATOR_REQUEST_APPROVED",
-        "STUDENT",
-        "VALIDATOR",
+        "VALIDATOR_CERTIFICATION_ADDED",
+        oldRole,
+        target.role === "STUDENT" ? "VALIDATOR" : target.role,
+        request.certification_id,
+        { requestId: request.id },
+      );
+    } else {
+      await insertRoleAudit(
+        transaction,
+        normalizedReviewerId,
+        request.user_id,
+        "VALIDATOR_REQUEST_REJECTED",
+        null,
+        null,
         request.certification_id,
         { requestId: request.id },
       );
     }
-    await recordRoleAudit(
-      reviewerId,
-      request.user_id,
-      "VALIDATOR_CERTIFICATION_ADDED",
-      target?.role || null,
-      target?.role || null,
-      request.certification_id,
-      { requestId: request.id },
-    );
-  } else {
-    await recordRoleAudit(
-      reviewerId,
-      request.user_id,
-      "VALIDATOR_REQUEST_REJECTED",
-      null,
-      null,
-      request.certification_id,
-      { requestId: request.id },
-    );
-  }
-  return updated;
+    return updatedRows[0];
+  });
 }
 
-export async function recordRoleAudit(
+async function insertRoleAudit(
+  transaction,
   actorUserId,
   targetUserId,
   action,
@@ -2198,12 +2307,12 @@ export async function recordRoleAudit(
   certificationId = null,
   metadata = {},
 ) {
-  const result = await executeQuery(
-    `
-    INSERT INTO role_audit_log (actor_user_id, target_user_id, action, old_role, new_role, certification_id, metadata)
-    VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
-    RETURNING *
-  `,
+  const result = await queryRows(
+    transaction,
+    `INSERT INTO role_audit_log
+      (actor_user_id, target_user_id, action, old_role, new_role, certification_id, metadata)
+     VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb)
+     RETURNING *`,
     [
       normalizeUserId(actorUserId),
       normalizeUserId(targetUserId),
@@ -2217,60 +2326,93 @@ export async function recordRoleAudit(
   return result[0] || null;
 }
 
+export async function recordRoleAudit(
+  actorUserId,
+  targetUserId,
+  action,
+  oldRole = null,
+  newRole = null,
+  certificationId = null,
+  metadata = {},
+) {
+  return insertRoleAudit(
+    getDatabase(),
+    actorUserId,
+    targetUserId,
+    action,
+    oldRole,
+    newRole,
+    certificationId,
+    metadata,
+  );
+}
+
 export async function changeUserAccess(
   actorUserId,
   targetUserId,
   { role, is_active } = {},
 ) {
-  const actor = await getUserById(actorUserId);
-  const target = await getUserById(targetUserId);
-  if (!actor || actor.role !== "ADMIN")
-    throw new Error("ADMIN access required");
-  if (!target) {
-    const error = new Error("Target user not found");
-    error.statusCode = 404;
-    throw error;
-  }
-  const nextRole = role === undefined ? target.role : normalizeAccessRole(role);
-  const nextActive =
-    is_active === undefined ? target.is_active : Boolean(is_active);
-  if (
-    target.role === "ADMIN" &&
-    target.is_active &&
-    (nextRole !== "ADMIN" || !nextActive)
-  ) {
-    const admins = await executeQuery(
-      "SELECT COUNT(*)::int AS count FROM users WHERE role = 'ADMIN' AND is_active = TRUE",
-    );
-    if (Number(admins[0]?.count || 0) <= 1) {
-      const error = new Error(
-        "The last active ADMIN cannot be demoted or disabled",
+  const normalizedActorId = normalizeUserId(actorUserId);
+  const normalizedTargetId = normalizeUserId(targetUserId);
+  return withAdminAccessTransaction(async (transaction) => {
+    const users = await lockAccessUsers(transaction, [
+      normalizedActorId,
+      normalizedTargetId,
+    ]);
+    const actor = users.get(normalizedActorId);
+    if (!actor || actor.role !== "ADMIN" || !actor.is_active)
+      throw accessError("ADMIN access required", 403);
+    const target = users.get(normalizedTargetId);
+    if (!target) throw accessError("Target user not found", 404);
+
+    const nextRole =
+      role === undefined ? target.role : normalizeAccessRole(role);
+    const nextActive =
+      is_active === undefined
+        ? target.is_active
+        : normalizeAccessActive(is_active);
+    if (
+      target.role === "ADMIN" &&
+      target.is_active &&
+      (nextRole !== "ADMIN" || !nextActive)
+    ) {
+      const admins = await queryRows(
+        transaction,
+        "SELECT COUNT(*)::int AS count FROM users WHERE role = 'ADMIN' AND is_active = TRUE",
       );
-      error.statusCode = 409;
-      throw error;
+      if (Number(admins[0]?.count || 0) <= 1)
+        throw accessError(
+          "The last active ADMIN cannot be demoted or disabled",
+          409,
+        );
     }
-  }
-  const updated = await updateUser(target.id, {
-    role: nextRole,
-    is_active: nextActive,
+
+    const updatedRows = await queryRows(
+      transaction,
+      "UPDATE users SET role = $1, is_active = $2 WHERE id = $3 RETURNING *",
+      [nextRole, nextActive, target.id],
+    );
+    const updated = updatedRows[0];
+    if (target.role !== nextRole)
+      await insertRoleAudit(
+        transaction,
+        actor.id,
+        target.id,
+        "ROLE_CHANGED",
+        target.role,
+        nextRole,
+      );
+    if (target.is_active !== nextActive)
+      await insertRoleAudit(
+        transaction,
+        actor.id,
+        target.id,
+        nextActive ? "USER_ENABLED" : "USER_DISABLED",
+        target.role,
+        target.role,
+      );
+    return updated;
   });
-  if (target.role !== nextRole)
-    await recordRoleAudit(
-      actor.id,
-      target.id,
-      "ROLE_CHANGED",
-      target.role,
-      nextRole,
-    );
-  if (target.is_active !== nextActive)
-    await recordRoleAudit(
-      actor.id,
-      target.id,
-      nextActive ? "USER_ENABLED" : "USER_DISABLED",
-      target.role,
-      target.role,
-    );
-  return updated;
 }
 
 // ============================================================================

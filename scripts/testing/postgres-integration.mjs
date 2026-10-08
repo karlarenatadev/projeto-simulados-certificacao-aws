@@ -9,6 +9,8 @@ const image =
 const token = randomUUID();
 const api = process.argv.includes("--api");
 const migrations = process.argv.includes("--migrations");
+const suiteIndex = process.argv.indexOf("--suite");
+const apiSuite = suiteIndex >= 0 ? process.argv[suiteIndex + 1] : null;
 const phase = api ? "F3" : migrations ? "F2" : "F1";
 const name = `cloudacademy-${phase.toLowerCase()}-test-${token}`;
 const label = `io.cloudacademy.${phase.toLowerCase()}-test`;
@@ -136,6 +138,7 @@ try {
       url,
       token,
       cwd,
+      suiteName: apiSuite,
       setChild: (value) => {
         child = value;
       },
