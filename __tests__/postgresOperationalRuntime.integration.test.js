@@ -64,13 +64,13 @@ async function request(path, options = {}) {
   return fetch(`${baseUrl}/api${path}`, options);
 }
 
-  suite(
-    "DB_ENGINE=postgres operational runtime on disposable PostgreSQL 16",
-    () => {
-      beforeAll(async () => {
-        await initializeDatabase();
-        expect(await getDatabase().checkReady()).toBe(true);
-        admin = new pg.Client({
+suite(
+  "DB_ENGINE=postgres operational runtime on disposable PostgreSQL 16",
+  () => {
+    beforeAll(async () => {
+      await initializeDatabase();
+      expect(await getDatabase().checkReady()).toBe(true);
+      admin = new pg.Client({
         connectionString: process.env.PG_OPERATIONAL_ADMIN_URL,
       });
       await admin.connect();
@@ -144,8 +144,18 @@ async function request(path, options = {}) {
     });
 
     test("postgres-test still refuses operational environments and non-test targets", async () => {
-      const testEnv = { ...process.env, NODE_ENV: "test", DB_SSL_MODE: "disable" };
-      expect(() => createTestPostgresRuntime({ ...testEnv, NODE_ENV: "production", DB_SSL_MODE: "verify-full" })).toThrow();
+      const testEnv = {
+        ...process.env,
+        NODE_ENV: "test",
+        DB_SSL_MODE: "disable",
+      };
+      expect(() =>
+        createTestPostgresRuntime({
+          ...testEnv,
+          NODE_ENV: "production",
+          DB_SSL_MODE: "verify-full",
+        }),
+      ).toThrow();
       expect(() =>
         createTestPostgresRuntime({
           ...testEnv,
