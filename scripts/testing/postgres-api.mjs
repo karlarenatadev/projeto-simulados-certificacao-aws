@@ -53,6 +53,8 @@ export async function runApiContracts({
       "casesEvaluateAuth",
       "postgresQuizConcurrency.integration",
       "postgresAdminRbacConcurrency.integration",
+      "postgresIdentityConcurrency.integration",
+      "postgresEditorialAuthorization.integration",
     ];
     if (suiteName && !suites.includes(suiteName)) {
       throw new Error("Unknown PostgreSQL API suite selection");
@@ -97,6 +99,8 @@ export async function runApiContracts({
               "postgresApi.integration",
               "postgresQuizConcurrency.integration",
               "postgresAdminRbacConcurrency.integration",
+              "postgresIdentityConcurrency.integration",
+              "postgresEditorialAuthorization.integration",
             ].includes(suite)
               ? url
               : "",

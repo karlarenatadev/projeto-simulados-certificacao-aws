@@ -921,7 +921,7 @@ function normalizeQuestionInput(questionData, { partial = false } = {}) {
   );
 }
 
-async function normalizeQuestionUpdate(updates, existingQuestion) {
+function normalizeQuestionUpdate(updates, existingQuestion) {
   const candidate = {
     ...existingQuestion,
     ...updates,
@@ -959,6 +959,8 @@ async function normalizeQuestionUpdate(updates, existingQuestion) {
         ? "question_text"
         : key === "correct"
           ? "correct_answer"
+          : key === "reference"
+            ? "reference_url"
           : key;
 
     if (!allowedFields.has(storageKey)) {
@@ -1334,6 +1336,227 @@ export async function deleteQuestion(questionId) {
   }
 }
 
+const EDITORIAL_CREATE_FIELDS = new Set([
+  "certification",
+  "language",
+  "source_question_id",
+  "domain",
+  "difficulty",
+  "question_text",
+  "question",
+  "options",
+  "correct_answer",
+  "correct",
+  "explanation",
+  "reference_url",
+  "reference",
+  "tags",
+]);
+const EDITORIAL_UPDATE_FIELDS = new Set([
+  "certification",
+  "domain",
+  "difficulty",
+  "question_text",
+  "question",
+  "options",
+  "correct_answer",
+  "correct",
+  "explanation",
+  "reference_url",
+  "reference",
+  "tags",
+]);
+
+function allowEditorialContentFields(payload, allowedFields) {
+  if (!isPlainObject(payload))
+    throw accessError("Editorial payload must be an object", 400);
+  const entries = Object.entries(payload);
+  if (entries.length === 0)
+    throw accessError("Editorial payload must contain writable content", 400);
+  const unsupported = entries.find(([key]) => !allowedFields.has(key));
+  if (unsupported)
+    throw accessError(`Editorial field is not client-writable: ${unsupported[0]}`, 400);
+  return Object.fromEntries(entries);
+}
+
+function normalizeEditorialInput(normalize) {
+  try {
+    return normalize();
+  } catch (error) {
+    if (error.statusCode === undefined) error.statusCode = 400;
+    throw error;
+  }
+}
+
+async function lockEditorialActor(transaction, actorUserId) {
+  const actorId = normalizeUserId(actorUserId);
+  const rows = await queryRows(
+    transaction,
+    "SELECT id, role, is_active FROM users WHERE id = $1 FOR SHARE",
+    [actorId],
+  );
+  const actor = rows[0];
+  if (!actor || actor.is_active !== true || !["VALIDATOR", "ADMIN"].includes(actor.role))
+    throw accessError("Active VALIDATOR or ADMIN is required", 403);
+  return actor;
+}
+
+async function assertEditorialCertificationAccess(
+  transaction,
+  actor,
+  certificationId,
+) {
+  if (actor.role === "ADMIN") return;
+  const certification = normalizeAccessCertification(certificationId);
+  const rows = await queryRows(
+    transaction,
+    `SELECT 1 FROM validator_certifications
+      WHERE user_id = $1 AND certification_id = $2 AND is_active = TRUE
+      FOR SHARE`,
+    [actor.id, certification],
+  );
+  if (rows.length === 0)
+    throw accessError("Validator is not authorized for this certification", 403);
+}
+
+/** HTTP/editorial creation: actor, current role and scope are checked in the write transaction. */
+export async function createEditorialQuestion(actorUserId, questionData) {
+  const safeQuestion = allowEditorialContentFields(
+    questionData,
+    EDITORIAL_CREATE_FIELDS,
+  );
+  const normalized = normalizeEditorialInput(() =>
+    normalizeQuestionInput(safeQuestion),
+  );
+  const database = getDatabase();
+  return database.transaction(async (transaction) => {
+    const actor = await lockEditorialActor(transaction, actorUserId);
+    await assertEditorialCertificationAccess(
+      transaction,
+      actor,
+      normalized.certification,
+    );
+    const rows = await queryRows(
+      transaction,
+      `INSERT INTO questions (
+        certification, language, source_question_id, domain, difficulty,
+        question_text, options, correct_answer, explanation, reference_url,
+        tags, is_active, validation_status
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7::jsonb,$8::jsonb,$9,$10,$11,TRUE,'PENDING')
+      RETURNING *`,
+      [
+        normalizeCertificationId(normalized.certification),
+        normalized.language ?? null,
+        normalized.source_question_id ?? null,
+        normalized.domain,
+        normalized.difficulty,
+        normalized.question_text,
+        JSON.stringify(normalized.options),
+        JSON.stringify(normalized.correct_answer),
+        normalized.explanation,
+        normalized.reference_url ?? null,
+        normalized.tags ?? [],
+      ],
+    );
+    return rows[0] || null;
+  });
+}
+
+/** HTTP/editorial update: lock the resource, then authorize both source and destination scope. */
+export async function updateEditorialQuestion(
+  actorUserId,
+  questionId,
+  updates,
+) {
+  normalizeRequiredString(questionId, "questionId");
+  const safeUpdates = allowEditorialContentFields(
+    updates,
+    EDITORIAL_UPDATE_FIELDS,
+  );
+  const database = getDatabase();
+  return database.transaction(async (transaction) => {
+    const actor = await lockEditorialActor(transaction, actorUserId);
+    const currentRows = await queryRows(
+      transaction,
+      "SELECT * FROM questions WHERE id = $1 AND is_active = TRUE FOR UPDATE",
+      [questionId],
+    );
+    const current = currentRows[0];
+    if (!current) return null;
+
+    const filteredUpdates = normalizeEditorialInput(() =>
+      normalizeQuestionUpdate(safeUpdates, current),
+    );
+    const sourceCertification = normalizeEditorialInput(() =>
+      validateCertification(current.certification, { required: true }),
+    );
+    const destinationCertification = normalizeEditorialInput(() =>
+      validateCertification(filteredUpdates.certification ?? sourceCertification, {
+        required: true,
+      }),
+    );
+    await assertEditorialCertificationAccess(
+      transaction,
+      actor,
+      sourceCertification,
+    );
+    if (destinationCertification !== sourceCertification) {
+      await assertEditorialCertificationAccess(
+        transaction,
+        actor,
+        destinationCertification,
+      );
+    }
+
+    const keys = Object.keys(filteredUpdates);
+    if (keys.length === 0)
+      throw accessError("Editorial payload contains no writable content", 400);
+    const setClause = keys
+      .map((key, index) => `${key} = $${index + 1}`)
+      .join(", ");
+    const values = keys.map((key) => {
+      const value = filteredUpdates[key];
+      return key === "options" || key === "correct_answer"
+        ? JSON.stringify(value)
+        : value;
+    });
+    const rows = await queryRows(
+      transaction,
+      `UPDATE questions SET ${setClause} WHERE id = $${keys.length + 1} AND is_active = TRUE RETURNING *`,
+      [...values, questionId],
+    );
+    return rows[0] || null;
+  });
+}
+
+/** Deletion remains ADMIN-only, rechecked against the database within the write transaction. */
+export async function deleteEditorialQuestion(actorUserId, questionId) {
+  normalizeRequiredString(questionId, "questionId");
+  const database = getDatabase();
+  return database.transaction(async (transaction) => {
+    const actorId = normalizeUserId(actorUserId);
+    const rows = await queryRows(
+      transaction,
+      "SELECT id, role, is_active FROM users WHERE id = $1 FOR SHARE",
+      [actorId],
+    );
+    if (rows[0]?.role !== "ADMIN" || rows[0]?.is_active !== true)
+      throw accessError("ADMIN access required", 403);
+    const question = await queryRows(
+      transaction,
+      "SELECT id FROM questions WHERE id = $1 AND is_active = TRUE FOR UPDATE",
+      [questionId],
+    );
+    if (!question[0]) return null;
+    const deleted = await queryRows(
+      transaction,
+      "UPDATE questions SET is_active = FALSE WHERE id = $1 AND is_active = TRUE RETURNING *",
+      [questionId],
+    );
+    return deleted[0] || null;
+  });
+}
+
 // ============================================================================
 // USERS - CRUD Operations
 // ============================================================================
@@ -1542,13 +1765,29 @@ export async function resolveGoogleIdentity({ subject, email, profile = {} }) {
 
   const database = getDatabase();
   return database.transaction(async (transaction) => {
+    // Serialize only resolutions that share an external subject or normalized
+    // email. Sorting the lock keys gives every request the same acquisition
+    // order when both keys overlap; hash collisions can only add serialization.
+    const identityLockKeys = [
+      `email:${normalizedEmail}`,
+      `provider:google:subject:${normalizedSubject}`,
+    ].sort();
+    for (const lockKey of identityLockKeys) {
+      await queryRows(
+        transaction,
+        "SELECT pg_advisory_xact_lock(hashtextextended($1, 0))",
+        [lockKey],
+      );
+    }
+
     const identityRows = await queryRows(
       transaction,
       `SELECT u.*, i.email_at_link
          FROM user_identities i
          JOIN users u ON u.id = i.user_id
         WHERE i.provider = 'google' AND i.subject = $1
-        LIMIT 1`,
+        LIMIT 1
+        FOR UPDATE OF u, i`,
       [normalizedSubject],
     );
 
@@ -1561,7 +1800,7 @@ export async function resolveGoogleIdentity({ subject, email, profile = {} }) {
       }
       const conflict = await queryRows(
         transaction,
-        "SELECT id FROM users WHERE LOWER(email) = LOWER($1) AND id::text <> $2 LIMIT 1",
+        "SELECT id FROM users WHERE LOWER(TRIM(email)) = $1 AND id::text <> $2 LIMIT 1",
         [normalizedEmail, String(existing.id)],
       );
       if (conflict.length > 0) {
@@ -1596,9 +1835,10 @@ export async function resolveGoogleIdentity({ subject, email, profile = {} }) {
     const existingByEmail = await queryRows(
       transaction,
       `SELECT * FROM users
-        WHERE LOWER(email) = LOWER($1)
+        WHERE LOWER(TRIM(email)) = $1
         ORDER BY CASE role WHEN 'ADMIN' THEN 1 WHEN 'VALIDATOR' THEN 2 ELSE 3 END, created_at ASC
-        LIMIT 1`,
+        LIMIT 1
+        FOR UPDATE`,
       [normalizedEmail],
     );
     let user = existingByEmail[0];
@@ -3889,6 +4129,64 @@ function normalizeValidationInput(
     rejection_reason:
       normalizedStatus === "REJECTED" ? normalizedRejectionReason : null,
   };
+}
+
+/** Validate a question using the actor and resource state from one write transaction. */
+export async function validateEditorialQuestion(
+  actorUserId,
+  questionId,
+  status,
+  rejectionReason = null,
+) {
+  const validation = normalizeValidationInput(
+    questionId,
+    actorUserId,
+    status,
+    rejectionReason,
+  );
+  const database = getDatabase();
+  return database.transaction(async (transaction) => {
+    const actor = await lockEditorialActor(transaction, actorUserId);
+    const questionRows = await queryRows(
+      transaction,
+      "SELECT * FROM questions WHERE id = $1 AND is_active = TRUE FOR UPDATE",
+      [validation.question_id],
+    );
+    const question = questionRows[0];
+    if (!question) return null;
+    await assertEditorialCertificationAccess(
+      transaction,
+      actor,
+      question.certification,
+    );
+
+    const logEntry = {
+      validatorId: String(actor.id),
+      action: validation.status,
+      timestamp: new Date().toISOString(),
+      reason: validation.rejection_reason,
+    };
+    const updated = await queryRows(
+      transaction,
+      `UPDATE questions
+          SET validation_status = $1,
+              rejection_reason = $2,
+              validated_by = $3::text,
+              validated_by_id = $3::uuid,
+              validated_at = CURRENT_TIMESTAMP,
+              validation_logs = validation_logs || $4::jsonb
+        WHERE id = $5 AND is_active = TRUE
+        RETURNING *`,
+      [
+        validation.status,
+        validation.rejection_reason,
+        actor.id,
+        JSON.stringify([logEntry]),
+        validation.question_id,
+      ],
+    );
+    return updated[0] || null;
+  });
 }
 
 export async function validateQuestion(
