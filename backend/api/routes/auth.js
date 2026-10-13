@@ -39,7 +39,7 @@ router.post('/login', async (req, res, next) => {
 
     const emailLoginAllowed =
       process.env.NODE_ENV === 'test' || process.env.ALLOW_DEV_EMAIL_LOGIN === 'true';
-    if (process.env.NODE_ENV === 'production' || !emailLoginAllowed) {
+    if (['staging', 'production'].includes(process.env.NODE_ENV) || !emailLoginAllowed) {
       return res.status(403).json({ error: 'Email-only login is disabled.', status: 403 });
     }
     if (!email) {

@@ -1,0 +1,1138 @@
+{
+  "url": "https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonLightsail/current/us-east-1/index.json",
+  "publicationDate": "2026-09-15T15:19:51Z",
+  "rows": [
+    {
+      "product": {
+        "sku": "8E4A4X47ZPXKB2KD",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "4",
+          "memory": "8GB",
+          "storage": "320GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of IPv6-only Lightsail Instance hours",
+          "usagetype": "USE1-ComputeOptimizedBundleUsage:8GB_IPv6",
+          "operation": "ComputeOptBundle:8GB_IPv6",
+          "dataTransferQuota": "6TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "8E4A4X47ZPXKB2KD.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "8E4A4X47ZPXKB2KD",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "8E4A4X47ZPXKB2KD.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "8E4A4X47ZPXKB2KD.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.10753 per Hr for ComputeOptimizedBundleUsage:8GB_IPv6 in US East (N. Virginia)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.1075300000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "ZYTTGRKDKCFUHQUE",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "32",
+          "memory": "128GB",
+          "storage": "1280GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of Lightsail Instance hours",
+          "usagetype": "USE1-BundleUsage:128GB",
+          "operation": "Bundle:128GB",
+          "dataTransferQuota": "9TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "ZYTTGRKDKCFUHQUE.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "ZYTTGRKDKCFUHQUE",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "ZYTTGRKDKCFUHQUE.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "ZYTTGRKDKCFUHQUE.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$1.18817 per hour of 128GB bundle Instance including public IPv4 address (Linux)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "1.1881700000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "Y8S55Q9C7QEMHEF5",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "16",
+          "memory": "64GB",
+          "storage": "1280GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of IPv6-only Lightsail Instance hours",
+          "usagetype": "USE1-BundleUsage:64GB_IPv6",
+          "operation": "Bundle:64GB_IPv6",
+          "dataTransferQuota": "8TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "Y8S55Q9C7QEMHEF5.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "Y8S55Q9C7QEMHEF5",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "Y8S55Q9C7QEMHEF5.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "Y8S55Q9C7QEMHEF5.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.51075 / Hour of 64GB IPv6 bundle Instance",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.5107500000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "9UQ3Z96RPYF2JWNH",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "4",
+          "memory": "8GB",
+          "storage": "320GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of Lightsail Instance hours",
+          "usagetype": "USE1-ComputeOptimizedBundleUsage:8GB",
+          "operation": "ComputeOptBundle:8GB",
+          "dataTransferQuota": "6TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "9UQ3Z96RPYF2JWNH.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "9UQ3Z96RPYF2JWNH",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "9UQ3Z96RPYF2JWNH.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "9UQ3Z96RPYF2JWNH.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.1129 per Hr for ComputeOptimizedBundleUsage:8GB in US East (N. Virginia)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.1129000000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "WGZK55T97QEGRT7X",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "8",
+          "memory": "64GB",
+          "storage": "640GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of Lightsail Instance hours",
+          "usagetype": "USE1-MemoryOptimizedBundleUsage:64GB",
+          "operation": "MemoryOptimizedBundle:64GB",
+          "dataTransferQuota": "7TB",
+          "instancefamily": "MemoryOptimized",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "WGZK55T97QEGRT7X.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "WGZK55T97QEGRT7X",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "WGZK55T97QEGRT7X.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "WGZK55T97QEGRT7X.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.39516 per hour of 64GB Memory optimized bundle Instance including public IPv4 address (Linux)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.3951600000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "ZPKAQ29QSV8FZMYW",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "2",
+          "memory": "8GB",
+          "storage": "160GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of IPv6-only Lightsail Instance hours",
+          "usagetype": "USE1-BundleUsage:8GB_IPv6",
+          "operation": "Bundle:8GB_IPv6",
+          "dataTransferQuota": "5TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "ZPKAQ29QSV8FZMYW.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "ZPKAQ29QSV8FZMYW",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "ZPKAQ29QSV8FZMYW.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "ZPKAQ29QSV8FZMYW.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.05376 / Hour of 8GB IPv6 bundle Instance ",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.0537600000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "GFCAP5UGQVCAFG29",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "32",
+          "memory": "128GB",
+          "storage": "1280GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of IPv6-only Lightsail Instance hours",
+          "usagetype": "USE1-BundleUsage:128GB_IPv6",
+          "operation": "Bundle:128GB_IPv6",
+          "dataTransferQuota": "9TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "GFCAP5UGQVCAFG29.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "GFCAP5UGQVCAFG29",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "GFCAP5UGQVCAFG29.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "GFCAP5UGQVCAFG29.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$1.18279 per hour of 128GB IPv6 bundle Instance (Linux)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "1.1827900000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "FTVF4KC5PGGSEZMN",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "48",
+          "memory": "384GB",
+          "storage": "1280GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of Lightsail Instance hours",
+          "usagetype": "USE1-MemoryOptimizedBundleUsage:384GB",
+          "operation": "MemoryOptimizedBundle:384GB",
+          "dataTransferQuota": "10TB",
+          "instancefamily": "MemoryOptimized",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "FTVF4KC5PGGSEZMN.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "FTVF4KC5PGGSEZMN",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "FTVF4KC5PGGSEZMN.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "FTVF4KC5PGGSEZMN.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$2.37097 per hour of 384GB Memory optimized bundle Instance including public IPv4 address (Linux)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "2.3709700000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "655SBVDQXJJY4HNS",
+        "productFamily": "Lightsail Database",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "2",
+          "memory": "8GB",
+          "storage": "240GB",
+          "group": "Lightsail Database",
+          "groupDescription": "Number of Lightsail Database hours",
+          "usagetype": "USE1-DatabaseUsage:8GB",
+          "operation": "RelationalDatabase",
+          "dataTransferQuota": "0.2TB",
+          "engine": "MySQL/PostgreSQL",
+          "highAvailability": "No",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "655SBVDQXJJY4HNS.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "655SBVDQXJJY4HNS",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "655SBVDQXJJY4HNS.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "655SBVDQXJJY4HNS.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.1546 / Hour of 8GB Standard Database bundle",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.1545700000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "5EPB2V8S2JCDVZF9",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "2",
+          "memory": "4GB",
+          "storage": "80GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of Lightsail Instance hours",
+          "usagetype": "USE1-BundleUsage:4GB",
+          "operation": "Bundle:4GB",
+          "dataTransferQuota": "4TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "5EPB2V8S2JCDVZF9.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "5EPB2V8S2JCDVZF9",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "5EPB2V8S2JCDVZF9.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "5EPB2V8S2JCDVZF9.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.03225 / Hour of 4GB bundle Instance including public IPv4 address",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.0322500000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "4CB4FJ84JFR9N5U9",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "16",
+          "memory": "128GB",
+          "storage": "1280GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of Lightsail Instance hours",
+          "usagetype": "USE1-MemoryOptimizedBundleUsage:128GB",
+          "operation": "MemoryOptimizedBundle:128GB",
+          "dataTransferQuota": "8TB",
+          "instancefamily": "MemoryOptimized",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "4CB4FJ84JFR9N5U9.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "4CB4FJ84JFR9N5U9",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "4CB4FJ84JFR9N5U9.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "4CB4FJ84JFR9N5U9.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.78495 per hour of 128GB Memory optimized bundle Instance including public IPv4 address (Linux)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.7849500000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "T7MQ998NVHH4A5SP",
+        "productFamily": "Lightsail Containers",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "4",
+          "memory": "8GB",
+          "storage": "NA",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Container",
+          "groupDescription": "Number of Lightsail Container Service hours",
+          "usagetype": "USE1-ContainerSvcUsage:XLarge-4CPU-8GB",
+          "operation": "ContainerSvc:XLarge-4CPU-8GB",
+          "dataTransferQuota": "500GB",
+          "isfree": "No",
+          "power": "XLarge",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "T7MQ998NVHH4A5SP.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "T7MQ998NVHH4A5SP",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "T7MQ998NVHH4A5SP.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "T7MQ998NVHH4A5SP.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.2151 / Hour for Container Service Node of Power-XLarge(4CPU-8GB) - US East (N. Virginia)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.2150537630"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "QRSB32C3VC8XR82V",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "16",
+          "memory": "128GB",
+          "storage": "1280GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of IPv6-only Lightsail Instance hours",
+          "usagetype": "USE1-MemoryOptimizedBundleUsage:128GB_IPv6",
+          "operation": "MemoryOptimizedBundle:128GB_IPv6",
+          "dataTransferQuota": "8TB",
+          "instancefamily": "MemoryOptimized",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "QRSB32C3VC8XR82V.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "QRSB32C3VC8XR82V",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "QRSB32C3VC8XR82V.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "QRSB32C3VC8XR82V.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.77957 per hour of 128GB Memory optimized IPv6 bundle Instance (Linux)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.7795700000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "D6RY8Q3T2RREEHFK",
+        "productFamily": "Lightsail Database",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "2",
+          "memory": "4GB",
+          "storage": "120GB",
+          "group": "Lightsail Database",
+          "groupDescription": "Number of Lightsail Database hours",
+          "usagetype": "USE1-DatabaseUsage:4GB_ha",
+          "operation": "RelationalDatabase",
+          "dataTransferQuota": "0.1TB",
+          "engine": "MySQL/PostgreSQL",
+          "highAvailability": "Yes",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "D6RY8Q3T2RREEHFK.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "D6RY8Q3T2RREEHFK",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "D6RY8Q3T2RREEHFK.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "D6RY8Q3T2RREEHFK.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.1613 / Hour of 4GB High Availability Database bundle",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.1612900000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "S7X4VXZCEMM6XMF8",
+        "productFamily": "Lightsail Database",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "2",
+          "memory": "4GB",
+          "storage": "120GB",
+          "group": "Lightsail Database",
+          "groupDescription": "Number of Lightsail Database hours",
+          "usagetype": "USE1-DatabaseUsage:4GB",
+          "operation": "RelationalDatabase",
+          "dataTransferQuota": "0.1TB",
+          "engine": "MySQL/PostgreSQL",
+          "highAvailability": "No",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "S7X4VXZCEMM6XMF8.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "S7X4VXZCEMM6XMF8",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "S7X4VXZCEMM6XMF8.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "S7X4VXZCEMM6XMF8.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.0806 / Hour of 4GB Standard Database bundle",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.0806500000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "Z6NERQDE765SRMU7",
+        "productFamily": "Lightsail Database",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "2",
+          "memory": "8GB",
+          "storage": "240GB",
+          "group": "Lightsail Database",
+          "groupDescription": "Number of Lightsail Database hours",
+          "usagetype": "USE1-DatabaseUsage:8GB_ha",
+          "operation": "RelationalDatabase",
+          "dataTransferQuota": "0.2TB",
+          "engine": "MySQL/PostgreSQL",
+          "highAvailability": "Yes",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "Z6NERQDE765SRMU7.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "Z6NERQDE765SRMU7",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "Z6NERQDE765SRMU7.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "Z6NERQDE765SRMU7.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.3091 / Hour of 8GB High Availability Database bundle",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.3091400000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "XT9FU4CN74CB7HXB",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "2",
+          "memory": "4GB",
+          "storage": "80GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of IPv6-only Lightsail Instance hours",
+          "usagetype": "USE1-BundleUsage:4GB_IPv6",
+          "operation": "Bundle:4GB_IPv6",
+          "dataTransferQuota": "4TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "XT9FU4CN74CB7HXB.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "XT9FU4CN74CB7HXB",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "XT9FU4CN74CB7HXB.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "XT9FU4CN74CB7HXB.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.02688 / Hour of 4GB IPv6 bundle Instance ",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.0268800000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "6CY5KQS2GPVEGXB7",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "48",
+          "memory": "384GB",
+          "storage": "1280GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of IPv6-only Lightsail Instance hours",
+          "usagetype": "USE1-MemoryOptimizedBundleUsage:384GB_IPv6",
+          "operation": "MemoryOptimizedBundle:384GB_IPv6",
+          "dataTransferQuota": "10TB",
+          "instancefamily": "MemoryOptimized",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "6CY5KQS2GPVEGXB7.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "6CY5KQS2GPVEGXB7",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "6CY5KQS2GPVEGXB7.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "6CY5KQS2GPVEGXB7.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$2.36559 per hour of 384GB Memory optimized IPv6 bundle Instance (Linux)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "2.3655900000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "GYGX8WMKMK7E28WX",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "2",
+          "memory": "4GB",
+          "storage": "160GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of IPv6-only Lightsail Instance hours",
+          "usagetype": "USE1-ComputeOptimizedBundleUsage:4GB_IPv6",
+          "operation": "ComputeOptBundle:4GB_IPv6",
+          "dataTransferQuota": "5TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "GYGX8WMKMK7E28WX.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "GYGX8WMKMK7E28WX",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "GYGX8WMKMK7E28WX.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "GYGX8WMKMK7E28WX.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.05108 per Hr for ComputeOptimizedBundleUsage:4GB_IPv6 in US East (N. Virginia)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.0510800000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "92KYF7FSDZTZ96GW",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "72",
+          "memory": "144GB",
+          "storage": "1280GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of IPv6-only Lightsail Instance hours",
+          "usagetype": "USE1-ComputeOptimizedBundleUsage:144GB_IPv6",
+          "operation": "ComputeOptBundle:144GB_IPv6",
+          "dataTransferQuota": "10TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "92KYF7FSDZTZ96GW.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "92KYF7FSDZTZ96GW",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "92KYF7FSDZTZ96GW.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "92KYF7FSDZTZ96GW.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$2.26344 per Hr for ComputeOptimizedBundleUsage:144GB_IPv6 in US East (N. Virginia)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "2.2634400000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "2US3M6Y5V366CGRK",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "2",
+          "memory": "4GB",
+          "storage": "160GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of Lightsail Instance hours",
+          "usagetype": "USE1-ComputeOptimizedBundleUsage:4GB",
+          "operation": "ComputeOptBundle:4GB",
+          "dataTransferQuota": "5TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "2US3M6Y5V366CGRK.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "2US3M6Y5V366CGRK",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "2US3M6Y5V366CGRK.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "2US3M6Y5V366CGRK.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.05645 per Hr for ComputeOptimizedBundleUsage:4GB in US East (N. Virginia)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.0564500000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "N4TKTE3U6FZWGCMM",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "72",
+          "memory": "144GB",
+          "storage": "1280GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of Lightsail Instance hours",
+          "usagetype": "USE1-ComputeOptimizedBundleUsage:144GB",
+          "operation": "ComputeOptBundle:144GB",
+          "dataTransferQuota": "10TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "N4TKTE3U6FZWGCMM.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "N4TKTE3U6FZWGCMM",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "N4TKTE3U6FZWGCMM.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "N4TKTE3U6FZWGCMM.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$2.26882 per Hr for ComputeOptimizedBundleUsage:144GB in US East (N. Virginia)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "2.2688200000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "DTAQ2Q9EHGCU5GUC",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "8",
+          "memory": "64GB",
+          "storage": "640GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of IPv6-only Lightsail Instance hours",
+          "usagetype": "USE1-MemoryOptimizedBundleUsage:64GB_IPv6",
+          "operation": "MemoryOptimizedBundle:64GB_IPv6",
+          "dataTransferQuota": "7TB",
+          "instancefamily": "MemoryOptimized",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "DTAQ2Q9EHGCU5GUC.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "DTAQ2Q9EHGCU5GUC",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "DTAQ2Q9EHGCU5GUC.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "DTAQ2Q9EHGCU5GUC.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.38978 per hour of 64GB Memory optimized IPv6 bundle Instance (Linux)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.3897800000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "D27UT4RVGWXEGAG4",
+        "productFamily": "Lightsail Containers",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "2",
+          "memory": "4GB",
+          "storage": "NA",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Container",
+          "groupDescription": "Number of Lightsail Container Service hours",
+          "usagetype": "USE1-ContainerSvcUsage:Large-2CPU-4GB",
+          "operation": "ContainerSvc:Large-2CPU-4GB",
+          "dataTransferQuota": "500GB",
+          "isfree": "No",
+          "power": "Large",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "D27UT4RVGWXEGAG4.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "D27UT4RVGWXEGAG4",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "D27UT4RVGWXEGAG4.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "D27UT4RVGWXEGAG4.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.1075 / Hour for Container Service Node of Power-Large(2CPU-4GB) - US East (N. Virginia)",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.1075268820"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "FUZFBMNEZVN47WEC",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "2",
+          "memory": "8GB",
+          "storage": "160GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of Lightsail Instance hours",
+          "usagetype": "USE1-BundleUsage:8GB",
+          "operation": "Bundle:8GB",
+          "dataTransferQuota": "5TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "FUZFBMNEZVN47WEC.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "FUZFBMNEZVN47WEC",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "FUZFBMNEZVN47WEC.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "FUZFBMNEZVN47WEC.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.05913 / Hour of 8GB bundle Instance including public IPv4 address",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.0591300000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    },
+    {
+      "product": {
+        "sku": "K6VEWRR5HVAWHMJY",
+        "productFamily": "Lightsail Instance",
+        "attributes": {
+          "servicecode": "AmazonLightsail",
+          "location": "US East (N. Virginia)",
+          "locationType": "AWS Region",
+          "vcpu": "16",
+          "memory": "64GB",
+          "storage": "1280GB",
+          "operatingSystem": "Linux",
+          "group": "Lightsail Instance",
+          "groupDescription": "Number of Lightsail Instance hours",
+          "usagetype": "USE1-BundleUsage:64GB",
+          "operation": "Bundle:64GB",
+          "dataTransferQuota": "8TB",
+          "regionCode": "us-east-1",
+          "servicename": "Amazon Lightsail"
+        }
+      },
+      "terms": {
+        "K6VEWRR5HVAWHMJY.JRTCKXETXF": {
+          "offerTermCode": "JRTCKXETXF",
+          "sku": "K6VEWRR5HVAWHMJY",
+          "effectiveDate": "2026-09-01T00:00:00Z",
+          "priceDimensions": {
+            "K6VEWRR5HVAWHMJY.JRTCKXETXF.6YS6EN2CT7": {
+              "rateCode": "K6VEWRR5HVAWHMJY.JRTCKXETXF.6YS6EN2CT7",
+              "description": "$0.51612 / Hour of 64GB bundle Instance including public IPv4 address",
+              "beginRange": "0",
+              "endRange": "Inf",
+              "unit": "Hrs",
+              "pricePerUnit": {
+                "USD": "0.5161200000"
+              },
+              "appliesTo": []
+            }
+          },
+          "termAttributes": {}
+        }
+      }
+    }
+  ]
+}

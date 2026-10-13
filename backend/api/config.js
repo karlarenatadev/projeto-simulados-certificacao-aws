@@ -5,11 +5,11 @@ import { URL } from 'node:url';
 export function validateApiConfig(env = process.env) {
   const operationalPostgres = env.DB_ENGINE === 'postgres';
   const production = env.NODE_ENV === 'production';
-  const hardened = production || (operationalPostgres && env.NODE_ENV === 'staging');
+  const hardened = production || env.NODE_ENV === 'staging';
   const fail = (name, requirement) => {
     throw new Error(`Invalid API configuration: ${name} ${requirement}`);
   };
-  if (production && !operationalPostgres) {
+  if (hardened && !operationalPostgres) {
     const directory = (env.DB_DATA_DIR || '').trim();
     if (!directory || directory.includes('://')) {
       fail(
@@ -62,6 +62,18 @@ export function validateApiConfig(env = process.env) {
         return true;
       }
     })) fail('CORS_ALLOWED_ORIGINS', 'must contain exact HTTPS origins');
+  }
+  if (!operationalPostgres && env.CORS_ALLOWED_ORIGINS !== undefined) {
+    const origins = env.CORS_ALLOWED_ORIGINS.split(',').map((value) => value.trim()).filter(Boolean);
+    if (!origins.length || origins.some((origin) => {
+      try {
+        const parsed = new URL(origin);
+        return parsed.origin !== origin || !['http:', 'https:'].includes(parsed.protocol) ||
+          (hardened && parsed.protocol !== 'https:');
+      } catch {
+        return true;
+      }
+    })) fail('CORS_ALLOWED_ORIGINS', 'must contain exact origins (HTTPS in staging/production)');
   }
   const port = env.PORT === undefined ? 3001 : Number(env.PORT);
   if (!Number.isInteger(port) || port < (hardened ? 1 : 0) || port > 65535) {

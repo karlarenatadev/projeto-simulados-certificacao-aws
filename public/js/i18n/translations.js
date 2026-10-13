@@ -744,8 +744,7 @@ export const translations = {
     auth_continue_local: "Continuar estudando sem conta",
     auth_local_first_description:
       "Seu progresso fica salvo neste navegador. A sincronização entre dispositivos exige uma conta.",
-    auth_local_first_footer:
-      "O modo local mantém o progresso neste navegador.",
+    auth_local_first_footer: "O modo local mantém o progresso neste navegador.",
     auth_google_unavailable_local:
       "A sincronização está temporariamente indisponível. Você pode continuar estudando localmente.",
     auth_link_loading: "Sincronizando progresso local compatível...",

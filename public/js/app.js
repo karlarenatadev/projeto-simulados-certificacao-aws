@@ -161,7 +161,9 @@ function showLoginUI() {
     const errorMsg = document.getElementById("login-error-msg");
     const devEmailSection = document.getElementById("dev-email-login-section");
     const googleSection = document.getElementById("google-login-section");
-    const localFirstSection = document.getElementById("local-first-login-section");
+    const localFirstSection = document.getElementById(
+      "local-first-login-section",
+    );
     const localFirstButton = document.getElementById("local-first-login-btn");
 
     if (!overlay || !form) {
@@ -176,7 +178,10 @@ function showLoginUI() {
     const localAccess = localFirst || hybrid;
     const googleAvailable =
       !devEmailEnabled && !localFirst && (!hybrid || isGoogleLoginConfigured());
-    devEmailSection?.classList.toggle("hidden", !devEmailEnabled || localAccess);
+    devEmailSection?.classList.toggle(
+      "hidden",
+      !devEmailEnabled || localAccess,
+    );
     googleSection?.classList.toggle("hidden", !googleAvailable);
     localFirstSection?.classList.toggle("hidden", !localAccess);
     if (hybrid && !googleAvailable) {
@@ -899,17 +904,6 @@ function wireUIActions() {
   // Nota: o toggle da sidebar (cloud-sidebar-toggle) é gerenciado por
   // initLeftSidebarToggleShell() em shell.js, que usa a chave "sidebar_closed".
   // ─────────────────────────────────────────────────────────────────────────
-
-  const flashcardContainer = document.getElementById("flashcard-container");
-  if (flashcardContainer) {
-    flashcardContainer.addEventListener("click", flipFlashcard);
-    flashcardContainer.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        flipFlashcard();
-      }
-    });
-  }
 
   // Atalho legado de confirmação, mantido para telas que não usam o fluxo
   // simplificado (por exemplo, o Diagnóstico dedicado).

@@ -9,7 +9,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
+import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
 import { randomUUID } from 'node:crypto';
 import { clearTimeout, setTimeout } from 'node:timers';
 import { resolve } from 'path';
@@ -27,6 +27,7 @@ import { validateApiConfig } from './config.js';
 import { installShutdown } from './lifecycle.js';
 import { safeError, writeRequestLog } from './services/operationalLogging.js';
 import { PostgresAdapterError } from '../database/postgres/errors.js';
+import { verifySessionToken } from './services/sessionToken.js';
 
 const app = express();
 let initialized = false;
@@ -54,7 +55,7 @@ const corsOptions = {
     if (!origin || process.env.NODE_ENV === 'test') {
       return callback(null, true);
     }
-    const configured = process.env.DB_ENGINE === 'postgres'
+    const configured = process.env.CORS_ALLOWED_ORIGINS !== undefined
       ? new Set((process.env.CORS_ALLOWED_ORIGINS || '').split(',').map((value) => value.trim()).filter(Boolean))
       : ALLOWED_ORIGINS;
     if (configured.has(origin)) {
@@ -102,6 +103,15 @@ const apiLimiter = rateLimit({
   limit: 300,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
+  keyGenerator(req) {
+    const authorization = req.headers.authorization;
+    const token = typeof authorization === 'string' && authorization.startsWith('Bearer ')
+      ? authorization.slice(7).trim() : null;
+    const claims = verifySessionToken(token);
+    // Only a verified signature can select an account bucket. Anonymous and
+    // invalid credentials retain the IP limit, including IPv6 subnet grouping.
+    return claims?.sub ? `user:${claims.sub}` : `ip:${ipKeyGenerator(req.ip)}`;
+  },
   handler: (_req, res) => {
     res.status(429).json({
       error: 'Too many requests',

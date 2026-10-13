@@ -1,0 +1,318 @@
+{
+  "recordedAt": "2026-10-13T15:01:37.324Z",
+  "environment": {
+    "node": "v24.14.0",
+    "platform": "win32",
+    "arch": "x64",
+    "cpu": "11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz",
+    "logicalCpus": 8,
+    "physicalRamMiB": 13830.78
+  },
+  "build": {
+    "files": 213,
+    "bytes": 7347414,
+    "gzipBytes": 1765641,
+    "extensions": {
+      "nojekyll": 2,
+      "html": 378920,
+      "css": 554221,
+      "json": 4875350,
+      "gitkeep": 397,
+      "md": 1578,
+      "png": 509863,
+      "js": 1027083
+    },
+    "largest": [
+      {
+        "path": "public\\data\\questions\\clf-c02.json",
+        "bytes": 662370
+      },
+      {
+        "path": "public\\data\\questions\\clf-c02-en.json",
+        "bytes": 653174
+      },
+      {
+        "path": "public\\data\\questions\\saa-c03.json",
+        "bytes": 537401
+      },
+      {
+        "path": "public\\data\\questions\\dva-c02.json",
+        "bytes": 534392
+      },
+      {
+        "path": "public\\data\\questions\\saa-c03-en.json",
+        "bytes": 498275
+      },
+      {
+        "path": "public\\data\\questions\\dva-c02-en.json",
+        "bytes": 496982
+      },
+      {
+        "path": "public\\data\\questions\\aif-c01.json",
+        "bytes": 482776
+      },
+      {
+        "path": "public\\data\\questions\\aif-c01-en.json",
+        "bytes": 453551
+      },
+      {
+        "path": "public\\css\\style.css",
+        "bytes": 278863
+      },
+      {
+        "path": "public\\data\\cases\\architecture_cases.json",
+        "bytes": 190954
+      },
+      {
+        "path": "public\\js\\app.js",
+        "bytes": 159362
+      },
+      {
+        "path": "public\\data\\exam-tips.json",
+        "bytes": 139907
+      },
+      {
+        "path": "public\\img\\simulado-dark.png",
+        "bytes": 136691
+      },
+      {
+        "path": "public\\img\\simulado.png",
+        "bytes": 122345
+      },
+      {
+        "path": "public\\js\\data.js",
+        "bytes": 86457
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "concurrency": 10,
+      "profile": "distinct-ip",
+      "questionFixtureCount": 40,
+      "questionsPerQuiz": 10,
+      "completed": 10,
+      "failures": [],
+      "requestCount": 180,
+      "elapsedMs": 2095.68,
+      "rps": 85.89,
+      "latencyMs": {
+        "p50": 104.41,
+        "p95": 218.39,
+        "p99": 230.13
+      },
+      "statusCounts": {
+        "200": 160,
+        "201": 20
+      },
+      "cpu": {
+        "userMs": 2469,
+        "systemMs": 219,
+        "averageOneCorePercent": 128.26
+      },
+      "eventLoopP99Ms": 189.79,
+      "memory": {
+        "baseline": {
+          "rssMiB": 43.83,
+          "heapTotalMiB": 7.57,
+          "heapUsedMiB": 4.96,
+          "externalMiB": 2.05,
+          "arrayBuffersMiB": 0.01
+        },
+        "imported": {
+          "rssMiB": 64.47,
+          "heapTotalMiB": 29.95,
+          "heapUsedMiB": 14.56,
+          "externalMiB": 2.69,
+          "arrayBuffersMiB": 0.03
+        },
+        "initialized": {
+          "rssMiB": 556.84,
+          "heapTotalMiB": 60.89,
+          "heapUsedMiB": 37.39,
+          "externalMiB": 439.26,
+          "arrayBuffersMiB": 97.9
+        },
+        "sampledPeaks": {
+          "rssMiB": 571.3,
+          "heapTotalMiB": 99.2,
+          "heapUsedMiB": 61.76,
+          "externalMiB": 440.35,
+          "arrayBuffersMiB": 97.96
+        },
+        "processLifetimeMaxRssMiB": 1056.4
+      },
+      "disk": {
+        "beforeBytes": 41402463,
+        "afterBytes": 41713759,
+        "growthBytes": 311296
+      },
+      "startupMs": 9461.9,
+      "backupMs": 2421.24,
+      "restartMs": 662.77,
+      "restoreMs": 5208.93,
+      "integrity": {
+        "users": 10,
+        "completed": 10,
+        "answers": 100,
+        "states": 10,
+        "duplicates": 0
+      },
+      "restoredAnswers": 100,
+      "temporary": "C:\\Users\\KARLA~1.ROS\\AppData\\Local\\Temp\\cloudacademy-synthetic-audit-eIwBGX",
+      "limitations": "Synthetic email login, no Google network, no browser, closed-loop burst without think time; PGlite shares Node RSS. Restart is graceful, not crash/power-loss. Windows is not an AWS VM."
+    },
+    {
+      "concurrency": 30,
+      "profile": "distinct-ip",
+      "questionFixtureCount": 40,
+      "questionsPerQuiz": 10,
+      "completed": 30,
+      "failures": [],
+      "requestCount": 540,
+      "elapsedMs": 6845.53,
+      "rps": 78.88,
+      "latencyMs": {
+        "p50": 351.51,
+        "p95": 845.58,
+        "p99": 857.07
+      },
+      "statusCounts": {
+        "200": 480,
+        "201": 60
+      },
+      "cpu": {
+        "userMs": 6812,
+        "systemMs": 1047,
+        "averageOneCorePercent": 114.8
+      },
+      "eventLoopP99Ms": 819.99,
+      "memory": {
+        "baseline": {
+          "rssMiB": 44.61,
+          "heapTotalMiB": 7.57,
+          "heapUsedMiB": 4.96,
+          "externalMiB": 2.05,
+          "arrayBuffersMiB": 0.01
+        },
+        "imported": {
+          "rssMiB": 65.36,
+          "heapTotalMiB": 29.7,
+          "heapUsedMiB": 14.51,
+          "externalMiB": 2.69,
+          "arrayBuffersMiB": 0.03
+        },
+        "initialized": {
+          "rssMiB": 557.87,
+          "heapTotalMiB": 60.89,
+          "heapUsedMiB": 37.39,
+          "externalMiB": 439.26,
+          "arrayBuffersMiB": 97.9
+        },
+        "sampledPeaks": {
+          "rssMiB": 565.16,
+          "heapTotalMiB": 182.2,
+          "heapUsedMiB": 104.93,
+          "externalMiB": 440.39,
+          "arrayBuffersMiB": 97.96
+        },
+        "processLifetimeMaxRssMiB": 1143.46
+      },
+      "disk": {
+        "beforeBytes": 41402463,
+        "afterBytes": 41893983,
+        "growthBytes": 491520
+      },
+      "startupMs": 11059.2,
+      "backupMs": 3088.21,
+      "restartMs": 710.35,
+      "restoreMs": 6867.65,
+      "integrity": {
+        "users": 30,
+        "completed": 30,
+        "answers": 300,
+        "states": 30,
+        "duplicates": 0
+      },
+      "restoredAnswers": 300,
+      "temporary": "C:\\Users\\KARLA~1.ROS\\AppData\\Local\\Temp\\cloudacademy-synthetic-audit-B7mDIT",
+      "limitations": "Synthetic email login, no Google network, no browser, closed-loop burst without think time; PGlite shares Node RSS. Restart is graceful, not crash/power-loss. Windows is not an AWS VM."
+    },
+    {
+      "concurrency": 50,
+      "profile": "distinct-ip",
+      "questionFixtureCount": 40,
+      "questionsPerQuiz": 10,
+      "completed": 50,
+      "failures": [],
+      "requestCount": 900,
+      "elapsedMs": 13984.35,
+      "rps": 64.36,
+      "latencyMs": {
+        "p50": 700.76,
+        "p95": 1372.12,
+        "p99": 1387.36
+      },
+      "statusCounts": {
+        "200": 800,
+        "201": 100
+      },
+      "cpu": {
+        "userMs": 12625,
+        "systemMs": 2125,
+        "averageOneCorePercent": 105.48
+      },
+      "eventLoopP99Ms": 1292.89,
+      "memory": {
+        "baseline": {
+          "rssMiB": 44.49,
+          "heapTotalMiB": 7.57,
+          "heapUsedMiB": 4.94,
+          "externalMiB": 2.05,
+          "arrayBuffersMiB": 0.01
+        },
+        "imported": {
+          "rssMiB": 65.13,
+          "heapTotalMiB": 29.7,
+          "heapUsedMiB": 14.55,
+          "externalMiB": 2.69,
+          "arrayBuffersMiB": 0.03
+        },
+        "initialized": {
+          "rssMiB": 557.18,
+          "heapTotalMiB": 60.64,
+          "heapUsedMiB": 37.39,
+          "externalMiB": 439.26,
+          "arrayBuffersMiB": 97.9
+        },
+        "sampledPeaks": {
+          "rssMiB": 566.88,
+          "heapTotalMiB": 178.7,
+          "heapUsedMiB": 95.46,
+          "externalMiB": 440.35,
+          "arrayBuffersMiB": 97.96
+        },
+        "processLifetimeMaxRssMiB": 1055.64
+      },
+      "disk": {
+        "beforeBytes": 41402463,
+        "afterBytes": 42016863,
+        "growthBytes": 614400
+      },
+      "startupMs": 15705.15,
+      "backupMs": 3094.16,
+      "restartMs": 771.37,
+      "restoreMs": 5858.51,
+      "integrity": {
+        "users": 50,
+        "completed": 50,
+        "answers": 500,
+        "states": 50,
+        "duplicates": 0
+      },
+      "restoredAnswers": 500,
+      "temporary": "C:\\Users\\KARLA~1.ROS\\AppData\\Local\\Temp\\cloudacademy-synthetic-audit-04BNh6",
+      "limitations": "Synthetic email login, no Google network, no browser, closed-loop burst without think time; PGlite shares Node RSS. Restart is graceful, not crash/power-loss. Windows is not an AWS VM."
+    }
+  ]
+}

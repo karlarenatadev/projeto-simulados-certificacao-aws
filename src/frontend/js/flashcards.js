@@ -731,6 +731,19 @@ export function filterFlashcardsByCert() {
 // CONEXÃO DOS BOTÕES (EVENT LISTENERS)
 // ==========================================
 function setupFlashcardListeners() {
+  // Bind when the card becomes usable, independently of the asynchronous hub
+  // boot. Reopening/filtering the deck must not attach another flip handler.
+  const container = document.getElementById("flashcard-container");
+  if (container && !container.dataset.flipBound) {
+    container.addEventListener("click", flipFlashcard);
+    container.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        flipFlashcard();
+      }
+    });
+    container.dataset.flipBound = "true";
+  }
   const nextBtn = document.getElementById("btn-next-flashcard");
   const prevBtn = document.getElementById("btn-prev-flashcard");
   const homeBtn = document.getElementById("btn-flashcards-home");

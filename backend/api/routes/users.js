@@ -40,7 +40,7 @@ router.post('/', async (req, res, next) => {
   try {
     // Anonymous account creation is a legacy local-first endpoint. Operational
     // PostgreSQL environments provision accounts through Google identity auth.
-    if (process.env.DB_ENGINE === 'postgres') {
+    if (process.env.DB_ENGINE === 'postgres' || ['staging', 'production'].includes(process.env.NODE_ENV)) {
       return res.status(403).json({
         success: false,
         error: 'Public user creation is disabled in operational environments.',

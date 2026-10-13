@@ -41,9 +41,11 @@ router.post("/start", requireAuth, async (req, res, next) => {
     } = req.body;
     const user_id = req.user.id;
 
+    // Database failures must keep their 503/500 contract; only language
+    // validation belongs to the client-input error boundary below.
+    const preferences = await getUserModuleState(user_id, "preferences");
     let language;
     try {
-      const preferences = await getUserModuleState(user_id, "preferences");
       language = normalizeLanguage(
         requestedLanguage ||
           locale ||
