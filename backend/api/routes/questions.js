@@ -7,7 +7,7 @@
  * DELETE /api/questions/:id      - Delete question
  */
 
-import { Router } from "express";
+import { Router } from 'express';
 import {
   getQuestions,
   getQuestionById,
@@ -19,12 +19,15 @@ import {
   getPendingQuestions,
   getValidationHistory,
   getValidatorCertifications,
-} from "../../database/db.js";
-import { requireRole } from "../middleware/requireRole.js";
-import { normalizeLanguage } from "../../database/normalizers.js";
+} from '../../database/db.js';
+import {
+  requireEmployeeForApi,
+  requireRole,
+} from '../middleware/requireRole.js';
+import { normalizeLanguage } from '../../database/normalizers.js';
 
 const router = Router();
-const VALID_VALIDATION_STATUSES = new Set(["APPROVED", "REJECTED"]);
+const VALID_VALIDATION_STATUSES = new Set(['APPROVED', 'REJECTED']);
 
 function createHttpError(statusCode, message) {
   const error = new Error(message);
@@ -33,19 +36,19 @@ function createHttpError(statusCode, message) {
 }
 
 const PUBLICLY_HIDDEN_QUESTION_KEYS = new Set([
-  "correct_answer",
-  "correctanswer",
-  "answer_key",
-  "answerkey",
-  "is_correct",
-  "iscorrect",
-  "solution",
-  "correct",
+  'correct_answer',
+  'correctanswer',
+  'answer_key',
+  'answerkey',
+  'is_correct',
+  'iscorrect',
+  'solution',
+  'correct',
 ]);
 
 function sanitizeQuestionForClient(value) {
   if (Array.isArray(value)) return value.map(sanitizeQuestionForClient);
-  if (!value || typeof value !== "object") return value;
+  if (!value || typeof value !== 'object') return value;
 
   return Object.fromEntries(
     Object.entries(value)
@@ -63,53 +66,53 @@ function sanitizeQuestionForClient(value) {
  */
 function validateQuestionPayload(data, isCreation = true) {
   const errors = [];
-  if (!data || typeof data !== "object" || Array.isArray(data)) {
-    return ["payload must be an object"];
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    return ['payload must be an object'];
   }
 
   if (isCreation) {
-    if (!data.certification) errors.push("certification is required");
-    if (!data.domain) errors.push("domain is required");
-    if (!data.difficulty) errors.push("difficulty is required");
+    if (!data.certification) errors.push('certification is required');
+    if (!data.domain) errors.push('domain is required');
+    if (!data.difficulty) errors.push('difficulty is required');
     if (!data.question_text || data.question_text.length < 10) {
       errors.push(
-        "question_text is required and must be at least 10 characters",
+        'question_text is required and must be at least 10 characters',
       );
     }
     if (!Array.isArray(data.options) || data.options.length < 2) {
-      errors.push("options must be an array with at least 2 items");
+      errors.push('options must be an array with at least 2 items');
     }
     if (!Array.isArray(data.correct_answer) || data.correct_answer.length < 1) {
-      errors.push("correct_answer must be a non-empty array");
+      errors.push('correct_answer must be a non-empty array');
     }
-    if (!data.explanation) errors.push("explanation is required");
+    if (!data.explanation) errors.push('explanation is required');
   }
 
   // Optional validations for updates
   if (
     data.difficulty &&
-    !["easy", "medium", "hard"].includes(data.difficulty)
+    !['easy', 'medium', 'hard'].includes(data.difficulty)
   ) {
-    errors.push("difficulty must be one of: easy, medium, hard");
+    errors.push('difficulty must be one of: easy, medium, hard');
   }
 
   if (data.certification) {
     const validCerts = [
-      "CLF-C02",
-      "SAA-C03",
-      "SAP-C02",
-      "DVA-C02",
-      "SOA-C02",
-      "DOP-C02",
-      "ANS-C01",
-      "DAS-C01",
-      "MLS-C01",
-      "SCS-C02",
-      "PAS-C01",
-      "AIF-C01",
+      'CLF-C02',
+      'SAA-C03',
+      'SAP-C02',
+      'DVA-C02',
+      'SOA-C02',
+      'DOP-C02',
+      'ANS-C01',
+      'DAS-C01',
+      'MLS-C01',
+      'SCS-C02',
+      'PAS-C01',
+      'AIF-C01',
     ];
     if (!validCerts.includes(data.certification)) {
-      errors.push(`certification must be one of: ${validCerts.join(", ")}`);
+      errors.push(`certification must be one of: ${validCerts.join(', ')}`);
     }
   }
 
@@ -123,22 +126,22 @@ function validateValidationPayload(payload = {}) {
     payload.rejection_reason ||
     payload.rejectionReason ||
     payload.feedback ||
-    ""
+    ''
   ).trim();
   const validator = (
     payload.validated_by ||
     payload.validator_id ||
     payload.validatorId ||
-    ""
+    ''
   ).trim();
 
   if (!VALID_VALIDATION_STATUSES.has(status)) {
-    errors.push("status must be one of: APPROVED, REJECTED");
+    errors.push('status must be one of: APPROVED, REJECTED');
   }
 
-  if (status === "REJECTED" && rejectionReason.length < 10) {
+  if (status === 'REJECTED' && rejectionReason.length < 10) {
     errors.push(
-      "rejection_reason with at least 10 characters is required when rejecting",
+      'rejection_reason with at least 10 characters is required when rejecting',
     );
   }
 
@@ -146,7 +149,7 @@ function validateValidationPayload(payload = {}) {
     errors,
     data: {
       status,
-      rejection_reason: status === "REJECTED" ? rejectionReason : null,
+      rejection_reason: status === 'REJECTED' ? rejectionReason : null,
       validated_by: validator || null,
     },
   };
@@ -157,13 +160,13 @@ function validateValidationPayload(payload = {}) {
 // ============================================================================
 
 router.get(
-  "/pending",
-  requireRole("VALIDATOR", "ADMIN"),
+  '/pending',
+  requireRole('VALIDATOR', 'ADMIN'),
   async (req, res, next) => {
     try {
       const { limit = 50, offset = 0 } = req.query;
       let questions = await getPendingQuestions({ limit, offset });
-      if (req.user.role === "VALIDATOR") {
+      if (req.user.role === 'VALIDATOR') {
         const certifications = await getValidatorCertifications(req.user.id);
         questions = [];
         for (const certification of certifications) {
@@ -194,13 +197,13 @@ router.get(
 
 // GET /api/questions/history - Validation history scoped by role
 router.get(
-  "/history",
-  requireRole("VALIDATOR", "ADMIN"),
+  '/history',
+  requireRole('VALIDATOR', 'ADMIN'),
   async (req, res, next) => {
     try {
       const history = await getValidationHistory({
         status: req.query.status,
-        validatorId: req.user.role === "ADMIN" ? null : req.user.id,
+        validatorId: req.user.role === 'ADMIN' ? null : req.user.id,
       });
       res
         .status(200)
@@ -216,20 +219,20 @@ router.get(
 // ============================================================================
 
 router.post(
-  "/:id/validate",
-  requireRole("VALIDATOR", "ADMIN"),
+  '/:id/validate',
+  requireRole('VALIDATOR', 'ADMIN'),
   async (req, res, next) => {
     try {
       const { id } = req.params;
 
       if (!id) {
-        throw createHttpError(400, "Question ID is required");
+        throw createHttpError(400, 'Question ID is required');
       }
 
       const { errors, data } = validateValidationPayload(req.body || {});
 
       if (errors.length > 0) {
-        throw createHttpError(400, errors.join("; "));
+        throw createHttpError(400, errors.join('; '));
       }
 
       const question = await validateEditorialQuestion(
@@ -256,7 +259,7 @@ router.post(
 // GET /api/questions - List questions with filters and pagination
 // ============================================================================
 
-router.get("/", async (req, res, next) => {
+router.get('/', requireEmployeeForApi, async (req, res, next) => {
   try {
     const {
       certification,
@@ -321,14 +324,14 @@ router.get("/", async (req, res, next) => {
 // GET /api/questions/:id - Get single question
 // ============================================================================
 
-router.get("/:id", async (req, res, next) => {
+router.get('/:id', requireEmployeeForApi, async (req, res, next) => {
   try {
     const { id } = req.params;
 
     if (!id) {
       return res.status(400).json({
         success: false,
-        message: "Question ID is required",
+        message: 'Question ID is required',
       });
     }
 
@@ -354,7 +357,7 @@ router.get("/:id", async (req, res, next) => {
 // POST /api/questions - Create new question
 // ============================================================================
 
-router.post("/", requireRole("VALIDATOR", "ADMIN"), async (req, res, next) => {
+router.post('/', requireRole('VALIDATOR', 'ADMIN'), async (req, res, next) => {
   try {
     const payload = req.body || {};
 
@@ -363,7 +366,7 @@ router.post("/", requireRole("VALIDATOR", "ADMIN"), async (req, res, next) => {
     if (validationErrors.length > 0) {
       return res.status(400).json({
         success: false,
-        message: "Validation failed",
+        message: 'Validation failed',
         errors: validationErrors,
       });
     }
@@ -374,13 +377,13 @@ router.post("/", requireRole("VALIDATOR", "ADMIN"), async (req, res, next) => {
     if (!newQuestion) {
       return res.status(500).json({
         success: false,
-        message: "Failed to create question",
+        message: 'Failed to create question',
       });
     }
 
     res.status(201).json({
       success: true,
-      message: "Question created successfully",
+      message: 'Question created successfully',
       data: newQuestion,
     });
   } catch (error) {
@@ -393,8 +396,8 @@ router.post("/", requireRole("VALIDATOR", "ADMIN"), async (req, res, next) => {
 // ============================================================================
 
 router.put(
-  "/:id",
-  requireRole("VALIDATOR", "ADMIN"),
+  '/:id',
+  requireRole('VALIDATOR', 'ADMIN'),
   async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -403,7 +406,7 @@ router.put(
       if (!id) {
         return res.status(400).json({
           success: false,
-          message: "Question ID is required",
+          message: 'Question ID is required',
         });
       }
 
@@ -412,7 +415,7 @@ router.put(
       if (validationErrors.length > 0) {
         return res.status(400).json({
           success: false,
-          message: "Validation failed",
+          message: 'Validation failed',
           errors: validationErrors,
         });
       }
@@ -432,7 +435,7 @@ router.put(
 
       res.status(200).json({
         success: true,
-        message: "Question updated successfully",
+        message: 'Question updated successfully',
         data: updatedQuestion,
       });
     } catch (error) {
@@ -445,14 +448,14 @@ router.put(
 // DELETE /api/questions/:id - Delete question (soft delete)
 // ============================================================================
 
-router.delete("/:id", requireRole("ADMIN"), async (req, res, next) => {
+router.delete('/:id', requireRole('ADMIN'), async (req, res, next) => {
   try {
     const { id } = req.params;
 
     if (!id) {
       return res.status(400).json({
         success: false,
-        message: "Question ID is required",
+        message: 'Question ID is required',
       });
     }
 
@@ -467,7 +470,7 @@ router.delete("/:id", requireRole("ADMIN"), async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: "Question deleted successfully",
+      message: 'Question deleted successfully',
       id,
     });
   } catch (error) {

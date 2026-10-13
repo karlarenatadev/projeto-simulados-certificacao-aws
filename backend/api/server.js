@@ -28,14 +28,13 @@ import { installShutdown } from './lifecycle.js';
 import { safeError, writeRequestLog } from './services/operationalLogging.js';
 import { PostgresAdapterError } from '../database/postgres/errors.js';
 import { verifySessionToken } from './services/sessionToken.js';
+import { requireEmployeeForApi } from './middleware/requireRole.js';
 
 const app = express();
 let initialized = false;
 let activeServer = null;
-// Escuta em 0.0.0.0 para aceitar conexões de localhost, 127.0.0.1 e
-// do host Windows ao acessar via WSL2 (ex: http://localhost:3001 no browser).
-const API_HOST = '0.0.0.0';
-
+// Development keeps localhost/WSL access; staging and production bind only
+// loopback behind the local HTTPS reverse proxy.
 app.use(helmet());
 
 // Origens permitidas: localhost em dev/test e o domínio do GitHub Pages em produção.
@@ -55,9 +54,15 @@ const corsOptions = {
     if (!origin || process.env.NODE_ENV === 'test') {
       return callback(null, true);
     }
-    const configured = process.env.CORS_ALLOWED_ORIGINS !== undefined
-      ? new Set((process.env.CORS_ALLOWED_ORIGINS || '').split(',').map((value) => value.trim()).filter(Boolean))
-      : ALLOWED_ORIGINS;
+    const configured =
+      process.env.CORS_ALLOWED_ORIGINS !== undefined
+        ? new Set(
+            (process.env.CORS_ALLOWED_ORIGINS || '')
+              .split(',')
+              .map((value) => value.trim())
+              .filter(Boolean),
+          )
+        : ALLOWED_ORIGINS;
     if (configured.has(origin)) {
       return callback(null, true);
     }
@@ -82,7 +87,10 @@ app.use((req, res, next) => {
   const startedAt = process.hrtime.bigint();
   res.once('finish', () => {
     const route = req.route?.path;
-    const safeRoute = typeof route === 'string' ? `${req.baseUrl}${route}`.slice(0, 200) : '<unmatched>';
+    const safeRoute =
+      typeof route === 'string'
+        ? `${req.baseUrl}${route}`.slice(0, 200)
+        : '<unmatched>';
     const status = res.statusCode;
     writeRequestLog({
       level: status >= 500 ? 'error' : status >= 400 ? 'warn' : 'info',
@@ -105,8 +113,10 @@ const apiLimiter = rateLimit({
   legacyHeaders: false,
   keyGenerator(req) {
     const authorization = req.headers.authorization;
-    const token = typeof authorization === 'string' && authorization.startsWith('Bearer ')
-      ? authorization.slice(7).trim() : null;
+    const token =
+      typeof authorization === 'string' && authorization.startsWith('Bearer ')
+        ? authorization.slice(7).trim()
+        : null;
     const claims = verifySessionToken(token);
     // Only a verified signature can select an account bucket. Anonymous and
     // invalid credentials retain the IP limit, including IPv6 subnet grouping.
@@ -162,7 +172,7 @@ app.use('/api/users', usersRoutes);
 app.use('/api/cases', casesRoutes);
 app.use('/api/services', servicesRouter);
 
-app.get('/api/leaderboard', async (req, res, next) => {
+app.get('/api/leaderboard', requireEmployeeForApi, async (req, res, next) => {
   try {
     const { limit = 100 } = req.query;
     const { getLeaderboard } = await import('../database/db.js');
@@ -185,12 +195,21 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, _next) => {
-  const unavailable = err instanceof PostgresAdapterError &&
-    (['connection', 'authentication', 'timeout'].includes(err.kind) || err.code === 'PG_POOL_CLOSED');
+  const unavailable =
+    err instanceof PostgresAdapterError &&
+    (['connection', 'authentication', 'timeout'].includes(err.kind) ||
+      err.code === 'PG_POOL_CLOSED');
   const statusCode = unavailable ? 503 : err.statusCode || err.status || 500;
   if (statusCode >= 500 && process.env.DB_ENGINE === 'postgres') {
-    const errorName = typeof err?.name === 'string' && /^[A-Za-z][A-Za-z0-9]{0,63}$/.test(err.name) ? err.name : 'Error';
-    const code = typeof err?.code === 'string' && /^[0-9A-Z]{5}$/.test(err.code) ? err.code : undefined;
+    const errorName =
+      typeof err?.name === 'string' &&
+      /^[A-Za-z][A-Za-z0-9]{0,63}$/.test(err.name)
+        ? err.name
+        : 'Error';
+    const code =
+      typeof err?.code === 'string' && /^[0-9A-Z]{5}$/.test(err.code)
+        ? err.code
+        : undefined;
     res.locals.errorClass = errorName;
     if (code) res.locals.errorCode = code;
   } else if (statusCode >= 500) {
@@ -198,10 +217,12 @@ app.use((err, req, res, _next) => {
   }
 
   const message =
-    statusCode === 503 ? 'Service unavailable' :
-    ['staging', 'production'].includes(process.env.NODE_ENV) && statusCode >= 500
-      ? 'Internal server error'
-      : err.message || 'Internal server error';
+    statusCode === 503
+      ? 'Service unavailable'
+      : ['staging', 'production'].includes(process.env.NODE_ENV) &&
+          statusCode >= 500
+        ? 'Internal server error'
+        : err.message || 'Internal server error';
 
   res.status(statusCode).json({
     error: message,
@@ -217,7 +238,8 @@ export async function startServer() {
   try {
     await database.initializeDatabase();
     const server = await new Promise((resolve, reject) => {
-      const host = process.env.DB_ENGINE === 'postgres-test' ? '127.0.0.1' : API_HOST;
+      const host =
+        process.env.DB_ENGINE === 'postgres-test' ? '127.0.0.1' : config.host;
       const candidate = app.listen(config.port, host, () => {
         candidate.removeListener('error', reject);
         resolve(candidate);
@@ -250,7 +272,9 @@ if (isDirectExecution) {
     console.error(
       'API startup failed:',
       error.message?.startsWith('Invalid API configuration:') ||
-        error.message?.startsWith('Invalid operational PostgreSQL configuration:')
+        error.message?.startsWith(
+          'Invalid operational PostgreSQL configuration:',
+        )
         ? error.message
         : safeError(error),
     );

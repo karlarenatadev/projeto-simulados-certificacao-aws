@@ -1,0 +1,113 @@
+{
+  "recordedAt": "2026-10-13T20:04:56.110Z",
+  "results": [
+    {
+      "path": "index.html",
+      "jsHeapUsedBytes": 2137500,
+      "jsHeapTotalBytes": 4980736,
+      "domNodes": 1689,
+      "requests": 73,
+      "encodedBodyBytes": 1147142,
+      "transferBytes": 1169042,
+      "duplicateResources": [],
+      "navigation": [
+        {
+          "domContentLoadedMs": 590.3000000119209,
+          "loadMs": 592.3999999761581,
+          "transferBytes": 61689
+        }
+      ]
+    },
+    {
+      "path": "simulados.html",
+      "jsHeapUsedBytes": 2657208,
+      "jsHeapTotalBytes": 6029312,
+      "domNodes": 1041,
+      "requests": 75,
+      "encodedBodyBytes": 1811301,
+      "transferBytes": 1833801,
+      "duplicateResources": [],
+      "navigation": [
+        {
+          "domContentLoadedMs": 463.89999997615814,
+          "loadMs": 487.19999998807907,
+          "transferBytes": 35961
+        }
+      ]
+    },
+    {
+      "path": "diagnostico.html",
+      "jsHeapUsedBytes": 2582660,
+      "jsHeapTotalBytes": 6029312,
+      "domNodes": 653,
+      "requests": 74,
+      "encodedBodyBytes": 1748342,
+      "transferBytes": 1770542,
+      "duplicateResources": [],
+      "navigation": [
+        {
+          "domContentLoadedMs": 230.70000004768372,
+          "loadMs": 247.30000001192093,
+          "transferBytes": 13484
+        }
+      ]
+    },
+    {
+      "path": "flashcards.html",
+      "jsHeapUsedBytes": 1948952,
+      "jsHeapTotalBytes": 5242880,
+      "domNodes": 932,
+      "requests": 74,
+      "encodedBodyBytes": 1090817,
+      "transferBytes": 1113017,
+      "duplicateResources": [],
+      "navigation": [
+        {
+          "domContentLoadedMs": 289.39999997615814,
+          "loadMs": 304.89999997615814,
+          "transferBytes": 17104
+        }
+      ]
+    },
+    {
+      "path": "cases.html",
+      "jsHeapUsedBytes": 1085580,
+      "jsHeapTotalBytes": 3145728,
+      "domNodes": 1125,
+      "requests": 41,
+      "encodedBodyBytes": 836217,
+      "transferBytes": 848517,
+      "duplicateResources": [],
+      "navigation": [
+        {
+          "domContentLoadedMs": 421.69999998807907,
+          "loadMs": 444.5,
+          "transferBytes": 19543
+        }
+      ]
+    },
+    {
+      "path": "laboratorios.html",
+      "jsHeapUsedBytes": 1829304,
+      "jsHeapTotalBytes": 3932160,
+      "domNodes": 1031,
+      "requests": 41,
+      "encodedBodyBytes": 669606,
+      "transferBytes": 681906,
+      "duplicateResources": [],
+      "navigation": [
+        {
+          "domContentLoadedMs": 263.5999999642372,
+          "loadMs": 282.80000001192093,
+          "transferBytes": 12115
+        }
+      ]
+    }
+  ],
+  "blockedOrigins": [
+    "https://www.googletagmanager.com",
+    "https://cdnjs.cloudflare.com",
+    "https://cdn.jsdelivr.net"
+  ],
+  "limitations": "Local offline session; external CDNs/API and service worker blocked. JS heap is not browser RSS. Resources exclude the HTML navigation itself, shown separately. No server compression."
+}

@@ -17,6 +17,7 @@
 
 import { getUserById } from '../../../backend/database/db.js';
 import { verifySessionToken } from '../services/sessionToken.js';
+import { isEmployeeEmailAuthorized } from '../services/googleIdentity.js';
 
 /**
  * Anexa req.user após validar a sessão; credenciais inválidas recebem 401.
@@ -62,6 +63,16 @@ export async function requireAuth(req, res, next) {
       });
     }
 
+    if (
+      ['staging', 'production'].includes(process.env.NODE_ENV) &&
+      !isEmployeeEmailAuthorized(user.email)
+    ) {
+      return res.status(403).json({
+        error: 'Employee is not individually authorized.',
+        status: 403,
+      });
+    }
+
     req.user = user;
     return next();
   } catch (error) {
@@ -69,6 +80,14 @@ export async function requireAuth(req, res, next) {
     // reach the API error handler instead of being disguised as invalid auth.
     return next(error);
   }
+}
+
+/** Preserve local-first development while requiring employee auth in deploy environments. */
+export function requireEmployeeForApi(req, res, next) {
+  if (['staging', 'production'].includes(process.env.NODE_ENV)) {
+    return requireAuth(req, res, next);
+  }
+  return next();
 }
 
 /**

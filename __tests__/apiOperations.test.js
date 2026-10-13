@@ -15,7 +15,11 @@ const valid = {
   NODE_ENV: 'production',
   DB_DATA_DIR: '/persistent/data',
   GOOGLE_CLIENT_ID: '123-test.apps.googleusercontent.com',
+  AUTH_ALLOWED_DOMAINS: 'a3data.com.br',
+  AUTH_ALLOWED_EMAILS: 'synthetic@a3data.com.br',
   AUTH_SESSION_SECRET: '0123456789abcdefghijklmnopqrstuvwxyz-TEST-ONLY',
+  TRUST_PROXY: '',
+  CORS_ALLOWED_ORIGINS: 'https://study.example.invalid',
 };
 
 describe('production configuration', () => {
@@ -34,7 +38,12 @@ describe('production configuration', () => {
     },
   );
   test('accepts configured production and keeps development/test defaults', () => {
-    expect(validateApiConfig(valid)).toEqual({ port: 3001, trustProxy: false });
+    expect(validateApiConfig(valid)).toMatchObject({
+      port: 3001,
+      trustProxy: false,
+      host: '127.0.0.1',
+      corsAllowedOrigins: ['https://study.example.invalid'],
+    });
     expect(validateApiConfig({ NODE_ENV: 'test', PORT: '0' }).port).toBe(0);
     expect(validateApiConfig({ NODE_ENV: 'development' }).port).toBe(3001);
     expect(() =>
@@ -123,8 +132,13 @@ describe('credential failures and sanitized logs', () => {
   });
   test('also sanitizes operational staging errors', () => {
     process.env.NODE_ENV = 'staging';
-    const error = Object.assign(new Error('private@example.com password'), { code: '42501' });
-    expect(safeError(error)).toEqual({ category: 'internal_error', databaseCode: '42501' });
+    const error = Object.assign(new Error('private@example.com password'), {
+      code: '42501',
+    });
+    expect(safeError(error)).toEqual({
+      category: 'internal_error',
+      databaseCode: '42501',
+    });
   });
 });
 

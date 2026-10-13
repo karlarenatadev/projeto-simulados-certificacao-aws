@@ -13,25 +13,46 @@ import {
   getCaseById,
   getAwsServices,
   markCaseCompleted,
-  executeQuery
+  executeQuery,
 } from '../../database/db.js';
 import { SimulatorEngine } from '../services/simulatorEngine.js';
-import { requireAuth } from '../middleware/requireRole.js';
+import {
+  requireAuth,
+  requireEmployeeForApi,
+} from '../middleware/requireRole.js';
 
 const router = Router();
 
 const VALID_DIFFICULTIES = new Set([
-  'beginner', 'intermediate', 'advanced',
-  'level_1_clf', 'level_2_saa', 'level_3_dva', 'level_4_sys',
-  'level_5_sec', 'level_6_data', 'level_7_ai', 'level_8_adv',
-  'investigative'
+  'beginner',
+  'intermediate',
+  'advanced',
+  'level_1_clf',
+  'level_2_saa',
+  'level_3_dva',
+  'level_4_sys',
+  'level_5_sec',
+  'level_6_data',
+  'level_7_ai',
+  'level_8_adv',
+  'investigative',
 ]);
 const VALID_CERTIFICATIONS = new Set([
-  'CLF-C02', 'SAA-C03', 'SAP-C02', 'DVA-C02',
-  'SOA-C02', 'DOP-C02', 'ANS-C01', 'DAS-C01',
-  'MLS-C01', 'SCS-C02', 'PAS-C01', 'AIF-C01',
+  'CLF-C02',
+  'SAA-C03',
+  'SAP-C02',
+  'DVA-C02',
+  'SOA-C02',
+  'DOP-C02',
+  'ANS-C01',
+  'DAS-C01',
+  'MLS-C01',
+  'SCS-C02',
+  'PAS-C01',
+  'AIF-C01',
 ]);
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function createHttpError(statusCode, message) {
   const error = new Error(message);
@@ -43,16 +64,22 @@ function createHttpError(statusCode, message) {
 // GET /api/cases — List cases
 // ============================================================================
 
-router.get('/', async (req, res, next) => {
+router.get('/', requireEmployeeForApi, async (req, res, next) => {
   try {
     const { certification, difficulty, limit = 20, offset = 0 } = req.query;
 
-    if (certification && !VALID_CERTIFICATIONS.has(certification.toUpperCase())) {
+    if (
+      certification &&
+      !VALID_CERTIFICATIONS.has(certification.toUpperCase())
+    ) {
       throw createHttpError(400, `Invalid certification: ${certification}`);
     }
 
     if (difficulty && !VALID_DIFFICULTIES.has(difficulty)) {
-      throw createHttpError(400, `difficulty must be one of: ${[...VALID_DIFFICULTIES].join(', ')}`);
+      throw createHttpError(
+        400,
+        `difficulty must be one of: ${[...VALID_DIFFICULTIES].join(', ')}`,
+      );
     }
 
     const cases = await getCases({
@@ -80,7 +107,7 @@ router.get('/', async (req, res, next) => {
 // GET /api/cases/:idOrSlug — Get single case
 // ============================================================================
 
-router.get('/:idOrSlug', async (req, res, next) => {
+router.get('/:idOrSlug', requireEmployeeForApi, async (req, res, next) => {
   try {
     const { idOrSlug } = req.params;
 
@@ -136,12 +163,15 @@ router.post('/:id/complete', requireAuth, async (req, res, next) => {
 // GET /api/cases/:id/dialogues — Get case interview dialogues
 // ============================================================================
 
-router.get('/:id/dialogues', async (req, res, next) => {
+router.get('/:id/dialogues', requireEmployeeForApi, async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!id) throw createHttpError(400, 'Case ID is required');
 
-    const rows = await executeQuery('SELECT * FROM case_dialogues WHERE case_id = $1 ORDER BY sort_order ASC', [id]);
+    const rows = await executeQuery(
+      'SELECT * FROM case_dialogues WHERE case_id = $1 ORDER BY sort_order ASC',
+      [id],
+    );
     res.status(200).json({ success: true, data: rows });
   } catch (error) {
     next(error);
@@ -152,12 +182,15 @@ router.get('/:id/dialogues', async (req, res, next) => {
 // GET /api/cases/:id/events — Get case unexpected events
 // ============================================================================
 
-router.get('/:id/events', async (req, res, next) => {
+router.get('/:id/events', requireEmployeeForApi, async (req, res, next) => {
   try {
     const { id } = req.params;
     if (!id) throw createHttpError(400, 'Case ID is required');
 
-    const rows = await executeQuery('SELECT * FROM case_events WHERE case_id = $1 ORDER BY sort_order ASC', [id]);
+    const rows = await executeQuery(
+      'SELECT * FROM case_events WHERE case_id = $1 ORDER BY sort_order ASC',
+      [id],
+    );
     res.status(200).json({ success: true, data: rows });
   } catch (error) {
     next(error);
@@ -181,7 +214,12 @@ router.post('/:id/evaluate', requireAuth, async (req, res, next) => {
     }
 
     const normalizedServiceIds = [...new Set(selected_service_ids)];
-    if (normalizedServiceIds.some((serviceId) => typeof serviceId !== 'string' || !UUID_PATTERN.test(serviceId))) {
+    if (
+      normalizedServiceIds.some(
+        (serviceId) =>
+          typeof serviceId !== 'string' || !UUID_PATTERN.test(serviceId),
+      )
+    ) {
       throw createHttpError(400, 'invalid_selected_service_ids');
     }
 
@@ -194,7 +232,9 @@ router.post('/:id/evaluate', requireAuth, async (req, res, next) => {
     }
 
     if (normalizedServiceIds.length > 0) {
-      const placeholders = normalizedServiceIds.map((_, index) => `$${index + 1}`).join(', ');
+      const placeholders = normalizedServiceIds
+        .map((_, index) => `$${index + 1}`)
+        .join(', ');
       const serviceRows = await executeQuery(
         `SELECT id FROM aws_services WHERE is_active = TRUE AND id IN (${placeholders})`,
         normalizedServiceIds,
@@ -204,15 +244,20 @@ router.post('/:id/evaluate', requireAuth, async (req, res, next) => {
       }
     }
 
-    const evaluation = await SimulatorEngine.evaluateArchitecture(id, normalizedServiceIds);
+    const evaluation = await SimulatorEngine.evaluateArchitecture(
+      id,
+      normalizedServiceIds,
+    );
 
     res.status(200).json({
       success: true,
-      data: evaluation
+      data: evaluation,
     });
   } catch (error) {
     if (error?.statusCode) {
-      return res.status(error.statusCode).json({ error: error.message, status: error.statusCode });
+      return res
+        .status(error.statusCode)
+        .json({ error: error.message, status: error.statusCode });
     }
     return next(error);
   }
@@ -224,7 +269,7 @@ router.post('/:id/evaluate', requireAuth, async (req, res, next) => {
 
 export const servicesRouter = Router();
 
-servicesRouter.get('/', async (req, res, next) => {
+servicesRouter.get('/', requireEmployeeForApi, async (req, res, next) => {
   try {
     const { category } = req.query;
     const services = await getAwsServices({ category });

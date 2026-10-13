@@ -1,0 +1,480 @@
+{
+  "recordedAt": "2026-10-13T20:32:14.652Z",
+  "environment": {
+    "node": "v24.21.0",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz",
+    "logicalCpus": 8,
+    "physicalRamMiB": 6682.11
+  },
+  "build": {
+    "files": 213,
+    "bytes": 7347414,
+    "gzipBytes": 1765641,
+    "extensions": {
+      "nojekyll": 2,
+      "html": 378920,
+      "css": 554221,
+      "json": 4875350,
+      "md": 1578,
+      "gitkeep": 397,
+      "png": 509863,
+      "js": 1027083
+    },
+    "largest": [
+      {
+        "path": "public/data/questions/clf-c02.json",
+        "bytes": 662370
+      },
+      {
+        "path": "public/data/questions/clf-c02-en.json",
+        "bytes": 653174
+      },
+      {
+        "path": "public/data/questions/saa-c03.json",
+        "bytes": 537401
+      },
+      {
+        "path": "public/data/questions/dva-c02.json",
+        "bytes": 534392
+      },
+      {
+        "path": "public/data/questions/saa-c03-en.json",
+        "bytes": 498275
+      },
+      {
+        "path": "public/data/questions/dva-c02-en.json",
+        "bytes": 496982
+      },
+      {
+        "path": "public/data/questions/aif-c01.json",
+        "bytes": 482776
+      },
+      {
+        "path": "public/data/questions/aif-c01-en.json",
+        "bytes": 453551
+      },
+      {
+        "path": "public/css/style.css",
+        "bytes": 278863
+      },
+      {
+        "path": "public/data/cases/architecture_cases.json",
+        "bytes": 190954
+      },
+      {
+        "path": "public/js/app.js",
+        "bytes": 159362
+      },
+      {
+        "path": "public/data/exam-tips.json",
+        "bytes": 139907
+      },
+      {
+        "path": "public/img/simulado-dark.png",
+        "bytes": 136691
+      },
+      {
+        "path": "public/img/simulado.png",
+        "bytes": 122345
+      },
+      {
+        "path": "public/js/data.js",
+        "bytes": 86457
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "concurrency": 10,
+      "profile": "distinct-ip",
+      "questionFixtureCount": 40,
+      "questionsPerQuiz": 10,
+      "completed": 10,
+      "scenarioPassed": true,
+      "expectedCompleted": 10,
+      "failures": [],
+      "requestCount": 180,
+      "elapsedMs": 3260.3,
+      "rps": 55.21,
+      "latencyMs": {
+        "p50": 147.21,
+        "p95": 393.26,
+        "p99": 607.78
+      },
+      "statusCounts": {
+        "200": 160,
+        "201": 20
+      },
+      "cpu": {
+        "userMs": 3627.805,
+        "systemMs": 276.827,
+        "averageOneCorePercent": 119.76
+      },
+      "eventLoopP99Ms": 326.11,
+      "memory": {
+        "baseline": {
+          "rssMiB": 52.34,
+          "heapTotalMiB": 7.54,
+          "heapUsedMiB": 4.92,
+          "externalMiB": 2.22,
+          "arrayBuffersMiB": 0.13
+        },
+        "imported": {
+          "rssMiB": 78.62,
+          "heapTotalMiB": 20.91,
+          "heapUsedMiB": 14.18,
+          "externalMiB": 3.03,
+          "arrayBuffersMiB": 0.26
+        },
+        "initialized": {
+          "rssMiB": 643.61,
+          "heapTotalMiB": 59.85,
+          "heapUsedMiB": 37.61,
+          "externalMiB": 439.48,
+          "arrayBuffersMiB": 98.02
+        },
+        "sampledPeaks": {
+          "rssMiB": 667.61,
+          "heapTotalMiB": 99.16,
+          "heapUsedMiB": 60.62,
+          "externalMiB": 440.83,
+          "arrayBuffersMiB": 98.14
+        },
+        "processLifetimeMaxRssMiB": 1078.96
+      },
+      "disk": {
+        "beforeBytes": 41402461,
+        "afterBytes": 41713757,
+        "growthBytes": 311296
+      },
+      "startupMs": 10070.67,
+      "backupMs": 793.03,
+      "restartMs": 513.24,
+      "restoreMs": 1412.68,
+      "integrity": {
+        "users": 10,
+        "completed": 10,
+        "answers": 100,
+        "states": 10,
+        "duplicates": 0
+      },
+      "restoredAnswers": 100,
+      "temporary": "/tmp/cloudacademy-synthetic-audit-nVEnqN",
+      "limitations": "Synthetic email login, no Google network, no browser, closed-loop burst without think time; PGlite shares Node RSS. Restart is graceful, not crash/power-loss. Windows is not an AWS VM."
+    },
+    {
+      "concurrency": 30,
+      "profile": "distinct-ip",
+      "questionFixtureCount": 40,
+      "questionsPerQuiz": 10,
+      "completed": 30,
+      "scenarioPassed": true,
+      "expectedCompleted": 30,
+      "failures": [],
+      "requestCount": 540,
+      "elapsedMs": 7788.04,
+      "rps": 69.34,
+      "latencyMs": {
+        "p50": 281.49,
+        "p95": 1006.06,
+        "p99": 2989.82
+      },
+      "statusCounts": {
+        "200": 480,
+        "201": 60
+      },
+      "cpu": {
+        "userMs": 8785.562,
+        "systemMs": 510.555,
+        "averageOneCorePercent": 119.36
+      },
+      "eventLoopP99Ms": 261.36,
+      "memory": {
+        "baseline": {
+          "rssMiB": 52.21,
+          "heapTotalMiB": 7.54,
+          "heapUsedMiB": 4.92,
+          "externalMiB": 2.22,
+          "arrayBuffersMiB": 0.13
+        },
+        "imported": {
+          "rssMiB": 79.1,
+          "heapTotalMiB": 21.16,
+          "heapUsedMiB": 14.21,
+          "externalMiB": 3.03,
+          "arrayBuffersMiB": 0.26
+        },
+        "initialized": {
+          "rssMiB": 697.03,
+          "heapTotalMiB": 59.6,
+          "heapUsedMiB": 37.66,
+          "externalMiB": 439.48,
+          "arrayBuffersMiB": 98.02
+        },
+        "sampledPeaks": {
+          "rssMiB": 710.03,
+          "heapTotalMiB": 179.55,
+          "heapUsedMiB": 89.1,
+          "externalMiB": 440.83,
+          "arrayBuffersMiB": 98.15
+        },
+        "processLifetimeMaxRssMiB": 1106.12
+      },
+      "disk": {
+        "beforeBytes": 41402461,
+        "afterBytes": 41893981,
+        "growthBytes": 491520
+      },
+      "startupMs": 13976.46,
+      "backupMs": 811.26,
+      "restartMs": 432.03,
+      "restoreMs": 2129.49,
+      "integrity": {
+        "users": 30,
+        "completed": 30,
+        "answers": 300,
+        "states": 30,
+        "duplicates": 0
+      },
+      "restoredAnswers": 300,
+      "temporary": "/tmp/cloudacademy-synthetic-audit-jnpD8k",
+      "limitations": "Synthetic email login, no Google network, no browser, closed-loop burst without think time; PGlite shares Node RSS. Restart is graceful, not crash/power-loss. Windows is not an AWS VM."
+    },
+    {
+      "concurrency": 50,
+      "profile": "distinct-ip",
+      "questionFixtureCount": 40,
+      "questionsPerQuiz": 10,
+      "completed": 50,
+      "scenarioPassed": true,
+      "expectedCompleted": 50,
+      "failures": [],
+      "requestCount": 900,
+      "elapsedMs": 14381.38,
+      "rps": 62.58,
+      "latencyMs": {
+        "p50": 355.23,
+        "p95": 1205.7,
+        "p99": 6574.41
+      },
+      "statusCounts": {
+        "200": 800,
+        "201": 100
+      },
+      "cpu": {
+        "userMs": 15505.27,
+        "systemMs": 815.06,
+        "averageOneCorePercent": 113.48
+      },
+      "eventLoopP99Ms": 462.42,
+      "memory": {
+        "baseline": {
+          "rssMiB": 52.09,
+          "heapTotalMiB": 7.54,
+          "heapUsedMiB": 4.93,
+          "externalMiB": 2.22,
+          "arrayBuffersMiB": 0.13
+        },
+        "imported": {
+          "rssMiB": 78.72,
+          "heapTotalMiB": 20.91,
+          "heapUsedMiB": 14.25,
+          "externalMiB": 3.03,
+          "arrayBuffersMiB": 0.26
+        },
+        "initialized": {
+          "rssMiB": 697.27,
+          "heapTotalMiB": 60.35,
+          "heapUsedMiB": 37.62,
+          "externalMiB": 439.48,
+          "arrayBuffersMiB": 98.02
+        },
+        "sampledPeaks": {
+          "rssMiB": 717.39,
+          "heapTotalMiB": 184.05,
+          "heapUsedMiB": 101.31,
+          "externalMiB": 440.83,
+          "arrayBuffersMiB": 98.14
+        },
+        "processLifetimeMaxRssMiB": 1117.71
+      },
+      "disk": {
+        "beforeBytes": 41402461,
+        "afterBytes": 42016861,
+        "growthBytes": 614400
+      },
+      "startupMs": 13651.52,
+      "backupMs": 771.31,
+      "restartMs": 420.42,
+      "restoreMs": 2450.9,
+      "integrity": {
+        "users": 50,
+        "completed": 50,
+        "answers": 500,
+        "states": 50,
+        "duplicates": 0
+      },
+      "restoredAnswers": 500,
+      "temporary": "/tmp/cloudacademy-synthetic-audit-iMIjVY",
+      "limitations": "Synthetic email login, no Google network, no browser, closed-loop burst without think time; PGlite shares Node RSS. Restart is graceful, not crash/power-loss. Windows is not an AWS VM."
+    },
+    {
+      "concurrency": 150,
+      "profile": "distinct-ip",
+      "questionFixtureCount": 40,
+      "questionsPerQuiz": 10,
+      "completed": 150,
+      "scenarioPassed": true,
+      "expectedCompleted": 150,
+      "failures": [],
+      "requestCount": 2700,
+      "elapsedMs": 42441.84,
+      "rps": 63.62,
+      "latencyMs": {
+        "p50": 440.57,
+        "p95": 3295.38,
+        "p99": 28797.63
+      },
+      "statusCounts": {
+        "200": 2400,
+        "201": 300
+      },
+      "cpu": {
+        "userMs": 42859.843,
+        "systemMs": 1818.239,
+        "averageOneCorePercent": 105.27
+      },
+      "eventLoopP99Ms": 610.8,
+      "memory": {
+        "baseline": {
+          "rssMiB": 52.34,
+          "heapTotalMiB": 7.54,
+          "heapUsedMiB": 4.91,
+          "externalMiB": 2.22,
+          "arrayBuffersMiB": 0.13
+        },
+        "imported": {
+          "rssMiB": 78.5,
+          "heapTotalMiB": 20.91,
+          "heapUsedMiB": 14.2,
+          "externalMiB": 3.03,
+          "arrayBuffersMiB": 0.26
+        },
+        "initialized": {
+          "rssMiB": 666.37,
+          "heapTotalMiB": 60.85,
+          "heapUsedMiB": 37.66,
+          "externalMiB": 439.48,
+          "arrayBuffersMiB": 98.02
+        },
+        "sampledPeaks": {
+          "rssMiB": 671.74,
+          "heapTotalMiB": 204.96,
+          "heapUsedMiB": 132.01,
+          "externalMiB": 440.59,
+          "arrayBuffersMiB": 98.02
+        },
+        "processLifetimeMaxRssMiB": 1039.09
+      },
+      "disk": {
+        "beforeBytes": 41402461,
+        "afterBytes": 42704989,
+        "growthBytes": 1302528
+      },
+      "startupMs": 17661.86,
+      "backupMs": 1107.87,
+      "restartMs": 921.45,
+      "restoreMs": 4647.44,
+      "integrity": {
+        "users": 150,
+        "completed": 150,
+        "answers": 1500,
+        "states": 150,
+        "duplicates": 0
+      },
+      "restoredAnswers": 1500,
+      "temporary": "/tmp/cloudacademy-synthetic-audit-iTPRXH",
+      "limitations": "Synthetic email login, no Google network, no browser, closed-loop burst without think time; PGlite shares Node RSS. Restart is graceful, not crash/power-loss. Windows is not an AWS VM."
+    },
+    {
+      "concurrency": 30,
+      "profile": "shared-ip",
+      "questionFixtureCount": 40,
+      "questionsPerQuiz": 10,
+      "completed": 30,
+      "scenarioPassed": true,
+      "expectedCompleted": 30,
+      "failures": [],
+      "requestCount": 540,
+      "elapsedMs": 6619.37,
+      "rps": 81.58,
+      "latencyMs": {
+        "p50": 229.16,
+        "p95": 716.52,
+        "p99": 2577.5
+      },
+      "statusCounts": {
+        "200": 480,
+        "201": 60
+      },
+      "cpu": {
+        "userMs": 7460.568,
+        "systemMs": 438.543,
+        "averageOneCorePercent": 119.33
+      },
+      "eventLoopP99Ms": 270.79,
+      "memory": {
+        "baseline": {
+          "rssMiB": 52.46,
+          "heapTotalMiB": 7.29,
+          "heapUsedMiB": 4.92,
+          "externalMiB": 2.22,
+          "arrayBuffersMiB": 0.13
+        },
+        "imported": {
+          "rssMiB": 76.11,
+          "heapTotalMiB": 20.84,
+          "heapUsedMiB": 15.35,
+          "externalMiB": 3.03,
+          "arrayBuffersMiB": 0.26
+        },
+        "initialized": {
+          "rssMiB": 732.34,
+          "heapTotalMiB": 60.6,
+          "heapUsedMiB": 37.61,
+          "externalMiB": 439.48,
+          "arrayBuffersMiB": 98.02
+        },
+        "sampledPeaks": {
+          "rssMiB": 737.97,
+          "heapTotalMiB": 180.66,
+          "heapUsedMiB": 84.11,
+          "externalMiB": 440.83,
+          "arrayBuffersMiB": 98.14
+        },
+        "processLifetimeMaxRssMiB": 1090.1
+      },
+      "disk": {
+        "beforeBytes": 41402461,
+        "afterBytes": 41893981,
+        "growthBytes": 491520
+      },
+      "startupMs": 20346.04,
+      "backupMs": 903.36,
+      "restartMs": 470.02,
+      "restoreMs": 1560.84,
+      "integrity": {
+        "users": 30,
+        "completed": 30,
+        "answers": 300,
+        "states": 30,
+        "duplicates": 0
+      },
+      "restoredAnswers": 300,
+      "temporary": "/tmp/cloudacademy-synthetic-audit-NxyC9n",
+      "limitations": "Synthetic email login, no Google network, no browser, closed-loop burst without think time; PGlite shares Node RSS. Restart is graceful, not crash/power-loss. Windows is not an AWS VM."
+    }
+  ]
+}

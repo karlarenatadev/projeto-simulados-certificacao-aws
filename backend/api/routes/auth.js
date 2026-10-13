@@ -15,8 +15,14 @@
 import { Router } from 'express';
 import * as database from '../../database/db.js';
 import { requireAuth } from '../middleware/requireRole.js';
-import { createSessionToken, SESSION_TTL_SECONDS } from '../services/sessionToken.js';
-import { verifyGoogleIdToken } from '../services/googleIdentity.js';
+import {
+  createSessionToken,
+  SESSION_TTL_SECONDS,
+} from '../services/sessionToken.js';
+import {
+  isEmployeeEmailAuthorized,
+  verifyGoogleIdToken,
+} from '../services/googleIdentity.js';
 
 const router = Router();
 
@@ -38,9 +44,15 @@ router.post('/login', async (req, res, next) => {
     const { email, full_name, nickname } = req.body || {};
 
     const emailLoginAllowed =
-      process.env.NODE_ENV === 'test' || process.env.ALLOW_DEV_EMAIL_LOGIN === 'true';
-    if (['staging', 'production'].includes(process.env.NODE_ENV) || !emailLoginAllowed) {
-      return res.status(403).json({ error: 'Email-only login is disabled.', status: 403 });
+      process.env.NODE_ENV === 'test' ||
+      process.env.ALLOW_DEV_EMAIL_LOGIN === 'true';
+    if (
+      ['staging', 'production'].includes(process.env.NODE_ENV) ||
+      !emailLoginAllowed
+    ) {
+      return res
+        .status(403)
+        .json({ error: 'Email-only login is disabled.', status: 403 });
     }
     if (!email) {
       return res.status(400).json({
@@ -56,13 +68,18 @@ router.post('/login', async (req, res, next) => {
       });
     }
 
-    const { user, created } = await database.upsertUserByEmail(email.trim().toLowerCase(), {
-      full_name: full_name || null,
-      nickname: nickname || null,
-    });
+    const { user, created } = await database.upsertUserByEmail(
+      email.trim().toLowerCase(),
+      {
+        full_name: full_name || null,
+        nickname: nickname || null,
+      },
+    );
 
     if (user.is_active === false) {
-      return res.status(403).json({ error: 'Usuário desativado.', status: 403 });
+      return res
+        .status(403)
+        .json({ error: 'Usuário desativado.', status: 403 });
     }
 
     // Inicializa gamification se ainda não existir (ignora erro de "não encontrado")
@@ -74,7 +91,9 @@ router.post('/login', async (req, res, next) => {
 
     return res.status(created ? 201 : 200).json({
       success: true,
-      message: created ? 'Usuário criado com sucesso.' : 'Login realizado com sucesso.',
+      message: created
+        ? 'Usuário criado com sucesso.'
+        : 'Login realizado com sucesso.',
       data: {
         access_token: createSessionToken(user.id),
         token_type: 'Bearer',
@@ -98,8 +117,13 @@ router.post('/login', async (req, res, next) => {
 router.post('/google', async (req, res, next) => {
   try {
     const payload = await verifyGoogleIdToken(req.body?.credential);
-    if (typeof database.resolveGoogleIdentity !== "function") {
-      const error = new Error("Google identity service unavailable");
+    if (!isEmployeeEmailAuthorized(payload.email)) {
+      const error = new Error('Employee is not individually authorized');
+      error.statusCode = 403;
+      throw error;
+    }
+    if (typeof database.resolveGoogleIdentity !== 'function') {
+      const error = new Error('Google identity service unavailable');
       error.statusCode = 503;
       throw error;
     }

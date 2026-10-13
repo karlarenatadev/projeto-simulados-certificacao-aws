@@ -7,133 +7,183 @@ import {
   expect,
   jest,
   test,
-} from "@jest/globals";
+} from '@jest/globals';
 
 const verifyIdToken = jest.fn();
-jest.unstable_mockModule("google-auth-library", () => ({
+jest.unstable_mockModule('google-auth-library', () => ({
   OAuth2Client: jest.fn(() => ({ verifyIdToken })),
 }));
 
-process.env.GOOGLE_CLIENT_ID = "client.apps.googleusercontent.com";
+process.env.GOOGLE_CLIENT_ID = 'client.apps.googleusercontent.com';
 const { verifyGoogleIdToken } =
-  await import("../backend/api/services/googleIdentity.js");
+  await import('../backend/api/services/googleIdentity.js');
+const { isEmployeeEmailAuthorized } =
+  await import('../backend/api/services/googleIdentity.js');
 const {
   closeDatabase,
   initializeDatabase,
   resolveGoogleIdentity,
   upsertUserByEmail,
   updateUser,
-} = await import("../backend/database/db.js");
+} = await import('../backend/database/db.js');
 
-describe("Google OIDC verification", () => {
+describe('Google OIDC verification', () => {
   beforeEach(() => verifyIdToken.mockReset());
   const futureExp = Math.floor(Date.now() / 1000) + 3600;
 
-  test("requires a verified token, audience and corporate domain", async () => {
+  test('requires a verified token, audience and corporate domain', async () => {
     verifyIdToken.mockResolvedValue({
       getPayload: () => ({
-        sub: "google-1",
-        email: "person@a3data.com.br",
+        sub: 'google-1',
+        email: 'person@a3data.com.br',
         email_verified: true,
-        iss: "https://accounts.google.com",
-        aud: "client.apps.googleusercontent.com",
+        iss: 'https://accounts.google.com',
+        aud: 'client.apps.googleusercontent.com',
         exp: futureExp,
       }),
     });
-    await expect(verifyGoogleIdToken("signed-token")).resolves.toMatchObject({
-      sub: "google-1",
+    await expect(verifyGoogleIdToken('signed-token')).resolves.toMatchObject({
+      sub: 'google-1',
     });
 
     verifyIdToken.mockResolvedValue({
       getPayload: () => ({
-        sub: "google-2",
-        email: "person@example.com",
+        sub: 'google-2',
+        email: 'person@example.com',
         email_verified: true,
-        iss: "https://accounts.google.com",
-        aud: "client.apps.googleusercontent.com",
+        iss: 'https://accounts.google.com',
+        aud: 'client.apps.googleusercontent.com',
         exp: futureExp,
       }),
     });
-    await expect(verifyGoogleIdToken("signed-token")).rejects.toMatchObject({
+    await expect(verifyGoogleIdToken('signed-token')).rejects.toMatchObject({
       statusCode: 403,
     });
   });
 
-  test("rejects unverified credentials", async () => {
+  test('rejects unverified credentials', async () => {
     verifyIdToken.mockResolvedValue({
       getPayload: () => ({
-        sub: "google-3",
-        email: "person@a3data.com.br",
+        sub: 'google-3',
+        email: 'person@a3data.com.br',
         email_verified: false,
-        iss: "https://accounts.google.com",
+        iss: 'https://accounts.google.com',
         exp: futureExp,
       }),
     });
-    await expect(verifyGoogleIdToken("signed-token")).rejects.toMatchObject({
+    await expect(verifyGoogleIdToken('signed-token')).rejects.toMatchObject({
       statusCode: 401,
     });
   });
 
-  test("rejects an audience that differs from configured client", async () => {
+  test('rejects an audience that differs from configured client', async () => {
     verifyIdToken.mockResolvedValue({
       getPayload: () => ({
-        sub: "google-audience",
-        email: "person@a3data.com.br",
+        sub: 'google-audience',
+        email: 'person@a3data.com.br',
         email_verified: true,
-        iss: "https://accounts.google.com",
-        aud: "another-client",
+        iss: 'https://accounts.google.com',
+        aud: 'another-client',
         exp: futureExp,
       }),
     });
-    await expect(verifyGoogleIdToken("signed-token")).rejects.toMatchObject({
+    await expect(verifyGoogleIdToken('signed-token')).rejects.toMatchObject({
       statusCode: 401,
     });
+  });
+
+  test('staging authorization is an explicit person allowlist and fails closed', () => {
+    const previous = {
+      NODE_ENV: process.env.NODE_ENV,
+      AUTH_ALLOWED_EMAILS: process.env.AUTH_ALLOWED_EMAILS,
+      AUTH_ALLOWED_DOMAINS: process.env.AUTH_ALLOWED_DOMAINS,
+    };
+    process.env.NODE_ENV = 'staging';
+    process.env.AUTH_ALLOWED_DOMAINS = 'a3data.com.br';
+    process.env.AUTH_ALLOWED_EMAILS = 'other@a3data.com.br';
+    try {
+      expect(isEmployeeEmailAuthorized('EMPLOYEE@example.invalid')).toBe(false);
+      process.env.AUTH_ALLOWED_EMAILS = 'employee@a3data.com.br';
+      expect(isEmployeeEmailAuthorized('EMPLOYEE@a3data.com.br')).toBe(true);
+      expect(isEmployeeEmailAuthorized('former@a3data.com.br')).toBe(false);
+      process.env.AUTH_ALLOWED_EMAILS = '';
+      expect(isEmployeeEmailAuthorized('employee@a3data.com.br')).toBe(false);
+    } finally {
+      for (const [name, value] of Object.entries(previous)) {
+        if (value === undefined) delete process.env[name];
+        else process.env[name] = value;
+      }
+    }
   });
 });
 
-describe("Google identity linking", () => {
+describe('Google identity linking', () => {
   const suffix = Date.now();
   const email = `google-link-${suffix}@a3data.com.br`;
 
   beforeEach(async () => {
     delete process.env.DB_DATA_DIR;
-    await initializeDatabase({ environment: "test" });
+    await initializeDatabase({ environment: 'test' });
   });
 
   afterEach(async () => {
     await closeDatabase();
   });
 
-  test("links an existing user and preserves role, then resolves by subject", async () => {
+  test('links an existing user and preserves role, then resolves by subject', async () => {
     const { user: existing } = await upsertUserByEmail(email);
-    await updateUser(existing.id, { role: "VALIDATOR" });
+    await updateUser(existing.id, { role: 'VALIDATOR' });
     const first = await resolveGoogleIdentity({
-      subject: "subject-link",
+      subject: 'subject-link',
       email,
-      profile: { full_name: "Verified User" },
+      profile: { full_name: 'Verified User' },
     });
     const second = await resolveGoogleIdentity({
-      subject: "subject-link",
+      subject: 'subject-link',
       email: `renamed-${suffix}@a3data.com.br`,
     });
     expect(first.user.id).toBe(existing.id);
-    expect(first.user.role).toBe("VALIDATOR");
+    expect(first.user.role).toBe('VALIDATOR');
     expect(first.linked).toBe(true);
     expect(second.user.id).toBe(existing.id);
-    expect(second.user.role).toBe("VALIDATOR");
+    expect(second.user.role).toBe('VALIDATOR');
   });
 
-  test("creates a new student and rejects conflicting subject", async () => {
+  test('creates a new student and rejects conflicting subject', async () => {
     const created = await resolveGoogleIdentity({
-      subject: "subject-new",
+      subject: 'subject-new',
       email: `new-${suffix}@a3data.com.br`,
     });
     expect(created.created).toBe(true);
-    expect(created.user.role).toBe("STUDENT");
+    expect(created.user.role).toBe('STUDENT');
     await expect(
       resolveGoogleIdentity({
-        subject: "subject-other",
+        subject: 'subject-other',
         email: `new-${suffix}@a3data.com.br`,
+      }),
+    ).rejects.toMatchObject({ statusCode: 409 });
+  });
+
+  test('does not relink an inactive account and rejects a different subject for the same email', async () => {
+    const inactiveEmail = `inactive-link-${suffix}@a3data.com.br`;
+    const { user } = await upsertUserByEmail(inactiveEmail);
+    await updateUser(user.id, { is_active: false });
+    await expect(
+      resolveGoogleIdentity({
+        subject: 'inactive-subject',
+        email: inactiveEmail,
+      }),
+    ).rejects.toMatchObject({ statusCode: 403 });
+
+    const activeEmail = `identity-swap-${suffix}@a3data.com.br`;
+    await resolveGoogleIdentity({
+      subject: 'original-subject',
+      email: activeEmail,
+    });
+    await expect(
+      resolveGoogleIdentity({
+        subject: 'replacement-subject',
+        email: activeEmail,
       }),
     ).rejects.toMatchObject({ statusCode: 409 });
   });

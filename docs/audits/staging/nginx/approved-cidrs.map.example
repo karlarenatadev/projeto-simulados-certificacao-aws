@@ -1,0 +1,3 @@
+# Fail-closed: leave no active ranges until A3Data Network supplies approved
+# VPN/proxy egress ranges and confirms the route from employee devices.
+# Add actual entries in the installed file, e.g. <approved-cidr> 1;
