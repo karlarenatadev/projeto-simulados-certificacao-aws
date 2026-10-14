@@ -1,0 +1,448 @@
+{
+  "recordedAt": "2026-10-14T00:08:55.382Z",
+  "users": 30,
+  "durationSeconds": 1800,
+  "thinkMs": 5000,
+  "elapsedMs": 113248.869861,
+  "rps": 9.271615701673266,
+  "aggregateRequests": {
+    "count": 1050,
+    "p50Ms": 14.941333000002487,
+    "p95Ms": 415.51148999999987,
+    "p99Ms": 631.488129,
+    "maxMs": 1026.5055360000001
+  },
+  "completedQuizzes": 30,
+  "totalAnswers": 600,
+  "idempotentResponses": 0,
+  "failures": [
+    "user-2: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-1: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-3: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-4: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-9: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-10: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-5: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-6: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-15: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-7: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-19: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-8: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-25: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-28: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-27: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-12: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-11: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-14: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-13: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-16: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-17: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-18: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-20: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-22: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-21: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-23: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-24: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-0: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-26: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}",
+    "user-29: /api/me/state/journey: PUT /api/me/state/journey: HTTP 409 {\"error\":\"module state version conflict\",\"status\":409}"
+  ],
+  "statuses": {
+    "200": 930,
+    "201": 90,
+    "409": 30
+  },
+  "requests": {
+    "/api/auth/login": {
+      "count": 30,
+      "p50Ms": 252.742063,
+      "p95Ms": 386.071361,
+      "p99Ms": 402.55141599999996,
+      "maxMs": 402.55141599999996
+    },
+    "/api/auth/me": {
+      "count": 60,
+      "p50Ms": 72.29069500000332,
+      "p95Ms": 288.59357900000003,
+      "p99Ms": 424.65473699999995,
+      "maxMs": 424.65473699999995
+    },
+    "/api/questions": {
+      "count": 60,
+      "p50Ms": 81.55582300000242,
+      "p95Ms": 131.66253000000006,
+      "p99Ms": 1026.5055360000001,
+      "maxMs": 1026.5055360000001
+    },
+    "/api/quiz/start": {
+      "count": 60,
+      "p50Ms": 55.85851399999956,
+      "p95Ms": 594.934715,
+      "p99Ms": 636.261312,
+      "maxMs": 636.261312
+    },
+    "POST /api/quiz/:id/answer": {
+      "count": 600,
+      "p50Ms": 11.523849000004702,
+      "p95Ms": 108.21939800000018,
+      "p99Ms": 571.800505,
+      "maxMs": 631.488129
+    },
+    "POST /api/quiz/:id/finish": {
+      "count": 60,
+      "p50Ms": 21.503072000006796,
+      "p95Ms": 693.1721319999997,
+      "p99Ms": 782.8578850000049,
+      "maxMs": 782.8578850000049
+    },
+    "GET /api/quiz/:id/results": {
+      "count": 60,
+      "p50Ms": 20.145710999990115,
+      "p95Ms": 163.22340599999734,
+      "p99Ms": 164.80580900000496,
+      "maxMs": 164.80580900000496
+    },
+    "GET /api/users/:id/stats": {
+      "count": 60,
+      "p50Ms": 29.27618500000972,
+      "p95Ms": 95.14731799999572,
+      "p99Ms": 103.2744509999975,
+      "maxMs": 103.2744509999975
+    },
+    "/api/me/state/journey": {
+      "count": 60,
+      "p50Ms": 15.779817000002367,
+      "p95Ms": 87.58568299999752,
+      "p99Ms": 89.4010500000004,
+      "maxMs": 89.4010500000004
+    }
+  },
+  "server": {
+    "enabled": true,
+    "measuredAt": "2026-10-14T00:08:55.379Z",
+    "http": {
+      "POST /api/auth/login": {
+        "count": 30,
+        "errors": 0,
+        "totalMs": 313.39,
+        "meanMs": 10.45,
+        "maxMs": 21.36,
+        "p50UpperBoundMs": 10,
+        "p95UpperBoundMs": 20,
+        "p99UpperBoundMs": 50
+      },
+      "GET /api/auth/me": {
+        "count": 60,
+        "errors": 0,
+        "totalMs": 207.16,
+        "meanMs": 3.45,
+        "maxMs": 10.15,
+        "p50UpperBoundMs": 5,
+        "p95UpperBoundMs": 10,
+        "p99UpperBoundMs": 20
+      },
+      "GET /api/questions/": {
+        "count": 60,
+        "errors": 0,
+        "totalMs": 244.11,
+        "meanMs": 4.07,
+        "maxMs": 8.64,
+        "p50UpperBoundMs": 5,
+        "p95UpperBoundMs": 10,
+        "p99UpperBoundMs": 10
+      },
+      "POST /api/quiz/start": {
+        "count": 60,
+        "errors": 0,
+        "totalMs": 1178.04,
+        "meanMs": 19.63,
+        "maxMs": 36.17,
+        "p50UpperBoundMs": 20,
+        "p95UpperBoundMs": 50,
+        "p99UpperBoundMs": 50
+      },
+      "POST /api/quiz/:id/answer": {
+        "count": 600,
+        "errors": 0,
+        "totalMs": 6764.44,
+        "meanMs": 11.27,
+        "maxMs": 42.64,
+        "p50UpperBoundMs": 20,
+        "p95UpperBoundMs": 50,
+        "p99UpperBoundMs": 50
+      },
+      "POST /api/quiz/:id/finish": {
+        "count": 60,
+        "errors": 0,
+        "totalMs": 706.1,
+        "meanMs": 11.77,
+        "maxMs": 20.83,
+        "p50UpperBoundMs": 20,
+        "p95UpperBoundMs": 20,
+        "p99UpperBoundMs": 50
+      },
+      "GET /api/quiz/:id/results": {
+        "count": 60,
+        "errors": 0,
+        "totalMs": 441.01,
+        "meanMs": 7.35,
+        "maxMs": 17.96,
+        "p50UpperBoundMs": 10,
+        "p95UpperBoundMs": 20,
+        "p99UpperBoundMs": 20
+      },
+      "GET /api/users/:id/stats": {
+        "count": 60,
+        "errors": 0,
+        "totalMs": 880.5,
+        "meanMs": 14.68,
+        "maxMs": 25.87,
+        "p50UpperBoundMs": 20,
+        "p95UpperBoundMs": 50,
+        "p99UpperBoundMs": 50
+      },
+      "PUT /api/me/state/:module": {
+        "count": 30,
+        "errors": 0,
+        "totalMs": 143.62,
+        "meanMs": 4.79,
+        "maxMs": 10.22,
+        "p50UpperBoundMs": 5,
+        "p95UpperBoundMs": 10,
+        "p99UpperBoundMs": 20
+      },
+      "PUT /state/:module": {
+        "count": 30,
+        "errors": 0,
+        "totalMs": 132.08,
+        "meanMs": 4.4,
+        "maxMs": 17.91,
+        "p50UpperBoundMs": 5,
+        "p95UpperBoundMs": 20,
+        "p99UpperBoundMs": 20
+      }
+    },
+    "sql": {
+      "SELECT users": {
+        "count": 1260,
+        "errors": 0,
+        "totalMs": 2110.6,
+        "meanMs": 1.68,
+        "maxMs": 14.85,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 10
+      },
+      "INSERT users": {
+        "count": 30,
+        "errors": 0,
+        "totalMs": 54.22,
+        "meanMs": 1.81,
+        "maxMs": 4.96,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 5
+      },
+      "SELECT gamification": {
+        "count": 150,
+        "errors": 0,
+        "totalMs": 161.31,
+        "meanMs": 1.08,
+        "maxMs": 9.67,
+        "p50UpperBoundMs": 1,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 5
+      },
+      "INSERT gamification": {
+        "count": 30,
+        "errors": 0,
+        "totalMs": 53.48,
+        "meanMs": 1.78,
+        "maxMs": 6.64,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 10
+      },
+      "SELECT questions": {
+        "count": 720,
+        "errors": 0,
+        "totalMs": 887.67,
+        "meanMs": 1.23,
+        "maxMs": 13.72,
+        "p50UpperBoundMs": 1,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 10
+      },
+      "SELECT user_module_state": {
+        "count": 60,
+        "errors": 0,
+        "totalMs": 69.52,
+        "meanMs": 1.16,
+        "maxMs": 3.15,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 2,
+        "p99UpperBoundMs": 5
+      },
+      "INSERT quiz_history": {
+        "count": 60,
+        "errors": 0,
+        "totalMs": 114.71,
+        "meanMs": 1.91,
+        "maxMs": 6.24,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 10
+      },
+      "INSERT quiz_questions": {
+        "count": 600,
+        "errors": 0,
+        "totalMs": 497.24,
+        "meanMs": 0.83,
+        "maxMs": 7.75,
+        "p50UpperBoundMs": 1,
+        "p95UpperBoundMs": 2,
+        "p99UpperBoundMs": 5
+      },
+      "SELECT quiz_history": {
+        "count": 780,
+        "errors": 0,
+        "totalMs": 1053.2,
+        "meanMs": 1.35,
+        "maxMs": 13.77,
+        "p50UpperBoundMs": 1,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 10
+      },
+      "SELECT quiz_questions": {
+        "count": 1860,
+        "errors": 0,
+        "totalMs": 1770.18,
+        "meanMs": 0.95,
+        "maxMs": 10.22,
+        "p50UpperBoundMs": 1,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 5
+      },
+      "SELECT answers": {
+        "count": 720,
+        "errors": 0,
+        "totalMs": 898.4,
+        "meanMs": 1.25,
+        "maxMs": 10.04,
+        "p50UpperBoundMs": 1,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 10
+      },
+      "INSERT answers": {
+        "count": 600,
+        "errors": 0,
+        "totalMs": 623.41,
+        "meanMs": 1.04,
+        "maxMs": 7.88,
+        "p50UpperBoundMs": 1,
+        "p95UpperBoundMs": 2,
+        "p99UpperBoundMs": 5
+      },
+      "UPDATE quiz_history": {
+        "count": 660,
+        "errors": 0,
+        "totalMs": 858.24,
+        "meanMs": 1.3,
+        "maxMs": 23.04,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 5
+      },
+      "SELECT user_stats": {
+        "count": 60,
+        "errors": 0,
+        "totalMs": 141.85,
+        "meanMs": 2.36,
+        "maxMs": 9.55,
+        "p50UpperBoundMs": 5,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 10
+      },
+      "INSERT user_module_state": {
+        "count": 60,
+        "errors": 0,
+        "totalMs": 82.46,
+        "meanMs": 1.37,
+        "maxMs": 3.39,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 5
+      }
+    },
+    "operations": {
+      "transaction.createQuiz": {
+        "count": 60,
+        "errors": 0,
+        "totalMs": 839.94,
+        "meanMs": 14,
+        "maxMs": 30.05,
+        "p50UpperBoundMs": 20,
+        "p95UpperBoundMs": 50,
+        "p99UpperBoundMs": 50
+      },
+      "transaction.recordAnswer": {
+        "count": 600,
+        "errors": 0,
+        "totalMs": 5341.51,
+        "meanMs": 8.9,
+        "maxMs": 40.15,
+        "p50UpperBoundMs": 10,
+        "p95UpperBoundMs": 20,
+        "p99UpperBoundMs": 50
+      },
+      "transaction.completeQuiz": {
+        "count": 60,
+        "errors": 0,
+        "totalMs": 530.18,
+        "meanMs": 8.84,
+        "maxMs": 17.04,
+        "p50UpperBoundMs": 10,
+        "p95UpperBoundMs": 20,
+        "p99UpperBoundMs": 20
+      }
+    },
+    "runtime": {
+      "rssMiB": 635.64,
+      "heapUsedMiB": 74.02,
+      "externalMiB": 200.46,
+      "cpuUserMs": 11545.13,
+      "cpuSystemMs": 628.62,
+      "eventLoopUtilization": 0.1021,
+      "eventLoopDelay": {
+        "meanMs": 21.116,
+        "maxMs": 635.437,
+        "p95Ms": 23.003,
+        "p99Ms": 35.75
+      },
+      "activeQueries": 0,
+      "peakActiveQueries": 3
+    },
+    "histogramUpperBoundsMs": [
+      1,
+      2,
+      5,
+      10,
+      20,
+      50,
+      100,
+      250,
+      500,
+      1000,
+      2500,
+      5000,
+      10000,
+      30000,
+      60000
+    ],
+    "note": "SQL wall duration includes PGlite queue wait and execution; PGlite exposes no supported per-query queue-wait metric."
+  },
+  "client": {
+    "rssMiB": 86.36328125,
+    "heapUsedMiB": 11.339797973632812
+  }
+}

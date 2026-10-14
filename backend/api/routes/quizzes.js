@@ -115,21 +115,9 @@ router.post("/:id/answer", requireAuth, async (req, res, next) => {
       });
     }
 
-    // Verify quiz existence and ownership before accepting an answer.
-    const quiz = await getQuizById(quiz_id);
-    if (!quiz || String(quiz.user_id) !== String(req.user.id)) {
-      return res.status(404).json({
-        success: false,
-        message: `Quiz with ID ${quiz_id} not found`,
-      });
-    }
-    if (quiz.status !== "started") {
-      return res.status(409).json({
-        success: false,
-        message: `Quiz does not accept answers while status is ${quiz.status}`,
-      });
-    }
-
+    // recordAnswer checks owner and started status under FOR UPDATE in the
+    // write transaction. A separate pre-read adds latency and permits a
+    // status change between the check and the write.
     const answer = await recordAnswer({
       quiz_id,
       user_id: req.user.id,

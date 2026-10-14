@@ -4,6 +4,10 @@
  */
 
 import { PGlite } from "@electric-sql/pglite";
+import {
+  measureAsyncOperation,
+  measureDatabaseQuery,
+} from "./performanceMetrics.js";
 import { config as loadEnvironment } from "dotenv";
 import { readFileSync } from "fs";
 import { dirname, isAbsolute, join, resolve } from "path";
@@ -286,8 +290,14 @@ function rowsFromResult(result) {
 
 async function queryRows(executor, query, params = []) {
   debugQuery(query, params);
-  const result = await executor.query(query, params);
+  const result = await measureDatabaseQuery(executor, query, params);
   return rowsFromResult(result);
+}
+
+function measureTransaction(label, database, operation) {
+  return measureAsyncOperation(label, () =>
+    database.transaction(operation),
+  );
 }
 
 function resolveDatabaseOptions(options = {}) {
@@ -3185,7 +3195,7 @@ export async function createQuizWithQuestions({
   }
   const database = getDatabase();
 
-  return database.transaction(async (transaction) => {
+  return measureTransaction("transaction.createQuiz", database, async (transaction) => {
     const questions = await queryRows(
       transaction,
       `
@@ -3401,7 +3411,7 @@ export async function recordAnswer(
   try {
     const database = getDatabase();
 
-    return await database.transaction(async (transaction) => {
+    return await measureTransaction("transaction.recordAnswer", database, async (transaction) => {
       const quizParams = user_id ? [quiz_id, user_id] : [quiz_id];
       const quizRows = await queryRows(
         transaction,
@@ -3580,7 +3590,7 @@ export async function completeQuiz(quizId, userId) {
   const database = getDatabase();
 
   try {
-    return await database.transaction(async (transaction) => {
+    return await measureTransaction("transaction.completeQuiz", database, async (transaction) => {
       const quizRows = await queryRows(
         transaction,
         `

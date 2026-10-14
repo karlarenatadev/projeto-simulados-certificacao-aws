@@ -1,0 +1,430 @@
+{
+  "recordedAt": "2026-10-14T00:11:49.785Z",
+  "users": 10,
+  "durationSeconds": 0,
+  "thinkMs": 0,
+  "elapsedMs": 2756.69972,
+  "rps": 65.29546859750107,
+  "aggregateRequests": {
+    "count": 180,
+    "p50Ms": 117.73997300000008,
+    "p95Ms": 276.2976060000001,
+    "p99Ms": 631.27669,
+    "maxMs": 799.8928510000001
+  },
+  "completedQuizzes": 10,
+  "totalAnswers": 100,
+  "idempotentResponses": 0,
+  "failures": [],
+  "statuses": {
+    "200": 160,
+    "201": 20
+  },
+  "requests": {
+    "/api/auth/login": {
+      "count": 10,
+      "p50Ms": 230.887234,
+      "p95Ms": 799.8928510000001,
+      "p99Ms": 799.8928510000001,
+      "maxMs": 799.8928510000001
+    },
+    "/api/auth/me": {
+      "count": 10,
+      "p50Ms": 151.60111200000006,
+      "p95Ms": 291.819392,
+      "p99Ms": 291.819392,
+      "maxMs": 291.819392
+    },
+    "/api/questions": {
+      "count": 10,
+      "p50Ms": 109.60760100000005,
+      "p95Ms": 286.60610699999984,
+      "p99Ms": 286.60610699999984,
+      "maxMs": 286.60610699999984
+    },
+    "/api/quiz/start": {
+      "count": 10,
+      "p50Ms": 117.73997300000008,
+      "p95Ms": 265.79946700000005,
+      "p99Ms": 265.79946700000005,
+      "maxMs": 265.79946700000005
+    },
+    "POST /api/quiz/:id/answer": {
+      "count": 100,
+      "p50Ms": 125.134636,
+      "p95Ms": 197.86009299999978,
+      "p99Ms": 276.2976060000001,
+      "maxMs": 310.3114849999997
+    },
+    "POST /api/quiz/:id/finish": {
+      "count": 10,
+      "p50Ms": 90.2950179999998,
+      "p95Ms": 190.676199,
+      "p99Ms": 190.676199,
+      "maxMs": 190.676199
+    },
+    "GET /api/quiz/:id/results": {
+      "count": 10,
+      "p50Ms": 95.84527200000002,
+      "p95Ms": 181.72837500000014,
+      "p99Ms": 181.72837500000014,
+      "maxMs": 181.72837500000014
+    },
+    "GET /api/users/:id/stats": {
+      "count": 10,
+      "p50Ms": 79.119099,
+      "p95Ms": 178.38883299999998,
+      "p99Ms": 178.38883299999998,
+      "maxMs": 178.38883299999998
+    },
+    "/api/me/state/journey": {
+      "count": 10,
+      "p50Ms": 28.64059300000008,
+      "p95Ms": 137.69718999999986,
+      "p99Ms": 137.69718999999986,
+      "maxMs": 137.69718999999986
+    }
+  },
+  "integrity": {
+    "before": {
+      "users": 0,
+      "completed_quizzes": 0,
+      "started_quizzes": 0,
+      "answers": 0,
+      "duplicate_answers": 0,
+      "answers_without_membership": 0
+    },
+    "after": {
+      "users": 10,
+      "completed_quizzes": 10,
+      "started_quizzes": 0,
+      "answers": 100,
+      "duplicate_answers": 0,
+      "answers_without_membership": 0
+    },
+    "delta": {
+      "users": 10,
+      "completed_quizzes": 10,
+      "started_quizzes": 0,
+      "answers": 100
+    }
+  },
+  "server": {
+    "enabled": true,
+    "measuredAt": "2026-10-14T00:11:49.779Z",
+    "http": {
+      "POST /api/auth/login": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 181.37,
+        "meanMs": 18.14,
+        "maxMs": 53.77,
+        "p50UpperBoundMs": 20,
+        "p95UpperBoundMs": 100,
+        "p99UpperBoundMs": 100
+      },
+      "GET /api/auth/me": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 44.7,
+        "meanMs": 4.47,
+        "maxMs": 7.31,
+        "p50UpperBoundMs": 5,
+        "p95UpperBoundMs": 10,
+        "p99UpperBoundMs": 10
+      },
+      "GET /api/questions/": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 59.46,
+        "meanMs": 5.95,
+        "maxMs": 9.49,
+        "p50UpperBoundMs": 10,
+        "p95UpperBoundMs": 10,
+        "p99UpperBoundMs": 10
+      },
+      "POST /api/quiz/start": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 223.42,
+        "meanMs": 22.34,
+        "maxMs": 48.88,
+        "p50UpperBoundMs": 20,
+        "p95UpperBoundMs": 50,
+        "p99UpperBoundMs": 50
+      },
+      "POST /api/quiz/:id/answer": {
+        "count": 100,
+        "errors": 0,
+        "totalMs": 1640.7,
+        "meanMs": 16.41,
+        "maxMs": 31.64,
+        "p50UpperBoundMs": 20,
+        "p95UpperBoundMs": 50,
+        "p99UpperBoundMs": 50
+      },
+      "POST /api/quiz/:id/finish": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 107.78,
+        "meanMs": 10.78,
+        "maxMs": 22.8,
+        "p50UpperBoundMs": 10,
+        "p95UpperBoundMs": 50,
+        "p99UpperBoundMs": 50
+      },
+      "GET /api/quiz/:id/results": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 68.52,
+        "meanMs": 6.85,
+        "maxMs": 14.63,
+        "p50UpperBoundMs": 10,
+        "p95UpperBoundMs": 20,
+        "p99UpperBoundMs": 20
+      },
+      "GET /api/users/:id/stats": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 172.94,
+        "meanMs": 17.29,
+        "maxMs": 47.34,
+        "p50UpperBoundMs": 20,
+        "p95UpperBoundMs": 50,
+        "p99UpperBoundMs": 50
+      },
+      "PUT /api/me/state/:module": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 60.09,
+        "meanMs": 6.01,
+        "maxMs": 15.16,
+        "p50UpperBoundMs": 5,
+        "p95UpperBoundMs": 20,
+        "p99UpperBoundMs": 20
+      }
+    },
+    "sql": {
+      "SELECT users": {
+        "count": 220,
+        "errors": 0,
+        "totalMs": 407.62,
+        "meanMs": 1.85,
+        "maxMs": 17.37,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 20
+      },
+      "INSERT users": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 20.89,
+        "meanMs": 2.09,
+        "maxMs": 4.11,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 5
+      },
+      "SELECT gamification": {
+        "count": 30,
+        "errors": 0,
+        "totalMs": 53.08,
+        "meanMs": 1.77,
+        "maxMs": 11.61,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 10,
+        "p99UpperBoundMs": 20
+      },
+      "INSERT gamification": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 48.13,
+        "meanMs": 4.81,
+        "maxMs": 11.5,
+        "p50UpperBoundMs": 5,
+        "p95UpperBoundMs": 20,
+        "p99UpperBoundMs": 20
+      },
+      "SELECT questions": {
+        "count": 120,
+        "errors": 0,
+        "totalMs": 216.42,
+        "meanMs": 1.8,
+        "maxMs": 11.4,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 10
+      },
+      "SELECT user_module_state": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 18.56,
+        "meanMs": 1.86,
+        "maxMs": 4.77,
+        "p50UpperBoundMs": 1,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 5
+      },
+      "INSERT quiz_history": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 19.4,
+        "meanMs": 1.94,
+        "maxMs": 5.02,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 10,
+        "p99UpperBoundMs": 10
+      },
+      "INSERT quiz_questions": {
+        "count": 100,
+        "errors": 0,
+        "totalMs": 90.1,
+        "meanMs": 0.9,
+        "maxMs": 5.96,
+        "p50UpperBoundMs": 1,
+        "p95UpperBoundMs": 2,
+        "p99UpperBoundMs": 5
+      },
+      "SELECT quiz_history": {
+        "count": 130,
+        "errors": 0,
+        "totalMs": 205.82,
+        "meanMs": 1.58,
+        "maxMs": 10.18,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 10
+      },
+      "SELECT quiz_questions": {
+        "count": 310,
+        "errors": 0,
+        "totalMs": 426.17,
+        "meanMs": 1.37,
+        "maxMs": 6.83,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 5
+      },
+      "SELECT answers": {
+        "count": 120,
+        "errors": 0,
+        "totalMs": 170.69,
+        "meanMs": 1.42,
+        "maxMs": 9.2,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 10
+      },
+      "INSERT answers": {
+        "count": 100,
+        "errors": 0,
+        "totalMs": 150.48,
+        "meanMs": 1.5,
+        "maxMs": 7,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 10
+      },
+      "UPDATE quiz_history": {
+        "count": 110,
+        "errors": 0,
+        "totalMs": 214.01,
+        "meanMs": 1.95,
+        "maxMs": 12.14,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 5,
+        "p99UpperBoundMs": 20
+      },
+      "SELECT user_stats": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 29.33,
+        "meanMs": 2.93,
+        "maxMs": 7.47,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 10,
+        "p99UpperBoundMs": 10
+      },
+      "INSERT user_module_state": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 28.84,
+        "meanMs": 2.88,
+        "maxMs": 11.75,
+        "p50UpperBoundMs": 2,
+        "p95UpperBoundMs": 20,
+        "p99UpperBoundMs": 20
+      }
+    },
+    "operations": {
+      "transaction.createQuiz": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 148.64,
+        "meanMs": 14.86,
+        "maxMs": 35.53,
+        "p50UpperBoundMs": 20,
+        "p95UpperBoundMs": 50,
+        "p99UpperBoundMs": 50
+      },
+      "transaction.recordAnswer": {
+        "count": 100,
+        "errors": 0,
+        "totalMs": 1308.36,
+        "meanMs": 13.08,
+        "maxMs": 28.53,
+        "p50UpperBoundMs": 20,
+        "p95UpperBoundMs": 50,
+        "p99UpperBoundMs": 50
+      },
+      "transaction.completeQuiz": {
+        "count": 10,
+        "errors": 0,
+        "totalMs": 78.73,
+        "meanMs": 7.87,
+        "maxMs": 19.59,
+        "p50UpperBoundMs": 10,
+        "p95UpperBoundMs": 20,
+        "p99UpperBoundMs": 20
+      }
+    },
+    "runtime": {
+      "rssMiB": 495.34,
+      "heapUsedMiB": 37.14,
+      "externalMiB": 199.97,
+      "cpuUserMs": 3126.61,
+      "cpuSystemMs": 206.52,
+      "eventLoopUtilization": 0.9838,
+      "eventLoopDelay": {
+        "meanMs": 82.836,
+        "maxMs": 172.098,
+        "p95Ms": 161.743,
+        "p99Ms": 172.098
+      },
+      "activeQueries": 0,
+      "peakActiveQueries": 3
+    },
+    "histogramUpperBoundsMs": [
+      1,
+      2,
+      5,
+      10,
+      20,
+      50,
+      100,
+      250,
+      500,
+      1000,
+      2500,
+      5000,
+      10000,
+      30000,
+      60000
+    ],
+    "note": "SQL wall duration includes PGlite queue wait and execution; PGlite exposes no supported per-query queue-wait metric."
+  },
+  "client": {
+    "rssMiB": 77.18359375,
+    "heapUsedMiB": 10.400856018066406
+  }
+}

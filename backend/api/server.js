@@ -29,6 +29,10 @@ import { safeError, writeRequestLog } from './services/operationalLogging.js';
 import { PostgresAdapterError } from '../database/postgres/errors.js';
 import { verifySessionToken } from './services/sessionToken.js';
 import { requireEmployeeForApi } from './middleware/requireRole.js';
+import {
+  getPerformanceMetrics,
+  trackHttpRequest,
+} from '../database/performanceMetrics.js';
 
 const app = express();
 let initialized = false;
@@ -77,6 +81,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use((req, res, next) => {
+  trackHttpRequest(req, res);
   const requestId = randomUUID();
   req.requestId = requestId;
   res.setHeader('X-Request-Id', requestId);
@@ -186,6 +191,41 @@ app.get('/api/leaderboard', requireEmployeeForApi, async (req, res, next) => {
     next(error);
   }
 });
+
+if (process.env.NODE_ENV === 'test' && process.env.CLOUDACADEMY_PERF_DIAGNOSTICS === '1') {
+  app.get('/api/__diagnostics/performance', (req, res) => {
+    const expected = process.env.CLOUDACADEMY_PERF_DIAGNOSTICS_TOKEN || '';
+    const supplied = req.get('authorization')?.replace(/^Bearer\s+/i, '') || '';
+    if (!expected || supplied !== expected) return res.sendStatus(404);
+    const reset = req.query.reset === '1';
+    res.json(getPerformanceMetrics({ reset }));
+  });
+  app.get('/api/__diagnostics/integrity', async (req, res, next) => {
+    const expected = process.env.CLOUDACADEMY_PERF_DIAGNOSTICS_TOKEN || '';
+    const supplied = req.get('authorization')?.replace(/^Bearer\s+/i, '') || '';
+    if (!expected || supplied !== expected) return res.sendStatus(404);
+    try {
+      const [counts] = await database.executeQuery(`
+        SELECT
+          (SELECT COUNT(*)::int FROM users) AS users,
+          (SELECT COUNT(*)::int FROM quiz_history WHERE status = 'completed') AS completed_quizzes,
+          (SELECT COUNT(*)::int FROM quiz_history WHERE status = 'started') AS started_quizzes,
+          (SELECT COUNT(*)::int FROM answers) AS answers,
+          (SELECT COUNT(*)::int FROM (
+            SELECT quiz_id, question_id FROM answers
+            GROUP BY quiz_id, question_id HAVING COUNT(*) > 1
+          ) duplicates) AS duplicate_answers,
+          (SELECT COUNT(*)::int FROM answers a
+            LEFT JOIN quiz_questions qq
+              ON qq.quiz_id = a.quiz_id AND qq.question_id = a.question_id
+            WHERE qq.quiz_id IS NULL) AS answers_without_membership
+      `);
+      res.json(counts);
+    } catch (error) {
+      next(error);
+    }
+  });
+}
 
 app.use((req, res) => {
   res.status(404).json({
