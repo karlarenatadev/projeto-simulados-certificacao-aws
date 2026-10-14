@@ -64,7 +64,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@jest/globals": "^29.7.0",
+    "@jest/globals": "^30.5.2",
     "@playwright/test": "^1.62.1",
     "@tailwindcss/cli": "^4.2.2",
     "babel-jest": "^29.7.0",
