@@ -9962,7 +9962,9 @@
       "item": 1,
       "round": "6/20",
       "originalAnswer": "C",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10013,7 +10015,9 @@
       "reviewStatus": "confirmed-with-notes",
       "reviewNotes": [
         "Gabarito confirmado. Um IP set do AWS WAF comporta até 10.000 endereços ou intervalos CIDR. Os limites citados para NACL e security groups são valores padrão de cota, ajustáveis dentro dos limites da AWS; a conclusão não muda."
-      ]
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10066,7 +10070,9 @@
       "item": 3,
       "round": "20/20",
       "originalAnswer": "C",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10118,7 +10124,9 @@
       "item": 4,
       "round": "18/20",
       "originalAnswer": "B e D",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10161,7 +10169,9 @@
       "item": 5,
       "round": "14/20",
       "originalAnswer": "D",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10218,7 +10228,9 @@
       "item": 6,
       "round": null,
       "originalAnswer": "A e D",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10267,7 +10279,9 @@
       "item": 7,
       "round": null,
       "originalAnswer": "A",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10315,7 +10329,9 @@
       "item": 8,
       "round": null,
       "originalAnswer": "D",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10359,7 +10375,9 @@
       "item": 9,
       "round": null,
       "originalAnswer": "B",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10412,7 +10430,9 @@
       "reviewNotes": [
         "Gabarito confirmado. As chaves gerenciadas pela AWS (aws/rds) também são rotacionadas automaticamente, mas o cliente não controla a política dessas chaves; é o requisito de controle total sobre as políticas de acesso que descarta a alternativa A.",
         "Crase solta removida na alternativa A (aws/rds)."
-      ]
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10464,7 +10484,9 @@
       "reviewStatus": "confirmed-with-notes",
       "reviewNotes": [
         "Crase solta removida na alternativa D (Deny)."
-      ]
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10518,7 +10540,9 @@
       "item": 12,
       "round": "4/20",
       "originalAnswer": "D",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10566,7 +10590,9 @@
       "item": 13,
       "round": "19/20",
       "originalAnswer": "C",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10610,7 +10636,9 @@
       "item": 14,
       "round": "17/20",
       "originalAnswer": "A",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10658,7 +10686,9 @@
       "item": 15,
       "round": null,
       "originalAnswer": "B",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10705,7 +10735,9 @@
       "reviewStatus": "confirmed-with-notes",
       "reviewNotes": [
         "Gabarito confirmado. Atenção às garantias reais: a deduplicação do SQS FIFO vale em uma janela de 5 minutos e a ordem só é garantida dentro de cada MessageGroupId. Se o visibility timeout expirar antes de o consumidor excluir a mensagem, ela pode ser reentregue, então o consumidor deve ser idempotente."
-      ]
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10753,7 +10785,9 @@
       "reviewNotes": [
         "Gabarito confirmado como a melhor opção. A latência de replicação do Aurora Global Database é tipicamente inferior a 1 segundo e a promoção de uma região secundária leva tipicamente cerca de 1 minuto, mas esses valores são típicos e não um SLA. O failover entre regiões não é totalmente automático e precisa ser acionado.",
         "Crase solta removida no enunciado (eu-west-1)."
-      ]
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10800,7 +10834,9 @@
       "reviewStatus": "confirmed-with-notes",
       "reviewNotes": [
         "Crase solta removida no enunciado (sa-east-1) e nas alternativas."
-      ]
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10847,7 +10883,9 @@
       "reviewStatus": "confirmed-with-notes",
       "reviewNotes": [
         "Gabarito confirmado. A afirmação de que o standby do Multi-AZ não atende leituras vale para a implantação Multi-AZ com uma instância em espera. Em um Multi-AZ DB cluster, os dois standbys podem atender leituras."
-      ]
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10890,7 +10928,9 @@
       "item": 20,
       "round": "9/20",
       "originalAnswer": "D",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10944,7 +10984,9 @@
       "item": 21,
       "round": "7/20",
       "originalAnswer": "B",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -10992,7 +11034,9 @@
       "item": 22,
       "round": "11/20",
       "originalAnswer": "C",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -11040,7 +11084,9 @@
       "item": 23,
       "round": "15/20",
       "originalAnswer": "B",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -11089,7 +11135,9 @@
       "item": 24,
       "round": null,
       "originalAnswer": "B",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -11138,7 +11186,9 @@
       "item": 25,
       "round": null,
       "originalAnswer": "A",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -11189,7 +11239,9 @@
       "reviewStatus": "confirmed-with-notes",
       "reviewNotes": [
         "Gabarito confirmado entre as opções apresentadas. A janela de 1 a 5 minutos da recuperação Expedited vale tipicamente para objetos menores que 250 MB, e a capacidade só é garantida com Provisioned Capacity. Em um cenário real com vídeos grandes, vale avaliar o S3 Glacier Instant Retrieval (acesso em milissegundos), que não está entre as opções."
-      ]
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -11234,7 +11286,7 @@
       2,
       3
     ],
-    "explanation": "B) O Amazon S3 File Gateway expõe um compartilhamento SMB local para os dispositivos gravarem os arquivos .csv e os transfere para um bucket do Amazon S3, o armazenamento mais barato da AWS. C) O crawler do AWS Glue lê os arquivos .csv no S3 e cria automaticamente a definição de tabela e o esquema no AWS Glue Data Catalog. D) O Amazon Athena permite que os analistas executem consultas SQL periódicas diretamente sobre os dados no S3, pagando apenas por TB lido, sem servidores ativos 24/7. A está incorreta: o Amazon FSx File Gateway armazena os dados no Amazon FSx for Windows File Server (armazenamento provisionado continuamente), que é muito mais caro que o S3 e não pode ser consultado de forma serverless pelo Athena com o Glue.",
+    "explanation": "O Amazon S3 File Gateway expõe um compartilhamento SMB local para os dispositivos gravarem os arquivos .csv e os transfere para um bucket do Amazon S3, o armazenamento mais barato da AWS. O crawler do AWS Glue lê os arquivos .csv no S3 e cria automaticamente a definição de tabela e o esquema no AWS Glue Data Catalog. O Amazon Athena permite que os analistas executem consultas SQL periódicas diretamente sobre os dados no S3, pagando apenas por TB lido, sem servidores ativos 24/7. A alternativa do Amazon FSx File Gateway está incorreta: ele armazena os dados no Amazon FSx for Windows File Server (armazenamento provisionado continuamente), que é muito mais caro que o S3 e não pode ser consultado de forma serverless pelo Athena com o Glue.",
     "reference_url": "",
     "validation": {
       "status": "validated",
@@ -11247,7 +11299,9 @@
       "item": 27,
       "round": "5/20",
       "originalAnswer": "B, C e D",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -11296,7 +11350,9 @@
       "item": 28,
       "round": "2/20",
       "originalAnswer": "C",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -11353,7 +11409,9 @@
       "reviewStatus": "confirmed-with-notes",
       "reviewNotes": [
         "Gabarito confirmado. Hoje o S3 e o DynamoDB também aceitam interface endpoints (PrivateLink), mas eles têm cobrança por hora e por GB processado; apenas os gateway endpoints não têm custo adicional, que é o critério da questão."
-      ]
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -11406,7 +11464,9 @@
       "reclassifiedDomain": "Domínio ajustado de Custos para Alto Desempenho (o critério é menor sobrecarga operacional em análise de dados e ML, não otimização de custo).",
       "reviewNotes": [
         "Gabarito confirmado. O Amazon Forecast não está mais disponível para novos clientes desde 29/07/2024 e o CloudWatch não é uma ferramenta de BI, o que reforça a rejeição da alternativa C. Domínio ajustado de Custos para Alto Desempenho: o critério é menor sobrecarga operacional em análise de dados e ML, não otimização de custo."
-      ]
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -11473,7 +11533,9 @@
       "reclassifiedDomain": "Domínio ajustado de Custos para Alto Desempenho (ingestão e transformação de dados com menor sobrecarga operacional).",
       "reviewNotes": [
         "Gabarito confirmado. Domínio ajustado de Custos para Alto Desempenho: o critério é menor sobrecarga operacional em ingestão, transformação e análise de dados, não otimização de custo."
-      ]
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -11545,7 +11607,9 @@
       "reviewStatus": "confirmed-with-notes",
       "reviewNotes": [
         "Gabarito confirmado. A alternativa B está internamente inconsistente (ECS, ALB e RDS combinados com um API Gateway que envia chamadas ao Lambda); o texto foi preservado como recebido."
-      ]
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -11588,7 +11652,9 @@
       "item": 33,
       "round": null,
       "originalAnswer": "B",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   },
   {
@@ -11623,7 +11689,7 @@
       "Utilizar o comando aws s3 sync com Multipart Upload através de uma conexão AWS Site-to-Site VPN."
     ],
     "correct": 2,
-    "explanation": "O AWS Snowball Edge contorna a limitação física do link de 100 Mbps, transportando os 70 TB offline dentro da janela de 10 dias. Nota de revisão técnica: Gabarito confirmado conceitualmente: 70 TB cabem em um Snowball Edge Storage Optimized, enquanto os cerca de 20 Mbps livres do link levariam quase um ano. Atenção: o AWS Snowball Edge não está mais disponível para novos clientes desde 07/11/2025 e a AWS anuncia o fim do suporte em 31/12/2026. Hoje a AWS recomenda DataSync (transferência online) ou AWS Data Transfer Terminal. Questão mantida por refletir conteúdo cobrado em provas, mas recomenda-se revisão futura.",
+    "explanation": "O AWS Snowball Edge contorna a limitação física do link de 100 Mbps, transportando os 70 TB offline dentro da janela de 10 dias. Nota de revisão técnica: Gabarito confirmado conceitualmente: 70 TB cabem em um Snowball Edge Storage Optimized, enquanto os cerca de 20 Mbps livres do link levariam quase um ano. Atenção: o AWS Snowball Edge não está mais disponível para novos clientes desde 07/11/2025 e a AWS anuncia o fim do suporte em 31/12/2026. Hoje a AWS recomenda DataSync (transferência online) ou AWS Data Transfer Terminal. A questão foi mantida porque o AWS Snow Family ainda consta na lista de serviços em escopo do guia oficial do SAA-C03; recomenda-se rever o item quando a AWS atualizar o guia.",
     "reference_url": "https://docs.aws.amazon.com/snowball/latest/developer-guide/snowball-edge-availability-change.html",
     "validation": {
       "status": "validated",
@@ -11638,8 +11704,11 @@
       "originalAnswer": "C",
       "reviewStatus": "confirmed-with-notes",
       "reviewNotes": [
-        "Gabarito confirmado conceitualmente: 70 TB cabem em um Snowball Edge Storage Optimized, enquanto os cerca de 20 Mbps livres do link levariam quase um ano. Atenção: o AWS Snowball Edge não está mais disponível para novos clientes desde 07/11/2025 e a AWS anuncia o fim do suporte em 31/12/2026. Hoje a AWS recomenda DataSync (transferência online) ou AWS Data Transfer Terminal. Questão mantida por refletir conteúdo cobrado em provas, mas recomenda-se revisão futura."
-      ]
+        "Gabarito confirmado conceitualmente. AWS Snowball Edge fechado para novos clientes desde 07/11/2025; fim de suporte anunciado para 31/12/2026. AWS Snow Family ainda consta no escopo do guia SAA-C03. Rever quando o guia for atualizado."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação.",
+      "serviceStatus": "retired-for-new-customers"
     }
   },
   {
@@ -11688,7 +11757,9 @@
       "item": 35,
       "round": null,
       "originalAnswer": "B",
-      "reviewStatus": "confirmed"
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "Material do AWS Skill Builder Trivia fornecido pelo mantenedor; autorização de uso e redistribuição não esclarecida. Não publicar em main/GitHub Pages até confirmação."
     }
   }
 ]

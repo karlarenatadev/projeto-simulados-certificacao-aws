@@ -5,7 +5,10 @@ import {
   StorageManager,
   storageManager,
 } from "../src/frontend/js/storageManager.js";
-import { remapExplanationLetters } from "../src/frontend/js/utils/explanationLetters.js";
+import {
+  extractLetterReferences,
+  remapExplanationLetters,
+} from "../src/frontend/js/utils/explanationLetters.js";
 import { certificationPaths } from "../src/frontend/js/data.js";
 
 const read = (file) => JSON.parse(fs.readFileSync(file, "utf8"));
@@ -426,6 +429,44 @@ describe("explicacoes que citam letras de alternativas", () => {
     expect(remapExplanationLetters("veja a alternativa B", map)).toBe(
       "veja a alternativa A",
     );
+  });
+
+  test("converte cada letra uma unica vez, mesmo quando casa com dois formatos", () => {
+    // A->1, B->2, C->0: "(opção A)" casa com "opção A" e com "A)"
+    const map = [1, 2, 0, 3];
+    expect(remapExplanationLetters("Snapshots (opção A) e DMS (opção C).", map)).toBe(
+      "Snapshots (opção B) e DMS (opção A).",
+    );
+    expect(remapExplanationLetters("Veja (alternativa B) e A) e C).", map)).toBe(
+      "Veja (alternativa C) e B) e A).",
+    );
+  });
+
+  test("em todos os bancos, as letras citadas continuam apontando para a mesma alternativa apos embaralhar", () => {
+    const engine = new QuizEngine(70);
+    let checked = 0;
+    for (const certId of ["clf-c02", "saa-c03", "dva-c02", "aif-c01"]) {
+      for (const suffix of ["", "-en"]) {
+        for (const source of bank(certId, suffix)) {
+          const before = extractLetterReferences(source.explanation);
+          if (before.length === 0) continue;
+          for (let run = 0; run < 8; run++) {
+            const shuffled = engine._shuffleOptions(
+              engine._normalizeQuestion(source),
+            );
+            const after = extractLetterReferences(shuffled.explanation);
+            expect(after).toHaveLength(before.length);
+            const target = (letters, options) =>
+              letters.map((l) => options[LETTER_INDEX[l]]).sort();
+            expect(target(after, shuffled.options)).toEqual(
+              target(before, source.options),
+            );
+          }
+          checked++;
+        }
+      }
+    }
+    expect(checked).toBeGreaterThan(100);
   });
 
   test("nao altera texto sem ordem trocada nem siglas com letras A-E", () => {

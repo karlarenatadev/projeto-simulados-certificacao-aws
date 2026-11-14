@@ -1,6 +1,9 @@
 /**
  * Remapeia letras de alternativas citadas em explicações (ex.: "A)", "(D)",
- * "B e C)", "alternativa A") quando as opções são embaralhadas.
+ * "B e C)", "alternativa A", "(opção B)") quando as opções são embaralhadas.
+ *
+ * A troca é feita em uma única passada: cada letra citada é convertida uma só
+ * vez, mesmo quando casa com mais de um formato (ex.: "(opção A)").
  *
  * @param {string} text Explicação original.
  * @param {number[]} newPositionByOldIndex newPositionByOldIndex[i] = nova posição
@@ -9,6 +12,18 @@
  */
 const LETTERS = "ABCDE";
 const SEPARATOR = /(\s*,\s*|\s+(?:e|and|y|ou|or)\s+)/;
+
+const REFERENCE = new RegExp(
+  [
+    // "alternativa A", "opção B", "option C", "letra D"
+    "(\\b(?:[Aa]lternativa|[Oo]p[cç][aã]o|[Oo]ption|[Ll]etra)\\s+)([A-E])\\b",
+    // "A)", "A e B)", "A, C e D)", "(D)"
+    "(?<![A-Za-zÀ-ÿ])([A-E](?:(?:\\s*,\\s*|\\s+(?:e|and|y|ou|or)\\s+)[A-E])*)(?=\\))",
+    // "A está incorreta", "A is incorrect"
+    "(?<![A-Za-zÀ-ÿ])([A-E])(?= (?:está incorreta|is incorrect))",
+  ].join("|"),
+  "g",
+);
 
 function mapLetter(letter, newPositionByOldIndex) {
   const oldIndex = LETTERS.indexOf(letter);
@@ -28,6 +43,19 @@ function mapLetterGroup(group, newPositionByOldIndex) {
   return parts.map((part, i) => (i % 2 === 0 ? letters[i / 2] : part)).join("");
 }
 
+/**
+ * Lista, na ordem do texto, as letras de alternativas citadas na explicação.
+ * @param {string} text
+ * @returns {string[]}
+ */
+export function extractLetterReferences(text) {
+  if (typeof text !== "string") return [];
+  return [...text.matchAll(REFERENCE)].flatMap((match) => {
+    const raw = match[2] || match[3] || match[4] || "";
+    return raw.match(/[A-E]/g) || [];
+  });
+}
+
 export function remapExplanationLetters(text, newPositionByOldIndex) {
   if (typeof text !== "string" || !Array.isArray(newPositionByOldIndex)) {
     return text;
@@ -36,23 +64,17 @@ export function remapExplanationLetters(text, newPositionByOldIndex) {
     return text;
   }
 
-  return (
-    text
-      // "A)", "A e B)", "A, C e D)" e "(D)"
-      .replace(
-        /(?<![A-Za-zÀ-ÿ])([A-E](?:(?:\s*,\s*|\s+(?:e|and|y|ou|or)\s+)[A-E])*)(?=\))/g,
-        (group) => mapLetterGroup(group, newPositionByOldIndex),
-      )
-      // "A está incorreta" / "A is incorrect"
-      .replace(
-        /(?<![A-Za-zÀ-ÿ])([A-E])(?= (?:está incorreta|is incorrect))/g,
-        (letter) => mapLetter(letter, newPositionByOldIndex),
-      )
-      // "alternativa A", "option B", "opção C"
-      .replace(
-        /\b(alternativa|op[cç][aã]o|option|letra)(\s+)([A-E])\b/gi,
-        (_match, word, space, letter) =>
-          `${word}${space}${mapLetter(letter, newPositionByOldIndex)}`,
-      )
+  return text.replace(
+    REFERENCE,
+    (match, keyword, keywordLetter, group, incorrectLetter) => {
+      if (keywordLetter) {
+        return `${keyword}${mapLetter(keywordLetter, newPositionByOldIndex)}`;
+      }
+      if (group) return mapLetterGroup(group, newPositionByOldIndex);
+      if (incorrectLetter) {
+        return mapLetter(incorrectLetter, newPositionByOldIndex);
+      }
+      return match;
+    },
   );
 }
