@@ -17,7 +17,7 @@ function integer(env, name, fallback, max = 300_000) {
 /** Explicit configuration only: no dotenv, pg environment defaults or I/O. */
 export function readPostgresConfig(env = process.env) {
   const environment = env.NODE_ENV || "development";
-  if (!["development", "test", "production"].includes(environment)) {
+  if (!["development", "test", "staging", "production"].includes(environment)) {
     invalid("NODE_ENV");
   }
   let url;

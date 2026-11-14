@@ -9916,5 +9916,1850 @@
       "validatorVersion": "1.0",
       "createdBy": "A3 Cloud Academy"
     }
+  },
+  {
+    "questionId": "saa-c03-43d5a43e",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-guardduty",
+        "service_name": "Amazon GuardDuty",
+        "service_slug": "amazon-guardduty"
+      },
+      {
+        "service_id": "aws-security-hub",
+        "service_name": "AWS Security Hub",
+        "service_slug": "aws-security-hub"
+      }
+    ],
+    "tags": [
+      "guardduty",
+      "security-hub",
+      "deteccao-de-ameacas"
+    ],
+    "question": "A product runs in an Auto Scaling group behind an NLB and stores objects in Amazon S3. After recent attacks, the company needs to continuously monitor malicious activity in the account, in the workloads, and in S3 access, and view it in a single dashboard. Which solution meets these requirements?",
+    "options": [
+      "Configure Amazon Macie to monitor and report findings to AWS Config.",
+      "Configure Amazon Inspector to monitor and report findings to AWS CloudTrail.",
+      "Configure Amazon GuardDuty to monitor and report findings to AWS Security Hub.",
+      "Configure AWS Config to monitor and report findings to Amazon EventBridge."
+    ],
+    "correct": 2,
+    "explanation": "Amazon GuardDuty is the continuous threat detection service that analyzes CloudTrail logs, VPC Flow Logs, and S3 data events to identify malicious behavior in the account and workloads. AWS Security Hub aggregates and centralizes security alerts in a single dashboard. Why the others are incorrect: A) Amazon Macie discovers sensitive data (PII) in S3; it does not monitor attacks on workloads or accounts, and AWS Config evaluates resource configuration compliance. B) Amazon Inspector scans EC2, ECR, and Lambda for software and network vulnerabilities, and CloudTrail is not a security findings aggregation dashboard. D) AWS Config tracks resource configuration changes, not malicious intrusion activity.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 1,
+      "round": "6/20",
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-962f442e",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-waf",
+        "service_name": "AWS WAF",
+        "service_slug": "aws-waf"
+      },
+      {
+        "service_id": "amazon-elastic-load-balancer",
+        "service_name": "Amazon Elastic Load Balancer",
+        "service_slug": "amazon-elastic-load-balancer"
+      }
+    ],
+    "tags": [
+      "waf",
+      "ip-set",
+      "alb"
+    ],
+    "question": "An application on EC2 behind an ALB exposes HTTPS services (port 443) to thousands of retail stores over the internet. The security team wants to restrict access to only the IP addresses registered by the stores. What should the solutions architect do?",
+    "options": [
+      "Associate an AWS WAF web ACL with the ALB. Use IP set rules to filter traffic and include the registered IP addresses.",
+      "Implement AWS Firewall Manager to manage the ACL. Configure firewall rules to restrict traffic to the ALB and include the registered IP addresses.",
+      "Store the IP addresses in an Amazon DynamoDB table. Configure an AWS Lambda authorizer function on the ALB to validate the IPs of incoming requests.",
+      "Configure the network ACL on the subnet of the ALB public interface. Add inbound rules for each registered IP address."
+    ],
+    "correct": 0,
+    "explanation": "AWS WAF supports IP sets that can hold up to 10,000 IP addresses or CIDR blocks in a single rule, and the web ACL is associated directly with the Application Load Balancer. Why the others are incorrect: B) AWS Firewall Manager manages security policies across multiple AWS Organizations accounts, which is excessive for protecting a single ALB. C) The ALB has no native Lambda authorizer like API Gateway does (on an ALB, Lambda only acts as a target, not as an authorizer), and this adds high development overhead and cost. D) Network ACLs and security groups have low rule limits (default values of 20 to 40 per NACL and 60 per security group), which cannot accommodate thousands of individual IP addresses. Technical review note: Answer confirmed. An AWS WAF IP set holds up to 10,000 IP addresses or CIDR ranges. The NACL and security group limits mentioned are default quota values that can be adjusted within AWS limits; the conclusion does not change.",
+    "reference_url": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-ipset-match.html",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 2,
+      "round": "3/20",
+      "originalAnswer": "A",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado. Um IP set do AWS WAF comporta até 10.000 endereços ou intervalos CIDR. Os limites citados para NACL e security groups são valores padrão de cota, ajustáveis dentro dos limites da AWS; a conclusão não muda."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-092dd4f2",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "amazon-macie",
+        "service_name": "Amazon Macie",
+        "service_slug": "amazon-macie"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "aws-lake-formation",
+        "service_name": "AWS Lake Formation",
+        "service_slug": "aws-lake-formation"
+      }
+    ],
+    "tags": [
+      "macie",
+      "pii",
+      "data-lake"
+    ],
+    "question": "A company wants to make sure an Amazon S3 bucket in its AWS Lake Formation data lake does not contain sensitive data. It needs to discover personally identifiable information (PII) and financial information, such as passport and credit card numbers. Which solution meets these requirements?",
+    "options": [
+      "Configure AWS Audit Manager and select the PCI DSS standard to perform the audit.",
+      "Configure inventory on the S3 bucket and use Amazon Athena to query for sensitive information.",
+      "Configure Amazon Macie to run a sensitive data discovery job with managed identifiers for the required data types.",
+      "Use Amazon S3 Select to run a report across the entire S3 bucket."
+    ],
+    "correct": 2,
+    "explanation": "Amazon Macie uses machine learning and pattern matching (managed data identifiers) to automatically locate PII and financial data in Amazon S3 buckets. Why the others are incorrect: A) Audit Manager collects audit compliance evidence; it does not inspect objects in S3. B) S3 Inventory lists only object metadata, not the contents. D) S3 Select runs SQL queries on individual objects; it does not perform automated PII scanning across the whole bucket.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 3,
+      "round": "20/20",
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-6161c925",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "hard",
+    "services": [
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "aws-kms",
+        "service_name": "AWS KMS",
+        "service_slug": "aws-kms"
+      }
+    ],
+    "tags": [
+      "object-lock",
+      "kms",
+      "retencao",
+      "criptografia"
+    ],
+    "question": "A company must store contracts for 5 years without them being overwritten or deleted. They must be encrypted at rest, with automatic annual key rotation. Which combination of steps meets these requirements with the LEAST operational overhead? (Select TWO)",
+    "options": [
+      "Store the documents in Amazon S3. Use S3 Object Lock in governance mode.",
+      "Store the documents in Amazon S3. Use S3 Object Lock in compliance mode.",
+      "Use server-side encryption with Amazon S3 managed keys (SSE-S3). Configure key rotation.",
+      "Use server-side encryption with AWS KMS customer managed keys. Configure key rotation."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "S3 Object Lock in compliance mode prevents any user, including the root user, from deleting or overwriting the contracts during the 5 years. AWS KMS customer managed keys (CMKs) allow you to enable automatic annual rotation. Why the others are incorrect: A) Governance mode lets users with specific permissions bypass the lock. C) SSE-S3 uses AWS managed keys and does not let the customer configure key rotation.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 4,
+      "round": "18/20",
+      "originalAnswer": "B e D",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-c04fde93",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-organizations",
+        "service_name": "AWS Organizations",
+        "service_slug": "aws-organizations"
+      }
+    ],
+    "tags": [
+      "scp",
+      "organizations",
+      "governanca"
+    ],
+    "question": "A security team wants to limit access to specific services or actions across all accounts in a large AWS Organizations organization. The solution must be scalable and have a single point to maintain permissions. What should the solutions architect do?",
+    "options": [
+      "Create an ACL to grant access to the services or actions.",
+      "Create a security group to allow accounts and attach it to user groups.",
+      "Create cross-account roles in each account to deny access to the services or actions.",
+      "Create a service control policy (SCP) at the root organizational unit to deny access to the services or actions."
+    ],
+    "correct": 3,
+    "explanation": "Service control policies (SCPs) applied at the AWS Organizations root centrally and scalably restrict which actions and services can be used in all member accounts. Why the others are incorrect: A and B) ACLs and security groups are network and storage controls, not multi-account API governance. C) Manually creating IAM roles in each account does not provide a single point of maintenance.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 5,
+      "round": "14/20",
+      "originalAnswer": "D",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-3492ece9",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "vpc",
+        "service_name": "Amazon VPC",
+        "service_slug": "amazon-vpc"
+      },
+      {
+        "service_id": "security-groups",
+        "service_name": "Security Groups",
+        "service_slug": "security-groups"
+      },
+      {
+        "service_id": "ec2",
+        "service_name": "Amazon EC2",
+        "service_slug": "amazon-ec2"
+      }
+    ],
+    "tags": [
+      "security-groups",
+      "tres-camadas",
+      "sub-redes"
+    ],
+    "question": "A solutions architect needs to design a secure environment for AWS resources deployed on Amazon EC2 instances in a VPC. The solution must support a three-tier architecture consisting of web servers, application servers, and a database cluster. The VPC must allow resources in the web tier to be reachable from the internet only over HTTPS. Which combination of actions would meet these requirements? (Select TWO)",
+    "options": [
+      "Create a web server security group that allows HTTPS requests from the internet. Create an application server security group that allows requests only from the web security group. Create a database cluster security group that allows TCP connections from the application security group only on the database port.",
+      "Create a web server security group that allows all traffic from the internet. Create an application server security group that allows requests only from Amazon API Gateway on the application port. Create a database cluster security group that allows TCP connections from the application security group only on the database port.",
+      "Attach Amazon API Gateway to the VPC. Create private subnets for the web, application, and database tiers.",
+      "Attach an internet gateway to the VPC. Create public subnets for the web tier. Create private subnets for the application and database tiers.",
+      "Attach a virtual private gateway to the VPC. Create public subnets for the web and application tiers. Create private subnets for the database tier."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "Chaining security groups ensures that each tier accepts traffic only from the tier immediately before it (A), while the internet gateway with a public subnet for the web tier and private subnets for the application and database tiers isolate the internal infrastructure (D).",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 6,
+      "round": null,
+      "originalAnswer": "A e D",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-084eb3b7",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "aws-certificate-manager",
+        "service_name": "AWS Certificate Manager",
+        "service_slug": "aws-certificate-manager"
+      },
+      {
+        "service_id": "amazon-elastic-load-balancer",
+        "service_name": "Amazon Elastic Load Balancer",
+        "service_slug": "amazon-elastic-load-balancer"
+      }
+    ],
+    "tags": [
+      "acm",
+      "tls",
+      "alb",
+      "certificados"
+    ],
+    "question": "A financial company is developing a web application that will process sensitive customer data. The application will be hosted on Amazon EC2 instances behind an internet-facing Application Load Balancer (ALB). The company requires all data in transit to be encrypted. In addition, SSL/TLS certificates must be managed with minimal manual intervention. Which solution will meet these requirements?",
+    "options": [
+      "Use AWS Certificate Manager (ACM) to provision and manage a public SSL/TLS certificate. Configure the ALB to use the ACM-managed certificate for HTTPS listeners.",
+      "Purchase third-party SSL certificates. Import the SSL certificates into AWS Identity and Access Management (AWS IAM). Associate the certificates with the ALB.",
+      "Use Amazon CloudFront with the default SSL certificate in front of the ALB. Configure CloudFront to forward HTTPS requests to the ALB over HTTP.",
+      "Use AWS Certificate Manager (ACM) to provision and manage a private SSL/TLS certificate. Configure the ALB to use the ACM-managed certificate for HTTPS listeners."
+    ],
+    "correct": 0,
+    "explanation": "ACM automatically provisions and renews public SSL/TLS certificates integrated with the ALB, with no manual intervention. Private certificates (D) would cause trust errors in the browsers of users on the public internet.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 7,
+      "round": null,
+      "originalAnswer": "A",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-9fd2ab6f",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "vpc",
+        "service_name": "Amazon VPC",
+        "service_slug": "amazon-vpc"
+      },
+      {
+        "service_id": "ec2",
+        "service_name": "Amazon EC2",
+        "service_slug": "amazon-ec2"
+      }
+    ],
+    "tags": [
+      "vpc-flow-logs",
+      "monitoramento",
+      "rede"
+    ],
+    "question": "A solutions architect notices an abnormal amount of network traffic coming from an Amazon EC2 instance. The traffic is considered malicious and its destination must be determined. Which tool can the solutions architect use to identify the destination of the malicious network traffic?",
+    "options": [
+      "Enable AWS CloudTrail and filter the logs.",
+      "Filter the Amazon CloudWatch logs.",
+      "Check the AWS Health Dashboard.",
+      "Enable VPC Flow Logs and filter the logs."
+    ],
+    "correct": 3,
+    "explanation": "VPC Flow Logs capture inbound and outbound IP traffic on network interfaces (ENIs), revealing the source and destination IP addresses.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 8,
+      "round": null,
+      "originalAnswer": "D",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-f5826b39",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "object-lock",
+      "compliance",
+      "retencao",
+      "auditoria"
+    ],
+    "question": "A financial institution needs to store audit records in Amazon S3. Due to a regulatory requirement, these files must not be modified or deleted by any user, including the AWS root account, for a strict period of 7 years. Which configuration should a Solutions Architect implement to meet this requirement?",
+    "options": [
+      "Configure a bucket policy with a Deny statement for the s3:DeleteObject action applying to all principals except the audit IAM role.",
+      "Enable S3 Versioning and configure S3 Object Lock in Compliance mode with a 7-year retention period.",
+      "Enable S3 Versioning and configure S3 Object Lock in Governance mode with a 7-year retention period.",
+      "Configure an S3 Lifecycle policy to transition the objects directly to Amazon S3 Glacier Deep Archive with MFA Delete enabled."
+    ],
+    "correct": 1,
+    "explanation": "Only S3 Object Lock Compliance mode prevents even the root user from deleting or altering object versions during the retention period.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 9,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-cfae71ce",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "rds",
+        "service_name": "Amazon RDS",
+        "service_slug": "amazon-rds"
+      },
+      {
+        "service_id": "aws-kms",
+        "service_name": "AWS KMS",
+        "service_slug": "aws-kms"
+      }
+    ],
+    "tags": [
+      "rds",
+      "kms",
+      "cmk",
+      "rotacao-de-chaves"
+    ],
+    "question": "A company runs an Amazon RDS for PostgreSQL database that stores sensitive customer data. The internal security policy requires data at rest to be encrypted and the encryption key to be rotated automatically every 365 days, while keeping full control over the key access policies. Which solution meets these requirements with the least operational overhead?",
+    "options": [
+      "Encrypt the RDS instance using an AWS managed key (aws/rds), which rotates automatically every year.",
+      "Create a symmetric customer managed key (CMK) in AWS KMS, enable automatic key rotation, and use it to encrypt the RDS instance at creation.",
+      "Use AWS CloudHSM to generate asymmetric keys and configure an AWS Lambda job to rotate the RDS keys annually.",
+      "Enable Transparent Data Encryption (TDE) directly in the PostgreSQL engine and store the certificates in AWS Secrets Manager with 365-day rotation."
+    ],
+    "correct": 1,
+    "explanation": "A symmetric CMK in AWS KMS gives full control over the key policy and native automatic annual rotation. Technical review note: Answer confirmed. AWS managed keys (aws/rds) are also rotated automatically, but the customer does not control their key policy; it is the requirement for full control over access policies that rules out option A.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 10,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado. As chaves gerenciadas pela AWS (aws/rds) também são rotacionadas automaticamente, mas o cliente não controla a política dessas chaves; é o requisito de controle total sobre as políticas de acesso que descarta a alternativa A.",
+        "Crase solta removida na alternativa A (aws/rds)."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-1ea61ae1",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-waf",
+        "service_name": "AWS WAF",
+        "service_slug": "aws-waf"
+      },
+      {
+        "service_id": "amazon-elastic-load-balancer",
+        "service_name": "Amazon Elastic Load Balancer",
+        "service_slug": "amazon-elastic-load-balancer"
+      }
+    ],
+    "tags": [
+      "waf",
+      "sql-injection",
+      "xss",
+      "geo-match"
+    ],
+    "question": "An e-commerce web application runs on a fleet of Amazon EC2 instances behind an Application Load Balancer (ALB). Recently, the security team identified SQL Injection (SQLi) and Cross-Site Scripting (XSS) attack attempts, as well as abusive traffic from specific IP addresses in a certain country. How should the Solutions Architect protect the application?",
+    "options": [
+      "Configure AWS Shield Standard on the ALB and create Network ACL (NACL) rules on the public subnet to block the IPs and filter packets with SQLi patterns.",
+      "Associate an AWS WAF web ACL directly with the Application Load Balancer with managed rules for SQLi/XSS and a geographic match (Geo-match) rule.",
+      "Replace the ALB with a Network Load Balancer (NLB) and associate AWS WAF with the NLB for TCP packet-level blocking.",
+      "Configure security groups on the EC2 instances with explicit deny rules (Deny) for the CIDR blocks of the source country and inspect the HTTP payload."
+    ],
+    "correct": 1,
+    "explanation": "AWS WAF protects against layer 7 attacks (SQLi and XSS) and blocks specific countries (Geo-match) directly on the ALB.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 11,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Crase solta removida na alternativa D (Deny)."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-b0e5823c",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-kinesis-data-firehose",
+        "service_name": "Amazon Kinesis Data Firehose",
+        "service_slug": "amazon-kinesis-data-firehose"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "amazon-glacier",
+        "service_name": "Amazon Glacier",
+        "service_slug": "amazon-glacier"
+      }
+    ],
+    "tags": [
+      "iot",
+      "firehose",
+      "s3-lifecycle",
+      "glacier"
+    ],
+    "question": "Thousands of IoT sensors generate 1 TB per day of alerts of about 2 KB each. A highly available and cost-effective solution is needed to ingest and store them, with 14 days available for immediate analysis and archiving of older data. Which solution is the MOST operationally efficient?",
+    "options": [
+      "Create an Amazon SQS standard queue with 14-day retention. After 14 days, the consumer copies the message to an S3 bucket and deletes it from the queue.",
+      "Use Amazon Data Firehose to ingest the alerts into an Amazon OpenSearch cluster. Take daily manual snapshots and delete data older than 14 days.",
+      "Create EC2 instances in two AZs behind an ELB, with a script that stores the alerts in S3. Configure an S3 lifecycle rule to move the data to S3 Glacier after 14 days.",
+      "Use Amazon Data Firehose to ingest the alerts and store them in an S3 bucket. Configure an S3 lifecycle rule to move the data to S3 Glacier after 14 days."
+    ],
+    "correct": 3,
+    "explanation": "Amazon Data Firehose is fully managed (serverless) and scales automatically to ingest continuous streams of IoT sensor data and deliver them to Amazon S3, where they are available for immediate analysis. The S3 Lifecycle rule automates the transition to S3 Glacier after 14 days with no manual intervention. Why the others are incorrect: A) SQS is a temporary message queue, not an analysis repository for roughly 14 TB of accumulated data, and it would require custom consumers. B) Maintaining an OpenSearch cluster for 14 TB of raw data and taking daily manual snapshots has high cost and very high operational overhead. C) Managing EC2 fleets, an ELB, and custom scripts creates unnecessary operational overhead compared to Data Firehose.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 12,
+      "round": "4/20",
+      "originalAnswer": "D",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-63a860a7",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-transit-gateway",
+        "service_name": "AWS Transit Gateway",
+        "service_slug": "aws-transit-gateway"
+      },
+      {
+        "service_id": "vpc",
+        "service_name": "Amazon VPC",
+        "service_slug": "amazon-vpc"
+      }
+    ],
+    "tags": [
+      "transit-gateway",
+      "multi-regiao",
+      "peering"
+    ],
+    "question": "A company has multiple VPCs in different AWS Regions with isolated workloads. Due to a new requirement, all VPCs must communicate with all other VPCs across all Regions. Which solution meets these requirements with the LEAST administrative effort?",
+    "options": [
+      "Use inter-Region VPC peering to enable communication between the VPCs.",
+      "Use AWS Direct Connect gateways in all Regions to connect the VPCs across Regions.",
+      "Use AWS Transit Gateway for communication between VPCs within each Region and Transit Gateway peering for communication between Regions.",
+      "Use AWS PrivateLink in all Regions to connect the VPCs across Regions."
+    ],
+    "correct": 2,
+    "explanation": "AWS Transit Gateway centralizes routing in a hub-and-spoke model within each Region and uses Transit Gateway peering between Regions, avoiding the management of dozens of point-to-point VPC peering connections.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 13,
+      "round": "19/20",
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-8ddb988c",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-direct-connect",
+        "service_name": "AWS Direct Connect",
+        "service_slug": "aws-direct-connect"
+      }
+    ],
+    "tags": [
+      "direct-connect",
+      "vpn",
+      "hibrido",
+      "alta-disponibilidade"
+    ],
+    "question": "A company is designing a hybrid architecture to extend its data center to AWS. It needs a highly available, constant low-latency connection to one Region at the lowest cost, and it accepts slower responses if the primary connection fails. What should the solutions architect do?",
+    "options": [
+      "Provision an AWS Direct Connect connection to one Region. Use a Site-to-Site VPN connection as a backup in case the primary connection fails.",
+      "Provision a VPN tunnel to one Region for private connectivity and a second VPN tunnel as a backup in case the primary VPN fails.",
+      "Provision an AWS Direct Connect connection to one Region and a second Direct Connect connection to the same Region as a backup.",
+      "Provision an AWS Direct Connect connection to one Region and use the AWS CLI failover attribute to automatically create a backup connection."
+    ],
+    "correct": 0,
+    "explanation": "Direct Connect provides constant low latency on the primary connection, while the Site-to-Site VPN works as a low-cost contingency, accepting lower speed during failures.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 14,
+      "round": "17/20",
+      "originalAnswer": "A",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-6158b703",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "ec2",
+        "service_name": "Amazon EC2",
+        "service_slug": "amazon-ec2"
+      },
+      {
+        "service_id": "aws-availability-zones",
+        "service_name": "AWS Availability Zones",
+        "service_slug": "aws-availability-zones"
+      }
+    ],
+    "tags": [
+      "multi-az",
+      "tolerancia-a-falhas",
+      "zonas-de-disponibilidade"
+    ],
+    "question": "A company is running an application on two Amazon EC2 instances. The company requires low latency for all users in the same AWS Region while maintaining a high level of fault tolerance. Which solution will meet these requirements?",
+    "options": [
+      "Place each EC2 instance in a different Region.",
+      "Place each EC2 instance in a different Availability Zone.",
+      "Place each EC2 instance in a different subnet.",
+      "Place each EC2 instance in a different VPC."
+    ],
+    "correct": 1,
+    "explanation": "Placing the instances in different Availability Zones provides physical isolation against data center failures while keeping network latency minimal within the Region.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 15,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-16f2d04c",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "hard",
+    "services": [
+      {
+        "service_id": "amazon-sqs",
+        "service_name": "Amazon SQS",
+        "service_slug": "amazon-sqs"
+      }
+    ],
+    "tags": [
+      "sqs-fifo",
+      "exactly-once",
+      "desacoplamento",
+      "ordenacao"
+    ],
+    "question": "A financial order processing system consists of a container-based intake tier and a payment processing tier. It is essential that transactions are processed exactly once and strictly in the same order in which they were sent by the client. In addition, the system must absorb sudden traffic spikes without losing messages if consumers fail temporarily. Which architecture should be used?",
+    "options": [
+      "Use an Amazon SQS Standard queue between the services, enabling long polling and a dead-letter queue (DLQ).",
+      "Use an Amazon SNS Standard topic to distribute messages directly to multiple HTTP endpoints of the payment services.",
+      "Use an Amazon SQS FIFO queue with content-based deduplication enabled and configure an appropriate MessageGroupId.",
+      "Use Amazon EventBridge with standard routing rules to guarantee ordered, duplicate-free delivery to consumers."
+    ],
+    "correct": 2,
+    "explanation": "SQS FIFO queues ensure processing order and exactly-once delivery. Technical review note: Answer confirmed. Mind the actual guarantees: SQS FIFO deduplication applies within a 5-minute window and ordering is guaranteed only within each MessageGroupId. If the visibility timeout expires before the consumer deletes the message, it can be redelivered, so the consumer should be idempotent.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 16,
+      "round": null,
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado. Atenção às garantias reais: a deduplicação do SQS FIFO vale em uma janela de 5 minutos e a ordem só é garantida dentro de cada MessageGroupId. Se o visibility timeout expirar antes de o consumidor excluir a mensagem, ela pode ser reentregue, então o consumidor deve ser idempotente."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-69a32496",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "hard",
+    "services": [
+      {
+        "service_id": "amazon-aurora",
+        "service_name": "Amazon Aurora",
+        "service_slug": "amazon-aurora"
+      }
+    ],
+    "tags": [
+      "aurora-global-database",
+      "rpo",
+      "rto",
+      "recuperacao-de-desastres"
+    ],
+    "question": "A global company operates a critical relational database on Amazon Aurora MySQL in the us-east-1 Region. The business continuity plan requires an RPO of at most 1 second and an RTO of less than 1 minute in the event of a complete failure of the entire primary Region, in addition to providing low-latency reads for users in Europe (eu-west-1). Which configuration meets these requirements?",
+    "options": [
+      "Configure Amazon Aurora with Multi-AZ replicas in us-east-1 and enable automated snapshots copied to eu-west-1 every 5 minutes.",
+      "Implement Amazon Aurora Global Database, configuring us-east-1 as the primary Region and eu-west-1 as the secondary Region with read instances.",
+      "Use Amazon RDS for MySQL with an asynchronous cross-Region read replica in eu-west-1 based on binlog logical replication.",
+      "Configure AWS Backup continuous backup with cross-Region replication and use an AWS Lambda script with Route 53 to restore the snapshot in case of failure."
+    ],
+    "correct": 1,
+    "explanation": "Aurora Global Database provides cross-Region replication with typical lag under 1 second and recovery in about 1 minute, plus local reads in the secondary Region. Technical review note: Answer confirmed as the best option. Aurora Global Database replication latency is typically under 1 second and promoting a secondary Region typically takes about 1 minute, but these values are typical, not an SLA. Cross-Region failover is not fully automatic and must be initiated.",
+    "reference_url": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 17,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado como a melhor opção. A latência de replicação do Aurora Global Database é tipicamente inferior a 1 segundo e a promoção de uma região secundária leva tipicamente cerca de 1 minuto, mas esses valores são típicos e não um SLA. O failover entre regiões não é totalmente automático e precisa ser acionado.",
+        "Crase solta removida no enunciado (eu-west-1)."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-00beaf77",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-route-53",
+        "service_name": "Amazon Route 53",
+        "service_slug": "amazon-route-53"
+      }
+    ],
+    "tags": [
+      "route-53",
+      "failover",
+      "ativo-passivo",
+      "health-check"
+    ],
+    "question": "A company has its application deployed in two AWS Regions: sa-east-1 (São Paulo) and us-east-1 (N. Virginia). Under normal conditions, 100% of the traffic must be directed to sa-east-1, where the customers are located. The us-east-1 Region operates in active standby mode (Active-Passive) and should only receive traffic if the endpoint in sa-east-1 becomes unavailable. Which Amazon Route 53 routing policy should be configured?",
+    "options": [
+      "Latency-based routing with health checks associated with both endpoints.",
+      "Failover routing with a health check associated with the primary record (sa-east-1) and the secondary record pointing to us-east-1.",
+      "Weighted routing configured with weight 50 for each Region.",
+      "Geolocation routing directing users from Brazil to sa-east-1 and the rest of the world to us-east-1."
+    ],
+    "correct": 1,
+    "explanation": "The Route 53 failover policy supports active-passive architectures, sending traffic to the secondary Region only if the primary record's health check fails.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 18,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Crase solta removida no enunciado (sa-east-1) e nas alternativas."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-6da42373",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "rds",
+        "service_name": "Amazon RDS",
+        "service_slug": "amazon-rds"
+      }
+    ],
+    "tags": [
+      "rds",
+      "read-replica",
+      "multi-az",
+      "desempenho"
+    ],
+    "question": "An application stores data in a Multi-AZ Amazon RDS for PostgreSQL instance. Increased traffic is causing performance problems, and the main cause is database queries. What should the solutions architect do to improve performance?",
+    "options": [
+      "Serve read traffic from the Multi-AZ standby replica.",
+      "Configure the database instance to use Transfer Acceleration.",
+      "Create a read replica of the source database instance and serve read traffic from it.",
+      "Use Amazon Data Firehose between the application and Amazon RDS to increase request concurrency."
+    ],
+    "correct": 2,
+    "explanation": "Amazon RDS read replicas are built to scale read-heavy workloads, offloading the primary instance. Why the others are incorrect: A) In the traditional Multi-AZ deployment, the standby instance exists only for failover and does not receive read traffic. B) Transfer Acceleration is an Amazon S3 feature, not an RDS feature. D) Data Firehose is a streaming data ingestion service, not a proxy or accelerator for SQL queries. Technical review note: Answer confirmed. The statement that the Multi-AZ standby cannot serve reads applies to the Multi-AZ deployment with a single standby instance. In a Multi-AZ DB cluster, the two standbys can serve reads.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 19,
+      "round": "10/20",
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado. A afirmação de que o standby do Multi-AZ não atende leituras vale para a implantação Multi-AZ com uma instância em espera. Em um Multi-AZ DB cluster, os dois standbys podem atender leituras."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-0523839b",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "amazon-ec2-auto-scaling",
+        "service_name": "Amazon EC2 Auto Scaling",
+        "service_slug": "amazon-ec2-auto-scaling"
+      }
+    ],
+    "tags": [
+      "auto-scaling",
+      "escalabilidade-programada",
+      "ec2"
+    ],
+    "question": "A web application runs on EC2 in an Auto Scaling group. Peak hours occur at the same time every day, and users report slowness at the start of that period. The company wants the application to perform well from the start of the peak. Which solution meets these requirements?",
+    "options": [
+      "Configure a Network Load Balancer to properly distribute traffic across the instances.",
+      "Configure a dynamic scaling policy to launch new instances based on memory utilization.",
+      "Configure a dynamic scaling policy to launch new instances based on CPU utilization.",
+      "Configure a scheduled scaling policy to launch new instances before peak hours."
+    ],
+    "correct": 3,
+    "explanation": "When load peaks happen at predictable times, scheduled scaling lets you provision EC2 instances before the peak begins, eliminating the initial slowness caused by instance startup time. Why the others are incorrect: A) Changing the load balancer does not add compute capacity. B and C) Dynamic scaling policies based on CPU or memory are reactive: they only trigger after the metric has already risen, and users experience slowness during the first minutes while new instances start.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 20,
+      "round": "9/20",
+      "originalAnswer": "D",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-b1da2ce0",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-appflow",
+        "service_name": "Amazon AppFlow",
+        "service_slug": "amazon-appflow"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "amazon-sns",
+        "service_name": "Amazon SNS",
+        "service_slug": "amazon-sns"
+      }
+    ],
+    "tags": [
+      "appflow",
+      "saas",
+      "s3-event-notifications",
+      "sns"
+    ],
+    "question": "An application uses EC2 instances to receive data from several SaaS sources, load it into Amazon S3, and notify the user at the end of each load. Performance is slow and must be improved as much as possible. Which solution meets these requirements with the LEAST operational overhead?",
+    "options": [
+      "Create an Auto Scaling group for the EC2 instances. Configure an S3 event notification that sends events to an Amazon SNS topic when the load completes.",
+      "Create an Amazon AppFlow flow to transfer data between each SaaS source and the S3 bucket. Configure an S3 event notification that sends events to an Amazon SNS topic when the load completes.",
+      "Configure an Amazon EventBridge rule for the SaaS sources to send data to S3 and another rule that sends an event to an Amazon SNS topic when the load completes.",
+      "Create a Docker container on Amazon ECS with Fargate. Configure CloudWatch Container Insights to send events to an Amazon SNS topic when the load completes."
+    ],
+    "correct": 1,
+    "explanation": "Amazon AppFlow is a fully managed integration service built to securely and quickly transfer data between SaaS applications (such as Salesforce, ServiceNow, Zendesk, and Slack) and AWS services such as Amazon S3, without writing code or managing servers. S3 event notifications integrated with Amazon SNS send the alert at the end of the load. Why the others are incorrect: A and D) Maintaining custom code on EC2 instances or ECS containers creates unnecessary operational overhead when a native SaaS connector exists. C) EventBridge has event integrations with SaaS partners, but it is geared toward lightweight event buses, not bulk data load transfer to S3 as AppFlow does.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 21,
+      "round": "7/20",
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-453a2a17",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "amazon-elasticache",
+        "service_name": "Amazon ElastiCache",
+        "service_slug": "amazon-elasticache"
+      },
+      {
+        "service_id": "rds",
+        "service_name": "Amazon RDS",
+        "service_slug": "amazon-rds"
+      }
+    ],
+    "tags": [
+      "elasticache",
+      "cache",
+      "rds-mysql"
+    ],
+    "question": "A multi-tier e-commerce application runs on Amazon EC2 with a database on Amazon RDS for MySQL. Frequent calls that return identical datasets are causing slowness. Which action improves backend performance?",
+    "options": [
+      "Implement Amazon SNS to cache the database calls.",
+      "Implement an RDS for MySQL read replica to cache the database calls.",
+      "Implement Amazon ElastiCache to cache the large datasets.",
+      "Implement Amazon Data Firehose to stream the database calls."
+    ],
+    "correct": 2,
+    "explanation": "Amazon ElastiCache stores the results of repeated identical queries in memory, responding in sub-milliseconds and offloading the RDS database.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 22,
+      "round": "11/20",
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-41b67e2b",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "hard",
+    "services": [
+      {
+        "service_id": "amazon-fsx",
+        "service_name": "Amazon FSx",
+        "service_slug": "amazon-fsx"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "fsx-for-lustre",
+      "hpc",
+      "baixa-latencia"
+    ],
+    "question": "A logistics company processes about 8 TB of data daily with hundreds of Linux EC2 instances. The storage requires sub-millisecond latency and a minimum throughput of 6 Gbps. Which solution meets the performance requirements?",
+    "options": [
+      "Create an Amazon FSx for NetApp ONTAP file system. Import the raw data and mount it on the EC2 instances.",
+      "Create an S3 bucket for the raw data and an Amazon FSx for Lustre file system with persistent SSD storage, with import/export to S3. Mount it on the EC2 instances.",
+      "Create an S3 bucket for the raw data and an Amazon FSx for Lustre file system with persistent HDD storage, with import/export to S3. Mount it on the EC2 instances.",
+      "Create an Amazon EFS file system with the Max I/O performance mode. Import the raw data and mount it on the EC2 instances."
+    ],
+    "correct": 1,
+    "explanation": "Amazon FSx for Lustre with SSD storage provides sub-millisecond latency and high throughput for Linux high-performance computing workloads, with direct integration with Amazon S3.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 23,
+      "round": "15/20",
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-ff69cbd6",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "cloudfront",
+        "service_name": "Amazon CloudFront",
+        "service_slug": "amazon-cloudfront"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "cloudfront",
+      "oac",
+      "s3",
+      "latencia-global"
+    ],
+    "question": "An online learning platform hosts videos and PDF handouts in an Amazon S3 bucket. Users in various parts of the world complain about slow loading. In addition, the company discovered that users are accessing the files directly through the S3 bucket URL, bypassing the platform's official domain. How can the global latency be solved while ensuring the files can only be accessed through the caching layer?",
+    "options": [
+      "Enable S3 Transfer Acceleration on the bucket and configure the bucket as a public static website with CORS rules.",
+      "Create an Amazon CloudFront distribution pointing to the S3 bucket, configure an Origin Access Control (OAC), and update the bucket policy to allow read access only to the CloudFront service principal.",
+      "Replicate the bucket to 5 Regions using S3 Cross-Region Replication (CRR) and use AWS Global Accelerator in front of the S3 buckets.",
+      "Place an Application Load Balancer in front of the S3 bucket and enable caching on the ALB with a security group restriction."
+    ],
+    "correct": 1,
+    "explanation": "CloudFront caches content globally at edge locations, and OAC blocks any direct read on the S3 bucket that does not come from the CloudFront distribution.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 24,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-963dcca9",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-storage-gateway",
+        "service_name": "AWS Storage Gateway",
+        "service_slug": "aws-storage-gateway"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "storage-gateway",
+      "s3-file-gateway",
+      "smb",
+      "hibrido"
+    ],
+    "question": "A medical clinic has on-premises servers that generate diagnostic exam images. Disk space in the local data center is running out, but physicians must keep accessing recently generated files with local network latency over the SMB protocol, while older files must be stored durably in Amazon S3 for later archiving in S3 Glacier. Which service fits this scenario?",
+    "options": [
+      "AWS Storage Gateway in Amazon S3 File Gateway mode.",
+      "AWS Storage Gateway in Tape Gateway (VTL) mode.",
+      "AWS DataSync scheduled to run once a week, deleting the local data.",
+      "Amazon EFS mounted directly over the public internet on the on-premises Windows servers via the SMB protocol."
+    ],
+    "correct": 0,
+    "explanation": "S3 File Gateway provides SMB/NFS mounts with a local cache for low latency and stores the files as native objects in S3.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 25,
+      "round": null,
+      "originalAnswer": "A",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-5f6ccb3e",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "amazon-s3-glacier",
+        "service_name": "amazon-s3-glacier",
+        "service_slug": "amazon-s3-glacier"
+      }
+    ],
+    "tags": [
+      "s3-glacier",
+      "expedited-retrieval",
+      "classes-de-armazenamento"
+    ],
+    "question": "A company needs to store sports news video files on AWS at the lowest possible cost. They are rarely restored, but when needed they must be available within five minutes at most. Which solution is the MOST cost-effective?",
+    "options": [
+      "Store the video files in Amazon S3 One Zone-Infrequent Access (S3 One Zone-IA).",
+      "Store the video files in Amazon S3 Glacier Flexible Retrieval with standard retrievals.",
+      "Store the video files in Amazon S3 Standard-Infrequent Access (S3 Standard-IA).",
+      "Store the video files in Amazon S3 Glacier Flexible Retrieval with expedited retrievals."
+    ],
+    "correct": 3,
+    "explanation": "Amazon S3 Glacier Flexible Retrieval has a much lower per-GB storage cost than S3 Standard-IA and S3 One Zone-IA. When the rare need to restore a video arises, expedited retrieval makes the data available within 1 to 5 minutes, meeting the requirement at the lowest monthly storage cost. Why the others are incorrect: A and C) S3 One Zone-IA and S3 Standard-IA have significantly higher monthly storage costs than Glacier Flexible Retrieval for rarely accessed files (and One Zone-IA does not survive the loss of an AZ). B) Standard retrievals from S3 Glacier Flexible Retrieval take 3 to 5 hours, violating the five-minute maximum requirement. Technical review note: Answer confirmed among the options presented. The 1 to 5 minute window for Expedited retrieval typically applies to objects smaller than 250 MB, and capacity is only guaranteed with Provisioned Capacity. In a real scenario with large videos, S3 Glacier Instant Retrieval (millisecond access) is worth evaluating, but it is not among the options.",
+    "reference_url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/restoring-objects-retrieval-options.html",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 26,
+      "round": "8/20",
+      "originalAnswer": "D",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado entre as opções apresentadas. A janela de 1 a 5 minutos da recuperação Expedited vale tipicamente para objetos menores que 250 MB, e a capacidade só é garantida com Provisioned Capacity. Em um cenário real com vídeos grandes, vale avaliar o S3 Glacier Instant Retrieval (acesso em milissegundos), que não está entre as opções."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-f92c2c47",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-storage-gateway",
+        "service_name": "AWS Storage Gateway",
+        "service_slug": "aws-storage-gateway"
+      },
+      {
+        "service_id": "aws-glue",
+        "service_name": "AWS Glue",
+        "service_slug": "aws-glue"
+      },
+      {
+        "service_id": "amazon-athena",
+        "service_name": "Amazon Athena",
+        "service_slug": "amazon-athena"
+      }
+    ],
+    "tags": [
+      "s3-file-gateway",
+      "glue-crawler",
+      "athena",
+      "smb"
+    ],
+    "question": "On-premises devices generate .csv files and write them to an SMB file share. The company wants to analyze the data on AWS, and its analysts must query it with SQL periodically throughout the day. Which combination of steps is the MOST cost-effective? (Select THREE)",
+    "options": [
+      "Deploy an on-premises AWS Storage Gateway in Amazon FSx File Gateway mode.",
+      "Deploy an on-premises AWS Storage Gateway in Amazon S3 File Gateway mode.",
+      "Configure an AWS Glue crawler to create a table based on the data in Amazon S3.",
+      "Configure Amazon Athena to query the data in Amazon S3. Provide access to the analysts."
+    ],
+    "correct": [
+      1,
+      2,
+      3
+    ],
+    "explanation": "Amazon S3 File Gateway exposes a local SMB share for the devices to write the .csv files and transfers them to an Amazon S3 bucket, the cheapest storage on AWS. The AWS Glue crawler reads the .csv files in S3 and automatically creates the table definition and schema in the AWS Glue Data Catalog. Amazon Athena lets analysts run periodic SQL queries directly on the data in S3, paying only per TB scanned, with no servers running 24/7. The Amazon FSx File Gateway option is incorrect: it stores data in Amazon FSx for Windows File Server (continuously provisioned storage), which is much more expensive than S3 and cannot be queried serverlessly by Athena with Glue.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 27,
+      "round": "5/20",
+      "originalAnswer": "B, C e D",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-951ae79b",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "vpc",
+        "service_name": "Amazon VPC",
+        "service_slug": "amazon-vpc"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "gateway-endpoint",
+      "nat-gateway",
+      "custos-de-rede",
+      "s3"
+    ],
+    "question": "An application on EC2 instances, across several AZs of a VPC, downloads and uploads videos to Amazon S3 through a single NAT gateway. The company is concerned about data transfer charges. What is the MOST cost-effective way to avoid the regional data transfer charges?",
+    "options": [
+      "Launch a NAT gateway in each Availability Zone.",
+      "Replace the NAT gateway with a NAT instance.",
+      "Implement a gateway VPC endpoint for Amazon S3.",
+      "Provision an EC2 Dedicated Host to run the EC2 instances."
+    ],
+    "correct": 2,
+    "explanation": "A gateway VPC endpoint for Amazon S3 has no hourly charge and no per-GB processing charge, and it routes traffic directly from private subnets, in any AZ of the VPC, to S3, eliminating the NAT gateway data processing fees and the cross-AZ transfer fees for reaching the single NAT gateway. Why the others are incorrect: A) One NAT gateway per AZ removes the cross-AZ fee but multiplies the fixed hourly cost and keeps the per-GB processing charge for data sent to S3. B) A NAT instance requires a continuously paid EC2 instance, manual administration, can become a network bottleneck for videos, and still generates cross-AZ traffic if it is in a single AZ. D) Dedicated Hosts are very expensive and do not change network routing or NAT gateway costs.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 28,
+      "round": "2/20",
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-18008456",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "vpc",
+        "service_name": "Amazon VPC",
+        "service_slug": "amazon-vpc"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "dynamodb",
+        "service_name": "Amazon DynamoDB",
+        "service_slug": "amazon-dynamodb"
+      }
+    ],
+    "tags": [
+      "gateway-endpoint",
+      "s3",
+      "dynamodb",
+      "sub-rede-privada"
+    ],
+    "question": "EC2 instances located in a private subnet (with no NAT gateway and no internet gateway) need to read and write data to an Amazon S3 bucket and an Amazon DynamoDB table in the same Region. The security policy prohibits traffic from leaving the AWS internal network, and the team wants to avoid additional hourly or per-gigabyte processing charges at the network layer. What is the ideal solution?",
+    "options": [
+      "Create interface VPC endpoints (AWS PrivateLink) for Amazon S3 and Amazon DynamoDB and associate restrictive security groups.",
+      "Create gateway VPC endpoints for Amazon S3 and Amazon DynamoDB and update the route table of the private subnet.",
+      "Deploy a NAT gateway in the public subnet and add a 0.0.0.0/0 route in the private subnet pointing to the NAT.",
+      "Configure an AWS Transit Gateway connecting the VPC directly to the public S3 and DynamoDB APIs."
+    ],
+    "correct": 1,
+    "explanation": "Gateway VPC endpoints support S3 and DynamoDB with no hourly or data traffic charges and work through route tables, inside the AWS network. Technical review note: Answer confirmed. S3 and DynamoDB now also support interface endpoints (PrivateLink), but they are billed per hour and per GB processed; only gateway endpoints have no additional charge, which is the criterion of the question.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 29,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado. Hoje o S3 e o DynamoDB também aceitam interface endpoints (PrivateLink), mas eles têm cobrança por hora e por GB processado; apenas os gateway endpoints não têm custo adicional, que é o critério da questão."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-e1878c94",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-sagemaker",
+        "service_name": "Amazon SageMaker",
+        "service_slug": "amazon-sagemaker"
+      },
+      {
+        "service_id": "amazon-quicksight",
+        "service_name": "Amazon QuickSight",
+        "service_slug": "amazon-quicksight"
+      }
+    ],
+    "tags": [
+      "sagemaker",
+      "quicksight",
+      "machine-learning",
+      "bi"
+    ],
+    "question": "A company wants to build and train ML models to detect purchasing trends in its online store and integrate them with a reporting platform to visualize the data in business intelligence dashboards. Which solution meets these requirements with the LEAST operational overhead?",
+    "options": [
+      "Use AWS Glue to create an ML transform to build and train models. Use Amazon OpenSearch Service to visualize the data.",
+      "Use a preconfigured ML AMI from the AWS Marketplace to build and train models. Use Amazon OpenSearch Service to visualize the data.",
+      "Use Amazon Forecast to build and train models. Use Amazon CloudWatch to visualize the data.",
+      "Use Amazon SageMaker to build and train models. Use Amazon QuickSight to visualize the data."
+    ],
+    "correct": 3,
+    "explanation": "Amazon SageMaker manages the entire ML model lifecycle and Amazon QuickSight provides serverless BI dashboards. Technical review note: Answer confirmed. Amazon Forecast has not been available to new customers since 07/29/2024 and CloudWatch is not a BI tool, which reinforces rejecting option C. Domain adjusted from Cost-Optimized to High-Performing: the criterion is least operational overhead in data analytics and ML, not cost optimization.",
+    "reference_url": "https://docs.aws.amazon.com/forecast/latest/dg/doc-history.html",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 30,
+      "round": "12/20",
+      "originalAnswer": "D",
+      "reviewStatus": "confirmed-with-notes",
+      "reclassifiedDomain": "Domínio ajustado de Custos para Alto Desempenho (o critério é menor sobrecarga operacional em análise de dados e ML, não otimização de custo).",
+      "reviewNotes": [
+        "Gabarito confirmado. O Amazon Forecast não está mais disponível para novos clientes desde 29/07/2024 e o CloudWatch não é uma ferramenta de BI, o que reforça a rejeição da alternativa C. Domínio ajustado de Custos para Alto Desempenho: o critério é menor sobrecarga operacional em análise de dados e ML, não otimização de custo."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-84bd2171",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-lake-formation",
+        "service_name": "AWS Lake Formation",
+        "service_slug": "aws-lake-formation"
+      },
+      {
+        "service_id": "aws-glue",
+        "service_name": "AWS Glue",
+        "service_slug": "aws-glue"
+      },
+      {
+        "service_id": "amazon-athena",
+        "service_name": "Amazon Athena",
+        "service_slug": "amazon-athena"
+      },
+      {
+        "service_id": "amazon-quicksight",
+        "service_name": "Amazon QuickSight",
+        "service_slug": "amazon-quicksight"
+      }
+    ],
+    "tags": [
+      "lake-formation",
+      "glue",
+      "parquet",
+      "athena",
+      "quicksight"
+    ],
+    "question": "A company generates batch data from several databases and must consolidate, process, and organize it in Amazon S3 buckets. Afterward, teams will run one-time queries and display KPIs in a BI tool. Which combination of steps has the LEAST operational overhead? (Select TWO)",
+    "options": [
+      "Use Amazon Athena for one-time queries. Use Amazon QuickSight to build KPI dashboards.",
+      "Use Amazon Managed Service for Apache Flink for one-time queries. Use Amazon QuickSight to build KPI dashboards.",
+      "Use AWS Glue to convert the data to JSON format and load it into multiple Amazon OpenSearch Service clusters.",
+      "Use AWS Lake Formation to create and manage a data lake. Use AWS Glue to catalog and extract the data and load it into Amazon S3 in Apache Parquet format."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "Lake Formation with Glue prepares the data lake in columnar Parquet format in S3 (D), and Athena with QuickSight deliver ad hoc SQL queries and KPI visualization serverlessly (A). Technical review note: Answer confirmed. Domain adjusted from Cost-Optimized to High-Performing: the criterion is least operational overhead in data ingestion, transformation, and analytics, not cost optimization.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 31,
+      "round": "13/20",
+      "originalAnswer": "A e D",
+      "reviewStatus": "confirmed-with-notes",
+      "reclassifiedDomain": "Domínio ajustado de Custos para Alto Desempenho (ingestão e transformação de dados com menor sobrecarga operacional).",
+      "reviewNotes": [
+        "Gabarito confirmado. Domínio ajustado de Custos para Alto Desempenho: o critério é menor sobrecarga operacional em ingestão, transformação e análise de dados, não otimização de custo."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-b779dff8",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "lambda",
+        "service_name": "AWS Lambda",
+        "service_slug": "aws-lambda"
+      },
+      {
+        "service_id": "dynamodb",
+        "service_name": "Amazon DynamoDB",
+        "service_slug": "amazon-dynamodb"
+      },
+      {
+        "service_id": "amazon-cognito",
+        "service_name": "Amazon Cognito",
+        "service_slug": "amazon-cognito"
+      },
+      {
+        "service_id": "aws-amplify",
+        "service_name": "AWS Amplify",
+        "service_slug": "aws-amplify"
+      },
+      {
+        "service_id": "amazon-api-gateway",
+        "service_name": "Amazon API Gateway",
+        "service_slug": "amazon-api-gateway"
+      }
+    ],
+    "tags": [
+      "serverless",
+      "cognito",
+      "amplify",
+      "api-gateway",
+      "lambda"
+    ],
+    "question": "A company wants to build a website whose traffic is unpredictable and may be idle for long periods. Only customers who have paid for a subscription can log in and use the web application. Which combination of steps is the MOST cost-effective? (Select THREE)",
+    "options": [
+      "Create an AWS Lambda function that retrieves user information from Amazon DynamoDB. Create an Amazon API Gateway endpoint for RESTful APIs that sends calls to Lambda.",
+      "Create an Amazon ECS service behind an ALB and use Amazon RDS for customer information. Create an API Gateway endpoint that sends calls to Lambda.",
+      "Create an Amazon Cognito user pool to authenticate users.",
+      "Use AWS Amplify to serve the frontend web content (HTML, CSS, and JS) with the integrated Amazon CloudFront configuration."
+    ],
+    "correct": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "The fully serverless stack (API Gateway, Lambda, DynamoDB, Cognito, and Amplify with CloudFront) incurs no idle charges when the site is inactive. Technical review note: Answer confirmed. Option B is internally inconsistent (ECS, ALB, and RDS combined with an API Gateway that sends calls to Lambda); the text was preserved as received.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 32,
+      "round": "16/20",
+      "originalAnswer": "A, C e D",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado. A alternativa B está internamente inconsistente (ECS, ALB e RDS combinados com um API Gateway que envia chamadas ao Lambda); o texto foi preservado como recebido."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-646ab431",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "s3",
+      "versionamento",
+      "protecao-contra-exclusao"
+    ],
+    "question": "A solutions architect must create a data storage location capable of handling different file formats of unknown sizes. The data must be highly available and protected against accidental deletion. Which solution meets the requirements and is the MOST cost-effective?",
+    "options": [
+      "Deploy a database using Amazon RDS and configure a Multi-AZ deployment for that database.",
+      "Deploy an Amazon S3 bucket and enable object versioning.",
+      "Deploy an Amazon DynamoDB table and enable global tables.",
+      "Deploy an Amazon S3 bucket and enable cross-Region replication (CRR)."
+    ],
+    "correct": 1,
+    "explanation": "Amazon S3 with versioning supports objects of any format and size and protects against accidental deletion, with data across multiple AZs in the same Region, without duplicating cost in another Region.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 33,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
+  },
+  {
+    "questionId": "saa-c03-59380d4e",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-snowball-edge",
+        "service_name": "AWS Snowball Edge",
+        "service_slug": "aws-snowball-edge"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "snowball-edge",
+      "migracao",
+      "transferencia-offline"
+    ],
+    "question": "A media company needs to migrate 70 TB of historical video files from its on-premises data center to Amazon S3 within a maximum of 10 days. The data center's internet link is only 100 Mbps and already runs at 80% utilization during business hours. What is the fastest and most cost-effective way to perform this migration without impacting the company's daily network operations?",
+    "options": [
+      "Configure AWS DataSync with compression enabled using the current internet link 24 hours a day.",
+      "Request a 10 Gbps AWS Direct Connect connection to perform the transfer in less than 48 hours.",
+      "Request an AWS Snowball Edge Storage Optimized physical device, copy the data locally in the data center, and ship it back to AWS to import into S3.",
+      "Use the aws s3 sync command with multipart upload over an AWS Site-to-Site VPN connection."
+    ],
+    "correct": 2,
+    "explanation": "AWS Snowball Edge works around the physical limitation of the 100 Mbps link, transporting the 70 TB offline within the 10-day window. Technical review note: Answer confirmed conceptually: 70 TB fits on a Snowball Edge Storage Optimized device, while the roughly 20 Mbps of free link capacity would take almost a year. Note: AWS Snowball Edge has not been available to new customers since 11/07/2025 and AWS announces end of support on 12/31/2026. AWS now recommends DataSync (online transfer) or AWS Data Transfer Terminal. The question was kept because AWS Snow Family is still listed among the in-scope services of the official SAA-C03 exam guide; review the item when AWS updates the guide.",
+    "reference_url": "https://docs.aws.amazon.com/snowball/latest/developer-guide/snowball-edge-availability-change.html",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 34,
+      "round": null,
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado conceitualmente. AWS Snowball Edge fechado para novos clientes desde 07/11/2025; fim de suporte anunciado para 31/12/2026. AWS Snow Family ainda consta no escopo do guia SAA-C03. Rever quando o guia for atualizado."
+      ],
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed.",
+      "serviceStatus": "retired-for-new-customers"
+    }
+  },
+  {
+    "questionId": "saa-c03-8ba8701f",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-ec2-spot-instances",
+        "service_name": "Amazon EC2 Spot Instances",
+        "service_slug": "amazon-ec2-spot-instances"
+      },
+      {
+        "service_id": "aws-savings-plans",
+        "service_name": "AWS Savings Plans",
+        "service_slug": "aws-savings-plans"
+      }
+    ],
+    "tags": [
+      "spot",
+      "savings-plans",
+      "modelos-de-compra",
+      "ec2"
+    ],
+    "question": "A company runs a data analytics application on Amazon EC2. The application has a predictable base load that must run 24/7 without interruption, requiring 4 m6i.xlarge instances. In addition, every night batch processing jobs run that are fault-tolerant, can be interrupted and resumed at any time, and require up to 20 additional instances for 3 hours. Which combination of EC2 purchase models offers the lowest cost?",
+    "options": [
+      "Purchase Compute Savings Plans for all 24 instances.",
+      "Use Savings Plans (or Reserved Instances) for the 4 base load instances and Spot Instances for the 20 batch processing instances.",
+      "Use On-Demand Instances for the 4 base load instances and Dedicated Hosts for the 20 nightly instances.",
+      "Use Spot Instances for both the 4 base load instances and the 20 batch processing instances."
+    ],
+    "correct": 1,
+    "explanation": "It combines Savings Plans or Reserved Instances for the predictable 24/7 load with Spot Instances for the interruption-tolerant nightly jobs.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 35,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed",
+      "licenseStatus": "not-cleared",
+      "licenseNote": "AWS Skill Builder Trivia material provided by the maintainer; usage and redistribution rights not clarified. Do not publish to main/GitHub Pages until confirmed."
+    }
   }
 ]

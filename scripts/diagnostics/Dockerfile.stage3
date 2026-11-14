@@ -1,0 +1,10 @@
+FROM node:24-bookworm-slim
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev --no-audit --no-fund
+COPY backend ./backend
+COPY data/taxonomy ./data/taxonomy
+COPY src/frontend/js/core/contracts ./src/frontend/js/core/contracts
+COPY src/frontend/js/data.js ./src/frontend/js/data.js
+COPY scripts/diagnostics/stage3-pglite-server.mjs scripts/diagnostics/stage3-http-load.mjs ./scripts/diagnostics/
+CMD ["node", "scripts/diagnostics/stage3-pglite-server.mjs"]

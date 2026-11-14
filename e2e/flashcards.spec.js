@@ -1,6 +1,24 @@
 import { expect, test } from "@playwright/test";
 import { installConsoleGuard, openAuthenticated } from "./helpers/app.js";
 
+test("card interaction is ready on deck initialization and remains bound once", async ({
+  page,
+}) => {
+  await openAuthenticated(page, "flashcards.html");
+  const card = page.locator("#flashcard-container");
+  await expect(card).toHaveAttribute("data-flip-bound", "true");
+  await page.evaluate(() => {
+    window.startFlashcards();
+    window.startFlashcards();
+  });
+  await card.press("Enter");
+  await expect(card).toHaveClass(/flipped/);
+  await card.press("Space");
+  await expect(card).not.toHaveClass(/flipped/);
+  await card.click();
+  await expect(card).toHaveClass(/flipped/);
+});
+
 test("flashcards show all certifications and switch the viewed deck", async ({
   page,
 }) => {

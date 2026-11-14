@@ -9,7 +9,10 @@ process.on('message', async (message) => {
     await closeDatabase();
     process.send({ closed: true });
   } else if (message === 'seed') {
-    const user = await createUser('ProductionPersistenceProbe');
+    const user = await createUser({
+      email: 'employee@a3data.test',
+      full_name: 'Production Persistence Probe',
+    });
     process.send({ userId: user.id, token: createSessionToken(user.id) });
   } else if (['SIGINT', 'SIGTERM'].includes(message)) {
     // Windows process.kill does not deliver POSIX signals. Exercise the same handler.

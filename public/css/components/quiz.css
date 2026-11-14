@@ -37,10 +37,11 @@
 /* ── Option Card (sistema legado app.js — .option-card) ────────────────── */
 
 .option-card {
-  transition: border-color var(--a3-transition-base),
-              background-color var(--a3-transition-base),
-              transform var(--a3-transition-fast),
-              box-shadow var(--a3-transition-base);
+  transition:
+    border-color var(--a3-transition-base),
+    background-color var(--a3-transition-base),
+    transform var(--a3-transition-fast),
+    box-shadow var(--a3-transition-base);
   border: 2px solid var(--border-theme);
   border-radius: var(--radius-xl);
   cursor: pointer;
@@ -185,6 +186,11 @@
 .a3-option:hover {
   border-color: var(--a3-tech-blue);
   background-color: var(--a3-surface-selected);
+}
+
+.a3-option:focus-visible {
+  outline: 3px solid var(--a3-tech-blue);
+  outline-offset: 2px;
 }
 
 .a3-option-letter {

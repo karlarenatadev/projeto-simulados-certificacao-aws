@@ -8,7 +8,10 @@ import {
   upsertUserByEmail,
 } from '../backend/database/db.js';
 import app from '../backend/api/server.js';
-import { createSessionToken, verifySessionToken } from '../backend/api/services/sessionToken.js';
+import {
+  createSessionToken,
+  verifySessionToken,
+} from '../backend/api/services/sessionToken.js';
 
 const suffix = Date.now();
 const adminEmail = `auth-admin-${suffix}@a3data.com.br`;
@@ -102,6 +105,46 @@ describe('auth token identity resolution', () => {
     expect(login.response.status).toBe(403);
   });
 
+  test('individual allowlist removal revokes API access without waiting for token expiry', async () => {
+    const previous = {
+      NODE_ENV: process.env.NODE_ENV,
+      AUTH_ALLOWED_DOMAINS: process.env.AUTH_ALLOWED_DOMAINS,
+      AUTH_ALLOWED_EMAILS: process.env.AUTH_ALLOWED_EMAILS,
+    };
+    process.env.NODE_ENV = 'staging';
+    process.env.AUTH_ALLOWED_DOMAINS = 'a3data.com.br';
+    process.env.AUTH_ALLOWED_EMAILS = adminEmail;
+    try {
+      const token = createSessionToken(admin.id);
+      const authorized = await request(baseUrl, '/api/auth/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      expect(authorized.response.status).toBe(200);
+
+      process.env.AUTH_ALLOWED_EMAILS = '';
+      const revoked = await request(baseUrl, '/api/auth/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      expect(revoked.response.status).toBe(403);
+    } finally {
+      for (const [name, value] of Object.entries(previous)) {
+        if (value === undefined) delete process.env[name];
+        else process.env[name] = value;
+      }
+    }
+  });
+
+  test('an expired server session is rejected over HTTP', async () => {
+    const token = createSessionToken(
+      student.id,
+      Math.floor(Date.now() / 1000) - 8 * 60 * 60 - 1,
+    );
+    const me = await request(baseUrl, '/api/auth/me', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    expect(me.response.status).toBe(401);
+  });
+
   test('authenticated roles reach pending according to RBAC', async () => {
     const adminLogin = await request(baseUrl, '/api/auth/login', {
       method: 'POST',
@@ -120,10 +163,14 @@ describe('auth token identity resolution', () => {
       headers: { Authorization: `Bearer ${adminLogin.body.data.access_token}` },
     });
     const validatorPending = await request(baseUrl, '/api/questions/pending', {
-      headers: { Authorization: `Bearer ${validatorLogin.body.data.access_token}` },
+      headers: {
+        Authorization: `Bearer ${validatorLogin.body.data.access_token}`,
+      },
     });
     const studentPending = await request(baseUrl, '/api/questions/pending', {
-      headers: { Authorization: `Bearer ${studentLogin.body.data.access_token}` },
+      headers: {
+        Authorization: `Bearer ${studentLogin.body.data.access_token}`,
+      },
     });
 
     expect(adminPending.response.status).toBe(200);

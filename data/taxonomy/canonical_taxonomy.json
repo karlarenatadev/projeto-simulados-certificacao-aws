@@ -2193,6 +2193,62 @@
         "AWS ACM",
         "AWS Certificate Manager"
       ]
+    },
+    {
+      "service_id": "aws-security-hub",
+      "service_slug": "aws-security-hub",
+      "service_name": "AWS Security Hub",
+      "aliases": [
+        "AWS Security Hub"
+      ]
+    },
+    {
+      "service_id": "amazon-appflow",
+      "service_slug": "amazon-appflow",
+      "service_name": "Amazon AppFlow",
+      "aliases": [
+        "Amazon AppFlow"
+      ]
+    },
+    {
+      "service_id": "amazon-fsx",
+      "service_slug": "amazon-fsx",
+      "service_name": "Amazon FSx",
+      "aliases": [
+        "Amazon FSx"
+      ]
+    },
+    {
+      "service_id": "aws-storage-gateway",
+      "service_slug": "aws-storage-gateway",
+      "service_name": "AWS Storage Gateway",
+      "aliases": [
+        "AWS Storage Gateway"
+      ]
+    },
+    {
+      "service_id": "amazon-athena",
+      "service_slug": "amazon-athena",
+      "service_name": "Amazon Athena",
+      "aliases": [
+        "Amazon Athena"
+      ]
+    },
+    {
+      "service_id": "amazon-quicksight",
+      "service_slug": "amazon-quicksight",
+      "service_name": "Amazon QuickSight",
+      "aliases": [
+        "Amazon QuickSight"
+      ]
+    },
+    {
+      "service_id": "aws-snowball-edge",
+      "service_slug": "aws-snowball-edge",
+      "service_name": "AWS Snowball Edge",
+      "aliases": [
+        "AWS Snowball Edge"
+      ]
     }
   ],
   "certifications": [

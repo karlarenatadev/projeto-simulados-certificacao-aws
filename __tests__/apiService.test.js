@@ -1,10 +1,10 @@
-import { jest } from "@jest/globals";
-import apiService from "../src/frontend/js/services/api.js";
-import { QuizEngine } from "../src/frontend/js/quizEngine.js";
-import { quizManager } from "../src/frontend/js/quizManager.js";
-import { userManager } from "../src/frontend/js/userManager.js";
-import { SessionManager } from "../src/frontend/js/core/sessionManager.js";
-import { storageManager } from "../src/frontend/js/storageManager.js";
+import { jest } from '@jest/globals';
+import apiService from '../src/frontend/js/services/api.js';
+import { QuizEngine } from '../src/frontend/js/quizEngine.js';
+import { quizManager } from '../src/frontend/js/quizManager.js';
+import { userManager } from '../src/frontend/js/userManager.js';
+import { SessionManager } from '../src/frontend/js/core/sessionManager.js';
+import { storageManager } from '../src/frontend/js/storageManager.js';
 
 function jsonResponse(body, status = 200) {
   return {
@@ -14,14 +14,14 @@ function jsonResponse(body, status = 200) {
   };
 }
 
-describe("apiService response normalization", () => {
+describe('apiService response normalization', () => {
   const originalFetch = global.fetch;
 
   beforeEach(() => {
     global.fetch = jest.fn();
-    jest.spyOn(console, "log").mockImplementation(() => {});
-    jest.spyOn(console, "warn").mockImplementation(() => {});
-    jest.spyOn(console, "error").mockImplementation(() => {});
+    jest.spyOn(console, 'log').mockImplementation(() => {});
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
     localStorage.clear();
     quizManager.currentQuizId = null;
     quizManager.currentUserId = null;
@@ -33,8 +33,8 @@ describe("apiService response normalization", () => {
     jest.restoreAllMocks();
   });
 
-  test("unwraps an API envelope and preserves metadata", async () => {
-    const questions = [{ id: "question-1" }];
+  test('unwraps an API envelope and preserves metadata', async () => {
+    const questions = [{ id: 'question-1' }];
     global.fetch.mockResolvedValue(
       jsonResponse({
         success: true,
@@ -53,15 +53,15 @@ describe("apiService response normalization", () => {
     expect(response.meta.count).toBe(1);
   });
 
-  test("Google transport failure is AUTH_NETWORK_ERROR, not invalid credential", async () => {
+  test('Google transport failure is AUTH_NETWORK_ERROR, not invalid credential', async () => {
     jest.useFakeTimers();
-    global.fetch.mockRejectedValueOnce(new TypeError("Failed to fetch"));
+    global.fetch.mockRejectedValueOnce(new TypeError('Failed to fetch'));
     try {
       await expect(
-        apiService.loginWithGoogle("opaque-fixture"),
+        apiService.loginWithGoogle('opaque-fixture'),
       ).rejects.toMatchObject({
         statusCode: 0,
-        details: { code: "AUTH_NETWORK_ERROR" },
+        details: { code: 'AUTH_NETWORK_ERROR' },
       });
     } finally {
       jest.clearAllTimers();
@@ -69,11 +69,11 @@ describe("apiService response normalization", () => {
     }
   });
 
-  test("preserves a direct response body", async () => {
-    const payload = { id: "record-1", data: { value: "domain data" } };
+  test('preserves a direct response body', async () => {
+    const payload = { id: 'record-1', data: { value: 'domain data' } };
     global.fetch.mockResolvedValue(jsonResponse(payload));
 
-    const response = await apiService.getQuestion("record-1");
+    const response = await apiService.getQuestion('record-1');
 
     expect(response).toMatchObject({
       success: true,
@@ -83,103 +83,130 @@ describe("apiService response normalization", () => {
     expect(response.meta).toBeUndefined();
   });
 
-  test("returns normalized user data to user login", async () => {
+  test('case simulator API methods send the authenticated session token', async () => {
+    SessionManager.persist({
+      user: {
+        id: 'case-user',
+        email: 'case-user@a3data.com.br',
+        role: 'STUDENT',
+      },
+      accessToken: 'synthetic-case-session',
+      tokenExpiresIn: 3600,
+      authenticationMode: 'online',
+      provider: 'google',
+    });
+    global.fetch.mockResolvedValue(jsonResponse({ success: true, data: [] }));
+
+    await apiService.getCaseDialogues('case/with-space');
+    await apiService.getAwsServices();
+    await apiService.evaluateCase('case/with-space', ['s3']);
+
+    expect(global.fetch).toHaveBeenCalledTimes(3);
+    for (const [url, options] of global.fetch.mock.calls) {
+      expect(options.headers.Authorization).toBe(
+        'Bearer synthetic-case-session',
+      );
+      expect(url).not.toContain('case/with-space');
+    }
+  });
+
+  test('returns normalized user data to user login', async () => {
     global.fetch.mockResolvedValue(
       jsonResponse(
         {
           success: true,
           data: {
-            id: "user-1",
-            email: "usuario@a3data.com.br",
-            nickname: "UsuarioA3",
-            role: "STUDENT",
+            id: 'user-1',
+            email: 'usuario@a3data.com.br',
+            nickname: 'UsuarioA3',
+            role: 'STUDENT',
           },
-          message: "Login realizado com sucesso.",
+          message: 'Login realizado com sucesso.',
         },
         200,
       ),
     );
 
     const apiResponse = await apiService.loginUser({
-      email: "usuario@a3data.com.br",
+      email: 'usuario@a3data.com.br',
     });
-    jest.spyOn(apiService, "loginUser").mockResolvedValue(apiResponse);
+    jest.spyOn(apiService, 'loginUser').mockResolvedValue(apiResponse);
 
-    const user = await userManager.login("usuario@a3data.com.br");
+    const user = await userManager.login('usuario@a3data.com.br');
 
-    expect(apiResponse.data.id).toBe("user-1");
-    expect(user.id).toBe("user-1");
-    expect(user.name).toBe("UsuarioA3");
+    expect(apiResponse.data.id).toBe('user-1');
+    expect(user.id).toBe('user-1');
+    expect(user.name).toBe('UsuarioA3');
     const session = JSON.parse(
-      localStorage.getItem("cloudacademy_session") || "null",
+      localStorage.getItem('cloudacademy_session') || 'null',
     );
-    expect(session?.user?.id).toBe("user-1");
+    expect(session?.user?.id).toBe('user-1');
   });
 
-  test("invalidates a stale online session without deleting user-scoped data", async () => {
+  test('invalidates a stale online session without deleting user-scoped data', async () => {
     SessionManager.persist({
-      user: { id: "stale-user", email: "stale@a3data.com.br", role: "ADMIN" },
-      accessToken: "stale-token",
-      authenticationMode: "online",
+      user: { id: 'stale-user', email: 'stale@a3data.com.br', role: 'ADMIN' },
+      accessToken: 'stale-token',
+      authenticationMode: 'online',
       expiresAt: new Date(Date.now() + 3600000).toISOString(),
     });
     storageManager.saveQuizResult({
-      certId: "clf-c02",
+      certId: 'clf-c02',
       score: 8,
       total: 10,
       percentage: 80,
     });
-    const historyKey = storageManager.getUserScopedKey("history");
-    expect(SessionManager.restore().authenticationMode).toBe("online");
+    const historyKey = storageManager.getUserScopedKey('history');
+    expect(SessionManager.restore().authenticationMode).toBe('online');
     global.fetch.mockResolvedValue(
       jsonResponse(
         {
-          error: "Usuário não encontrado ou desativado.",
+          error: 'Usuário não encontrado ou desativado.',
           status: 401,
         },
         401,
       ),
     );
 
-    await expect(apiService.getMe("stale-user")).rejects.toMatchObject({
+    await expect(apiService.getMe('stale-user')).rejects.toMatchObject({
       statusCode: 401,
     });
 
     expect(SessionManager.restore()?.authenticationMode).toBe(
-      "offline-expired",
+      'offline-expired',
     );
     expect(SessionManager.restore()?.accessToken).toBeNull();
     expect(localStorage.getItem(historyKey)).not.toBeNull();
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
-  test("403 preserves a valid remote session and does not retry", async () => {
+  test('403 preserves a valid remote session and does not retry', async () => {
     SessionManager.persist({
-      user: { id: "forbidden-user", role: "STUDENT" },
-      accessToken: "fixture-token",
-      authenticationMode: "online",
+      user: { id: 'forbidden-user', role: 'STUDENT' },
+      accessToken: 'fixture-token',
+      authenticationMode: 'online',
       expiresAt: new Date(Date.now() + 3600000).toISOString(),
     });
     const before = SessionManager.restore();
-    global.fetch.mockResolvedValue(jsonResponse({ error: "Forbidden" }, 403));
-    await expect(apiService.getMe("forbidden-user")).rejects.toMatchObject({
+    global.fetch.mockResolvedValue(jsonResponse({ error: 'Forbidden' }, 403));
+    await expect(apiService.getMe('forbidden-user')).rejects.toMatchObject({
       statusCode: 403,
     });
     expect(SessionManager.restore()).toMatchObject({
       user: before.user,
       accessToken: before.accessToken,
       expiresAt: before.expiresAt,
-      authenticationMode: "online",
+      authenticationMode: 'online',
     });
     expect(SessionManager.restore().sessionExpired).not.toBe(true);
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
-  test("a delayed 401 for account A cannot expire account B", async () => {
+  test('a delayed 401 for account A cannot expire account B', async () => {
     SessionManager.persist({
-      user: { id: "account-a", role: "STUDENT" },
-      accessToken: "token-a",
-      authenticationMode: "online",
+      user: { id: 'account-a', role: 'STUDENT' },
+      accessToken: 'token-a',
+      authenticationMode: 'online',
       expiresAt: new Date(Date.now() + 3600000).toISOString(),
     });
     let resolveResponse;
@@ -190,28 +217,28 @@ describe("apiService response normalization", () => {
         }),
     );
 
-    const pending = apiService.getMe("account-a");
+    const pending = apiService.getMe('account-a');
     expect(resolveResponse).toEqual(expect.any(Function));
     SessionManager.persist({
-      user: { id: "account-b", role: "STUDENT" },
-      accessToken: "token-b",
-      authenticationMode: "online",
+      user: { id: 'account-b', role: 'STUDENT' },
+      accessToken: 'token-b',
+      authenticationMode: 'online',
       expiresAt: new Date(Date.now() + 3600000).toISOString(),
     });
     resolveResponse(
-      jsonResponse({ error: "Credential invalid", status: 401 }, 401),
+      jsonResponse({ error: 'Credential invalid', status: 401 }, 401),
     );
 
     await expect(pending).rejects.toMatchObject({ statusCode: 401 });
     expect(SessionManager.restore()).toMatchObject({
-      user: { id: "account-b" },
-      accessToken: "token-b",
-      authenticationMode: "online",
+      user: { id: 'account-b' },
+      accessToken: 'token-b',
+      authenticationMode: 'online',
     });
   });
 
-  test("preserves a direct list response", async () => {
-    const questions = [{ id: "question-1" }];
+  test('preserves a direct list response', async () => {
+    const questions = [{ id: 'question-1' }];
     global.fetch.mockResolvedValue(jsonResponse(questions));
 
     const response = await apiService.loadQuestions();
@@ -220,76 +247,76 @@ describe("apiService response normalization", () => {
     expect(response.data).toHaveLength(1);
   });
 
-  test("unwraps quiz results and leaderboard lists", async () => {
+  test('unwraps quiz results and leaderboard lists', async () => {
     global.fetch
       .mockResolvedValueOnce(
         jsonResponse({
           success: true,
-          data: { quiz_id: "quiz-1", percentage: 80 },
+          data: { quiz_id: 'quiz-1', percentage: 80 },
         }),
       )
       .mockResolvedValueOnce(
         jsonResponse({
           success: true,
-          data: [{ id: "user-1", best_score: 90 }],
+          data: [{ id: 'user-1', best_score: 90 }],
           count: 1,
         }),
       );
 
-    const results = await apiService.getQuizResults("quiz-1");
+    const results = await apiService.getQuizResults('quiz-1');
     const leaderboard = await apiService.getLeaderboard();
 
-    expect(results.data).toEqual({ quiz_id: "quiz-1", percentage: 80 });
+    expect(results.data).toEqual({ quiz_id: 'quiz-1', percentage: 80 });
     expect(leaderboard.data).toHaveLength(1);
     expect(leaderboard.count).toBe(1);
   });
 
-  test("returns normalized quiz data to quiz initialization", async () => {
+  test('returns normalized quiz data to quiz initialization', async () => {
     global.fetch.mockResolvedValue(
       jsonResponse(
         {
           success: true,
           data: {
-            quiz_id: "quiz-1",
-            questions: [{ id: "question-1" }],
+            quiz_id: 'quiz-1',
+            questions: [{ id: 'question-1' }],
             total_questions: 1,
           },
-          message: "Quiz started successfully",
+          message: 'Quiz started successfully',
         },
         201,
       ),
     );
 
     const apiResponse = await apiService.startQuiz({
-      user_id: "user-1",
-      certification: "clf-c02",
+      user_id: 'user-1',
+      certification: 'clf-c02',
       num_questions: 1,
     });
-    jest.spyOn(apiService, "startQuiz").mockResolvedValue(apiResponse);
+    jest.spyOn(apiService, 'startQuiz').mockResolvedValue(apiResponse);
 
-    quizManager.currentUserId = "user-1";
-    const quiz = await quizManager.startQuiz("clf-c02", 1);
+    quizManager.currentUserId = 'user-1';
+    const quiz = await quizManager.startQuiz('clf-c02', 1);
 
-    expect(apiResponse.data.quiz_id).toBe("quiz-1");
+    expect(apiResponse.data.quiz_id).toBe('quiz-1');
     expect(quiz).toEqual({
-      quizId: "quiz-1",
-      questions: [{ id: "question-1" }],
+      quizId: 'quiz-1',
+      questions: [{ id: 'question-1' }],
       totalQuestions: 1,
       fromAPI: true,
     });
   });
 
-  test("keeps the JSON fallback working when the API is unavailable", async () => {
+  test('keeps the JSON fallback working when the API is unavailable', async () => {
     const fallbackQuestions = [
       {
-        id: "local-question",
-        domain: "cloud",
-        difficulty: "easy",
-        question: "Which AWS service provides object storage?",
-        options: ["EC2", "S3"],
+        id: 'local-question',
+        domain: 'cloud',
+        difficulty: 'easy',
+        question: 'Which AWS service provides object storage?',
+        options: ['EC2', 'S3'],
         correct: 1,
-        explanation: "Amazon S3 provides object storage.",
-        validation: { status: "validated" },
+        explanation: 'Amazon S3 provides object storage.',
+        validation: { status: 'validated' },
       },
     ];
 
@@ -297,17 +324,17 @@ describe("apiService response normalization", () => {
 
     const engine = new QuizEngine();
     const result = await engine.loadQuestions(
-      "clf-c02",
-      [{ id: "cloud" }],
-      { quantity: 1, difficulty: "all", topic: "", mode: "exam" },
-      "pt",
+      'clf-c02',
+      [{ id: 'cloud' }],
+      { quantity: 1, difficulty: 'all', topic: '', mode: 'exam' },
+      'pt',
     );
 
     expect(result).toEqual({ success: true, totalQuestions: 1 });
     expect(engine.state.questions).toHaveLength(1);
     expect(global.fetch).toHaveBeenNthCalledWith(
       1,
-      "data/questions/clf-c02.json",
+      'data/questions/clf-c02.json',
     );
   });
 });

@@ -4,6 +4,10 @@
  */
 
 import { PGlite } from "@electric-sql/pglite";
+import {
+  measureAsyncOperation,
+  measureDatabaseQuery,
+} from "./performanceMetrics.js";
 import { config as loadEnvironment } from "dotenv";
 import { readFileSync } from "fs";
 import { dirname, isAbsolute, join, resolve } from "path";
@@ -268,7 +272,9 @@ function isDebugEnabled() {
 
 function debugQuery(query, params) {
   if (
+    process.env.DB_ENGINE === "postgres" ||
     process.env.DB_ENGINE === "postgres-test" ||
+    process.env.NODE_ENV === "staging" ||
     process.env.NODE_ENV === "production" ||
     !isDebugEnabled()
   ) {
@@ -284,8 +290,14 @@ function rowsFromResult(result) {
 
 async function queryRows(executor, query, params = []) {
   debugQuery(query, params);
-  const result = await executor.query(query, params);
+  const result = await measureDatabaseQuery(executor, query, params);
   return rowsFromResult(result);
+}
+
+function measureTransaction(label, database, operation) {
+  return measureAsyncOperation(label, () =>
+    database.transaction(operation),
+  );
 }
 
 function resolveDatabaseOptions(options = {}) {
@@ -411,7 +423,7 @@ export async function checkDatabaseReady() {
  */
 export async function initializeDatabase(options = {}) {
   const engine = process.env.DB_ENGINE || "pglite";
-  if (!["pglite", "postgres-test"].includes(engine)) {
+  if (!["pglite", "postgres-test", "postgres"].includes(engine)) {
     throw new Error("Invalid database engine");
   }
   if (db && !db.closed) {
@@ -434,6 +446,15 @@ export async function initializeDatabase(options = {}) {
         });
       }
       db = runtime;
+      return db;
+    }
+    if (engine === "postgres") {
+      const { createOperationalPostgresRuntime } = await import(
+        "./postgres/operationalRuntime.js"
+      );
+      // Pool creation is lazy. The HTTP process may become live while the DB is
+      // unavailable; readiness remains 503 until schema/privileges recover.
+      db = createOperationalPostgresRuntime();
       return db;
     }
     const databaseOptions = resolveDatabaseOptions(options);
@@ -3174,7 +3195,7 @@ export async function createQuizWithQuestions({
   }
   const database = getDatabase();
 
-  return database.transaction(async (transaction) => {
+  return measureTransaction("transaction.createQuiz", database, async (transaction) => {
     const questions = await queryRows(
       transaction,
       `
@@ -3390,7 +3411,7 @@ export async function recordAnswer(
   try {
     const database = getDatabase();
 
-    return await database.transaction(async (transaction) => {
+    return await measureTransaction("transaction.recordAnswer", database, async (transaction) => {
       const quizParams = user_id ? [quiz_id, user_id] : [quiz_id];
       const quizRows = await queryRows(
         transaction,
@@ -3569,7 +3590,7 @@ export async function completeQuiz(quizId, userId) {
   const database = getDatabase();
 
   try {
-    return await database.transaction(async (transaction) => {
+    return await measureTransaction("transaction.completeQuiz", database, async (transaction) => {
       const quizRows = await queryRows(
         transaction,
         `

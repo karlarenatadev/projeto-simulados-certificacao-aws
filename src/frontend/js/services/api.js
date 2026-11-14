@@ -688,6 +688,17 @@ export const apiService = {
     }
   },
 
+  async getCaseDialogues(caseId) {
+    return fetchWithRetry(`/api/cases/${encodeURIComponent(caseId)}/dialogues`);
+  },
+
+  async evaluateCase(caseId, selectedServiceIds) {
+    return fetchWithRetry(`/api/cases/${encodeURIComponent(caseId)}/evaluate`, {
+      method: "POST",
+      body: JSON.stringify({ selected_service_ids: selectedServiceIds }),
+    });
+  },
+
   async markCaseComplete(caseId, _userId) {
     try {
       return await fetchWithRetry(

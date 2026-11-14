@@ -4,6 +4,7 @@ import { NotificationService } from "../services/notificationService.js";
 import { ModalService } from "../services/modalService.js";
 import { getCurrentLanguage } from "../core/languageManager.js";
 import { t } from "../i18n/useTranslation.js";
+import apiService from "../services/api.js";
 
 function createTextElement(tagName, className, value) {
   const element = document.createElement(tagName);
@@ -66,17 +67,16 @@ export class SimulatorEngineClient {
   }
 
   async loadCaseData() {
-    let response = await fetch("./api/cases?limit=100").catch(() => null);
-    if (!response || !response.ok) {
-      response = await fetch("./data/cases/architecture_cases.json").catch(
-        () => null,
-      );
+    let cases;
+    try {
+      const response = await apiService.getCases({ limit: 100 });
+      cases = response.data;
+    } catch {
+      const response = await fetch(
+        "./data/cases/architecture_cases.json",
+      ).catch(() => null);
+      if (response?.ok) cases = await response.json();
     }
-    if (!response || !response.ok) {
-      throw new Error("Case catalog unavailable");
-    }
-    const data = await response.json();
-    const cases = Array.isArray(data) ? data : data?.data;
     if (!Array.isArray(cases)) {
       throw new Error("Invalid case catalog format");
     }
@@ -91,15 +91,14 @@ export class SimulatorEngineClient {
   }
 
   async loadDialogues() {
-    const res = await fetch(`/api/cases/${this.caseId}/dialogues`).catch(
-      () => null,
-    );
-    if (res && res.ok) {
-      const data = await res.json();
-      if (data.success) {
-        this.dialogues = data.data;
+    try {
+      const response = await apiService.getCaseDialogues(this.caseId);
+      if (response.success) {
+        this.dialogues = response.data;
         return;
       }
+    } catch {
+      // Offline and local-first sessions use the versioned case content below.
     }
     // Fallback: build dialogues from the JSON's questions
     if (this.caseData.questions) {
@@ -114,13 +113,14 @@ export class SimulatorEngineClient {
   }
 
   async loadServices() {
-    const res = await fetch("/api/services").catch(() => null);
-    if (res && res.ok) {
-      const data = await res.json();
-      if (data.success) {
-        this.services = data.data;
+    try {
+      const response = await apiService.getAwsServices();
+      if (response.success) {
+        this.services = response.data;
         return;
       }
+    } catch {
+      // The selected case contains its own local service choices.
     }
     // Fallback: just use the services listed in the case itself
     // In a real app we'd load all AWS services as distractors
@@ -341,21 +341,14 @@ export class SimulatorEngineClient {
     }
 
     try {
-      const res = await fetch(`/api/cases/${this.caseId}/evaluate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          selected_service_ids: Array.from(this.selectedServices),
-        }),
-      }).catch(() => null);
-
-      if (res && res.ok) {
-        const data = await res.json();
-        if (data.success) {
-          this.renderEvaluation(data.data);
-          this.saveState(data.data);
-          return;
-        }
+      const response = await apiService.evaluateCase(
+        this.caseId,
+        Array.from(this.selectedServices),
+      );
+      if (response.success) {
+        this.renderEvaluation(response.data);
+        this.saveState(response.data);
+        return;
       }
 
       // Local Fallback Evaluation

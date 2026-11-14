@@ -161,7 +161,9 @@ function showLoginUI() {
     const errorMsg = document.getElementById("login-error-msg");
     const devEmailSection = document.getElementById("dev-email-login-section");
     const googleSection = document.getElementById("google-login-section");
-    const localFirstSection = document.getElementById("local-first-login-section");
+    const localFirstSection = document.getElementById(
+      "local-first-login-section",
+    );
     const localFirstButton = document.getElementById("local-first-login-btn");
 
     if (!overlay || !form) {
@@ -176,7 +178,10 @@ function showLoginUI() {
     const localAccess = localFirst || hybrid;
     const googleAvailable =
       !devEmailEnabled && !localFirst && (!hybrid || isGoogleLoginConfigured());
-    devEmailSection?.classList.toggle("hidden", !devEmailEnabled || localAccess);
+    devEmailSection?.classList.toggle(
+      "hidden",
+      !devEmailEnabled || localAccess,
+    );
     googleSection?.classList.toggle("hidden", !googleAvailable);
     localFirstSection?.classList.toggle("hidden", !localAccess);
     if (hybrid && !googleAvailable) {
@@ -900,17 +905,6 @@ function wireUIActions() {
   // initLeftSidebarToggleShell() em shell.js, que usa a chave "sidebar_closed".
   // ─────────────────────────────────────────────────────────────────────────
 
-  const flashcardContainer = document.getElementById("flashcard-container");
-  if (flashcardContainer) {
-    flashcardContainer.addEventListener("click", flipFlashcard);
-    flashcardContainer.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        flipFlashcard();
-      }
-    });
-  }
-
   // Atalho legado de confirmação, mantido para telas que não usam o fluxo
   // simplificado (por exemplo, o Diagnóstico dedicado).
   document.addEventListener("keydown", (event) => {
@@ -1621,9 +1615,9 @@ function loadQuestionUI() {
       ? uiState.tempSelectedAnswer
       : [uiState.tempSelectedAnswer];
     selected.forEach((index) => {
-      document
-        .getElementById(`option-${index}`)
-        ?.classList.add("a3-option-selected");
+      const option = document.getElementById(`option-${index}`);
+      option?.classList.add("a3-option-selected");
+      option?.setAttribute("aria-checked", "true");
     });
   }
 
@@ -1681,10 +1675,32 @@ function renderOptionsUI(question) {
   container.innerHTML = "";
   const isMulti = isMultiSelectQuestion(question);
 
+  // Semântica de grupo para tecnologias assistivas (radio = única, checkbox = múltipla).
+  container.setAttribute("role", isMulti ? "group" : "radiogroup");
+  container.setAttribute("aria-labelledby", "question-text");
+
+  const syncOptionAria = () => {
+    container.querySelectorAll(".a3-option").forEach((option) => {
+      option.setAttribute(
+        "aria-checked",
+        String(option.classList.contains("a3-option-selected")),
+      );
+    });
+  };
+
   question.options.forEach((opt, idx) => {
     const card = document.createElement("div");
     card.id = `option-${idx}`;
     card.className = "a3-option";
+    card.setAttribute("role", isMulti ? "checkbox" : "radio");
+    card.setAttribute("aria-checked", "false");
+    card.tabIndex = 0;
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        card.click();
+      }
+    });
 
     const letter = document.createElement("div");
     letter.className = "a3-option-letter";
@@ -1727,6 +1743,8 @@ function renderOptionsUI(question) {
           }
         }
       }
+
+      syncOptionAria();
 
       if (
         shouldAutoSubmitQuizAnswer({
