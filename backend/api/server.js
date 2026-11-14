@@ -85,7 +85,10 @@ app.use((req, res, next) => {
   const requestId = randomUUID();
   req.requestId = requestId;
   res.setHeader('X-Request-Id', requestId);
-  if (process.env.DB_ENGINE !== 'postgres') {
+  const structuredOperationalLogs =
+    ['staging', 'production'].includes(process.env.NODE_ENV) ||
+    process.env.DB_ENGINE === 'postgres';
+  if (!structuredOperationalLogs) {
     console.log(`[${new Date().toISOString()}] ${req.method}`);
     return next();
   }
@@ -240,7 +243,11 @@ app.use((err, req, res, _next) => {
     (['connection', 'authentication', 'timeout'].includes(err.kind) ||
       err.code === 'PG_POOL_CLOSED');
   const statusCode = unavailable ? 503 : err.statusCode || err.status || 500;
-  if (statusCode >= 500 && process.env.DB_ENGINE === 'postgres') {
+  if (
+    statusCode >= 500 &&
+    (process.env.DB_ENGINE === 'postgres' ||
+      ['staging', 'production'].includes(process.env.NODE_ENV))
+  ) {
     const errorName =
       typeof err?.name === 'string' &&
       /^[A-Za-z][A-Za-z0-9]{0,63}$/.test(err.name)

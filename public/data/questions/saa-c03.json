@@ -9916,5 +9916,1779 @@
       "validatorVersion": "1.0",
       "createdBy": "A3 Cloud Academy"
     }
+  },
+  {
+    "questionId": "saa-c03-38a20fc7",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-guardduty",
+        "service_name": "Amazon GuardDuty",
+        "service_slug": "amazon-guardduty"
+      },
+      {
+        "service_id": "aws-security-hub",
+        "service_name": "AWS Security Hub",
+        "service_slug": "aws-security-hub"
+      }
+    ],
+    "tags": [
+      "guardduty",
+      "security-hub",
+      "deteccao-de-ameacas"
+    ],
+    "question": "Um produto é executado em um grupo do Auto Scaling atrás de um NLB e armazena objetos no Amazon S3. Após ataques recentes, é preciso monitorar continuamente atividades maliciosas na conta, nas cargas de trabalho e no acesso ao S3, e vê-las em um painel único. Qual solução atende a esses requisitos?",
+    "options": [
+      "Configurar o Amazon Macie para monitorar e reportar as descobertas ao AWS Config.",
+      "Configurar o Amazon Inspector para monitorar e reportar as descobertas ao AWS CloudTrail.",
+      "Configurar o Amazon GuardDuty para monitorar e reportar as descobertas ao AWS Security Hub.",
+      "Configurar o AWS Config para monitorar e reportar as descobertas ao Amazon EventBridge."
+    ],
+    "correct": 2,
+    "explanation": "O Amazon GuardDuty é o serviço de detecção contínua de ameaças que analisa logs do CloudTrail, VPC Flow Logs e eventos de dados do S3 para identificar comportamentos maliciosos na conta e nas cargas de trabalho. O AWS Security Hub agrega e centraliza os alertas de segurança em um painel único. Por que as outras estão incorretas: A) O Amazon Macie descobre dados sensíveis (PII) no S3, não monitora ataques em cargas de trabalho ou contas, e o AWS Config avalia conformidade de configuração de recursos. B) O Amazon Inspector faz varredura de vulnerabilidades de software e rede em EC2, ECR e Lambda, e o CloudTrail não é um painel agregador de descobertas de segurança. D) O AWS Config rastreia alterações de configuração de recursos, não atividades maliciosas de intrusão.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 1,
+      "round": "6/20",
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-8b4ddc5b",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-waf",
+        "service_name": "AWS WAF",
+        "service_slug": "aws-waf"
+      },
+      {
+        "service_id": "amazon-elastic-load-balancer",
+        "service_name": "Amazon Elastic Load Balancer",
+        "service_slug": "amazon-elastic-load-balancer"
+      }
+    ],
+    "tags": [
+      "waf",
+      "ip-set",
+      "alb"
+    ],
+    "question": "Uma aplicação em EC2 atrás de um ALB expõe serviços HTTPS (porta 443) a milhares de lojas de varejo pela internet. A equipe de segurança quer restringir o acesso apenas aos endereços IP registrados pelas lojas. O que o arquiteto de soluções deve fazer?",
+    "options": [
+      "Associar uma ACL web do AWS WAF ao ALB. Usar conjuntos de regras de IP para filtrar o tráfego e incluir os endereços IP registrados.",
+      "Implementar o AWS Firewall Manager para gerenciar a ACL. Configurar regras de firewall para restringir o tráfego ao ALB e incluir os endereços IP registrados.",
+      "Armazenar os endereços IP em uma tabela do Amazon DynamoDB. Configurar uma função de autorização do AWS Lambda no ALB para validar os IPs das solicitações recebidas.",
+      "Configurar a ACL de rede na sub-rede da interface pública do ALB. Adicionar regras de entrada para cada endereço IP registrado."
+    ],
+    "correct": 0,
+    "explanation": "O AWS WAF suporta IP Sets que armazenam até 10.000 endereços ou blocos IP em uma única regra, e a Web ACL é associada diretamente ao Application Load Balancer. Por que as outras estão incorretas: B) O AWS Firewall Manager gerencia políticas de segurança em múltiplas contas do AWS Organizations, o que é excessivo para proteger um único ALB. C) O ALB não possui funções de autorização Lambda nativas como o API Gateway (no ALB o Lambda atua apenas como target, não como authorizer), além de gerar alta sobrecarga de desenvolvimento e custo. D) Network ACLs e security groups têm limites baixos de regras (valores padrão de 20 a 40 por NACL e 60 por security group), incapazes de acomodar milhares de endereços IP individuais. Nota de revisão técnica: Gabarito confirmado. Um IP set do AWS WAF comporta até 10.000 endereços ou intervalos CIDR. Os limites citados para NACL e security groups são valores padrão de cota, ajustáveis dentro dos limites da AWS; a conclusão não muda.",
+    "reference_url": "https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-ipset-match.html",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 2,
+      "round": "3/20",
+      "originalAnswer": "A",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado. Um IP set do AWS WAF comporta até 10.000 endereços ou intervalos CIDR. Os limites citados para NACL e security groups são valores padrão de cota, ajustáveis dentro dos limites da AWS; a conclusão não muda."
+      ]
+    }
+  },
+  {
+    "questionId": "saa-c03-ea9d91e6",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "amazon-macie",
+        "service_name": "Amazon Macie",
+        "service_slug": "amazon-macie"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "aws-lake-formation",
+        "service_name": "AWS Lake Formation",
+        "service_slug": "aws-lake-formation"
+      }
+    ],
+    "tags": [
+      "macie",
+      "pii",
+      "data-lake"
+    ],
+    "question": "Uma empresa quer garantir que um bucket do Amazon S3 de seu data lake do AWS Lake Formation não contenha dados confidenciais. Ela precisa descobrir informações de identificação pessoal (PII) e financeiras, como números de passaporte e de cartão de crédito. Qual solução atende a esses requisitos?",
+    "options": [
+      "Configurar o AWS Audit Manager e selecionar o padrão PCI DSS para realizar a auditoria.",
+      "Configurar o inventário no bucket do S3 e usar o Amazon Athena para consultar se há informações confidenciais.",
+      "Configurar o Amazon Macie para executar um trabalho de descoberta de dados confidenciais com identificadores gerenciados para os tipos de dados necessários.",
+      "Usar o Amazon S3 Select para executar um relatório em todo o bucket do S3."
+    ],
+    "correct": 2,
+    "explanation": "O Amazon Macie usa machine learning e correspondência de padrões (managed data identifiers) para localizar automaticamente dados PII e financeiros em buckets do Amazon S3. Por que as outras estão incorretas: A) O Audit Manager coleta evidências de conformidade de auditoria, não inspeciona objetos no S3. B) O S3 Inventory lista apenas metadados dos objetos, não o conteúdo. D) O S3 Select executa consultas SQL em objetos individuais, não faz varredura automatizada de PII no bucket inteiro.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 3,
+      "round": "20/20",
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-83696396",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "hard",
+    "services": [
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "aws-kms",
+        "service_name": "AWS KMS",
+        "service_slug": "aws-kms"
+      }
+    ],
+    "tags": [
+      "object-lock",
+      "kms",
+      "retencao",
+      "criptografia"
+    ],
+    "question": "Uma empresa deve armazenar contratos por 5 anos sem que sejam sobrescritos ou excluídos. Eles devem ser criptografados em repouso, com rotação automática anual das chaves. Qual combinação de etapas atende a esses requisitos com a MENOR sobrecarga operacional? (Selecione DUAS)",
+    "options": [
+      "Armazenar os documentos no Amazon S3. Usar o S3 Object Lock no modo de governança.",
+      "Armazenar os documentos no Amazon S3. Usar o S3 Object Lock no modo de conformidade.",
+      "Usar criptografia no lado do servidor com chaves gerenciadas pelo Amazon S3 (SSE-S3). Configurar a rotação de chaves.",
+      "Usar criptografia no lado do servidor com chaves gerenciadas pelo cliente do AWS KMS. Configurar a rotação de chaves."
+    ],
+    "correct": [
+      1,
+      3
+    ],
+    "explanation": "O modo de conformidade (Compliance) do S3 Object Lock impede que qualquer usuário, incluindo o root, exclua ou sobrescreva os contratos durante os 5 anos. As chaves gerenciadas pelo cliente no AWS KMS (CMK) permitem ativar a rotação automática anual. Por que as outras estão incorretas: A) O modo de governança permite que usuários com permissões específicas contornem o bloqueio. C) O SSE-S3 usa chaves gerenciadas pela AWS e não permite ao cliente configurar a rotação de chaves.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 4,
+      "round": "18/20",
+      "originalAnswer": "B e D",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-20998f47",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-organizations",
+        "service_name": "AWS Organizations",
+        "service_slug": "aws-organizations"
+      }
+    ],
+    "tags": [
+      "scp",
+      "organizations",
+      "governanca"
+    ],
+    "question": "Uma equipe de segurança quer limitar o acesso a serviços ou ações específicas em todas as contas de uma grande organização no AWS Organizations. A solução deve ser escalável e ter um ponto único para manter as permissões. O que o arquiteto de soluções deve fazer?",
+    "options": [
+      "Criar uma ACL para fornecer acesso aos serviços ou ações.",
+      "Criar um grupo de segurança para permitir contas e anexá-lo a grupos de usuários.",
+      "Criar funções entre contas em cada conta para negar o acesso aos serviços ou ações.",
+      "Criar uma política de controle de serviço (SCP) na unidade organizacional raiz para negar o acesso aos serviços ou ações."
+    ],
+    "correct": 3,
+    "explanation": "As Service Control Policies (SCPs) aplicadas na raiz do AWS Organizations restringem de forma centralizada e escalável quais ações e serviços podem ser usados em todas as contas-membro. Por que as outras estão incorretas: A e B) ACLs e security groups são controles de rede e armazenamento, não de governança de APIs em várias contas. C) Criar IAM roles manualmente em cada conta não oferece um ponto único de manutenção.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 5,
+      "round": "14/20",
+      "originalAnswer": "D",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-981cb51e",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "vpc",
+        "service_name": "Amazon VPC",
+        "service_slug": "amazon-vpc"
+      },
+      {
+        "service_id": "security-groups",
+        "service_name": "Security Groups",
+        "service_slug": "security-groups"
+      },
+      {
+        "service_id": "ec2",
+        "service_name": "Amazon EC2",
+        "service_slug": "amazon-ec2"
+      }
+    ],
+    "tags": [
+      "security-groups",
+      "tres-camadas",
+      "sub-redes"
+    ],
+    "question": "Um arquiteto de soluções precisa projetar um ambiente seguro para recursos da AWS que estão sendo implantados em instâncias do Amazon EC2 em uma VPC. A solução deve comportar uma arquitetura de três níveis que consiste em servidores web, servidores de aplicações e um cluster de banco de dados. A VPC deve permitir que os recursos na camada da web sejam acessíveis pela internet apenas com o protocolo HTTPS. Qual combinação de ações atenderia a esses requisitos? (Selecione DUAS)",
+    "options": [
+      "Criar um grupo de segurança de servidor da web que permita solicitações HTTPS da internet. Criar um grupo de segurança do servidor de aplicações que permita solicitações somente do grupo de segurança da web. Criar um grupo de segurança do cluster de banco de dados que permita conexões TCP do grupo de segurança da aplicação somente na porta do banco de dados.",
+      "Criar um grupo de segurança de servidor da web que permita todo tráfego da internet. Criar um grupo de segurança do servidor de aplicações que permita solicitações somente do Amazon API Gateway na porta da aplicação. Criar um grupo de segurança do cluster de banco de dados que permita conexões TCP do grupo de segurança da aplicação somente na porta do banco de dados.",
+      "Anexar o Amazon API Gateway à VPC. Criar sub-redes privadas para as camadas da web, da aplicação e do banco de dados.",
+      "Anexar um gateway da internet à VPC. Criar sub-redes públicas para a camada da web. Criar sub-redes privadas para as camadas da aplicação e do banco de dados.",
+      "Anexar uma gateway privada virtual à VPC. Criar sub-redes públicas para as camadas da web e da aplicação. Criar sub-redes privadas para a camada do banco de dados."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "O encadeamento de security groups garante que cada camada aceite tráfego apenas da camada imediatamente anterior (A), enquanto o internet gateway com sub-rede pública na camada web e sub-redes privadas nas camadas de aplicação e banco de dados isolam a infraestrutura interna (D).",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 6,
+      "round": null,
+      "originalAnswer": "A e D",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-8dfb7b1e",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "aws-certificate-manager",
+        "service_name": "AWS Certificate Manager",
+        "service_slug": "aws-certificate-manager"
+      },
+      {
+        "service_id": "amazon-elastic-load-balancer",
+        "service_name": "Amazon Elastic Load Balancer",
+        "service_slug": "amazon-elastic-load-balancer"
+      }
+    ],
+    "tags": [
+      "acm",
+      "tls",
+      "alb",
+      "certificados"
+    ],
+    "question": "Uma empresa financeira está desenvolvendo um aplicativo web que processará dados confidenciais de clientes. A aplicação será hospedada em instâncias do Amazon EC2 por trás de um Application Load Balancer (ALB) voltado para a Internet. A empresa exige que todos os dados em trânsito sejam criptografados. Além disso, os certificados SSL/TLS devem ser gerenciados com o mínimo de intervenção manual. Qual solução atenderá a esses requisitos?",
+    "options": [
+      "Usar o AWS Certificate Manager (ACM) para provisionar e gerenciar um certificado SSL/TLS público. Configurar o ALB para usar o certificado gerenciado do ACM para receptores HTTPS.",
+      "Comprar certificados SSL de terceiros. Importar os certificados SSL para o AWS Identity and Access Management (AWS IAM). Associar os certificados ao ALB.",
+      "Usar o Amazon CloudFront com certificado SSL padrão na frente do ALB. Configurar o CloudFront para encaminhar solicitações HTTPS para o ALB por HTTP.",
+      "Usar o AWS Certificate Manager (ACM) para provisionar e gerenciar um certificado SSL/TLS privado. Configurar o ALB para usar o certificado gerenciado do ACM para receptores HTTPS."
+    ],
+    "correct": 0,
+    "explanation": "O ACM provisiona e renova automaticamente certificados SSL/TLS públicos integrados ao ALB, sem intervenção manual. Certificados privados (D) gerariam erros de confiança nos navegadores dos usuários na internet pública.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 7,
+      "round": null,
+      "originalAnswer": "A",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-15b7b34e",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "vpc",
+        "service_name": "Amazon VPC",
+        "service_slug": "amazon-vpc"
+      },
+      {
+        "service_id": "ec2",
+        "service_name": "Amazon EC2",
+        "service_slug": "amazon-ec2"
+      }
+    ],
+    "tags": [
+      "vpc-flow-logs",
+      "monitoramento",
+      "rede"
+    ],
+    "question": "Um arquiteto de soluções percebe uma quantidade anormal de tráfego de rede proveniente de uma instância do Amazon EC2. O tráfego é considerado mal-intencionado e o destino precisa ser determinado. Que ferramenta o arquiteto de soluções pode usar para identificar o destino do tráfego de rede mal-intencionado?",
+    "options": [
+      "Ativar o AWS CloudTrail e filtrar os logs.",
+      "Filtrar os logs do Amazon CloudWatch.",
+      "Consultar o AWS Health Dashboard.",
+      "Ativar os logs de fluxo da VPC (VPC Flow Logs) e filtrar os logs."
+    ],
+    "correct": 3,
+    "explanation": "Os VPC Flow Logs capturam o tráfego IP de entrada e saída das interfaces de rede (ENIs), revelando os endereços IP de origem e destino.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 8,
+      "round": null,
+      "originalAnswer": "D",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-e8429739",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "object-lock",
+      "compliance",
+      "retencao",
+      "auditoria"
+    ],
+    "question": "Uma instituição financeira precisa armazenar registros de auditoria no Amazon S3. Por exigência regulatória, esses arquivos não podem ser modificados ou excluídos por nenhum usuário, incluindo a conta root da AWS, durante um período estrito de 7 anos. Qual configuração um Arquiteto de Soluções deve implementar para atender a esse requisito?",
+    "options": [
+      "Configurar uma Bucket Policy com uma declaração Deny para a ação s3:DeleteObject aplicável a todos os Principals, exceto ao IAM Role de auditoria.",
+      "Habilitar o S3 Versioning e configurar o S3 Object Lock no modo Compliance com um período de retenção de 7 anos.",
+      "Habilitar o S3 Versioning e configurar o S3 Object Lock no modo Governance com um período de retenção de 7 anos.",
+      "Configurar uma política de ciclo de vida (S3 Lifecycle) para transicionar os objetos diretamente para o Amazon S3 Glacier Deep Archive com MFA Delete habilitado."
+    ],
+    "correct": 1,
+    "explanation": "Apenas o modo Compliance do S3 Object Lock impede que até mesmo o usuário root exclua ou altere versões de objetos durante o período de retenção.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 9,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-80ac2d5f",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "rds",
+        "service_name": "Amazon RDS",
+        "service_slug": "amazon-rds"
+      },
+      {
+        "service_id": "aws-kms",
+        "service_name": "AWS KMS",
+        "service_slug": "aws-kms"
+      }
+    ],
+    "tags": [
+      "rds",
+      "kms",
+      "cmk",
+      "rotacao-de-chaves"
+    ],
+    "question": "Uma empresa executa um banco de dados Amazon RDS for PostgreSQL que armazena dados sensíveis de clientes. A política de segurança interna exige que os dados em repouso sejam criptografados e que a chave de criptografia seja rotacionada automaticamente a cada 365 dias, mantendo controle total sobre as políticas de acesso à chave. Qual solução atende a esses requisitos com a menor sobrecarga operacional?",
+    "options": [
+      "Criptografar a instância do RDS usando uma chave gerenciada pela AWS (aws/rds), que rotaciona automaticamente a cada ano.",
+      "Criar uma Customer Managed Key (CMK) simétrica no AWS KMS, habilitar a rotação automática de chaves e utilizá-la para criptografar a instância do RDS na criação.",
+      "Utilizar o AWS CloudHSM para gerar chaves assimétricas e configurar um job no AWS Lambda para rotacionar as chaves do RDS anualmente.",
+      "Habilitar a criptografia Transparent Data Encryption (TDE) diretamente no motor do PostgreSQL e armazenar os certificados no AWS Secrets Manager com rotação de 365 dias."
+    ],
+    "correct": 1,
+    "explanation": "Uma CMK simétrica no AWS KMS oferece controle completo sobre a key policy e rotação automática anual nativa. Nota de revisão técnica: Gabarito confirmado. As chaves gerenciadas pela AWS (aws/rds) também são rotacionadas automaticamente, mas o cliente não controla a política dessas chaves; é o requisito de controle total sobre as políticas de acesso que descarta a alternativa A.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 10,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado. As chaves gerenciadas pela AWS (aws/rds) também são rotacionadas automaticamente, mas o cliente não controla a política dessas chaves; é o requisito de controle total sobre as políticas de acesso que descarta a alternativa A.",
+        "Crase solta removida na alternativa A (aws/rds)."
+      ]
+    }
+  },
+  {
+    "questionId": "saa-c03-2c4866d1",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Secure Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-waf",
+        "service_name": "AWS WAF",
+        "service_slug": "aws-waf"
+      },
+      {
+        "service_id": "amazon-elastic-load-balancer",
+        "service_name": "Amazon Elastic Load Balancer",
+        "service_slug": "amazon-elastic-load-balancer"
+      }
+    ],
+    "tags": [
+      "waf",
+      "sql-injection",
+      "xss",
+      "geo-match"
+    ],
+    "question": "Uma aplicação web de e-commerce roda em uma frota de instâncias Amazon EC2 atrás de um Application Load Balancer (ALB). Recentemente, a equipe de segurança identificou tentativas de ataques de SQL Injection (SQLi) e Cross-Site Scripting (XSS), além de tráfego abusivo vindo de endereços IP específicos de um determinado país. Como o Arquiteto de Soluções deve proteger a aplicação?",
+    "options": [
+      "Configurar o AWS Shield Standard no ALB e criar regras de Network ACL (NACL) na sub-rede pública para bloquear os IPs e filtrar pacotes com padrões SQLi.",
+      "Associar uma Web ACL do AWS WAF diretamente ao Application Load Balancer com regras gerenciadas para SQLi/XSS e uma regra de correspondência geográfica (Geo-match).",
+      "Substituir o ALB por um Network Load Balancer (NLB) e associar o AWS WAF ao NLB para bloqueio em nível de pacotes TCP.",
+      "Configurar Security Groups nas instâncias EC2 com regras de negação explícita (Deny) para os blocos CIDR do país de origem e inspecionar o payload HTTP."
+    ],
+    "correct": 1,
+    "explanation": "O AWS WAF protege contra ataques de camada 7 (SQLi e XSS) e bloqueia países específicos (Geo-match) diretamente no ALB.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 11,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Crase solta removida na alternativa D (Deny)."
+      ]
+    }
+  },
+  {
+    "questionId": "saa-c03-906cc292",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-kinesis-data-firehose",
+        "service_name": "Amazon Kinesis Data Firehose",
+        "service_slug": "amazon-kinesis-data-firehose"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "amazon-glacier",
+        "service_name": "Amazon Glacier",
+        "service_slug": "amazon-glacier"
+      }
+    ],
+    "tags": [
+      "iot",
+      "firehose",
+      "s3-lifecycle",
+      "glacier"
+    ],
+    "question": "Milhares de sensores IoT geram 1 TB diário de alertas de ~2 KB cada. É necessária uma solução altamente disponível e econômica para ingeri-los e armazená-los, com 14 dias disponíveis para análise imediata e arquivamento dos dados mais antigos. Qual é a solução MAIS eficiente operacionalmente?",
+    "options": [
+      "Criar uma fila padrão do Amazon SQS com retenção de 14 dias. Após 14 dias, o consumidor copia a mensagem para um bucket do S3 e a exclui da fila.",
+      "Usar o Amazon Data Firehose para ingerir os alertas em um cluster do Amazon OpenSearch. Fazer snapshots manuais diários e excluir os dados com mais de 14 dias.",
+      "Criar instâncias EC2 em duas AZs atrás de um ELB, com um script que armazene os alertas no S3. Configurar uma regra de ciclo de vida do S3 para mover os dados para o S3 Glacier após 14 dias.",
+      "Usar o Amazon Data Firehose para ingerir os alertas e armazená-los em um bucket do S3. Configurar uma regra de ciclo de vida do S3 para mover os dados para o S3 Glacier após 14 dias."
+    ],
+    "correct": 3,
+    "explanation": "O Amazon Data Firehose é totalmente gerenciado (serverless) e escala automaticamente para ingerir fluxos contínuos de dados de sensores IoT e entregá-los no Amazon S3, onde ficam disponíveis para análise imediata. A regra de S3 Lifecycle automatiza a transição para o S3 Glacier após 14 dias, sem intervenção manual. Por que as outras estão incorretas: A) O SQS é uma fila de mensagens temporária, não um repositório de análise para cerca de 14 TB acumulados, e exigiria consumidores customizados. B) Manter um cluster OpenSearch para 14 TB de dados brutos e fazer snapshots manuais diários tem custo elevado e altíssima sobrecarga operacional. C) Gerenciar frotas EC2, ELB e scripts personalizados gera sobrecarga operacional desnecessária frente ao Data Firehose.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 12,
+      "round": "4/20",
+      "originalAnswer": "D",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-57efe97c",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-transit-gateway",
+        "service_name": "AWS Transit Gateway",
+        "service_slug": "aws-transit-gateway"
+      },
+      {
+        "service_id": "vpc",
+        "service_name": "Amazon VPC",
+        "service_slug": "amazon-vpc"
+      }
+    ],
+    "tags": [
+      "transit-gateway",
+      "multi-regiao",
+      "peering"
+    ],
+    "question": "Uma empresa tem várias VPCs em diferentes regiões da AWS com cargas de trabalho isoladas. Devido a um novo requisito, todas as VPCs devem se comunicar com todas as outras VPCs em todas as regiões. Qual solução atende a esses requisitos com o MENOR esforço administrativo?",
+    "options": [
+      "Usar o emparelhamento (peering) de VPC entre regiões para habilitar a comunicação entre as VPCs.",
+      "Usar gateways do AWS Direct Connect em todas as regiões para conectar as VPCs entre regiões.",
+      "Usar o AWS Transit Gateway para a comunicação entre VPCs dentro de cada região e o Transit Gateway peering para a comunicação entre regiões.",
+      "Usar o AWS PrivateLink em todas as regiões para conectar as VPCs entre regiões."
+    ],
+    "correct": 2,
+    "explanation": "O AWS Transit Gateway centraliza o roteamento em modelo hub-and-spoke dentro de cada região e usa Transit Gateway peering entre regiões, evitando gerenciar dezenas de conexões de VPC peering ponto a ponto.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 13,
+      "round": "19/20",
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-892a0c7b",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-direct-connect",
+        "service_name": "AWS Direct Connect",
+        "service_slug": "aws-direct-connect"
+      }
+    ],
+    "tags": [
+      "direct-connect",
+      "vpn",
+      "hibrido",
+      "alta-disponibilidade"
+    ],
+    "question": "Uma empresa projeta uma arquitetura híbrida para estender seu data center à AWS. Precisa de uma conexão de alta disponibilidade e baixa latência constante com uma região, ao menor custo, e aceita respostas mais lentas se a conexão principal falhar. O que o arquiteto de soluções deve fazer?",
+    "options": [
+      "Provisionar uma conexão do AWS Direct Connect para uma região. Usar uma conexão Site-to-Site VPN como backup caso a conexão principal falhe.",
+      "Provisionar um túnel VPN para uma região para conectividade privada e um segundo túnel VPN como backup caso a VPN principal falhe.",
+      "Provisionar uma conexão do AWS Direct Connect para uma região e uma segunda conexão Direct Connect para a mesma região como backup.",
+      "Provisionar uma conexão do AWS Direct Connect para uma região e usar o atributo de failover da AWS CLI para criar automaticamente uma conexão de backup."
+    ],
+    "correct": 0,
+    "explanation": "O Direct Connect garante baixa latência constante na conexão principal, enquanto a Site-to-Site VPN funciona como contingência de baixo custo, aceitando velocidade menor durante falhas.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 14,
+      "round": "17/20",
+      "originalAnswer": "A",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-73d38ce9",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "ec2",
+        "service_name": "Amazon EC2",
+        "service_slug": "amazon-ec2"
+      },
+      {
+        "service_id": "aws-availability-zones",
+        "service_name": "AWS Availability Zones",
+        "service_slug": "aws-availability-zones"
+      }
+    ],
+    "tags": [
+      "multi-az",
+      "tolerancia-a-falhas",
+      "zonas-de-disponibilidade"
+    ],
+    "question": "Uma empresa está executando uma aplicação em duas instâncias do Amazon EC2. A empresa exige baixa latência para todos os usuários na mesma região da AWS, mantendo um alto nível de tolerância a falhas. Qual solução atenderá a esses requisitos?",
+    "options": [
+      "Colocar cada instância do EC2 em uma região diferente.",
+      "Colocar cada instância do EC2 em uma zona de disponibilidade diferente.",
+      "Colocar cada instância do EC2 em uma sub-rede diferente.",
+      "Colocar cada instância do EC2 em uma VPC diferente."
+    ],
+    "correct": 1,
+    "explanation": "Colocar as instâncias em Zonas de Disponibilidade diferentes garante isolamento físico contra falhas de data center, mantendo latência de rede mínima dentro da região.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 15,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-7d5245f7",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "hard",
+    "services": [
+      {
+        "service_id": "amazon-sqs",
+        "service_name": "Amazon SQS",
+        "service_slug": "amazon-sqs"
+      }
+    ],
+    "tags": [
+      "sqs-fifo",
+      "exactly-once",
+      "desacoplamento",
+      "ordenacao"
+    ],
+    "question": "Um sistema de processamento de pedidos financeiros é composto por uma camada de recepção em containers e uma camada de processamento de pagamentos. É fundamental que as transações sejam processadas exatamente uma vez (exactly-once) e estritamente na mesma ordem em que foram enviadas pelo cliente. Além disso, o sistema precisa absorver picos repentinos de tráfego sem perder mensagens caso os consumidores falhem temporariamente. Qual arquitetura deve ser utilizada?",
+    "options": [
+      "Utilizar uma fila Amazon SQS Standard entre os serviços, habilitando o Long Polling e uma Dead-Letter Queue (DLQ).",
+      "Utilizar um tópico Amazon SNS Standard para distribuir as mensagens diretamente para múltiplos endpoints HTTP dos serviços de pagamento.",
+      "Utilizar uma fila Amazon SQS FIFO com deduplicação baseada em conteúdo habilitada e configurar um MessageGroupId adequado.",
+      "Utilizar o Amazon EventBridge com regras padrão de roteamento para garantir a entrega ordenada e sem duplicatas aos consumidores."
+    ],
+    "correct": 2,
+    "explanation": "Filas SQS FIFO asseguram a ordem de processamento e a entrega exactly-once. Nota de revisão técnica: Gabarito confirmado. Atenção às garantias reais: a deduplicação do SQS FIFO vale em uma janela de 5 minutos e a ordem só é garantida dentro de cada MessageGroupId. Se o visibility timeout expirar antes de o consumidor excluir a mensagem, ela pode ser reentregue, então o consumidor deve ser idempotente.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 16,
+      "round": null,
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado. Atenção às garantias reais: a deduplicação do SQS FIFO vale em uma janela de 5 minutos e a ordem só é garantida dentro de cada MessageGroupId. Se o visibility timeout expirar antes de o consumidor excluir a mensagem, ela pode ser reentregue, então o consumidor deve ser idempotente."
+      ]
+    }
+  },
+  {
+    "questionId": "saa-c03-72b654ba",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "hard",
+    "services": [
+      {
+        "service_id": "amazon-aurora",
+        "service_name": "Amazon Aurora",
+        "service_slug": "amazon-aurora"
+      }
+    ],
+    "tags": [
+      "aurora-global-database",
+      "rpo",
+      "rto",
+      "recuperacao-de-desastres"
+    ],
+    "question": "Uma empresa global opera um banco de dados relacional crítico no Amazon Aurora MySQL na região us-east-1. O plano de continuidade de negócios exige um RPO de no máximo 1 segundo e um RTO inferior a 1 minuto no caso de uma falha completa de toda a região primária, além de fornecer leituras de baixa latência para usuários na Europa (eu-west-1). Qual configuração atende a esses requisitos?",
+    "options": [
+      "Configurar o Amazon Aurora com réplicas Multi-AZ na região us-east-1 e habilitar snapshots automatizados copiados para eu-west-1 a cada 5 minutos.",
+      "Implementar o Amazon Aurora Global Database configurando us-east-1 como região primária e eu-west-1 como região secundária com instâncias de leitura.",
+      "Utilizar o Amazon RDS for MySQL com uma Read Replica Cross-Region assíncrona em eu-west-1 baseada em replicação lógica binlog.",
+      "Configurar o backup contínuo do AWS Backup com replicação entre regiões e usar um script do AWS Lambda com Route 53 para restaurar o snapshot em caso de falha."
+    ],
+    "correct": 1,
+    "explanation": "O Aurora Global Database oferece replicação entre regiões com atraso típico inferior a 1 segundo e recuperação em cerca de 1 minuto, além de leituras locais na região secundária. Nota de revisão técnica: Gabarito confirmado como a melhor opção. A latência de replicação do Aurora Global Database é tipicamente inferior a 1 segundo e a promoção de uma região secundária leva tipicamente cerca de 1 minuto, mas esses valores são típicos e não um SLA. O failover entre regiões não é totalmente automático e precisa ser acionado.",
+    "reference_url": "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 17,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado como a melhor opção. A latência de replicação do Aurora Global Database é tipicamente inferior a 1 segundo e a promoção de uma região secundária leva tipicamente cerca de 1 minuto, mas esses valores são típicos e não um SLA. O failover entre regiões não é totalmente automático e precisa ser acionado.",
+        "Crase solta removida no enunciado (eu-west-1)."
+      ]
+    }
+  },
+  {
+    "questionId": "saa-c03-93853424",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Resilient Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-route-53",
+        "service_name": "Amazon Route 53",
+        "service_slug": "amazon-route-53"
+      }
+    ],
+    "tags": [
+      "route-53",
+      "failover",
+      "ativo-passivo",
+      "health-check"
+    ],
+    "question": "Uma empresa possui sua aplicação implantada em duas regiões da AWS: sa-east-1 (São Paulo) e us-east-1 (Norte da Virgínia). Em condições normais, 100% do tráfego deve ser direcionado para sa-east-1, onde os clientes estão localizados. A região us-east-1 opera em modo de espera ativa (Active-Passive) e só deve receber tráfego se o endpoint em sa-east-1 ficar indisponível. Qual política de roteamento do Amazon Route 53 deve ser configurada?",
+    "options": [
+      "Roteamento baseado em Latência com Health Checks associados aos dois endpoints.",
+      "Roteamento de Failover com um Health Check associado ao registro primário (sa-east-1) e o registro secundário apontando para us-east-1.",
+      "Roteamento Ponderado configurado com peso 50 para cada região.",
+      "Roteamento de Geolocalização direcionando usuários do Brasil para sa-east-1 e o restante do mundo para us-east-1."
+    ],
+    "correct": 1,
+    "explanation": "A política de Failover do Route 53 suporta arquiteturas ativo-passivo, enviando tráfego para a região secundária somente se o health check do registro primário falhar.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 18,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Crase solta removida no enunciado (sa-east-1) e nas alternativas."
+      ]
+    }
+  },
+  {
+    "questionId": "saa-c03-02156e0f",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "rds",
+        "service_name": "Amazon RDS",
+        "service_slug": "amazon-rds"
+      }
+    ],
+    "tags": [
+      "rds",
+      "read-replica",
+      "multi-az",
+      "desempenho"
+    ],
+    "question": "Uma aplicação armazena dados em uma instância Multi-AZ do Amazon RDS para PostgreSQL. O aumento do tráfego está causando problemas de desempenho, e a causa principal são as consultas ao banco de dados. O que o arquiteto de soluções deve fazer para melhorar o desempenho?",
+    "options": [
+      "Servir o tráfego de leitura a partir da réplica em espera Multi-AZ.",
+      "Configurar a instância de banco de dados para usar o Transfer Acceleration.",
+      "Criar uma réplica de leitura da instância de banco de dados de origem e servir o tráfego de leitura a partir dela.",
+      "Usar o Amazon Data Firehose entre a aplicação e o Amazon RDS para aumentar a simultaneidade das solicitações."
+    ],
+    "correct": 2,
+    "explanation": "As réplicas de leitura (read replicas) do Amazon RDS são criadas para escalar cargas de trabalho com muita leitura, aliviando a instância primária. Por que as outras estão incorretas: A) Na implantação Multi-AZ tradicional, a instância em espera existe apenas para failover e não recebe tráfego de leitura. B) O Transfer Acceleration é uma funcionalidade do Amazon S3, não do RDS. D) O Data Firehose é um serviço de ingestão de streaming de dados, não um proxy ou acelerador de consultas SQL. Nota de revisão técnica: Gabarito confirmado. A afirmação de que o standby do Multi-AZ não atende leituras vale para a implantação Multi-AZ com uma instância em espera. Em um Multi-AZ DB cluster, os dois standbys podem atender leituras.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 19,
+      "round": "10/20",
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado. A afirmação de que o standby do Multi-AZ não atende leituras vale para a implantação Multi-AZ com uma instância em espera. Em um Multi-AZ DB cluster, os dois standbys podem atender leituras."
+      ]
+    }
+  },
+  {
+    "questionId": "saa-c03-8766a440",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "amazon-ec2-auto-scaling",
+        "service_name": "Amazon EC2 Auto Scaling",
+        "service_slug": "amazon-ec2-auto-scaling"
+      }
+    ],
+    "tags": [
+      "auto-scaling",
+      "escalabilidade-programada",
+      "ec2"
+    ],
+    "question": "Uma aplicação web é executada em EC2 dentro de um grupo do Auto Scaling. Os horários de pico ocorrem no mesmo horário todos os dias, e os usuários relatam lentidão no início desse período. A empresa quer que a aplicação funcione bem desde o início do pico. Qual solução atende a esses requisitos?",
+    "options": [
+      "Configurar um Network Load Balancer para distribuir corretamente o tráfego entre as instâncias.",
+      "Configurar uma política de escalabilidade dinâmica para iniciar novas instâncias com base na utilização de memória.",
+      "Configurar uma política de escalabilidade dinâmica para iniciar novas instâncias com base na utilização de CPU.",
+      "Configurar uma política de escalabilidade programada para iniciar novas instâncias antes dos horários de pico."
+    ],
+    "correct": 3,
+    "explanation": "Quando os picos de carga acontecem em horários previsíveis, a escalabilidade programada (scheduled scaling) permite provisionar as instâncias EC2 antes de o pico começar, eliminando a lentidão inicial causada pelo tempo de inicialização das máquinas. Por que as outras estão incorretas: A) Trocar o balanceador de carga não adiciona capacidade computacional. B e C) As políticas de escalabilidade dinâmica por CPU ou memória são reativas: só disparam depois que a métrica já subiu, e os usuários sofrem lentidão nos primeiros minutos enquanto as novas instâncias iniciam.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 20,
+      "round": "9/20",
+      "originalAnswer": "D",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-b8bfd893",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-appflow",
+        "service_name": "Amazon AppFlow",
+        "service_slug": "amazon-appflow"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "amazon-sns",
+        "service_name": "Amazon SNS",
+        "service_slug": "amazon-sns"
+      }
+    ],
+    "tags": [
+      "appflow",
+      "saas",
+      "s3-event-notifications",
+      "sns"
+    ],
+    "question": "Uma aplicação usa instâncias EC2 para receber dados de várias fontes SaaS, carregá-los no Amazon S3 e notificar o usuário ao final de cada carga. O desempenho está lento e deve ser melhorado ao máximo. Qual solução atende a esses requisitos com a MENOR sobrecarga operacional?",
+    "options": [
+      "Criar um grupo do Auto Scaling para as instâncias EC2. Configurar uma notificação de eventos do S3 que envie eventos a um tópico do Amazon SNS quando a carga for concluída.",
+      "Criar um fluxo do Amazon AppFlow para transferir dados entre cada fonte SaaS e o bucket do S3. Configurar uma notificação de eventos do S3 que envie eventos a um tópico do Amazon SNS quando a carga for concluída.",
+      "Configurar uma regra do Amazon EventBridge para que as fontes SaaS enviem dados ao S3 e outra regra que envie um evento a um tópico do Amazon SNS quando a carga for concluída.",
+      "Criar um contêiner Docker no Amazon ECS com Fargate. Configurar o CloudWatch Container Insights para enviar eventos a um tópico do Amazon SNS quando a carga for concluída."
+    ],
+    "correct": 1,
+    "explanation": "O Amazon AppFlow é um serviço de integração totalmente gerenciado, criado para transferir dados de forma segura e rápida entre aplicações SaaS (como Salesforce, ServiceNow, Zendesk e Slack) e serviços da AWS como o Amazon S3, sem escrever código nem gerenciar servidores. As notificações de eventos do S3 integradas ao Amazon SNS enviam o aviso ao final da carga. Por que as outras estão incorretas: A e D) Manter código customizado em instâncias EC2 ou contêineres ECS gera sobrecarga operacional desnecessária quando existe um conector SaaS nativo. C) O EventBridge tem integrações de eventos com parceiros SaaS, mas é voltado a barramento de eventos leves, não à transferência de cargas de dados em lote para o S3 como o AppFlow.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 21,
+      "round": "7/20",
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-694ba368",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "amazon-elasticache",
+        "service_name": "Amazon ElastiCache",
+        "service_slug": "amazon-elasticache"
+      },
+      {
+        "service_id": "rds",
+        "service_name": "Amazon RDS",
+        "service_slug": "amazon-rds"
+      }
+    ],
+    "tags": [
+      "elasticache",
+      "cache",
+      "rds-mysql"
+    ],
+    "question": "Uma aplicação de e-commerce de várias camadas é executada no Amazon EC2 com banco de dados no Amazon RDS para MySQL. Chamadas frequentes que retornam conjuntos de dados idênticos estão causando lentidão. Qual ação melhora o desempenho do backend?",
+    "options": [
+      "Implementar o Amazon SNS para armazenar as chamadas ao banco de dados.",
+      "Implementar uma réplica de leitura do RDS para MySQL para armazenar em cache as chamadas ao banco de dados.",
+      "Implementar o Amazon ElastiCache para armazenar em cache os conjuntos de dados grandes.",
+      "Implementar o Amazon Data Firehose para transmitir as chamadas ao banco de dados."
+    ],
+    "correct": 2,
+    "explanation": "O Amazon ElastiCache armazena em memória os resultados de consultas idênticas repetidas, respondendo em submilissegundos e tirando a carga do RDS.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 22,
+      "round": "11/20",
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-6f20573d",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "hard",
+    "services": [
+      {
+        "service_id": "amazon-fsx",
+        "service_name": "Amazon FSx",
+        "service_slug": "amazon-fsx"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "fsx-for-lustre",
+      "hpc",
+      "baixa-latencia"
+    ],
+    "question": "Uma empresa de logística processa cerca de 8 TB de dados diários com centenas de instâncias EC2 Linux. O armazenamento exige latência inferior a milissegundos e uma taxa de transferência mínima de 6 Gbps. Qual solução atende aos requisitos de desempenho?",
+    "options": [
+      "Criar um sistema de arquivos Amazon FSx for NetApp ONTAP. Importar os dados brutos e montá-lo nas instâncias EC2.",
+      "Criar um bucket do S3 para os dados brutos e um sistema Amazon FSx for Lustre com armazenamento SSD persistente, com importação/exportação para o S3. Montá-lo nas instâncias EC2.",
+      "Criar um bucket do S3 para os dados brutos e um sistema Amazon FSx for Lustre com armazenamento HDD persistente, com importação/exportação para o S3. Montá-lo nas instâncias EC2.",
+      "Criar um sistema de arquivos Amazon EFS com modo de desempenho Max I/O. Importar os dados brutos e montá-lo nas instâncias EC2."
+    ],
+    "correct": 1,
+    "explanation": "O Amazon FSx for Lustre com armazenamento SSD oferece latência submilissegundo e alta taxa de transferência para cargas de trabalho Linux de computação de alto desempenho, com integração direta ao Amazon S3.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 23,
+      "round": "15/20",
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-562b28a0",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "cloudfront",
+        "service_name": "Amazon CloudFront",
+        "service_slug": "amazon-cloudfront"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "cloudfront",
+      "oac",
+      "s3",
+      "latencia-global"
+    ],
+    "question": "Uma plataforma de ensino online hospeda vídeos e apostilas em PDF em um bucket do Amazon S3. Usuários de várias partes do mundo reclamam de lentidão no carregamento. Além disso, a empresa descobriu que usuários estão acessando os arquivos diretamente pela URL do bucket S3, contornando o domínio oficial da plataforma. Como resolver a latência global e garantir que os arquivos só possam ser acessados através da camada de cache?",
+    "options": [
+      "Habilitar o S3 Transfer Acceleration no bucket e configurar o bucket como Website Estático Público com regras de CORS.",
+      "Criar uma distribuição do Amazon CloudFront apontando para o bucket S3, configurar um Origin Access Control (OAC) e atualizar a Bucket Policy para permitir leitura apenas ao Service Principal do CloudFront.",
+      "Replicar o bucket para 5 regiões usando S3 Cross-Region Replication (CRR) e usar o AWS Global Accelerator na frente dos buckets S3.",
+      "Colocar um Application Load Balancer na frente do bucket S3 e ativar o cache no ALB com restrição de Security Group."
+    ],
+    "correct": 1,
+    "explanation": "O CloudFront faz o cache global nas edge locations e o OAC bloqueia qualquer leitura direta no bucket S3 que não venha da distribuição do CloudFront.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 24,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-c467a39d",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-storage-gateway",
+        "service_name": "AWS Storage Gateway",
+        "service_slug": "aws-storage-gateway"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "storage-gateway",
+      "s3-file-gateway",
+      "smb",
+      "hibrido"
+    ],
+    "question": "Uma clínica médica possui servidores locais (on-premises) que geram imagens de exames diagnósticos. O espaço em disco do datacenter local está se esgotando, mas os médicos precisam continuar acessando os arquivos gerados recentemente com latência de rede local via protocolo SMB, enquanto os arquivos mais antigos devem ser armazenados de forma durável no Amazon S3 para posterior arquivamento no S3 Glacier. Qual serviço atende a esse cenário?",
+    "options": [
+      "AWS Storage Gateway no modo Amazon S3 File Gateway.",
+      "AWS Storage Gateway no modo Tape Gateway (VTL).",
+      "AWS DataSync agendado para rodar uma vez por semana excluindo os dados locais.",
+      "Amazon EFS montado diretamente via internet pública nos servidores Windows locais via protocolo SMB."
+    ],
+    "correct": 0,
+    "explanation": "O S3 File Gateway disponibiliza montagem SMB/NFS com cache local para baixa latência e armazena os arquivos como objetos nativos no S3.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 25,
+      "round": null,
+      "originalAnswer": "A",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-8e0e3ae4",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "amazon-s3-glacier",
+        "service_name": "amazon-s3-glacier",
+        "service_slug": "amazon-s3-glacier"
+      }
+    ],
+    "tags": [
+      "s3-glacier",
+      "expedited-retrieval",
+      "classes-de-armazenamento"
+    ],
+    "question": "Uma empresa precisa armazenar na AWS arquivos de vídeo de notícias esportivas com o menor custo possível. Eles raramente são restaurados, mas quando necessários devem estar disponíveis em no máximo cinco minutos. Qual é a solução MAIS econômica?",
+    "options": [
+      "Armazenar os arquivos de vídeo no Amazon S3 One Zone-Infrequent Access (S3 One Zone-IA).",
+      "Armazenar os arquivos de vídeo no Amazon S3 Glacier Flexible Retrieval com recuperações padrão (Standard retrievals).",
+      "Armazenar os arquivos de vídeo no Amazon S3 Standard-Infrequent Access (S3 Standard-IA).",
+      "Armazenar os arquivos de vídeo no Amazon S3 Glacier Flexible Retrieval com recuperações aceleradas (Expedited retrievals)."
+    ],
+    "correct": 3,
+    "explanation": "O Amazon S3 Glacier Flexible Retrieval tem custo de armazenamento por GB muito inferior ao S3 Standard-IA e ao S3 One Zone-IA. Quando surge a necessidade rara de restaurar um vídeo, a recuperação acelerada (Expedited) disponibiliza os dados entre 1 e 5 minutos, cumprindo o requisito pelo menor custo mensal de armazenamento. Por que as outras estão incorretas: A e C) O S3 One Zone-IA e o S3 Standard-IA têm custo mensal de armazenamento significativamente maior que o Glacier Flexible Retrieval para arquivos raramente acessados (e o One Zone-IA não resiste à falha de uma AZ). B) As recuperações padrão do S3 Glacier Flexible Retrieval levam de 3 a 5 horas, violando o requisito de no máximo 5 minutos. Nota de revisão técnica: Gabarito confirmado entre as opções apresentadas. A janela de 1 a 5 minutos da recuperação Expedited vale tipicamente para objetos menores que 250 MB, e a capacidade só é garantida com Provisioned Capacity. Em um cenário real com vídeos grandes, vale avaliar o S3 Glacier Instant Retrieval (acesso em milissegundos), que não está entre as opções.",
+    "reference_url": "https://docs.aws.amazon.com/AmazonS3/latest/userguide/restoring-objects-retrieval-options.html",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 26,
+      "round": "8/20",
+      "originalAnswer": "D",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado entre as opções apresentadas. A janela de 1 a 5 minutos da recuperação Expedited vale tipicamente para objetos menores que 250 MB, e a capacidade só é garantida com Provisioned Capacity. Em um cenário real com vídeos grandes, vale avaliar o S3 Glacier Instant Retrieval (acesso em milissegundos), que não está entre as opções."
+      ]
+    }
+  },
+  {
+    "questionId": "saa-c03-d86eab34",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-storage-gateway",
+        "service_name": "AWS Storage Gateway",
+        "service_slug": "aws-storage-gateway"
+      },
+      {
+        "service_id": "aws-glue",
+        "service_name": "AWS Glue",
+        "service_slug": "aws-glue"
+      },
+      {
+        "service_id": "amazon-athena",
+        "service_name": "Amazon Athena",
+        "service_slug": "amazon-athena"
+      }
+    ],
+    "tags": [
+      "s3-file-gateway",
+      "glue-crawler",
+      "athena",
+      "smb"
+    ],
+    "question": "Dispositivos locais geram arquivos .csv e gravam em um compartilhamento de arquivos SMB. A empresa quer analisar os dados na AWS, e seus analistas devem consultá-los com SQL periodicamente ao longo do dia. Qual combinação de etapas é a MAIS econômica? (Selecione TRÊS)",
+    "options": [
+      "Implementar um AWS Storage Gateway local no modo Amazon FSx File Gateway.",
+      "Implementar um AWS Storage Gateway local no modo Amazon S3 File Gateway.",
+      "Configurar um crawler do AWS Glue para criar uma tabela com base nos dados do Amazon S3.",
+      "Configurar o Amazon Athena para consultar os dados do Amazon S3. Fornecer acesso aos analistas."
+    ],
+    "correct": [
+      1,
+      2,
+      3
+    ],
+    "explanation": "B) O Amazon S3 File Gateway expõe um compartilhamento SMB local para os dispositivos gravarem os arquivos .csv e os transfere para um bucket do Amazon S3, o armazenamento mais barato da AWS. C) O crawler do AWS Glue lê os arquivos .csv no S3 e cria automaticamente a definição de tabela e o esquema no AWS Glue Data Catalog. D) O Amazon Athena permite que os analistas executem consultas SQL periódicas diretamente sobre os dados no S3, pagando apenas por TB lido, sem servidores ativos 24/7. A está incorreta: o Amazon FSx File Gateway armazena os dados no Amazon FSx for Windows File Server (armazenamento provisionado continuamente), que é muito mais caro que o S3 e não pode ser consultado de forma serverless pelo Athena com o Glue.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 27,
+      "round": "5/20",
+      "originalAnswer": "B, C e D",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-33b1af37",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "vpc",
+        "service_name": "Amazon VPC",
+        "service_slug": "amazon-vpc"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "gateway-endpoint",
+      "nat-gateway",
+      "custos-de-rede",
+      "s3"
+    ],
+    "question": "Uma aplicação em instâncias EC2, em várias AZs de uma VPC, baixa e carrega vídeos no Amazon S3 por meio de um único NAT Gateway. A empresa está preocupada com as cobranças de transferência de dados. Qual é a forma MAIS econômica de evitar as cobranças regionais de transferência de dados?",
+    "options": [
+      "Iniciar um gateway NAT (NAT Gateway) em cada zona de disponibilidade.",
+      "Substituir o gateway NAT (NAT Gateway) por uma instância NAT.",
+      "Implementar um endpoint de VPC do tipo gateway (Gateway VPC endpoint) para o Amazon S3.",
+      "Provisionar um host dedicado EC2 para executar as instâncias EC2."
+    ],
+    "correct": 2,
+    "explanation": "Um Gateway VPC endpoint para o Amazon S3 não tem custo por hora nem cobrança por GB processado e roteia o tráfego diretamente das sub-redes privadas, em qualquer AZ da VPC, para o S3, eliminando as taxas de processamento de dados do NAT Gateway e as de transferência entre AZs para alcançar o NAT Gateway único. Por que as outras estão incorretas: A) Um NAT Gateway por AZ elimina a taxa entre AZs, mas multiplica o custo fixo por hora e mantém a cobrança de processamento por GB enviado ao S3. B) Uma instância NAT exige uma instância EC2 paga continuamente, administração manual, pode virar gargalo de rede para vídeos e ainda gera tráfego entre AZs se estiver em uma única AZ. D) Hosts dedicados são muito caros e não alteram o roteamento de rede nem os custos do NAT Gateway.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 28,
+      "round": "2/20",
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-9973d633",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "vpc",
+        "service_name": "Amazon VPC",
+        "service_slug": "amazon-vpc"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      },
+      {
+        "service_id": "dynamodb",
+        "service_name": "Amazon DynamoDB",
+        "service_slug": "amazon-dynamodb"
+      }
+    ],
+    "tags": [
+      "gateway-endpoint",
+      "s3",
+      "dynamodb",
+      "sub-rede-privada"
+    ],
+    "question": "Instâncias EC2 localizadas em uma sub-rede privada (sem NAT Gateway e sem Internet Gateway) precisam ler e gravar dados em um bucket do Amazon S3 e em uma tabela do Amazon DynamoDB na mesma região. A política de segurança proíbe que o tráfego saia da rede interna da AWS e a equipe deseja evitar custos adicionais por hora ou por gigabyte processado na camada de rede. Qual é a solução ideal?",
+    "options": [
+      "Criar Interface VPC Endpoints (AWS PrivateLink) para o Amazon S3 e para o Amazon DynamoDB e associar Security Groups restritivos.",
+      "Criar Gateway VPC Endpoints para o Amazon S3 e para o Amazon DynamoDB e atualizar a tabela de rotas (Route Table) da sub-rede privada.",
+      "Implementar um NAT Gateway na sub-rede pública e adicionar uma rota 0.0.0.0/0 na sub-rede privada apontando para o NAT.",
+      "Configurar um AWS Transit Gateway conectando a VPC diretamente às APIs públicas do S3 e do DynamoDB."
+    ],
+    "correct": 1,
+    "explanation": "Os Gateway VPC Endpoints suportam S3 e DynamoDB sem custo por hora ou por tráfego de dados e operam por meio das tabelas de rotas, dentro da rede da AWS. Nota de revisão técnica: Gabarito confirmado. Hoje o S3 e o DynamoDB também aceitam interface endpoints (PrivateLink), mas eles têm cobrança por hora e por GB processado; apenas os gateway endpoints não têm custo adicional, que é o critério da questão.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 29,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado. Hoje o S3 e o DynamoDB também aceitam interface endpoints (PrivateLink), mas eles têm cobrança por hora e por GB processado; apenas os gateway endpoints não têm custo adicional, que é o critério da questão."
+      ]
+    }
+  },
+  {
+    "questionId": "saa-c03-2e66937c",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-sagemaker",
+        "service_name": "Amazon SageMaker",
+        "service_slug": "amazon-sagemaker"
+      },
+      {
+        "service_id": "amazon-quicksight",
+        "service_name": "Amazon QuickSight",
+        "service_slug": "amazon-quicksight"
+      }
+    ],
+    "tags": [
+      "sagemaker",
+      "quicksight",
+      "machine-learning",
+      "bi"
+    ],
+    "question": "Uma empresa quer criar e treinar modelos de ML para detectar tendências de compra em sua loja virtual e integrá-los a uma plataforma de relatórios para visualizar os dados em painéis de business intelligence. Qual solução atende a esses requisitos com a MENOR sobrecarga operacional?",
+    "options": [
+      "Usar o AWS Glue para criar uma transformação de ML para criar e treinar modelos. Usar o Amazon OpenSearch Service para visualizar os dados.",
+      "Usar uma AMI de ML pré-configurada do AWS Marketplace para criar e treinar modelos. Usar o Amazon OpenSearch Service para visualizar os dados.",
+      "Usar o Amazon Forecast para criar e treinar modelos. Usar o Amazon CloudWatch para visualizar os dados.",
+      "Usar o Amazon SageMaker para criar e treinar modelos. Usar o Amazon QuickSight para visualizar os dados."
+    ],
+    "correct": 3,
+    "explanation": "O Amazon SageMaker gerencia todo o ciclo de vida de modelos de ML e o Amazon QuickSight fornece painéis de BI serverless. Nota de revisão técnica: Gabarito confirmado. O Amazon Forecast não está mais disponível para novos clientes desde 29/07/2024 e o CloudWatch não é uma ferramenta de BI, o que reforça a rejeição da alternativa C. Domínio ajustado de Custos para Alto Desempenho: o critério é menor sobrecarga operacional em análise de dados e ML, não otimização de custo.",
+    "reference_url": "https://docs.aws.amazon.com/forecast/latest/dg/doc-history.html",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 30,
+      "round": "12/20",
+      "originalAnswer": "D",
+      "reviewStatus": "confirmed-with-notes",
+      "reclassifiedDomain": "Domínio ajustado de Custos para Alto Desempenho (o critério é menor sobrecarga operacional em análise de dados e ML, não otimização de custo).",
+      "reviewNotes": [
+        "Gabarito confirmado. O Amazon Forecast não está mais disponível para novos clientes desde 29/07/2024 e o CloudWatch não é uma ferramenta de BI, o que reforça a rejeição da alternativa C. Domínio ajustado de Custos para Alto Desempenho: o critério é menor sobrecarga operacional em análise de dados e ML, não otimização de custo."
+      ]
+    }
+  },
+  {
+    "questionId": "saa-c03-df852b6c",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design High-Performing Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-lake-formation",
+        "service_name": "AWS Lake Formation",
+        "service_slug": "aws-lake-formation"
+      },
+      {
+        "service_id": "aws-glue",
+        "service_name": "AWS Glue",
+        "service_slug": "aws-glue"
+      },
+      {
+        "service_id": "amazon-athena",
+        "service_name": "Amazon Athena",
+        "service_slug": "amazon-athena"
+      },
+      {
+        "service_id": "amazon-quicksight",
+        "service_name": "Amazon QuickSight",
+        "service_slug": "amazon-quicksight"
+      }
+    ],
+    "tags": [
+      "lake-formation",
+      "glue",
+      "parquet",
+      "athena",
+      "quicksight"
+    ],
+    "question": "Uma empresa gera dados em lote de vários bancos de dados e deve consolidá-los, processá-los e organizá-los em buckets do Amazon S3. Depois, as equipes farão consultas únicas e exibirão KPIs em uma ferramenta de BI. Qual combinação de etapas tem a MENOR sobrecarga operacional? (Selecione DUAS)",
+    "options": [
+      "Usar o Amazon Athena para consultas únicas. Usar o Amazon QuickSight para criar painéis de KPIs.",
+      "Usar o Amazon Managed Service for Apache Flink para consultas únicas. Usar o Amazon QuickSight para criar painéis de KPIs.",
+      "Usar o AWS Glue para converter os dados para o formato JSON e carregá-los em vários clusters do Amazon OpenSearch Service.",
+      "Usar o AWS Lake Formation para criar e gerenciar um data lake. Usar o AWS Glue para catalogar e extrair os dados e carregá-los no Amazon S3 em formato Apache Parquet."
+    ],
+    "correct": [
+      0,
+      3
+    ],
+    "explanation": "O Lake Formation com o Glue prepara o data lake em formato colunar Parquet no S3 (D), e o Athena com o QuickSight entregam consultas SQL ad hoc e visualização de KPIs de forma serverless (A). Nota de revisão técnica: Gabarito confirmado. Domínio ajustado de Custos para Alto Desempenho: o critério é menor sobrecarga operacional em ingestão, transformação e análise de dados, não otimização de custo.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 31,
+      "round": "13/20",
+      "originalAnswer": "A e D",
+      "reviewStatus": "confirmed-with-notes",
+      "reclassifiedDomain": "Domínio ajustado de Custos para Alto Desempenho (ingestão e transformação de dados com menor sobrecarga operacional).",
+      "reviewNotes": [
+        "Gabarito confirmado. Domínio ajustado de Custos para Alto Desempenho: o critério é menor sobrecarga operacional em ingestão, transformação e análise de dados, não otimização de custo."
+      ]
+    }
+  },
+  {
+    "questionId": "saa-c03-0fb7989b",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "lambda",
+        "service_name": "AWS Lambda",
+        "service_slug": "aws-lambda"
+      },
+      {
+        "service_id": "dynamodb",
+        "service_name": "Amazon DynamoDB",
+        "service_slug": "amazon-dynamodb"
+      },
+      {
+        "service_id": "amazon-cognito",
+        "service_name": "Amazon Cognito",
+        "service_slug": "amazon-cognito"
+      },
+      {
+        "service_id": "aws-amplify",
+        "service_name": "AWS Amplify",
+        "service_slug": "aws-amplify"
+      },
+      {
+        "service_id": "amazon-api-gateway",
+        "service_name": "Amazon API Gateway",
+        "service_slug": "amazon-api-gateway"
+      }
+    ],
+    "tags": [
+      "serverless",
+      "cognito",
+      "amplify",
+      "api-gateway",
+      "lambda"
+    ],
+    "question": "Uma empresa quer criar um site cujo tráfego é imprevisível e pode ficar inativo por longos períodos. Apenas os clientes que pagaram uma assinatura podem fazer login e usar a aplicação web. Qual combinação de etapas é a MAIS econômica? (Selecione TRÊS)",
+    "options": [
+      "Criar uma função do AWS Lambda que recupere informações de usuário do Amazon DynamoDB. Criar um endpoint do Amazon API Gateway para APIs RESTful que envie as chamadas ao Lambda.",
+      "Criar um serviço do Amazon ECS atrás de um ALB e usar o Amazon RDS para as informações dos clientes. Criar um endpoint de API Gateway que envie as chamadas ao Lambda.",
+      "Criar um grupo de usuários (user pool) do Amazon Cognito para autenticar os usuários.",
+      "Usar o AWS Amplify para servir o conteúdo web do frontend (HTML, CSS e JS) com a configuração integrada do Amazon CloudFront."
+    ],
+    "correct": [
+      0,
+      2,
+      3
+    ],
+    "explanation": "A pilha totalmente serverless (API Gateway, Lambda, DynamoDB, Cognito e Amplify com CloudFront) não gera cobrança por ociosidade quando o site fica inativo. Nota de revisão técnica: Gabarito confirmado. A alternativa B está internamente inconsistente (ECS, ALB e RDS combinados com um API Gateway que envia chamadas ao Lambda); o texto foi preservado como recebido.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 32,
+      "round": "16/20",
+      "originalAnswer": "A, C e D",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado. A alternativa B está internamente inconsistente (ECS, ALB e RDS combinados com um API Gateway que envia chamadas ao Lambda); o texto foi preservado como recebido."
+      ]
+    }
+  },
+  {
+    "questionId": "saa-c03-8f598c6b",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "easy",
+    "services": [
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "s3",
+      "versionamento",
+      "protecao-contra-exclusao"
+    ],
+    "question": "Um arquiteto de soluções deve criar um local de armazenamento de dados que seja capaz de lidar com diferentes formatos de arquivo de tamanhos desconhecidos. Os dados devem estar altamente disponíveis e protegidos contra exclusão acidental. Qual solução atende aos requisitos e é a MAIS econômica?",
+    "options": [
+      "Implantar um banco de dados usando o Amazon RDS e configurar uma implantação Multi-AZ para esse banco de dados.",
+      "Implantar um bucket do Amazon S3 e ativar o versionamento de objetos.",
+      "Implantar uma tabela do Amazon DynamoDB e ativar as tabelas globais.",
+      "Implantar um bucket do Amazon S3 e ativar a replicação entre regiões (CRR)."
+    ],
+    "correct": 1,
+    "explanation": "O Amazon S3 com versionamento suporta objetos de qualquer formato e tamanho e protege contra exclusão acidental, com dados em múltiplas AZs da mesma região, sem duplicar o custo em outra região.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 33,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed"
+    }
+  },
+  {
+    "questionId": "saa-c03-30fb1088",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "aws-snowball-edge",
+        "service_name": "AWS Snowball Edge",
+        "service_slug": "aws-snowball-edge"
+      },
+      {
+        "service_id": "s3",
+        "service_name": "Amazon S3",
+        "service_slug": "amazon-s3"
+      }
+    ],
+    "tags": [
+      "snowball-edge",
+      "migracao",
+      "transferencia-offline"
+    ],
+    "question": "Uma empresa de mídia precisa migrar 70 TB de arquivos de vídeo históricos do seu datacenter local para o Amazon S3 no prazo máximo de 10 dias. O link de internet do datacenter é de apenas 100 Mbps e já opera com 80% de utilização durante o horário comercial. Qual é a maneira mais rápida e econômica de realizar essa migração sem impactar a operação diária da rede da empresa?",
+    "options": [
+      "Configurar o AWS DataSync com compressão habilitada utilizando o link de internet atual durante 24 horas por dia.",
+      "Solicitar uma conexão AWS Direct Connect de 10 Gbps para realizar a transferência em menos de 48 horas.",
+      "Solicitar um dispositivo físico AWS Snowball Edge Storage Optimized, copiar os dados localmente no datacenter e enviá-lo de volta para a AWS importar no S3.",
+      "Utilizar o comando aws s3 sync com Multipart Upload através de uma conexão AWS Site-to-Site VPN."
+    ],
+    "correct": 2,
+    "explanation": "O AWS Snowball Edge contorna a limitação física do link de 100 Mbps, transportando os 70 TB offline dentro da janela de 10 dias. Nota de revisão técnica: Gabarito confirmado conceitualmente: 70 TB cabem em um Snowball Edge Storage Optimized, enquanto os cerca de 20 Mbps livres do link levariam quase um ano. Atenção: o AWS Snowball Edge não está mais disponível para novos clientes desde 07/11/2025 e a AWS anuncia o fim do suporte em 31/12/2026. Hoje a AWS recomenda DataSync (transferência online) ou AWS Data Transfer Terminal. Questão mantida por refletir conteúdo cobrado em provas, mas recomenda-se revisão futura.",
+    "reference_url": "https://docs.aws.amazon.com/snowball/latest/developer-guide/snowball-edge-availability-change.html",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 34,
+      "round": null,
+      "originalAnswer": "C",
+      "reviewStatus": "confirmed-with-notes",
+      "reviewNotes": [
+        "Gabarito confirmado conceitualmente: 70 TB cabem em um Snowball Edge Storage Optimized, enquanto os cerca de 20 Mbps livres do link levariam quase um ano. Atenção: o AWS Snowball Edge não está mais disponível para novos clientes desde 07/11/2025 e a AWS anuncia o fim do suporte em 31/12/2026. Hoje a AWS recomenda DataSync (transferência online) ou AWS Data Transfer Terminal. Questão mantida por refletir conteúdo cobrado em provas, mas recomenda-se revisão futura."
+      ]
+    }
+  },
+  {
+    "questionId": "saa-c03-37e11472",
+    "certId": "saa-c03",
+    "examCode": "AWS Certified Solutions Architect - Associate",
+    "version": "1.0",
+    "domain": "Design Cost-Optimized Architectures",
+    "difficulty": "medium",
+    "services": [
+      {
+        "service_id": "amazon-ec2-spot-instances",
+        "service_name": "Amazon EC2 Spot Instances",
+        "service_slug": "amazon-ec2-spot-instances"
+      },
+      {
+        "service_id": "aws-savings-plans",
+        "service_name": "AWS Savings Plans",
+        "service_slug": "aws-savings-plans"
+      }
+    ],
+    "tags": [
+      "spot",
+      "savings-plans",
+      "modelos-de-compra",
+      "ec2"
+    ],
+    "question": "Uma empresa executa uma aplicação de análise de dados no Amazon EC2. A aplicação possui uma carga base previsível que precisa rodar 24/7 sem interrupções, exigindo 4 instâncias m6i.xlarge. Além disso, todas as noites são executados jobs de processamento em lote (batch) que são tolerantes a falhas, podem ser interrompidos e retomados a qualquer momento, exigindo até 20 instâncias adicionais por 3 horas. Qual combinação de modelos de compra do EC2 oferece o menor custo?",
+    "options": [
+      "Comprar Compute Savings Plans para todas as 24 instâncias.",
+      "Utilizar Savings Plans (ou Reserved Instances) para as 4 instâncias da carga base e Spot Instances para as 20 instâncias do processamento em lote.",
+      "Utilizar On-Demand Instances para as 4 instâncias da carga base e Dedicated Hosts para as 20 instâncias noturnas.",
+      "Utilizar Spot Instances tanto para as 4 instâncias da carga base quanto para as 20 instâncias de processamento em lote."
+    ],
+    "correct": 1,
+    "explanation": "Combina Savings Plans ou Reserved Instances para a carga previsível 24/7 com Spot Instances para os jobs noturnos tolerantes a interrupções.",
+    "reference_url": "",
+    "validation": {
+      "status": "validated",
+      "validatedAt": "2026-11-13T23:51:09.497Z",
+      "validatorVersion": "1.0",
+      "createdBy": "A3 Cloud Academy"
+    },
+    "source": {
+      "origin": "AWS Skill Builder Trivia (material fornecido pelo mantenedor)",
+      "item": 35,
+      "round": null,
+      "originalAnswer": "B",
+      "reviewStatus": "confirmed"
+    }
   }
 ]

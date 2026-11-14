@@ -32,7 +32,8 @@
     "db:start": "node backend/server.js",
     "db:dev": "node backend/server.js",
     "api:start": "node backend/api/server.js",
-    "api:dev": "node backend/api/server.js"
+    "api:dev": "node backend/api/server.js",
+    "preflight:staging": "node scripts/operations/staging-preflight.mjs"
   },
   "repository": {
     "type": "git",

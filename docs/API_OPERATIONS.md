@@ -1,176 +1,62 @@
-# API: contrato operacional para o primeiro deploy (D4.2.5)
+# API: contrato operacional do staging PGlite
 
-Nenhum provedor, domínio ou deploy é definido nesta etapa. A API é
-`backend/api/server.js`, iniciada por `npm run api:start`. Não requer build do
-frontend. Usar Node 22, uma réplica e um único processo Node proprietário do
-banco. Não usar cluster/PM2 com múltiplos workers, autoscaling horizontal,
-filesystem efêmero ou dois processos abrindo o mesmo diretório PGlite.
+Este contrato descreve o runtime Express/PGlite atual e a preparação de uma única máquina. Não representa publicação ou homologação AWS. A API inicia com `npm run api:start`; o pacote estático precisa ser gerado com `npm run build` antes de ser publicado.
 
-## Configuração e volume
+## Runtime, bind e processo
 
-Definir `NODE_ENV=production` explicitamente. Antes de abrir o banco/porta,
-o startup valida:
+O runtime candidato para staging é Node.js **24.21.0**, usado pelo ensaio Linux da Etapa 3. O repositório não declara `engines`; CI e publicação GitHub Pages usam Node 22, e o ambiente local desta auditoria usa Node 24.14.0. Assim, 24.21.0 é uma escolha para reproduzir a evidência de desempenho, não uma declaração de compatibilidade já homologada. O preflight exige essa versão exata; validar dependências e build nela no host Linux antes do canário.
 
-- `DB_DATA_DIR`: caminho de filesystem não vazio, sem URI `memory://`.
-  Montar nele um volume persistente gravável pelo usuário do processo.
-  O código não consegue provar que a infraestrutura persiste o disco: isso
-  precisa ser verificado na hospedagem. Preferir caminho absoluto.
-- `AUTH_SESSION_SECRET`: pelo menos 32 bytes, diversidade mínima de caracteres
-  e rejeição de placeholders óbvios. Gerar 32 bytes criptograficamente aleatórios
-  (por exemplo `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64'))"`)
-  e armazenar no mecanismo de segredos da hospedagem. Comprimento/diversidade
-  não comprovam entropia; não escolher uma frase humana. Preservar o segredo
-  entre reinícios; sua troca invalida sessões existentes.
-- `GOOGLE_CLIENT_ID`: Client ID público válido em formato
-  `*.apps.googleusercontent.com`, igual ao frontend. A configuração externa do
-  Google continua exigindo verificação; o startup não a valida remotamente.
-- `PORT`: inteiro entre 1 e 65535 (padrão 3001); bind em `0.0.0.0`.
-- `TRUST_PROXY`, se fornecido: somente IPs/CIDRs explícitos de proxies confiáveis.
+`backend/api/config.js` configura o bind conforme ambiente: desenvolvimento PGlite normalmente usa `0.0.0.0`; `NODE_ENV=staging` ou `production` usa `127.0.0.1`; `DB_ENGINE=postgres-test` também permanece em loopback. Em staging, Nginx na mesma máquina encaminha `/api/` para `http://127.0.0.1:3001`. A porta 3001 não deve ser publicada na rede. Definir `TRUST_PROXY=127.0.0.1` (ou `127.0.0.1/32`) somente para esse proxy local; forwarded headers devem ser sobrescritos pelo Nginx. CORS restringe origens de navegadores, mas não autentica clientes nem substitui firewall/proxy.
 
-Configuração inválida encerra com código 1 e nome da variável, sem seu valor.
-Desenvolvimento/testes mantêm o fallback de segredo exclusivo de teste e banco
-em memória exclusivo de teste. `ALLOW_DEV_EMAIL_LOGIN=true` continua incapaz de
-habilitar login por email em produção.
+Usar uma única réplica e um processo Node proprietário de `DB_DATA_DIR`. Não usar cluster, PM2 com workers, autoscaling horizontal, filesystem efêmero ou dois processos abrindo o mesmo diretório. PGlite é incorporado ao processo e o diretório não oferece coordenação entre instâncias.
 
-## HTTPS, proxy e monitoramento
+## Variáveis e identidade
 
-Terminar HTTPS na infraestrutura e restringir acesso direto à porta Node.
-`TRUST_PROXY` vazio mantém `false`. Quando a topologia for conhecida, listar
-somente o proxy/subnet que realmente conecta ao processo. O proxy deve
-sobrescrever os headers encaminhados; não usar `true`, contagem arbitrária de
-hops nem subnets abrangendo clientes. Assim o rate limit não aceita
-`X-Forwarded-For` de qualquer origem. Validar o IP observado antes de publicar.
+Staging exige `NODE_ENV=staging`, `DB_ENGINE=pglite`, `DB_DATA_DIR`, `AUTH_SESSION_SECRET`, `GOOGLE_CLIENT_ID`, `AUTH_ALLOWED_DOMAINS`, `AUTH_ALLOWED_EMAILS`, `TRUST_PROXY` e `CORS_ALLOWED_ORIGINS`. Valores corporativos devem vir dos responsáveis A3Data; não usar exemplos deste documento como allowlist real.
 
-CORS continua autorizando `https://karlarenatadev.github.io`; não é controle de
-autenticação nem proteção contra clientes fora do navegador.
+`AUTH_ALLOWED_EMAILS` limita indivíduos autorizados e cada identidade deve estar no domínio explicitamente autorizado. Google OAuth verifica token, audience/issuer/expiração e email verificado; em staging login local por email fica desabilitado. O preflight verifica formato/configuração local, não consulta Google nem prova desligamento/revogação corporativa. O responsável pela allowlist deve remover acessos desligados; validar o fluxo de revogação e expiração no canário.
 
-- `GET /api/health`: liveness, 200 enquanto o HTTP responde, inclusive com banco
-  indisponível.
-- `GET /api/ready`: 200 `{ "ready": true }` somente após startup/migrations,
-  configuração válida e consulta `SELECT 1` bem-sucedida. Banco fechado,
-  indisponível, shutdown ou consulta acima de 1 segundo: 503, sem detalhes.
-- Configurar probes espaçadas; ambas continuam sob o rate limit geral de
-  300 requisições/15 minutos. Não usar alta frequência a partir de um só IP.
-- Disponibilizar logs e reinício automático após falha. Logs de produção
-  omitem headers, corpos, tokens, paths arbitrários e mensagens/stacks de
-  erros SQL/terceiros. Mantêm contexto estático e SQLSTATE quando disponível.
-  Consultas/parâmetros SQL não são impressos em produção, mesmo se `DEBUG` ou
-  `DB_DEBUG` forem habilitados. Fora de produção, o diagnóstico SQL opt-in pode
-  conter dados pessoais; manter ambas as flags desligadas por padrão.
+`AUTH_SESSION_SECRET` deve conter pelo menos 32 bytes de material aleatório, ser mantido em secret store aprovado e permanecer estável entre reinícios. A troca invalida sessões. Não imprimir ou incluir segredos no bundle público, logs ou Git. `GOOGLE_CLIENT_ID` é público, mas deve corresponder ao OAuth Client e às origens aprovadas no Google Console.
 
-## Inicialização e parada
+`POST /api/users` responde **403** quando `NODE_ENV` é `staging`/`production` ou `DB_ENGINE=postgres`; a criação anônima legada só fica disponível no ambiente local permitido. Isso é independente do endpoint de login por email, também recusado no modo hardened. Provisionamento corporativo ocorre no fluxo autenticado Google.
 
-Banco vazio recebe schema; banco existente passa pelas migrations idempotentes.
-O retry de abertura executa a mesma sequência, incluindo vínculos locais e a
-permissão de `mistakes`. O retry não torna seguro compartilhar o volume.
+## PGlite, inicialização e readiness
 
-SIGTERM, SIGINT e SIGHUP iniciam uma única parada: readiness negativa, HTTP deixa
-de aceitar conexões, conexões ociosas fecham, requisições em curso drenam e só
-depois PGlite fecha. Após 10 segundos, conexões HTTP restantes são interrompidas;
-após 15 segundos totais, saída forçada com código 1 se a parada não concluiu.
-Configurar grace period da infraestrutura superior a 15 segundos. Falhas fatais
-usam a mesma sequência com saída 1. Reinício só deve começar após saída do processo.
+`DB_DATA_DIR` é diretório de filesystem, não URI `memory://`. O código valida que foi configurado, mas o preflight de staging exige caminho absoluto, diretório já existente e gravável. No Linux, usar proprietário do serviço e permissões sem acesso de grupo/outros (recomendação `0700`). O preflight não cria nem corrige o volume.
+
+No startup, a aplicação abre PGlite, aplica schema e migrations idempotentes e só então sinaliza readiness. Restart reabre o mesmo diretório; testes locais não provam que o volume AWS sobrevive à troca/falha de host. Garantir persistência e exclusividade no provedor antes do canário.
+
+- `GET /api/health`: liveness HTTP; pode responder 200 mesmo se o banco estiver indisponível.
+- `GET /api/ready`: 200 após inicialização e consulta simples do banco; durante startup, falha ou shutdown responde 503. O teste de banco tem timeout curto.
+
+Ambos estão sujeitos ao rate limit geral, portanto usar probes espaçadas e validar limites no Nginx. O readiness não comprova identidade, backup nem conectividade externa.
+
+SIGTERM/SIGINT/SIGHUP iniciam shutdown único: readiness negativa, servidor deixa de aceitar conexões, requisições em andamento drenam e banco fecha depois. O processo interrompe conexões restantes após cerca de 10 segundos e força saída após 15 segundos totais. O serviço do host deve permitir grace maior que 15s; o exemplo systemd usa 30s.
+
+## Proxy e conteúdo
+
+O template `docs/audits/staging/nginx/cloudacademy.conf.example` termina TLS, restringe a rede por uma allowlist CIDR inicialmente vazia e encaminha API somente ao loopback. O arquivo `approved-cidrs.map.example` é deliberadamente deny-all até a equipe de rede fornecer faixas aprovadas. Nginx deve sobrescrever `Host`, `X-Real-IP`, `X-Forwarded-For` e `X-Forwarded-Proto`, e o firewall deve negar acesso direto à porta Node.
+
+Os arquivos `public/` (HTML, JS, CSS, JSON, imagens e Service Worker) são conteúdo estático acessível a quem alcança o host; autenticação da API não protege esses arquivos. Não colocar dados de usuário ou segredos no bundle. O cache offline do PWA pode conservar conteúdo estático em um dispositivo após revogação; revogação de sessão bloqueia chamadas autenticadas, mas não apaga cópias já baixadas. A restrição de rede corporativa é requisito de confidencialidade para o canário e depende da configuração real de VPN/proxy/firewall da A3Data.
+
+## Logs mínimos
+
+Em staging/produção, logs de request devem conter request ID gerado pelo servidor, método, rota normalizada, status e duração; erros usam classe/código sanitizado. Não registrar email, token, headers, query string, corpo, parâmetros SQL, segredo ou stack/mensagem potencialmente sensível. A aplicação não instala agente de observabilidade nem fornece métricas do host. No canário, coletar externamente ao processo CPU, RSS, heap, event-loop lag, reinicializações e readiness com ferramentas aprovadas pela A3Data, mantendo logs locais protegidos.
 
 ## Backup e restauração
 
-**Todo o diretório `DB_DATA_DIR` é estado persistente**, incluindo catálogo,
-dados e arquivos internos do PostgreSQL/PGlite. Não copiar apenas tabelas nem
-selecionar arquivos internos. O dump contém dados pessoais e deve ter controle
-de acesso, criptografia e cópia externa ao volume de produção.
+O backup é **offline**: parar a API, aguardar saída e confirmar que nenhum outro processo abre o diretório. `scripts/operations/backup-pglite.mjs` exige `DB_DATA_DIR` absoluto, `BACKUP_OUTPUT_DIR` preexistente fora do diretório (inclusive após resolução de symlinks) e `BACKUP_AGE_RECIPIENT`. O diretório externo deve ser criado antes; o script não cria diretórios que poderiam atravessar symlinks até o banco. Executa `syncToFs`, `dumpDataDir("gzip")`, fecha PGlite e criptografa com `age`; publica um arquivo novo sem sobrescrever nome existente e remove o parcial após erro. A chave privada permanece separada do host/destino.
 
-Procedimento consistente com o utilitário existente (janela de manutenção):
+O dump compactado é mantido em memória e a versão atual ainda lê o artefato criptografado inteiro para calcular SHA-256; o pico de RAM do backup não foi medido e deve ser medido em staging sintético antes de janela de backup curta. O script não detecta por si só outro processo usando o banco: parada e exclusividade são pré-condições operacionais.
 
-1. Drenar/parar a API e aguardar a saída. Confirmar que nenhum outro processo
-   usa o banco. Não executar o utilitário sobre o volume aberto pela API.
-2. Definir `RECOVERY_DATA_DIR` como o diretório existente, previamente verificado,
-   e `RECOVERY_DUMP_PATH` como um arquivo novo fora desse diretório. Executar
-   `node scripts/diagnostics/pglite-recovery.mjs`. Verificar exit 0 e `DUMP_BYTES`.
-3. Copiar o dump para armazenamento externo protegido e registrar checksum,
-   data e versão do PGlite/aplicação. Reiniciar a API e verificar `/api/ready`.
-4. Testar restauração regularmente em um diretório **novo e vazio**, com a mesma
-   versão do PGlite. Exemplo de script ESM executado na raiz do projeto:
+`scripts/operations/verify-pglite-backup.mjs` exige artefato criptografado, identidade `age` autorizada e um caminho absoluto de restauração que ainda não exista. Descriptografa em memória, abre em diretório novo e verifica tabelas esperadas, contagens e consulta simples; mantém o diretório restaurado para inspeção. Isso não compara contagens com um manifesto de origem nem prova restauração de host AWS. Após validação, remover o diretório sintético conforme o procedimento controlado local; nunca apontar para o volume ativo.
 
-```js
-import { readFile } from 'node:fs/promises';
-import { PGlite } from '@electric-sql/pglite';
+Retenção, destino externo, chaves, custódia, teste periódico, RPO e RTO dependem de aprovação A3Data. Não houve ensaio criptográfico nesta máquina porque `age` não está instalado; portanto criptografia e restore não estão homologados.
 
-const db = await PGlite.create({
-  dataDir: process.env.RESTORE_DATA_DIR, // obrigatório: diretório novo e vazio
-  loadDataDir: new Blob([await readFile(process.env.RECOVERY_DUMP_PATH)]),
-});
-try {
-  await db.query('SELECT count(*) FROM users');
-  await db.query('SELECT count(*) FROM user_module_state');
-  await db.query('SELECT count(*) FROM local_identity_links');
-} finally {
-  await db.close();
-}
-```
+## Runtime PostgreSQL separado
 
-5. Para recuperar produção: API parada, conservar o diretório original; apontar
-   `DB_DATA_DIR` ao volume restaurado, iniciar e validar readiness e dados antes
-   de liberar tráfego. Nunca sobrescrever o banco ativo.
+`DB_ENGINE=postgres` e `postgres-test` são runtimes separados, não selecionados para este contrato de staging PGlite. As instruções de migrations, pool e TLS em documentos históricos não autorizam banco externo ou cutover. Não executar runner de migrations operacional sem plano e aprovação específicos.
 
-O utilitário não verifica exclusividade, existência prévia do banco nem impede
-sobrescrever o arquivo de dump. Esses controles são pré-condições do operador;
-não houve alteração nele. Uma evolução separada pode adicionar essas guardas.
-Backup offline do diretório inteiro também exige processo totalmente encerrado.
+## Preflight local
 
-## Runtime operacional PostgreSQL
-
-`DB_ENGINE=postgres` é o runtime operacional novo e separado de `pglite`
-(local-first) e `DB_ENGINE=postgres-test` (harness F3). Ele aceita somente
-`NODE_ENV=staging` ou `production`, requer `DATABASE_URL`, `AUTH_SESSION_SECRET`,
-`AUTH_ALLOWED_DOMAINS`, `GOOGLE_CLIENT_ID`, `PORT`, `TRUST_PROXY` e
-`CORS_ALLOWED_ORIGINS` explicitamente configurados, além de validar os limites
-de pool/timeouts F1. A URL nunca é impressa. `DB_SSL_MODE=verify-full` é
-obrigatório para staging/produção; `DB_SSL_CA` é o PEM da CA quando necessário.
-A única exceção de TLS sem validação é o harness automatizado, que exige
-simultaneamente token de teste, loopback, database `cloudacademy_f2_test` e
-role `cloudacademy_operational_runtime`; isso não altera as guards F3.
-
-Esse runtime não executa schema, migrations, seeds nem bootstrap no startup.
-Ele verifica PostgreSQL 16, ledger/checksums F2, schema efetivo e privilégios
-da role. A role precisa de DML e leitura do ledger, sem DDL, ownership ou
-privilégios administrativos. `/api/health` mede liveness do processo; `/api/ready`
-retorna 200 somente com banco/schema/permissões compatíveis e 503 durante falha,
-drain ou incompatibilidade. O pool é lazy, de forma que HTTP pode iniciar sem o
-banco e readiness volta a 200 quando a dependência recupera.
-
-O runner F2 atual continua protegido como test-only. Não o aponte a um banco
-operacional nem remova suas guards: um job de migrations com credencial admin
-operacional ainda é gate separado antes de staging AWS. O runtime operacional
-usa deadline de encerramento de pool padrão de 4 s, dentro dos 10 s de drain e
-15 s totais definidos para o processo.
-
-`CORS_ALLOWED_ORIGINS` é uma lista separada por vírgulas de origens HTTPS
-exatas, sem wildcard; `TRUST_PROXY` vazio desabilita proxy trust, ou deve
-enumerar somente IPs/CIDRs confiáveis. Request ID é sempre UUID gerado pelo
-servidor e retornado em `X-Request-Id`; logs JSON usam rota template e omitem
-headers, query, corpo, tokens, URL do banco e dados pessoais. Mensagens internas
-de staging e produção são sanitizadas.
-
-`POST /api/users` (criação anônima legada) é recusado com 403 em `DB_ENGINE=postgres`.
-Não há consumidor ativo identificado no frontend; criação corporativa permanece
-no fluxo autenticado Google. Consumidores externos precisam ser inventariados
-antes de qualquer publicação.
-
-## Contratos preservados e dívidas
-
-`POST /api/users` ainda é público. Há método `ApiService.createUser()` em
-`src/frontend/js/services/api.js` e documentação pública da rota; não foram
-encontrados chamadores ativos desse método no frontend atual. Login Google
-cria usuários internamente por `resolveGoogleIdentity`, sem essa rota. Não é
-possível excluir consumidores externos: proteção/retirada requer decisão de
-compatibilidade. Proposta mínima futura: restringir o POST legado em produção,
-preservando o provisionamento Google. Risco atual: criação anônima/abuso de disco.
-
-`PUT /api/me/state/:module` continua aceitando versão omitida. O cliente público
-`saveModuleState(..., version = null)` e testes de persistência cobrem o contrato
-legado; o repositório atual usa versões conforme D4.2.2. Tornar versão obrigatória
-globalmente exige migração de consumidores e permanece dívida técnica.
-
-Não se alteraram OAuth, frontend, Service Worker, namespaces, regras de merge,
-normalização `certId`, banco externo ou infraestrutura. A D4.2.6 deve selecionar
-hospedagem que satisfaça este contrato, configurar volume/segredos/HTTPS/proxy/
-probes/backup e obter a URL real para `PUBLIC_API_BASE_URL`, mediante autorização.
+Antes de empacotar, executar `npm run build` e `npm run preflight:staging`. O preflight verifica versão Node, configuração hardened, allowlist, segredo sem revelar valor, origem HTTPS, confiança explícita no proxy local, diretório, artefatos, templates Nginx/systemd e padrões conhecidos de credenciais em arquivos públicos. Um resultado local sem bloqueios é apenas validação estática; não testa Nginx, TLS, firewall, OAuth, IAM, volume ou AWS e não autoriza deploy. Veja `docs/audits/ETAPA4_1_CONTRATO_CANARIO_STAGING.md` para a matriz de gates.

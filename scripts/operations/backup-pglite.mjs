@@ -2,19 +2,15 @@
 // opens the PGlite data directory exclusively and refuses incomplete settings.
 import { createHash, randomUUID } from "node:crypto";
 import { createWriteStream } from "node:fs";
-import { mkdir, stat } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import {
-  basename,
-  dirname,
-  isAbsolute,
-  relative,
-  resolve,
-  sep,
-} from "node:path";
+import { link, stat, unlink } from "node:fs/promises";
+import { basename, resolve } from "node:path";
 import { spawn } from "node:child_process";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
+import {
+  assertBackupPaths,
+  assertResolvedBackupOutsideDatabase,
+} from "./backupGuards.mjs";
 
 const dataDirInput = process.env.DB_DATA_DIR?.trim();
 const outputDirInput = process.env.BACKUP_OUTPUT_DIR?.trim();
@@ -27,16 +23,10 @@ if (!dataDirInput || !outputDirInput || !recipient) {
 
 const dataDir = resolve(dataDirInput);
 const outputDir = resolve(outputDirInput);
-const outputRelativeToDb = relative(dataDir, outputDir);
-if (
-  !isAbsolute(dataDirInput) ||
-  outputRelativeToDb === "" ||
-  (!outputRelativeToDb.startsWith(`..${sep}`) && outputRelativeToDb !== "..")
-) {
-  throw new Error("Backup output must be outside DB_DATA_DIR");
-}
+assertBackupPaths(dataDirInput, outputDirInput);
 await stat(dataDir);
-await mkdir(outputDir, { recursive: true, mode: 0o700 });
+await stat(outputDir);
+await assertResolvedBackupOutsideDatabase(dataDir, outputDir);
 
 const { PGlite } = await import("@electric-sql/pglite");
 const database = await PGlite.create({ dataDir });
@@ -80,10 +70,13 @@ try {
     ),
     result,
   ]);
-  const { rename } = await import("node:fs/promises");
-  await rename(partialPath, finalPath);
+  // A hard link publishes atomically and fails if finalPath already exists.
+  // Both paths are in the same output directory/filesystem.
+  await link(partialPath, finalPath);
+  await unlink(partialPath);
 } catch (error) {
   age.kill();
+  await unlink(partialPath).catch(() => {});
   throw error;
 }
 

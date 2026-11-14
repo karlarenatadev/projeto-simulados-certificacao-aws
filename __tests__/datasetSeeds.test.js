@@ -63,17 +63,17 @@ describe('catalog seed projections', () => {
       return { count: count[0].count, row: row[0], tagged: tagged[0].count, languages, certifications, apiQuestions: (await getQuestions({ limit: 100 })).length };
     });
 
-    expect(first.count).toBe(2538);
+    expect(first.count).toBe(2608);
     expect(second.count).toBe(first.count);
     expect(second.row).toEqual({ validation_status: 'APPROVED', validated_by: 'fixture-validator' });
     expect(second.tagged).toBeGreaterThan(0);
     expect(second.languages).toEqual([
-      { language: 'en', count: 1269 },
-      { language: 'pt', count: 1269 },
+      { language: 'en', count: 1304 },
+      { language: 'pt', count: 1304 },
     ]);
     expect(second.certifications).toEqual([
       { certification: 'CLF-C02', count: 788 },
-      { certification: 'SAA-C03', count: 570 },
+      { certification: 'SAA-C03', count: 640 },
       { certification: 'DVA-C02', count: 568 },
       { certification: 'AIF-C01', count: 612 },
     ]);
@@ -258,7 +258,7 @@ describe('catalog seed projections', () => {
       };
     });
 
-    expect(first).toEqual({ cases: 25, services: 241, progress: 1 });
-    expect(second).toEqual({ cases: 25, services: 241, progress: 1, labs: 0, route53Links: 1, apiCases: 25, apiServices: 241 });
+    expect(first).toEqual({ cases: 25, services: 248, progress: 1 });
+    expect(second).toEqual({ cases: 25, services: 248, progress: 1, labs: 0, route53Links: 1, apiCases: 25, apiServices: 248 });
   });
 });

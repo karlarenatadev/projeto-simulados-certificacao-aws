@@ -288,6 +288,12 @@ export function createDataRepository(storage, _api = null) {
       return saved;
     },
 
+    resolveMistake(questionOrId, certificationId) {
+      const saved = storage.resolveMistake(questionOrId, certificationId);
+      void syncModuleState("mistakes", certificationId);
+      return saved;
+    },
+
     clearMistakes(certificationId) {
       const saved = storage.clearMistakes(certificationId);
       void syncModuleState("mistakes", certificationId);

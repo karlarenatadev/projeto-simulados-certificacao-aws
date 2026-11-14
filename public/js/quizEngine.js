@@ -19,6 +19,7 @@ import { normalizeCertificationId } from "./utils/certUtils.js";
 import { certificationPaths } from "./data.js";
 import { selectDiagnosticQuestions } from "./diagnosticQuestionSelector.js";
 import { normalizeDomain } from "./domainTaxonomy.js";
+import { remapExplanationLetters } from "./utils/explanationLetters.js";
 import {
   selectTargetedQuestions,
   TARGETED_PRACTICE_QUESTION_COUNT,
@@ -617,10 +618,11 @@ export class QuizEngine {
     if (authoritativeFeedback) {
       isCorrect = authoritativeFeedback.is_correct === true;
     } else if (Array.isArray(q.correct)) {
+      const numeric = (a, b) => a - b;
       const userSorted = Array.isArray(selectedIndex)
-        ? [...selectedIndex].sort()
+        ? [...selectedIndex].sort(numeric)
         : [];
-      const correctSorted = [...q.correct].sort();
+      const correctSorted = [...q.correct].sort(numeric);
       isCorrect = JSON.stringify(userSorted) === JSON.stringify(correctSorted);
     } else {
       isCorrect = selectedIndex === q.correct;
@@ -1014,15 +1016,26 @@ export class QuizEngine {
     // Mapeia as opções mantendo a referência se estão corretas
     let opts = q.options.map((t, i) => ({
       t,
+      from: i,
       isCorrect: isMulti ? q.correct.includes(i) : i === q.correct,
     }));
 
     // Embaralha
     opts = this._shuffleArray(opts);
 
+    // Letras citadas na explicação ("A)", "(D)") seguem a nova ordem
+    const newPositionByOldIndex = [];
+    opts.forEach((o, position) => {
+      newPositionByOldIndex[o.from] = position;
+    });
+
     // Reconstrói a propriedade 'correct' com os novos índices
     return {
       ...q,
+      explanation: remapExplanationLetters(
+        q.explanation,
+        newPositionByOldIndex,
+      ),
       options: opts.map((o) => o.t),
       correct: isMulti
         ? opts

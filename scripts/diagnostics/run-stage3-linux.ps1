@@ -2,11 +2,26 @@ param(
   [int]$Port = 39123,
   [int]$SoakSeconds = 1800,
   [int]$ThinkMilliseconds = 5000,
-  [switch]$MatrixOnly
+  [switch]$MatrixOnly,
+  [string]$EvidenceDirectory
 )
 $ErrorActionPreference = 'Stop'
 $root = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
-$evidence = Join-Path $root 'docs/audits/evidence/2026-10-13/stage3'
+if ([string]::IsNullOrWhiteSpace($EvidenceDirectory)) {
+  $evidence = Join-Path $root 'docs/audits/evidence/2026-10-13/stage3'
+} else {
+  if ([System.IO.Path]::IsPathRooted($EvidenceDirectory)) {
+    throw 'EvidenceDirectory must be a relative path inside the repository.'
+  }
+  $evidence = [System.IO.Path]::GetFullPath((Join-Path $root $EvidenceDirectory))
+  $rootPrefix = $root.TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
+  if (-not $evidence.StartsWith($rootPrefix, [System.StringComparison]::OrdinalIgnoreCase)) {
+    throw 'EvidenceDirectory must remain inside the repository.'
+  }
+  if (Test-Path -LiteralPath $evidence) {
+    throw 'EvidenceDirectory already exists; select a new directory to preserve prior evidence.'
+  }
+}
 New-Item -ItemType Directory -Force -Path $evidence | Out-Null
 $network = "cloudacademy-stage3-$PID"
 $server = "$network-api"

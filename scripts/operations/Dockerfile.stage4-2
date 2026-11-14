@@ -1,0 +1,29 @@
+FROM cloudacademy-stage3:local
+
+USER root
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      age ca-certificates curl nginx openssl procps iproute2 util-linux \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY backend ./backend
+COPY data/taxonomy ./data/taxonomy
+COPY src/frontend/js/core/contracts ./src/frontend/js/core/contracts
+COPY src/frontend/js/data.js ./src/frontend/js/data.js
+COPY public /opt/cloudacademy/current/public
+COPY docs/audits/staging/nginx ./docs/audits/staging/nginx
+COPY docs/audits/staging/systemd ./docs/audits/staging/systemd
+COPY scripts/operations/staging-preflight.mjs ./scripts/operations/staging-preflight.mjs
+COPY scripts/operations/backupGuards.mjs ./scripts/operations/backupGuards.mjs
+COPY scripts/operations/backup-pglite.mjs ./scripts/operations/backup-pglite.mjs
+COPY scripts/operations/verify-pglite-backup.mjs ./scripts/operations/verify-pglite-backup.mjs
+COPY scripts/operations/stage4-2-linux-smoke.mjs ./scripts/operations/stage4-2-linux-smoke.mjs
+COPY scripts/operations/stage4-2-entrypoint.sh ./scripts/operations/stage4-2-entrypoint.sh
+RUN chmod 755 /app/scripts/operations/stage4-2-entrypoint.sh
+
+ENV STAGE42_ROOT=/var/lib/cloudacademy/stage4-2
+ENV DB_DATA_DIR=/var/lib/cloudacademy/pglite
+ENV BACKUP_OUTPUT_DIR=/var/lib/cloudacademy/backups
+ENV RESTORE_DATA_DIR=/var/lib/cloudacademy/restored
+ENTRYPOINT ["/app/scripts/operations/stage4-2-entrypoint.sh"]

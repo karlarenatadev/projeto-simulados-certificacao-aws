@@ -27,6 +27,7 @@ beforeAll(async () => {
   url = `http://127.0.0.1:${server.address().port}`;
 });
 afterEach(() => {
+  jest.restoreAllMocks();
   for (const name of [
     'NODE_ENV',
     'DB_ENGINE',
@@ -73,6 +74,23 @@ test('PGlite uses the explicit corporate CORS allowlist without retaining the Pa
       origin === 'https://study.example.invalid' ? origin : null,
     );
   }
+});
+
+test('PGlite staging emits sanitized structured request logs', async () => {
+  process.env.NODE_ENV = 'staging';
+  process.env.DB_ENGINE = 'pglite';
+  const log = jest.spyOn(console, 'log').mockImplementation(() => {});
+  const response = await fetch(`${url}/api/health?token=private-synthetic-token`);
+  expect(response.status).toBe(200);
+  const requestLog = log.mock.calls
+    .map(([value]) => value)
+    .find((value) => typeof value === 'string' && value.includes('"route":"/api/health"'));
+  expect(requestLog).toBeDefined();
+  const entry = JSON.parse(requestLog);
+  expect(entry).toMatchObject({ method: 'GET', route: '/api/health', status: 200 });
+  expect(entry.request_id).toBeTruthy();
+  expect(typeof entry.duration_ms).toBe('number');
+  expect(requestLog).not.toContain('private-synthetic-token');
 });
 
 test.each(['staging', 'production'])(

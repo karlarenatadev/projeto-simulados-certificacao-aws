@@ -1,8 +1,9 @@
 // Decrypts to memory and restores only into a new, explicitly named directory.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { lstat, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { assertRestoreTargetDoesNotExist } from "./backupGuards.mjs";
 
 const encryptedPath = process.env.BACKUP_ENCRYPTED_PATH?.trim();
 const identityFile = process.env.BACKUP_AGE_IDENTITY_FILE?.trim();
@@ -14,14 +15,7 @@ if (!encryptedPath || !identityFile || !restoreDirInput) {
 }
 const restoreDir = resolve(restoreDirInput);
 assert.ok(restoreDirInput && restoreDirInput === restoreDir);
-try {
-  await lstat(restoreDir);
-  throw new Error(
-    "RESTORE_DATA_DIR already exists; choose a new isolated path",
-  );
-} catch (error) {
-  if (error.code !== "ENOENT") throw error;
-}
+await assertRestoreTargetDoesNotExist(restoreDir);
 
 const age = spawn(
   "age",
